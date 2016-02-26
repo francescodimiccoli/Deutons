@@ -1,0 +1,14 @@
+        float CorrLATAgl_tot[11]={1,1,1,1,1,1,1,1,1,1,1};
+        float CorrLATAgl_tot_err[11]={0};
+
+        for(int m=0;m<11;m++) {
+                for(int S=0;S<3;S++) CorrLATAgl_tot[m]*=CorrLAT_pre[S]->Eval(geomagC[m]);
+                CorrLATAgl_tot[m]*=CorrLAT_LikAgl->Eval(geomagC[m]);
+                CorrLATAgl_tot[m]*=CorrLAT_DistAgl->Eval(geomagC[m]);
+
+                for(int S=0;S<3;S++) CorrLATAgl_tot_err[m]+=pow(CorrLATpre_spl[S]->GetBinContent(m+1,2)/CorrLATpre_spl[S]->GetBinContent(m+1,1),2);
+                CorrLATAgl_tot_err[m]+=pow(CorrLAT_LikAgl_spl->GetBinContent(m+1,2)/CorrLAT_LikAgl_spl->GetBinContent(m+1,1),2);
+                CorrLATAgl_tot_err[m]+=pow(CorrLAT_DistAgl_spl->GetBinContent(m+1,2)/CorrLAT_DistAgl_spl->GetBinContent(m+1,1),2);
+                CorrLATAgl_tot_err[m]=pow(CorrLATAgl_tot_err[m],0.5)*CorrLATAgl_tot[m];
+                }
+

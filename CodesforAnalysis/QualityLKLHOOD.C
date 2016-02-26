@@ -27,7 +27,7 @@
 #include "TF2.h"
 #include <math.h>
 #include <cstring>
-#include "../Functions_auto.h"
+#include "Functions_auto.h"
 #include <TMVA/Factory.h>
 #include <TMVA/Reader.h>
 #include <TMVA/Tools.h>

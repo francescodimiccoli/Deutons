@@ -20,7 +20,7 @@
 #include "TGraphAsymmErrors.h"
 #include "TGraphErrors.h"
 #include <cstring>
-#include "../Functions_auto.h"
+#include "Functions_auto.h"
 #include "Parte2/Definitions.h"
 #include "Parte2/MCpreeff.h"
 #include "Parte2/MCUnbiaseff.h"
