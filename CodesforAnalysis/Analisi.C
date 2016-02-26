@@ -54,7 +54,7 @@ int main(int argc, char * argv[])
 {
 	cout<<"Month _ Indx _ Frac "<<endl;
 	//string percorso="/home/francesco/PhD/LocalCNAF/";
-	string percorso="/storage/gpfs_ams/ams/users/fdimicco/";
+	string percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
 	string frac=argv[3];
 	FRAC=atoi(argv[3]);
 	INDX=atoi(argv[2]);

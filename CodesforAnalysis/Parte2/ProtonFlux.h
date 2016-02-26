@@ -19,7 +19,7 @@ TGraphErrors * P_Flux;
 TGraphErrors * P_Flux_pre;
 float potenza=0;
 //string percorso="/home/francesco/PhD/LocalCNAF/";
-string percorso="/storage/gpfs_ams/ams/users/fdimicco/";
+string percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
 
 void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona){
 	int k = ntupla->GetEvent(l);

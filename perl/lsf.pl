@@ -12,8 +12,8 @@ print OUT "#!/bin/bash
 export WORKDIR=/storage/gpfs_ams/ams/users/fdimicco/Deutons/
 source \$WORKDIR/amsvar.sh
 sh /storage/gpfs_ams/ams/users/fdimicco/MAIN/Sommaisto$j.sh;
-\$WORKDIR/AnalyzeDATA.exe $j $ARGV[0]>> \$WORKDIR/logs/log$j.log;\n
-\$WORKDIR/AnalyzeMC.exe $j $ARGV[0]>> \$WORKDIR/logs/logMC$j.log;\n
+\$WORKDIR/Ntuple-making/AnalyzeDATA.exe $j $ARGV[0]>> \$WORKDIR/logs/log$j.log;\n
+\$WORKDIR/Ntuple-making/AnalyzeMC.exe $j $ARGV[0]>> \$WORKDIR/logs/logMC$j.log;\n
 \$WORKDIR/CodesforAnalysis/Analisi $ARGV[0] 0 $j >>\$WORKDIR/logs/logAnalisi$j.log;\n";
 }
 if($ARGV[1]==1){
