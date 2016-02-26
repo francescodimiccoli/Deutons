@@ -59,10 +59,10 @@ int main(int argc, char * argv[]){
 	///////////////////////////// CALIBR.
 	int control=0;
 	string calib=argv[2];
-	string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/CodesforAnalysis/CALIBRAZIONI/"+calib+".root");
+	string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/CodesforAnalysis/CALIBRAZIONI/"+calib+".root");
 	TFile *_file2 = TFile::Open(nomecal.c_str());
 	cout<<"calibrazione: "<<_file2<<endl;
-	if(!_file2) {nomecal=("/storage/gpfs_ams/ams/users/fdimicco/CodesforAnalysis/2011_07.root");
+	if(!_file2) {nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/CodesforAnalysis/2011_07.root");
 	_file2 = TFile::Open(nomecal.c_str());
 	control=1;
 	}
@@ -170,7 +170,7 @@ int main(int argc, char * argv[]){
 	TFile *file =TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/sommaMC.root");
 	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string ARGV(argv[1]);
-	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Risultati/risultati/RisultatiMC_"+ARGV+".root";
+	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/risultati/RisultatiMC_"+ARGV+".root";
 	TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
 	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Beta:Massa_gen:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:EdepTOFU:EdepTOFD:Cutmask:Momentogen:DistD");
 	TNtuple *grandezzequalRICH = new TNtuple("grandezzequalRICH","grandezzequalRICH","BetaRICH_new:Massa_gen:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD");

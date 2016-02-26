@@ -74,10 +74,10 @@ int main(int argc, char * argv[]){
 	/////////// CALIBR.
 	int control=0;
 	string calib=argv[2]; 
-        string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/CodesforAnalysis/CALIBRAZIONI/"+calib+".root");
+        string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/CodesforAnalysis/CALIBRAZIONI/"+calib+".root");
         TFile *_file2 = TFile::Open(nomecal.c_str());
         cout<<"calibrazione: "<<_file2<<endl;
-        if(!_file2) {nomecal=("/storage/gpfs_ams/ams/users/fdimicco/CodesforAnalysis/2011_07.root");
+        if(!_file2) {nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/CodesforAnalysis/2011_07.root");
         _file2 = TFile::Open(nomecal.c_str());
         control=1;
         }
@@ -226,7 +226,7 @@ int main(int argc, char * argv[]){
 		if(!(geo_stuff>0)) check=false;
 		if(!(geo_stuff>0)) check=false;
 		if(check==false) std::cout<<"Skipping file!"<<endl;
-		string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Risultati/risultati/RisultatiDATI_"+ARGV+".root";
+		string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/risultati/RisultatiDATI_"+ARGV+".root";
 		TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
 		
 		TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Beta:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:EdepTOFU:EdepTOFD:Cutmask:LDiscriminant:DistD");
