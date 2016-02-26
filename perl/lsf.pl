@@ -5,7 +5,7 @@ use warnings;
 for($j=0;$j<100;$j++)
 {
 if($ARGV[1]==0){
-open(OUT,">","/storage/gpfs_ams/ams/users/fdimicco/lsf/lsf$j.tcsh");
+open(OUT,">","/storage/gpfs_ams/ams/users/fdimicco/Deutons/lsf/lsf$j.tcsh");
 
 print OUT "#!/bin/bash
 
@@ -17,7 +17,7 @@ sh \$WORKDIR/MAIN/Sommaisto$j.sh;
 \$WORKDIR/CodesforAnalysis/Analisi $ARGV[0] 0 $j >>\$WORKDIR/logs/logAnalisi$j.log;\n";
 }
 if($ARGV[1]==1){
-open(OUT,">","/storage/gpfs_ams/ams/users/fdimicco/lsf/lsf$j.tcsh");
+open(OUT,">","/storage/gpfs_ams/ams/users/fdimicco/Deutons/lsf/lsf$j.tcsh");
 
 print OUT "#!/bin/bash
 
