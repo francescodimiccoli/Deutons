@@ -5,15 +5,15 @@ TCanvas * c33 = new TCanvas("Exposure Time");
 TCanvas * c34 = new TCanvas("Deutons Flux: Primaries");
 TCanvas * c35 = new TCanvas("D/P ratio");
 
-TH3F * DFluxgeoTOF_Dist = new TH3F("DFluxsgeoTOF_Dist","DFluxsgeoTOF_Dist",18,0,18,11,0,11,2,0,2);
+TH3F * DFluxgeoTOF = new TH3F("DFluxsgeoTOF","DFluxsgeoTOF",18,0,18,11,0,11,2,0,2);
 TH3F * DFluxgeoNaF = new TH3F("DFluxsgeoNaF","DFluxsgeoNaF",18,0,18,11,0,11,2,0,2);
 TH3F * DFluxgeoAgl = new TH3F("DFluxsgeoAgl","DFluxsgeoAgl",18,0,18,11,0,11,2,0,2);
 
-TH2F * DFluxTOF_Dist= new TH2F("DFluxTOF_Dist","DFluxTOF_Dist",18,0,18,2,0,2);
+TH2F * DFluxTOF= new TH2F("DFluxTOF","DFluxTOF",18,0,18,2,0,2);
 TH2F * DFluxNaF= new TH2F("DFluxNaF","DFluxNaF",18,0,18,2,0,2);
 TH2F * DFluxAgl= new TH2F("DFluxAgl","DFluxAgl",18,0,18,2,0,2);
 
-TH2F * PDratioTOF_Dist= new TH2F("PDratioTOF_Dist","PDratioTOF_Dist",18,0,18,2,0,2);
+TH2F * PDratioTOF= new TH2F("PDratioTOF","PDratioTOF",18,0,18,2,0,2);
 TH2F * PDratioNaF= new TH2F("PDratioNaF","PDratioNaF",18,0,18,2,0,2);
 TH2F * PDratioAgl= new TH2F("PDratioAgl","PDratioAgl",18,0,18,2,0,2);
 
@@ -83,9 +83,9 @@ void DeutonFlux(TFile * file1){
 	for(int l =0;l<11;l++)
 		for(int m=0;m<18;m++)
 			if(AcceptDzoneTOF->GetBinContent(m+1,l+1,2)>0&&Tempi->GetBinContent(l)>0){
-				DFluxgeoTOF_Dist->SetBinContent(m+1,l+1,0,DCountsgeoTOF_Dist->GetBinContent(m+1,l+1,0)/(AcceptDzoneTOF->GetBinContent(m+1,l+1,2)*Tempi->GetBinContent(l)*deltaencinTOF[m]));
+				DFluxgeoTOF->SetBinContent(m+1,l+1,0,DCountsgeoTOF->GetBinContent(m+1,l+1,0)/(AcceptDzoneTOF->GetBinContent(m+1,l+1,2)*Tempi->GetBinContent(l)*deltaencinTOF[m]));
 				//err stat
-				errore=DCountsgeoTOF_Dist->GetBinContent(m+1,l+1,1)/DCountsgeoTOF_Dist->GetBinContent(m+1,l+1,0);
+				errore=DCountsgeoTOF->GetBinContent(m+1,l+1,1)/DCountsgeoTOF->GetBinContent(m+1,l+1,0);
 				//err lat corr
 				//errore=errore+CorrLAT_tot_spl->GetBinContent(l+1,2);
 				//err D vs MC
@@ -95,7 +95,7 @@ void DeutonFlux(TFile * file1){
 				//errore=pow(errore,0.5);
 				if(errore>1) errore=0.5;
 				if(errore>0) //cout<<m<<" "<<l<<" "<<errore<<endl;
-				DFluxgeoTOF_Dist->SetBinContent(m+1,l+1,1,errore*DFluxgeoTOF_Dist->GetBinContent(m+1,l+1,0));
+				DFluxgeoTOF->SetBinContent(m+1,l+1,1,errore*DFluxgeoTOF->GetBinContent(m+1,l+1,0));
 			}
 
 	for(int l =0;l<11;l++)
@@ -123,11 +123,11 @@ void DeutonFlux(TFile * file1){
 	//Primaries
 	for(int m=0;m<18;m++)
 		if( AcceptLATdTOF[m]>0&&Esposd_TOF[m]>0){	
-			DFluxTOF_Dist->SetBinContent(m+1,0,DCountsgeoTOF_Dist->GetBinContent(m+1,12,0)/(AcceptLATdTOF[m]*Esposd_TOF[m]*deltaencinTOF[m]));
+			DFluxTOF->SetBinContent(m+1,0,DCountsgeoTOF->GetBinContent(m+1,12,0)/(AcceptLATdTOF[m]*Esposd_TOF[m]*deltaencinTOF[m]));
 			//err stat
-			errore=DCountsgeoTOF_Dist->GetBinContent(m+1,12,1)/DCountsgeoTOF_Dist->GetBinContent(m+1,12,0);
+			errore=DCountsgeoTOF->GetBinContent(m+1,12,1)/DCountsgeoTOF->GetBinContent(m+1,12,0);
 			if(errore>1) errore=0.5;
-			if(errore>0) DFluxTOF_Dist->SetBinContent(m+1,1,errore*DFluxTOF_Dist->GetBinContent(m+1,0));
+			if(errore>0) DFluxTOF->SetBinContent(m+1,1,errore*DFluxTOF->GetBinContent(m+1,0));
 		}
 	for(int m=0;m<18;m++)
 		if( AcceptLATdNaF[m]>0&&Esposd_NaF[m]>0){       
@@ -148,10 +148,10 @@ void DeutonFlux(TFile * file1){
 
 	//ratio
 	for(int m=0;m<18;m++)
-		if( AcceptLATdTOF[m]>0&&Esposd_TOF[m]>0&&AcceptLATpTOF[m]>0&&Esposp_TOF[m]>0&&PCountsTOF_Dist->GetBinContent(m+1,0)>0){
-			PDratioTOF_Dist->SetBinContent(m+1,0,(DCountsgeoTOF_Dist->GetBinContent(m+1,12,0)/(AcceptLATdTOF[m]*Esposd_TOF[m]*deltaencinTOF[m]))/(PCountsTOF_Dist->GetBinContent(m+1,0)/(AcceptLATpTOF[m]*Esposp_TOF[m]*deltaencinTOF[m])));
+		if( AcceptLATdTOF[m]>0&&Esposd_TOF[m]>0&&AcceptLATpTOF[m]>0&&Esposp_TOF[m]>0&&PCountsTOF->GetBinContent(m+1,0)>0){
+			PDratioTOF->SetBinContent(m+1,0,(DCountsgeoTOF->GetBinContent(m+1,12,0)/(AcceptLATdTOF[m]*Esposd_TOF[m]*deltaencinTOF[m]))/(PCountsTOF->GetBinContent(m+1,0)/(AcceptLATpTOF[m]*Esposp_TOF[m]*deltaencinTOF[m])));
 			//err
-			PDratioTOF_Dist->SetBinContent(m+1,1,pow(2,0.5)*DFluxTOF_Dist->GetBinContent(m+1,1)/DFluxTOF_Dist->GetBinContent(m+1,0)*PDratioTOF_Dist->GetBinContent(m+1,0));
+			PDratioTOF->SetBinContent(m+1,1,pow(2,0.5)*DFluxTOF->GetBinContent(m+1,1)/DFluxTOF->GetBinContent(m+1,0)*PDratioTOF->GetBinContent(m+1,0));
 
 		}
 	for(int m=0;m<18;m++)
@@ -285,8 +285,8 @@ void DeutonFlux(TFile * file1){
 		D_FluxgeoTOF[j]->SetName(nome.c_str());
 		p=0;
 		for(int m=1;m<18;m++){
-			D_FluxgeoTOF[j]->SetPoint(p,Ekincent[m],DFluxgeoTOF_Dist->GetBinContent(m+1,j+1,0));
-			D_FluxgeoTOF[j]->SetPointError(p,0,DFluxgeoTOF_Dist->GetBinContent(m+1,j+1,1));
+			D_FluxgeoTOF[j]->SetPoint(p,Ekincent[m],DFluxgeoTOF->GetBinContent(m+1,j+1,0));
+			D_FluxgeoTOF[j]->SetPointError(p,0,DFluxgeoTOF->GetBinContent(m+1,j+1,1));
 			p++;
 		}
 		D_FluxgeoTOF[j]->SetMarkerStyle(8);
@@ -372,9 +372,9 @@ void DeutonFlux(TFile * file1){
 	D_FluxTOF->SetName(nome.c_str());
 	p=0;
 	for(int m=1;m<18;m++){
-		D_FluxTOF->SetPoint(p,Ekincent[m],DFluxTOF_Dist->GetBinContent(m+1,0));
-		cout<<DFluxTOF_Dist->GetBinContent(m+1,1)<<" "<<DFluxTOF_Dist->GetBinContent(m+1,0)<<endl;
-		D_FluxTOF->SetPointError(p,0,DFluxTOF_Dist->GetBinContent(m+1,1));
+		D_FluxTOF->SetPoint(p,Ekincent[m],DFluxTOF->GetBinContent(m+1,0));
+		cout<<DFluxTOF->GetBinContent(m+1,1)<<" "<<DFluxTOF->GetBinContent(m+1,0)<<endl;
+		D_FluxTOF->SetPointError(p,0,DFluxTOF->GetBinContent(m+1,1));
 		p++;
 	}
 	D_FluxTOF->SetMarkerStyle(8);
@@ -485,8 +485,8 @@ void DeutonFlux(TFile * file1){
 	PD_ratioTOF=new TGraphErrors();
 	p=0;
 	for(int m=1;m<18;m++){
-		PD_ratioTOF->SetPoint(p,Ekincent[m],PDratioTOF_Dist->GetBinContent(m+1,0));
-		PD_ratioTOF->SetPointError(p,0,PDratioTOF_Dist->GetBinContent(m+1,1));
+		PD_ratioTOF->SetPoint(p,Ekincent[m],PDratioTOF->GetBinContent(m+1,0));
+		PD_ratioTOF->SetPointError(p,0,PDratioTOF->GetBinContent(m+1,1));
 		p++;
 	}
 	PD_ratioTOF->SetMarkerStyle(8);

@@ -349,7 +349,7 @@ int main(int argc, char * argv[])
 	CorrLAT_Dist_Spl->Write();
 	CorrLAT_Lik_spl->Write();
 	CorrLAT_Lik_Spl->Write();
-	/*CorrLAT_LikNaF->Write();
+	CorrLAT_LikNaF->Write();
         CorrLAT_DistNaF->Write();
         CorrLAT_DistNaF_spl->Write();
         CorrLAT_DistNaF_Spl->Write();
@@ -360,7 +360,7 @@ int main(int argc, char * argv[])
         CorrLAT_DistAgl_spl->Write();
         CorrLAT_DistAgl_Spl->Write();
         CorrLAT_LikAgl_spl->Write();
-        CorrLAT_LikAgl_Spl->Write();*/
+        CorrLAT_LikAgl_Spl->Write();
 	DistDVSMC_P->Write("DistDVSMC_P");
 	LikDVSMC_P->Write("LikDVSMC_P");
 	LikDVSMC_P_Graph->Write();
@@ -387,7 +387,7 @@ int main(int argc, char * argv[])
 	PFlux->Write();
 	P_Flux->Write();
 	P_Flux_pre->Write();
-	DFluxgeoTOF_Dist->Write();
+	DFluxgeoTOF->Write();
 	f_out->Write();
 	f_out->Close();
 

@@ -5,7 +5,7 @@
 
 #system("rm /home/AMS/fdimicco/fdimicco/fdimicco/Risultati/risultati/*");
 #$percorso="/home/francesco/PhD/LocalCNAF/";
-$percorso="/storage/gpfs_ams/ams/users/fdimicco/";
+$percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
 system("cp  $percorso/Risultati/*/*tot*  $percorso/Risultati/risultati");
 
 chomp (@Rootuple = `ls  $percorso/Risultati/risultati/|grep tot  |  sed s/_tot_P1.root//g`);
