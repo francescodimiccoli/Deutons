@@ -2303,7 +2303,7 @@ int main(int argc, char * argv[]){
 
 	///////////////
 	////////////// OUTPUT ///////////////////////
-	string nomefile="/home/AMS/fdimicco/fdimicco/CodesforAnalysis/CALIBRAZIONI/"+mese+".root";
+	string nomefile="/home/AMS/fdimicco/fdimicco/Deutons/CodesforAnalysis/CALIBRAZIONI/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 	f_out->mkdir("Beta vs R");
 	f_out->mkdir("Tracker L1");
