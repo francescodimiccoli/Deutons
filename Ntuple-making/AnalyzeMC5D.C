@@ -167,7 +167,7 @@ int main(int argc, char * argv[]){
 	for(int i=0;i<18;i++) encinTOF[i]=1/pow(1-pow(Betabins[i],2),0.5)-1;
 	
 
-	TFile *file =TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/sommaMC.root");
+	TFile *file =TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/sommaMC_smear.root");
 	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string ARGV(argv[1]);
 	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/risultati/RisultatiMC_"+ARGV+".root";
