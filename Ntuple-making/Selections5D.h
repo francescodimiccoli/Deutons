@@ -258,10 +258,10 @@ int noR=33;
 int notpassed[10]={0,1021,955,33,1007,799,959,799,187,187};
 TMVA::Reader *reader;
 Float_t BDT_response;
-TFile *_file0 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Final_Def.root");
-TFile *_file1 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/QualityVariables_Def.root");
-TFile *_file3 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/QualityVariables_NaF_Def.root");
-TFile *_file3b = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/QualityVariables_Agl_Def.root");
+TFile *_file0 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Final_Def.root");
+TFile *_file1 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables_Def.root");
+TFile *_file3 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables_NaF_Def.root");
+TFile *_file3b = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables_Agl_Def.root");
 TMatrixF *TOF_Phi;
 TMatrixF *Track_Phi;
 TMatrixF *TRD_Phi;
@@ -330,7 +330,7 @@ void BDTreader()
 	  reader->AddVariable("trtrack_edep[7]",&trtred[7]);
 	  reader->AddVariable("trtrack_edep[8]",&trtred[8]);*/
 
-	reader->BookMVA("BDTmethod", "/storage/gpfs_ams/ams/users/fdimicco/TMVA/QualityBDT_BDT.weights.xml");
+	reader->BookMVA("BDTmethod", "/storage/gpfs_ams/ams/users/fdimicco/Deutons/TMVA/QualityBDT_BDT.weights.xml");
 }
 
 bool Quality(TTree *albero,int i)
