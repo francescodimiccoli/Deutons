@@ -39,6 +39,7 @@ double totaltrig=0;
 double totaltrig2=0;
 double response[44][44];
 double norm[44];
+float BetanS=0;
 int Number=0;
 int scelta=0;
 int efficienzagenbeta_P[18]={0};
@@ -175,7 +176,7 @@ int main(int argc, char * argv[]){
 	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Beta:Massa_gen:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:EdepTOFU:EdepTOFD:Cutmask:Momentogen:DistD");
 	TNtuple *grandezzequalRICH = new TNtuple("grandezzequalRICH","grandezzequalRICH","BetaRICH_new:Massa_gen:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD");
 	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Massagen:Cutmask:X:YTOFU:YTrack:YTOFD:Momentogen:BetaRICH_new:LDiscriminant:BDT_response:Dist5D:Dist5D_P");
-	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:Massagen:Momentogen:Betagen:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:LDiscriminant");
+	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:Massagen:Momentogen:Betagen:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:BetanS");
 	TNtuple * trig = new TNtuple("trig","trig","Massagen:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias");
 	
 	BDTreader();
@@ -187,6 +188,7 @@ int main(int argc, char * argv[]){
 	geo_stuff->SetBranchAddress("Pres_Unbias",&Pres_Unbias);
 	geo_stuff->SetBranchAddress("Preselected",&Preselected);
 	geo_stuff->SetBranchAddress("Beta_pre",&Beta_pre);
+	geo_stuff->SetBranchAddress("BetanS",&BetanS);
 	geo_stuff->SetBranchAddress("R_pre",&R_pre);
 	geo_stuff->SetBranchAddress("CUTMASK",&CUTMASK);
 	geo_stuff->SetBranchAddress("trtrack_edep",&trtrack_edep);
@@ -250,6 +252,7 @@ int main(int argc, char * argv[]){
 		if (Quality(geo_stuff,i)){
 			giov++;
 			if(scelta==1) aggiungiantupla(geo_stuff,i,pre,0);
+			//cout<<Beta<<" "<<BetanS<<endl;
 			if(control==1) continue;
 			//////////////////// CORR EDEP /////////////////////
 			EdepTOFU=((EdepTOFU)*Corr_TOFU->Eval(Beta));
@@ -447,7 +450,7 @@ void Trigg (TTree *albero,int i,TNtuple *ntupla)
 void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla,int P_ID)
 {
 	int k = albero->GetEvent(i);
-	ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTrack,EdepTOFD,EdepECAL,Massa_gen,Momento_gen,Beta_gen,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,LDiscriminant);
+	ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTrack,EdepTOFD,EdepECAL,Massa_gen,Momento_gen,Beta_gen,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,BetanS);
 
 }
 

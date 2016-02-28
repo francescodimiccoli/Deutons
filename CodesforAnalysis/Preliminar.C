@@ -407,7 +407,7 @@ int main(int argc, char * argv[]){
                 B1=B1+0.05/30.;
         }
 	cout<<"*************************** DATA READING **********************************"<<endl;
-	for(int i=0; i<ntupla2->GetEntries();i++) {
+	for(int i=0; i<ntupla2->GetEntries()/5;i++) {
 		int k = ntupla2->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
