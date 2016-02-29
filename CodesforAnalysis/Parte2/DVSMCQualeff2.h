@@ -22,10 +22,10 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l,int zona){
 	if((R>Rcut[zona]&&zona<10)||(zona==10)) {
 		if(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.1&&EdepL1>EdepL1beta->Eval(Beta)-0.1){
 			for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP2->Fill(K,zona);}
-			if(Distcut)
+			if(Dist5D_P<6)
 				for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP1->Fill(K,zona);}
 
-			if(Distcut) {
+			if(Dist5D_P<6) {
 				for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP1->Fill(K,zona);}
 				if(Likcut)
 					for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP2->Fill(K,zona);}

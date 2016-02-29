@@ -58,22 +58,23 @@ double CorrTOFD[30]={0.999484,1.04346,0.908516,0.913861,0.924209,0.926476,0.9305
 ///////////////////////////////////////////////////////
 
 ////////////// DEFINIZIONE SPLINES //////////////////
-TSpline3 *Rig = new TSpline3("Cubic Spline",valorecent,sigmaRinv,23);
-TSpline3 *beta = new TSpline3("beta",PiccoBeta,sigmabetainv,30);
-TSpline3 *eL1 = new TSpline3("Cubic Spline",Beta_cent,sigmaEL1Uinv,30);
-TSpline3 *etofu = new TSpline3("Cubic Spline",Beta_cent,sigmaEtofUinv,30);
-TSpline3 *etrack = new TSpline3("Cubic Spline",Beta_cent,sigmaEtrackinv,30);
-TSpline3 *etofd = new TSpline3("Cubic Spline",Beta_cent,sigmaETofDinv,30);
-TSpline3 *EdepL1beta = new TSpline3("Cubic Spline",Beta_cent,EL1,30);
-TSpline3 *EdepTOFbeta = new TSpline3("Cubic Spline",Beta_cent,ETOFU,30);
-TSpline3 *EdepTrackbeta = new TSpline3("Cubic Spline",Beta_cent,ETrack,30);
-TSpline3 *EdepTOFDbeta = new TSpline3("Cubic Spline",Beta_cent,ETOFD,30);
-TSpline3 *Corr_L1 = new TSpline3("Cubic Spline",Beta_cent,CorrL1,30);
-TSpline3 *Corr_TOFU = new TSpline3("Cubic Spline",Beta_cent,CorrTOFU,30);
-TSpline3 *Corr_Track = new TSpline3("Cubic Spline",Beta_cent,CorrTrack,30);
-TSpline3 *Corr_TOFD = new TSpline3("Cubic Spline",Beta_cent,CorrTOFD,30);
-TSpline3 *Rgenmis = new TSpline3("",R_mis,R_gen,34);
-TSpline3 *CorrRICH = new TSpline3("",R_rich,Corr_rich,25);
+TSpline3 *Rig;
+TSpline3 *beta;
+TF1 *betaNaF;
+TF1 *betaAgl;
+TSpline3 *eL1;
+TSpline3 *etofu;
+TSpline3 *etrack;
+TSpline3 *etofd;
+TSpline3 *EdepL1beta;
+TSpline3 *EdepTOFbeta;
+TSpline3 *EdepTrackbeta;
+TSpline3 *EdepTOFDbeta;
+TSpline3 *Corr_L1;
+TSpline3 *Corr_TOFU ;
+TSpline3 *Corr_Track;
+TSpline3 *Corr_TOFD;
+
 ///////////////////////////////////////////////////////
 
 void Functions_auto(){}

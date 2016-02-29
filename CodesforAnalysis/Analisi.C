@@ -20,6 +20,11 @@
 #include "TGraphAsymmErrors.h"
 #include "TGraphErrors.h"
 #include <cstring>
+#include "TFile.h"
+#include "TTree.h"
+#include "TMath.h"
+#include <math.h>
+
 #include "Functions_auto.h"
 #include "Parte2/Definitions.h"
 #include "Parte2/MCpreeff.h"

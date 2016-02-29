@@ -27,6 +27,31 @@ void FillIstogram(int INDX,string frac,string mese)
 	float Esposizionegeo[43][11]={{0}};
 	double geomag[12]={0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
 	float DistTOF,DistTrack,DistTRD=0;
+	
+	cout<<"*********************** CALIB. READING *********************"<<endl;
+
+	string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/CodesforAnalysis/CALIBRAZIONI/"+mese+".root");
+        TFile *calib = TFile::Open(nomecal.c_str());
+        cout<<"calibrazione: "<<calib<<endl;	
+	Rig = (TSpline3 *) calib->Get("Fit Results/Splines/Rig");
+        beta = (TSpline3 *) calib->Get("Fit Results/Splines/beta");
+        betaNaF = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaNaF_spl");
+        betaAgl = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaAgl_spl");
+        eL1 = (TSpline3 *) calib->Get("Fit Results/Splines/eL1");
+        etofu =  (TSpline3 *) calib->Get("Fit Results/Splines/etofu");
+        etrack =  (TSpline3 *) calib->Get("Fit Results/Splines/etrack");
+        etofd =  (TSpline3 *) calib->Get("Fit Results/Splines/etofd");
+        EdepL1beta =  (TSpline3 *) calib->Get("Fit Results/Splines/EdepL1beta");
+        EdepTOFbeta =  (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFbeta");
+        EdepTrackbeta =  (TSpline3 *) calib->Get("Fit Results/Splines/EdepTrackbeta");
+        EdepTOFDbeta =  (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFDbeta");
+        Corr_L1 =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_L1");
+        Corr_TOFU =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFU");
+        Corr_Track =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_Track");
+        Corr_TOFD =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFD");
+        cout<<Rig<<" "<<beta<<" "<<" "<<betaNaF<<" "<<betaAgl<<" "<<eL1<<" "<<etofu<<" "<<etrack<<" "<<etofd<<" "<<EdepL1beta<<" "<<EdepTOFbeta<<" "<<EdepTrackbeta<<" "<<EdepTOFDbeta<<" "<<Corr_L1<<" "<<Corr_TOFU<<" "<<Corr_Track<<" "<<Corr_TOFD<<endl;
+	cout<<"******************************"<<endl;
+
 	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
  	TFile *file =TFile::Open(nomefile.c_str());	
 	if(!file){

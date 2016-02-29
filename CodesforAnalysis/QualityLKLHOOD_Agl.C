@@ -104,6 +104,30 @@ void BDTreader();
 
 int main()
 {
+	cout<<"*********************** CALIB. READING *********************"<<endl;
+
+        string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/CodesforAnalysis/CALIBRAZIONI/2012_01.root");
+        TFile *calib = TFile::Open(nomecal.c_str());
+        cout<<"calibrazione: "<<calib<<endl;
+        Rig = (TSpline3 *) calib->Get("Fit Results/Splines/Rig");
+        beta = (TSpline3 *) calib->Get("Fit Results/Splines/beta");
+        betaNaF = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaNaF_spl");
+        betaAgl = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaAgl_spl");
+        eL1 = (TSpline3 *) calib->Get("Fit Results/Splines/eL1");
+        etofu =  (TSpline3 *) calib->Get("Fit Results/Splines/etofu");
+        etrack =  (TSpline3 *) calib->Get("Fit Results/Splines/etrack");
+        etofd =  (TSpline3 *) calib->Get("Fit Results/Splines/etofd");
+        EdepL1beta =  (TSpline3 *) calib->Get("Fit Results/Splines/EdepL1beta");
+        EdepTOFbeta =  (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFbeta");
+        EdepTrackbeta =  (TSpline3 *) calib->Get("Fit Results/Splines/EdepTrackbeta");
+        EdepTOFDbeta =  (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFDbeta");
+        Corr_L1 =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_L1");
+        Corr_TOFU =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFU");
+        Corr_Track =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_Track");
+        Corr_TOFD =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFD");
+        cout<<Rig<<" "<<beta<<" "<<" "<<betaNaF<<" "<<betaAgl<<" "<<eL1<<" "<<etofu<<" "<<etrack<<" "<<etofd<<" "<<EdepL1beta<<" "<<EdepTOFbeta<<" "<<EdepTrackbeta<<" "<<EdepTOFDbeta<<" "<<Corr_L1<<" "<<Corr_TOFU<<" "<<Corr_Track<<" "<<Corr_TOFD<<endl;
+        cout<<"******************************"<<endl;
+
 	TFile *file1 =TFile::Open("../Risultati/2012_01/RisultatiMC.root");
 	TFile *file2 =TFile::Open("../Risultati/2012_01/RisultatiDATI.root");
 	TNtuple *ntupla1=(TNtuple*)file1->Get("grandezzequalRICH");
