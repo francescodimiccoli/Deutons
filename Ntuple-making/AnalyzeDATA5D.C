@@ -231,7 +231,7 @@ int main(int argc, char * argv[]){
 		
 		TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Beta:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:EdepTOFU:EdepTOFD:Cutmask:LDiscriminant:DistD");
 		TNtuple *grandezzequalRICH = new TNtuple("grandezzequalRICH","grandezzequalRICH","BetaRICH_new:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:LDiscriminant:DistD");
-		TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:X:YTOFU:YTrack:YTOFD:Rcutoff:BetaRICH_new:LDiscriminant:BDT_response:Dist5D:Dist5D_P");
+		TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:Rmin:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:BDT_response:Dist5D:Dist5D_P");
 		TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:LDiscriminant");
 		TNtuple * trig = new TNtuple("trig","trig","U_time:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias");
 
@@ -533,7 +533,7 @@ void GrandezzequalRICH (TTree *albero,int i,TNtuple *ntupla)
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
 	int k = albero->GetEvent(i);
-	ntupla->Fill(R,Beta,(*trtrack_edep)[0],Cutmask,Latitude,PSCALTOF2,PSCALTOF3,PSCALTrack3,PSCALTRD3,Rcutoff,BetaRICH_new,LDiscriminant,BDT_response,Dist5D,Dist5D_P);
+	ntupla->Fill(R,Beta,(*trtrack_edep)[0],Cutmask,Latitude,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Rcutoff,BetaRICH_new,LDiscriminant,BDT_response,Dist5D,Dist5D_P);
 }
 
 
