@@ -93,7 +93,7 @@ float Var2=0;
 float Var3=0;
 bool Likcut=false;
 bool Distcut=false;
-
+bool Herejcut=false;
 TH1F * Esposizione[10];
 TH1F * Tempi;
 TH2F * esposizionegeo;

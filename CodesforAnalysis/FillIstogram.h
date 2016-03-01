@@ -94,16 +94,15 @@ void FillIstogram(int INDX,string frac,string mese)
 	ntupla0->SetBranchAddress("BetaRICH",&BetaRICH);
 	ntupla0->SetBranchAddress("Unbias",&Unbias);
 
-
 	ntupla1->SetBranchAddress("Momentogen",&Momento_gen);
 	ntupla1->SetBranchAddress("R",&R);
         ntupla1->SetBranchAddress("Beta",&Beta);
 	ntupla1->SetBranchAddress("BetaRICH_new",&BetaRICH);
         ntupla1->SetBranchAddress("EdepL1",&EdepL1);
-        ntupla1->SetBranchAddress("X",&X);
-        ntupla1->SetBranchAddress("YTOFU",&YTOFU);
-        ntupla1->SetBranchAddress("YTrack",&YTrack);
-        ntupla1->SetBranchAddress("YTOFD",&YTOFD);
+        ntupla1->SetBranchAddress("Rmin",&Rmin);
+        ntupla1->SetBranchAddress("EdepTOF",&EdepTOFU);
+        ntupla1->SetBranchAddress("EdepTrack",&EdepTrack);
+        ntupla1->SetBranchAddress("EdepTOFD",&EdepTOFD);
 	ntupla1->SetBranchAddress("Massagen",&Massa_gen);
         ntupla1->SetBranchAddress("LDiscriminant",&LDiscriminant);
         ntupla1->SetBranchAddress("BDT_response",&BDT_response);
@@ -132,10 +131,10 @@ void FillIstogram(int INDX,string frac,string mese)
         ntupla3->SetBranchAddress("BetaRICH_new",&BetaRICH);
 	ntupla3->SetBranchAddress("EdepL1",&EdepL1);
         ntupla3->SetBranchAddress("Rcutoff",&Rcutoff);
-	ntupla3->SetBranchAddress("X",&X);
-        ntupla3->SetBranchAddress("YTOFU",&YTOFU);
-        ntupla3->SetBranchAddress("YTrack",&YTrack);
-        ntupla3->SetBranchAddress("YTOFD",&YTOFD);
+	ntupla3->SetBranchAddress("Rmin",&Rmin);
+        ntupla3->SetBranchAddress("EdepTOFU",&EdepTOFU);
+        ntupla3->SetBranchAddress("EdepTrack",&EdepTrack);
+        ntupla3->SetBranchAddress("EdepTOFD",&EdepTOFD);
         ntupla3->SetBranchAddress("Latitude",&Latitude);
 	ntupla3->SetBranchAddress("Massagen",&Massa_gen);
         ntupla3->SetBranchAddress("LDiscriminant",&LDiscriminant);
@@ -173,22 +172,16 @@ void FillIstogram(int INDX,string frac,string mese)
 		int k = ntupla1->GetEvent(i);
 		Cutmask=CUTMASK;
         	if(100*(i/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla1->GetEntries())))+1;}
-		///QUALITY
-		Likcut=false;
-		if((((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0)&&-log(1-LDiscriminant)>2.6)||((!((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0))&&LDiscriminant>0.7)) Likcut=true;
-		Distcut=false;
-		if(fabs((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D))>ddiscrcut) Distcut=true;
-		//
+		Cuts();
 		Var3=Momento_gen;
  	        Var=R;
-        	Var2=R;
+  		Var2=R;
         	/*Var=Beta;
          	Var2=BetaRICH;
                 Var3=Beta_gen;*/
-
-		MCQualeff_Fill(ntupla1,i);	
-		MCQualCheck_Fill(ntupla1,i);
-		MCQualCheck2_Fill(ntupla1,i);
+		HecutMC_Fill(ntupla1,i);
+		MCQualeff_Fill(ntupla1,i);
+		DVSMCQualeff2_Fill(ntupla1,i);	
 		DeutonsMC_Fill(ntupla1,i);
 		MCMC_Fill(ntupla1,i);
 	}
@@ -205,9 +198,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		 DVSMCTrackeff_Copy(file);	
         }
         if(INDX==2){
-                 MCQualeff_Copy(file);
-		 MCQualCheck_Copy(file);
-		 MCQualCheck2_Copy(file);
+                 HecutMC_Copy(file);
+		 MCQualeff_Copy(file);
 		 DeutonsMC_Copy(file);
         }
 	
@@ -267,10 +259,7 @@ void FillIstogram(int INDX,string frac,string mese)
                         double geo2=geomag[z+1];
                         if(Latitude>geo && Latitude<geo2) Zona=z;
                 }
-		Likcut=false;
-                if((((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0)&&-log(1-LDiscriminant)>2.6)||((!((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0))&&LDiscriminant>0.7)) Likcut=true;
-                Distcut=false;
-                if(fabs((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D))>ddiscrcut) Distcut=true;
+                Cuts();
 		Var3=Momento_gen;
                 Var=R;
                 Var2=R;
@@ -278,9 +267,9 @@ void FillIstogram(int INDX,string frac,string mese)
                   Var2=BetaRICH;  
                   Var3=Beta_gen;*/
 		if(100*(i/(float)(ntupla3->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla3->GetEntries())))+1;}
-
+		HecutD_Fill(ntupla3,i);	
 		DATAQualeff_Fill(ntupla3,i,Zona);
-		DVSMCQualeff2_Fill(ntupla3,i,Zona);
+		DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		ProtonFlux_Fill(ntupla3,i,Zona);	
 		DeutonsDATA_Fill(ntupla3,i,Zona);
 		MCMCDATA_Fill(ntupla3,i);
@@ -309,9 +298,9 @@ void FillIstogram(int INDX,string frac,string mese)
 	DATAQualeff_Write();
 	DATApreSeleff_Write();
 	Correlazione_Preselezioni_Write();
+	HecutMC_Write();
 	DATAUnbiaseff_Write();
 	DeutonsMC_Write();
-	cout<<"DEDe"<<endl;
 	DVSMCpreSeleff_Write();
 	DVSMCQualeff2_Write();
 	DVSMCTrackeff_Write();
@@ -320,8 +309,6 @@ void FillIstogram(int INDX,string frac,string mese)
 	MCpreCheck_Write();
 	MCpreSeleff_Write();
 	MCQualeff_Write();
-	MCQualCheck2_Write();
-	MCQualCheck_Write();
 	MCTrackeff_Write();	
 	MCUnbiaseff_Write();
 	MigrationMatrix_Write();

@@ -35,9 +35,9 @@ void AcceptanceP(TFile * file1){
 			for(int S=0;S<3;S++) AcceptpreP[i][j]/=CorrLAT_pre[S]->Eval(geomagC[j]);
 			AcceptSelP[i][j]/=CorrLAT_Lik->Eval(geomagC[j])*CorrLAT_Dist->Eval(geomagC[j]);
 			//DvsMC
-			/*for(int S=0;S<3;S++) AcceptSelP[i][j]*=PreDVSMC_P[S]->GetBinContent(i+1,1);
-			for(int S=0;S<3;S++) AcceptpreP[i][j]*=PreDVSMC_P[S]->GetBinContent(i+1,1);		
-			AcceptSelP[i][j]*=DistDVSMC_P->Eval(encinprot[i])*LikDVSMC_P->Eval(encinprot[i]);*/	
+			//for(int S=0;S<3;S++) AcceptSelP[i][j]*=PreDVSMC_P[S]->GetBinContent(i+1,1);
+			//for(int S=0;S<3;S++) AcceptpreP[i][j]*=PreDVSMC_P[S]->GetBinContent(i+1,1);		
+			AcceptSelP[i][j]*=DistDVSMC_P->Eval(encinprot[i])*LikDVSMC_P->Eval(encinprot[i]);	
 			}
 	//c22->Divide(2,1);
 	c22->cd();

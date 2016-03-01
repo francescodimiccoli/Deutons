@@ -29,9 +29,8 @@
 #include "Parte2/Definitions.h"
 #include "Parte2/MCpreeff.h"
 #include "Parte2/MCUnbiaseff.h"
+#include "Parte2/Hecut.h"
 #include "Parte2/MCQualeff.h"
-#include "Parte2/MCQualCheck.h"
-#include "Parte2/MCQualCheck2.h"
 #include "Parte2/MCTrackeff.h"
 #include "Parte2/MCpreSeleff.h"
 #include "Parte2/MCpreCheck.h"
@@ -50,10 +49,10 @@
 #include "Parte2/Deutons.h"
 #include "Parte2/MCMC.h"
 #include "Parte2/DeutonsFlux.h"
+#include "Parte2/Cuts.h"
 #include "FillIstogram.h"
 using namespace std;
 
-//PROVA
 
 int main(int argc, char * argv[])
 {
@@ -197,9 +196,8 @@ int main(int argc, char * argv[])
 	cout<<"********************************** ANALYSIS *************************************************************************************"<<endl;
 	MCpreeff(file1);
 	MCUnbiaseff(file1);
+	Hecut(file1);
 	MCQualeff(file1);
-	MCQualCheck(file1);
-	MCQualCheck2(file1);
 	MCTrackeff(file1);
 	MCpreSeleff(file1);
 	Correlazione_Preselezioni(file1);
@@ -222,6 +220,7 @@ int main(int argc, char * argv[])
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 	string nome;
 	f_out->mkdir("MC Results");
+	f_out->mkdir("MC Results/He cut");
 	f_out->mkdir("MC Results/Preselections");
 	f_out->mkdir("MC Results/Quality");
 	f_out->mkdir("Data-driven Results");
@@ -250,6 +249,9 @@ int main(int argc, char * argv[])
 	f_out->mkdir("Mass Agl Template Fits/Primaries");
 	f_out->mkdir("Export");
 	f_out->cd("MC Results");
+	f_out->cd("MC Results/He cut");
+        c36->Write();
+        c37->Write();
 	f_out->cd("MC Results/Preselections");
 	c4->Write();
 	c4_bis->Write();
@@ -266,8 +268,6 @@ int main(int argc, char * argv[])
 	c5_bis->Write();
 	c6->Write();
 	c6_bis->Write();
-	c18->Write();
-	c19->Write();
 	f_out->cd("Data-driven Results");
 	c12->Write();
 	c28->Write();
@@ -342,9 +342,6 @@ int main(int argc, char * argv[])
 	EffPreSelMCP_TH2F->Write();
 	EffPreSelMCD_R_TH3F->Write();
 	EffPreSelMCD_TH3F->Write();
-	EffQualCheckMCP_TH1F->Write();
-	EffLik2CheckMCP_TH1F->Write();
-	EffDistCheckMCP_TH1F->Write();
 	for(int S=0;S<3;S++) CorrLAT_pre[S]->Write();
 	for(int S=0;S<3;S++) CorrLATpre_spl[S]->Write();
 	for(int S=0;S<3;S++) CorrLATpre_Spl[S]->Write();

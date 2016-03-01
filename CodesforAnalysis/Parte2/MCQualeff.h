@@ -53,7 +53,7 @@ TH2F * EffMCDistD_BetaAgl_TH2F = new TH2F("EffMCDistD_BetaAgl_TH2F","EffMCDistD_
 void MCQualeff_Fill(TNtuple *ntupla, int l){
 	
 	int k = ntupla->GetEvent(l);
-	if(Beta<=0||R<=0||Unbias!=0) return;
+	if(Beta<=0||R<=0) return;
 	if(Massa_gen<1){
 		for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffQualMCP->Fill(K);}
                 for(int m=0;m<18;m++) if(Var<BetaP[m+1]&&Var>BetaP[m]) EffQualMCP_Beta->Fill(m);

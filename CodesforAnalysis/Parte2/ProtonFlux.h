@@ -29,16 +29,13 @@ void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona){
 		for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) if(R>1.2*Rcutoff) {PCountsgeo_prim->Fill(K,zona);}
 		if(R>1.2*Rcutoff) for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {PCounts->Fill(K);}
 	}
-	if(!(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.05&&EdepL1>EdepL1beta->Eval(Beta)-0.05)) return;
-	for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]&&R>1.2*Rcutoff) {
-		if(Beta<protons->Eval(R)+0.1&&Beta>protons->Eval(R)-0.1) 
-		{
+	if(Beta<=0||R<=0||R<1.2*Rcutoff||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
+	if(Herejcut) {
+		for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {
 			PCounts_pre->Fill(K);
 			if(Dist5D_P<6&&Likcut) PCounts_sel->Fill(K);
-
 		}
 	}
-
 	return;
 }
 

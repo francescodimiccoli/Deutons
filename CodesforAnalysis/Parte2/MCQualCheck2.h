@@ -20,7 +20,7 @@ void MCQualCheck2_Fill(TNtuple *ntupla, int l){
 			if(Dist5D_P<6)
 				for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistCheckMCP1->Fill(K);}
 
-			if(Dist5D_P<5){
+			if(Dist5D_P<6){
 				for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2CheckMCP2->Fill(K);}
 				if(Likcut)
 					for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2CheckMCP1->Fill(K);}

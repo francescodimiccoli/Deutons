@@ -49,7 +49,7 @@ TGraphErrors *CorrLAT_DistAgl_Spl;
 void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 
 	int k = ntupla->GetEvent(l);
-	if(Unbias!=0||Beta<=0||R<=0) return;
+	if(Beta<=0||R<=0) return;
 	if(!(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.1&&EdepL1>EdepL1beta->Eval(Beta)-0.1)) return;
 	if(!(((int)Cutmask>>11)==0||((int)Cutmask>>11)==512)){
 		for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]&&R>Rcut[zona]) {EffQualDATAP->Fill(K,zona);}
