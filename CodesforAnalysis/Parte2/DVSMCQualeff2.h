@@ -28,7 +28,7 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 		if(Herejcut){
 			if(Likcut){
 			for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_2->Fill(K,zona);}
-			        if(Dist5D_P<5) for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_1->Fill(K,zona);}
+			        if(Dist5D_P<6) for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_1->Fill(K,zona);}
 			}
 			if(Dist5D_P<6) {
 				for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP_D_1->Fill(K,zona);}

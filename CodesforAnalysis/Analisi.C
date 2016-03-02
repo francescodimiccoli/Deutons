@@ -216,7 +216,7 @@ int main(int argc, char * argv[])
 	if(frac=="tot")DeutonsTemplFits(file1);
 	DeutonFlux(file1);
 	cout<<"************************************** OUTPUT **************************************************************"<<endl;
-	nomefile=percorso + "/CodesforAnalysis/Risultati/"+mese+".root";
+	nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 	string nome;
 	f_out->mkdir("MC Results");

@@ -43,7 +43,7 @@ int main()
 	for(int i=0;i<num_mesi;i++){
 		nomefile="./CALIBRAZIONI/"+mesi[i]+".root";
 		calib[i]=TFile::Open(nomefile.c_str());
-		nomefile="./Risultati/"+mesi[i]+".root";
+		nomefile="./Final_plots/"+mesi[i]+".root";
 		result[i]=TFile::Open(nomefile.c_str());
 		cout<<"calib: "<<calib[i]<<" results: "<<result[i]<<endl;
 	}
