@@ -29,7 +29,7 @@ void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona){
 		for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) if(R>1.2*Rcutoff) {PCountsgeo_prim->Fill(K,zona);}
 		if(R>1.2*Rcutoff) for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {PCounts->Fill(K);}
 	}
-	if(Beta<=0||R<=0||R<1.2*Rcutoff||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
+	if(Beta<=0||R<=0||R<1.2*Rcutoff/*||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1*/) return;
 	if(Herejcut) {
 		for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {
 			PCounts_pre->Fill(K);
@@ -122,15 +122,12 @@ void ProtonFlux(TFile * file1){
 			//err lat corr
 			errore=errore+pow(CorrLAT_preM2->GetBinContent(i+1,2)/CorrLAT_preM2->GetBinContent(i+1,1),2);
 			//err D vs MC
-			for(int S=0;S<3;S++) errore=errore+pow(PreDVSMC_P[S]->GetBinContent(i+1,2)/PreDVSMC_P[S]->GetBinContent(i+1,1),2);
-                        errore=errore+pow(LikDVSMC_P_graph->GetBinContent(i+1,2)/LikDVSMC_P_graph->GetBinContent(i+1,1),2);
+			for(int S=0;S<3;S++) if (PreDVSMC_P[S]->GetBinContent(i+1,1)>0) errore=errore+pow(PreDVSMC_P[S]->GetBinContent(i+1,2)/PreDVSMC_P[S]->GetBinContent(i+1,1),2);
 			//err sist somma
 			errore=errore+pow(0.005,2);
 			errore=pow(errore,0.5);
 			PFluxpre->SetBinContent(i+1,2,errore*PFluxpre->GetBinContent(i+1,1));
-			
 			}
-	
 	for(int i=0;i<43;i++)
 		if(AcceptLAT[i]>0){
 			PFluxsel->SetBinContent(i+1,1,PCounts_sel->GetBinContent(i+1)/(AcceptLAT[i]*Espos_R[i]*deltaencinprot[i]));
@@ -139,7 +136,8 @@ void ProtonFlux(TFile * file1){
 			//err lat corr
 			errore=errore+pow(CorrLAT_totM2->GetBinContent(i+1,2)/CorrLAT_totM2->GetBinContent(i+1,1),2);
 			//err D vs MC
-			for(int S=0;S<3;S++) errore=errore+pow(PreDVSMC_P[S]->GetBinContent(i+1,2)/PreDVSMC_P[S]->GetBinContent(i+1,1),2);	
+			for(int S=0;S<3;S++) if(PreDVSMC_P[S]->GetBinContent(i+1,1)>0) errore=errore+pow(PreDVSMC_P[S]->GetBinContent(i+1,2)/PreDVSMC_P[S]->GetBinContent(i+1,1),2);	
+			errore=errore+pow(LikDVSMC_P_graph->GetBinContent(i+1,2)/LikDVSMC_P_graph->GetBinContent(i+1,1),2);
 			errore=errore+pow(0.01,2);
 			//err sist somma
 			errore=pow(errore,0.5);
@@ -167,7 +165,7 @@ void ProtonFlux(TFile * file1){
 		P_Fluxgeo[j]->SetLineWidth(2);
 	}
 	P_Fluxgeo[10]->SetTitle("Protons Flux: Geo. Zones");
-	P_Fluxgeo[10]->GetXaxis()->SetTitle("R [GV]");
+	P_Fluxgeo[10]->GetXaxis()->SetTitle("Kin. En./nucl. [GeV/nucl.]");
 	P_Fluxgeo[10]->GetYaxis()->SetTitle("Flux [(m^2 sr GeV/nucl.)^-1]");
 	P_Fluxgeo[10]->GetXaxis()->SetTitleSize(0.045);
 	P_Fluxgeo[10]->GetYaxis()->SetTitleSize(0.045);
@@ -188,7 +186,7 @@ void ProtonFlux(TFile * file1){
 	P_Flux->SetMarkerStyle(8);
 	P_Flux->SetMarkerColor(2);
 	P_Flux->SetTitle("Primary Protons Flux");
-	P_Flux->GetXaxis()->SetTitle("R [GV]");
+	P_Flux->GetXaxis()->SetTitle("Kin. En./nucl. [GeV/nucl.]");
 	P_Flux->GetYaxis()->SetTitle("Flux [(m^2 sr GeV/nucl.)^-1]");
 	P_Flux->GetXaxis()->SetTitleSize(0.045);
 	P_Flux->GetYaxis()->SetTitleSize(0.045);
@@ -235,13 +233,14 @@ void ProtonFlux(TFile * file1){
 	P_Flux_pre->SetName("Protons Primary Flux (only pres.)");
 	int p=0;
 	for(int i=1;i<43;i++) if(PFluxpre->GetBinContent(i+1,1)>0&&PFluxsel->GetBinContent(i+1,1)>0) {
-		P_Flux_->SetPoint(p,encinprot[i],PFluxpre->GetBinContent(i+1,1)/PFluxpre->GetBinContent(i+1,1));
+		P_Flux_->SetPoint(p,R_cent[i],PFluxpre->GetBinContent(i+1,1)/PFluxpre->GetBinContent(i+1,1));
 		P_Flux_pre->SetPoint(p,encinprot[i],PFluxpre->GetBinContent(i+1,1));
-		P_Flux_->SetPointError(p,0,(PFluxpre->GetBinContent(i+1,2)+PFluxsel->GetBinContent(i+1,2))/PFluxpre->GetBinContent(i+1,1));
+		if((PFluxpre->GetBinContent(i+1,2)+PFluxsel->GetBinContent(i+1,2))/PFluxpre->GetBinContent(i+1,1)>0) 
+			P_Flux_->SetPointError(p,0,(PFluxpre->GetBinContent(i+1,2)+PFluxsel->GetBinContent(i+1,2))/PFluxpre->GetBinContent(i+1,1));
 		p++;}
 	p=0;
 	for(int i=1;i<43;i++) if(PFluxpre->GetBinContent(i+1,1)>0&&PFluxsel->GetBinContent(i+1,1)>0) {
-			P_Fluxpre->SetPoint(p,encinprot[i],PFluxsel->GetBinContent(i+1,1)/PFluxpre->GetBinContent(i+1,1));
+			P_Fluxpre->SetPoint(p,R_cent[i],PFluxsel->GetBinContent(i+1,1)/PFluxpre->GetBinContent(i+1,1));
 			p++;}
 	P_Fluxpre->SetMarkerStyle(8);
         P_Fluxpre->SetMarkerColor(2);

@@ -37,7 +37,7 @@ void AcceptanceP(TFile * file1){
 			//DvsMC
 			//for(int S=0;S<3;S++) AcceptSelP[i][j]*=PreDVSMC_P[S]->GetBinContent(i+1,1);
 			//for(int S=0;S<3;S++) AcceptpreP[i][j]*=PreDVSMC_P[S]->GetBinContent(i+1,1);		
-			AcceptSelP[i][j]*=DistDVSMC_P->Eval(encinprot[i])*LikDVSMC_P->Eval(encinprot[i]);	
+			AcceptSelP[i][j]*=LikDVSMC_P_graph->GetBinContent(i+1,1)*DistDVSMC_P_graph->GetBinContent(i+1,1);	
 			}
 	//c22->Divide(2,1);
 	c22->cd();

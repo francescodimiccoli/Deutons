@@ -13,8 +13,6 @@ TH2F * EffDistMCvsDP_D_2 = new TH2F("EffDistMCvsDP_D_2","EffDistMCvsDP_D_2",43,0
 TH2F * EffLik2MCvsDP_D_1 = new TH2F("EffLik2MCvsDP_D_1","EffLik2MCvsDP_D_1",43,0,43,11,0,11);
 TH2F * EffLik2MCvsDP_D_2 = new TH2F("EffLik2MCvsDP_D_2","EffLik2MCvsDP_D_2",43,0,43,11,0,11);
 
-TSpline3 *DistDVSMC_P;
-TSpline3 *LikDVSMC_P;
 TGraphErrors *LikDVSMC_P_Graph;
 TGraphErrors *DistDVSMC_P_Graph;
 TH2F * LikDVSMC_P_graph=new TH2F("LikDVSMC_P_graph","LikDVSMC_P_graph",43,0,43,2,0,2);
@@ -26,10 +24,10 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 	if(Beta<=0||R<=0||R<1.2*Rcutoff||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
 	if((R>Rcut[zona]&&zona<10)||(zona==10)) {
 		if(Herejcut){
-			if(Likcut){
+			//if(Likcut){
 			for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_2->Fill(K,zona);}
 			        if(Dist5D_P<6) for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_1->Fill(K,zona);}
-			}
+			//}
 			if(Dist5D_P<6) {
 				for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP_D_1->Fill(K,zona);}
 				if(Likcut)
@@ -46,10 +44,10 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 	if(Beta<=0||R<=0||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
 	if(Massa_gen<1){
 	if(Herejcut){
-		if(Likcut){
+		//if(Likcut){
 			for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP2->Fill(K);}
 			if(Dist5D_P<6) for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP1->Fill(K);}
-		}
+		//}
 		if(Dist5D_P<6) {
 			for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP1->Fill(K);}
 			if(Likcut)
@@ -151,8 +149,8 @@ void DVSMCQualeff2(TFile * file1){
 		}
         }
 	//SMOOTHING & FIT
-	double ratioL_smooth[43]={0};
-	double ratioD_smooth[43]={0};
+	float ratioL_smooth[43]={0};
+	float ratioD_smooth[43]={0};
 
 	for(int j=1;j<43;j++){
 		ratioL_smooth[j]=EffLik2MCvsDP_mean[j];
@@ -171,8 +169,8 @@ void DVSMCQualeff2(TFile * file1){
         for(int i=1;i<43;i++) if(EffDistMCvsDP_MC[i]>0)
                 {EffMCvsDDistP_MC->SetPoint(j,R_cent[i],EffDistMCvsDP_MC[i]/EffDistMCvsDP_MC[i]);j++;}
 
-	TF1 *polL=new TF1("polL","pol2");
-	TF1 *polD=new TF1("polD","pol2");
+	TF1 *polL=new TF1("polL","pol3");
+	TF1 *polD=new TF1("polD","pol3");
 	
 	EffLik2MCvsDP_Mean->Fit("polL","","",8,70);
 	EffDistMCvsDP_Mean->Fit("polD","","",8,70);
@@ -187,7 +185,9 @@ void DVSMCQualeff2(TFile * file1){
 		ratioD_smooth[j]=polD->Eval(R_cent[j]);
 		}
 	}
-	
+	///errore fit
+        float errorefitL=FitError(ratioL_smooth,EffLik2MCvsDP_mean,EffLik2MCvsDP_meanerr,43,3);
+        float errorefitD=FitError(ratioD_smooth,EffDistMCvsDP_mean,EffDistMCvsDP_meanerr,43,3);
 	///////////
 	
 
@@ -195,18 +195,16 @@ void DVSMCQualeff2(TFile * file1){
 	gPad->SetLogx();
         gPad->SetGridx();
         gPad->SetGridy();
-	//LikDVSMC_P = new TSpline3("LikDVSMC_P",EffMCvsDLikP);
-	LikDVSMC_P = new TSpline3("LikDVSMC_P",R_cent,ratioL_smooth,40); 
-	LikDVSMC_P->SetLineColor(4);
 	LikDVSMC_P_Graph=new TGraphErrors();
 	LikDVSMC_P_Graph->SetName("LikDVSMC_P_Graph");
 	j=0;
+	
 	for(int i=1;i<43;i++) {
 		if(EffLik2MCvsDP_MC[i]>0){
 		LikDVSMC_P_Graph->SetPoint(j,R_cent[i],ratioL_smooth[i]);
 		LikDVSMC_P_graph->SetBinContent(i+1,1,ratioL_smooth[i]);
-		LikDVSMC_P_Graph->SetPointError(j,0,EffLik2MCvsDP_meanerr[i]);
-		LikDVSMC_P_graph->SetBinContent(i+1,2,EffLik2MCvsDP_meanerr[i]);
+		LikDVSMC_P_Graph->SetPointError(j,0,errorefitL);
+		LikDVSMC_P_graph->SetBinContent(i+1,2,errorefitL);
 	j++;
 	}
 	}
@@ -231,7 +229,7 @@ void DVSMCQualeff2(TFile * file1){
 	{
                 EffLik2MCvsDP_Mean->Draw("AP");
 		EffMCvsDLikP_MC->Draw("CPsame");
-                LikDVSMC_P_Graph->Draw("Lsame");
+                LikDVSMC_P_Graph->Draw("L4same");
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 //leg->AddEntry(EffMCLikP,MCLegend[0].c_str(), "ep");
 
@@ -241,9 +239,6 @@ void DVSMCQualeff2(TFile * file1){
         gPad->SetLogx();
         gPad->SetGridx();
         gPad->SetGridy();
-	//DistDVSMC_P = new TSpline3("DistDVSMC_P",EffMCvsDDistP);
-	DistDVSMC_P =new TSpline3("DistDVSMC_P",R_cent,ratioD_smooth,40);
-	DistDVSMC_P->SetLineColor(4);
 	DistDVSMC_P_Graph=new TGraphErrors();
         DistDVSMC_P_Graph->SetName("DistDVSMC_P_Graph");
 	j=0;
@@ -251,8 +246,8 @@ void DVSMCQualeff2(TFile * file1){
                 if(EffLik2MCvsDP_MC[i]>0){
                 DistDVSMC_P_Graph->SetPoint(j,R_cent[i],ratioD_smooth[i]);
                	DistDVSMC_P_graph->SetBinContent(i+1,1,ratioD_smooth[i]);
-		DistDVSMC_P_Graph->SetPointError(j,0,EffDistMCvsDP_meanerr[i]);
-        	DistDVSMC_P_graph->SetBinContent(i+1,2,EffDistMCvsDP_meanerr[i]);
+		DistDVSMC_P_Graph->SetPointError(j,0,errorefitD);
+        	DistDVSMC_P_graph->SetBinContent(i+1,2,errorefitD);
 	j++;
         }
         }
@@ -275,9 +270,9 @@ void DVSMCQualeff2(TFile * file1){
         EffDistMCvsDP_Mean->GetYaxis()->SetTitleSize(0.045);
 	EffDistMCvsDP_Mean->GetYaxis()->SetRangeUser(0.7,1.4);
         {
-                EffDistMCvsDP_Mean->Draw(/*"AP4"*/"AP");
+                EffDistMCvsDP_Mean->Draw("AP");
 		EffMCvsDDistP_MC->Draw("CPsame");
-                DistDVSMC_P_Graph->Draw("Lsame");
+                DistDVSMC_P_Graph->Draw("L4same");
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 //leg->AddEntry(EffMCDistP,MCLegend[0].c_str(), "ep");
 

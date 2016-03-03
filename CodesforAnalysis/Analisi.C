@@ -27,6 +27,7 @@
 
 #include "Functions_auto.h"
 #include "Parte2/Definitions.h"
+#include "Parte2/FitError.h"
 #include "Parte2/MCpreeff.h"
 #include "Parte2/MCUnbiaseff.h"
 #include "Parte2/Hecut.h"
@@ -363,8 +364,6 @@ int main(int argc, char * argv[])
         CorrLAT_DistAgl_Spl->Write();
         CorrLAT_LikAgl_spl->Write();
         CorrLAT_LikAgl_Spl->Write();
-	DistDVSMC_P->Write("DistDVSMC_P");
-	LikDVSMC_P->Write("LikDVSMC_P");
 	LikDVSMC_P_Graph->Write();
 	DistDVSMC_P_Graph->Write();
 	LikDVSMC_P_graph->Write();

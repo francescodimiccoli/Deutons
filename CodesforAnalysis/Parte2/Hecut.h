@@ -13,7 +13,7 @@ void HecutMC_Fill(TNtuple *ntupla,int l){
 	if(Beta<=0||R<=0) return;
 	float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
 	if(Massa_gen<1){
-		HecutMC_P->Fill(fabs(EdepTOFbeta->Eval(Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta)),fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta)));
+		if(Herejcut) HecutMC_P->Fill(fabs(EdepTOFbeta->Eval(Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta)),fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta)));
 		for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) HecutMC_P1->Fill(K);
 		if(Herejcut)
 					for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) HecutMC_P2->Fill(K);	
@@ -48,7 +48,7 @@ void HecutMC_Write(){
 
 void Hecut(TFile * file1){
 	float EffHecut[43]={0};
-	for(int K=0;K<43;K++) EffHecut[K]=1-HecutMC_P2->GetBinContent(K+1)/HecutMC_P1->GetBinContent(K+1);
+	for(int K=0;K<43;K++) EffHecut[K]=HecutMC_P2->GetBinContent(K+1)/HecutMC_P1->GetBinContent(K+1);
 	c36->cd();
 	gPad->SetLogz();
 	gPad->SetGridx();
@@ -57,18 +57,19 @@ void Hecut(TFile * file1){
 	Hecut_D->GetXaxis()->SetTitle("E.dep TOF (|meas -teo|). (# of sigmas)");
 	Hecut_D->GetYaxis()->SetTitle("E.dep Track (|meas -teo|). (# of sigmas)");
 	Hecut_D->Draw("col");
-	//HecutMC_P->Draw("same");	
+	HecutMC_P->Draw("same");	
 	c37->cd();
 	gPad->SetGridx();
 	gPad->SetGridy();
 	gPad->SetLogx();
 	TGraphErrors *effHecut=new TGraphErrors();
 	for(int K=0;K<43;K++) {effHecut->SetPoint(K,R_cent[K],EffHecut[K]);
-			       effHecut->SetPointError(K,0,(pow(HecutMC_P2->GetBinContent(K+1),0.5)/HecutMC_P2->GetBinContent(K+1))*(1-EffHecut[K]));}
+			       effHecut->SetPointError(K,0,(pow(HecutMC_P2->GetBinContent(K+1),0.5)/HecutMC_P2->GetBinContent(K+1))*(EffHecut[K]));}
 	effHecut->SetMarkerColor(2);
 	effHecut->SetLineColor(2);
 	effHecut->SetMarkerStyle(8);
-	effHecut->GetXaxis()->SetTitle("");
+	effHecut->GetXaxis()->SetTitle("R [GV]");
+	effHecut->GetYaxis()->SetRangeUser(0.88,1.05);
 	effHecut->Draw("AP");			
 
 }
