@@ -48,6 +48,7 @@
 #include "Parte2/CorrLAT.h"
 #include "Parte2/ProtonFlux.h"
 #include "Parte2/Deutons.h"
+#include "Parte2/DeutonsDist.h"
 #include "Parte2/MCMC.h"
 #include "Parte2/DeutonsFlux.h"
 #include "Parte2/Cuts.h"
@@ -175,13 +176,14 @@ int main(int argc, char * argv[])
 	  }*/	
 	////////////////////////////
 	/////////// BINNAGGIO IN RIGIDITA'
-	for(int i=0;i<19;i++){
+	for(int i=0;i<20;i++){
 		BetaD[i]=BetabinsR_D[i];
 		BetaP[i]=BetabinsR_P[i];
 		BetaNaFD[i]=BetabinsNaFR_D[i];
 		BetaNaFP[i]=BetabinsNaFR_P[i];
 		BetaAglD[i]=BetabinsAglR_D[i];
 		BetaAglP[i]=BetabinsAglR_P[i];
+		cout<<"TOF: "<<BetaD[i]<<" "<<BetaP[i]<<" NaF "<<BetaNaFD[i]<<" "<<BetaNaFP[i]<<" Agl "<<BetaAglD[i]<<" "<<BetaAglP[i]<<endl;
 	}
 	////////////////////////////
 

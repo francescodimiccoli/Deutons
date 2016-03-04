@@ -183,6 +183,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCQualeff_Fill(ntupla1,i);
 		DVSMCQualeff2_Fill(ntupla1,i);	
 		DeutonsMC_Fill(ntupla1,i);
+		DeutonsMC_Dist_Fill(ntupla1,i);
 		MCMC_Fill(ntupla1,i);
 	}
 	}
@@ -201,6 +202,7 @@ void FillIstogram(int INDX,string frac,string mese)
                  HecutMC_Copy(file);
 		 MCQualeff_Copy(file);
 		 DeutonsMC_Copy(file);
+		 DeutonsMC_Dist_Copy(file);
         }
 	
 	cout<<"*********************** DATA READING *********************"<<endl;
@@ -272,6 +274,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		ProtonFlux_Fill(ntupla3,i,Zona);	
 		DeutonsDATA_Fill(ntupla3,i,Zona);
+		DeutonsDATA_Dist_Fill(ntupla3,i,Zona);
 		MCMCDATA_Fill(ntupla3,i);
 		}
         }
@@ -301,6 +304,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	HecutMC_Write();
 	DATAUnbiaseff_Write();
 	DeutonsMC_Write();
+	DeutonsMC_Dist_Write();
 	DVSMCpreSeleff_Write();
 	DVSMCQualeff2_Write();
 	DVSMCTrackeff_Write();

@@ -61,7 +61,7 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 						if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) DTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);}
 		 if(Massa_gen<4&&Massa_gen>2.5)
                         for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) HeTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);
-						if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) HeTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);}
+						if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) HeTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);}
 	}
 	if(Likcut&&R<20&&Distcut){
 		mm=1;
@@ -118,7 +118,7 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 				if((((int)Cutmask)>>11)==512)
 					{if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
 						DhistosgeoNaF->Fill(zona,mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
-						if(R>1.2*Rcutoff) DhistosNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
+						if(R>1.2*Rcutoff) DhistosNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m); 
 						}
 					if(BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]) if(R>1.2*Rcutoff) DhistosNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
 					}
@@ -129,10 +129,12 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 		for(int m=0;m<18;m++) 
 				if((((int)Cutmask)>>11)==0)	
 					{if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
-						DhistosgeoAgl->Fill(zona,mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
-						if(R>1.2*Rcutoff) DhistosAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
-						}	
+						DhistosgeoAgl->Fill(zona,mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m); 
+						if(R>1.2*Rcutoff) DhistosAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m); 
+						}
+						
 					 if(BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]) if(R>1.2*Rcutoff) DhistosAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
+					 //DhistosAgl->Fill(2,17);	
 					}
 	}
 }
@@ -175,41 +177,27 @@ void DeutonsMC_Write(){
         DTemplatesTOF->Write();
         PTemplatesTOF->Write();
         HeTemplatesTOF->Write();
-        cout<<"ca"<<endl;
 	DTemplatesNaF->Write();
         PTemplatesNaF->Write();
         HeTemplatesNaF->Write();
-	cout<<"ca"<<endl;
         DTemplatesAgl->Write();
         PTemplatesAgl->Write();
         HeTemplatesAgl->Write();
-cout<<"ca"<<endl;
-
         DTemplatesTOF2->Write();
         PTemplatesTOF2->Write();
         HeTemplatesTOF2->Write();
-cout<<"ca"<<endl;
-
         DTemplatesNaF2->Write();
         PTemplatesNaF2->Write();
         HeTemplatesNaF2->Write();
-cout<<"ca"<<endl;
-
         DTemplatesAgl2->Write();
         PTemplatesAgl2->Write();
         HeTemplatesAgl2->Write();
-cout<<"ca"<<endl;
-
         DhistosgeoTOF->Write();
         DhistosgeoNaF->Write();
         DhistosgeoAgl->Write();
-cout<<"ca"<<endl;
-
         DhistosTOF->Write();
         DhistosNaF->Write();
         DhistosAgl->Write();
-cout<<"ca"<<endl;
-
         DhistosTOF2->Write();
         DhistosNaF2->Write();
         DhistosAgl2->Write();
@@ -262,7 +250,7 @@ void DeutonsTemplFits(TFile * file1){
 	TH1F *DTemplTOFW[18][12];
 	TH1F *HeTemplTOFW[18][12];
 	for(int i=0;i<12;i++) for(int m=0;m<18;m++)c30[i][m]=new TCanvas(); 	
-		bool He=false;
+		bool He=true;
 	for(int i=0;i<12;i++) for(int m=0;m<18;m++) {
 		c30[i][m]->cd();
 		PTemplTOFW[m][i]=new TH1F("","",50,0,3);
