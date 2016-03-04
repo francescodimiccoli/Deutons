@@ -299,9 +299,9 @@ int main(int argc, char * argv[]){
 
 			Cutmask=CUTMASK;
 			Cutmask=CUTMASK|(1<<10);
-			Cutmask = Cutmask|(RICHmask_new<<11);
 			//Temp. rich bug fixing
-			if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH_new=-1) Cutmask = Cutmask|(1<<11);
+			if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH_new==-1) RICHmask_new=1;
+			Cutmask = Cutmask|(RICHmask_new<<11);
 			if(!(((Cutmask&187)==187))) continue;
                 	entries++;	
 			if(Unbias==1) continue;
