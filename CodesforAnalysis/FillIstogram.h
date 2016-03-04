@@ -238,7 +238,7 @@ void FillIstogram(int INDX,string frac,string mese)
                         if(Latitude>geo && Latitude<geo2) Zona=z;
         	}
 		// Temporary Betarich check
-		if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH_new<0) continue;
+		if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH<0) continue;
 		Var3=Momento_gen;
                 Var=R_pre;
                 Var2=R_pre;
@@ -264,7 +264,7 @@ void FillIstogram(int INDX,string frac,string mese)
                         if(Latitude>geo && Latitude<geo2) Zona=z;
                 }
                 // Temporary Betarich check
-                if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH_new<0) continue;
+                if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH<0) continue;
                 Cuts();
 		Var3=Momento_gen;
                 Var=R;
