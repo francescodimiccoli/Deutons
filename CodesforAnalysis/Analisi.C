@@ -217,6 +217,7 @@ int main(int argc, char * argv[])
 	CorrLAT(file1);
 	ProtonFlux(file1);
 	if(frac=="tot")DeutonsTemplFits(file1);
+	if(frac=="tot")DeutonsTemplFits_Dist(file1);
 	DeutonFlux(file1);
 	cout<<"************************************** OUTPUT **************************************************************"<<endl;
 	nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
@@ -233,23 +234,39 @@ int main(int argc, char * argv[])
 	f_out->mkdir("Data-driven Results/Data vs MC/Quality");
 	f_out->mkdir("Acceptance");
 	f_out->mkdir("P Flux");
-	f_out->mkdir("Dist. Template Fits");
+	f_out->mkdir("Mass Template Fits");
+	f_out->mkdir("Dist Template Fits");
 	f_out->mkdir("D Flux");
 	for(int l=0;l<11;l++) {
-		nome="Dist. TOF Template Fits/Zona "+numero[l];
+		nome="Mass Template Fits/Mass TOF Template Fits/Zona "+numero[l];
 		f_out->mkdir(nome.c_str());
 	}
-	f_out->mkdir("Dist. TOF Template Fits/Primaries");
+	f_out->mkdir("Mass Template Fits/Mass TOF Template Fits/Primaries");
 	for(int l=0;l<11;l++) {
-		nome="Mass NaF Template Fits/Zona "+numero[l];
+		nome="Mass Template Fits/Mass NaF Template Fits/Zona "+numero[l];
 		f_out->mkdir(nome.c_str());
 	}
-	f_out->mkdir("Mass NaF Template Fits/Primaries");
+	f_out->mkdir("Mass Template Fits/Mass NaF Template Fits/Primaries");
 	for(int l=0;l<11;l++) {
-		nome="Mass Agl Template Fits/Zona "+numero[l];
+		nome="Mass Template Fits/Mass Agl Template Fits/Zona "+numero[l];
 		f_out->mkdir(nome.c_str());
 	}
-	f_out->mkdir("Mass Agl Template Fits/Primaries");
+	f_out->mkdir("Mass Template Fits/Mass Agl Template Fits/Primaries");
+	for(int l=0;l<11;l++) {
+                nome="Dist Template Fits/Dist TOF Template Fits/Zona "+numero[l];
+                f_out->mkdir(nome.c_str());
+        }
+        f_out->mkdir("Dist Template Fits/Dist TOF Template Fits/Primaries");
+        for(int l=0;l<11;l++) {
+                nome="Dist Template Fits/Dist NaF Template Fits/Zona "+numero[l];
+                f_out->mkdir(nome.c_str());
+        }
+        f_out->mkdir("Dist Template Fits/Dist NaF Template Fits/Primaries");
+        for(int l=0;l<11;l++) {
+                nome="Dist Template Fits/Dist Agl Template Fits/Zona "+numero[l];
+                f_out->mkdir(nome.c_str());
+        }
+        f_out->mkdir("Dist Template Fits/Dist Agl Template Fits/Primaries");	
 	f_out->mkdir("Export");
 	f_out->cd("MC Results");
 	f_out->cd("MC Results/He cut");
@@ -297,26 +314,50 @@ int main(int argc, char * argv[])
 	c25->Write();
 	if(frac=="tot"){
 		for(int l=0;l<11;l++) {
-			nome="Dist. TOF Template Fits/Zona "+numero[l];
+			nome="Mass Template Fits/Mass TOF Template Fits/Zona "+numero[l];
 			f_out->cd(nome.c_str());
 			for(int m=0;m<18;m++) c30[l][m]->Write();
 		}
-		f_out->cd("Dist. TOF Template Fits/Primaries");
+		f_out->cd("Mass Template Fits/Mass TOF Template Fits/Primaries");
 		for(int m=0;m<18;m++) c30[11][m]->Write();
 		for(int l=0;l<11;l++) {
-			nome="Mass NaF Template Fits/Zona "+numero[l];
+			nome="Mass Template Fits/Mass NaF Template Fits/Zona "+numero[l];
 			f_out->cd(nome.c_str());
 			for(int m=0;m<18;m++) c30_bis[l][m]->Write();
 		}
-		f_out->cd("Mass NaF Template Fits/Primaries");
+		f_out->cd("Mass Template Fits/Mass NaF Template Fits/Primaries");
 		for(int m=0;m<18;m++) c30_bis[11][m]->Write();
 		for(int l=0;l<11;l++) {
-			nome="Mass Agl Template Fits/Zona "+numero[l];
+			nome="Mass Template Fits/Mass Agl Template Fits/Zona "+numero[l];
 			f_out->cd(nome.c_str());
 			for(int m=0;m<18;m++) c30_tris[l][m]->Write();
 		}
-		f_out->cd("Mass Agl Template Fits/Primaries");
+		f_out->cd("Mass Template Fits/Mass Agl Template Fits/Primaries");
 		for(int m=0;m<18;m++) c30_tris[11][m]->Write();
+
+		for(int l=0;l<11;l++) {
+			nome="Dist Template Fits/Dist TOF Template Fits/Zona "+numero[l];
+			f_out->cd(nome.c_str());
+			for(int m=0;m<18;m++) c40[l][m]->Write();
+		}
+		f_out->cd("Dist Template Fits/Dist TOF Template Fits/Primaries");
+		for(int m=0;m<18;m++) c40[11][m]->Write();
+		for(int l=0;l<11;l++) {
+			nome="Dist Template Fits/Dist NaF Template Fits/Zona "+numero[l];
+			f_out->cd(nome.c_str());
+			for(int m=0;m<18;m++) c30_bis[l][m]->Write();
+		}
+		f_out->cd("Dist Template Fits/Dist NaF Template Fits/Primaries");
+		for(int m=0;m<18;m++) c40_bis[11][m]->Write();
+		for(int l=0;l<11;l++) {
+			nome="Dist Template Fits/Dist Agl Template Fits/Zona "+numero[l];
+			f_out->cd(nome.c_str());
+			for(int m=0;m<18;m++) c40_tris[l][m]->Write();
+		}
+		f_out->cd("Dist Template Fits/Dist Agl Template Fits/Primaries");
+		for(int m=0;m<18;m++) c40_tris[11][m]->Write();
+
+
 	}
 	f_out->cd("D Flux");
 	c33->Write();
