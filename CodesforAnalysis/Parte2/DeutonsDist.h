@@ -83,7 +83,7 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
                 //if(Dist5D>distcut) mm=2;
 		if(Massa_gen<1&&Massa_gen>0.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {PTemplatesAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);}
+			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {PTemplatesAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m); }
 				if((((int)Cutmask)>>11)==0&&BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]) PTemplatesAgl_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);}
 		if(Massa_gen<2&&Massa_gen>1.5)
 			for(int m=0;m<18;m++) 
@@ -122,12 +122,13 @@ void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona){
 					if(BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]) if(R>1.2*Rcutoff) DhistosNaF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
 					}
 	}
+	if((((int)Cutmask)>>11)==0&&Dist5D+Dist5D_P>20) return;
 	if(Likcut&&R<40&&Distcut){
                 mm=1;
-                //if(Dist5D>distcut) mm=2; 
 		for(int m=0;m<18;m++) 
 				if((((int)Cutmask)>>11)==0)	
-					{if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
+					{
+					if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
 						DhistosgeoAgl_Dist->Fill(zona,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
 						if(R>1.2*Rcutoff) DhistosAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
 						}	
@@ -198,7 +199,7 @@ void DeutonsMC_Dist_Write(){
 
 void DeutonsTemplFits_Dist(TFile * file1){
 	
-	cout<<"******************** DISTANCE TEMPLATE FITS *******************"<<endl;
+	cout<<"******************** Dist TOF TEMPLATE FITS *******************"<<endl;
 	TH1F *DataDistTOF[12][18];
 	TH1F *DTemplTOF[18];
 	TH1F *PTemplTOF[18];
@@ -233,63 +234,18 @@ void DeutonsTemplFits_Dist(TFile * file1){
 		}	
 	}
 	
-	/////////////////// TEMP
-	TH1F *DataDistTOF_cut[12][18];
-        TH1F *DTemplTOF_cut[18];
-        TH1F *PTemplTOF_cut[18];
-        TH1F *HeTemplTOF_cut[18];
-	TH1F *DTemplTOF2_cut[18];
-        TH1F *PTemplTOF2_cut[18];
-        TH1F *HeTemplTOF2_cut[18];
-
-		
-	for(int m=0;m<18;m++){
-                DTemplTOF_cut[m]=new TH1F("","",50,-1,1);
-                PTemplTOF_cut[m]=new TH1F("","",50,-1,1);
-                HeTemplTOF_cut[m]=new TH1F("","",50,-1,1);
-                DTemplTOF2_cut[m]=new TH1F("","",50,-1,1);
-                PTemplTOF2_cut[m]=new TH1F("","",50,-1,1);
-                HeTemplTOF2_cut[m]=new TH1F("","",50,-1,1);
-		for(int l=0;l<12;l++){
-                        DataDistTOF_cut[l][m]=new TH1F("","",50,-1,1);
-                }
-        }
-
-	for(int m=0;m<18;m++){
-                for(int i=0;i<50;i++){
-				if(i>29){	
-				DTemplTOF_cut[m]->SetBinContent(i+1,DTemplatesTOF_Dist->GetBinContent(i+1,m+1));
-				PTemplTOF_cut[m]->SetBinContent(i+1,PTemplatesTOF_Dist->GetBinContent(i+1,m+1));
-				HeTemplTOF_cut[m]->SetBinContent(i+1,HeTemplatesTOF_Dist->GetBinContent(i+1,m+1));
-				for(int l=1;l<11;l++)  DataDistTOF_cut[l][m]->SetBinContent(i+1,DhistosgeoTOF_Dist->GetBinContent(l+1,i+1,m+1));
-				DataDistTOF_cut[11][m]->SetBinContent(i+1,DhistosTOF_Dist->GetBinContent(i+1,m+1));
-			}
-                }
-        }
-	for(int m=0;m<18;m++){
-                for(int i=0;i<50;i++){
-                                if(i<16||i>35){
-					DTemplTOF2_cut[m]->SetBinContent(i+1,DTemplatesTOF_Dist2->GetBinContent(i+1,m+1));
-                                        PTemplTOF2_cut[m]->SetBinContent(i+1,PTemplatesTOF_Dist2->GetBinContent(i+1,m+1));
-                                        HeTemplTOF2_cut[m]->SetBinContent(i+1,HeTemplatesTOF_Dist2->GetBinContent(i+1,m+1));
-					DataDistTOF_cut[0][m]->SetBinContent(i+1,DhistosTOF_Dist2->GetBinContent(i+1,m+1));
-			}
-		}
-	}	
-	///////////////////////////
-	
 	TFractionFitter * fitT[18][12]={{NULL}};
 	TObjArray *Tpl[18][12]={{NULL}};
-	int cut=25*(1+ddiscrcut);
+	int cut=0;
 	int s1[18][12]={{0}};
 	float Err[18][12]={{0}};
 	TH1F *PTemplTOFW[18][12];
 	TH1F *DTemplTOFW[18][12];
 	TH1F *HeTemplTOFW[18][12];
-	for(int i=0;i<12;i++) for(int m=0;m<18;m++)c30[i][m]=new TCanvas(); 	
-		bool He=false;
+	for(int i=0;i<12;i++) for(int m=0;m<18;m++)c40[i][m]=new TCanvas(); 	
+		bool He=true;
 	for(int i=0;i<12;i++) for(int m=0;m<18;m++) {
-		c30[i][m]->cd();
+		c40[i][m]->cd();
 		PTemplTOFW[m][i]=new TH1F("","",50,-1,1);
 		DTemplTOFW[m][i]=new TH1F("","",50,-1,1);
 		HeTemplTOFW[m][i]=new TH1F("","",50,-1,1);
@@ -305,32 +261,31 @@ void DeutonsTemplFits_Dist(TFile * file1){
 		THStack *Stack=new THStack("","");
 		Tpl[m][i] = new TObjArray(2);
 		if(i!=0){
-			cut=25*(1+ddiscrcut);;
-			Tpl[m][i]->Add(PTemplTOF_cut[m]);
-			Tpl[m][i]->Add(DTemplTOF_cut[m]);
-			if(He) Tpl[m][i]->Add(HeTemplTOF_cut[m]);
-		}
-		else{
 			cut=0;
-			Tpl[m][i]->Add(PTemplTOF2_cut[m]);
-                        Tpl[m][i]->Add(DTemplTOF2_cut[m]);
-                        if(He) Tpl[m][i]->Add(HeTemplTOF2_cut[m]);
+			Tpl[m][i]->Add(PTemplTOF[m]);
+			Tpl[m][i]->Add(DTemplTOF[m]);
+			if(He) Tpl[m][i]->Add(HeTemplTOF[m]);
 		}
-		fitT[m][i] = new TFractionFitter( DataDistTOF_cut[i][m], Tpl[m][i],"q");
+		else{	cut=0;
+			Tpl[m][i]->Add(PTemplTOF2[m]);
+                        Tpl[m][i]->Add(DTemplTOF2[m]);
+                        if(He) Tpl[m][i]->Add(HeTemplTOF2[m]);
+		}	
+		fitT[m][i] = new TFractionFitter( DataDistTOF[i][m], Tpl[m][i],"q");
 		if(He){
 			fitT[m][i]->Constrain(0,0.0,1.0);
 			fitT[m][i]->Constrain(1,0.0,1.0);
-			fitT[m][i]->Constrain(2,0.0,1.0);
-			fitT[m][i]->SetRangeX(cut,50);
+			fitT[m][i]->Constrain(2,0.0,0.05);
+			fitT[m][i]->SetRangeX(0,50);
 		}
 		else {
 			fitT[m][i]->Constrain(0,0,1);
 			fitT[m][i]->Constrain(1,0,1);
-			fitT[m][i]->SetRangeX(cut,50);
-		}	
-		if(DataDistTOF_cut[i][m]->Integral(0,50)>50) s1[m][i]=fitT[m][i]->Fit();
+			fitT[m][i]->SetRangeX(0,50);
+		}
+		if(DataDistTOF[i][m]->Integral(0,50)>50) s1[m][i]=fitT[m][i]->Fit();
 		else s1[m][i]=1;
-		if(i!=0){
+		if(s1[m][i]==-1){
 			cut=25*(1+ddiscrcut);
 			for(int z=0;z<5;z++){
 				if(s1[m][i]==-1){
@@ -338,32 +293,33 @@ void DeutonsTemplFits_Dist(TFile * file1){
 					fitT[m][i]->SetRangeX(cut,50);
 					s1[m][i]=fitT[m][i]->Fit();
 				}
-				if(s1[m][i]==0) break;
+				if(s1[m][i]==0) {s1[m][i]=2;break;}
 			}	
 		}
 		double w1,w2,w3=0;
 		double e1,e2,e3=0;
-		if(s1[m][i]==0){
+		if(s1[m][i]==0||s1[m][i]==2){
 			fitT[m][i]->GetResult(0,w1,e1);
 			fitT[m][i]->GetResult(1,w2,e2);
 			if(He) fitT[m][i]->GetResult(2,w3,e3);
 			Result = (TH1F*) fitT[m][i]->GetPlot();
+			if(!Result) continue;	
 			if(i!=0){
 				float itot= Result->Integral();
-				float i1 = PTemplTOF_cut[m]->Integral(cut,50);
-				float i2 = DTemplTOF_cut[m]->Integral(cut,50);
+				float i1 = PTemplTOF[m]->Integral(cut,50);
+				float i2 = DTemplTOF[m]->Integral(cut,50);
 				float i3=0;
-				if(He) i3 = HeTemplTOF_cut[m]->Integral();
+				if(He) i3 = HeTemplTOF[m]->Integral();
 				if(i1>0) for(int j=0; j<PTemplTOF[m]->GetNbinsX();j++) PTemplTOFW[m][i]->SetBinContent(j,w1*PTemplTOF[m]->GetBinContent(j)/i1*itot);
 				if(i2>0) for(int j=0; j<DTemplTOF[m]->GetNbinsX();j++) DTemplTOFW[m][i]->SetBinContent(j,w2*DTemplTOF[m]->GetBinContent(j)/i2*itot);
 				if(i3>0) for(int j=0; j<HeTemplTOF[m]->GetNbinsX();j++) HeTemplTOFW[m][i]->SetBinContent(j,w3*HeTemplTOF[m]->GetBinContent(j)/i3*itot);
 			}
 			else{
 				float itot= Result->Integral();
-                                float i1 = PTemplTOF2_cut[m]->Integral(cut,50);
-                                float i2 = DTemplTOF2_cut[m]->Integral(cut,50);
+                                float i1 = PTemplTOF2[m]->Integral(cut,50);
+                                float i2 = DTemplTOF2[m]->Integral(cut,50);
                                 float i3=0;
-                                if(He) i3 = HeTemplTOF2_cut[m]->Integral();
+                                if(He) i3 = HeTemplTOF2[m]->Integral();
                                 if(i1>0) for(int j=0; j<PTemplTOF2[m]->GetNbinsX();j++) PTemplTOFW[m][i]->SetBinContent(j,w1*PTemplTOF2[m]->GetBinContent(j)/i1*itot);
                                 if(i2>0) for(int j=0; j<DTemplTOF2[m]->GetNbinsX();j++) DTemplTOFW[m][i]->SetBinContent(j,w2*DTemplTOF2[m]->GetBinContent(j)/i2*itot);
                                 if(i3>0) for(int j=0; j<HeTemplTOF2[m]->GetNbinsX();j++) HeTemplTOFW[m][i]->SetBinContent(j,w3*HeTemplTOF2[m]->GetBinContent(j)/i3*itot);	
@@ -382,17 +338,26 @@ void DeutonsTemplFits_Dist(TFile * file1){
 			float Cov12=fitT[m][i]->GetFitter()->GetCovarianceMatrixElement(1,2);
 			float Sigma=pow((pow(e2/w2,2)+pow(e1/w1,2))/2,0.5);
 			Err[m][i]= Sigma*DTemplTOFW[m][i]->Integral();
-			DCountsgeoTOF_Dist->SetBinContent(m+1,i+1,0,DTemplTOFW[m][i]->Integral(cut,50));
+			DCountsgeoTOF_Dist->SetBinContent(m+1,i+1,0,DTemplTOFW[m][i]->Integral(0,50));
+
 			DCountsgeoTOF_Dist->SetBinContent(m+1,i+1,1,Err[m][i]);	
 			if(i==0){
-				PCountsTOF_Dist->SetBinContent(m+1,0,PTemplTOFW[m][0]->Integral(0,(int)(26*(1-ddiscrcut))));
+				PCountsTOF_Dist->SetBinContent(m+1,0,PTemplTOFW[m][0]->Integral(0,50));
                         	PCountsTOF_Dist->SetBinContent(m+1,1,Err[m][i]);
 			}
 		}
 		else{
 			DataDistTOF[i][m]->SetMarkerStyle(8);
-			DataDistTOF[i][m]->Draw("ep");
-			 if(i!=0){PTemplTOF[m]->Draw("same");
+                        DataDistTOF[i][m]->Draw("ep");
+
+			PTemplTOF[m]->SetFillStyle(3001);
+	                DTemplTOF[m]->SetFillStyle(3001);
+        	        HeTemplTOF[m]->SetFillStyle(3001);
+                	PTemplTOF[m]->SetFillColor(2);
+                	DTemplTOF[m]->SetFillColor(4);
+                	HeTemplTOF[m]->SetFillColor(3);
+ 
+			if(i!=0){PTemplTOF[m]->Draw("same");
                                 DTemplTOF[m]->Draw("same");
                                 if(He) HeTemplTOF[m]->Draw("same");
                                 }
@@ -405,8 +370,8 @@ void DeutonsTemplFits_Dist(TFile * file1){
 
 	}
 
-	cout<<"******************** MASS NaF TEMPLATE FITS *******************"<<endl;
-        TH1F *DataMassNaF[12][18];
+	cout<<"******************** Dist NaF TEMPLATE FITS *******************"<<endl;
+        TH1F *DataDistNaF[12][18];
         TH1F *DTemplNaF[18];
         TH1F *PTemplNaF[18];
         TH1F *HeTemplNaF[18];
@@ -421,34 +386,37 @@ void DeutonsTemplFits_Dist(TFile * file1){
                 PTemplNaF2[m]=new TH1F("","",50,-1,1);
                 HeTemplNaF2[m]=new TH1F("","",50,-1,1);
 		for(int l=0;l<12;l++){
-                        DataMassNaF[l][m]=new TH1F("","",50,-1,1);
+                        DataDistNaF[l][m]=new TH1F("","",50,-1,1);
                 }
         }
         for(int m=0;m<18;m++){
                 for(int i=0;i<50;i++){
-                DTemplNaF[m]->SetBinContent(i+1,DTemplatesNaF->GetBinContent(i+1,m+1));
-                PTemplNaF[m]->SetBinContent(i+1,PTemplatesNaF->GetBinContent(i+1,m+1));
-                HeTemplNaF[m]->SetBinContent(i+1,HeTemplatesNaF->GetBinContent(i+1,m+1));
-		DTemplNaF2[m]->SetBinContent(i+1,DTemplatesNaF2->GetBinContent(i+1,m+1));
-                PTemplNaF2[m]->SetBinContent(i+1,PTemplatesNaF2->GetBinContent(i+1,m+1));
-                HeTemplNaF2[m]->SetBinContent(i+1,HeTemplatesNaF2->GetBinContent(i+1,m+1));
-                for(int l=1;l<11;l++)  DataMassNaF[l][m]->SetBinContent(i+1,DhistosgeoNaF->GetBinContent(l+1,i+1,m+1));
-                DataMassNaF[11][m]->SetBinContent(i+1,DhistosNaF->GetBinContent(i+1,m+1));
-		DataMassNaF[0][m]->SetBinContent(i+1,DhistosNaF2->GetBinContent(i+1,m+1));
+                DTemplNaF[m]->SetBinContent(i+1,DTemplatesNaF_Dist->GetBinContent(i+1,m+1));
+                PTemplNaF[m]->SetBinContent(i+1,PTemplatesNaF_Dist->GetBinContent(i+1,m+1));
+                HeTemplNaF[m]->SetBinContent(i+1,HeTemplatesNaF_Dist->GetBinContent(i+1,m+1));
+		DTemplNaF2[m]->SetBinContent(i+1,DTemplatesNaF_Dist2->GetBinContent(i+1,m+1));
+                PTemplNaF2[m]->SetBinContent(i+1,PTemplatesNaF_Dist2->GetBinContent(i+1,m+1));
+                HeTemplNaF2[m]->SetBinContent(i+1,HeTemplatesNaF_Dist2->GetBinContent(i+1,m+1));
+                for(int l=1;l<11;l++)  DataDistNaF[l][m]->SetBinContent(i+1,DhistosgeoNaF_Dist->GetBinContent(l+1,i+1,m+1));
+                DataDistNaF[11][m]->SetBinContent(i+1,DhistosNaF_Dist->GetBinContent(i+1,m+1));
+		DataDistNaF[0][m]->SetBinContent(i+1,DhistosNaF_Dist2->GetBinContent(i+1,m+1));
 		}
         }
 	TFractionFitter * fitTNaF[18][12]={{NULL}};
 	TObjArray *TplNaF[18][12]={{NULL}};
-	int cutNaF=17;
+	int cutNaF=0;
 	int s1NaF[18][12]={{0}};
 	float ErrNaF[18][12]={{0}};
 	TH1F *PTemplNaFW[18][12];
 	TH1F *DTemplNaFW[18][12];
 	TH1F *HeTemplNaFW[18][12];
-	for(int i=0;i<12;i++) for(int m=0;m<18;m++) c30_bis[i][m]=new TCanvas(); 	
-		He=false;
+	for(int i=0;i<12;i++) for(int m=0;m<18;m++) c40_bis[i][m]=new TCanvas(); 	
+		He=true;
 	for(int i=0;i<12;i++) for(int m=0;m<18;m++) {
-		c30_bis[i][m]->cd();
+		c40_bis[i][m]->cd();
+		cutNaF=0;
+		He=true;
+		 if(HeTemplNaF[m]->Integral(0,50)<=50) He=false;
 		PTemplNaFW[m][i]=new TH1F("","",50,-1,1);
 		DTemplNaFW[m][i]=new TH1F("","",50,-1,1);
 		HeTemplNaFW[m][i]=new TH1F("","",50,-1,1);
@@ -473,26 +441,38 @@ void DeutonsTemplFits_Dist(TFile * file1){
                		TplNaF[m][i]->Add(DTemplNaF2[m]);
                 	if(He) TplNaF[m][i]->Add(HeTemplNaF2[m]);
 		}
-		fitTNaF[m][i] = new TFractionFitter( DataMassNaF[i][m], TplNaF[m][i],"q");
+		fitTNaF[m][i] = new TFractionFitter( DataDistNaF[i][m], TplNaF[m][i],"q");
 		if(He){
 			fitTNaF[m][i]->Constrain(0,0.5,1.0);
 			fitTNaF[m][i]->Constrain(1,0.0,1.0);
-			fitTNaF[m][i]->Constrain(2,0.0,1.0);
+			fitTNaF[m][i]->Constrain(2,0.0,0.1);
 		}
 		else {
 			fitTNaF[m][i]->Constrain(0,0,1);
 			fitTNaF[m][i]->Constrain(1,0,1);
-			fitTNaF[m][i]->SetRangeX(cutNaF,40);
+			fitTNaF[m][i]->SetRangeX(cutNaF,50);
 		}
-		if((DataMassNaF[i][m]->Integral(25,50)>50&&i!=0)||i==0) s1NaF[m][i]=fitTNaF[m][i]->Fit();
+		if((DataDistNaF[i][m]->Integral(0,50)>50&&i!=0)&&i==11) s1NaF[m][i]=fitTNaF[m][i]->Fit();
 		else s1NaF[m][i]=1;
+		if(s1NaF[m][i]==-1){
+                        cutNaF=25*(1+ddiscrcut);
+                        for(int z=0;z<5;z++){
+                                if(s1NaF[m][i]==-1){
+                                        cutNaF+=1;
+                                        fitTNaF[m][i]->SetRangeX(cutNaF,50);
+                                        s1NaF[m][i]=fitTNaF[m][i]->Fit();
+                                }
+                                if(s1NaF[m][i]==0) {s1NaF[m][i]=2;break;}
+                        }
+                }
 		double w1,w2,w3=0;
 		double e1,e2,e3=0;
-		if(s1NaF[m][i]==0){
+		if(s1NaF[m][i]==0||s1NaF[m][i]==2){
 			fitTNaF[m][i]->GetResult(0,w1,e1);
 			fitTNaF[m][i]->GetResult(1,w2,e2);
 			if(He) fitTNaF[m][i]->GetResult(2,w3,e3);
 			Result = (TH1F*) fitTNaF[m][i]->GetPlot();
+			if(!Result) continue;
 			if(i!=0){
 				float itot= Result->Integral();
 				float i1 = PTemplNaF[m]->Integral(cutNaF,50);
@@ -516,9 +496,9 @@ void DeutonsTemplFits_Dist(TFile * file1){
 			Stack->Add(PTemplNaFW[m][i]);
 			Stack->Add(DTemplNaFW[m][i]);
 			if(He) Stack->Add(HeTemplNaFW[m][i]);
-			DataMassNaF[i][m]->SetMarkerStyle(8);
+			DataDistNaF[i][m]->SetMarkerStyle(8);
 			Stack->Draw();
-			DataMassNaF[i][m]->Draw("epsame");
+			DataDistNaF[i][m]->Draw("epsame");
 			Result->SetLineColor(5);
 			Result->SetLineWidth(2);
 			Result->Draw("SAME");
@@ -531,14 +511,14 @@ void DeutonsTemplFits_Dist(TFile * file1){
 			DCountsgeoNaF->SetBinContent(m+1,i+1,0,DTemplNaFW[m][i]->Integral(0,50));
 			DCountsgeoNaF->SetBinContent(m+1,i+1,1,ErrNaF[m][i]);	
 			if(i==0){
-                                PCountsNaF->SetBinContent(m+1,0,/*PTemplNaFW[m][0]*/DataMassNaF[i][m]->Integral(5,25));
+                                PCountsNaF->SetBinContent(m+1,0,PTemplNaFW[m][0]->Integral(0,50));
                                 PCountsNaF->SetBinContent(m+1,1,Err[m][i]);
                         }
 
 		}
 		else{
-			DataMassNaF[i][m]->SetMarkerStyle(8);
-			DataMassNaF[i][m]->Draw("ep");
+			DataDistNaF[i][m]->SetMarkerStyle(8);
+			DataDistNaF[i][m]->Draw("ep");
 			 if(i!=0){PTemplNaF[m]->Draw("same");
                                 DTemplNaF[m]->Draw("same");
                                 if(He) HeTemplNaF[m]->Draw("same");
@@ -546,14 +526,14 @@ void DeutonsTemplFits_Dist(TFile * file1){
                         if(i==0) {PTemplNaF2[m]->Draw("same");
                                  DTemplNaF2[m]->Draw("same");
                                 if(He) HeTemplNaF2[m]->Draw("same");
-                                PCountsNaF->SetBinContent(m+1,0,DataMassNaF[i][m]->Integral(5,25));
+                                PCountsNaF->SetBinContent(m+1,0,DataDistNaF[i][m]->Integral(5,25));
 				}
 
 		}
 
 	}
-	cout<<"******************** MASS Agl TEMPLATE FITS *******************"<<endl;
-        TH1F *DataMassAgl[12][18];
+	cout<<"******************** Dist Agl TEMPLATE FITS *******************"<<endl;
+        TH1F *DataDistAgl[12][18];
         TH1F *DTemplAgl[18];
         TH1F *PTemplAgl[18];
         TH1F *HeTemplAgl[18];
@@ -568,20 +548,20 @@ void DeutonsTemplFits_Dist(TFile * file1){
                 PTemplAgl2[m]=new TH1F("","",50,-1,1);
                 HeTemplAgl2[m]=new TH1F("","",50,-1,1);
                 for(int l=0;l<12;l++){
-                        DataMassAgl[l][m]=new TH1F("","",50,-1,1);
+                        DataDistAgl[l][m]=new TH1F("","",50,-1,1);
                 }
         }
         for(int m=0;m<18;m++){
                 for(int i=0;i<50;i++){
-                DTemplAgl[m]->SetBinContent(i+1,DTemplatesAgl->GetBinContent(i+1,m+1));
-                PTemplAgl[m]->SetBinContent(i+1,PTemplatesAgl->GetBinContent(i+1,m+1));
-                HeTemplAgl[m]->SetBinContent(i+1,HeTemplatesAgl->GetBinContent(i+1,m+1));
-                DTemplAgl2[m]->SetBinContent(i+1,DTemplatesAgl2->GetBinContent(i+1,m+1));
-                PTemplAgl2[m]->SetBinContent(i+1,PTemplatesAgl2->GetBinContent(i+1,m+1));
-                HeTemplAgl2[m]->SetBinContent(i+1,HeTemplatesAgl2->GetBinContent(i+1,m+1));
-		for(int l=1;l<11;l++)  DataMassAgl[l][m]->SetBinContent(i+1,DhistosgeoAgl->GetBinContent(l+1,i+1,m+1));
-                DataMassAgl[11][m]->SetBinContent(i+1,DhistosAgl->GetBinContent(i+1,m+1));
-		DataMassAgl[0][m]->SetBinContent(i+1,DhistosAgl2->GetBinContent(i+1,m+1));
+                DTemplAgl[m]->SetBinContent(i+1,DTemplatesAgl_Dist->GetBinContent(i+1,m+1));
+                PTemplAgl[m]->SetBinContent(i+1,PTemplatesAgl_Dist->GetBinContent(i+1,m+1));
+                HeTemplAgl[m]->SetBinContent(i+1,HeTemplatesAgl_Dist->GetBinContent(i+1,m+1));
+                DTemplAgl2[m]->SetBinContent(i+1,DTemplatesAgl_Dist2->GetBinContent(i+1,m+1));
+                PTemplAgl2[m]->SetBinContent(i+1,PTemplatesAgl_Dist2->GetBinContent(i+1,m+1));
+                HeTemplAgl2[m]->SetBinContent(i+1,HeTemplatesAgl_Dist2->GetBinContent(i+1,m+1));
+		for(int l=1;l<11;l++)  DataDistAgl[l][m]->SetBinContent(i+1,DhistosgeoAgl_Dist->GetBinContent(l+1,i+1,m+1));
+                DataDistAgl[11][m]->SetBinContent(i+1,DhistosAgl_Dist->GetBinContent(i+1,m+1));
+		DataDistAgl[0][m]->SetBinContent(i+1,DhistosAgl_Dist2->GetBinContent(i+1,m+1));
 		}
         }
 
@@ -593,11 +573,11 @@ void DeutonsTemplFits_Dist(TFile * file1){
         TH1F *PTemplAglW[18][12];
         TH1F *DTemplAglW[18][12];
         TH1F *HeTemplAglW[18][12];
-        for(int i=0;i<12;i++) for(int m=0;m<18;m++) c30_tris[i][m]=new TCanvas();
-                He=false;
+        for(int i=0;i<12;i++) for(int m=0;m<18;m++) c40_tris[i][m]=new TCanvas();
+                He=true;
         for(int i=0;i<12;i++) for(int m=0;m<18;m++) {
-                c30_tris[i][m]->cd();
-                cutAgl=16;
+                c40_tris[i][m]->cd();
+                cutAgl=0;
 		PTemplAglW[m][i]=new TH1F("","",50,-1,1);
                 DTemplAglW[m][i]=new TH1F("","",50,-1,1);
                 HeTemplAglW[m][i]=new TH1F("","",50,-1,1);
@@ -622,35 +602,40 @@ void DeutonsTemplFits_Dist(TFile * file1){
                         TplAgl[m][i]->Add(DTemplAgl2[m]);
                         if(He) TplAgl[m][i]->Add(HeTemplAgl2[m]);
 		}
-		fitTAgl[m][i] = new TFractionFitter( DataMassAgl[i][m], TplAgl[m][i],"q");
+		fitTAgl[m][i] = new TFractionFitter( DataDistAgl[i][m], TplAgl[m][i],"q");
                 if(He){
                         fitTAgl[m][i]->Constrain(0,0.5,1.0);
                         fitTAgl[m][i]->Constrain(1,0.0,1.0);
-                        fitTAgl[m][i]->Constrain(2,0.0,1.0);
+                        fitTAgl[m][i]->Constrain(2,0.0,0.01);
                 }
                 else {
                         fitTAgl[m][i]->Constrain(0,0,1);
                         fitTAgl[m][i]->Constrain(1,0,1);
                         fitTAgl[m][i]->SetRangeX(cutAgl,40);
                 }
-                if((DataMassAgl[i][m]->Integral(25,50)>50&&i!=0)||i==0) s1Agl[m][i]=fitTAgl[m][i]->Fit();
+                if((DataDistAgl[i][m]->Integral(25,50)>50&&i!=0)&&i==11) s1Agl[m][i]=fitTAgl[m][i]->Fit();
                 else s1Agl[m][i]=1;
-		for(int z=0;z<5;z++){
-			if(s1Agl[m][i]==-1){
-				cutAgl+=1;
-				fitTAgl[m][i]->SetRangeX(cutAgl,40);
-				s1Agl[m][i]=fitTAgl[m][i]->Fit();
-			}
-			if(s1Agl[m][i]==0) break;
-		}
+		if(s1Agl[m][i]==-1){
+                        cutAgl=25*(1+ddiscrcut);
+                        for(int z=0;z<5;z++){
+                                if(s1Agl[m][i]==-1){
+                                        cutAgl+=1;
+                                        fitTAgl[m][i]->SetRangeX(cutAgl,50);
+                                        s1Agl[m][i]=fitTAgl[m][i]->Fit();
+                                }
+                                if(s1Agl[m][i]==0) {s1Agl[m][i]=2;break;}
+                        }
+                }
+
 		double w1,w2,w3=0;
                 double e1,e2,e3=0;
-                if(s1Agl[m][i]==0){
+                if(s1Agl[m][i]==0||s1Agl[m][i]==2){
                         fitTAgl[m][i]->GetResult(0,w1,e1);
                         fitTAgl[m][i]->GetResult(1,w2,e2);
                         if(He) fitTAgl[m][i]->GetResult(2,w3,e3);
                         Result = (TH1F*) fitTAgl[m][i]->GetPlot();
-                        if(i!=0){
+                        if(!Result) continue;
+			if(i!=0){
 				float itot= Result->Integral();
                         	float i1 = PTemplAgl[m]->Integral(cutAgl,50);
                         	float i2 = DTemplAgl[m]->Integral(cutAgl,50);
@@ -673,9 +658,9 @@ void DeutonsTemplFits_Dist(TFile * file1){
 			Stack->Add(PTemplAglW[m][i]);
                         Stack->Add(DTemplAglW[m][i]);
                         if(He) Stack->Add(HeTemplAglW[m][i]);
-                        DataMassAgl[i][m]->SetMarkerStyle(8);
+                        DataDistAgl[i][m]->SetMarkerStyle(8);
                         Stack->Draw();
-                        DataMassAgl[i][m]->Draw("epsame");
+                        DataDistAgl[i][m]->Draw("epsame");
                         Result->SetLineColor(5);
                         Result->SetLineWidth(2);
                         Result->Draw("SAME");
@@ -684,17 +669,17 @@ void DeutonsTemplFits_Dist(TFile * file1){
                         float Cov12=fitTAgl[m][i]->GetFitter()->GetCovarianceMatrixElement(1,2);
                         float Sigma=pow((pow(e2/w2,2)+pow(e1/w1,2))/2,0.5);
                         ErrAgl[m][i]= Sigma*DTemplAglW[m][i]->Integral();
-                        DCountsgeoAgl->SetBinContent(m+1,i+1,0,DTemplAglW[m][i]->Integral(5,50));
+                        DCountsgeoAgl->SetBinContent(m+1,i+1,0,DTemplAglW[m][i]->Integral(0,50));
 			DCountsgeoAgl->SetBinContent(m+1,i+1,1,ErrAgl[m][i]);
                 	if(i==0){
-                                PCountsAgl->SetBinContent(m+1,0,/*PTemplAglW[m][0]*/DataMassAgl[i][m]->Integral(5,25));
+                                PCountsAgl->SetBinContent(m+1,0,PTemplAglW[m][0]->Integral(0,50));
                                 PCountsAgl->SetBinContent(m+1,1,Err[m][i]);
                         }
 
 		}
                 else{
-                        DataMassAgl[i][m]->SetMarkerStyle(8);
-                        DataMassAgl[i][m]->Draw("ep");
+                        DataDistAgl[i][m]->SetMarkerStyle(8);
+                        DataDistAgl[i][m]->Draw("ep");
                         if(i!=0){PTemplAgl[m]->Draw("same");
                         	DTemplAgl[m]->Draw("same");
                         	if(He) HeTemplAgl[m]->Draw("same");
@@ -702,13 +687,13 @@ void DeutonsTemplFits_Dist(TFile * file1){
 			if(i==0) {PTemplAgl2[m]->Draw("same");
                                  DTemplAgl2[m]->Draw("same");
                                 if(He) HeTemplAgl2[m]->Draw("same");
-				PCountsAgl->SetBinContent(m+1,0,DataMassAgl[i][m]->Integral(0,25));
+				PCountsAgl->SetBinContent(m+1,0,PTemplAglW[m][0]->Integral(0,50));
 				}
                 }
 
         }
 
-	cout<<"********** TEMPL: FIT RESULTS ********************"<<endl;
+	cout<<"********** TEMPL DIST: FIT RESULTS ********************"<<endl;
 	cout<<"**** TOF ********"<<endl;
 	for(int i=0;i<12;i++){
 		for(int m=0;m<18;m++) cout<<s1[m][i]<<" ";
