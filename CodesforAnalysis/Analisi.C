@@ -51,6 +51,7 @@
 #include "Parte2/DeutonsDist.h"
 #include "Parte2/MCMC.h"
 #include "Parte2/DeutonsFlux.h"
+#include "Parte2/DeutonsFlux_Dist.h"
 #include "Parte2/Cuts.h"
 #include "FillIstogram.h"
 using namespace std;
@@ -219,6 +220,7 @@ int main(int argc, char * argv[])
 	if(frac=="tot")DeutonsTemplFits(file1);
 	if(frac=="tot")DeutonsTemplFits_Dist(file1);
 	DeutonFlux(file1);
+	DeutonFlux_Dist(file1);
 	cout<<"************************************** OUTPUT **************************************************************"<<endl;
 	nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
@@ -236,7 +238,8 @@ int main(int argc, char * argv[])
 	f_out->mkdir("P Flux");
 	f_out->mkdir("Mass Template Fits");
 	f_out->mkdir("Dist Template Fits");
-	f_out->mkdir("D Flux");
+	f_out->mkdir("D Flux (Mass fit)");
+	f_out->mkdir("D Flux (Dist. fit)");
 	for(int l=0;l<11;l++) {
 		nome="Mass Template Fits/Mass TOF Template Fits/Geo.Zones/Zona "+numero[l];
 		f_out->mkdir(nome.c_str());
@@ -385,11 +388,16 @@ int main(int argc, char * argv[])
 		for(int m=0;m<18;m++) c40_tris[0][m]->Write();
 
 	}
-	f_out->cd("D Flux");
+	f_out->cd("D Flux (Mass fit)");
 	c33->Write();
 	c32->Write();
 	c34->Write();
 	c35->Write();
+	f_out->cd("D Flux (Dist. fit)");
+        c43->Write();
+        c42->Write();
+        c44->Write();
+        c45->Write();
 	f_out->cd("Export");
 	MigrMatrix->Write();
 	EffTrackerMCP_R_TH1F->Write();

@@ -508,11 +508,11 @@ void DeutonsTemplFits_Dist(TFile * file1){
 			float Cov12=fitTNaF[m][i]->GetFitter()->GetCovarianceMatrixElement(1,2);
 			float Sigma=pow((pow(e2/w2,2)+pow(e1/w1,2))/2,0.5);
 			ErrNaF[m][i]= Sigma*DTemplNaFW[m][i]->Integral();
-			DCountsgeoNaF->SetBinContent(m+1,i+1,0,DTemplNaFW[m][i]->Integral(0,50));
-			DCountsgeoNaF->SetBinContent(m+1,i+1,1,ErrNaF[m][i]);	
+			DCountsgeoNaF_Dist->SetBinContent(m+1,i+1,0,DTemplNaFW[m][i]->Integral(0,50));
+			DCountsgeoNaF_Dist->SetBinContent(m+1,i+1,1,ErrNaF[m][i]);	
 			if(i==0){
-                                PCountsNaF->SetBinContent(m+1,0,PTemplNaFW[m][0]->Integral(0,50));
-                                PCountsNaF->SetBinContent(m+1,1,Err[m][i]);
+                                PCountsNaF_Dist->SetBinContent(m+1,0,PTemplNaFW[m][0]->Integral(0,50));
+                                PCountsNaF_Dist->SetBinContent(m+1,1,Err[m][i]);
                         }
 
 		}
@@ -526,7 +526,7 @@ void DeutonsTemplFits_Dist(TFile * file1){
                         if(i==0) {PTemplNaF2[m]->Draw("same");
                                  DTemplNaF2[m]->Draw("same");
                                 if(He) HeTemplNaF2[m]->Draw("same");
-                                PCountsNaF->SetBinContent(m+1,0,DataDistNaF[i][m]->Integral(5,25));
+                                PCountsNaF_Dist->SetBinContent(m+1,0,PTemplNaFW[m][0]->Integral(0,50));
 				}
 
 		}
@@ -669,11 +669,11 @@ void DeutonsTemplFits_Dist(TFile * file1){
                         float Cov12=fitTAgl[m][i]->GetFitter()->GetCovarianceMatrixElement(1,2);
                         float Sigma=pow((pow(e2/w2,2)+pow(e1/w1,2))/2,0.5);
                         ErrAgl[m][i]= Sigma*DTemplAglW[m][i]->Integral();
-                        DCountsgeoAgl->SetBinContent(m+1,i+1,0,DTemplAglW[m][i]->Integral(0,50));
-			DCountsgeoAgl->SetBinContent(m+1,i+1,1,ErrAgl[m][i]);
+                        DCountsgeoAgl_Dist->SetBinContent(m+1,i+1,0,DTemplAglW[m][i]->Integral(0,50));
+			DCountsgeoAgl_Dist->SetBinContent(m+1,i+1,1,ErrAgl[m][i]);
                 	if(i==0){
-                                PCountsAgl->SetBinContent(m+1,0,PTemplAglW[m][0]->Integral(0,50));
-                                PCountsAgl->SetBinContent(m+1,1,Err[m][i]);
+                                PCountsAgl_Dist->SetBinContent(m+1,0,PTemplAglW[m][0]->Integral(0,50));
+                                PCountsAgl_Dist->SetBinContent(m+1,1,Err[m][i]);
                         }
 
 		}
@@ -687,7 +687,7 @@ void DeutonsTemplFits_Dist(TFile * file1){
 			if(i==0) {PTemplAgl2[m]->Draw("same");
                                  DTemplAgl2[m]->Draw("same");
                                 if(He) HeTemplAgl2[m]->Draw("same");
-				PCountsAgl->SetBinContent(m+1,0,PTemplAglW[m][0]->Integral(0,50));
+				PCountsAgl_Dist->SetBinContent(m+1,0,PTemplAglW[m][0]->Integral(0,50));
 				}
                 }
 
