@@ -54,46 +54,46 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 	if(Likcut&&R<4&&Distcut){
 		mm=1;
 		if(Massa_gen<1&&Massa_gen>0.5) 
-			for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) PTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m); ;
-						if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) PTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);} 
+			for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) PTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1); ;
+						if(Var>BetaP[m]&&Var<=BetaP[m+1]) PTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);} 
 		if(Massa_gen<2&&Massa_gen>1.5)
-                        for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) DTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);	
-						if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) DTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);}
+                        for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) DTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);	
+						if(Var>BetaP[m]&&Var<=BetaP[m+1]) DTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);}
 		 if(Massa_gen<4&&Massa_gen>2.5)
-                        for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) HeTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);
-						if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) HeTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);}
+                        for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) HeTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);
+						if(Var>BetaP[m]&&Var<=BetaP[m+1]) HeTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);}
 	}
 	if(Likcut&&R<20&&Distcut){
 		mm=1;
 		//if(Dist5D>distcut) mm=2;
 		if(Massa_gen<1&&Massa_gen>0.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) PTemplatesNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
-				if((((int)Cutmask)>>11)==512&&BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]) PTemplatesNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);}	
+			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) PTemplatesNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
+			if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) PTemplatesNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}	
 		if(Massa_gen<2&&Massa_gen>1.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) DTemplatesNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
-				if((((int)Cutmask)>>11)==512&&BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]) DTemplatesNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);}	
+			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) DTemplatesNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
+				if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) DTemplatesNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}	
 		if(Massa_gen<4&&Massa_gen>2.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) HeTemplatesNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
-				if((((int)Cutmask)>>11)==512&&BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]) HeTemplatesNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);}
+			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) HeTemplatesNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
+			if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) HeTemplatesNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}
 	}
 	if(Likcut&&R<40&&Distcut){
 		mm=1;
                 //if(Dist5D>distcut) mm=2;
 		if(Massa_gen<1&&Massa_gen>0.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {PTemplatesAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);}
-				if((((int)Cutmask)>>11)==0&&BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]) PTemplatesAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);}
+			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {PTemplatesAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}
+			 if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) PTemplatesAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}
 		if(Massa_gen<2&&Massa_gen>1.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) DTemplatesAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
-				if((((int)Cutmask)>>11)==0&&BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]) DTemplatesAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);}
+			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) DTemplatesAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
+			if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) DTemplatesAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}
 		if(Massa_gen<4&&Massa_gen>2.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) HeTemplatesAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
-				if((((int)Cutmask)>>11)==0&&BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]) HeTemplatesAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);}
+			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) HeTemplatesAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
+			if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) HeTemplatesAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}
 	}
 
 	
@@ -106,10 +106,10 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 	float mm=1;
 	if(Likcut&&R<4&&Distcut)
 		 for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) {
-						DhistosgeoTOF->Fill(zona,mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);
-						if(R>1.2*Rcutoff) DhistosTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);
+						DhistosgeoTOF->Fill(zona,mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);
+						if(R>1.2*Rcutoff) DhistosTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);
 						}
-					 if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) if(R>1.2*Rcutoff) DhistosTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m);	 
+					 if(Var>BetaP[m]&&Var<=BetaP[m+1]) if(R>1.2*Rcutoff) DhistosTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);	 
 					}
 	if(Likcut&&R<20&&Distcut){
 		mm=1;
@@ -117,24 +117,24 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 		for(int m=0;m<18;m++) 
 				if((((int)Cutmask)>>11)==512)
 					{if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
-						DhistosgeoNaF->Fill(zona,mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
-						if(R>1.2*Rcutoff) DhistosNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m); 
+						DhistosgeoNaF->Fill(zona,mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
+						if(R>1.2*Rcutoff) DhistosNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1); 
 						}
-					if(BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]) if(R>1.2*Rcutoff) DhistosNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
+					if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) if(R>1.2*Rcutoff) DhistosNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
 					}
 	}
+	if((((int)Cutmask)>>11)==0&&Dist5D+Dist5D_P>20) return;
 	if(Likcut&&R<40&&Distcut){
                 mm=1;
                 //if(Dist5D>distcut) mm=2; 
 		for(int m=0;m<18;m++) 
 				if((((int)Cutmask)>>11)==0)	
 					{if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
-						DhistosgeoAgl->Fill(zona,mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m); 
-						if(R>1.2*Rcutoff) DhistosAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m); 
+						DhistosgeoAgl->Fill(zona,mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1); 
+						if(R>1.2*Rcutoff) DhistosAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1); 
 						}
 						
-					 if(BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]) if(R>1.2*Rcutoff) DhistosAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m);
-					 //DhistosAgl->Fill(2,17);	
+					 if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) if(R>1.2*Rcutoff) DhistosAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
 					}
 	}
 }
@@ -274,7 +274,7 @@ void DeutonsTemplFits(TFile * file1){
 			if(He) Tpl[m][i]->Add(HeTemplTOF[m]);
 		}
 		else{
-			cut=17;
+			cut=0;
 			Tpl[m][i]->Add(PTemplTOF2[m]);
                         Tpl[m][i]->Add(DTemplTOF2[m]);
                         if(He) Tpl[m][i]->Add(HeTemplTOF2[m]);
@@ -348,7 +348,7 @@ void DeutonsTemplFits(TFile * file1){
 			DCountsgeoTOF->SetBinContent(m+1,i+1,0,DTemplTOFW[m][i]->Integral(0,50));
 			DCountsgeoTOF->SetBinContent(m+1,i+1,1,Err[m][i]);	
 			if(i==0){
-				PCountsTOF->SetBinContent(m+1,0,PTemplTOFW[m][0]->Integral(5,25));
+				PCountsTOF->SetBinContent(m+1,0,PTemplTOFW[m][0]->Integral(0,50));
                         	PCountsTOF->SetBinContent(m+1,1,Err[m][i]);
 			}
 		}
@@ -427,11 +427,13 @@ void DeutonsTemplFits(TFile * file1){
 		THStack *Stack=new THStack("","");
 		TplNaF[m][i] = new TObjArray(2);
 		if(i!=0){
+			cutNaF=17;
 			TplNaF[m][i]->Add(PTemplNaF[m]);
 			TplNaF[m][i]->Add(DTemplNaF[m]);
 			if(He) TplNaF[m][i]->Add(HeTemplNaF[m]);
 		}
 		else{
+			cutNaF=0;		
 			TplNaF[m][i]->Add(PTemplNaF2[m]);
                		TplNaF[m][i]->Add(DTemplNaF2[m]);
                 	if(He) TplNaF[m][i]->Add(HeTemplNaF2[m]);
@@ -445,7 +447,7 @@ void DeutonsTemplFits(TFile * file1){
 		else {
 			fitTNaF[m][i]->Constrain(0,0,1);
 			fitTNaF[m][i]->Constrain(1,0,1);
-			fitTNaF[m][i]->SetRangeX(cutNaF,40);
+			fitTNaF[m][i]->SetRangeX(cutNaF,50);
 		}
 		if((DataMassNaF[i][m]->Integral(25,50)>50&&i!=0)||i==0) s1NaF[m][i]=fitTNaF[m][i]->Fit();
 		else s1NaF[m][i]=1;
@@ -494,7 +496,7 @@ void DeutonsTemplFits(TFile * file1){
 			DCountsgeoNaF->SetBinContent(m+1,i+1,0,DTemplNaFW[m][i]->Integral(0,50));
 			DCountsgeoNaF->SetBinContent(m+1,i+1,1,ErrNaF[m][i]);	
 			if(i==0){
-                                PCountsNaF->SetBinContent(m+1,0,/*PTemplNaFW[m][0]*/DataMassNaF[i][m]->Integral(5,25));
+                                PCountsNaF->SetBinContent(m+1,0,PTemplNaFW[m][0]->Integral(0,50));
                                 PCountsNaF->SetBinContent(m+1,1,Err[m][i]);
                         }
 
@@ -557,7 +559,7 @@ void DeutonsTemplFits(TFile * file1){
         TH1F *DTemplAglW[18][12];
         TH1F *HeTemplAglW[18][12];
         for(int i=0;i<12;i++) for(int m=0;m<18;m++) c30_tris[i][m]=new TCanvas();
-                He=false;
+                He=true;
         for(int i=0;i<12;i++) for(int m=0;m<18;m++) {
                 c30_tris[i][m]->cd();
                 cutAgl=16;
@@ -576,11 +578,13 @@ void DeutonsTemplFits(TFile * file1){
                 THStack *Stack=new THStack("","");
                 TplAgl[m][i] = new TObjArray(2);
                 if(i!=0){
+			cutAgl=16;
 			TplAgl[m][i]->Add(PTemplAgl[m]);
                 	TplAgl[m][i]->Add(DTemplAgl[m]);
                 	if(He) TplAgl[m][i]->Add(HeTemplAgl[m]);
                 }
 		else{
+			cutAgl=0;
 			TplAgl[m][i]->Add(PTemplAgl2[m]);
                         TplAgl[m][i]->Add(DTemplAgl2[m]);
                         if(He) TplAgl[m][i]->Add(HeTemplAgl2[m]);
@@ -589,19 +593,20 @@ void DeutonsTemplFits(TFile * file1){
                 if(He){
                         fitTAgl[m][i]->Constrain(0,0.5,1.0);
                         fitTAgl[m][i]->Constrain(1,0.0,1.0);
-                        fitTAgl[m][i]->Constrain(2,0.0,1.0);
-                }
+                        fitTAgl[m][i]->Constrain(2,0.0,0.01);
+                	fitTAgl[m][i]->SetRangeX(cutAgl,50);
+		}
                 else {
                         fitTAgl[m][i]->Constrain(0,0,1);
                         fitTAgl[m][i]->Constrain(1,0,1);
-                        fitTAgl[m][i]->SetRangeX(cutAgl,40);
+                        fitTAgl[m][i]->SetRangeX(cutAgl,50);
                 }
                 if((DataMassAgl[i][m]->Integral(25,50)>50&&i!=0)||i==0) s1Agl[m][i]=fitTAgl[m][i]->Fit();
                 else s1Agl[m][i]=1;
 		for(int z=0;z<5;z++){
 			if(s1Agl[m][i]==-1){
 				cutAgl+=1;
-				fitTAgl[m][i]->SetRangeX(cutAgl,40);
+				fitTAgl[m][i]->SetRangeX(cutAgl,50);
 				s1Agl[m][i]=fitTAgl[m][i]->Fit();
 			}
 			if(s1Agl[m][i]==0) break;
@@ -647,10 +652,10 @@ void DeutonsTemplFits(TFile * file1){
                         float Cov12=fitTAgl[m][i]->GetFitter()->GetCovarianceMatrixElement(1,2);
                         float Sigma=pow((pow(e2/w2,2)+pow(e1/w1,2))/2,0.5);
                         ErrAgl[m][i]= Sigma*DTemplAglW[m][i]->Integral();
-                        DCountsgeoAgl->SetBinContent(m+1,i+1,0,DTemplAglW[m][i]->Integral(5,50));
+                        DCountsgeoAgl->SetBinContent(m+1,i+1,0,DTemplAglW[m][i]->Integral(0,50));
 			DCountsgeoAgl->SetBinContent(m+1,i+1,1,ErrAgl[m][i]);
                 	if(i==0){
-                                PCountsAgl->SetBinContent(m+1,0,/*PTemplAglW[m][0]*/DataMassAgl[i][m]->Integral(5,25));
+                                PCountsAgl->SetBinContent(m+1,0,PTemplAglW[m][0]->Integral(0,50));
                                 PCountsAgl->SetBinContent(m+1,1,Err[m][i]);
                         }
 

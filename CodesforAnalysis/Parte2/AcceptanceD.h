@@ -240,7 +240,7 @@ void AcceptanceD(TFile * file1){
                 	AccSelMCPbeta->SetLineColor(2);
                 	AccSelMCPbeta->SetLineWidth(1);
 		}
-		AccSelMCDbeta[0]->SetPoint(p,50,0);
+		//AccSelMCDbeta[0]->SetPoint(p,50,0);
 		/*AccgeoDbeta[h]->SetMarkerStyle(8);
                 AccgeoDbeta[h]->SetMarkerColor(4);
                 AccgeoDbeta[h]->SetMarkerSize(2);

@@ -53,46 +53,46 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
         float mm=0;
 	if(Likcut&&R<4&&Distcut){
 		if(Massa_gen<1&&Massa_gen>0.5) 
-			for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) PTemplatesTOF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m); ;
-						if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) PTemplatesTOF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);} 
+			for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) PTemplatesTOF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1); ;
+						if(Var>BetaP[m]&&Var<=BetaP[m+1]) PTemplatesTOF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);} 
 		if(Massa_gen<2&&Massa_gen>1.5)
-                        for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) DTemplatesTOF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);	
-						if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) DTemplatesTOF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);}
+                        for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) DTemplatesTOF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);	
+						if(Var>BetaP[m]&&Var<=BetaP[m+1]) DTemplatesTOF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);}
 		 if(Massa_gen<4&&Massa_gen>2.5)
-                        for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) HeTemplatesTOF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
-						if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) HeTemplatesTOF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);}
+                        for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) HeTemplatesTOF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
+						if(Var>BetaP[m]&&Var<=BetaP[m+1]) HeTemplatesTOF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);}
 	}
 	if(Likcut&&R<20&&Distcut){
 		mm=1;
 		//if(Dist5D>distcut) mm=2;
 		if(Massa_gen<1&&Massa_gen>0.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) PTemplatesNaF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
-				if((((int)Cutmask)>>11)==512&&BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]) PTemplatesNaF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);}	
+			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) PTemplatesNaF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
+			 if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1])	 PTemplatesNaF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);}	
 		if(Massa_gen<2&&Massa_gen>1.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) DTemplatesNaF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
-				if((((int)Cutmask)>>11)==512&&BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]) DTemplatesNaF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);}	
+			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) DTemplatesNaF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
+			 if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) DTemplatesNaF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);}	
 		if(Massa_gen<4&&Massa_gen>2.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) HeTemplatesNaF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
-				if((((int)Cutmask)>>11)==512&&BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]) HeTemplatesNaF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);}
+			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) HeTemplatesNaF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
+			if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) HeTemplatesNaF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);}
 	}
 	if(Likcut&&R<40&&Distcut){
 		mm=1;
                 //if(Dist5D>distcut) mm=2;
 		if(Massa_gen<1&&Massa_gen>0.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {PTemplatesAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m); }
-				if((((int)Cutmask)>>11)==0&&BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]) PTemplatesAgl_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);}
+			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {PTemplatesAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1); }
+			if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) PTemplatesAgl_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);}
 		if(Massa_gen<2&&Massa_gen>1.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) DTemplatesAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
-				if((((int)Cutmask)>>11)==0&&BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]) DTemplatesAgl_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);}
+			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) DTemplatesAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
+			if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) DTemplatesAgl_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);}
 		if(Massa_gen<4&&Massa_gen>2.5)
 			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) HeTemplatesAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
-				if((((int)Cutmask)>>11)==0&&BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]) HeTemplatesAgl_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);}
+			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) HeTemplatesAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
+			if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) HeTemplatesAgl_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);}
 	}
 
 	
@@ -105,10 +105,10 @@ void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona){
 	float mm=0;
 	if(Likcut&&R<4&&Distcut)
 		 for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) {
-						DhistosgeoTOF_Dist->Fill(zona,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
-						if(R>1.2*Rcutoff) DhistosTOF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
+						DhistosgeoTOF_Dist->Fill(zona,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
+						if(R>1.2*Rcutoff) DhistosTOF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
 						}
-					 if(Beta>Betabins[m]&&Beta<=Betabins[m+1]) if(R>1.2*Rcutoff) DhistosTOF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);	 
+					 if(Var>BetaP[m]&&Var<=BetaP[m+1]) if(R>1.2*Rcutoff) DhistosTOF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);	 
 					}
 	if(Likcut&&R<20&&Distcut){
 		mm=1;
@@ -116,10 +116,10 @@ void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona){
 		for(int m=0;m<18;m++) 
 				if((((int)Cutmask)>>11)==512)
 					{if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
-						DhistosgeoNaF_Dist->Fill(zona,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
-						if(R>1.2*Rcutoff) DhistosNaF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
+						DhistosgeoNaF_Dist->Fill(zona,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
+						if(R>1.2*Rcutoff) DhistosNaF_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
 						}
-					if(BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]) if(R>1.2*Rcutoff) DhistosNaF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
+					if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) if(R>1.2*Rcutoff) DhistosNaF_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
 					}
 	}
 	if((((int)Cutmask)>>11)==0&&Dist5D+Dist5D_P>20) return;
@@ -129,10 +129,10 @@ void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona){
 				if((((int)Cutmask)>>11)==0)	
 					{
 					if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
-						DhistosgeoAgl_Dist->Fill(zona,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
-						if(R>1.2*Rcutoff) DhistosAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
+						DhistosgeoAgl_Dist->Fill(zona,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
+						if(R>1.2*Rcutoff) DhistosAgl_Dist->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
 						}	
-					 if(BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]) if(R>1.2*Rcutoff) DhistosAgl_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m);
+					 if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) if(R>1.2*Rcutoff) DhistosAgl_Dist2->Fill((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),m+0.1);
 					}
 	}
 }
