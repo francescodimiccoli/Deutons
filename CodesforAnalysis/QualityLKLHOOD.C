@@ -346,11 +346,13 @@ int main()
 
 	cout<<"************************************** TRAINING *****************************************************"<<endl;
 	int avanzamento=0;
+	bool Hecut=false;
 	for(int i=0; i<ntupla1->GetEntries();i++) {
 		int k = ntupla1->GetEvent(i);
 		if(100*(i/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
 		IsCharge1=0;
+		 float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
 		if(EdepL1>0.04&&EdepL1<0.15) IsCharge1=1;
 		//Clusterinutili=ClusterTOFtotali-ClusterTOFusati;
 		TOF_Up_Down=fabs(EdepTOFD-EdepTOFU);
@@ -374,7 +376,7 @@ int main()
 				sigmagen_bad->Fill(fabs(R-Momentogen)/(pow(Momentogen,2)*Rig->Eval(Momentogen)),fabs(Beta-Betagen)/(pow(Beta,2)*beta->Eval(Beta)));
 				}
 		}
-		if(Beta<0.75&&Beta>0&&(1/Massa)<MassLimit&&R<4&&R>=0&&IsPrescaled==0/*&&!(Momentogen<1.2&&R<1.5)*/){ 	
+		if(Beta<0.8&&Beta>0&&(1/Massa)<MassLimit&&R<4&&R>=0&&IsPrescaled==0/*&&!(Momentogen<1.2&&R<1.5)*/){ 	
 			if(Massagen<1&&Massagen>0.5)
 			{
 				grafico1[0]->Fill(NAnticluster);
@@ -520,18 +522,39 @@ int main()
 	TH1F *LKLold_Data=new TH1F("Lkold_Data","Signal",50,0,1);
 	TH2F *LkvsDist_P=new TH2F("LkvsDist_P","",500,0,1,500,-1,1);
 	TH2F *LkvsDist_D=new TH2F("LkvsDist_D","",500,0,1,500,-1,1);
+	TH2F *RvsBetaTOF_P=new TH2F("RvsBetaTOF_P","RvsBetaTOF_P",500,0,6,500,0.4,1);
+        TH2F *RvsBetaNaF_P=new TH2F("RvsBetaNaF_P","RvsBetaNaF_P",500,1,10,500,0.75,1);
+        TH2F *RvsBetaAgl_P=new TH2F("RvsBetaAgl_P","RvsBetaAgl_P",500,3,15,500,0.95,1);
+        TH2F *RvsBetaTOF_D=new TH2F("RvsBetaTOF_D","RvsBetaTOF_D",500,0,6,500,0.4,1);
+        TH2F *RvsBetaNaF_D=new TH2F("RvsBetaNaF_D","RvsBetaNaF_D",500,1,10,500,0.75,1);
+        TH2F *RvsBetaAgl_D=new TH2F("RvsBetaAgl_D","RvsBetaAgl_D",500,3,15,500,0.95,1);
+        TH2F *RvsBetaTOF_He=new TH2F("RvsBetaTOF_He","RvsBetaTOF_He",500,0,6,500,0.4,1);
+        TH2F *RvsBetaNaF_He=new TH2F("RvsBetaNaF_He","RvsBetaNaF_He",500,1,10,500,0.75,1);
+        TH2F *RvsBetaAgl_He=new TH2F("RvsBetaAgl_He","RvsBetaAgl_He",500,3,15,500,0.95,1);
+
 	float var[9]={0,0,0,0,0,0,0,0,0};
 	BDTreader();
 	avanzamento=0;
 	int qu=0;
 	for(int l=0; l<ntupla1->GetEntries();l++) {
 		int k = ntupla1->GetEvent(l);
-		IsCharge1=1;
+		IsCharge1=0;
 		if(EdepL1>0.04&&EdepL1<0.15) IsCharge1=1;
 		if(100*(l/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
 		Betagen=(pow(pow(Momentogen/Massagen,2)/(1+pow(Momentogen/Massagen,2)),0.5));
 		//Clusterinutili=fabs(ClusterTOFtotali-ClusterTOFusati);
+		if(IsCharge1==1){
+                if(Massagen<1&&Massagen>0.5){
+                                RvsBetaTOF_P->Fill(R,Beta);
+				}
+                if(Massagen<2&&Massagen>1.5){
+				RvsBetaTOF_D->Fill(R,Beta);
+                        }
+                if(Massagen<4.5&&Massagen>2.5){
+				RvsBetaTOF_He->Fill(R,Beta);
+                       }
+                }
 		TOF_Up_Down=fabs(EdepTOFD-EdepTOFU);
 		var[0]=NAnticluster;
 		var[1]=Clusterinutili;
@@ -598,6 +621,12 @@ int main()
 		if(IsCharge1==1&&L_Discr>0.8&&R<4&&R>=0)for(int z=0;z<17;z++) if(Beta>Betabins[z]&&Beta<Betabins[z+1]&&Massagen<2&&Massagen>1.5) cutoffMC[z]->Fill(pow(1/Massa,2));
 		if(IsCharge1==1&&L_Discr>0.8&&R<4&&R>=0)for(int z=0;z<17;z++) if(Beta>Betabins[z]&&Beta<Betabins[z+1]&&Massagen<1&&Massagen>0.5) cutoffMC_P[z]->Fill(pow(1/Massa,2));
 	}
+	
+
+	TH2F *RvsBetaTOF=new TH2F("RvsBetaTOF","RvsBetaTOF",500,0,6,500,0.4,1);
+        TH2F *RvsBetaNaF=new TH2F("RvsBetaNaF","RvsBetaNaF",500,1,10,500,0.75,1);
+        TH2F *RvsBetaAgl=new TH2F("RvsBetaAgl","RvsBetaAgl",500,3,15,500,0.95,1);
+
 	avanzamento=0;
 	for(int l=0; l<ntupla2->GetEntries();l++) {
 		int k = ntupla2->GetEvent(l);
@@ -606,6 +635,10 @@ int main()
 		if(100*(l/(float)(ntupla2->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
 		//Clusterinutili=fabs(ClusterTOFtotali-ClusterTOFusati);
+		if(IsCharge1==1&&Rcutoff<1){
+                                RvsBetaTOF->Fill(R,Beta);
+                }
+
 		TOF_Up_Down=fabs(EdepTOFD-EdepTOFU);
 		Betagen=(pow(pow(Momentogen/Massagen,2)/(1+pow(Momentogen/Massagen,2)),0.5));
 		var[0]=NAnticluster;
@@ -637,7 +670,7 @@ int main()
 			h1->Fill(Beta,EdepTOFU);
                 	h3->Fill(Beta,EdepTOFD);
 		}
-		if(Beta<0.75&&Beta>0&&(1/Massa)<MassLimit&&R<4&&R>=0&&IsPrescaled==0&&IsCharge1==1)
+		if(Beta<0.75&&Beta>0.4&&(1/Massa)<MassLimit&&R<4&&R>=0&&IsPrescaled==0&&IsCharge1==1)
 		{
 			LKL_Data->Fill(L_Discr);
 			if(fabs(DistD)>0.15) LKLold_Data->Fill(L_Discr_old);
@@ -654,6 +687,28 @@ int main()
 				if(Beta>Betabins[z]&&Beta<Betabins[z+1]) {if(Rcutoff<0.7*RBeta_P->Eval(Beta)&&z<14) cutoff_P[z]->Fill(pow(1/Massa,2));
 					if(Rcutoff<0.8*RBeta_P->Eval(Beta)&&z>=14) cutoff_P[z]->Fill(pow(1/Massa,2));	}
 	}
+	/////////////// R vs BETA ////////////////////
+	TCanvas *uno=new TCanvas("RvsBeta: MC");
+	uno->cd();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	RvsBetaTOF_P->SetMarkerColor(2);
+	RvsBetaTOF_D->SetMarkerColor(4);
+	RvsBetaTOF_He->SetMarkerColor(3);
+	RvsBetaTOF_D->GetXaxis()->SetTitle("R [GV]");
+	RvsBetaTOF_D->GetYaxis()->SetTitle("Beta TOF");
+	RvsBetaTOF_D->Draw();
+	RvsBetaTOF_P->Draw("same");
+	RvsBetaTOF_He->Draw("same");
+		
+	TCanvas *due=new TCanvas("RvsBeta: Dati");
+	due->cd();
+        gPad->SetGridx();
+        gPad->SetGridy();
+	gPad->SetLogz();
+	RvsBetaTOF->Draw("col");
+	protons->Draw("same");
+	deutons->Draw("same");	
 	/////////////// DISTR. TOT E BAD //////////////////////
 	g1->cd();
 	h1->GetXaxis()->SetTitle("Beta TOF");
@@ -1115,12 +1170,16 @@ int main()
 	/////////OUTPUT////////////
 	string nomefile="./QualityVariables.root";
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
+	f_out->mkdir("RvsBeta");
 	f_out->mkdir("Bad Events Study");
 	f_out->mkdir("Variables");
 	f_out->mkdir("Distributions");
 	f_out->mkdir("Performances");
 	f_out->mkdir("Cutoff Templates");
 	f_out->mkdir("Splines");
+	f_out->cd("RvsBeta");
+	uno->Write();
+	due->Write();
 	f_out->cd("Variables");
 	for(int m=0;m<9;m++) {c1[m]->Write();}
 	f_out->cd("Bad Events Study");
