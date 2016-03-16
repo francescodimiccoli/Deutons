@@ -229,8 +229,7 @@ int main(int argc, char * argv[]){
 		string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/risultati/RisultatiDATI_"+ARGV+".root";
 		TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
 		
-		TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Beta:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:EdepTOFU:EdepTOFD:Cutmask:LDiscriminant:DistD");
-		TNtuple *grandezzequalRICH = new TNtuple("grandezzequalRICH","grandezzequalRICH","BetaRICH_new:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:LDiscriminant:DistD");
+		TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:LDiscriminant:DistD,IsCharge1");
 		TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:Rmin:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:BDT_response:Dist5D:Dist5D_P");
 		TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:LDiscriminant");
 		TNtuple * trig = new TNtuple("trig","trig","U_time:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias");
@@ -315,7 +314,6 @@ int main(int argc, char * argv[]){
 			}
 			if(control==1) continue;
 			if(scelta==1) Grandezzequal(geo_stuff,i,grandezzequal);
-			if(scelta==1) GrandezzequalRICH(geo_stuff,i,grandezzequalRICH);
 		}
 
 		cout<<"------Calcolo Live Time-----"<<endl;
@@ -522,14 +520,8 @@ void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla,int P_ID)
 
 void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 {
-	int k = albero->GetEvent(i);
-	ntupla->Fill(Beta,Rcutoff,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,(*trtrack_edep)[0],layernonusati,Chisquare,EdepTOFU,EdepTOFD,Cutmask,LDiscriminant,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
-}
-
-void GrandezzequalRICH (TTree *albero,int i,TNtuple *ntupla)
-{
         int k = albero->GetEvent(i);
-        ntupla->Fill(BetaRICH_new,Rcutoff,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,(*trtrack_edep)[0],layernonusati,Chisquare,Richtotused,RichPhEl,Cutmask,LDiscriminant,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
+        ntupla->Fill(Velocity,Rcutoff,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,layernonusati,Chisquare,Richtotused,RichPhEl,Cutmask,LDiscriminant,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),IsCharge1);
 }
 
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)

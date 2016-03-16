@@ -256,6 +256,7 @@ int Cutmask=0;
 int UnbiasPre=9;
 int noR=33;
 int notpassed[10]={0,1021,955,33,1007,799,959,799,187,187};
+float Velocity=0;
 TMVA::Reader *reader;
 Float_t BDT_response;
 TFile *_file0 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Final_Def.root");
@@ -292,44 +293,6 @@ void BDTreader()
 	reader->AddVariable("NTofUsed := NTofClusters - NTofClustersusati",&NTofUsed);
 	reader->AddVariable("diffR := TMath::Abs(Rup-Rdown)/R",&diffR);
 	reader->AddVariable("TOF_Up_Down := TMath::Abs(Endep[2]+Endep[3]-Endep[0]-Endep[1])", &TOF_Up_Down);
-	/*reader->AddVariable("ResiduiX[1]",&ResX[1]);
-	  reader->AddVariable("ResiduiX[2]",&ResX[2]);
-	  reader->AddVariable("ResiduiX[3]",&ResX[3]);
-	  reader->AddVariable("ResiduiX[4]",&ResX[4]);
-	  reader->AddVariable("ResiduiX[5]",&ResX[5]);
-	  reader->AddVariable("ResiduiX[6]",&ResX[6]);
-	  reader->AddVariable("ResiduiY[0]",&ResY[0]);
-	  reader->AddVariable("ResiduiY[1]",&ResY[1]);
-	  reader->AddVariable("ResiduiY[2]",&ResY[2]);
-	  reader->AddVariable("ResiduiY[3]",&ResY[3]);
-	  reader->AddVariable("ResiduiY[4]",&ResY[4]);
-	  reader->AddVariable("ResiduiY[5]",&ResY[5]);
-	  reader->AddVariable("ResiduiY[6]",&ResY[6]);*/
-
-	/*reader->AddVariable("trtot_edep[0]",&trtoted[0]);
-	reader->AddVariable("trtot_edep[1]",&trtoted[1]);
-	reader->AddVariable("trtot_edep[2]",&trtoted[2]);
-	reader->AddVariable("trtot_edep[3]",&trtoted[3]);
-	reader->AddVariable("trtot_edep[4]",&trtoted[4]);
-	reader->AddVariable("trtot_edep[5]",&trtoted[5]);
-	reader->AddVariable("trtot_edep[6]",&trtoted[6]);
-	reader->AddVariable("trtot_edep[7]",&trtoted[7]);
-
-	reader->AddVariable("Endep[0]",&EdepLayer[0]);
-	reader->AddVariable("Endep[1]",&EdepLayer[1]);
-	reader->AddVariable("Endep[2]",&EdepLayer[2]);
-	reader->AddVariable("Endep[3]",&EdepLayer[3]);*/
-	/*reader->AddVariable("trtot_edep[8]",&trtoted[8]);
-	  reader->AddVariable("trtrack_edep[0]",&trtred[0]);
-	  reader->AddVariable("trtrack_edep[1]",&trtred[1]);
-	  reader->AddVariable("trtrack_edep[2]",&trtred[2]);
-	  reader->AddVariable("trtrack_edep[3]",&trtred[3]);
-	  reader->AddVariable("trtrack_edep[4]",&trtred[4]);
-	  reader->AddVariable("trtrack_edep[5]",&trtred[5]);
-	  reader->AddVariable("trtrack_edep[6]",&trtred[6]);
-	  reader->AddVariable("trtrack_edep[7]",&trtred[7]);
-	  reader->AddVariable("trtrack_edep[8]",&trtred[8]);*/
-
 	reader->BookMVA("BDTmethod", "/storage/gpfs_ams/ams/users/fdimicco/Deutons/TMVA/QualityBDT_BDT.weights.xml");
 }
 
@@ -345,11 +308,6 @@ bool Quality(TTree *albero,int i)
 	if(fabs(Rup-Rdown)/R>0.2)  selection = false; else l++;
 	if(ProbQ<0.43) selection = false; else m++;
 	//CONTROLLOFIT
-	/*a2=0;
-	  for(int j=0;j<6;j++)
-	  if((*chiq)[j]<0||(*chiq)[j]>15||fabs((*R_)[j]-R)/R>0.2) a2++;
-	  if(a2>0) selection = false; else n++;*/
-
 	fuoriX=0;
 	fuoriY=0;
 	for(int layer=1;layer<8;layer++) {
@@ -433,7 +391,7 @@ bool Quality(TTree *albero,int i)
 	//if(BDT_response<0.14) selection=false;
 	/////////////////////////////////////////////////////////////////////////
 
-	/////////////////////////// Correzione R e Beta ///////////////////////////
+	/////////////////////////// Variables for Likelihood ///////////////////////////
 	EdepTrack=0;
 	EdepTOFU=((*Endep)[0]+(*Endep)[1])/2;
 	EdepTOFD=((*Endep)[2]+(*Endep)[3])/2;
@@ -444,6 +402,11 @@ bool Quality(TTree *albero,int i)
 	EndepTOF=((*Endep)[0]+(*Endep)[1]+(*Endep)[2]+(*Endep)[3])/4;
 	R_corr=R;
 	Massa=pow(fabs(pow(fabs(R_corr)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
+	IsCharge1=0;
+	if(fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta))<4||fabs(EdepTOFbeta->Eval(Beta)-EndepTOF)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta))<10) IsCharge1=1;
+	Velocity=0;
+	Velocity=Beta;
+	if((((int)Cutmask)>>11)==0||(((int)Cutmask)>>11)==512) Velocity=BetaRICH_new;	
 	//////////////////////////////////////////////////////////////////////
 
 	//=true: Disattiva selezione/////

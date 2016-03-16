@@ -29,7 +29,6 @@ void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla);
 void Grandezzequal (TTree *albero,int i,TNtuple *ntupla);
 void GrandezzequalRICH (TTree *albero,int i,TNtuple *ntupla);
 void Trigg (TTree *albero,int i,TNtuple *ntupla);
-int AssegnaCutmask(int CT,float MG);
 int Ev_Num;
 int Trig_Num;
 double Trig;
@@ -173,8 +172,7 @@ int main(int argc, char * argv[]){
 	string ARGV(argv[1]);
 	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/risultati/RisultatiMC_"+ARGV+".root";
 	TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
-	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Beta:Massa_gen:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:EdepTOFU:EdepTOFD:Cutmask:Momentogen:DistD");
-	TNtuple *grandezzequalRICH = new TNtuple("grandezzequalRICH","grandezzequalRICH","BetaRICH_new:Massa_gen:R:NAnticluster:Clusterinutili:DiffR:fuoriX:EdepL1:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD");
+	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Massa_gen:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD:IsCharge1");
 	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Massagen:Cutmask:Rmin:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:BDT_response:Dist5D:Dist5D_P");
 	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:Massagen:Momentogen:Betagen:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:BetanS");
 	TNtuple * trig = new TNtuple("trig","trig","Massagen:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias");
@@ -257,7 +255,6 @@ int main(int argc, char * argv[]){
 			//////////////////// CORR EDEP /////////////////////
 			EdepTOFU=((EdepTOFU)*Corr_TOFU->Eval(Beta));
 			EdepTOFD=((EdepTOFD)*Corr_TOFD->Eval(Beta));
-			//E_depTRD=((E_depTRD)*Corr_TRD->Eval(Beta));
 			EdepTrack=((EdepTrack)*Corr_Track->Eval(Beta));
 			///////////////////////////////////////////////////// 
 			//////////////// MATRICE DI RISPOSTA ///////////////
@@ -275,7 +272,6 @@ int main(int argc, char * argv[]){
 		} 
 		if(control==1) continue;
 		if(scelta==1) Grandezzequal(geo_stuff,i,grandezzequal);
-		if(scelta==1) GrandezzequalRICH(geo_stuff,i,grandezzequalRICH);													
 	}
 
 	//ANALISI SET COMPLETO
@@ -295,14 +291,12 @@ int main(int argc, char * argv[]){
 		Cutmask=CUTMASK;
                 Cutmask=CUTMASK|(1<<10);
                 Cutmask = Cutmask|(RICHmask_new<<11);
-                //Cutmask = AssegnaCutmask(Cutmask,Massa_gen);
 		
 		EdepTrack=0;
 	        EdepTOFU=((*Endep)[0]+(*Endep)[1])/2;
 	        EdepTOFD=((*Endep)[2]+(*Endep)[3])/2;
        	 	EdepTOFU=((EdepTOFU)*Corr_TOFU->Eval(Beta));
                 EdepTOFD=((EdepTOFD)*Corr_TOFD->Eval(Beta));
-                //E_depTRD=((E_depTRD)*Corr_TRD->Eval(Beta));
 		for(int layer=1;layer<8;layer++) EdepTrack+=(*trtot_edep)[layer]; EdepTrack=EdepTrack/7;
 		EdepTrack=((EdepTrack)*Corr_Track->Eval(Beta));	
 	
@@ -426,19 +420,6 @@ int main(int argc, char * argv[]){
 		return 1;
 }
 
-int AssegnaCutmask(int CT,float MG)
-{
-	int Cutmask=CT;
-	if(MG<1) Cutmask=Cutmask | (1<<22);
-	if(MG>1&&MG<1.85705) Cutmask=Cutmask | (1<<23);
-	if(MG>1.85705&&MG<1.85715) Cutmask=Cutmask | (1<<24);
-	if(MG>1.85715&&MG<1.85725) Cutmask=Cutmask | (1<<25);
-	if(MG>1.85725&&MG<1.85735) Cutmask=Cutmask | (1<<26);
-	if(MG>1.85735&&MG<1.85745) Cutmask=Cutmask | (1<<27);
-	if(MG>1.85745&&MG<1.85755) Cutmask=Cutmask | (1<<28);
-	if(MG>3&&MG<4) Cutmask=Cutmask | (1<<29);
-	return Cutmask;
-}
 
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
@@ -456,14 +437,8 @@ void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla,int P_ID)
 
 void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 {
-	int k = albero->GetEvent(i);
-	ntupla->Fill(Beta,Massa_gen,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,(*trtrack_edep)[0],layernonusati,Chisquare,EdepTOFU,EdepTOFD,Cutmask,Momento_gen,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
-}
-
-void GrandezzequalRICH (TTree *albero,int i,TNtuple *ntupla)
-{
         int k = albero->GetEvent(i);
-        ntupla->Fill(BetaRICH_new,Massa_gen,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,(*trtrack_edep)[0],layernonusati,Chisquare,Richtotused,RichPhEl,Cutmask,Momento_gen,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
+        ntupla->Fill(Velocity,Massa_gen,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,layernonusati,Chisquare,Richtotused,RichPhEl,Cutmask,Momento_gen,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),IsCharge1);
 }
 
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
