@@ -1,6 +1,5 @@
 using namespace std;
 
-TCanvas * c27 = new TCanvas("Rigidity Migration matrix");
 
 TH2F * MigrMatrix = new TH2F("MigrMatrix","MigrMatrix",43,0,43,43,0,43);
 
@@ -21,6 +20,8 @@ void MigrationMatrix_Copy(TFile * file){
 void MigrationMatrix_Write(){
         MigrMatrix->Write();
 }
+
+TCanvas * c27 = new TCanvas("Rigidity Migration matrix");
 
 void MigrationMatrix(){
 	float norm[43]={0};

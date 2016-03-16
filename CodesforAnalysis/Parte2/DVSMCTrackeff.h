@@ -1,6 +1,5 @@
 using namespace std;
 
-TCanvas *c28= new TCanvas("R vs ECAL E.dep.");
 TH2F * ECALvsR_D=new TH2F("ECALvsR_D","ECALvsR_D",1000,0,100,1000,0,100);
 TH2F * ECALvsR_MC=new TH2F("ECALvsR_MC","ECALvsR_MC",1000,0,100,1000,0,100);
 
@@ -39,7 +38,7 @@ void DVSMCTrackeff_Write(){
         return;
 }
 
-
+TCanvas *c28= new TCanvas("R vs ECAL E.dep.");
 void DVSMCTrackeff(TFile * file){
 	c28->Divide(1,2);
 	c28->cd(1);

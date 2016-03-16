@@ -1,7 +1,5 @@
 using namespace std;
 
-TCanvas *c4=new TCanvas("Preselections Efficiency (R bins)");
-TCanvas *c4_bis=new TCanvas("Preselections Efficiency (Beta bins)");
 
 TH1F * EffpreselMCP1=new TH1F("EffpreselMCP1","EffpreselMCP1",18,0,18);
 TH1F * EffpreselMCP2=new TH1F("EffpreselMCP2","EffpreselMCP2",18,0,18);
@@ -20,15 +18,6 @@ TH2F * EffpreselMCD1Agl=new TH2F("EffpreselMCD1Agl","EffpreselMCD1Agl",18,0,18,6
 TH2F * EffpreselMCD2Agl=new TH2F("EffpreselMCD2Agl","EffpreselMCD2Agl",18,0,18,6,0,6);
 TH2F * EffpreselMCD1_R=new TH2F("EffpreselMCD1_R","EffpreselMCD1_R",43,0,43,6,0,6);
 TH2F * EffpreselMCD2_R=new TH2F("EffpreselMCD2_R","EffpreselMCD2_R",43,0,43,6,0,6);
-
-TH1F *EffPreMCP_R_TH1F = new TH1F("EffPreMCP_R_TH1F","EffPreMCP_R_TH1F",43,0,43);
-TH1F *EffPreMCP_TH1F = new TH1F("EffPreMCP_TH1F","EffPreMCP_TH1F",18,0,18);
-TH1F *EffPreMCPNaF_TH1F = new TH1F("EffPreMCPNaF_TH1F","EffPreMCPNaF_TH1F",18,0,18);
-TH1F *EffPreMCPAgl_TH1F = new TH1F("EffPreMCPAgl_TH1F","EffPreMCPAgl_TH1F",18,0,18);
-TH2F *EffPreMCD_R_TH2F = new TH2F("EffPreMCD_R_TH2F","EffPreMCD_R_TH2F",43,0,43,6,0,6);
-TH2F *EffPreMCD_TH2F = new TH2F("EffPreMCD_TH2F","EffPreMCD_TH2F",18,0,18,6,0,6);
-TH2F *EffPreMCDNaF_TH2F = new TH2F("EffPreMCDNaF_TH2F","EffPreMCDNaF_TH2F",18,0,18,6,0,6);
-TH2F *EffPreMCDAgl_TH2F = new TH2F("EffPreMCDAgl_TH2F","EffPreMCDAgl_TH2F",18,0,18,6,0,6);
 
 
 
@@ -134,6 +123,18 @@ void MCpreeff_Write(){
         return;
 }
 
+
+TCanvas *c4=new TCanvas("Preselections Efficiency (R bins)");
+TCanvas *c4_bis=new TCanvas("Preselections Efficiency (Beta bins)");
+
+TH1F *EffPreMCP_R_TH1F = new TH1F("EffPreMCP_R_TH1F","EffPreMCP_R_TH1F",43,0,43);
+TH1F *EffPreMCP_TH1F = new TH1F("EffPreMCP_TH1F","EffPreMCP_TH1F",18,0,18);
+TH1F *EffPreMCPNaF_TH1F = new TH1F("EffPreMCPNaF_TH1F","EffPreMCPNaF_TH1F",18,0,18);
+TH1F *EffPreMCPAgl_TH1F = new TH1F("EffPreMCPAgl_TH1F","EffPreMCPAgl_TH1F",18,0,18);
+TH2F *EffPreMCD_R_TH2F = new TH2F("EffPreMCD_R_TH2F","EffPreMCD_R_TH2F",43,0,43,6,0,6);
+TH2F *EffPreMCD_TH2F = new TH2F("EffPreMCD_TH2F","EffPreMCD_TH2F",18,0,18,6,0,6);
+TH2F *EffPreMCDNaF_TH2F = new TH2F("EffPreMCDNaF_TH2F","EffPreMCDNaF_TH2F",18,0,18,6,0,6);
+TH2F *EffPreMCDAgl_TH2F = new TH2F("EffPreMCDAgl_TH2F","EffPreMCDAgl_TH2F",18,0,18,6,0,6);
 
 void MCpreeff(TFile * file1){
 

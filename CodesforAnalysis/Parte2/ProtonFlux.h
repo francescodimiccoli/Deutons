@@ -1,25 +1,9 @@
 using namespace std;
 
-TCanvas * c23 = new TCanvas("Protons Flux: Geo. Zones");
-TCanvas * c24 = new TCanvas("Primary Protons Flux");
-TCanvas * c25 = new TCanvas("Protons Flux: Pre vs Qual");
-
-
-TH3F * PFluxgeo = new TH3F("PFluxgeo","PFluxgeo",43,0,43,11,0,11,2,0,2);
-TH2F * PFlux = new TH2F("PFlux","PFlux",43,0,43,2,0,2);
-TH2F * PFluxpre = new TH2F("PFluxpre","PFluxpre",43,0,43,2,0,2);
-TH2F * PFluxsel = new TH2F("PFluxsel","PFluxsel",43,0,43,2,0,2);
-
 TH1F * PCounts = new TH1F("PCounts","PCounts",43,0,43);
 TH1F * PCounts_pre = new TH1F("PCounts_pre","PCounts_pre",43,0,43);
 TH1F * PCounts_sel = new TH1F("PCounts_sel","PCounts_sel",43,0,43);
-string numero[11]={"0","1","2","3","4","5","6","7","8","9","10"};
-TGraphErrors * P_Fluxgeo[11];
-TGraphErrors * P_Flux;
-TGraphErrors * P_Flux_pre;
-float potenza=0;
-//string percorso="/home/francesco/PhD/LocalCNAF/";
-string percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
+
 
 void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona){
 	int k = ntupla->GetEvent(l);
@@ -55,6 +39,23 @@ void ProtonFlux_Write(){
         PCounts_sel ->Write();
 }
 
+
+TCanvas * c23 = new TCanvas("Protons Flux: Geo. Zones");
+TCanvas * c24 = new TCanvas("Primary Protons Flux");
+TCanvas * c25 = new TCanvas("Protons Flux: Pre vs Qual");
+
+TH3F * PFluxgeo = new TH3F("PFluxgeo","PFluxgeo",43,0,43,11,0,11,2,0,2);
+TH2F * PFlux = new TH2F("PFlux","PFlux",43,0,43,2,0,2);
+TH2F * PFluxpre = new TH2F("PFluxpre","PFluxpre",43,0,43,2,0,2);
+TH2F * PFluxsel = new TH2F("PFluxsel","PFluxsel",43,0,43,2,0,2);
+
+string numero[11]={"0","1","2","3","4","5","6","7","8","9","10"};
+TGraphErrors * P_Fluxgeo[11];
+TGraphErrors * P_Flux;
+TGraphErrors * P_Flux_pre;
+float potenza=0;
+//string percorso="/home/francesco/PhD/LocalCNAF/";
+string percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
 
 void ProtonFlux(TFile * file1){
 	Tempi = (TH1F *)file1->Get("Tempi");

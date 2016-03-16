@@ -1,6 +1,5 @@
 using namespace std;
 
-TCanvas *c11=new TCanvas("Unbias Trigger Efficiency");
 
 TH1F * EffUnbiasMCP1=new TH1F("EffUnbiasMCP1","EffUnbiasMCP1",18,0,18);
 TH1F * EffUnbiasMCP2=new TH1F("EffUnbiasMCP2","EffUnbiasMCP2",18,0,18);
@@ -10,11 +9,6 @@ TH2F * EffUnbiasMCD1=new TH2F("EffUnbiasMCD1","EffUnbiasMCD1",18,0,18,6,0,6);
 TH2F * EffUnbiasMCD2=new TH2F("EffUnbiasMCD2","EffUnbiasMCD2",18,0,18,6,0,6);
 TH2F * EffUnbiasMCD1_R=new TH2F("EffUnbiasMCD1_R","EffUnbiasMCD1_R",43,0,43,6,0,6);
 TH2F * EffUnbiasMCD2_R=new TH2F("EffUnbiasMCD2_R","EffUnbiasMCD2_R",43,0,43,6,0,6);
-
-TH1F *EffUnbMCP_R_TH1F = new TH1F("EffUnbMCP_R_TH1F","EffUnbMCP_R_TH1F",43,0,43);
-TH1F *EffUnbMCP_TH1F = new TH1F("EffUnbMCP_TH1F","EffUnbMCP_TH1F",18,0,18);
-TH2F *EffUnbMCD_R_TH2F = new TH2F("EffUnbMCD_R_TH2F","EffUnbMCD_R_TH2F",43,0,43,6,0,6);
-TH2F *EffUnbMCD_TH2F = new TH2F("EffUnbMCD_TH2F","EffUnbMCD_TH2F",18,0,18,6,0,6);
 
 
 
@@ -73,6 +67,15 @@ void MCUnbiaseff_Write(){
 
         return;
 }
+
+
+TCanvas *c11=new TCanvas("Unbias Trigger Efficiency");
+
+TH1F *EffUnbMCP_R_TH1F = new TH1F("EffUnbMCP_R_TH1F","EffUnbMCP_R_TH1F",43,0,43);
+TH1F *EffUnbMCP_TH1F = new TH1F("EffUnbMCP_TH1F","EffUnbMCP_TH1F",18,0,18);
+TH2F *EffUnbMCD_R_TH2F = new TH2F("EffUnbMCD_R_TH2F","EffUnbMCD_R_TH2F",43,0,43,6,0,6);
+TH2F *EffUnbMCD_TH2F = new TH2F("EffUnbMCD_TH2F","EffUnbMCD_TH2F",18,0,18,6,0,6);
+
 
 void MCUnbiaseff(TFile * file1){
 

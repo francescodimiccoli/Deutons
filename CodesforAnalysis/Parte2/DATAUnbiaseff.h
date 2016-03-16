@@ -1,15 +1,11 @@
 using namespace std;
 
-TCanvas *c12=new TCanvas("DATA: Unb. Trigger Efficiency");
 
 TH1F * EffUnbiasDATA1=new TH1F("EffUnbiasDATA1","EffUnbiasDATA1",18,0,18);
 TH1F * EffUnbiasDATA2=new TH1F("EffUnbiasDATA2","EffUnbiasDATA2",18,0,18);
 TH1F * EffUnbiasDATA1_R=new TH1F("EffUnbiasDATA1_R","EffUnbiasDATA1_R",43,0,43);
 TH1F * EffUnbiasDATA2_R=new TH1F("EffUnbiasDATA2_R","EffUnbiasDATA2_R",43,0,43);
 
-TH1F *EffUnbDATA_R_TH1F = new TH1F("EffUnbDATA_R_TH1F","EffUnbDATA_R_TH1F",43,0,43);
-TH1F *EffUnbDATA_TH1F = new TH1F("EffUnbDATA_TH1F","EffUnbDATA_TH1F",18,0,18);
-                                    
 
 void DATAUnbiaseff_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
@@ -49,6 +45,10 @@ void DATAUnbiaseff_Write(){
         return;
 }
 
+//results
+TCanvas *c12=new TCanvas("DATA: Unb. Trigger Efficiency");
+TH1F *EffUnbDATA_R_TH1F = new TH1F("EffUnbDATA_R_TH1F","EffUnbDATA_R_TH1F",43,0,43);
+TH1F *EffUnbDATA_TH1F = new TH1F("EffUnbDATA_TH1F","EffUnbDATA_TH1F",18,0,18);
 
 void DATAUnbiaseff(TFile * file1){
 

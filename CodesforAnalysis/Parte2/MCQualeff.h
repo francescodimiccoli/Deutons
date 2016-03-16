@@ -1,9 +1,5 @@
 using namespace std;
 
-TCanvas *c5=new TCanvas("Likelihood Efficiency (R bins)");
-TCanvas *c6=new TCanvas("Distance Efficiency (R bins)");
-TCanvas *c5_bis=new TCanvas("Likelihood Efficiency (Beta bins)");
-TCanvas *c6_bis=new TCanvas("Distance Efficiency (Beta bins)");	
 
 TH1F * EffDistMCP = new TH1F("EffDistMCP","EffDistMCP",43,0,43);
 TH1F * EffLikMCP = new TH1F("EffLikMCP","EffLikMCP",43,0,43);
@@ -32,23 +28,6 @@ TH2F * EffQualMCD_Beta = new TH2F("EffQualMCD_Beta","EffQualMCD_Beta",18,0,18,6,
 TH2F * EffQualMCD_BetaNaF = new TH2F("EffQualMCD_BetaNaF","EffQualMCD_BetaNaF",18,0,18,6,0,6);
 TH2F * EffQualMCD_BetaAgl = new TH2F("EffQualMCD_BetaAgl","EffQualMCD_BetaAgl",18,0,18,6,0,6);
 
-TH1F * EffMCLikP_TH1F = new TH1F("EffMCLikP_TH1F","EffMCLikP_TH1F",43,0,43);
-TH2F * EffMCLikD_TH2F = new TH2F("EffMCLikD_TH2F","EffMCLikD_TH2F",43,0,43,6,0,6);
-TH1F * EffMCLikP_Beta_TH1F = new TH1F("EffMCLikP_Beta_TH1F","EffMCLikP_Beta_TH1F",18,0,18);
-TH2F * EffMCLikD_Beta_TH2F = new TH2F("EffMCLikD_Beta_TH2F","EffMCLikD_Beta_TH2F",18,0,18,6,0,6);
-TH1F * EffMCLikP_BetaNaF_TH1F = new TH1F("EffMCLikP_BetaNaF_TH1F","EffMCLikP_BetaNaF_TH1F",18,0,18);
-TH2F * EffMCLikD_BetaNaF_TH2F = new TH2F("EffMCLikD_BetaNaF_TH2F","EffMCLikD_BetaNaF_TH2F",18,0,18,6,0,6);
-TH1F * EffMCLikP_BetaAgl_TH1F = new TH1F("EffMCLikP_BetaAgl_TH1F","EffMCLikP_BetaAgl_TH1F",18,0,18);
-TH2F * EffMCLikD_BetaAgl_TH2F = new TH2F("EffMCLikD_BetaAgl_TH2F","EffMCLikD_BetaAgl_TH2F",18,0,18,6,0,6);
-
-TH1F * EffMCDistP_TH1F = new TH1F("EffMCDistP_TH1F","EffMCDistP_TH1F",43,0,43);
-TH2F * EffMCDistD_TH2F = new TH2F("EffMCDistD_TH2F","EffMCDistD_TH2F",43,0,43,6,0,6);
-TH1F * EffMCDistP_Beta_TH1F = new TH1F("EffMCDistP_Beta_TH1F","EffMCDistP_Beta_TH1F",18,0,18);
-TH2F * EffMCDistD_Beta_TH2F = new TH2F("EffMCDistD_Beta_TH2F","EffMCDistD_Beta_TH2F",18,0,18,6,0,6);
-TH1F * EffMCDistP_BetaNaF_TH1F = new TH1F("EffMCDistP_BetaNaF_TH1F","EffMCDistP_BetaNaF_TH1F",18,0,18);
-TH2F * EffMCDistD_BetaNaF_TH2F = new TH2F("EffMCDistD_BetaNaF_TH2F","EffMCDistD_BetaNaF_TH2F",18,0,18,6,0,6);
-TH1F * EffMCDistP_BetaAgl_TH1F = new TH1F("EffMCDistP_BetaAgl_TH1F","EffMCDistP_BetaAgl_TH1F",18,0,18);
-TH2F * EffMCDistD_BetaAgl_TH2F = new TH2F("EffMCDistD_BetaAgl_TH2F","EffMCDistD_BetaAgl_TH2F",18,0,18,6,0,6);
 
 void MCQualeff_Fill(TNtuple *ntupla, int l){
 	
@@ -163,6 +142,30 @@ void MCQualeff_Write(){
 
         return;
 }
+
+
+TCanvas *c5=new TCanvas("Likelihood Efficiency (R bins)");
+TCanvas *c6=new TCanvas("Distance Efficiency (R bins)");
+TCanvas *c5_bis=new TCanvas("Likelihood Efficiency (Beta bins)");
+TCanvas *c6_bis=new TCanvas("Distance Efficiency (Beta bins)");
+
+TH1F * EffMCLikP_TH1F = new TH1F("EffMCLikP_TH1F","EffMCLikP_TH1F",43,0,43);
+TH2F * EffMCLikD_TH2F = new TH2F("EffMCLikD_TH2F","EffMCLikD_TH2F",43,0,43,6,0,6);
+TH1F * EffMCLikP_Beta_TH1F = new TH1F("EffMCLikP_Beta_TH1F","EffMCLikP_Beta_TH1F",18,0,18);
+TH2F * EffMCLikD_Beta_TH2F = new TH2F("EffMCLikD_Beta_TH2F","EffMCLikD_Beta_TH2F",18,0,18,6,0,6);
+TH1F * EffMCLikP_BetaNaF_TH1F = new TH1F("EffMCLikP_BetaNaF_TH1F","EffMCLikP_BetaNaF_TH1F",18,0,18);
+TH2F * EffMCLikD_BetaNaF_TH2F = new TH2F("EffMCLikD_BetaNaF_TH2F","EffMCLikD_BetaNaF_TH2F",18,0,18,6,0,6);
+TH1F * EffMCLikP_BetaAgl_TH1F = new TH1F("EffMCLikP_BetaAgl_TH1F","EffMCLikP_BetaAgl_TH1F",18,0,18);
+TH2F * EffMCLikD_BetaAgl_TH2F = new TH2F("EffMCLikD_BetaAgl_TH2F","EffMCLikD_BetaAgl_TH2F",18,0,18,6,0,6);
+
+TH1F * EffMCDistP_TH1F = new TH1F("EffMCDistP_TH1F","EffMCDistP_TH1F",43,0,43);
+TH2F * EffMCDistD_TH2F = new TH2F("EffMCDistD_TH2F","EffMCDistD_TH2F",43,0,43,6,0,6);
+TH1F * EffMCDistP_Beta_TH1F = new TH1F("EffMCDistP_Beta_TH1F","EffMCDistP_Beta_TH1F",18,0,18);
+TH2F * EffMCDistD_Beta_TH2F = new TH2F("EffMCDistD_Beta_TH2F","EffMCDistD_Beta_TH2F",18,0,18,6,0,6);
+TH1F * EffMCDistP_BetaNaF_TH1F = new TH1F("EffMCDistP_BetaNaF_TH1F","EffMCDistP_BetaNaF_TH1F",18,0,18);
+TH2F * EffMCDistD_BetaNaF_TH2F = new TH2F("EffMCDistD_BetaNaF_TH2F","EffMCDistD_BetaNaF_TH2F",18,0,18,6,0,6);
+TH1F * EffMCDistP_BetaAgl_TH1F = new TH1F("EffMCDistP_BetaAgl_TH1F","EffMCDistP_BetaAgl_TH1F",18,0,18);
+TH2F * EffMCDistD_BetaAgl_TH2F = new TH2F("EffMCDistD_BetaAgl_TH2F","EffMCDistD_BetaAgl_TH2F",18,0,18,6,0,6);
 
 
 void MCQualeff(TFile * file1){

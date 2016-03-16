@@ -1,6 +1,5 @@
 using namespace std;
 
-TCanvas *c18=new TCanvas("Quality Sel. Check");
 
 TH1F * EffQualCheckMCP1 = new TH1F("EffQualCheckMCP1","EffQualCheckMCP1",43,0,43);
 TH1F * EffQualCheckMCP2 = new TH1F("EffQualCheckMCP2","EffQualCheckMCP2",43,0,43);
@@ -15,7 +14,6 @@ TH1F * EffTrackCheckMCP2 = new TH1F("EffTrackCheckMCP2","EffTrackCheckMCP2",43,0
 TH1F * EffLikCheckMCP1 = new TH1F("EffLikCheckMCP1","EffTLikkCheckMCP1",43,0,43);
 TH1F * EffLikCheckMCP2 = new TH1F("EffLikCheckMCP2","EffLikCheckMCP2",43,0,43);
 
-TH1F * EffQualCheckMCP_TH1F = new TH1F("EffQualCheckMCP_TH1F","EffQualCheckMCP_TH1F",43,0,43);
 
 void MCQualCheck_Fill(TNtuple *ntupla, int l){
 
@@ -77,6 +75,11 @@ void MCQualCheck_Write(){
         EffLikCheckMCP2->Write();
         return;
 }
+
+
+
+TCanvas *c18=new TCanvas("Quality Sel. Check");
+TH1F * EffQualCheckMCP_TH1F = new TH1F("EffQualCheckMCP_TH1F","EffQualCheckMCP_TH1F",43,0,43);
 
 void MCQualCheck(TFile * file1){
         cout<<"**** MC QUALITY SEL. CHECK ****"<<endl;

@@ -1,44 +1,4 @@
-TCanvas *p1=new TCanvas("RvsBeta TOF MC");
-TCanvas *p2=new TCanvas("RvsBeta NaF MC");
-TCanvas *p3=new TCanvas("RvsBeta Agl MC");
-
-TCanvas *p4=new TCanvas("RvsBeta TOF H.L. data");
-TCanvas *p5=new TCanvas("RvsBeta NaF H.L. data");
-TCanvas *p6=new TCanvas("RvsBeta Agl H.L. data");
-
-TCanvas *p7=new TCanvas("RvsEdep Upper TOF MC");
-TCanvas *p8=new TCanvas("RvsEdep Lower TOF MC");
-TCanvas *p9=new TCanvas("RvsEdep Tracker MC");
-
-TCanvas *p10=new TCanvas("Mass TOF H.L. data");
-TCanvas *p11=new TCanvas("Mass NaF H.L. data");
-TCanvas *p12=new TCanvas("Mass Agl H.L. data");
-
-TCanvas *p13=new TCanvas("Mass TOF MC");
-TCanvas *p14=new TCanvas("Mass NaF MC");
-TCanvas *p15=new TCanvas("Mass Agl MC");
-
-TCanvas *p10Q=new TCanvas("Qual. Mass TOF H.L. data");
-TCanvas *p11Q=new TCanvas("Qual. Mass NaF H.L. data");
-TCanvas *p12Q=new TCanvas("Qual. Mass Agl H.L. data");
-
-TCanvas *p13Q=new TCanvas("Qual. Mass TOF MC");
-TCanvas *p14Q=new TCanvas("Qual. Mass NaF MC");
-TCanvas *p15Q=new TCanvas("Qual. Mass Agl MC");
-
-TCanvas *p16=new TCanvas("Distance discr. TOF MC");
-TCanvas *p17=new TCanvas("Distance discr. NaF MC");
-TCanvas *p18=new TCanvas("Distance discr. Agl MC");
-
-TCanvas *p19=new TCanvas("DistvsR  TOF MC");
-TCanvas *p20=new TCanvas("DistvsR  NaF MC");
-TCanvas *p21=new TCanvas("DistvsR  Agl MC");
-
-TCanvas *p22=new TCanvas("DistvsLik  TOF MC");
-TCanvas *p23=new TCanvas("DistvsLik  NaF MC");
-TCanvas *p24=new TCanvas("DistvsLik  Agl MC");
-
-
+using namespace std;
 
 TH2F *RvsBetaTOF_P=new TH2F("RvsBetaTOF_P","RvsBetaTOF_P",500,0,6,500,0.4,1);
 TH2F *RvsBetaNaF_P=new TH2F("RvsBetaNaF_P","RvsBetaNaF_P",500,1,10,500,0.75,1);
@@ -376,6 +336,46 @@ RvsDistAgl_He->Write();
 sigmagen_bad->Write();
 }
 
+
+TCanvas *p1=new TCanvas("RvsBeta TOF MC");
+TCanvas *p2=new TCanvas("RvsBeta NaF MC");
+TCanvas *p3=new TCanvas("RvsBeta Agl MC");
+
+TCanvas *p4=new TCanvas("RvsBeta TOF H.L. data");
+TCanvas *p5=new TCanvas("RvsBeta NaF H.L. data");
+TCanvas *p6=new TCanvas("RvsBeta Agl H.L. data");
+
+TCanvas *p7=new TCanvas("RvsEdep Upper TOF MC");
+TCanvas *p8=new TCanvas("RvsEdep Lower TOF MC");
+TCanvas *p9=new TCanvas("RvsEdep Tracker MC");
+
+TCanvas *p10=new TCanvas("Mass TOF H.L. data");
+TCanvas *p11=new TCanvas("Mass NaF H.L. data");
+TCanvas *p12=new TCanvas("Mass Agl H.L. data");
+
+TCanvas *p13=new TCanvas("Mass TOF MC");
+TCanvas *p14=new TCanvas("Mass NaF MC");
+TCanvas *p15=new TCanvas("Mass Agl MC");
+
+TCanvas *p10Q=new TCanvas("Qual. Mass TOF H.L. data");
+TCanvas *p11Q=new TCanvas("Qual. Mass NaF H.L. data");
+TCanvas *p12Q=new TCanvas("Qual. Mass Agl H.L. data");
+
+TCanvas *p13Q=new TCanvas("Qual. Mass TOF MC");
+TCanvas *p14Q=new TCanvas("Qual. Mass NaF MC");
+TCanvas *p15Q=new TCanvas("Qual. Mass Agl MC");
+
+TCanvas *p16=new TCanvas("Distance discr. TOF MC");
+TCanvas *p17=new TCanvas("Distance discr. NaF MC");
+TCanvas *p18=new TCanvas("Distance discr. Agl MC");
+
+TCanvas *p19=new TCanvas("DistvsR  TOF MC");
+TCanvas *p20=new TCanvas("DistvsR  NaF MC");
+TCanvas *p21=new TCanvas("DistvsR  Agl MC");
+
+TCanvas *p22=new TCanvas("DistvsLik  TOF MC");
+TCanvas *p23=new TCanvas("DistvsLik  NaF MC");
+TCanvas *p24=new TCanvas("DistvsLik  Agl MC");
 
 
 void SlidesforPlot(TFile * file1){

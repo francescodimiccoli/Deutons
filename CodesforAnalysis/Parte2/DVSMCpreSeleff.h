@@ -1,4 +1,3 @@
-TCanvas *c17[4];
 
 TH2F * EffpreSelMCvsD1=new TH2F("EffpreSelMCvsD1","EffpreSelMCvsD1",18,0,18,3,0,3);
 TH2F * EffpreSelMCvsD2=new TH2F("EffpreSelMCvsD2","EffpreSelMCvsD2",18,0,18,3,0,3);
@@ -9,12 +8,6 @@ TH3F * EffpreSelMCvsD1_D=new TH3F("EffpreSelMCvsD1_D","EffpreSelMCvsD1_D",18,0,1
 TH3F * EffpreSelMCvsD2_D=new TH3F("EffpreSelMCvsD2_D","EffpreSelMCvsD2_D",18,0,18,3,0,3,11,0,11);
 TH3F * EffpreSelMCvsD1_R_D=new TH3F("EffpreSelMCvsD1_R_D","EffpreSelMCvsD1_R_D",43,0,43,3,0,3,11,0,11);
 TH3F * EffpreSelMCvsD2_R_D=new TH3F("EffpreSelMCvsD2_R_D","EffpreSelMCvsD2_R_D",43,0,43,3,0,3,11,0,11);
-
-TH2F * EffPreSelMCvsD_R_TH2F=new TH2F("EffPreSelMCvsD_R_TH2F","EffPreSelMCvsD_R_TH2F",43,0,43,3,0,3);
-TH2F * EffPreSelMCvsD_TH2F=new TH2F("EffPreSelMCvsD_TH2F","EffPreSelMCvsD_TH2F",18,0,18,3,0,3);
-
-TGraphErrors *PreDVSMC_P_Graph[3];
-TH2F *PreDVSMC_P[3];
 
 void DVSMCpreSeleff_D_Fill(TNtuple *ntupla, int l,int zona){
         int k = ntupla->GetEvent(l);
@@ -93,6 +86,16 @@ void DVSMCpreSeleff_Write(){
 
         return;
 }
+
+
+
+
+
+TCanvas *c17[4];
+TH2F * EffPreSelMCvsD_R_TH2F=new TH2F("EffPreSelMCvsD_R_TH2F","EffPreSelMCvsD_R_TH2F",43,0,43,3,0,3);
+TH2F * EffPreSelMCvsD_TH2F=new TH2F("EffPreSelMCvsD_TH2F","EffPreSelMCvsD_TH2F",18,0,18,3,0,3);
+TGraphErrors *PreDVSMC_P_Graph[3];
+TH2F *PreDVSMC_P[3];
 
 
 void DVSMCpreSeleff(TFile * file){

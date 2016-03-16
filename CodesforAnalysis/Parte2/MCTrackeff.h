@@ -1,8 +1,5 @@
 using namespace std;
 
-TCanvas *c_7=new TCanvas("Trigger sel. efficiency");
-TCanvas *c7=new TCanvas("Tracker rec. efficiency");
-TCanvas *c8=new TCanvas("TOF rec. efficiency");
 
 TH1F * EffQTOFMCP1=new TH1F("EffQTOFMCP1","EffQTOFMCP1",18,0,18);
 TH1F * EffQTOFMCP2=new TH1F("EffQTOFMCP2","EffQTOFMCP2",18,0,18);
@@ -43,30 +40,6 @@ TH2F * EffTOFMCD2_R=new TH2F("EffTOFMCD2_R","EffTOFMCD2_R",43,0,43,6,0,6);
 TH1F * EffMassMCP1_R=new TH1F("EffMassMCP1_R","EffMassMCP1_R",43,0,43);
 TH1F * EffMassMCP2_R=new TH1F("EffMassMCP2_R","EffMassMCP2_R",43,0,43);
 
-
-TH1F * EffTriggerMCP_R_TH1F=new TH1F("EffTriggerMCP_R_TH1F","EffTriggerMCP_R_TH1F",43,0,43);
-TH1F * EffTriggerMCP_TH1F=new TH1F("EffTriggerMCP_TH1F","EffTriggerMCP_TH1F",18,0,18);
-TH2F * EffTriggerMCD_R_TH2F=new TH2F("EffTriggerMCD_R_TH2F","EffTriggerMCD_R_TH2F",43,0,43,6,0,6);
-TH2F * EffTriggerMCD_TH2F=new TH2F("EffTriggerMCD_TH2F","EffTriggerMCD_TH2F",18,0,18,6,0,6);
-
-TH1F * EffQTOFerMCP_R_TH1F=new TH1F("EffQTOFerMCP_R_TH1F","EffQTOFerMCP_R_TH1F",43,0,43);
-TH1F * EffQTOFerMCP_TH1F=new TH1F("EffQTOFerMCP_TH1F","EffQTOFerMCP_TH1F",18,0,18);
-TH2F * EffQTOFerMCD_R_TH2F=new TH2F("EffQTOFerMCD_R_TH2F","EffQTOFerMCD_R_TH2F",43,0,43,6,0,6);
-TH2F * EffQTOFerMCD_TH2F=new TH2F("EffQTOFerMCD_TH2F","EffQTOFerMCD_TH2F",18,0,18,6,0,6);
-
-TH1F * EffMassMCP_R_TH1F=new TH1F("EffMassMCP_R_TH1F","EffMassMCP_R_TH1F",43,0,43);
-TH1F * EffMassMCP_TH1F=new TH1F("EffMassMCP_TH1F","EffMassMCP_TH1F",18,0,18);
-
-
-TH1F * EffTrackerMCP_R_TH1F=new TH1F("EffTrackerMCP_R_TH1F","EffTrackerMCP_R_TH1F",43,0,43);
-TH1F * EffTrackerMCP_TH1F=new TH1F("EffTrackerMCP_TH1F","EffTrackerMCP_TH1F",18,0,18);
-TH2F * EffTrackerMCD_R_TH2F=new TH2F("EffTrackerMCD_R_TH2F","EffTrackerMCD_R_TH2F",43,0,43,6,0,6);
-TH2F * EffTrackerMCD_TH2F=new TH2F("EffTrackerMCD_TH2F","EffTrackerMCD_TH2F",18,0,18,6,0,6);
-
-TH1F * EffTOF_MCP_R_TH1F=new TH1F("EffTOFMCP_R_TH1F","EffTOFMCP_R_TH1F",43,0,43);
-TH1F * EffTOF_MCP_TH1F=new TH1F("EffTOFMCP_TH1F","EffTOFMCP_TH1F",18,0,18);
-TH2F * EffTOF_MCD_R_TH2F=new TH2F("EffTOFMCD_R_TH2F","EffTOFMCD_R_TH2F",43,0,43,6,0,6);
-TH2F * EffTOF_MCD_TH2F=new TH2F("EffTOFMCD_TH2F","EffTOFMCD_TH2F",18,0,18,6,0,6);
 
 void MCTrackeff_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
@@ -232,6 +205,36 @@ void MCTrackeff_Write(){
         return;
 }
 
+
+
+
+TCanvas *c_7=new TCanvas("Trigger sel. efficiency");
+TCanvas *c7=new TCanvas("Tracker rec. efficiency");
+TCanvas *c8=new TCanvas("TOF rec. efficiency");
+
+TH1F * EffTriggerMCP_R_TH1F=new TH1F("EffTriggerMCP_R_TH1F","EffTriggerMCP_R_TH1F",43,0,43);
+TH1F * EffTriggerMCP_TH1F=new TH1F("EffTriggerMCP_TH1F","EffTriggerMCP_TH1F",18,0,18);
+TH2F * EffTriggerMCD_R_TH2F=new TH2F("EffTriggerMCD_R_TH2F","EffTriggerMCD_R_TH2F",43,0,43,6,0,6);
+TH2F * EffTriggerMCD_TH2F=new TH2F("EffTriggerMCD_TH2F","EffTriggerMCD_TH2F",18,0,18,6,0,6);
+
+TH1F * EffQTOFerMCP_R_TH1F=new TH1F("EffQTOFerMCP_R_TH1F","EffQTOFerMCP_R_TH1F",43,0,43);
+TH1F * EffQTOFerMCP_TH1F=new TH1F("EffQTOFerMCP_TH1F","EffQTOFerMCP_TH1F",18,0,18);
+TH2F * EffQTOFerMCD_R_TH2F=new TH2F("EffQTOFerMCD_R_TH2F","EffQTOFerMCD_R_TH2F",43,0,43,6,0,6);
+TH2F * EffQTOFerMCD_TH2F=new TH2F("EffQTOFerMCD_TH2F","EffQTOFerMCD_TH2F",18,0,18,6,0,6);
+
+TH1F * EffMassMCP_R_TH1F=new TH1F("EffMassMCP_R_TH1F","EffMassMCP_R_TH1F",43,0,43);
+TH1F * EffMassMCP_TH1F=new TH1F("EffMassMCP_TH1F","EffMassMCP_TH1F",18,0,18);
+
+
+TH1F * EffTrackerMCP_R_TH1F=new TH1F("EffTrackerMCP_R_TH1F","EffTrackerMCP_R_TH1F",43,0,43);
+TH1F * EffTrackerMCP_TH1F=new TH1F("EffTrackerMCP_TH1F","EffTrackerMCP_TH1F",18,0,18);
+TH2F * EffTrackerMCD_R_TH2F=new TH2F("EffTrackerMCD_R_TH2F","EffTrackerMCD_R_TH2F",43,0,43,6,0,6);
+TH2F * EffTrackerMCD_TH2F=new TH2F("EffTrackerMCD_TH2F","EffTrackerMCD_TH2F",18,0,18,6,0,6);
+
+TH1F * EffTOF_MCP_R_TH1F=new TH1F("EffTOFMCP_R_TH1F","EffTOFMCP_R_TH1F",43,0,43);
+TH1F * EffTOF_MCP_TH1F=new TH1F("EffTOFMCP_TH1F","EffTOFMCP_TH1F",18,0,18);
+TH2F * EffTOF_MCD_R_TH2F=new TH2F("EffTOFMCD_R_TH2F","EffTOFMCD_R_TH2F",43,0,43,6,0,6);
+TH2F * EffTOF_MCD_TH2F=new TH2F("EffTOFMCD_TH2F","EffTOFMCD_TH2F",18,0,18,6,0,6);
 
 void MCTrackeff(TFile * file1){
 

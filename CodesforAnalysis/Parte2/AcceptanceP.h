@@ -39,7 +39,8 @@ void AcceptanceP(TFile * file1){
 			//for(int S=0;S<3;S++) AcceptpreP[i][j]*=PreDVSMC_P[S]->GetBinContent(i+1,1);		
 			AcceptSelP[i][j]*=LikDVSMC_P_graph->GetBinContent(i+1,1)*DistDVSMC_P_graph->GetBinContent(i+1,1);	
 			}
-	//c22->Divide(2,1);
+	
+	
 	c22->cd();
 	gPad->SetLogx();
         gPad->SetLogy();

@@ -1,8 +1,5 @@
 using namespace std;
 
-TCanvas *c20=new TCanvas("Data vs MC: Likelihood");
-TCanvas *c21=new TCanvas("Data vs MC: Distance");
-
 TH1F * EffDistMCvsDP1 = new TH1F("EffDistMCvsDP1","EffDistMCvsDP1",43,0,43);
 TH1F * EffDistMCvsDP2 = new TH1F("EffDistMCvsDP2","EffDistMCvsDP2",43,0,43);
 TH1F * EffLik2MCvsDP1 = new TH1F("EffLik2MCvsDP1","EffLik2MCvsDP1",43,0,43);
@@ -13,10 +10,6 @@ TH2F * EffDistMCvsDP_D_2 = new TH2F("EffDistMCvsDP_D_2","EffDistMCvsDP_D_2",43,0
 TH2F * EffLik2MCvsDP_D_1 = new TH2F("EffLik2MCvsDP_D_1","EffLik2MCvsDP_D_1",43,0,43,11,0,11);
 TH2F * EffLik2MCvsDP_D_2 = new TH2F("EffLik2MCvsDP_D_2","EffLik2MCvsDP_D_2",43,0,43,11,0,11);
 
-TGraphErrors *LikDVSMC_P_Graph;
-TGraphErrors *DistDVSMC_P_Graph;
-TH2F * LikDVSMC_P_graph=new TH2F("LikDVSMC_P_graph","LikDVSMC_P_graph",43,0,43,2,0,2);
-TH2F * DistDVSMC_P_graph=new TH2F("DistDVSMC_P_graph","DistDVSMC_P_graph",43,0,43,2,0,2);
 
 void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 
@@ -82,6 +75,17 @@ void DVSMCQualeff2_Write(){
         EffLik2MCvsDP2->Write();
         return;
 }
+
+
+
+
+
+TCanvas *c20=new TCanvas("Data vs MC: Likelihood");
+TCanvas *c21=new TCanvas("Data vs MC: Distance");
+TGraphErrors *LikDVSMC_P_Graph;
+TGraphErrors *DistDVSMC_P_Graph;
+TH2F * LikDVSMC_P_graph=new TH2F("LikDVSMC_P_graph","LikDVSMC_P_graph",43,0,43,2,0,2);
+TH2F * DistDVSMC_P_graph=new TH2F("DistDVSMC_P_graph","DistDVSMC_P_graph",43,0,43,2,0,2);
 
 
 void DVSMCQualeff2(TFile * file1){

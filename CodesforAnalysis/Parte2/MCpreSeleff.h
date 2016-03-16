@@ -1,6 +1,5 @@
 using namespace std;
 
-TCanvas *c9[4];
 
 TH2F * EffpreSelMCP1=new TH2F("EffpreSelMCP1","EffpreSelMCP1",18,0,18,3,0,3);
 TH2F * EffpreSelMCP2=new TH2F("EffpreSelMCP2","EffpreSelMCP2",18,0,18,3,0,3);
@@ -10,11 +9,6 @@ TH3F * EffpreSelMCD1=new TH3F("EffpreSelMCD1","EffpreSelMCD1",18,0,18,6,0,6,3,0,
 TH3F * EffpreSelMCD2=new TH3F("EffpreSelMCD2","EffpreSelMCD2",18,0,18,6,0,6,3,0,3);
 TH3F * EffpreSelMCD1_R=new TH3F("EffpreSelMCD1_R","EffpreSelMCD1_R",43,0,43,6,0,6,3,0,3);
 TH3F * EffpreSelMCD2_R=new TH3F("EffpreSelMCD2_R","EffpreSelMCD2_R",43,0,43,6,0,6,3,0,3);
-
-TH2F * EffPreSelMCP_R_TH2F=new TH2F("EffPreSelMCP_R_TH2F","EffPreSelMCP_R_TH2F",43,0,43,3,0,3);
-TH2F * EffPreSelMCP_TH2F=new TH2F("EffPreSelMCP_TH2F","EffPreSelMCP_TH2F",18,0,18,3,0,3);
-TH3F * EffPreSelMCD_R_TH3F=new TH3F("EffPreSelMCD_R_TH3F","EffPreSelMCP_R_TH2F",43,0,43,6,0,6,3,0,3);
-TH3F * EffPreSelMCD_TH3F=new TH3F("EffPreSelMCD_TH3F","EffPreSelMCD_TH3F",18,0,18,6,0,6,3,0,3);
 
 
 void MCpreSeleff_Fill(TNtuple *ntupla, int l){
@@ -85,6 +79,13 @@ void MCpreSeleff_Write(){
         return; 
 }
 
+
+
+TCanvas *c9[4];
+TH2F * EffPreSelMCP_R_TH2F=new TH2F("EffPreSelMCP_R_TH2F","EffPreSelMCP_R_TH2F",43,0,43,3,0,3);
+TH2F * EffPreSelMCP_TH2F=new TH2F("EffPreSelMCP_TH2F","EffPreSelMCP_TH2F",18,0,18,3,0,3);
+TH3F * EffPreSelMCD_R_TH3F=new TH3F("EffPreSelMCD_R_TH3F","EffPreSelMCP_R_TH2F",43,0,43,6,0,6,3,0,3);
+TH3F * EffPreSelMCD_TH3F=new TH3F("EffPreSelMCD_TH3F","EffPreSelMCD_TH3F",18,0,18,6,0,6,3,0,3);
 
 void MCpreSeleff(TFile * file1){
 

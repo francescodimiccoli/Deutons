@@ -151,6 +151,7 @@ void AcceptanceD(TFile * file1){
         for(int m=0;m<18;m++)
         AcceptSelMCPAgl[m]=AcceptpreMCPAgl[m]*EffMCDistP_BetaAgl_TH1F->GetBinContent(m+1);	
 
+	
 	string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
 	c31->cd();
 	gPad->SetLogx();

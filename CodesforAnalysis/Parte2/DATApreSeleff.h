@@ -1,14 +1,9 @@
 using namespace std;
 
-TCanvas *c14[4];
 
 float Rcut[11]={18,18,16,14,12,10,8,6,4,2,1};
 TH3F * EffpreSelDATA1_R=new TH3F("EffpreSelDATA1_R","EffpreSelDATA1_R",43,0,43,3,0,3,11,0,11);
 TH3F * EffpreSelDATA2_R=new TH3F("EffpreSelDATA2_R","EffpreSelDATA2_R",43,0,43,3,0,3,11,0,11);
-
-TF1 * CorrLAT_pre[3];
-TH2F *CorrLATpre_spl[3];
-TGraphErrors *CorrLATpre_Spl[3];
 
 void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
 	int k = ntupla->GetEvent(l);
@@ -36,6 +31,12 @@ void DATApreSeleff_Write(){
         EffpreSelDATA2_R->Write();
         return;
 }
+
+// results
+TCanvas *c14[4];
+TF1 * CorrLAT_pre[3];
+TH2F *CorrLATpre_spl[3];
+TGraphErrors *CorrLATpre_Spl[3];
 
 
 void DATApreSeleff(TFile * file1){

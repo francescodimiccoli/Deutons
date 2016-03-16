@@ -1,6 +1,3 @@
-TCanvas *c40[12][18];
-TCanvas *c40_bis[12][18];
-TCanvas *c40_tris[12][18];
 
 TH2F *DTemplatesTOF_Dist=new TH2F("DTemplatesTOF_Dist","DTemplatesTOF_Dist",50,-1,1,18,0,18);
 TH2F *PTemplatesTOF_Dist=new TH2F("PTemplatesTOF_Dist","PTemplatesTOF_Dist",50,-1,1,18,0,18);
@@ -37,14 +34,6 @@ TH2F *DhistosAgl_Dist=new TH2F("DhistosAgl_Dist","DhistosAgl_Dist",50,-1,1,18,0,
 TH2F *DhistosTOF_Dist2=new TH2F("DhistosTOF_Dist2","DhistosTOF_Dist2",50,-1,1,18,0,18);
 TH2F *DhistosNaF_Dist2=new TH2F("DhistosNaF_Dist2","DhistosNaF_Dist2",50,-1,1,18,0,18);
 TH2F *DhistosAgl_Dist2=new TH2F("DhistosAgl_Dist2","DhistosAgl_Dist2",50,-1,1,18,0,18);
-
-TH3F * DCountsgeoTOF_Dist = new TH3F("DCountsgeoTOF_Dist","DCountsgeoTOF_Dist",18,0,18,12,0,12,2,0,2);
-TH3F * DCountsgeoNaF_Dist = new TH3F("DCountsgeoNaF_Dist","DCountsgeoNaF_Dist",18,0,18,12,0,12,2,0,2);
-TH3F * DCountsgeoAgl_Dist = new TH3F("DCountsgeoAgl_Dist","DCountsgeoAgl_Dist",18,0,18,12,0,12,2,0,2);
-
-TH2F * PCountsTOF_Dist = new TH2F("PCountsTOF_Dist","PCountsTOF_Dist",18,0,18,2,0,2);
-TH2F * PCountsNaF_Dist = new TH2F("PCountsNaF_Dist","PCountsNaF_Dist",18,0,18,2,0,2);
-TH2F * PCountsAgl_Dist = new TH2F("PCountsAgl_Dist","PCountsAgl_Dist",18,0,18,2,0,2);
 
 
 void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
@@ -196,6 +185,20 @@ void DeutonsMC_Dist_Write(){
         DhistosNaF_Dist2->Write();
         DhistosAgl_Dist2->Write();
 }
+
+
+
+TCanvas *c40[12][18];
+TCanvas *c40_bis[12][18];
+TCanvas *c40_tris[12][18];
+
+TH3F * DCountsgeoTOF_Dist = new TH3F("DCountsgeoTOF_Dist","DCountsgeoTOF_Dist",18,0,18,12,0,12,2,0,2);
+TH3F * DCountsgeoNaF_Dist = new TH3F("DCountsgeoNaF_Dist","DCountsgeoNaF_Dist",18,0,18,12,0,12,2,0,2);
+TH3F * DCountsgeoAgl_Dist = new TH3F("DCountsgeoAgl_Dist","DCountsgeoAgl_Dist",18,0,18,12,0,12,2,0,2);
+TH2F * PCountsTOF_Dist = new TH2F("PCountsTOF_Dist","PCountsTOF_Dist",18,0,18,2,0,2);
+TH2F * PCountsNaF_Dist = new TH2F("PCountsNaF_Dist","PCountsNaF_Dist",18,0,18,2,0,2);
+TH2F * PCountsAgl_Dist = new TH2F("PCountsAgl_Dist","PCountsAgl_Dist",18,0,18,2,0,2);
+
 
 void DeutonsTemplFits_Dist(TFile * file1){
 	cout<<"******************** Dist TOF TEMPLATE FITS *******************"<<endl;

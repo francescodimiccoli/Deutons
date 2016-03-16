@@ -1,6 +1,3 @@
-TCanvas *c30[12][18];
-TCanvas *c30_bis[12][18];
-TCanvas *c30_tris[12][18];
 
 TH2F *DTemplatesTOF=new TH2F("DTemplatesTOF","DTemplatesTOF",50,0,3,18,0,18);
 TH2F *PTemplatesTOF=new TH2F("PTemplatesTOF","PTemplatesTOF",50,0,3,18,0,18);
@@ -37,15 +34,6 @@ TH2F *DhistosAgl=new TH2F("DhistosAgl","DhistosAgl",50,0,3,18,0,18);
 TH2F *DhistosTOF2=new TH2F("DhistosTOF2","DhistosTOF2",50,0,3,18,0,18);
 TH2F *DhistosNaF2=new TH2F("DhistosNaF2","DhistosNaF2",50,0,3,18,0,18);
 TH2F *DhistosAgl2=new TH2F("DhistosAgl2","DhistosAgl2",50,0,3,18,0,18);
-
-TH3F * DCountsgeoTOF = new TH3F("DCountsgeoTOF","DCountsgeoTOF",18,0,18,12,0,12,2,0,2);
-TH3F * DCountsgeoNaF = new TH3F("DCountsgeoNaF","DCountsgeoNaF",18,0,18,12,0,12,2,0,2);
-TH3F * DCountsgeoAgl = new TH3F("DCountsgeoAgl","DCountsgeoAgl",18,0,18,12,0,12,2,0,2);
-
-TH2F * PCountsTOF = new TH2F("PCountsTOF","PCountsTOF",18,0,18,2,0,2);
-TH2F * PCountsNaF = new TH2F("PCountsNaF","PCountsNaF",18,0,18,2,0,2);
-TH2F * PCountsAgl = new TH2F("PCountsAgl","PCountsAgl",18,0,18,2,0,2);
-
 
 void DeutonsMC_Fill(TNtuple *ntupla, int l){
         int k = ntupla->GetEvent(l);
@@ -203,6 +191,23 @@ void DeutonsMC_Write(){
         DhistosNaF2->Write();
         DhistosAgl2->Write();
 }
+
+
+
+
+
+
+
+
+TCanvas *c30[12][18];
+TCanvas *c30_bis[12][18];
+TCanvas *c30_tris[12][18];
+TH3F * DCountsgeoTOF = new TH3F("DCountsgeoTOF","DCountsgeoTOF",18,0,18,12,0,12,2,0,2);
+TH3F * DCountsgeoNaF = new TH3F("DCountsgeoNaF","DCountsgeoNaF",18,0,18,12,0,12,2,0,2);
+TH3F * DCountsgeoAgl = new TH3F("DCountsgeoAgl","DCountsgeoAgl",18,0,18,12,0,12,2,0,2);
+TH2F * PCountsTOF = new TH2F("PCountsTOF","PCountsTOF",18,0,18,2,0,2);
+TH2F * PCountsNaF = new TH2F("PCountsNaF","PCountsNaF",18,0,18,2,0,2);
+TH2F * PCountsAgl = new TH2F("PCountsAgl","PCountsAgl",18,0,18,2,0,2);
 
 void DeutonsTemplFits(TFile * file1){
 	

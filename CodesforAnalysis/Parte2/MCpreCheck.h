@@ -1,11 +1,8 @@
 using namespace std;
 
-TCanvas *c10 =new TCanvas("Cascade Pres. Eff.");
 
 TH1F * EffpreCheckP1_R=new TH1F("EffpreCheckP1_R","EffpreselMCP1_R",43,0,43);
 TH1F * EffpreCheckP2_R=new TH1F("EffpreCheckP2_R","EffpreselMCP2_R",43,0,43);
-
-TH1F *EffPreCheckP_R_TH1F = new TH1F("EffPreCheckP_R_TH1F","EffPreCheckP_R_TH1F",43,0,43);
 
 
 void MCpreCheck_Fill(TNtuple *ntupla, int l){
@@ -31,6 +28,9 @@ void MCpreCheck_Write(){
         EffpreCheckP2_R->Write();
 }
 
+
+TCanvas *c10 =new TCanvas("Cascade Pres. Eff.");
+TH1F *EffPreCheckP_R_TH1F = new TH1F("EffPreCheckP_R_TH1F","EffPreCheckP_R_TH1F",43,0,43);
                                                                
 void MCpreCheck(){
 

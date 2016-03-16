@@ -1,14 +1,11 @@
 using namespace std;
 
-TCanvas *c19=new TCanvas("EdepL1 Quality Sel. Check");
 
 TH1F * EffDistCheckMCP1 = new TH1F("EffDistCheckMCP1","EffDistCheckMCP1",43,0,43);
 TH1F * EffDistCheckMCP2 = new TH1F("EffDistCheckMCP2","EffDistCheckMCP2",43,0,43);
 TH1F * EffLik2CheckMCP1 = new TH1F("EffLik2CheckMCP1","EffLik2CheckMCP1",43,0,43);
 TH1F * EffLik2CheckMCP2 = new TH1F("EffLik2CheckMCP2","EffLik2CheckMCP2",43,0,43);
 
-TH2F * EffLik2CheckMCP_TH1F = new TH2F("EffLik2CheckMCP_TH1F","EffLik2CheckMCP_TH1F",43,0,43,2,0,2);
-TH2F * EffDistCheckMCP_TH1F = new TH2F("EffDistCheckMCP_TH1F","EffDistCheckMCP_TH1F",43,0,43,2,0,2);
 
 void MCQualCheck2_Fill(TNtuple *ntupla, int l){
 
@@ -46,6 +43,11 @@ void MCQualCheck2_Write(){
         return;
 }
 
+
+
+TCanvas *c19=new TCanvas("EdepL1 Quality Sel. Check");
+TH2F * EffLik2CheckMCP_TH1F = new TH2F("EffLik2CheckMCP_TH1F","EffLik2CheckMCP_TH1F",43,0,43,2,0,2);
+TH2F * EffDistCheckMCP_TH1F = new TH2F("EffDistCheckMCP_TH1F","EffDistCheckMCP_TH1F",43,0,43,2,0,2);
 
 void MCQualCheck2(TFile * file1){
         cout<<"**** EDEP L1 MC QUALITY SEL. CHECK ****"<<endl;

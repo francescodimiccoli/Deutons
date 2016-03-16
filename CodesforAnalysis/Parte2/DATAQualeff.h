@@ -1,7 +1,5 @@
 using namespace std;
 
-TCanvas *c15=new TCanvas("Latitude Likelihood Efficiency");
-TCanvas *c16=new TCanvas("Latitude Distance Efficiency");
 
 TH2F * EffDistDATAP = new TH2F("EffDistDATAP","EffDistDATAP",43,0,43,11,0,11);
 TH2F * EffLikDATAP = new TH2F("EffLikDATAP","EffLikDATAP",43,0,43,11,0,11);
@@ -9,42 +7,9 @@ TH2F * EffDistDATANaFP = new TH2F("EffDistDATANaFP","EffDistDATANaFP",43,0,43,11
 TH2F * EffLikDATANaFP = new TH2F("EffLikDATANaFP","EffLikDATANaFP",43,0,43,11,0,11);
 TH2F * EffDistDATAAglP = new TH2F("EffDistDATAAglP","EffDistDATAAglP",43,0,43,11,0,11);
 TH2F * EffLikDATAAglP = new TH2F("EffLikDATAAglP","EffLikDATAAglP",43,0,43,11,0,11);
-
-
-
 TH2F * EffQualDATAP = new TH2F("EffQualDATAP","EffQualDATAP",43,0,43,11,0,11);
 TH2F * EffQualDATANaFP = new TH2F("EffQualDATANaFP","EffQualDATANaFP",43,0,43,11,0,11);
 TH2F * EffQualDATAAglP = new TH2F("EffQualDATAAglP","EffQualDATAAglP",43,0,43,11,0,11);
-
-TF1 * CorrLAT_Lik;
-TF1 * CorrLAT_Dist;
-
-TH2F *CorrLAT_Lik_spl;
-TGraphErrors *CorrLAT_Lik_Spl;
-
-TH2F *CorrLAT_Dist_spl;
-TGraphErrors *CorrLAT_Dist_Spl;
-
-
-TF1 * CorrLAT_LikNaF;
-TF1 * CorrLAT_DistNaF;
-
-TH2F *CorrLAT_LikNaF_spl;
-TGraphErrors *CorrLAT_LikNaF_Spl;
-
-TH2F *CorrLAT_DistNaF_spl;
-TGraphErrors *CorrLAT_DistNaF_Spl;
-
-
-TF1 * CorrLAT_LikAgl;
-TF1 * CorrLAT_DistAgl;
-
-TH2F *CorrLAT_LikAgl_spl;
-TGraphErrors *CorrLAT_LikAgl_Spl;
-
-TH2F *CorrLAT_DistAgl_spl;
-TGraphErrors *CorrLAT_DistAgl_Spl;
-
 
 void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 
@@ -111,6 +76,38 @@ void DATAQualeff_Write(){
 }
 
 
+//results
+TCanvas *c15=new TCanvas("Latitude Likelihood Efficiency");
+TCanvas *c16=new TCanvas("Latitude Distance Efficiency");
+
+TF1 * CorrLAT_Lik;
+TF1 * CorrLAT_Dist;
+
+TH2F *CorrLAT_Lik_spl;
+TGraphErrors *CorrLAT_Lik_Spl;
+
+TH2F *CorrLAT_Dist_spl;
+TGraphErrors *CorrLAT_Dist_Spl;
+
+
+TF1 * CorrLAT_LikNaF;
+TF1 * CorrLAT_DistNaF;
+
+TH2F *CorrLAT_LikNaF_spl;
+TGraphErrors *CorrLAT_LikNaF_Spl;
+
+TH2F *CorrLAT_DistNaF_spl;
+TGraphErrors *CorrLAT_DistNaF_Spl;
+
+
+TF1 * CorrLAT_LikAgl;
+TF1 * CorrLAT_DistAgl;
+
+TH2F *CorrLAT_LikAgl_spl;
+TGraphErrors *CorrLAT_LikAgl_Spl;
+
+TH2F *CorrLAT_DistAgl_spl;
+TGraphErrors *CorrLAT_DistAgl_Spl;
 
 void DATAQualeff(TFile * file1){
 	cout<<"********************************************************** DATA QUALITY SEL. EFFICIENCIES ************************************************************"<<endl;		
