@@ -198,7 +198,6 @@ void DeutonsMC_Dist_Write(){
 }
 
 void DeutonsTemplFits_Dist(TFile * file1){
-	
 	cout<<"******************** Dist TOF TEMPLATE FITS *******************"<<endl;
 	TH1F *DataDistTOF[12][18];
 	TH1F *DTemplTOF[18];
@@ -236,7 +235,8 @@ void DeutonsTemplFits_Dist(TFile * file1){
 	
 	TFractionFitter * fitT[18][12]={{NULL}};
 	TObjArray *Tpl[18][12]={{NULL}};
-	int cut=0;
+	int cut1=21;
+	int cut2=29;
 	int s1[18][12]={{0}};
 	float Err[18][12]={{0}};
 	TH1F *PTemplTOFW[18][12];
@@ -261,21 +261,20 @@ void DeutonsTemplFits_Dist(TFile * file1){
 		THStack *Stack=new THStack("","");
 		Tpl[m][i] = new TObjArray(2);
 		if(i!=0){
-			cut=0;
 			Tpl[m][i]->Add(PTemplTOF[m]);
 			Tpl[m][i]->Add(DTemplTOF[m]);
 			if(He) Tpl[m][i]->Add(HeTemplTOF[m]);
 		}
-		else{	cut=0;
+		else{	
 			Tpl[m][i]->Add(PTemplTOF2[m]);
                         Tpl[m][i]->Add(DTemplTOF2[m]);
                         if(He) Tpl[m][i]->Add(HeTemplTOF2[m]);
 		}	
-		fitT[m][i] = new TFractionFitter( DataDistTOF[i][m], Tpl[m][i],"q");
+		fitT[m][i] = new TFractionFitter( DataDistTOF[i][m], Tpl[m][i],"Q");
 		if(He){
 			fitT[m][i]->Constrain(0,0.0,1.0);
-			fitT[m][i]->Constrain(1,0.0,1.0);
-			fitT[m][i]->Constrain(2,0.0,0.05);
+			fitT[m][i]->Constrain(1,0.0,0.1);
+			fitT[m][i]->Constrain(2,0.0,0.01);
 			fitT[m][i]->SetRangeX(0,50);
 		}
 		else {
@@ -283,19 +282,24 @@ void DeutonsTemplFits_Dist(TFile * file1){
 			fitT[m][i]->Constrain(1,0,1);
 			fitT[m][i]->SetRangeX(0,50);
 		}
+		cut1=21;
+        	cut2=29;
+		for(int z=cut1;z<=cut2;z++) fitT[m][i]->ExcludeBin(z);
 		if(DataDistTOF[i][m]->Integral(0,50)>50) s1[m][i]=fitT[m][i]->Fit();
 		else s1[m][i]=1;
 		if(s1[m][i]==-1){
-			cut=25*(1+ddiscrcut);
-			for(int z=0;z<5;z++){
-				if(s1[m][i]==-1){
-					cut+=1;
-					fitT[m][i]->SetRangeX(cut,50);
+                        for(int z=0;z<5;z++){
+                                if(s1[m][i]==-1){
+                                        cut2+=1;
+					cut1-=1;
+                                        fitT[m][i]->ExcludeBin(cut1);
+					fitT[m][i]->ExcludeBin(cut2);
 					s1[m][i]=fitT[m][i]->Fit();
-				}
-				if(s1[m][i]==0) {s1[m][i]=2;break;}
-			}	
-		}
+                                }
+                                if(s1[m][i]==0) {s1[m][i]=2;break;}
+                        }
+                }
+		
 		double w1,w2,w3=0;
 		double e1,e2,e3=0;
 		if(s1[m][i]==0||s1[m][i]==2){
@@ -305,21 +309,22 @@ void DeutonsTemplFits_Dist(TFile * file1){
 			Result = (TH1F*) fitT[m][i]->GetPlot();
 			if(!Result) continue;	
 			if(i!=0){
-				float itot= Result->Integral();
-				float i1 = PTemplTOF[m]->Integral(cut,50);
-				float i2 = DTemplTOF[m]->Integral(cut,50);
-				float i3=0;
-				if(He) i3 = HeTemplTOF[m]->Integral();
+				
+				float i1 = PTemplTOF[m]->Integral(0,cut1) + PTemplTOF[m]->Integral(cut2,50);
+                                float i2 = DTemplTOF[m]->Integral(0,cut1) + DTemplTOF[m]->Integral(cut2,50);
+                                float i3=0;
+                                float itot= Result->Integral();
+                                if(He) i3 = HeTemplTOF[m]->Integral(0,cut1) + HeTemplTOF[m]->Integral(cut2,50);
 				if(i1>0) for(int j=0; j<PTemplTOF[m]->GetNbinsX();j++) PTemplTOFW[m][i]->SetBinContent(j,w1*PTemplTOF[m]->GetBinContent(j)/i1*itot);
 				if(i2>0) for(int j=0; j<DTemplTOF[m]->GetNbinsX();j++) DTemplTOFW[m][i]->SetBinContent(j,w2*DTemplTOF[m]->GetBinContent(j)/i2*itot);
 				if(i3>0) for(int j=0; j<HeTemplTOF[m]->GetNbinsX();j++) HeTemplTOFW[m][i]->SetBinContent(j,w3*HeTemplTOF[m]->GetBinContent(j)/i3*itot);
 			}
 			else{
-				float itot= Result->Integral();
-                                float i1 = PTemplTOF2[m]->Integral(cut,50);
-                                float i2 = DTemplTOF2[m]->Integral(cut,50);
+                                float i1 = PTemplTOF2[m]->Integral(0,cut1) + PTemplTOF2[m]->Integral(cut2,50);
+                                float i2 = DTemplTOF2[m]->Integral(0,cut1) + DTemplTOF2[m]->Integral(cut2,50);
                                 float i3=0;
-                                if(He) i3 = HeTemplTOF2[m]->Integral();
+                                float itot= Result->Integral();
+				if(He) i3 = HeTemplTOF2[m]->Integral(0,cut1) + HeTemplTOF2[m]->Integral(cut2,50);
                                 if(i1>0) for(int j=0; j<PTemplTOF2[m]->GetNbinsX();j++) PTemplTOFW[m][i]->SetBinContent(j,w1*PTemplTOF2[m]->GetBinContent(j)/i1*itot);
                                 if(i2>0) for(int j=0; j<DTemplTOF2[m]->GetNbinsX();j++) DTemplTOFW[m][i]->SetBinContent(j,w2*DTemplTOF2[m]->GetBinContent(j)/i2*itot);
                                 if(i3>0) for(int j=0; j<HeTemplTOF2[m]->GetNbinsX();j++) HeTemplTOFW[m][i]->SetBinContent(j,w3*HeTemplTOF2[m]->GetBinContent(j)/i3*itot);	
@@ -415,7 +420,7 @@ void DeutonsTemplFits_Dist(TFile * file1){
 	for(int i=0;i<12;i++) for(int m=0;m<18;m++) {
 		c40_bis[i][m]->cd();
 		cutNaF=0;
-		He=true;
+		He=false;
 		 if(HeTemplNaF[m]->Integral(0,50)<=50) He=false;
 		PTemplNaFW[m][i]=new TH1F("","",50,-1,1);
 		DTemplNaFW[m][i]=new TH1F("","",50,-1,1);
@@ -443,28 +448,35 @@ void DeutonsTemplFits_Dist(TFile * file1){
 		}
 		fitTNaF[m][i] = new TFractionFitter( DataDistNaF[i][m], TplNaF[m][i],"q");
 		if(He){
-			fitTNaF[m][i]->Constrain(0,0.5,1.0);
-			fitTNaF[m][i]->Constrain(1,0.0,1.0);
-			fitTNaF[m][i]->Constrain(2,0.0,0.1);
+			fitTNaF[m][i]->Constrain(0,0.0,1.0);
+			fitTNaF[m][i]->Constrain(1,0.0,0.1);
+			fitTNaF[m][i]->Constrain(2,0.0,0.01);
 		}
 		else {
 			fitTNaF[m][i]->Constrain(0,0,1);
 			fitTNaF[m][i]->Constrain(1,0,1);
 			fitTNaF[m][i]->SetRangeX(cutNaF,50);
 		}
-		if((DataDistNaF[i][m]->Integral(0,50)>50&&i!=0)&&i==11) s1NaF[m][i]=fitTNaF[m][i]->Fit();
+		if((DataDistNaF[i][m]->Integral(0,50)>50)) s1NaF[m][i]=fitTNaF[m][i]->Fit();
 		else s1NaF[m][i]=1;
-		if(s1NaF[m][i]==-1){
-                        cutNaF=25*(1+ddiscrcut);
+		cut1=21;
+                cut2=29;
+                for(int z=cut1;z<=cut2;z++) fitTNaF[m][i]->ExcludeBin(z);
+                if(DataDistNaF[i][m]->Integral(0,50)>50) s1NaF[m][i]=fitTNaF[m][i]->Fit();
+                else s1NaF[m][i]=1;
+                if(s1NaF[m][i]==-1){
                         for(int z=0;z<5;z++){
                                 if(s1NaF[m][i]==-1){
-                                        cutNaF+=1;
-                                        fitTNaF[m][i]->SetRangeX(cutNaF,50);
+                                        cut2+=1;
+                                        cut1-=1;
+                                        fitTNaF[m][i]->ExcludeBin(cut1);
+                                        fitTNaF[m][i]->ExcludeBin(cut2);
                                         s1NaF[m][i]=fitTNaF[m][i]->Fit();
                                 }
                                 if(s1NaF[m][i]==0) {s1NaF[m][i]=2;break;}
                         }
                 }
+
 		double w1,w2,w3=0;
 		double e1,e2,e3=0;
 		if(s1NaF[m][i]==0||s1NaF[m][i]==2){
@@ -474,21 +486,23 @@ void DeutonsTemplFits_Dist(TFile * file1){
 			Result = (TH1F*) fitTNaF[m][i]->GetPlot();
 			if(!Result) continue;
 			if(i!=0){
-				float itot= Result->Integral();
-				float i1 = PTemplNaF[m]->Integral(cutNaF,50);
-				float i2 = DTemplNaF[m]->Integral(cutNaF,50);
-				float i3=0;
-				if(He) i3 = HeTemplNaF[m]->Integral();
+				
+				float i1 = PTemplNaF[m]->Integral(0,cut1) + PTemplNaF[m]->Integral(cut2,50);
+                                float i2 = DTemplNaF[m]->Integral(0,cut1) + DTemplNaF[m]->Integral(cut2,50);
+                                float i3=0;
+                                float itot= Result->Integral();
+                                if(He) i3 = HeTemplNaF[m]->Integral(0,cut1) + HeTemplNaF[m]->Integral(cut2,50);
+
 				if(i1>0) for(int j=0; j<PTemplNaF[m]->GetNbinsX();j++) PTemplNaFW[m][i]->SetBinContent(j,w1*PTemplNaF[m]->GetBinContent(j)/i1*itot);
 				if(i2>0) for(int j=0; j<DTemplNaF[m]->GetNbinsX();j++) DTemplNaFW[m][i]->SetBinContent(j,w2*DTemplNaF[m]->GetBinContent(j)/i2*itot);
 				if(i3>0) for(int j=0; j<HeTemplNaF[m]->GetNbinsX();j++) HeTemplNaFW[m][i]->SetBinContent(j,w3*HeTemplNaF[m]->GetBinContent(j)/i3*itot);
 			}
 			else{
-				float itot= Result->Integral();
-				float i1 = PTemplNaF2[m]->Integral(cutNaF,50);
-                                float i2 = DTemplNaF2[m]->Integral(cutNaF,50);
+				float i1 = PTemplNaF2[m]->Integral(0,cut1) + PTemplNaF2[m]->Integral(cut2,50);
+                                float i2 = DTemplNaF2[m]->Integral(0,cut1) + DTemplNaF2[m]->Integral(cut2,50);
                                 float i3=0;
-                                if(He) i3 = HeTemplNaF2[m]->Integral();
+                                float itot= Result->Integral();
+                                if(He) i3 = HeTemplNaF[m]->Integral(0,cut1) + HeTemplNaF[m]->Integral(cut2,50);
 				if(i1>0) for(int j=0; j<PTemplNaF2[m]->GetNbinsX();j++) PTemplNaFW[m][i]->SetBinContent(j,w1*PTemplNaF2[m]->GetBinContent(j)/i1*itot);
                                 if(i2>0) for(int j=0; j<DTemplNaF2[m]->GetNbinsX();j++) DTemplNaFW[m][i]->SetBinContent(j,w2*DTemplNaF2[m]->GetBinContent(j)/i2*itot);
                                 if(i3>0) for(int j=0; j<HeTemplNaF2[m]->GetNbinsX();j++) HeTemplNaFW[m][i]->SetBinContent(j,w3*HeTemplNaF2[m]->GetBinContent(j)/i3*itot);
@@ -574,7 +588,7 @@ void DeutonsTemplFits_Dist(TFile * file1){
         TH1F *DTemplAglW[18][12];
         TH1F *HeTemplAglW[18][12];
         for(int i=0;i<12;i++) for(int m=0;m<18;m++) c40_tris[i][m]=new TCanvas();
-                He=true;
+                He=false;
         for(int i=0;i<12;i++) for(int m=0;m<18;m++) {
                 c40_tris[i][m]->cd();
                 cutAgl=0;
@@ -604,29 +618,35 @@ void DeutonsTemplFits_Dist(TFile * file1){
 		}
 		fitTAgl[m][i] = new TFractionFitter( DataDistAgl[i][m], TplAgl[m][i],"q");
                 if(He){
-                        fitTAgl[m][i]->Constrain(0,0.5,1.0);
-                        fitTAgl[m][i]->Constrain(1,0.0,1.0);
-                        fitTAgl[m][i]->Constrain(2,0.0,0.01);
+                        fitTAgl[m][i]->Constrain(0,0.0,1.0);
+                        fitTAgl[m][i]->Constrain(1,0.0,0.1);
+                        fitTAgl[m][i]->Constrain(2,0.0,0.015);
                 }
                 else {
                         fitTAgl[m][i]->Constrain(0,0,1);
                         fitTAgl[m][i]->Constrain(1,0,1);
                         fitTAgl[m][i]->SetRangeX(cutAgl,40);
                 }
-                if((DataDistAgl[i][m]->Integral(25,50)>50&&i!=0)&&i==11) s1Agl[m][i]=fitTAgl[m][i]->Fit();
+		if((DataDistAgl[i][m]->Integral(25,50)>50)) s1Agl[m][i]=fitTAgl[m][i]->Fit();
                 else s1Agl[m][i]=1;
-		if(s1Agl[m][i]==-1){
-                        cutAgl=25*(1+ddiscrcut);
+		cut1=21;
+                cut2=29;
+                for(int z=cut1;z<=cut2;z++) fitTAgl[m][i]->ExcludeBin(z);
+                if(DataDistAgl[i][m]->Integral(0,50)>50) s1Agl[m][i]=fitTAgl[m][i]->Fit();
+                else s1Agl[m][i]=1;
+                if(s1Agl[m][i]==-1){
                         for(int z=0;z<5;z++){
                                 if(s1Agl[m][i]==-1){
-                                        cutAgl+=1;
-                                        fitTAgl[m][i]->SetRangeX(cutAgl,50);
+                                        cut2+=1;
+                                        cut1-=1;
+                                        fitTAgl[m][i]->ExcludeBin(cut1);
+                                        fitTAgl[m][i]->ExcludeBin(cut2);
                                         s1Agl[m][i]=fitTAgl[m][i]->Fit();
                                 }
                                 if(s1Agl[m][i]==0) {s1Agl[m][i]=2;break;}
                         }
                 }
-
+	
 		double w1,w2,w3=0;
                 double e1,e2,e3=0;
                 if(s1Agl[m][i]==0||s1Agl[m][i]==2){
@@ -636,22 +656,22 @@ void DeutonsTemplFits_Dist(TFile * file1){
                         Result = (TH1F*) fitTAgl[m][i]->GetPlot();
                         if(!Result) continue;
 			if(i!=0){
-				float itot= Result->Integral();
-                        	float i1 = PTemplAgl[m]->Integral(cutAgl,50);
-                        	float i2 = DTemplAgl[m]->Integral(cutAgl,50);
-                        	float i3=0;
-                        	if(He) i3 = HeTemplAgl[m]->Integral();
-                        	if(i1>0) for(int j=0; j<PTemplAgl[m]->GetNbinsX();j++) PTemplAglW[m][i]->SetBinContent(j,w1*PTemplAgl[m]->GetBinContent(j)/i1*itot);
+                        	float i1 = PTemplAgl[m]->Integral(0,cut1) + PTemplAgl[m]->Integral(cut2,50);
+                                float i2 = DTemplAgl[m]->Integral(0,cut1) + DTemplAgl[m]->Integral(cut2,50);
+                                float i3=0;
+                                float itot= Result->Integral();
+                                if(He) i3 = HeTemplAgl[m]->Integral(0,cut1) + HeTemplAgl[m]->Integral(cut2,50);
+				if(i1>0) for(int j=0; j<PTemplAgl[m]->GetNbinsX();j++) PTemplAglW[m][i]->SetBinContent(j,w1*PTemplAgl[m]->GetBinContent(j)/i1*itot);
                         	if(i2>0) for(int j=0; j<DTemplAgl[m]->GetNbinsX();j++) DTemplAglW[m][i]->SetBinContent(j,w2*DTemplAgl[m]->GetBinContent(j)/i2*itot);
                         	if(i3>0) for(int j=0; j<HeTemplAgl[m]->GetNbinsX();j++) HeTemplAglW[m][i]->SetBinContent(j,w3*HeTemplAgl[m]->GetBinContent(j)/i3*itot);
                         }
 			else{
-				float itot= Result->Integral();
-                                float i1 = PTemplAgl2[m]->Integral(cutAgl,50);
-                                float i2 = DTemplAgl2[m]->Integral(cutAgl,50);
+                                float i1 = PTemplAgl2[m]->Integral(0,cut1) + PTemplAgl2[m]->Integral(cut2,50);
+                                float i2 = DTemplAgl2[m]->Integral(0,cut1) + DTemplAgl2[m]->Integral(cut2,50);
                                 float i3=0;
-                                if(He) i3 = HeTemplAgl2[m]->Integral();
-                                if(i1>0) for(int j=0; j<PTemplAgl[m]->GetNbinsX();j++) PTemplAglW[m][i]->SetBinContent(j,w1*PTemplAgl2[m]->GetBinContent(j)/i1*itot);
+                                float itot= Result->Integral();
+                                if(He) i3 = HeTemplAgl2[m]->Integral(0,cut1) + HeTemplAgl2[m]->Integral(cut2,50);
+				if(i1>0) for(int j=0; j<PTemplAgl[m]->GetNbinsX();j++) PTemplAglW[m][i]->SetBinContent(j,w1*PTemplAgl2[m]->GetBinContent(j)/i1*itot);
                                 if(i2>0) for(int j=0; j<DTemplAgl[m]->GetNbinsX();j++) DTemplAglW[m][i]->SetBinContent(j,w2*DTemplAgl2[m]->GetBinContent(j)/i2*itot);
                                 if(i3>0) for(int j=0; j<HeTemplAgl[m]->GetNbinsX();j++) HeTemplAglW[m][i]->SetBinContent(j,w3*HeTemplAgl2[m]->GetBinContent(j)/i3*itot);
 			}

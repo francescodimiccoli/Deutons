@@ -53,6 +53,7 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
         float mm=0;
 	if(Likcut&&R<4&&Distcut){
 		mm=1;
+		if(((R/Beta)*pow((1-pow(Beta,2)),0.5))<0.5) cout<<BetaRICH<<endl;
 		if(Massa_gen<1&&Massa_gen>0.5) 
 			for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) PTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1); ;
 						if(Var>BetaP[m]&&Var<=BetaP[m+1]) PTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);} 
@@ -283,12 +284,14 @@ void DeutonsTemplFits(TFile * file1){
 		if(He){
 			fitT[m][i]->Constrain(0,0.0,1.0);
 			fitT[m][i]->Constrain(1,0.0,1.0);
-			fitT[m][i]->Constrain(2,0.0,1.0);
+			if(i==0) fitT[m][i]->Constrain(1,0.0,0.01);
+			fitT[m][i]->Constrain(2,0.0,0.01);
 			fitT[m][i]->SetRangeX(cut,50);
 		}
 		else {
 			fitT[m][i]->Constrain(0,0,1);
 			fitT[m][i]->Constrain(1,0,1);
+			if(i==0) fitT[m][i]->Constrain(1,0.0,0.1);
 			fitT[m][i]->SetRangeX(cut,50);
 		}	
 		if(DataMassTOF[i][m]->Integral(0,50)>50) s1[m][i]=fitT[m][i]->Fit();
@@ -363,7 +366,10 @@ void DeutonsTemplFits(TFile * file1){
                                  DTemplTOF2[m]->Draw("same");
                                 if(He) HeTemplTOF2[m]->Draw("same");
                                 }
-
+			if(i==0){
+				PCountsTOF->SetBinContent(m+1,0,DataMassTOF[0][m]->Integral(0,21));
+				PCountsTOF->SetBinContent(m+1,1,DataMassTOF[0][m]->Integral(0,21)/2);
+			}
 		}
 
 	}
@@ -442,11 +448,13 @@ void DeutonsTemplFits(TFile * file1){
 		if(He){
 			fitTNaF[m][i]->Constrain(0,0.5,1.0);
 			fitTNaF[m][i]->Constrain(1,0.0,1.0);
+			if(i==0) fitTNaF[m][i]->Constrain(1,0.0,0.1);
 			fitTNaF[m][i]->Constrain(2,0.0,1.0);
 		}
 		else {
 			fitTNaF[m][i]->Constrain(0,0,1);
 			fitTNaF[m][i]->Constrain(1,0,1);
+			if(i==0) fitTNaF[m][i]->Constrain(1,0.0,0.1);
 			fitTNaF[m][i]->SetRangeX(cutNaF,50);
 		}
 		if((DataMassNaF[i][m]->Integral(25,50)>50&&i!=0)||i==0) s1NaF[m][i]=fitTNaF[m][i]->Fit();
@@ -593,13 +601,15 @@ void DeutonsTemplFits(TFile * file1){
                 if(He){
                         fitTAgl[m][i]->Constrain(0,0.5,1.0);
                         fitTAgl[m][i]->Constrain(1,0.0,1.0);
-                        fitTAgl[m][i]->Constrain(2,0.0,0.01);
+                        if(i==0) fitTAgl[m][i]->Constrain(1,0.0,0.1);
+			fitTAgl[m][i]->Constrain(2,0.0,0.01);
                 	fitTAgl[m][i]->SetRangeX(cutAgl,50);
 		}
                 else {
                         fitTAgl[m][i]->Constrain(0,0,1);
                         fitTAgl[m][i]->Constrain(1,0,1);
-                        fitTAgl[m][i]->SetRangeX(cutAgl,50);
+                        if(i==0) fitTAgl[m][i]->Constrain(1,0.0,0.1);
+			fitTAgl[m][i]->SetRangeX(cutAgl,50);
                 }
                 if((DataMassAgl[i][m]->Integral(25,50)>50&&i!=0)||i==0) s1Agl[m][i]=fitTAgl[m][i]->Fit();
                 else s1Agl[m][i]=1;

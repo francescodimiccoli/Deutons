@@ -538,7 +538,7 @@ int main()
 	int qu=0;
 	for(int l=0; l<ntupla1->GetEntries();l++) {
 		int k = ntupla1->GetEvent(l);
-		IsCharge1=0;
+		IsCharge1=1;
 		if(EdepL1>0.04&&EdepL1<0.15) IsCharge1=1;
 		if(100*(l/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
@@ -670,7 +670,7 @@ int main()
 			h1->Fill(Beta,EdepTOFU);
                 	h3->Fill(Beta,EdepTOFD);
 		}
-		if(Beta<0.75&&Beta>0.4&&(1/Massa)<MassLimit&&R<4&&R>=0&&IsPrescaled==0&&IsCharge1==1)
+		if(Beta<0.8&&Beta>0&&(1/Massa)<MassLimit&&R<4&&R>=0&&IsPrescaled==0&&IsCharge1==1)
 		{
 			LKL_Data->Fill(L_Discr);
 			if(fabs(DistD)>0.15) LKLold_Data->Fill(L_Discr_old);

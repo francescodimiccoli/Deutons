@@ -180,6 +180,7 @@ void FillIstogram(int INDX,string frac,string mese)
          	Var2=BetaRICH;
                 Var3=Beta_gen;*/
 		HecutMC_Fill(ntupla1,i);
+		SlidesforPlot_Fill(ntupla1,i);
 		MCQualeff_Fill(ntupla1,i);
 		DVSMCQualeff2_Fill(ntupla1,i);	
 		DeutonsMC_Fill(ntupla1,i);
@@ -274,6 +275,7 @@ void FillIstogram(int INDX,string frac,string mese)
                   Var3=Beta_gen;*/
 		if(100*(i/(float)(ntupla3->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla3->GetEntries())))+1;}
 		HecutD_Fill(ntupla3,i);	
+		SlidesforPlot_D_Fill(ntupla1,i);
 		DATAQualeff_Fill(ntupla3,i,Zona);
 		DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		ProtonFlux_Fill(ntupla3,i,Zona);	
@@ -290,6 +292,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		DATAQualeff_Copy(file);
 		DVSMCQualeff2_Copy(file);
 		ProtonFlux_Copy(file);
+		SlidesforPlot_Copy(file);
 		MCMC_Copy(file);	
         }
 	
@@ -306,6 +309,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	DATApreSeleff_Write();
 	Correlazione_Preselezioni_Write();
 	HecutMC_Write();
+	SlidesforPlot_Write();	
 	DATAUnbiaseff_Write();
 	DeutonsMC_Write();
 	DeutonsMC_Dist_Write();

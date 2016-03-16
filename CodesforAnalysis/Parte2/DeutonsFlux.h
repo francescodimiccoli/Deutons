@@ -126,6 +126,7 @@ void DeutonFlux(TFile * file1){
 			DFluxTOF->SetBinContent(m+1,0,DCountsgeoTOF->GetBinContent(m+1,12,0)/(AcceptLATdTOF[m]*Esposd_TOF[m]*deltaencinTOF[m]));
 			//err stat
 			errore=DCountsgeoTOF->GetBinContent(m+1,12,1)/DCountsgeoTOF->GetBinContent(m+1,12,0);
+			errore+=(fabs(DCountsgeoTOF->GetBinContent(m+1,12,0)-DCountsgeoTOF_Dist->GetBinContent(m+1,12,0))/(AcceptLATdTOF[m]*Esposd_TOF[m]*deltaencinTOF[m]))/DFluxTOF->GetBinContent(m+1,0);
 			if(errore>1) errore=0.5;
 			if(errore>0) DFluxTOF->SetBinContent(m+1,1,errore*DFluxTOF->GetBinContent(m+1,0));
 		}
@@ -134,6 +135,7 @@ void DeutonFlux(TFile * file1){
 			DFluxNaF->SetBinContent(m+1,0,DCountsgeoNaF->GetBinContent(m+1,12,0)/(AcceptLATdNaF[m]*Esposd_NaF[m]*deltaencinNaF[m]));
 			//err stat
 			errore=DCountsgeoNaF->GetBinContent(m+1,12,1)/DCountsgeoNaF->GetBinContent(m+1,12,0);
+			errore+=(fabs(DCountsgeoNaF->GetBinContent(m+1,12,0)-DCountsgeoNaF_Dist->GetBinContent(m+1,12,0))/(AcceptLATdNaF[m]*Esposd_NaF[m]*deltaencinNaF[m]))/DFluxNaF->GetBinContent(m+1,0);
 			if(errore>1) errore=0.5;
 			if(errore>0) DFluxNaF->SetBinContent(m+1,1,errore*DFluxNaF->GetBinContent(m+1,0));		
 		}
@@ -142,8 +144,9 @@ void DeutonFlux(TFile * file1){
 			DFluxAgl->SetBinContent(m+1,0,DCountsgeoAgl->GetBinContent(m+1,12,0)/(AcceptLATdAgl[m]*Esposd_Agl[m]*deltaencinAgl[m]));
 			//err stat
 			errore=DCountsgeoAgl->GetBinContent(m+1,12,1)/DCountsgeoAgl->GetBinContent(m+1,12,0);
+			errore+=(fabs(DCountsgeoAgl->GetBinContent(m+1,12,0)-DCountsgeoAgl_Dist->GetBinContent(m+1,12,0))/(AcceptLATdAgl[m]*Esposd_Agl[m]*deltaencinAgl[m]))/DFluxAgl->GetBinContent(m+1,0);
 			if(errore>1) errore=0.5;
-			if(errore>0) DFluxAgl->SetBinContent(m+1,1,errore*DFluxAgl->GetBinContent(m+1,0));	
+			if(errore>0) DFluxAgl->SetBinContent(m+1,1,errore*DFluxAgl->GetBinContent(m+1,0)+fabs(DCountsgeoAgl->GetBinContent(m+1,12,0)-DCountsgeoAgl_Dist->GetBinContent(m+1,12,0))/(AcceptLATdAgl[m]*Esposd_Agl[m]*deltaencinAgl[m]));	
 		}
 
 	//ratio

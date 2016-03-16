@@ -31,6 +31,7 @@
 #include "Parte2/MCpreeff.h"
 #include "Parte2/MCUnbiaseff.h"
 #include "Parte2/Hecut.h"
+#include "Parte2/SlidesforPlot.h"
 #include "Parte2/MCQualeff.h"
 #include "Parte2/MCTrackeff.h"
 #include "Parte2/MCpreSeleff.h"
@@ -201,6 +202,7 @@ int main(int argc, char * argv[])
 	MCpreeff(file1);
 	MCUnbiaseff(file1);
 	Hecut(file1);
+	SlidesforPlot(file1);
 	MCQualeff(file1);
 	MCTrackeff(file1);
 	MCpreSeleff(file1);
@@ -225,6 +227,7 @@ int main(int argc, char * argv[])
 	nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 	string nome;
+	f_out->mkdir("Slides common plots");
 	f_out->mkdir("MC Results");
 	f_out->mkdir("MC Results/He cut");
 	f_out->mkdir("MC Results/Preselections");
@@ -287,10 +290,48 @@ int main(int argc, char * argv[])
 	f_out->mkdir("Dist Template Fits/Dist Agl Template Fits/Geo.Zones");
 
 	f_out->mkdir("Export");
+	f_out->mkdir("Export/Hecut");
+	f_out->mkdir("Export/MCMC");
+	f_out->mkdir("Export/Qual.Sel.Eff.");
+	f_out->mkdir("Export/Acceptance");
+	f_out->mkdir("Export/Slidesplot");
+	
+	f_out->cd("Slides common plots");
+	p1->Write();
+	p2->Write();
+	p3->Write();
+	p4->Write();
+	p5->Write();
+	p6->Write();
+	p7->Write();
+	p8->Write();
+	p9->Write();
+	p10->Write();
+        p11->Write();
+        p12->Write();
+	p13->Write();
+        p14->Write();
+        p15->Write();
+	p10Q->Write();
+        p11Q->Write();
+        p12Q->Write();
+	p13Q->Write();
+        p14Q->Write();
+        p15Q->Write();
+	p16->Write();
+	p17->Write();
+	p18->Write();
+	p19->Write();
+	p20->Write();
+	p21->Write();
+	p22->Write();
+	p23->Write();
+	p24->Write();
 	f_out->cd("MC Results");
 	f_out->cd("MC Results/He cut");
         c36->Write();
-        c37->Write();
+        c36_bis->Write();
+	c37->Write();
 	f_out->cd("MC Results/Preselections");
 	c4->Write();
 	c4_bis->Write();
@@ -371,7 +412,7 @@ int main(int argc, char * argv[])
 		for(int l=1;l<11;l++) {
 			nome="Dist Template Fits/Dist NaF Template Fits/Geo.Zones/Zona "+numero[l];
 			f_out->cd(nome.c_str());
-			for(int m=0;m<18;m++) c30_bis[l][m]->Write();
+			for(int m=0;m<18;m++) c40_bis[l][m]->Write();
 		}
 		f_out->cd("Dist Template Fits/Dist NaF Template Fits/Primaries/D.bins");
 		for(int m=0;m<18;m++) c40_bis[11][m]->Write();
@@ -412,10 +453,6 @@ int main(int argc, char * argv[])
 	EffMCLikD_TH2F->Write();
 	EffMCLikP_Beta_TH1F->Write();
 	EffMCLikD_Beta_TH2F->Write();
-	EffMCDistP_TH1F->Write();
-	EffMCDistD_TH2F->Write();
-	EffMCDistP_Beta_TH1F->Write();
-	EffMCDistD_Beta_TH2F->Write();
 	EffPreSelMCP_R_TH2F->Write();
 	EffPreSelMCP_TH2F->Write();
 	EffPreSelMCD_R_TH3F->Write();
@@ -451,23 +488,56 @@ int main(int argc, char * argv[])
 	CorrLAT_pre_spl->Write();
 	CorrLAT_totM2->Write();
 	CorrLAT_preM2->Write();
+	for(int i=0;i<11;i++) P_Fluxgeo[i]->Write();
+	PFlux->Write();
+	P_Flux->Write();
+	P_Flux_pre->Write();
+	DFluxgeoTOF->Write();
+	f_out->cd("Export/Hecut");
+	HecutMC_P->Write();
+        HecutMC_He->Write();
+        Hecut_D->Write();
+        HecutMC_P1->Write();
+        HecutMC_P2->Write();
+        HecutMC_He1->Write();
+        HecutMC_He2->Write();
+	f_out->cd("Export/MCMC");
+	MCMCPTemplatesTOF->Write();
+        MCMCDTemplatesTOF->Write();
+        MCMCHeTemplatesTOF->Write();
+        MCMCPTemplatesNaF->Write();
+        MCMCDTemplatesNaF->Write();
+        MCMCHeTemplatesNaF->Write();
+        MCMCPTemplatesAgl->Write();
+        MCMCDTemplatesAgl->Write();
+        MCMCHeTemplatesAgl->Write();
+        MCMCDataTOF->Write();
+        MCMCDataNaF->Write();
+        MCMCDataAgl->Write();
+	f_out->cd("Export/Qual.Sel.Eff.");
+	EffMCDistP_TH1F->Write();
+	EffMCDistD_TH2F->Write();
+	EffMCDistP_Beta_TH1F->Write();
+	EffMCDistD_Beta_TH2F->Write();
+	EffMCDistP_BetaNaF_TH1F->Write();
+	EffMCDistD_BetaNaF_TH2F->Write();
+	EffMCDistP_BetaAgl_TH1F->Write();
+	EffMCDistD_BetaAgl_TH2F->Write();	
+	f_out->cd("Export/Acceptance");
 	AcceptPzone->Write();
-	AcceptDzoneTOF->Write();
-	AcceptDzoneNaF->Write();
-	AcceptDzoneAgl->Write();
+        AcceptDzoneTOF->Write();
+        AcceptDzoneNaF->Write();
+        AcceptDzoneAgl->Write();
 	AcceptPTOF->Write();
 	AcceptPNaF->Write();
 	AcceptPAgl->Write();
 	AcceptDTOF->Write();
 	AcceptDNaF->Write();
 	AcceptDAgl->Write();
-	for(int i=0;i<11;i++) P_Fluxgeo[i]->Write();
-	PFlux->Write();
-	P_Flux->Write();
-	P_Flux_pre->Write();
-	DFluxgeoTOF->Write();
+	f_out->cd("Export/Slidesplot");
+	SlidesforPlot_Write();	
 	f_out->Write();
-	f_out->Close();
-
+        f_out->Close();
+	
 	return 1;
 }

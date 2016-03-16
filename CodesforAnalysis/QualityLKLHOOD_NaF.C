@@ -355,7 +355,7 @@ int main()
 
 	cout<<"************************************** TRAINING *****************************************************"<<endl;
 	int avanzamento=0;
-	for(int i=0; i<ntupla1->GetEntries()/2;i++) {
+	for(int i=0; i<ntupla1->GetEntries();i++) {
 		int k = ntupla1->GetEvent(i);
 		if(100*(i/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
@@ -536,7 +536,7 @@ int main()
 	BDTreader();
 	avanzamento=0;
 	int qu=0;
-	for(int l=0; l<ntupla1->GetEntries()/2;l++) {
+	for(int l=0; l<ntupla1->GetEntries();l++) {
 		int k = ntupla1->GetEvent(l);
 		IsCharge1=1;
 		if(EdepL1>0.04&&EdepL1<0.15) IsCharge1=1;
@@ -614,7 +614,7 @@ int main()
 		if(((int)Cutmask>>11)==512&&IsCharge1==1&&-log(1-L_Discr)>2&&R>=0)for(int z=0;z<17;z++) if(Beta>Betabins[z]&&Beta<Betabins[z+1]&&Massagen<1&&Massagen>0.5) cutoffMC_P[z]->Fill(pow(1/Massa,2));
 	}
 	avanzamento=0;
-	for(int l=0; l<ntupla2->GetEntries()/5;l++) {
+	for(int l=0; l<ntupla2->GetEntries();l++) {
 		int k = ntupla2->GetEvent(l);
 		IsCharge1=0;
 		if(EdepL1>0.04&&EdepL1<0.15) IsCharge1=1;

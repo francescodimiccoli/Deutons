@@ -189,7 +189,7 @@ void AcceptanceD(TFile * file1){
                 AccSelMCD[h]->SetLineColor(4);
                 AccSelMCD[h]->SetLineWidth(1);
                 AccSelMCD[h]->SetMarkerStyle(h+3);
-		AccgeoD[h]->SetTitle("Deutons Acceptance");
+		AccgeoD[h]->SetTitle("Final effective Acceptance");
 		AccgeoD[h]->GetXaxis()->SetTitle("R [GV]");
 		AccgeoD[h]->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
 		AccgeoD[h]->GetXaxis()->SetTitleSize(0.045);
@@ -202,7 +202,6 @@ void AcceptanceD(TFile * file1){
 		AccSelMCD[0]->Draw("Csame");
 		AccPreMCD[0]->Draw("Csame");
 	for(int h=1;h<6;h++){
-		leg->AddEntry(AccgeoD[h],MCLegend[h+1].c_str(), "ep");
 		AccgeoD[h]->Draw("CPsame");
 		AccPreMCD[h]->Draw("CPsame");
 		AccSelMCD[h]->Draw("CPsame");		
@@ -232,34 +231,24 @@ void AcceptanceD(TFile * file1){
 		for(int m=0;m<18;m++) for(int i=0;i<11;i++)AcceptDzoneTOF->SetBinContent(m+1,i+1,h,AcceptSelMCDTOFzone[m][i][h]);
 		if(h==0) 
 		{
+			p=0;
 			for(int m=0;m<18;m++) if(AcceptSelMCPTOF[m]>0) {AccSelMCPbeta->SetPoint(p,Ekincent[m],AcceptSelMCPTOF[m]);p++;}
 			for(int m=0;m<18;m++) AcceptPTOF->SetBinContent(m+1,AcceptSelMCPTOF[m]);
+			AccSelMCDbeta[0]->SetPoint(p,50,0.001);
 			AccSelMCPbeta->SetMarkerStyle(8);
                 	AccSelMCPbeta->SetMarkerColor(2);
                 	AccSelMCPbeta->SetMarkerSize(2);
                 	AccSelMCPbeta->SetLineColor(2);
                 	AccSelMCPbeta->SetLineWidth(1);
 		}
-		//AccSelMCDbeta[0]->SetPoint(p,50,0);
-		/*AccgeoDbeta[h]->SetMarkerStyle(8);
-                AccgeoDbeta[h]->SetMarkerColor(4);
-                AccgeoDbeta[h]->SetMarkerSize(2);
-                AccgeoDbeta[h]->SetLineColor(4);
-                AccgeoDbeta[h]->SetLineWidth(1);
-                AccgeoDbeta[h]->SetMarkerStyle(h+3);
-                AccPreMCDbeta[h]->SetMarkerStyle(8);
-                AccPreMCDbeta[h]->SetMarkerColor(4);
-                AccPreMCDbeta[h]->SetMarkerSize(2);
-                AccPreMCDbeta[h]->SetLineColor(4);
-                AccPreMCDbeta[h]->SetLineWidth(1);
-                AccPreMCDbeta[h]->SetMarkerStyle(h+3);*/
 		AccSelMCDbeta[h]->SetMarkerStyle(8);
                 AccSelMCDbeta[h]->SetMarkerColor(4);
                 AccSelMCDbeta[h]->SetMarkerSize(2);
                 AccSelMCDbeta[h]->SetLineColor(4);
+		AccSelMCDbeta[h]->SetLineStyle(2);
                 AccSelMCDbeta[h]->SetLineWidth(1);
                 AccSelMCDbeta[h]->SetMarkerStyle(h+3);
-                AccSelMCDbeta[0]->SetTitle("Deutons Acceptance");
+                AccSelMCDbeta[0]->SetTitle("Final effective Acceptance");
                 AccSelMCDbeta[0]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
                 AccSelMCDbeta[0]->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
                 AccSelMCDbeta[0]->GetXaxis()->SetTitleSize(0.045);
@@ -269,12 +258,14 @@ void AcceptanceD(TFile * file1){
 	{	TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(AccSelMCDbeta[0],MCLegend[1].c_str(), "ep");
 		AccSelMCDbeta[0]->Draw("AP");
+		AccSelMCPbeta->SetLineStyle(2);
 		AccSelMCPbeta->Draw("CPsame");
         for(int h=1;h<6;h++){
                 leg->AddEntry(AccSelMCDbeta[h],MCLegend[h+1].c_str(), "ep");
-                AccSelMCDbeta[h]->Draw("CPsame");
+		AccSelMCDbeta[h]->Draw("CPsame");
         }
-        	leg->Draw("same");
+        	leg->AddEntry(AccSelMCPbeta,"Protons B800","ep");		
+		leg->Draw("same");
 	}
 
         TGraphErrors * AccgeoDbetaNaF[6];
@@ -295,7 +286,8 @@ void AcceptanceD(TFile * file1){
                 for(int m=0;m<18;m++) AcceptDNaF->SetBinContent(m+1,h+1,AcceptSelMCDNaF[m][h]);
 		if(h==0)
                 {
-                        for(int m=0;m<18;m++) if(AcceptSelMCPNaF[m]>0) {AccSelMCPbetaNaF->SetPoint(p,EkincentNaF[m],AcceptSelMCPNaF[m]);p++;}
+                        p=0;
+			for(int m=0;m<18;m++) if(AcceptSelMCPNaF[m]>0) {AccSelMCPbetaNaF->SetPoint(p,EkincentNaF[m],AcceptSelMCPNaF[m]);p++;}
                         for(int m=0;m<18;m++) AcceptPNaF->SetBinContent(m+1,AcceptSelMCPNaF[m]);
                         AccSelMCPbetaNaF->SetMarkerStyle(8);
                         AccSelMCPbetaNaF->SetMarkerColor(2);
@@ -319,7 +311,8 @@ void AcceptanceD(TFile * file1){
                 AccSelMCDbetaNaF[h]->SetMarkerColor(4);
                 AccSelMCDbetaNaF[h]->SetMarkerSize(2);
                 AccSelMCDbetaNaF[h]->SetLineColor(4);
-                AccSelMCDbetaNaF[h]->SetLineWidth(1);
+                AccSelMCDbetaNaF[h]->SetLineStyle(2);
+		AccSelMCDbetaNaF[h]->SetLineWidth(1);
                 AccSelMCDbetaNaF[h]->SetMarkerStyle(h+3);
                 AccSelMCDbetaNaF[h]->SetTitle("Deutons Acceptance");
                 AccSelMCDbetaNaF[h]->GetXaxis()->SetTitle("R [GV]");
@@ -329,6 +322,7 @@ void AcceptanceD(TFile * file1){
                 AccSelMCDbetaNaF[h]->GetYaxis()->SetRangeUser(1e-2,1.3);
         }
                 AccSelMCDbetaNaF[0]->Draw("CPsame");
+		AccSelMCPbetaNaF->SetLineStyle(2);
 		AccSelMCPbetaNaF->Draw("CPsame");
         for(int h=1;h<6;h++){
                 AccSelMCDbetaNaF[h]->Draw("CPsame");
@@ -352,7 +346,8 @@ void AcceptanceD(TFile * file1){
                 for(int m=0;m<18;m++) AcceptDAgl->SetBinContent(m+1,h+1,AcceptSelMCDAgl[m][h]); 
 		if(h==0)
                 {
-                        for(int m=0;m<18;m++) if(AcceptSelMCPAgl[m]>0) {AccSelMCPbetaAgl->SetPoint(p,EkincentAgl[m],AcceptSelMCPAgl[m]);p++;}
+                        p=0;
+			for(int m=0;m<18;m++) if(AcceptSelMCPAgl[m]>0) {AccSelMCPbetaAgl->SetPoint(p,EkincentAgl[m],AcceptSelMCPAgl[m]);p++;}
                         for(int m=0;m<18;m++) AcceptPAgl->SetBinContent(m+1,AcceptSelMCPAgl[m]);
                         AccSelMCPbetaAgl->SetMarkerStyle(8);
                         AccSelMCPbetaAgl->SetMarkerColor(2);
@@ -378,7 +373,8 @@ void AcceptanceD(TFile * file1){
                 AccSelMCDbetaAgl[h]->SetMarkerSize(2);
                 AccSelMCDbetaAgl[h]->SetLineColor(4);
                 AccSelMCDbetaAgl[h]->SetLineWidth(1);
-                AccSelMCDbetaAgl[h]->SetMarkerStyle(h+3);
+                AccSelMCDbetaAgl[h]->SetLineStyle(2);
+		AccSelMCDbetaAgl[h]->SetMarkerStyle(h+3);
                 AccSelMCDbetaAgl[h]->SetTitle("Deutons Acceptance");
                 AccSelMCDbetaAgl[h]->GetXaxis()->SetTitle("R [GV]");
                 AccSelMCDbetaAgl[h]->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
@@ -387,6 +383,7 @@ void AcceptanceD(TFile * file1){
                 AccSelMCDbetaAgl[h]->GetYaxis()->SetRangeUser(1e-2,1.3);
         }
                 AccSelMCDbetaAgl[0]->Draw("CPsame");
+		AccSelMCPbetaAgl->SetLineStyle(2);
         	AccSelMCPbetaAgl->Draw("CPsame");
 	for(int h=1;h<6;h++){
                 AccSelMCDbetaAgl[h]->Draw("CPsame");
