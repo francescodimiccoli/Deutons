@@ -27,6 +27,7 @@
 #include <math.h>
 #include "Functions_auto.h"
 #include "Parte2/Definitions.h"
+#include "Parte2/EfficiencyClass.h"
 #include "Parte2/FitError.h"
 #include "Parte2/MCpreeff.h"
 /*#include "Parte2/MCUnbiaseff.h"
