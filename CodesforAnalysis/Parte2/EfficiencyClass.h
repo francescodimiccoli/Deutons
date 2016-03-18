@@ -46,49 +46,44 @@ public:
   //   Reading constructors
 
     Efficiency(TFile * file, std::string basename){
-        beforeTOF = (TH1F *)file->Get((basename + "1"   ).c_str());
-        afterTOF  = (TH1F *)file->Get((basename + "2"   ).c_str());
-        beforeNaF = (TH1F *)file->Get((basename + "1NaF").c_str());
-        afterNaF  = (TH1F *)file->Get((basename + "2NaF").c_str());
-        beforeAgl = (TH1F *)file->Get((basename + "1Agl").c_str());
-        afterAgl  = (TH1F *)file->Get((basename + "2Agl").c_str());
-        beforeR   = (TH1F *)file->Get((basename + "1_R" ).c_str());
-        afterR    = (TH1F *)file->Get((basename + "2_R" ).c_str());
-    }
-
-    Efficiency(TFile * file, std::string basename, int i){
-        beforeTOF = (TH2F *)file->Get((basename + "1"   ).c_str());
-        afterTOF  = (TH2F *)file->Get((basename + "2"   ).c_str());
-        beforeNaF = (TH2F *)file->Get((basename + "1NaF").c_str());
-        afterNaF  = (TH2F *)file->Get((basename + "2NaF").c_str());
-        beforeAgl = (TH2F *)file->Get((basename + "1Agl").c_str());
-        afterAgl  = (TH2F *)file->Get((basename + "2Agl").c_str());
-        beforeR   = (TH2F *)file->Get((basename + "1_R" ).c_str());
-        afterR    = (TH2F *)file->Get((basename + "2_R" ).c_str());
-    }
-
-    Efficiency(TFile * file, std::string basename, int i, int j){
-        beforeTOF = (TH3F *)file->Get((basename + "1"   ).c_str());
-        afterTOF  = (TH3F *)file->Get((basename + "2"   ).c_str());
-        beforeNaF = (TH3F *)file->Get((basename + "1NaF").c_str());
-        afterNaF  = (TH3F *)file->Get((basename + "2NaF").c_str());
-        beforeAgl = (TH3F *)file->Get((basename + "1Agl").c_str());
-        afterAgl  = (TH3F *)file->Get((basename + "2Agl").c_str());
-        beforeR   = (TH3F *)file->Get((basename + "1_R" ).c_str());
-        afterR    = (TH3F *)file->Get((basename + "2_R" ).c_str());
+        beforeTOF = (TH1 *)file->Get((basename + "1"   ).c_str());
+        afterTOF  = (TH1 *)file->Get((basename + "2"   ).c_str());
+        beforeNaF = (TH1 *)file->Get((basename + "1NaF").c_str());
+        afterNaF  = (TH1 *)file->Get((basename + "2NaF").c_str());
+        beforeAgl = (TH1 *)file->Get((basename + "1Agl").c_str());
+        afterAgl  = (TH1 *)file->Get((basename + "2Agl").c_str());
+        beforeR   = (TH1 *)file->Get((basename + "1_R" ).c_str());
+        afterR    = (TH1 *)file->Get((basename + "2_R" ).c_str());
     }
 
     void Write();
-
+    void UpdateErrorbars();	
 };
 
 
 void Efficiency::Write()
 {
-    beforeTOF->Write(); 
-    beforeNaF->Write();
-    beforeAgl->Write();
-    afterTOF->Write();
-    afterNaF->Write();
-    afterAgl->Write();
-}  
+	if(afterR)	afterR->Write(); 
+	if(beforeR)	beforeR->Write();	   
+	if(beforeTOF)	beforeTOF->Write(); 
+	if(beforeNaF)	beforeNaF->Write();
+	if(beforeAgl)	beforeAgl->Write();
+	if(afterTOF)	afterTOF->Write();
+	if(afterNaF)	afterNaF->Write();
+	if(afterAgl)	afterAgl->Write();
+}
+
+void Efficiency::UpdateErrorbars()
+{
+
+   if(afterR)	 afterR->Sumw2();
+   if(beforeR)	 beforeR->Sumw2(); 
+   if(beforeTOF) beforeTOF->Sumw2(); 
+   if(beforeNaF) beforeNaF->Sumw2();
+   if(beforeAgl) beforeAgl->Sumw2();
+   if(afterTOF)	 afterTOF->Sumw2();
+   if(afterNaF)	 afterNaF->Sumw2();
+   if(afterAgl)	 afterAgl->Sumw2();
+
+}
+  

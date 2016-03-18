@@ -1,100 +1,95 @@
 using namespace std;
 
-
-TH1F * EffUnbiasMCP1=new TH1F("EffUnbiasMCP1","EffUnbiasMCP1",18,0,18);
-TH1F * EffUnbiasMCP2=new TH1F("EffUnbiasMCP2","EffUnbiasMCP2",18,0,18);
-TH1F * EffUnbiasMCP1_R=new TH1F("EffUnbiasMCP1_R","EffUnbiasMCP1_R",43,0,43);
-TH1F * EffUnbiasMCP2_R=new TH1F("EffUnbiasMCP2_R","EffUnbiasMCP2_R",43,0,43);
-TH2F * EffUnbiasMCD1=new TH2F("EffUnbiasMCD1","EffUnbiasMCD1",18,0,18,6,0,6);
-TH2F * EffUnbiasMCD2=new TH2F("EffUnbiasMCD2","EffUnbiasMCD2",18,0,18,6,0,6);
-TH2F * EffUnbiasMCD1_R=new TH2F("EffUnbiasMCD1_R","EffUnbiasMCD1_R",43,0,43,6,0,6);
-TH2F * EffUnbiasMCD2_R=new TH2F("EffUnbiasMCD2_R","EffUnbiasMCD2_R",43,0,43,6,0,6);
-
-
+Efficiency * EffUnbiasMCP = new Efficiency("EffUnbiasMCP");
+Efficiency * EffUnbiasMCD = new Efficiency("EffUnbiasMCD");
 
 void MCUnbiaseff_Fill(TNtuple *ntupla, int l){
 		int k = ntupla->GetEvent(l);
-		
 		if((Cutmask&187)!=187||Beta_pre<=0||R_pre<=0) return;
-		if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2){
+		if(!(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2)) return;
+		
 		if(Massa_gen<1&&Massa_gen>0.5) {
-			for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
-				EffUnbiasMCP1_R->Fill(M);
-				if(Unbias==0) EffUnbiasMCP2_R->Fill(M);
+			//R bins
+			for(int M=0;M<43;M++) 
+				if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
+					EffUnbiasMCP->beforeR->Fill(M);
+					if(Unbias==0) EffUnbiasMCP->afterR->Fill(M);
 			}	
-			for(int m=0;m<18;m++)  if(Var3>BetaP[m]&&Var3<=BetaP[m+1]){
-				EffUnbiasMCP1->Fill(m);
-				if(Unbias==0) EffUnbiasMCP2->Fill(m);	
+			//Beta bins
+			for(int m=0;m<18;m++)  
+				if(Var3>BetaP[m]&&Var3<=BetaP[m+1]){
+					EffUnbiasMCP->beforeTOF->Fill(m);
+					if(Unbias==0) EffUnbiasMCP->afterTOF->Fill(m);	
 			}
 		}				 
 
 		if(Massa_gen>1&&Massa_gen<2) {
-			for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
-				EffUnbiasMCD1_R->Fill(M,(int)(10000*Massa_gen-18570));
-				if(Unbias==0) EffUnbiasMCD2_R->Fill(M,(int)(10000*Massa_gen-18570));
-			}
-			for(int m=0;m<18;m++) if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
-				EffUnbiasMCD1->Fill(m,(int)(10000*Massa_gen-18570));
-				if(Unbias==0) EffUnbiasMCD2->Fill(m,(int)(10000*Massa_gen-18570));
-			}
+			//R bins
+			for(int M=0;M<43;M++) 
+				if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
+					EffUnbiasMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
+					if(Unbias==0) EffUnbiasMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
+				}
+			//Beta bins
+			for(int m=0;m<18;m++) 
+				if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
+					EffUnbiasMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
+					if(Unbias==0) EffUnbiasMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
+				}
 		}
-		}
+		
 	return;
 }
 
 
 void MCUnbiaseff_Write(){
-        EffUnbiasMCP1->Write();
-        EffUnbiasMCD1->Write();
-        EffUnbiasMCP2->Write();
-        EffUnbiasMCD2->Write();
-        EffUnbiasMCP1_R->Write();
-        EffUnbiasMCD1_R->Write();
-        EffUnbiasMCP2_R->Write();
-        EffUnbiasMCD2_R->Write();
-
+        EffUnbiasMCP->Write();
+        EffUnbiasMCD->Write();
         return;
 }
 
 
-TCanvas *c11=new TCanvas("Unbias Trigger Efficiency");
-
-TH1F *EffUnbMCP_R_TH1F = new TH1F("EffUnbMCP_R_TH1F","EffUnbMCP_R_TH1F",43,0,43);
-TH1F *EffUnbMCP_TH1F = new TH1F("EffUnbMCP_TH1F","EffUnbMCP_TH1F",18,0,18);
-TH2F *EffUnbMCD_R_TH2F = new TH2F("EffUnbMCD_R_TH2F","EffUnbMCD_R_TH2F",43,0,43,6,0,6);
-TH2F *EffUnbMCD_TH2F = new TH2F("EffUnbMCD_TH2F","EffUnbMCD_TH2F",18,0,18,6,0,6);
-
 
 void MCUnbiaseff(TFile * file1){
-
-	TH1F * EffUnbiasMCP1= (TH1F*) file1->Get("EffUnbiasMCP1");
-	TH2F * EffUnbiasMCD1= (TH2F*) file1->Get("EffUnbiasMCD1");
-	TH1F * EffUnbiasMCP2= (TH1F*) file1->Get("EffUnbiasMCP2");
-	TH2F * EffUnbiasMCD2= (TH2F*) file1->Get("EffUnbiasMCD2");
-	TH1F * EffUnbiasMCP1_R =(TH1F*) file1->Get("EffUnbiasMCP1_R");
-	TH2F * EffUnbiasMCD1_R =(TH2F*) file1->Get("EffUnbiasMCD1_R");
-	TH1F * EffUnbiasMCP2_R =(TH1F*) file1->Get("EffUnbiasMCP2_R");
-	TH2F * EffUnbiasMCD2_R =(TH2F*) file1->Get("EffUnbiasMCD2_R");
+	
+	Efficiency * EffUnbiasMCP = new Efficiency(file1,"EffUnbiasMCP" );
+	Efficiency * EffUnbiasMCD = new Efficiency(file1,"EffUnbiasMCD" );
 
 	string nome;
 	Tempi = (TH1F *)file1->Get("Tempi");
 
 	cout<<"**** MC Unbias TRIGGER EFF. ****"<<endl;
+	
+	TH1F *EffUnbMCP_R_TH1F = (TH1F*)  EffUnbiasMCP->afterR   ->Clone();	
+        TH1F *EffUnbMCP_TH1F   = (TH1F*)  EffUnbiasMCP->afterTOF->Clone();
+        TH2F *EffUnbMCD_R_TH2F = (TH2F*)  EffUnbiasMCD->afterR   ->Clone();
+	TH2F *EffUnbMCD_TH2F   = (TH2F*)  EffUnbiasMCD->afterTOF->Clone();
+
+	EffUnbiasMCP -> UpdateErrorbars();	
+        EffUnbiasMCD -> UpdateErrorbars();
+	
+	EffUnbMCP_R_TH1F  -> Divide( EffUnbiasMCP->beforeR	);   
+        EffUnbMCP_TH1F    -> Divide( EffUnbiasMCP->beforeTOF	);
+        EffUnbMCD_R_TH2F  -> Divide( EffUnbiasMCD->beforeR   	);
+	EffUnbMCD_TH2F    -> Divide( EffUnbiasMCD->beforeTOF	);
+	
+	cout<<"*** Updating P1 file ****"<<endl;
+	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+	if(!file1){
+		nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
+		file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+	}
+
+	file1->cd("Results");
+	EffUnbMCP_R_TH1F  -> Write();
+	EffUnbMCP_TH1F   -> Write();
+	EffUnbMCD_R_TH2F  -> Write();
+	EffUnbMCD_TH2F    -> Write();
+	
+
+	TCanvas *c11=new TCanvas("Unbias Trigger Efficiency");
 	c11->Divide(2,1);
-        float EffUnbiasMCP[18]={0};
-        for(int i=0;i<17;i++) if(EffUnbiasMCP1->GetBinContent(i+1)>0) if(EffUnbiasMCP2->GetBinContent(i+1)<EffUnbiasMCP1->GetBinContent(i+1))
-                EffUnbiasMCP[i]=EffUnbiasMCP2->GetBinContent(i+1)/(float)EffUnbiasMCP1->GetBinContent(i+1);
-        float EffUnbiasMCD[18][6]={{0}};
-        for(int i=0;i<17;i++) for(int h=0;h<6;h++) if(EffUnbiasMCD2->GetBinContent(i+1,h+1)<EffUnbiasMCD1->GetBinContent(i+1,h+1))
-                EffUnbiasMCD[i][h]=EffUnbiasMCD2->GetBinContent(i+1,h+1)/(float)EffUnbiasMCD1->GetBinContent(i+1,h+1);
-
-        float EffUnbiasMCP_R[43]={0};
-        for(int i=1;i<43;i++) EffUnbiasMCP_R[i]=EffUnbiasMCP2_R->GetBinContent(i+1)/(float)EffUnbiasMCP1_R->GetBinContent(i+1);
-        float EffUnbiasMCD_R[43][6]={{0}};
-        for(int i=4;i<43;i++) for(int h=0;h<6;h++) if(EffUnbiasMCD1_R->GetBinContent(i+1,h+1)>EffUnbiasMCD2_R->GetBinContent(i+1,h+1))
-                EffUnbiasMCD_R[i][h]=EffUnbiasMCD2_R->GetBinContent(i+1,h+1)/(float)EffUnbiasMCD1_R->GetBinContent(i+1,h+1);
-
-
 	c11->cd(1);
         gPad->SetLogx();
         gPad->SetGridx();
@@ -102,8 +97,7 @@ void MCUnbiaseff(TFile * file1){
         string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
         TGraph * EffUnbMCP_R = new TGraph();
         EffUnbMCP_R->SetTitle(MCLegend[0].c_str());
-        for(int i=0;i<43;i++) EffUnbMCP_R->SetPoint(i,R_cent[i],EffUnbiasMCP_R[i]);
-        for(int i=0;i<43;i++) EffUnbMCP_R_TH1F->SetBinContent(i+1,EffUnbiasMCP_R[i]);
+        for(int i=0;i<43;i++) EffUnbMCP_R->SetPoint(i,R_cent[i],EffUnbMCP_R_TH1F->GetBinContent(i+1));
         TGraph * EffUnbMCD_R[6];
         EffUnbMCP_R->SetMarkerColor(2);
         EffUnbMCP_R->SetMarkerStyle(8);
@@ -122,8 +116,7 @@ void MCUnbiaseff(TFile * file1){
                 for(int h=0;h<6;h++){
                         EffUnbMCD_R[h]= new TGraph();
                         EffUnbMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-                        for(int i=1;i<43;i++) EffUnbMCD_R[h]->SetPoint(i,R_cent[i],EffUnbiasMCD_R[i][h]);
-                        for(int i=1;i<43;i++) EffUnbMCD_R_TH2F->SetBinContent(i+1,h+1,EffUnbiasMCD_R[i][h]);
+                        for(int i=1;i<43;i++) EffUnbMCD_R[h]->SetPoint(i,R_cent[i],EffUnbMCD_R_TH2F->GetBinContent(i+1,h+1));
                         leg->AddEntry(EffUnbMCD_R[h],MCLegend[h+1].c_str(), "ep");
                         EffUnbMCD_R[h]->SetMarkerColor(4);
                         EffUnbMCD_R[h]->SetMarkerStyle(h+3);
@@ -140,8 +133,7 @@ void MCUnbiaseff(TFile * file1){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraph * EffUnbMCP = new TGraph();
-        for(int i=0;i<17;i++) EffUnbMCP->SetPoint(i,Ekincent[i],EffUnbiasMCP[i]);
-        for(int i=0;i<17;i++) EffUnbMCP_TH1F->SetBinContent(i+1,EffUnbiasMCP[i]);
+        for(int i=0;i<17;i++) EffUnbMCP->SetPoint(i,Ekincent[i],EffUnbMCP_TH1F->GetBinContent(i+1));
         TGraph * EffUnbMCD[6];
         EffUnbMCP->SetMarkerColor(2);
         EffUnbMCP->SetMarkerStyle(8);
@@ -159,8 +151,7 @@ void MCUnbiaseff(TFile * file1){
 
                 for(int h=0;h<6;h++){
                         EffUnbMCD[h]= new TGraph();
-                        for(int i=0;i<17;i++) EffUnbMCD[h]->SetPoint(i,Ekincent[i],EffUnbiasMCD[i][h]);
-                        for(int i=0;i<17;i++) EffUnbMCD_TH2F->SetBinContent(i+1,h+1,EffUnbiasMCD[i][h]);
+                        for(int i=0;i<17;i++) EffUnbMCD[h]->SetPoint(i,Ekincent[i],EffUnbMCD_TH2F->GetBinContent(i+1,h+1));
                         EffUnbMCD[h]->SetMarkerColor(4);
                         EffUnbMCD[h]->SetMarkerStyle(h+3);
                         leg->AddEntry(EffUnbMCD[h],MCLegend[h+1].c_str(), "ep");
@@ -171,5 +162,11 @@ void MCUnbiaseff(TFile * file1){
                         leg->Draw();
                 }
         }
-
+	cout<<"*** Updating Results file ***"<<endl;
+        nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+	f_out->cd("MC Results/Preselections");
+	c11->Write();
+	f_out->Write();
+	f_out->Close();
 }

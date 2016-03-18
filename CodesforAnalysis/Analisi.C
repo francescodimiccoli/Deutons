@@ -30,9 +30,9 @@
 #include "Parte2/EfficiencyClass.h"
 #include "Parte2/FitError.h"
 #include "Parte2/MCpreeff.h"
-/*#include "Parte2/MCUnbiaseff.h"
+#include "Parte2/MCUnbiaseff.h"
 #include "Parte2/Hecut.h"
-#include "Parte2/SlidesforPlot.h"
+/*#include "Parte2/SlidesforPlot.h"
 #include "Parte2/MCQualeff.h"
 #include "Parte2/MCTrackeff.h"
 #include "Parte2/MCpreSeleff.h"
@@ -201,9 +201,9 @@ int main(int argc, char * argv[])
 	cout<<"********************************** ANALYSIS *************************************************************************************"<<endl;
 	if(frac=="tot"){
 		MCpreeff(file1);
-		/*MCUnbiaseff(file1);
-		  Hecut(file1);
-		  SlidesforPlot(file1);
+		MCUnbiaseff(file1);
+		Hecut(file1);
+		/*  SlidesforPlot(file1);
 		  MCQualeff(file1);
 		  MCTrackeff(file1);
 		  MCpreSeleff(file1);
