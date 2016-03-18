@@ -102,33 +102,18 @@ void MCpreseff_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
 	
 	if(Massa_gen<1&&Massa_gen>0.5) {
-		for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) 
-			EffpreselMCP->beforeR->Fill(M);
-		if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0) 
-			for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]) 	
-				EffpreselMCP->afterR->Fill(M);
-
-		for(int m=0;m<18;m++)  if(Var3>BetaP[m]&&Var3<=BetaP[m+1]) 
-			EffpreselMCP->beforeTOF->Fill(m);
-		if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0) 
-			for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1])		
-				EffpreselMCP->afterTOF->Fill(m);	
-
-		for(int m=0;m<18;m++)  if(Var3>BetaNaFP[m]&&Var3<=BetaNaFP[m+1])
-			EffpreselMCP->beforeNaF->Fill(m);
-		if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0)
-			for(int m=0;m<18;m++)  if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1])
-				EffpreselMCP->afterNaF->Fill(m);	
-
-		for(int m=0;m<18;m++)  if(Var3>BetaAglP[m]&&Var3<=BetaAglP[m+1])
-			EffpreselMCP->beforeAgl->Fill(m);
-		if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0)
-			for(int m=0;m<18;m++)  if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1])
-				EffpreselMCP->afterAgl->Fill(m);
-
-        ////////////*********************////////////////
-		/* for(int m=0;m<18;m++) { 
-
+        //R bins
+		for(int M=0;M<43;M++) 
+        {
+            if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) EffpreselMCP->beforeR->Fill(M);
+			if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]) 	
+            {
+                if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0) EffpreselMCP->afterR->Fill(M);
+            }
+        }
+        
+        // Beta bins
+		for(int m=0;m<18;m++) { 
             if(Var3>BetaP[m]   &&Var3<=BetaP[m+1])    EffpreselMCP->beforeTOF->Fill(m);
             if(Var3>BetaNaFP[m]&&Var3<=BetaNaFP[m+1]) EffpreselMCP->beforeNaF->Fill(m);
             if(Var3>BetaAglP[m]&&Var3<=BetaAglP[m+1]) EffpreselMCP->beforeAgl->Fill(m);
@@ -139,37 +124,44 @@ void MCpreseff_Fill(TNtuple *ntupla, int l){
                 if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) EffpreselMCP->afterNaF->Fill(m);	
                 if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) EffpreselMCP->afterAgl->Fill(m);
             }
-        }*/
+        }
 	}				 
 
 	if(Massa_gen>1&&Massa_gen<2) {
-		for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) 
-			EffpreselMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
-		if(((int)Cutmask&187)==187&&Beta_pre>0&&Unbias==0&&R_pre>0) 
-			for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M])	
-				EffpreselMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
+        // R bins
+		for(int M=0;M<43;M++) 
+        {
+            if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) 
+                EffpreselMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
+            
+		    if(((int)Cutmask&187)==187&&Beta_pre>0&&Unbias==0&&R_pre>0) 
+            {
+			    if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M])	
+				    EffpreselMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
+            }
+        }
 
-		for(int m=0;m<18;m++) if(Var3>BetaD[m]&&Var3<=BetaD[m+1])
-			EffpreselMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
-		for(int m=0;m<18;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1])	
+        // Beta bins
+		for(int m=0;m<18;m++) 
+        {
+            if(Var3>BetaD[m]&&Var3<=BetaD[m+1])
+                EffpreselMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
+            if(Var3>BetaNaFD[m]&&Var3<=BetaNaFD[m+1])
+			    EffpreselMCD->beforeNaF->Fill(m,(int)(10000*Massa_gen-18570));
+            if(Var3>BetaAglD[m]&&Var3<=BetaAglD[m+1])
+			    EffpreselMCD->beforeAgl->Fill(m,(int)(10000*Massa_gen-18570));
+        
 			if(((int)Cutmask&187)==187&&Beta_pre>0&&Unbias==0&&R_pre>0) 
-				EffpreselMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
-
-		for(int m=0;m<18;m++) if(Var3>BetaNaFD[m]&&Var3<=BetaNaFD[m+1])
-			EffpreselMCD->beforeNaF->Fill(m,(int)(10000*Massa_gen-18570));
-		for(int m=0;m<18;m++)  if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1])
-			if(((int)Cutmask&187)==187&&Beta_pre>0&&Unbias==0&&R_pre>0)
-				EffpreselMCD->afterNaF->Fill(m,(int)(10000*Massa_gen-18570));
-
-		for(int m=0;m<18;m++) if(Var3>BetaAglD[m]&&Var3<=BetaAglD[m+1])
-			EffpreselMCD->beforeAgl->Fill(m,(int)(10000*Massa_gen-18570));
-		for(int m=0;m<18;m++)  if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1])
-			if(((int)Cutmask&187)==187&&Beta_pre>0&&Unbias==0&&R_pre>0)
-				EffpreselMCD->afterAgl->Fill(m,(int)(10000*Massa_gen-18570));
-
-		
-	}
-
+            {
+                if(Var>BetaD[m]&&Var<=BetaD[m+1])	
+                    EffpreselMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
+                if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1])
+                    EffpreselMCD->afterNaF->Fill(m,(int)(10000*Massa_gen-18570));
+                if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1])
+                    EffpreselMCD->afterAgl->Fill(m,(int)(10000*Massa_gen-18570));
+            }
+	    }
+    }
 	return;
 }
 
