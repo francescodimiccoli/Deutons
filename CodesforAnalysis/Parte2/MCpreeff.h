@@ -14,8 +14,8 @@ public:
         afterTOF  = new TH1F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),18,0,18);
         beforeNaF = new TH1F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),18,0,18);
         afterNaF  = new TH1F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),18,0,18);
-        beforeNaF = new TH1F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18);
-        afterNaF  = new TH1F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),18,0,18);
+        beforeAgl = new TH1F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18);
+        afterAgl  = new TH1F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),18,0,18);
         beforeR   = new TH1F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),43,0,43);
         afterR    = new TH1F((basename + "2_R" ).c_str(),(basename + "2_R" ).c_str(),43,0,43);
     }
@@ -25,8 +25,8 @@ public:
         afterTOF  = new TH2F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),18,0,18, n, 0 ,n);
         beforeNaF = new TH2F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),18,0,18, n, 0 ,n);
         afterNaF  = new TH2F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),18,0,18, n, 0 ,n);
-        beforeNaF = new TH2F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18, n, 0 ,n);
-        afterNaF  = new TH2F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),18,0,18, n, 0 ,n);
+        beforeAgl = new TH2F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18, n, 0 ,n);
+        afterAgl  = new TH2F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),18,0,18, n, 0 ,n);
         beforeR   = new TH2F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),43,0,43, n, 0 ,n);
         afterR    = new TH2F((basename + "2_R" ).c_str(),(basename + "2_R" ).c_str(),43,0,43, n, 0 ,n);
     }
@@ -36,8 +36,8 @@ public:
         afterTOF  = new TH3F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),18,0,18, n, 0 ,n, m, 0, m);
         beforeNaF = new TH3F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),18,0,18, n, 0 ,n, m, 0, m);
         afterNaF  = new TH3F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),18,0,18, n, 0 ,n, m, 0, m);
-        beforeNaF = new TH3F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18, n, 0 ,n, m, 0, m);
-        afterNaF  = new TH3F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),18,0,18, n, 0 ,n, m, 0, m);
+        beforeAgl = new TH3F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18, n, 0 ,n, m, 0, m);
+        afterAgl  = new TH3F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),18,0,18, n, 0 ,n, m, 0, m);
         beforeR   = new TH3F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),43,0,43, n, 0 ,n, m, 0, m);
         afterR    = new TH3F((basename + "2_R" ).c_str(),(basename + "2_R" ).c_str(),43,0,43, n, 0 ,n, m, 0, m);
     }
@@ -49,8 +49,8 @@ public:
         afterTOF  = (TH1F *)file->Get((basename + "2"   ).c_str());
         beforeNaF = (TH1F *)file->Get((basename + "1NaF").c_str());
         afterNaF  = (TH1F *)file->Get((basename + "2NaF").c_str());
-        beforeNaF = (TH1F *)file->Get((basename + "1Agl").c_str());
-        afterNaF  = (TH1F *)file->Get((basename + "2Agl").c_str());
+        beforeAgl = (TH1F *)file->Get((basename + "1Agl").c_str());
+        afterAgl  = (TH1F *)file->Get((basename + "2Agl").c_str());
         beforeR   = (TH1F *)file->Get((basename + "1_R" ).c_str());
         afterR    = (TH1F *)file->Get((basename + "2_R" ).c_str());
     }
@@ -60,8 +60,8 @@ public:
         afterTOF  = (TH2F *)file->Get((basename + "2"   ).c_str());
         beforeNaF = (TH2F *)file->Get((basename + "1NaF").c_str());
         afterNaF  = (TH2F *)file->Get((basename + "2NaF").c_str());
-        beforeNaF = (TH2F *)file->Get((basename + "1Agl").c_str());
-        afterNaF  = (TH2F *)file->Get((basename + "2Agl").c_str());
+        beforeAgl = (TH2F *)file->Get((basename + "1Agl").c_str());
+        afterAgl  = (TH2F *)file->Get((basename + "2Agl").c_str());
         beforeR   = (TH2F *)file->Get((basename + "1_R" ).c_str());
         afterR    = (TH2F *)file->Get((basename + "2_R" ).c_str());
     }
@@ -71,8 +71,8 @@ public:
         afterTOF  = (TH3F *)file->Get((basename + "2"   ).c_str());
         beforeNaF = (TH3F *)file->Get((basename + "1NaF").c_str());
         afterNaF  = (TH3F *)file->Get((basename + "2NaF").c_str());
-        beforeNaF = (TH3F *)file->Get((basename + "1Agl").c_str());
-        afterNaF  = (TH3F *)file->Get((basename + "2Agl").c_str());
+        beforeAgl = (TH3F *)file->Get((basename + "1Agl").c_str());
+        afterAgl  = (TH3F *)file->Get((basename + "2Agl").c_str());
         beforeR   = (TH3F *)file->Get((basename + "1_R" ).c_str());
         afterR    = (TH3F *)file->Get((basename + "2_R" ).c_str());
     }
@@ -184,7 +184,7 @@ void MCpreeff_Write(){
 
 void MCpreeff(TFile * file1){
 	Efficiency * EffpreselMCP = new Efficiency(file1, "EffpreselMCP");
-	Efficiency * EffpreselMCD = new Efficiency(file1, "EffpreselMCP", 6);
+	Efficiency * EffpreselMCD = new Efficiency(file1, "EffpreselMCD", 6);
 
 	string numero[18]={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","18"};
 	string tagli[10]={"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
@@ -192,12 +192,11 @@ void MCpreeff(TFile * file1){
 
 	cout<<"**** MC PRESELECTIONS EFFICIENCY (FULL SET) ****"<<endl;
 
-    	
-	TH1F * EffPreMCP_R_TH1F  = (TH1F *)EffpreselMCP->afterR->Clone(); 
+	TH1F * EffPreMCP_R_TH1F  = (TH1F *)EffpreselMCP->afterR  ->Clone(); 
 	TH1F * EffPreMCP_TH1F    = (TH1F *)EffpreselMCP->afterTOF->Clone(); 
 	TH1F * EffPreMCPNaF_TH1F = (TH1F *)EffpreselMCP->afterNaF->Clone(); 
 	TH1F * EffPreMCPAgl_TH1F = (TH1F *)EffpreselMCP->afterAgl->Clone(); 
-	TH2F * EffPreMCD_R_TH2F  = (TH2F *)EffpreselMCD->afterR->Clone(); 
+	TH2F * EffPreMCD_R_TH2F  = (TH2F *)EffpreselMCD->afterR  ->Clone(); 
 	TH2F * EffPreMCD_TH2F    = (TH2F *)EffpreselMCD->afterTOF->Clone(); 
 	TH2F * EffPreMCDNaF_TH2F = (TH2F *)EffpreselMCD->afterNaF->Clone(); 
 	TH2F * EffPreMCDAgl_TH2F = (TH2F *)EffpreselMCD->afterAgl->Clone(); 
