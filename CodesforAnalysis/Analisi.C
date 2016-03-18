@@ -32,8 +32,8 @@
 #include "Parte2/MCpreeff.h"
 #include "Parte2/MCUnbiaseff.h"
 #include "Parte2/Hecut.h"
-/*#include "Parte2/SlidesforPlot.h"
-#include "Parte2/MCQualeff.h"
+#include "Parte2/SlidesforPlot.h"
+/*#include "Parte2/MCQualeff.h"
 #include "Parte2/MCTrackeff.h"
 #include "Parte2/MCpreSeleff.h"
 #include "Parte2/MCpreCheck.h"
@@ -203,8 +203,8 @@ int main(int argc, char * argv[])
 		MCpreeff(file1);
 		MCUnbiaseff(file1);
 		Hecut(file1);
-		/*  SlidesforPlot(file1);
-		  MCQualeff(file1);
+		SlidesforPlot(file1);
+		/*  MCQualeff(file1);
 		  MCTrackeff(file1);
 		  MCpreSeleff(file1);
 		  Correlazione_Preselezioni(file1);

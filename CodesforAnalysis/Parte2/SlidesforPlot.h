@@ -269,47 +269,6 @@ sigmagen_bad->Write();
 }
 
 
-TCanvas *p1=new TCanvas("RvsBeta TOF MC");
-TCanvas *p2=new TCanvas("RvsBeta NaF MC");
-TCanvas *p3=new TCanvas("RvsBeta Agl MC");
-
-TCanvas *p4=new TCanvas("RvsBeta TOF H.L. data");
-TCanvas *p5=new TCanvas("RvsBeta NaF H.L. data");
-TCanvas *p6=new TCanvas("RvsBeta Agl H.L. data");
-
-TCanvas *p7=new TCanvas("RvsEdep Upper TOF MC");
-TCanvas *p8=new TCanvas("RvsEdep Lower TOF MC");
-TCanvas *p9=new TCanvas("RvsEdep Tracker MC");
-
-TCanvas *p10=new TCanvas("Mass TOF H.L. data");
-TCanvas *p11=new TCanvas("Mass NaF H.L. data");
-TCanvas *p12=new TCanvas("Mass Agl H.L. data");
-
-TCanvas *p13=new TCanvas("Mass TOF MC");
-TCanvas *p14=new TCanvas("Mass NaF MC");
-TCanvas *p15=new TCanvas("Mass Agl MC");
-
-TCanvas *p10Q=new TCanvas("Qual. Mass TOF H.L. data");
-TCanvas *p11Q=new TCanvas("Qual. Mass NaF H.L. data");
-TCanvas *p12Q=new TCanvas("Qual. Mass Agl H.L. data");
-
-TCanvas *p13Q=new TCanvas("Qual. Mass TOF MC");
-TCanvas *p14Q=new TCanvas("Qual. Mass NaF MC");
-TCanvas *p15Q=new TCanvas("Qual. Mass Agl MC");
-
-TCanvas *p16=new TCanvas("Distance discr. TOF MC");
-TCanvas *p17=new TCanvas("Distance discr. NaF MC");
-TCanvas *p18=new TCanvas("Distance discr. Agl MC");
-
-TCanvas *p19=new TCanvas("DistvsR  TOF MC");
-TCanvas *p20=new TCanvas("DistvsR  NaF MC");
-TCanvas *p21=new TCanvas("DistvsR  Agl MC");
-
-TCanvas *p22=new TCanvas("DistvsLik  TOF MC");
-TCanvas *p23=new TCanvas("DistvsLik  NaF MC");
-TCanvas *p24=new TCanvas("DistvsLik  Agl MC");
-
-
 void SlidesforPlot(TFile * file1){
 TH2F * RvsBetaTOF_P=(TH2F*)file1->Get("RvsBetaTOF_P");
 TH2F * RvsBetaNaF_P=(TH2F*)file1->Get("RvsBetaNaF_P");
@@ -376,7 +335,41 @@ TH2F * RvsDistNaF_He=(TH2F*)file1->Get("RvsDistNaF_He");
 TH2F * RvsDistAgl_He=(TH2F*)file1->Get("RvsDistAgl_He");
 TH2F * sigmagen_bad=(TH2F*)file1->Get("sigmagen_bad");
 
+TCanvas *p1 =new TCanvas("RvsBeta TOF MC");
+TCanvas *p2 =new TCanvas("RvsBeta NaF MC");
+TCanvas *p3 =new TCanvas("RvsBeta Agl MC");
+TCanvas *p4 =new TCanvas("RvsBeta TOF H.L. data");
+TCanvas *p5 =new TCanvas("RvsBeta NaF H.L. data");
+TCanvas *p6 =new TCanvas("RvsBeta Agl H.L. data");
+TCanvas *p7 =new TCanvas("RvsEdep Upper TOF MC");
+TCanvas *p8 =new TCanvas("RvsEdep Lower TOF MC");
+TCanvas *p9 =new TCanvas("RvsEdep Tracker MC");
+TCanvas *p10=new TCanvas("Mass TOF H.L. data");
+TCanvas *p11=new TCanvas("Mass NaF H.L. data");
+TCanvas *p12=new TCanvas("Mass Agl H.L. data");
+TCanvas *p13=new TCanvas("Mass TOF MC");
+TCanvas *p14=new TCanvas("Mass NaF MC");
+TCanvas *p15=new TCanvas("Mass Agl MC");
+TCanvas *p10Q=new TCanvas("Qual. Mass TOF H.L. data");
+TCanvas *p11Q=new TCanvas("Qual. Mass NaF H.L. data");
+TCanvas *p12Q=new TCanvas("Qual. Mass Agl H.L. data");
+TCanvas *p13Q=new TCanvas("Qual. Mass TOF MC");
+TCanvas *p14Q=new TCanvas("Qual. Mass NaF MC");
+TCanvas *p15Q=new TCanvas("Qual. Mass Agl MC");
+TCanvas *p16=new TCanvas("Distance discr. TOF MC");
+TCanvas *p17=new TCanvas("Distance discr. NaF MC");
+TCanvas *p18=new TCanvas("Distance discr. Agl MC");
+TCanvas *p19=new TCanvas("DistvsR  TOF MC");
+TCanvas *p20=new TCanvas("DistvsR  NaF MC");
+TCanvas *p21=new TCanvas("DistvsR  Agl MC");
+TCanvas *p22=new TCanvas("DistvsLik  TOF MC");
+TCanvas *p23=new TCanvas("DistvsLik  NaF MC");
+TCanvas *p24=new TCanvas("DistvsLik  Agl MC");
+
+
+
 cout<<"******************* R vs Beta plots ******************"<<endl;
+
 {
 p1->cd();
 gPad->SetGridx();
@@ -860,6 +853,7 @@ RvsDistAgl_P->Draw("same");
 
 
 cout<<"******************* Lik vs Dist plots ******************"<<endl;
+
 p22->cd();
 gPad->SetGridx();
 gPad->SetGridy();
@@ -909,7 +903,42 @@ LikvsDistAgl_D->SetMarkerStyle(6);
 LikvsDistAgl_D->Draw();
 LikvsDistAgl_P->Draw("same");
 
+
+        cout<<"*** Updating Results file ***"<<endl;
+        string nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        f_out->mkdir("Common plots for slides");
+        f_out->cd("Common plots for slides");
+         p1->Write();
+         p2->Write();
+         p3 ->Write();
+	 p4 ->Write();
+         p5 ->Write();
+	 p6 ->Write();
+         p7 ->Write();
+         p8 ->Write();
+         p9 ->Write();
+         p10->Write();
+         p11->Write();
+         p12->Write();
+         p13->Write();
+         p14->Write();
+         p15->Write();
+         p10->Write();
+         p11->Write();
+         p12->Write();
+         p13->Write();
+         p14->Write();
+         p15->Write();
+         p16->Write();
+         p17->Write();
+         p18->Write();
+         p19->Write();
+         p20->Write();
+         p21->Write();
+         p22->Write();
+         p23->Write();
+         p24->Write();
+	 f_out->Write();
+	 f_out->Close();
 }
-
- 
-
