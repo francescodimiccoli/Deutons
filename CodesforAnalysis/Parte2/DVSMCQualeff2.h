@@ -51,19 +51,6 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 	}
 }
 
-
-void DVSMCQualeff2_Copy(TFile * file1){
-	EffDistMCvsDP_D_1 = (TH2F *)file1->Get("EffDistMCvsDP_D_1");
-	EffDistMCvsDP_D_2 = (TH2F *)file1->Get("EffDistMCvsDP_D_2");
-	EffLik2MCvsDP_D_1 = (TH2F *)file1->Get("EffLik2MCvsDP_D_1");
-        EffLik2MCvsDP_D_2 = (TH2F *)file1->Get("EffLik2MCvsDP_D_2");
-	EffDistMCvsDP1 = (TH1F *)file1->Get("EffDistMCvsDP1");
-        EffDistMCvsDP2 = (TH1F *)file1->Get("EffDistMCvsDP2");
-        EffLik2MCvsDP1 = (TH1F *)file1->Get("EffLik2MCvsDP1");
-        EffLik2MCvsDP2 = (TH1F *)file1->Get("EffLik2MCvsDP2");
-	return;
-}
-
 void DVSMCQualeff2_Write(){
         EffDistMCvsDP_D_1->Write(); 
         EffDistMCvsDP_D_2->Write();
@@ -89,6 +76,15 @@ TH2F * DistDVSMC_P_graph=new TH2F("DistDVSMC_P_graph","DistDVSMC_P_graph",43,0,4
 
 
 void DVSMCQualeff2(TFile * file1){
+	TH2F * EffDistMCvsDP_D_1 = (TH2F *)file1->Get("EffDistMCvsDP_D_1");
+	TH2F * EffDistMCvsDP_D_2 = (TH2F *)file1->Get("EffDistMCvsDP_D_2");
+	TH2F * EffLik2MCvsDP_D_1 = (TH2F *)file1->Get("EffLik2MCvsDP_D_1");
+	TH2F * EffLik2MCvsDP_D_2 = (TH2F *)file1->Get("EffLik2MCvsDP_D_2");
+	TH1F * EffDistMCvsDP1 = (TH1F *)file1->Get("EffDistMCvsDP1");
+	TH1F * EffDistMCvsDP2 = (TH1F *)file1->Get("EffDistMCvsDP2");
+	TH1F * EffLik2MCvsDP1 = (TH1F *)file1->Get("EffLik2MCvsDP1");
+	TH1F * EffLik2MCvsDP2 = (TH1F *)file1->Get("EffLik2MCvsDP2");
+
 	cout<<"************************************************************ MC QUALITY SEL. EFFICIENCIES ************************************************************"<<endl;		
 	float EffLik2MCvsDP[43][11]={{0}};
 	for(int l=0;l<11;l++)

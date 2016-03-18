@@ -20,16 +20,16 @@
 #include "TGraphAsymmErrors.h"
 #include "TGraphErrors.h"
 #include <cstring>
+#include <string>
 #include "TFile.h"
 #include "TTree.h"
 #include "TMath.h"
 #include <math.h>
-
 #include "Functions_auto.h"
 #include "Parte2/Definitions.h"
 #include "Parte2/FitError.h"
 #include "Parte2/MCpreeff.h"
-#include "Parte2/MCUnbiaseff.h"
+/*#include "Parte2/MCUnbiaseff.h"
 #include "Parte2/Hecut.h"
 #include "Parte2/SlidesforPlot.h"
 #include "Parte2/MCQualeff.h"
@@ -54,19 +54,18 @@
 #include "Parte2/DeutonsFlux.h"
 #include "Parte2/DeutonsFlux_Dist.h"
 #include "Parte2/Cuts.h"
-#include "FillIstogram.h"
+#include "FillIstogram.h"*/
 using namespace std;
-
 
 int main(int argc, char * argv[])
 {
 	cout<<"Month _ Indx _ Frac "<<endl;
 	//string percorso="/home/francesco/PhD/LocalCNAF/";
-	string percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
-	string frac=argv[3];
+	percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
+	frac=argv[3];
 	FRAC=atoi(argv[3]);
 	INDX=atoi(argv[2]);
-	string mese=argv[1];
+	mese=argv[1];
 	cout<<"********************************************** R BINS ******************************************************************************"<<endl;
 	for(int i=0;i<44;i++)
 	{
@@ -190,7 +189,7 @@ int main(int argc, char * argv[])
 	////////////////////////////
 
 	cout<<"************************************* ISTOGRAM FILLING **************************************************************************"<<endl;
-	FillIstogram(INDX,frac,mese);
+	//FillIstogram(INDX,frac,mese);
 	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
 	TFile *file1 =TFile::Open(nomefile.c_str());
 	if(!file1){
@@ -199,32 +198,34 @@ int main(int argc, char * argv[])
 	}
 
 	cout<<"********************************** ANALYSIS *************************************************************************************"<<endl;
-	MCpreeff(file1);
-	MCUnbiaseff(file1);
-	Hecut(file1);
-	SlidesforPlot(file1);
-	MCQualeff(file1);
-	MCTrackeff(file1);
-	MCpreSeleff(file1);
-	Correlazione_Preselezioni(file1);
-	MCpreCheck();
-	MigrationMatrix();
-	DATAUnbiaseff(file1);
-	DATApreSeleff(file1);
-	DVSMCTrackeff(file1);
-	DATAQualeff(file1);
-	DVSMCpreSeleff(file1);
-	DVSMCQualeff2(file1);
-	AcceptanceP(file1);
-	AcceptanceD(file1);
-	CorrLAT(file1);
-	ProtonFlux(file1);
-	if(frac=="tot")DeutonsTemplFits(file1);
-	if(frac=="tot")DeutonsTemplFits_Dist(file1);
-	DeutonFlux(file1);
-	DeutonFlux_Dist(file1);
+	if(frac=="tot"){
+		MCpreeff(file1);
+		/*MCUnbiaseff(file1);
+		  Hecut(file1);
+		  SlidesforPlot(file1);
+		  MCQualeff(file1);
+		  MCTrackeff(file1);
+		  MCpreSeleff(file1);
+		  Correlazione_Preselezioni(file1);
+		  MCpreCheck(file1);
+		  MigrationMatrix(file1);
+		  DATAUnbiaseff(file1);
+		  DATApreSeleff(file1);
+		  DVSMCTrackeff(file1);
+		  DATAQualeff(file1);
+		  DVSMCpreSeleff(file1);
+		  DVSMCQualeff2(file1);
+		  AcceptanceP(file1);
+		  AcceptanceD(file1);
+		  CorrLAT(file1);
+		  ProtonFlux(file1);
+		  DeutonsTemplFits(file1);
+		  DeutonsTemplFits_Dist(file1);
+		  DeutonFlux(file1);
+		  DeutonFlux_Dist(file1);*/
+	}
 	cout<<"************************************** OUTPUT **************************************************************"<<endl;
-	nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+	/*nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 	string nome;
 	f_out->mkdir("Slides common plots");
@@ -372,7 +373,7 @@ int main(int argc, char * argv[])
 	c23->Write();
 	c24->Write();
 	c25->Write();
-	if(frac=="tot"){
+	if(frac=="lol"){
 		for(int l=1;l<11;l++) {
 			nome="Mass Template Fits/Mass TOF Template Fits/Geo.Zones/Zona "+numero[l];
 			f_out->cd(nome.c_str());
@@ -538,6 +539,6 @@ int main(int argc, char * argv[])
 	SlidesforPlot_Write();	
 	f_out->Write();
         f_out->Close();
-	
+	*/	
 	return 1;
 }

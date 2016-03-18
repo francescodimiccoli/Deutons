@@ -200,74 +200,6 @@ void SlidesforPlot_D_Fill(TNtuple *ntupla, int l){
 
 
 
-void SlidesforPlot_Copy(TFile * file){
-RvsBetaTOF_P=(TH2F*)file->Get("RvsBetaTOF_P");
-RvsBetaNaF_P=(TH2F*)file->Get("RvsBetaNaF_P");
-RvsBetaAgl_P=(TH2F*)file->Get("RvsBetaAgl_P");
-RvsBetaTOF_D=(TH2F*)file->Get("RvsBetaTOF_D");
-RvsBetaNaF_D=(TH2F*)file->Get("RvsBetaNaF_D");
-RvsBetaAgl_D=(TH2F*)file->Get("RvsBetaAgl_D");
-RvsBetaTOF_He=(TH2F*)file->Get("RvsBetaTOF_He");
-RvsBetaNaF_He=(TH2F*)file->Get("RvsBetaNaF_He");
-RvsBetaAgl_He=(TH2F*)file->Get("RvsBetaAgl_He");
-EdepUTOFvsR_P=(TH2F*)file->Get("EdepUTOFvsR_P");
-EdepUTOFvsR_D=(TH2F*)file->Get("EdepUTOFvsR_D");
-EdepUTOFvsR_He=(TH2F*)file->Get("EdepUTOFvsR_He");
-EdepLTOFvsR_P=(TH2F*)file->Get("EdepLTOFvsR_P");
-EdepLTOFvsR_D=(TH2F*)file->Get("EdepLTOFvsR_D");
-EdepLTOFvsR_He=(TH2F*)file->Get("EdepLTOFvsR_He");
-EdepTrackvsR_P=(TH2F*)file->Get("EdepTrackvsR_P");
-EdepTrackvsR_D=(TH2F*)file->Get("EdepTrackvsR_D");
-EdepTrackvsR_He=(TH2F*)file->Get("EdepTrackvsR_He");
-MassTOF_P=(TH1F*)file->Get("MassTOF_P");
-MassTOF_D=(TH1F*)file->Get("MassTOF_D");
-MassNaF_P=(TH1F*)file->Get("MassNaF_P");
-MassNaF_D=(TH1F*)file->Get("MassNaF_D");
-MassAgl_P=(TH1F*)file->Get("MassAgl_P");
-MassAgl_D=(TH1F*)file->Get("MassAgl_D");
-MassTOF_PQ=(TH1F*)file->Get("MassTOF_PQ");
-MassTOF_DQ=(TH1F*)file->Get("MassTOF_DQ");
-MassNaF_PQ=(TH1F*)file->Get("MassNaF_PQ");
-MassNaF_DQ=(TH1F*)file->Get("MassNaF_DQ");
-MassAgl_PQ=(TH1F*)file->Get("MassAgl_PQ");
-MassAgl_DQ=(TH1F*)file->Get("MassAgl_DQ");
-RvsBetaTOF=(TH2F*)file->Get("RvsBetaTOF");
-RvsBetaNaF=(TH2F*)file->Get("RvsBetaNaF");
-RvsBetaAgl=(TH2F*)file->Get("RvsBetaAgl");
-MassTOF=(TH1F*)file->Get("MassTOF");
-MassNaF=(TH1F*)file->Get("MassNaF");
-MassAgl=(TH1F*)file->Get("MassAgl");
-MassTOFQ=(TH1F*)file->Get("MassTOFQ");
-MassNaFQ=(TH1F*)file->Get("MassNaFQ");
-MassAglQ=(TH1F*)file->Get("MassAglQ");
-LikvsDistTOF_P=(TH2F*)file->Get("LikvsDistTOF_P");
-LikvsDistNaF_P=(TH2F*)file->Get("LikvsDistNaF_P");
-LikvsDistAgl_P=(TH2F*)file->Get("LikvsDistAgl_P");
-LikvsDistTOF_D=(TH2F*)file->Get("LikvsDistTOF_D");
-LikvsDistNaF_D=(TH2F*)file->Get("LikvsDistNaF_D");
-LikvsDistAgl_D=(TH2F*)file->Get("LikvsDistAgl_D");
-DistTOF_P=(TH1F*)file->Get("DistTOF_P");
-DistNaF_P=(TH1F*)file->Get("DistNaF_P");
-DistAgl_P=(TH1F*)file->Get("DistAgl_P");
-DistTOF_D=(TH1F*)file->Get("DistTOF_D");
-DistNaF_D=(TH1F*)file->Get("DistNaF_D");
-DistAgl_D=(TH1F*)file->Get("DistAgl_D");
-DistTOF_He=(TH1F*)file->Get("DistTOF_He");
-DistNaF_He=(TH1F*)file->Get("DistNaF_He");
-DistAgl_He=(TH1F*)file->Get("DistAgl_He");
-RvsDistTOF_P=(TH2F*)file->Get("RvsDistTOF_P");
-RvsDistNaF_P=(TH2F*)file->Get("RvsDistNaF_P");
-RvsDistAgl_P=(TH2F*)file->Get("RvsDistAgl_P");
-RvsDistTOF_D=(TH2F*)file->Get("RvsDistTOF_D");
-RvsDistNaF_D=(TH2F*)file->Get("RvsDistNaF_D");
-RvsDistAgl_D=(TH2F*)file->Get("RvsDistAgl_D");
-RvsDistTOF_He=(TH2F*)file->Get("RvsDistTOF_He");
-RvsDistNaF_He=(TH2F*)file->Get("RvsDistNaF_He");
-RvsDistAgl_He=(TH2F*)file->Get("RvsDistAgl_He");
-sigmagen_bad=(TH2F*)file->Get("sigmagen_bad");
-}
-
-
 
 void SlidesforPlot_Write(){
 RvsBetaTOF_P->Write();
@@ -379,6 +311,70 @@ TCanvas *p24=new TCanvas("DistvsLik  Agl MC");
 
 
 void SlidesforPlot(TFile * file1){
+TH2F * RvsBetaTOF_P=(TH2F*)file1->Get("RvsBetaTOF_P");
+TH2F * RvsBetaNaF_P=(TH2F*)file1->Get("RvsBetaNaF_P");
+TH2F * RvsBetaAgl_P=(TH2F*)file1->Get("RvsBetaAgl_P");
+TH2F * RvsBetaTOF_D=(TH2F*)file1->Get("RvsBetaTOF_D");
+TH2F * RvsBetaNaF_D=(TH2F*)file1->Get("RvsBetaNaF_D");
+TH2F * RvsBetaAgl_D=(TH2F*)file1->Get("RvsBetaAgl_D");
+TH2F * RvsBetaTOF_He=(TH2F*)file1->Get("RvsBetaTOF_He");
+TH2F * RvsBetaNaF_He=(TH2F*)file1->Get("RvsBetaNaF_He");
+TH2F * RvsBetaAgl_He=(TH2F*)file1->Get("RvsBetaAgl_He");
+TH2F * EdepUTOFvsR_P=(TH2F*)file1->Get("EdepUTOFvsR_P");
+TH2F * EdepUTOFvsR_D=(TH2F*)file1->Get("EdepUTOFvsR_D");
+TH2F * EdepUTOFvsR_He=(TH2F*)file1->Get("EdepUTOFvsR_He");
+TH2F * EdepLTOFvsR_P=(TH2F*)file1->Get("EdepLTOFvsR_P");
+TH2F * EdepLTOFvsR_D=(TH2F*)file1->Get("EdepLTOFvsR_D");
+TH2F * EdepLTOFvsR_He=(TH2F*)file1->Get("EdepLTOFvsR_He");
+TH2F * EdepTrackvsR_P=(TH2F*)file1->Get("EdepTrackvsR_P");
+TH2F * EdepTrackvsR_D=(TH2F*)file1->Get("EdepTrackvsR_D");
+TH2F * EdepTrackvsR_He=(TH2F*)file1->Get("EdepTrackvsR_He");
+TH1F * MassTOF_P=(TH1F*)file1->Get("MassTOF_P");
+TH1F * MassTOF_D=(TH1F*)file1->Get("MassTOF_D");
+TH1F * MassNaF_P=(TH1F*)file1->Get("MassNaF_P");
+TH1F * MassNaF_D=(TH1F*)file1->Get("MassNaF_D");
+TH1F * MassAgl_P=(TH1F*)file1->Get("MassAgl_P");
+TH1F * MassAgl_D=(TH1F*)file1->Get("MassAgl_D");
+TH1F * MassTOF_PQ=(TH1F*)file1->Get("MassTOF_PQ");
+TH1F * MassTOF_DQ=(TH1F*)file1->Get("MassTOF_DQ");
+TH1F * MassNaF_PQ=(TH1F*)file1->Get("MassNaF_PQ");
+TH1F * MassNaF_DQ=(TH1F*)file1->Get("MassNaF_DQ");
+TH1F * MassAgl_PQ=(TH1F*)file1->Get("MassAgl_PQ");
+TH1F * MassAgl_DQ=(TH1F*)file1->Get("MassAgl_DQ");
+TH2F * RvsBetaTOF=(TH2F*)file1->Get("RvsBetaTOF");
+TH2F * RvsBetaNaF=(TH2F*)file1->Get("RvsBetaNaF");
+TH2F * RvsBetaAgl=(TH2F*)file1->Get("RvsBetaAgl");
+TH1F * MassTOF=(TH1F*)file1->Get("MassTOF");
+TH1F * MassNaF=(TH1F*)file1->Get("MassNaF");
+TH1F * MassAgl=(TH1F*)file1->Get("MassAgl");
+TH1F * MassTOFQ=(TH1F*)file1->Get("MassTOFQ");
+TH1F * MassNaFQ=(TH1F*)file1->Get("MassNaFQ");
+TH1F * MassAglQ=(TH1F*)file1->Get("MassAglQ");
+TH2F * LikvsDistTOF_P=(TH2F*)file1->Get("LikvsDistTOF_P");
+TH2F * LikvsDistNaF_P=(TH2F*)file1->Get("LikvsDistNaF_P");
+TH2F * LikvsDistAgl_P=(TH2F*)file1->Get("LikvsDistAgl_P");
+TH2F * LikvsDistTOF_D=(TH2F*)file1->Get("LikvsDistTOF_D");
+TH2F * LikvsDistNaF_D=(TH2F*)file1->Get("LikvsDistNaF_D");
+TH2F * LikvsDistAgl_D=(TH2F*)file1->Get("LikvsDistAgl_D");
+TH1F * DistTOF_P=(TH1F*)file1->Get("DistTOF_P");
+TH1F * DistNaF_P=(TH1F*)file1->Get("DistNaF_P");
+TH1F * DistAgl_P=(TH1F*)file1->Get("DistAgl_P");
+TH1F * DistTOF_D=(TH1F*)file1->Get("DistTOF_D");
+TH1F * DistNaF_D=(TH1F*)file1->Get("DistNaF_D");
+TH1F * DistAgl_D=(TH1F*)file1->Get("DistAgl_D");
+TH1F * DistTOF_He=(TH1F*)file1->Get("DistTOF_He");
+TH1F * DistNaF_He=(TH1F*)file1->Get("DistNaF_He");
+TH1F * DistAgl_He=(TH1F*)file1->Get("DistAgl_He");
+TH2F * RvsDistTOF_P=(TH2F*)file1->Get("RvsDistTOF_P");
+TH2F * RvsDistNaF_P=(TH2F*)file1->Get("RvsDistNaF_P");
+TH2F * RvsDistAgl_P=(TH2F*)file1->Get("RvsDistAgl_P");
+TH2F * RvsDistTOF_D=(TH2F*)file1->Get("RvsDistTOF_D");
+TH2F * RvsDistNaF_D=(TH2F*)file1->Get("RvsDistNaF_D");
+TH2F * RvsDistAgl_D=(TH2F*)file1->Get("RvsDistAgl_D");
+TH2F * RvsDistTOF_He=(TH2F*)file1->Get("RvsDistTOF_He");
+TH2F * RvsDistNaF_He=(TH2F*)file1->Get("RvsDistNaF_He");
+TH2F * RvsDistAgl_He=(TH2F*)file1->Get("RvsDistAgl_He");
+TH2F * sigmagen_bad=(TH2F*)file1->Get("sigmagen_bad");
 
 cout<<"******************* R vs Beta plots ******************"<<endl;
 {

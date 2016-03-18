@@ -66,21 +66,6 @@ void MCMCDATA_Fill(TNtuple *ntupla, int l){
                                 if((((int)Cutmask)>>11)==0) if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) if(R>1.2*Rcutoff) MCMCDataAgl->Fill(m,BetaRICH);
 }
 
-void MCMC_Copy(TFile * file){
-	MCMCPTemplatesTOF=(TH3D*)file->Get("MCMCPTemplatesTOF");
-	MCMCDTemplatesTOF=(TH3D*)file->Get("MCMCDTemplatesTOF");
-	MCMCHeTemplatesTOF=(TH3D*)file->Get("MCMCHeTemplatesTOF");		
-	MCMCPTemplatesNaF=(TH3D*)file->Get("MCMCPTemplatesNaF");  
-        MCMCDTemplatesNaF=(TH3D*)file->Get("MCMCDTemplatesNaF");
-        MCMCHeTemplatesNaF=(TH3D*)file->Get("MCMCHeTemplatesNaF");	
-	MCMCPTemplatesAgl=(TH3D*)file->Get("MCMCPTemplatesAgl");  
-        MCMCDTemplatesAgl=(TH3D*)file->Get("MCMCDTemplatesAgl");
-        MCMCHeTemplatesAgl=(TH3D*)file->Get("MCMCHeTemplatesAgl");
-	MCMCDataTOF=(TH2D*)file->Get("MCMCDataTOF");
-	MCMCDataNaF=(TH2D*)file->Get("MCMCDataNaF");
-	MCMCDataAgl=(TH2D*)file->Get("MCMCDataAgl");	
-}
-
 void MCMC_Write(){
         MCMCPTemplatesTOF->Write();
         MCMCDTemplatesTOF->Write();
@@ -96,4 +81,18 @@ void MCMC_Write(){
         MCMCDataAgl->Write();
 }
 
+void MCMC(TFile * file){
+	TH3D * MCMCPTemplatesTOF=(TH3D*)file->Get("MCMCPTemplatesTOF");
+	TH3D * MCMCDTemplatesTOF=(TH3D*)file->Get("MCMCDTemplatesTOF");
+	TH3D * MCMCHeTemplatesTOF=(TH3D*)file->Get("MCMCHeTemplatesTOF");
+	TH3D * MCMCPTemplatesNaF=(TH3D*)file->Get("MCMCPTemplatesNaF");
+	TH3D * MCMCDTemplatesNaF=(TH3D*)file->Get("MCMCDTemplatesNaF");
+	TH3D * MCMCHeTemplatesNaF=(TH3D*)file->Get("MCMCHeTemplatesNaF");
+	TH3D * MCMCPTemplatesAgl=(TH3D*)file->Get("MCMCPTemplatesAgl");
+	TH3D * MCMCDTemplatesAgl=(TH3D*)file->Get("MCMCDTemplatesAgl");
+	TH3D * MCMCHeTemplatesAgl=(TH3D*)file->Get("MCMCHeTemplatesAgl");
+	TH2D * MCMCDataTOF=(TH2D*)file->Get("MCMCDataTOF");
+	TH2D * MCMCDataNaF=(TH2D*)file->Get("MCMCDataNaF");
+	TH2D * MCMCDataAgl=(TH2D*)file->Get("MCMCDataAgl");
+}
 

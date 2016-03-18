@@ -41,16 +41,6 @@ void HecutD_Fill(TNtuple *ntupla,int l){
 }
 
 
-void HecutMC_Copy(TFile * file1){
-	HecutMC_P=(TH2F*)file1->Get("HecutMC_P");
-	HecutMC_He=(TH2F*)file1->Get("HecutMC_He");
-	Hecut_D=(TH2F*)file1->Get("Hecut_D");	
-	HecutMC_P1=(TH1F*)file1->Get("HecutMC_P1");
-	HecutMC_P2=(TH1F*)file1->Get("HecutMC_P2");
-	HecutMC_He1=(TH1F*)file1->Get("HecutMC_He1");
-        HecutMC_He2=(TH1F*)file1->Get("HecutMC_He2");
-}
-
 void HecutMC_Write(){
 	HecutMC_P->Write();
 	HecutMC_He->Write();
@@ -64,6 +54,15 @@ void HecutMC_Write(){
 
 
 void Hecut(TFile * file1){
+	TH2F* HecutMC_P=(TH2F*)file1->Get("HecutMC_P");
+	TH2F* HecutMC_He=(TH2F*)file1->Get("HecutMC_He");
+	TH2F* Hecut_D=(TH2F*)file1->Get("Hecut_D");
+	TH1F*  HecutMC_P1=(TH1F*)file1->Get("HecutMC_P1");
+	TH1F* HecutMC_P2=(TH1F*)file1->Get("HecutMC_P2");
+	TH1F* HecutMC_He1=(TH1F*)file1->Get("HecutMC_He1");
+	TH1F* HecutMC_He2=(TH1F*)file1->Get("HecutMC_He2");
+
+	cout<<"*************** He control sample cut *******************"<<endl;
 	float EffHecut[43]={0};
 	for(int K=0;K<43;K++) if(HecutMC_P2->GetBinContent(K+1)<HecutMC_P1->GetBinContent(K+1)) 
 					EffHecut[K]=HecutMC_P2->GetBinContent(K+1)/HecutMC_P1->GetBinContent(K+1);

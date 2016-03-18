@@ -58,7 +58,13 @@ float potenza=0;
 string percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
 
 void ProtonFlux(TFile * file1){
+	TH2F * PCountsgeo = (TH2F *)file1->Get("PCountsgeo");
+	TH2F * PCountsgeo_prim = (TH2F *)file1->Get("PCountsgeo_prim");
+	TH1F * PCounts = (TH1F *)file1->Get("PCounts");
+	TH1F * PCounts_pre = (TH1F *)file1->Get("PCounts_pre");
+	TH1F * PCounts_sel = (TH1F *)file1->Get("PCounts_sel");
 	Tempi = (TH1F *)file1->Get("Tempi");
+	
 	cout<<"*************** Protons Fluxes Calculation ******************"<<endl;	
 	float AcceptLAT[43]={0};
 	float AcceptLAT_pre[43]={0};

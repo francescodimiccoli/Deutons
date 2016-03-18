@@ -20,11 +20,6 @@ void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
 	return;
 }
 
-void DATApreSeleff_Copy(TFile * file){
-        EffpreSelDATA1_R =(TH3F*) file->Get("EffpreSelDATA1_R");
-        EffpreSelDATA2_R =(TH3F*) file->Get("EffpreSelDATA2_R");
-	return;	
-}
 
 void DATApreSeleff_Write(){
         EffpreSelDATA1_R->Write() ;
@@ -40,6 +35,9 @@ TGraphErrors *CorrLATpre_Spl[3];
 
 
 void DATApreSeleff(TFile * file1){
+
+	TH3F * EffpreSelDATA1_R =(TH3F*) file1->Get("EffpreSelDATA1_R");
+        TH3F * EffpreSelDATA2_R =(TH3F*) file1->Get("EffpreSelDATA2_R");
 
 	string tagli[3]={"Matching TOF","Chi^2 R","1 Tr. Track"};
         string nome;

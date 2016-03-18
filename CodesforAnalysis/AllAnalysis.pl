@@ -21,6 +21,7 @@ for($i=0;$i<$num_Rootuple;$i++) {
 print OUT "};\n";
 
 for($i=0;$i<$num_Rootuple;$i++) {
+system("rm $percorso/CodesforAnalysis/Final_plots/$Rootuple[$i].root");
 print "Analyzing ".$Rootuple[$i]."...\n";
 system("./Analisi $Rootuple[$i] 2 tot")
 }

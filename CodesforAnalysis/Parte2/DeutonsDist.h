@@ -126,35 +126,6 @@ void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona){
 	}
 }
 
-void DeutonsMC_Dist_Copy(TFile * file){
-	DTemplatesTOF_Dist=(TH2F*)file->Get("DTemplatesTOF_Dist");
-	PTemplatesTOF_Dist=(TH2F*)file->Get("PTemplatesTOF_Dist");
-	HeTemplatesTOF_Dist=(TH2F*)file->Get("HeTemplatesTOF_Dist");
-	DTemplatesNaF_Dist=(TH2F*)file->Get("DTemplatesNaF_Dist");
-        PTemplatesNaF_Dist=(TH2F*)file->Get("PTemplatesNaF_Dist");
-        HeTemplatesNaF_Dist=(TH2F*)file->Get("HeTemplatesNaF_Dist");
-	DTemplatesAgl_Dist=(TH2F*)file->Get("DTemplatesAgl_Dist");
-        PTemplatesAgl_Dist=(TH2F*)file->Get("PTemplatesAgl_Dist");
-        HeTemplatesAgl_Dist=(TH2F*)file->Get("HeTemplatesAgl_Dist");
-	DTemplatesTOF_Dist2=(TH2F*)file->Get("DTemplatesTOF_Dist2");
-        PTemplatesTOF_Dist2=(TH2F*)file->Get("PTemplatesTOF_Dist2");
-        HeTemplatesTOF_Dist2=(TH2F*)file->Get("HeTemplatesTOF_Dist2");
-        DTemplatesNaF_Dist2=(TH2F*)file->Get("DTemplatesNaF_Dist2");
-        PTemplatesNaF_Dist2=(TH2F*)file->Get("PTemplatesNaF_Dist2");
-        HeTemplatesNaF_Dist2=(TH2F*)file->Get("HeTemplatesNaF_Dist2");
-        DTemplatesAgl_Dist2=(TH2F*)file->Get("DTemplatesAgl_Dist2");
-        PTemplatesAgl_Dist2=(TH2F*)file->Get("PTemplatesAgl_Dist2");
-        HeTemplatesAgl_Dist2=(TH2F*)file->Get("HeTemplatesAgl_Dist2");
-	DhistosgeoTOF_Dist=(TH3F*)file->Get("DhistosgeoTOF_Dist");
-	DhistosgeoNaF_Dist=(TH3F*)file->Get("DhistosgeoNaF_Dist");
-	DhistosgeoAgl_Dist=(TH3F*)file->Get("DhistosgeoAgl_Dist");
-	DhistosTOF_Dist=(TH2F*)file->Get("DhistosTOF_Dist");
-        DhistosNaF_Dist=(TH2F*)file->Get("DhistosNaF_Dist");
-        DhistosAgl_Dist=(TH2F*)file->Get("DhistosAgl_Dist");
-	DhistosTOF_Dist2=(TH2F*)file->Get("DhistosTOF_Dist2");
-        DhistosNaF_Dist2=(TH2F*)file->Get("DhistosNaF_Dist2");
-        DhistosAgl_Dist2=(TH2F*)file->Get("DhistosAgl_Dist2");	
-}
 
 void DeutonsMC_Dist_Write(){
         DTemplatesTOF_Dist->Write();
@@ -201,6 +172,34 @@ TH2F * PCountsAgl_Dist = new TH2F("PCountsAgl_Dist","PCountsAgl_Dist",18,0,18,2,
 
 
 void DeutonsTemplFits_Dist(TFile * file1){
+	TH2F* DTemplatesTOF_Dist=(TH2F*)file1->Get("DTemplatesTOF_Dist");
+	TH2F* PTemplatesTOF_Dist=(TH2F*)file1->Get("PTemplatesTOF_Dist");
+	TH2F* HeTemplatesTOF_Dist=(TH2F*)file1->Get("HeTemplatesTOF_Dist");
+	TH2F* DTemplatesNaF_Dist=(TH2F*)file1->Get("DTemplatesNaF_Dist");
+	TH2F* PTemplatesNaF_Dist=(TH2F*)file1->Get("PTemplatesNaF_Dist");
+	TH2F* HeTemplatesNaF_Dist=(TH2F*)file1->Get("HeTemplatesNaF_Dist");
+	TH2F* DTemplatesAgl_Dist=(TH2F*)file1->Get("DTemplatesAgl_Dist");
+	TH2F* PTemplatesAgl_Dist=(TH2F*)file1->Get("PTemplatesAgl_Dist");
+	TH2F* HeTemplatesAgl_Dist=(TH2F*)file1->Get("HeTemplatesAgl_Dist");
+	TH2F* DTemplatesTOF_Dist2=(TH2F*)file1->Get("DTemplatesTOF_Dist2");
+	TH2F* PTemplatesTOF_Dist2=(TH2F*)file1->Get("PTemplatesTOF_Dist2");
+	TH2F* HeTemplatesTOF_Dist2=(TH2F*)file1->Get("HeTemplatesTOF_Dist2");
+	TH2F* DTemplatesNaF_Dist2=(TH2F*)file1->Get("DTemplatesNaF_Dist2");
+	TH2F* PTemplatesNaF_Dist2=(TH2F*)file1->Get("PTemplatesNaF_Dist2");
+	TH2F* HeTemplatesNaF_Dist2=(TH2F*)file1->Get("HeTemplatesNaF_Dist2");
+	TH2F* DTemplatesAgl_Dist2=(TH2F*)file1->Get("DTemplatesAgl_Dist2");
+	TH2F* PTemplatesAgl_Dist2=(TH2F*)file1->Get("PTemplatesAgl_Dist2");
+	TH2F* HeTemplatesAgl_Dist2=(TH2F*)file1->Get("HeTemplatesAgl_Dist2");
+	TH3F* DhistosgeoTOF_Dist=(TH3F*)file1->Get("DhistosgeoTOF_Dist");
+	TH3F* DhistosgeoNaF_Dist=(TH3F*)file1->Get("DhistosgeoNaF_Dist");
+	TH3F* DhistosgeoAgl_Dist=(TH3F*)file1->Get("DhistosgeoAgl_Dist");
+	TH2F* DhistosTOF_Dist=(TH2F*)file1->Get("DhistosTOF_Dist");
+	TH2F* DhistosNaF_Dist=(TH2F*)file1->Get("DhistosNaF_Dist");
+	TH2F* DhistosAgl_Dist=(TH2F*)file1->Get("DhistosAgl_Dist");
+	TH2F* DhistosTOF_Dist2=(TH2F*)file1->Get("DhistosTOF_Dist2");
+	TH2F* DhistosNaF_Dist2=(TH2F*)file1->Get("DhistosNaF_Dist2");
+	TH2F* DhistosAgl_Dist2=(TH2F*)file1->Get("DhistosAgl_Dist2");
+
 	cout<<"******************** Dist TOF TEMPLATE FITS *******************"<<endl;
 	TH1F *DataDistTOF[12][18];
 	TH1F *DTemplTOF[18];
@@ -630,12 +629,10 @@ void DeutonsTemplFits_Dist(TFile * file1){
                         fitTAgl[m][i]->Constrain(1,0,1);
                         fitTAgl[m][i]->SetRangeX(cutAgl,40);
                 }
-		if((DataDistAgl[i][m]->Integral(25,50)>50)) s1Agl[m][i]=fitTAgl[m][i]->Fit();
-                else s1Agl[m][i]=1;
 		cut1=21;
                 cut2=29;
                 for(int z=cut1;z<=cut2;z++) fitTAgl[m][i]->ExcludeBin(z);
-                if(DataDistAgl[i][m]->Integral(0,50)>50) s1Agl[m][i]=fitTAgl[m][i]->Fit();
+                if(DataDistAgl[i][m]->Integral(0,50)>50) s1Agl[m][i]=1;//fitTAgl[m][i]->Fit();
                 else s1Agl[m][i]=1;
                 if(s1Agl[m][i]==-1){
                         for(int z=0;z<5;z++){

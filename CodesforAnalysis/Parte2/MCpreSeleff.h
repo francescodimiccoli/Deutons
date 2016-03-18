@@ -53,18 +53,6 @@ void MCpreSeleff_Fill(TNtuple *ntupla, int l){
 	return;
 }
 
-void MCpreSeleff_Copy(TFile * file){
-	EffpreSelMCP1= (TH2F*) file->Get("EffpreSelMCP1");
-	EffpreSelMCD1= (TH3F*) file->Get("EffpreSelMCD1");
-        EffpreSelMCP2= (TH2F*) file->Get("EffpreSelMCP2");
-        EffpreSelMCD2= (TH3F*) file->Get("EffpreSelMCD2");
-        EffpreSelMCP1_R =(TH2F*) file->Get("EffpreSelMCP1_R");
-        EffpreSelMCD1_R =(TH3F*) file->Get("EffpreSelMCD1_R");
-        EffpreSelMCP2_R =(TH2F*) file->Get("EffpreSelMCP2_R");
-        EffpreSelMCD2_R =(TH3F*) file->Get("EffpreSelMCD2_R");
-	
-	return;	
-}
 
 void MCpreSeleff_Write(){
         EffpreSelMCP1->Write();
@@ -88,12 +76,21 @@ TH3F * EffPreSelMCD_R_TH3F=new TH3F("EffPreSelMCD_R_TH3F","EffPreSelMCP_R_TH2F",
 TH3F * EffPreSelMCD_TH3F=new TH3F("EffPreSelMCD_TH3F","EffPreSelMCD_TH3F",18,0,18,6,0,6,3,0,3);
 
 void MCpreSeleff(TFile * file1){
+	
+	TH2F * EffpreSelMCP1= (TH2F*) file1->Get("EffpreSelMCP1");
+	TH3F * EffpreSelMCD1= (TH3F*) file1->Get("EffpreSelMCD1");
+	TH2F * EffpreSelMCP2= (TH2F*) file1->Get("EffpreSelMCP2");
+	TH3F * EffpreSelMCD2= (TH3F*) file1->Get("EffpreSelMCD2");
+	TH2F * EffpreSelMCP1_R =(TH2F*) file1->Get("EffpreSelMCP1_R");
+	TH3F * EffpreSelMCD1_R =(TH3F*) file1->Get("EffpreSelMCD1_R");
+	TH2F * EffpreSelMCP2_R =(TH2F*) file1->Get("EffpreSelMCP2_R");
+	TH3F * EffpreSelMCD2_R =(TH3F*) file1->Get("EffpreSelMCD2_R");
 
 	string numero[18]={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17"};
 	string tagli[3]={"Matching TOF","Chi^2 R","1 Tr. Track"};
 	string nome;
 
-	cout<<"**** MC \"GOLDEN\" SEL. EFFICIENCIES ****"<<endl;
+	cout<<"********* MC \"GOLDEN\" SEL. EFFICIENCIES *********"<<endl;
 	string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
 	float EffpreSelMCP[18][3];
 	float EffpreSelMCD[18][6][3];

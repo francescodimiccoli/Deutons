@@ -26,12 +26,6 @@ void DVSMCTrackeff_Fill(TNtuple *ntupla, int l){
 }
 
 
-void DVSMCTrackeff_Copy(TFile * file){
-        ECALvsR_D =(TH2F*) file->Get("ECALvsR_D");
-	ECALvsR_MC =(TH2F*) file->Get("ECALvsR_MC");
-        return;
-}
-
 void DVSMCTrackeff_Write(){
         ECALvsR_D->Write(); 
         ECALvsR_MC->Write();
@@ -40,6 +34,9 @@ void DVSMCTrackeff_Write(){
 
 TCanvas *c28= new TCanvas("R vs ECAL E.dep.");
 void DVSMCTrackeff(TFile * file){
+	TH2F * ECALvsR_D =(TH2F*) file->Get("ECALvsR_D");
+        TH2F * ECALvsR_MC =(TH2F*) file->Get("ECALvsR_MC");
+	
 	c28->Divide(1,2);
 	c28->cd(1);
 	gPad->SetLogx();

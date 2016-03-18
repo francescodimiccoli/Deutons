@@ -13,9 +13,6 @@ void MigrationMatrix_Fill(TNtuple *ntupla, int l){
 	
 }
 
-void MigrationMatrix_Copy(TFile * file){
-        MigrMatrix= (TH2F*) file->Get("MigrMatrix");
-}
 
 void MigrationMatrix_Write(){
         MigrMatrix->Write();
@@ -23,7 +20,10 @@ void MigrationMatrix_Write(){
 
 TCanvas * c27 = new TCanvas("Rigidity Migration matrix");
 
-void MigrationMatrix(){
+void MigrationMatrix(TFile * file1){
+	TH2F * MigrMatrix= (TH2F*) file1->Get("MigrMatrix");
+	
+	cout<<"****** Migration Matrix **********"<<endl;
 	float norm[43]={0};
 	for(int M=0;M<43;M++)for(int l=0;l<43;l++) norm[M]+=MigrMatrix->GetBinContent(l+1,M+1);
 	for(int M=0;M<43;M++)for(int l=0;l<43;l++) MigrMatrix->SetBinContent(l+1,M+1,MigrMatrix->GetBinContent(l+1,M+1)/norm[M]);

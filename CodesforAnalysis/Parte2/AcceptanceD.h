@@ -16,8 +16,9 @@ TH2F * AcceptDTOF = new TH2F("AcceptDTOF","AcceptDTOF",18,0,18,6,0,6);
 TH2F * AcceptDNaF = new TH2F("AcceptDNaF","AcceptDNaF",18,0,18,6,0,6);
 TH2F * AcceptDAgl = new TH2F("AcceptDAgl","AcceptDAgl",18,0,18,6,0,6);
 
-void AcceptanceD(TFile * file1){
 
+
+void AcceptanceD(TFile * file1){
 	cout<<"****************** ACCEPTANCE CALCULATION ******************"<<endl;
 	//Deutons
 	float AcceptgeoD[43][6]={{0}};

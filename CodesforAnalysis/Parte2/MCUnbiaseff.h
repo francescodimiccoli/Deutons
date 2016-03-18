@@ -42,18 +42,6 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l){
 	return;
 }
 
-void MCUnbiaseff_Copy(TFile * file){
-	EffUnbiasMCP1= (TH1F*) file->Get("EffUnbiasMCP1");
-        EffUnbiasMCD1= (TH2F*) file->Get("EffUnbiasMCD1");
-        EffUnbiasMCP2= (TH1F*) file->Get("EffUnbiasMCP2");
-        EffUnbiasMCD2= (TH2F*) file->Get("EffUnbiasMCD2");
-        EffUnbiasMCP1_R =(TH1F*) file->Get("EffUnbiasMCP1_R");
-        EffUnbiasMCD1_R =(TH2F*) file->Get("EffUnbiasMCD1_R");
-        EffUnbiasMCP2_R =(TH1F*) file->Get("EffUnbiasMCP2_R");
-        EffUnbiasMCD2_R =(TH2F*) file->Get("EffUnbiasMCD2_R");
-                                                               	
-	return;	
-}
 
 void MCUnbiaseff_Write(){
         EffUnbiasMCP1->Write();
@@ -78,6 +66,15 @@ TH2F *EffUnbMCD_TH2F = new TH2F("EffUnbMCD_TH2F","EffUnbMCD_TH2F",18,0,18,6,0,6)
 
 
 void MCUnbiaseff(TFile * file1){
+
+	TH1F * EffUnbiasMCP1= (TH1F*) file1->Get("EffUnbiasMCP1");
+	TH2F * EffUnbiasMCD1= (TH2F*) file1->Get("EffUnbiasMCD1");
+	TH1F * EffUnbiasMCP2= (TH1F*) file1->Get("EffUnbiasMCP2");
+	TH2F * EffUnbiasMCD2= (TH2F*) file1->Get("EffUnbiasMCD2");
+	TH1F * EffUnbiasMCP1_R =(TH1F*) file1->Get("EffUnbiasMCP1_R");
+	TH2F * EffUnbiasMCD1_R =(TH2F*) file1->Get("EffUnbiasMCD1_R");
+	TH1F * EffUnbiasMCP2_R =(TH1F*) file1->Get("EffUnbiasMCP2_R");
+	TH2F * EffUnbiasMCD2_R =(TH2F*) file1->Get("EffUnbiasMCD2_R");
 
 	string nome;
 	Tempi = (TH1F *)file1->Get("Tempi");

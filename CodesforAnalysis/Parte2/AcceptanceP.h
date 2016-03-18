@@ -5,8 +5,14 @@ TCanvas * c22 = new TCanvas("Protons Acceptance");
 TH2F * AcceptPzone = new TH2F("AcceptPzone","AcceptPzone",43,0,43,11,0,11);
 TH2F * AcceptPzone_pre = new TH2F("AcceptPzone_pre","AcceptPzone_pre",43,0,43,11,0,11);
 
-void AcceptanceP(TFile * file1){
 
+
+void AcceptanceP(TFile * file1){
+	TH1F * EffTriggMCP1_R=(TH1F *)file1->Get("EffTriggMCP1_R");
+	TH1F * EffpreselMCP1_R=(TH1F *)file1->Get("EffpreselMCP1_R");
+	
+	cout<<"****************** ACCEPTANCE (R bins) CALCULATION ******************"<<endl;
+	cout<<EffPreMCP_R_TH1F<<" "<<CorrLAT_pre[0]<<" "<<CorrLAT_pre[1]<<" "<<CorrLAT_pre[2]<<endl;
 	float AcceptgeoP[43]={0};
 	float AcceptSelMCP[43]={0};
 	float AcceptpreMCP[43]={0};
@@ -19,6 +25,7 @@ void AcceptanceP(TFile * file1){
 	float triggertot=(pow(0.0308232619,-1))*eventiprova;
 	for(int i=0;i<43;i++) 
 		AcceptgeoP[i]=EffTriggerMCP_R_TH1F->GetBinContent(i+1)*EffTOF_MCP_R_TH1F->GetBinContent(i+1)*EffTriggMCP1_R->GetBinContent(i+1)/triggerbin*47.78;
+	for(int i=0;i<43;i++) cout<<AcceptgeoP[i]<<endl;
 	for(int j=0;j<11;j++) 
 		for(int i=0;i<43;i++)	{
 			//AcceptSelP[i][j]=AcceptgeoP[i]*EffTrackerMCP_R_TH1F->GetBinContent(i+1);
@@ -40,7 +47,7 @@ void AcceptanceP(TFile * file1){
 			AcceptSelP[i][j]*=LikDVSMC_P_graph->GetBinContent(i+1,1)*DistDVSMC_P_graph->GetBinContent(i+1,1);	
 			}
 	
-	
+		
 	c22->cd();
 	gPad->SetLogx();
         gPad->SetLogy();

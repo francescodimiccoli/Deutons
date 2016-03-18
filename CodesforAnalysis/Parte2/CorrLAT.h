@@ -27,6 +27,8 @@ void CorrLAT(TFile * file1){
         TH2F * esposizionedgeo = (TH2F*)file1->Get("esposizionedgeo");
         TH2F * esposizionedgeoNaF = (TH2F*)file1->Get("esposizionedgeoNaF");
         TH2F * esposizionedgeoAgl = (TH2F*)file1->Get("esposizionedgeoAgl");
+	TH2F * PCountsgeo = (TH2F *)file1->Get("PCountsgeo");
+        TH2F * PCountsgeo_prim = (TH2F *)file1->Get("PCountsgeo_prim");
 
 	cout<<"******* LAT CORRECTION *************"<<endl;
 	float CorrLAT_tot[11]={1,1,1,1,1,1,1,1,1,1,1};

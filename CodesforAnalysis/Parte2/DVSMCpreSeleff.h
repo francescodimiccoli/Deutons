@@ -61,18 +61,6 @@ void DVSMCpreSeleff_Fill(TNtuple *ntupla, int l){
 }
 
 
-void DVSMCpreSeleff_Copy(TFile * file){
-        EffpreSelMCvsD1= (TH2F*) file->Get("EffpreSelMCvsD1");
-        EffpreSelMCvsD2= (TH2F*) file->Get("EffpreSelMCvsD2");
-        EffpreSelMCvsD1_R =(TH2F*) file->Get("EffpreSelMCvsD1_R");
-        EffpreSelMCvsD2_R =(TH2F*) file->Get("EffpreSelMCvsD2_R");
-	EffpreSelMCvsD1_D= (TH3F*) file->Get("EffpreSelMCvsD1_D");
-        EffpreSelMCvsD2_D= (TH3F*) file->Get("EffpreSelMCvsD2_D");
-        EffpreSelMCvsD1_R_D =(TH3F*) file->Get("EffpreSelMCvsD1_R_D");
-        EffpreSelMCvsD2_R_D =(TH3F*) file->Get("EffpreSelMCvsD2_R_D");
-
-        return;
-}
 
 void DVSMCpreSeleff_Write(){
         EffpreSelMCvsD1->Write();
@@ -102,6 +90,15 @@ void DVSMCpreSeleff(TFile * file){
 	string numero[18]={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17"};
         string tagli[3]={"Matching TOF","Chi^2 R","1 Tr. Track"};
         string nome;
+
+	TH2F* EffpreSelMCvsD1= (TH2F*) file->Get("EffpreSelMCvsD1");
+	TH2F* EffpreSelMCvsD2= (TH2F*) file->Get("EffpreSelMCvsD2");
+	TH2F* EffpreSelMCvsD1_R =(TH2F*) file->Get("EffpreSelMCvsD1_R");
+	TH2F* EffpreSelMCvsD2_R =(TH2F*) file->Get("EffpreSelMCvsD2_R");
+	TH3F* EffpreSelMCvsD1_D= (TH3F*) file->Get("EffpreSelMCvsD1_D");
+	TH3F* EffpreSelMCvsD2_D= (TH3F*) file->Get("EffpreSelMCvsD2_D");
+	TH3F* EffpreSelMCvsD1_R_D =(TH3F*) file->Get("EffpreSelMCvsD1_R_D");
+	TH3F* EffpreSelMCvsD2_R_D =(TH3F*) file->Get("EffpreSelMCvsD2_R_D");
 
 	cout<<"************************************************* DATA vs MC PRESELECTIONS EFFICIENCIES **********************************************************************"<<endl;
         string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};

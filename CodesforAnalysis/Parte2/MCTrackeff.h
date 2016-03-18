@@ -128,43 +128,6 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l){
 	return; 
 }
 
-void MCTrackeff_Copy(TFile * file){
-	EffTriggMCP1= (TH1F*) file->Get("EffTriggMCP1");
-	EffTriggMCD1= (TH2F*) file->Get("EffTriggMCD1");
-	EffTriggMCP2= (TH1F*) file->Get("EffTriggMCP2");
-	EffTriggMCD2= (TH2F*) file->Get("EffTriggMCD2");
-	EffTriggMCP1_R =(TH1F*) file->Get("EffTriggMCP1_R");
-	EffTriggMCD1_R =(TH2F*) file->Get("EffTriggMCD1_R");
-	EffTriggMCP2_R =(TH1F*) file->Get("EffTriggMCP2_R");
-	EffTriggMCD2_R =(TH2F*) file->Get("EffTriggMCD2_R");
-	EffQTOFMCP1= (TH1F*) file->Get("EffQTOFMCP1");
-	EffQTOFMCD1= (TH2F*) file->Get("EffQTOFMCD1");
-	EffQTOFMCP2= (TH1F*) file->Get("EffQTOFMCP2");
-	EffQTOFMCD2= (TH2F*) file->Get("EffQTOFMCD2");
-	EffQTOFMCP1_R =(TH1F*) file->Get("EffQTOFMCP1_R");
-	EffQTOFMCD1_R =(TH2F*) file->Get("EffQTOFMCD1_R");
-	EffQTOFMCP2_R =(TH1F*) file->Get("EffQTOFMCP2_R");
-	EffQTOFMCD2_R =(TH2F*) file->Get("EffQTOFMCD2_R");
-	EffTrackMCP1= (TH1F*) file->Get("EffTrackMCP1");
-	EffTrackMCD1= (TH2F*) file->Get("EffTrackMCD1"); 
-	EffTrackMCP2= (TH1F*) file->Get("EffTrackMCP2");
-	EffTrackMCD2= (TH2F*) file->Get("EffTrackMCD2");
-	EffTrackMCP1_R =(TH1F*) file->Get("EffTrackMCP1_R");
-	EffTrackMCD1_R =(TH2F*) file->Get("EffTrackMCD1_R");
-	EffTrackMCP2_R =(TH1F*) file->Get("EffTrackMCP2_R");
-	EffTrackMCD2_R =(TH2F*) file->Get("EffTrackMCD2_R");
-	EffTOFMCP1= (TH1F*) file->Get("EffTOFMCP1");
-	EffTOFMCD1= (TH2F*) file->Get("EffTOFMCD1");
-	EffTOFMCP2= (TH1F*) file->Get("EffTOFMCP2");
-	EffTOFMCD2= (TH2F*) file->Get("EffTOFMCD2");
-	EffTOFMCP1_R =(TH1F*) file->Get("EffTOFMCP1_R");
-	EffTOFMCD1_R =(TH2F*) file->Get("EffTOFMCD1_R");
-	EffTOFMCP2_R =(TH1F*) file->Get("EffTOFMCP2_R");
-	EffTOFMCD2_R =(TH2F*) file->Get("EffTOFMCD2_R");
-	EffMassMCP1_R =(TH1F*) file->Get("EffMassMCP1_R");
-	EffMassMCP2_R =(TH1F*) file->Get("EffMassMCP2_R");
-	return; 
-}
 
 
 void MCTrackeff_Write(){
@@ -237,6 +200,41 @@ TH2F * EffTOF_MCD_R_TH2F=new TH2F("EffTOFMCD_R_TH2F","EffTOFMCD_R_TH2F",43,0,43,
 TH2F * EffTOF_MCD_TH2F=new TH2F("EffTOFMCD_TH2F","EffTOFMCD_TH2F",18,0,18,6,0,6);
 
 void MCTrackeff(TFile * file1){
+
+	TH1F * EffTriggMCP1= (TH1F*) file1->Get("EffTriggMCP1");
+	TH2F * EffTriggMCD1= (TH2F*) file1->Get("EffTriggMCD1");
+	TH1F * EffTriggMCP2= (TH1F*) file1->Get("EffTriggMCP2");
+	TH2F * EffTriggMCD2= (TH2F*) file1->Get("EffTriggMCD2");
+	TH1F * EffTriggMCP1_R =(TH1F*) file1->Get("EffTriggMCP1_R");
+	TH2F * EffTriggMCD1_R =(TH2F*) file1->Get("EffTriggMCD1_R");
+	TH1F * EffTriggMCP2_R =(TH1F*) file1->Get("EffTriggMCP2_R");
+	TH2F * EffTriggMCD2_R =(TH2F*) file1->Get("EffTriggMCD2_R");
+	TH1F * EffQTOFMCP1= (TH1F*) file1->Get("EffQTOFMCP1");
+	TH2F * EffQTOFMCD1= (TH2F*) file1->Get("EffQTOFMCD1");
+	TH1F * EffQTOFMCP2= (TH1F*) file1->Get("EffQTOFMCP2");
+	TH2F * EffQTOFMCD2= (TH2F*) file1->Get("EffQTOFMCD2");
+	TH1F * EffQTOFMCP1_R =(TH1F*) file1->Get("EffQTOFMCP1_R");
+	TH2F * EffQTOFMCD1_R =(TH2F*) file1->Get("EffQTOFMCD1_R");
+	TH1F * EffQTOFMCP2_R =(TH1F*) file1->Get("EffQTOFMCP2_R");
+	TH2F * EffQTOFMCD2_R =(TH2F*) file1->Get("EffQTOFMCD2_R");
+	TH1F * EffTrackMCP1= (TH1F*) file1->Get("EffTrackMCP1");
+	TH2F * EffTrackMCD1= (TH2F*) file1->Get("EffTrackMCD1");
+	TH1F * EffTrackMCP2= (TH1F*) file1->Get("EffTrackMCP2");
+	TH2F * EffTrackMCD2= (TH2F*) file1->Get("EffTrackMCD2");
+	TH1F * EffTrackMCP1_R =(TH1F*) file1->Get("EffTrackMCP1_R");
+	TH2F * EffTrackMCD1_R =(TH2F*) file1->Get("EffTrackMCD1_R");
+	TH1F * EffTrackMCP2_R =(TH1F*) file1->Get("EffTrackMCP2_R");
+	TH2F * EffTrackMCD2_R =(TH2F*) file1->Get("EffTrackMCD2_R");
+	TH1F * EffTOFMCP1= (TH1F*) file1->Get("EffTOFMCP1");
+	TH2F * EffTOFMCD1= (TH2F*) file1->Get("EffTOFMCD1");
+	TH1F * EffTOFMCP2= (TH1F*) file1->Get("EffTOFMCP2");
+	TH2F * EffTOFMCD2= (TH2F*) file1->Get("EffTOFMCD2");
+	TH1F * EffTOFMCP1_R =(TH1F*) file1->Get("EffTOFMCP1_R");
+	TH2F * EffTOFMCD1_R =(TH2F*) file1->Get("EffTOFMCD1_R");
+	TH1F * EffTOFMCP2_R =(TH1F*) file1->Get("EffTOFMCP2_R");
+	TH2F * EffTOFMCD2_R =(TH2F*) file1->Get("EffTOFMCD2_R");
+	TH1F * EffMassMCP1_R =(TH1F*) file1->Get("EffMassMCP1_R");
+	TH1F * EffMassMCP2_R =(TH1F*) file1->Get("EffMassMCP2_R");
 
 	string numero[18]={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17"};
 	string tagli[10]={"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};

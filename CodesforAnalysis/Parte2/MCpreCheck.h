@@ -18,10 +18,6 @@ void MCpreCheck_Fill(TNtuple *ntupla, int l){
 	}
 } 
 
-void MCpreCheck_Copy(TFile * file){
-        EffpreCheckP1_R= (TH1F*) file->Get("EffpreCheckP1_R");
-        EffpreCheckP2_R= (TH1F*) file->Get("EffpreCheckP2_R");
-}
 
 void MCpreCheck_Write(){
         EffpreCheckP1_R->Write();
@@ -32,9 +28,12 @@ void MCpreCheck_Write(){
 TCanvas *c10 =new TCanvas("Cascade Pres. Eff.");
 TH1F *EffPreCheckP_R_TH1F = new TH1F("EffPreCheckP_R_TH1F","EffPreCheckP_R_TH1F",43,0,43);
                                                                
-void MCpreCheck(){
+void MCpreCheck(TFile *file1){
 
-	cout<<"**** MC P Eff. CHECK ****"<<endl;
+	TH1F * EffpreCheckP1_R= (TH1F*) file1->Get("EffpreCheckP1_R");
+        TH1F * EffpreCheckP2_R= (TH1F*) file1->Get("EffpreCheckP2_R");
+
+	cout<<"******************** MC P Eff. CHECK *****************"<<endl;
 	float EffpreCheckP_R[43]={0};
         for(int i=1;i<43;i++) EffpreCheckP_R[i]=EffpreCheckP2_R->GetBinContent(i+1)/(float)EffpreCheckP1_R->GetBinContent(i+1);
 	for(int i=1;i<43;i++) EffPreCheckP_R_TH1F->SetBinContent(i+1,EffpreCheckP_R[i]);

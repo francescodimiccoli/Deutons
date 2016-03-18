@@ -27,13 +27,6 @@ void MCQualCheck2_Fill(TNtuple *ntupla, int l){
 	return;
 }
 
-void MCQualCheck2_Copy(TFile * file1){
-	EffDistCheckMCP1 = (TH1F *)file1->Get("EffDistCheckMCP1");
-	EffDistCheckMCP2 = (TH1F *)file1->Get("EffDistCheckMCP2");
-	EffLik2CheckMCP1 = (TH1F *)file1->Get("EffLik2CheckMCP1");
-	EffLik2CheckMCP2 = (TH1F *)file1->Get("EffLik2CheckMCP2");
-	return;
-}
 
 void MCQualCheck2_Write(){
         EffDistCheckMCP1->Write();
@@ -50,7 +43,12 @@ TH2F * EffLik2CheckMCP_TH1F = new TH2F("EffLik2CheckMCP_TH1F","EffLik2CheckMCP_T
 TH2F * EffDistCheckMCP_TH1F = new TH2F("EffDistCheckMCP_TH1F","EffDistCheckMCP_TH1F",43,0,43,2,0,2);
 
 void MCQualCheck2(TFile * file1){
-        cout<<"**** EDEP L1 MC QUALITY SEL. CHECK ****"<<endl;
+	TH1F * EffDistCheckMCP1 = (TH1F *)file1->Get("EffDistCheckMCP1");
+	TH1F * EffDistCheckMCP2 = (TH1F *)file1->Get("EffDistCheckMCP2");
+	TH1F * EffLik2CheckMCP1 = (TH1F *)file1->Get("EffLik2CheckMCP1");
+	TH1F * EffLik2CheckMCP2 = (TH1F *)file1->Get("EffLik2CheckMCP2");
+
+	cout<<"******** EDEP L1 MC QUALITY SEL. CHECK ********"<<endl;
 	float EffDistCheckP[43]={0};
         for(int i=1;i<43;i++) EffDistCheckP[i]=EffDistCheckMCP1->GetBinContent(i+1)/(float)EffDistCheckMCP2->GetBinContent(i+1);
 	float EffLik2CheckP[43]={0};

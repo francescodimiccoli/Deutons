@@ -20,7 +20,6 @@ TH2F * EffpreselMCD1_R=new TH2F("EffpreselMCD1_R","EffpreselMCD1_R",43,0,43,6,0,
 TH2F * EffpreselMCD2_R=new TH2F("EffpreselMCD2_R","EffpreselMCD2_R",43,0,43,6,0,6);
 
 
-
 void MCpreseff_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
 	
@@ -82,26 +81,6 @@ void MCpreseff_Fill(TNtuple *ntupla, int l){
 	return;
 }
 
-void MCpreeff_Copy(TFile * file){
-	EffpreselMCP1= (TH1F*) file->Get("EffpreselMCP1");
-	EffpreselMCP1NaF= (TH1F*) file->Get("EffpreselMCP1NaF");
-	EffpreselMCP1Agl= (TH1F*) file->Get("EffpreselMCP1Agl");
-	EffpreselMCD1= (TH2F*) file->Get("EffpreselMCD1");
-	EffpreselMCD1NaF= (TH2F*) file->Get("EffpreselMCD1NaF");
-	EffpreselMCD1Agl= (TH2F*) file->Get("EffpreselMCD1Agl");
-	EffpreselMCP2= (TH1F*) file->Get("EffpreselMCP2");
-	EffpreselMCP2NaF= (TH1F*) file->Get("EffpreselMCP2NaF");
-	EffpreselMCP2Agl= (TH1F*) file->Get("EffpreselMCP2Agl");
-	EffpreselMCD2= (TH2F*) file->Get("EffpreselMCD2");
-	EffpreselMCD2NaF= (TH2F*) file->Get("EffpreselMCD2NaF");
-	EffpreselMCD2Agl= (TH2F*) file->Get("EffpreselMCD2Agl");
-	EffpreselMCP1_R =(TH1F*) file->Get("EffpreselMCP1_R");
-	EffpreselMCD1_R =(TH2F*) file->Get("EffpreselMCD1_R");
-	EffpreselMCP2_R =(TH1F*) file->Get("EffpreselMCP2_R");
-	EffpreselMCD2_R =(TH2F*) file->Get("EffpreselMCD2_R");
-
-	return;	
-}
 
 void MCpreeff_Write(){
         EffpreselMCP1->Write();
@@ -124,26 +103,40 @@ void MCpreeff_Write(){
 }
 
 
-TCanvas *c4=new TCanvas("Preselections Efficiency (R bins)");
-TCanvas *c4_bis=new TCanvas("Preselections Efficiency (Beta bins)");
-
-TH1F *EffPreMCP_R_TH1F = new TH1F("EffPreMCP_R_TH1F","EffPreMCP_R_TH1F",43,0,43);
-TH1F *EffPreMCP_TH1F = new TH1F("EffPreMCP_TH1F","EffPreMCP_TH1F",18,0,18);
-TH1F *EffPreMCPNaF_TH1F = new TH1F("EffPreMCPNaF_TH1F","EffPreMCPNaF_TH1F",18,0,18);
-TH1F *EffPreMCPAgl_TH1F = new TH1F("EffPreMCPAgl_TH1F","EffPreMCPAgl_TH1F",18,0,18);
-TH2F *EffPreMCD_R_TH2F = new TH2F("EffPreMCD_R_TH2F","EffPreMCD_R_TH2F",43,0,43,6,0,6);
-TH2F *EffPreMCD_TH2F = new TH2F("EffPreMCD_TH2F","EffPreMCD_TH2F",18,0,18,6,0,6);
-TH2F *EffPreMCDNaF_TH2F = new TH2F("EffPreMCDNaF_TH2F","EffPreMCDNaF_TH2F",18,0,18,6,0,6);
-TH2F *EffPreMCDAgl_TH2F = new TH2F("EffPreMCDAgl_TH2F","EffPreMCDAgl_TH2F",18,0,18,6,0,6);
 
 void MCpreeff(TFile * file1){
 
+	TH1F * EffpreselMCP1= (TH1F*) file1->Get("EffpreselMCP1");
+	TH1F * EffpreselMCP1NaF= (TH1F*) file1->Get("EffpreselMCP1NaF");
+	TH1F * EffpreselMCP1Agl= (TH1F*) file1->Get("EffpreselMCP1Agl");
+	TH2F * EffpreselMCD1= (TH2F*) file1->Get("EffpreselMCD1");
+	TH2F * EffpreselMCD1NaF= (TH2F*) file1->Get("EffpreselMCD1NaF");
+	TH2F * EffpreselMCD1Agl= (TH2F*) file1->Get("EffpreselMCD1Agl");
+	TH1F * EffpreselMCP2= (TH1F*) file1->Get("EffpreselMCP2");
+	TH1F * EffpreselMCP2NaF= (TH1F*) file1->Get("EffpreselMCP2NaF");
+	TH1F * EffpreselMCP2Agl= (TH1F*) file1->Get("EffpreselMCP2Agl");
+	TH2F * EffpreselMCD2= (TH2F*) file1->Get("EffpreselMCD2");
+	TH2F * EffpreselMCD2NaF= (TH2F*) file1->Get("EffpreselMCD2NaF");
+	TH2F * EffpreselMCD2Agl= (TH2F*) file1->Get("EffpreselMCD2Agl");
+	TH1F * EffpreselMCP1_R =(TH1F*) file1->Get("EffpreselMCP1_R");
+	TH2F * EffpreselMCD1_R =(TH2F*) file1->Get("EffpreselMCD1_R");
+	TH1F * EffpreselMCP2_R =(TH1F*) file1->Get("EffpreselMCP2_R");
+	TH2F * EffpreselMCD2_R =(TH2F*) file1->Get("EffpreselMCD2_R");
 	string numero[18]={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","18"};
 	string tagli[10]={"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
 	string nome;
 
 	cout<<"**** MC PRESELECTIONS EFFICIENCY (FULL SET) ****"<<endl;
-	c4_bis->Divide(3,1);
+	
+	TH1F *EffPreMCP_R_TH1F = new TH1F("EffPreMCP_R_TH1F","EffPreMCP_R_TH1F",43,0,43);
+	TH1F *EffPreMCP_TH1F = new TH1F("EffPreMCP_TH1F","EffPreMCP_TH1F",18,0,18);
+	TH1F *EffPreMCPNaF_TH1F = new TH1F("EffPreMCPNaF_TH1F","EffPreMCPNaF_TH1F",18,0,18);
+	TH1F *EffPreMCPAgl_TH1F = new TH1F("EffPreMCPAgl_TH1F","EffPreMCPAgl_TH1F",18,0,18);
+	TH2F *EffPreMCD_R_TH2F = new TH2F("EffPreMCD_R_TH2F","EffPreMCD_R_TH2F",43,0,43,6,0,6);
+	TH2F *EffPreMCD_TH2F = new TH2F("EffPreMCD_TH2F","EffPreMCD_TH2F",18,0,18,6,0,6);
+	TH2F *EffPreMCDNaF_TH2F = new TH2F("EffPreMCDNaF_TH2F","EffPreMCDNaF_TH2F",18,0,18,6,0,6);
+	TH2F *EffPreMCDAgl_TH2F = new TH2F("EffPreMCDAgl_TH2F","EffPreMCDAgl_TH2F",18,0,18,6,0,6);
+
 	float EffpreselMCP[18]={0};
 	for(int i=0;i<18;i++) if(EffpreselMCP1->GetBinContent(i+1)>0) if(EffpreselMCP2->GetBinContent(i+1)<EffpreselMCP1->GetBinContent(i+1))
 		EffpreselMCP[i]=EffpreselMCP2->GetBinContent(i+1)/(float)EffpreselMCP1->GetBinContent(i+1);
@@ -173,6 +166,30 @@ void MCpreeff(TFile * file1){
 	float EffpreselMCD_R[43][6]={{0}};
 	for(int i=4;i<43;i++) for(int h=0;h<6;h++) if(EffpreselMCD1_R->GetBinContent(i+1,h+1)>EffpreselMCD2_R->GetBinContent(i+1,h+1))
 		EffpreselMCD_R[i][h]=EffpreselMCD2_R->GetBinContent(i+1,h+1)/(float)EffpreselMCD1_R->GetBinContent(i+1,h+1);
+
+	
+	cout<<"*** Updating P1 file ****"<<endl;
+	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+	if(!file1){
+		nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
+		file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+	}
+	file1->mkdir("Result");
+	file1->cd("Result");
+	EffPreMCP_R_TH1F->Write();
+	EffPreMCP_TH1F ->Write();
+	EffPreMCPNaF_TH1F->Write();
+	EffPreMCPAgl_TH1F ->Write();
+	EffPreMCD_R_TH2F->Write();
+	EffPreMCD_TH2F->Write();
+	EffPreMCDNaF_TH2F ->Write();
+	EffPreMCDAgl_TH2F->Write();
+	file1->Close();
+
+	TCanvas *c4=new TCanvas("Preselections Efficiency (R bins)");
+	TCanvas *c4_bis=new TCanvas("Preselections Efficiency (Beta bins)");	
+	c4_bis->Divide(3,1);
 
 	c4->cd();
 	gPad->SetLogx();
@@ -325,4 +342,14 @@ void MCpreeff(TFile * file1){
                 }
         }
 	
+
+	cout<<"*** Updating Results file ***"<<endl;
+	nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+	f_out->mkdir("MC Results");
+	f_out->mkdir("MC Results/Preselections");
+	f_out->cd("MC Results/Preselections");
+	c4->Write();
+	c4_bis->Write();
+	f_out->Close();
 }

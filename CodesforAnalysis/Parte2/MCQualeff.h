@@ -85,34 +85,6 @@ void MCQualeff_Fill(TNtuple *ntupla, int l){
 }
 
 
-void MCQualeff_Copy(TFile * file1){
-	EffQualMCP = (TH1F *)file1->Get("EffQualMCP");
-	EffQualMCP_Beta = (TH1F *)file1->Get("EffQualMCP_Beta");
-	EffQualMCP_BetaNaF = (TH1F *)file1->Get("EffQualMCP_BetaNaF");
-	EffQualMCP_BetaAgl = (TH1F *)file1->Get("EffQualMCP_BetaAgl");	
-	EffQualMCD = (TH2F *)file1->Get("EffQualMCD");
-        EffQualMCD_Beta = (TH2F *)file1->Get("EffQualMCD_Beta");
-	EffQualMCD_BetaNaF = (TH2F *)file1->Get("EffQualMCD_BetaNaF");
-	EffQualMCD_BetaAgl = (TH2F *)file1->Get("EffQualMCD_BetaAgl");
-	EffDistMCP = (TH1F *)file1->Get("EffDistMCP");
-	EffLikMCP = (TH1F *)file1->Get("EffLikMCP");
-	EffDistMCP_Beta = (TH1F *)file1->Get("EffDistMCP_Beta");
-	EffLikMCP_Beta = (TH1F *)file1->Get("EffLikMCP_Beta");
-	EffDistMCP_BetaNaF = (TH1F *)file1->Get("EffDistMCP_BetaNaF");
-        EffLikMCP_BetaNaF = (TH1F *)file1->Get("EffLikMCP_BetaNaF");
-	EffDistMCP_BetaAgl = (TH1F *)file1->Get("EffDistMCP_BetaAgl");
-        EffLikMCP_BetaAgl = (TH1F *)file1->Get("EffLikMCP_BetaAgl");
-	EffDistMCD = (TH2F *)file1->Get("EffDistMCD");
-        EffLikMCD = (TH2F *)file1->Get("EffLikMCD");
-        EffDistMCD_Beta = (TH2F *)file1->Get("EffDistMCD_Beta");
-        EffLikMCD_Beta = (TH2F *)file1->Get("EffLikMCD_Beta");
-	EffDistMCD_BetaNaF = (TH2F *)file1->Get("EffDistMCD_BetaNaF");
-        EffLikMCD_BetaNaF = (TH2F *)file1->Get("EffLikMCD_BetaNaF");
-	EffDistMCD_BetaAgl = (TH2F *)file1->Get("EffDistMCD_BetaAgl");
-        EffLikMCD_BetaAgl = (TH2F *)file1->Get("EffLikMCD_BetaAgl");
-
-	return;
-}
 
 void MCQualeff_Write(){
         EffQualMCP->Write(); 
@@ -169,6 +141,32 @@ TH2F * EffMCDistD_BetaAgl_TH2F = new TH2F("EffMCDistD_BetaAgl_TH2F","EffMCDistD_
 
 
 void MCQualeff(TFile * file1){
+	
+	TH1F * EffQualMCP = (TH1F *)file1->Get("EffQualMCP");
+	TH1F * EffQualMCP_Beta = (TH1F *)file1->Get("EffQualMCP_Beta");
+	TH1F * EffQualMCP_BetaNaF = (TH1F *)file1->Get("EffQualMCP_BetaNaF");
+	TH1F * EffQualMCP_BetaAgl = (TH1F *)file1->Get("EffQualMCP_BetaAgl");
+	TH2F * EffQualMCD = (TH2F *)file1->Get("EffQualMCD");
+	TH2F * EffQualMCD_Beta = (TH2F *)file1->Get("EffQualMCD_Beta");
+	TH2F * EffQualMCD_BetaNaF = (TH2F *)file1->Get("EffQualMCD_BetaNaF");
+	TH2F * EffQualMCD_BetaAgl = (TH2F *)file1->Get("EffQualMCD_BetaAgl");
+	TH1F * EffDistMCP = (TH1F *)file1->Get("EffDistMCP");
+	TH1F * EffLikMCP = (TH1F *)file1->Get("EffLikMCP");
+	TH1F * EffDistMCP_Beta = (TH1F *)file1->Get("EffDistMCP_Beta");
+	TH1F * EffLikMCP_Beta = (TH1F *)file1->Get("EffLikMCP_Beta");
+	TH1F * EffDistMCP_BetaNaF = (TH1F *)file1->Get("EffDistMCP_BetaNaF");
+	TH1F * EffLikMCP_BetaNaF = (TH1F *)file1->Get("EffLikMCP_BetaNaF");
+	TH1F * EffDistMCP_BetaAgl = (TH1F *)file1->Get("EffDistMCP_BetaAgl");
+	TH1F * EffLikMCP_BetaAgl = (TH1F *)file1->Get("EffLikMCP_BetaAgl");
+	TH2F * EffDistMCD = (TH2F *)file1->Get("EffDistMCD");
+	TH2F * EffLikMCD = (TH2F *)file1->Get("EffLikMCD");
+	TH2F * EffDistMCD_Beta = (TH2F *)file1->Get("EffDistMCD_Beta");
+	TH2F * EffLikMCD_Beta = (TH2F *)file1->Get("EffLikMCD_Beta");
+	TH2F * EffDistMCD_BetaNaF = (TH2F *)file1->Get("EffDistMCD_BetaNaF");
+	TH2F * EffLikMCD_BetaNaF = (TH2F *)file1->Get("EffLikMCD_BetaNaF");
+	TH2F * EffDistMCD_BetaAgl = (TH2F *)file1->Get("EffDistMCD_BetaAgl");
+	TH2F * EffLikMCD_BetaAgl = (TH2F *)file1->Get("EffLikMCD_BetaAgl");
+
 	cout<<"**** MC QUALITY SEL. EFFICIENCIES ****"<<endl;		
 
 	float EffLikP[43]={0};

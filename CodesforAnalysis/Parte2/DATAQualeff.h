@@ -47,21 +47,6 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 	return;
 }
 
-
-void DATAQualeff_Copy(TFile * file1){
-	EffQualDATAP = (TH2F *)file1->Get("EffQualDATAP");
-	EffDistDATAP = (TH2F *)file1->Get("EffDistDATAP");
-	EffLikDATAP = (TH2F *)file1->Get("EffLikDATAP");
-	EffQualDATANaFP = (TH2F *)file1->Get("EffQualDATANaFP");
-        EffDistDATANaFP = (TH2F *)file1->Get("EffDistDATANaFP");
-        EffLikDATANaFP = (TH2F *)file1->Get("EffLikDATANaFP");
-	EffQualDATAAglP = (TH2F *)file1->Get("EffQualDATAAglP");
-        EffDistDATAAglP = (TH2F *)file1->Get("EffDistDATAAglP");
-        EffLikDATAAglP = (TH2F *)file1->Get("EffLikDATAAglP");
-	cout<<EffQualDATAP<<" "<<EffDistDATAP<<" "<<EffLikDATAP<<" "<<EffQualDATANaFP<<" "<<EffDistDATANaFP<<" "<<EffLikDATANaFP<<" "<< EffQualDATAAglP<<" "<<EffDistDATAAglP<<" "<<EffLikDATAAglP<<endl;
-	return;
-}
-
 void DATAQualeff_Write(){
         EffQualDATAP->Write();
         EffDistDATAP->Write();
@@ -82,34 +67,34 @@ TCanvas *c16=new TCanvas("Latitude Distance Efficiency");
 
 TF1 * CorrLAT_Lik;
 TF1 * CorrLAT_Dist;
-
 TH2F *CorrLAT_Lik_spl;
 TGraphErrors *CorrLAT_Lik_Spl;
-
 TH2F *CorrLAT_Dist_spl;
 TGraphErrors *CorrLAT_Dist_Spl;
-
-
 TF1 * CorrLAT_LikNaF;
 TF1 * CorrLAT_DistNaF;
-
 TH2F *CorrLAT_LikNaF_spl;
 TGraphErrors *CorrLAT_LikNaF_Spl;
-
 TH2F *CorrLAT_DistNaF_spl;
 TGraphErrors *CorrLAT_DistNaF_Spl;
-
-
 TF1 * CorrLAT_LikAgl;
 TF1 * CorrLAT_DistAgl;
-
 TH2F *CorrLAT_LikAgl_spl;
 TGraphErrors *CorrLAT_LikAgl_Spl;
-
 TH2F *CorrLAT_DistAgl_spl;
 TGraphErrors *CorrLAT_DistAgl_Spl;
 
 void DATAQualeff(TFile * file1){
+	TH2F *EffQualDATAP = (TH2F *)file1->Get("EffQualDATAP");
+	TH2F *EffDistDATAP = (TH2F *)file1->Get("EffDistDATAP");
+	TH2F *EffLikDATAP = (TH2F *)file1->Get("EffLikDATAP");
+	TH2F *EffQualDATANaFP = (TH2F *)file1->Get("EffQualDATANaFP");
+	TH2F *EffDistDATANaFP = (TH2F *)file1->Get("EffDistDATANaFP");
+	TH2F *EffLikDATANaFP = (TH2F *)file1->Get("EffLikDATANaFP");
+	TH2F *EffQualDATAAglP = (TH2F *)file1->Get("EffQualDATAAglP");
+	TH2F *EffDistDATAAglP = (TH2F *)file1->Get("EffDistDATAAglP");
+	TH2F *EffLikDATAAglP = (TH2F *)file1->Get("EffLikDATAAglP");
+
 	cout<<"********************************************************** DATA QUALITY SEL. EFFICIENCIES ************************************************************"<<endl;		
 	c15->Divide(2,3);
 	c16->Divide(2,3);

@@ -27,14 +27,6 @@ void DATAUnbiaseff_Fill(TNtuple *ntupla, int l){
 	return;
 }
 
-void DATAUnbiaseff_Copy(TFile * file){
-        EffUnbiasDATA1= (TH1F*) file->Get("EffUnbiasDATA1");
-        EffUnbiasDATA2= (TH1F*) file->Get("EffUnbiasDATA2");
-        EffUnbiasDATA1_R =(TH1F*) file->Get("EffUnbiasDATA1_R");
-        EffUnbiasDATA2_R =(TH1F*) file->Get("EffUnbiasDATA2_R");
-                                                       	
-	return;	
-}
 
 void DATAUnbiaseff_Write(){
         EffUnbiasDATA1->Write();
@@ -51,7 +43,11 @@ TH1F *EffUnbDATA_R_TH1F = new TH1F("EffUnbDATA_R_TH1F","EffUnbDATA_R_TH1F",43,0,
 TH1F *EffUnbDATA_TH1F = new TH1F("EffUnbDATA_TH1F","EffUnbDATA_TH1F",18,0,18);
 
 void DATAUnbiaseff(TFile * file1){
-
+	TH1F *EffUnbiasDATA1= (TH1F*) file1->Get("EffUnbiasDATA1");
+	TH1F *EffUnbiasDATA2= (TH1F*) file1->Get("EffUnbiasDATA2");
+	TH1F *EffUnbiasDATA1_R =(TH1F*) file1->Get("EffUnbiasDATA1_R");
+	TH1F *EffUnbiasDATA2_R =(TH1F*) file1->Get("EffUnbiasDATA2_R");
+	
 	cout<<"************************************************* DATA Unbias TRIGG. EFFICIENCy **********************************************************************"<<endl;
 	c12->Divide(2,1);
         float EffUnbiasDATA[18]={0};

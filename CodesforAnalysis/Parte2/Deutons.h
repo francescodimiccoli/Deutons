@@ -128,39 +128,6 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 	}
 }
 
-void DeutonsMC_Copy(TFile * file){
-	DTemplatesTOF=(TH2F*)file->Get("DTemplatesTOF");
-	PTemplatesTOF=(TH2F*)file->Get("PTemplatesTOF");
-	HeTemplatesTOF=(TH2F*)file->Get("HeTemplatesTOF");
-
-	DTemplatesNaF=(TH2F*)file->Get("DTemplatesNaF");
-        PTemplatesNaF=(TH2F*)file->Get("PTemplatesNaF");
-        HeTemplatesNaF=(TH2F*)file->Get("HeTemplatesNaF");
-	
-	DTemplatesAgl=(TH2F*)file->Get("DTemplatesAgl");
-        PTemplatesAgl=(TH2F*)file->Get("PTemplatesAgl");
-        HeTemplatesAgl=(TH2F*)file->Get("HeTemplatesAgl");
-	
-	DTemplatesTOF2=(TH2F*)file->Get("DTemplatesTOF2");
-        PTemplatesTOF2=(TH2F*)file->Get("PTemplatesTOF2");
-        HeTemplatesTOF2=(TH2F*)file->Get("HeTemplatesTOF2");
-        
-	DTemplatesNaF2=(TH2F*)file->Get("DTemplatesNaF2");
-        PTemplatesNaF2=(TH2F*)file->Get("PTemplatesNaF2");
-        HeTemplatesNaF2=(TH2F*)file->Get("HeTemplatesNaF2");
-        DTemplatesAgl2=(TH2F*)file->Get("DTemplatesAgl2");
-        PTemplatesAgl2=(TH2F*)file->Get("PTemplatesAgl2");
-        HeTemplatesAgl2=(TH2F*)file->Get("HeTemplatesAgl2");
-	DhistosgeoTOF=(TH3F*)file->Get("DhistosgeoTOF");
-	DhistosgeoNaF=(TH3F*)file->Get("DhistosgeoNaF");
-	DhistosgeoAgl=(TH3F*)file->Get("DhistosgeoAgl");
-	DhistosTOF=(TH2F*)file->Get("DhistosTOF");
-        DhistosNaF=(TH2F*)file->Get("DhistosNaF");
-        DhistosAgl=(TH2F*)file->Get("DhistosAgl");
-	DhistosTOF2=(TH2F*)file->Get("DhistosTOF2");
-        DhistosNaF2=(TH2F*)file->Get("DhistosNaF2");
-        DhistosAgl2=(TH2F*)file->Get("DhistosAgl2");	
-}
 
 void DeutonsMC_Write(){
         DTemplatesTOF->Write();
@@ -210,6 +177,33 @@ TH2F * PCountsNaF = new TH2F("PCountsNaF","PCountsNaF",18,0,18,2,0,2);
 TH2F * PCountsAgl = new TH2F("PCountsAgl","PCountsAgl",18,0,18,2,0,2);
 
 void DeutonsTemplFits(TFile * file1){
+	TH2F* DTemplatesTOF=(TH2F*)file1->Get("DTemplatesTOF");
+	TH2F* PTemplatesTOF=(TH2F*)file1->Get("PTemplatesTOF");
+	TH2F* HeTemplatesTOF=(TH2F*)file1->Get("HeTemplatesTOF");
+	TH2F* DTemplatesNaF=(TH2F*)file1->Get("DTemplatesNaF");
+	TH2F* PTemplatesNaF=(TH2F*)file1->Get("PTemplatesNaF");
+	TH2F* HeTemplatesNaF=(TH2F*)file1->Get("HeTemplatesNaF");
+	TH2F* DTemplatesAgl=(TH2F*)file1->Get("DTemplatesAgl");
+	TH2F* PTemplatesAgl=(TH2F*)file1->Get("PTemplatesAgl");
+	TH2F* HeTemplatesAgl=(TH2F*)file1->Get("HeTemplatesAgl");
+	TH2F* DTemplatesTOF2=(TH2F*)file1->Get("DTemplatesTOF2");
+	TH2F* PTemplatesTOF2=(TH2F*)file1->Get("PTemplatesTOF2");
+	TH2F* HeTemplatesTOF2=(TH2F*)file1->Get("HeTemplatesTOF2");
+	TH2F* DTemplatesNaF2=(TH2F*)file1->Get("DTemplatesNaF2");
+	TH2F* PTemplatesNaF2=(TH2F*)file1->Get("PTemplatesNaF2");
+	TH2F* HeTemplatesNaF2=(TH2F*)file1->Get("HeTemplatesNaF2");
+	TH2F* DTemplatesAgl2=(TH2F*)file1->Get("DTemplatesAgl2");
+	TH2F* PTemplatesAgl2=(TH2F*)file1->Get("PTemplatesAgl2");
+	TH2F* HeTemplatesAgl2=(TH2F*)file1->Get("HeTemplatesAgl2");
+	TH3F* DhistosgeoTOF=(TH3F*)file1->Get("DhistosgeoTOF");
+	TH3F* DhistosgeoNaF=(TH3F*)file1->Get("DhistosgeoNaF");
+	TH3F* DhistosgeoAgl=(TH3F*)file1->Get("DhistosgeoAgl");
+	TH2F* DhistosTOF=(TH2F*)file1->Get("DhistosTOF");
+	TH2F* DhistosNaF=(TH2F*)file1->Get("DhistosNaF");
+	TH2F* DhistosAgl=(TH2F*)file1->Get("DhistosAgl");
+	TH2F* DhistosTOF2=(TH2F*)file1->Get("DhistosTOF2");
+	TH2F* DhistosNaF2=(TH2F*)file1->Get("DhistosNaF2");
+	TH2F* DhistosAgl2=(TH2F*)file1->Get("DhistosAgl2");
 	
 	cout<<"******************** Mass TOF TEMPLATE FITS *******************"<<endl;
 	TH1F *DataMassTOF[12][18];
@@ -616,7 +610,7 @@ void DeutonsTemplFits(TFile * file1){
                         if(i==0) fitTAgl[m][i]->Constrain(1,0.0,0.1);
 			fitTAgl[m][i]->SetRangeX(cutAgl,50);
                 }
-                if((DataMassAgl[i][m]->Integral(25,50)>50&&i!=0)||i==0) s1Agl[m][i]=fitTAgl[m][i]->Fit();
+                if((DataMassAgl[i][m]->Integral(25,50)>50&&i!=0)||i==0) s1Agl[m][i]=1;//fitTAgl[m][i]->Fit();
                 else s1Agl[m][i]=1;
 		for(int z=0;z<5;z++){
 			if(s1Agl[m][i]==-1){

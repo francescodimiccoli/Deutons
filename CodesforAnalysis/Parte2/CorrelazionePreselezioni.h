@@ -17,18 +17,15 @@ void Correlazione_Preselezioni(TNtuple *ntupla, int l){
 	}
 }
 
-void Correlazione_Preselezioni_Copy(TFile * file){
-	CorrelazionePreselezioni = (TH2F*) file->Get("CorrelazionePreselezioni");
-	return;
-}
-
 void Correlazione_Preselezioni_Write(){
         CorrelazionePreselezioni->Write();
         return;
 }
 
 
-void Correlazione_Preselezioni(TFile * file){
+void Correlazione_Preselezioni(TFile * file1){
+	TH2F * CorrelazionePreselezioni = (TH2F*) file1->Get("CorrelazionePreselezioni");
+	
 	for(int S=0;S<11;S++)
 		for(int F=0;F<11;F++) if(Norm[S]>0) CorrelazionePreselezioni->SetBinContent(S+1,F+1,CorrelazionePreselezioni->GetBinContent(S+1,F+1)/(float)Norm[S]);
 	c13->cd();

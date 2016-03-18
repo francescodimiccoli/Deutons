@@ -48,19 +48,6 @@ void MCQualCheck_Fill(TNtuple *ntupla, int l){
 	return;
 }
 
-void MCQualCheck_Copy(TFile * file1){
-        EffQualCheckMCP1 = (TH1F *)file1->Get("EffQualCheckMCP1");
-        EffQualCheckMCP2 = (TH1F *)file1->Get("EffQualCheckMCP2");
-	EffTOFUCheckMCP1 = (TH1F *)file1->Get("EffTOFUCheckMCP1");
-        EffTOFUCheckMCP2 = (TH1F *)file1->Get("EffTOFUCheckMCP2");
-	EffTrackCheckMCP1 = (TH1F *)file1->Get("EffTrackCheckMCP1");
-        EffTrackCheckMCP2 = (TH1F *)file1->Get("EffTrackCheckMCP2");
-	EffTOFDCheckMCP1 = (TH1F *)file1->Get("EffTOFDCheckMCP1");
-        EffTOFDCheckMCP2 = (TH1F *)file1->Get("EffTOFDCheckMCP2");
-	EffLikCheckMCP1 = (TH1F *)file1->Get("EffLikCheckMCP1");
-        EffLikCheckMCP2 = (TH1F *)file1->Get("EffLikCheckMCP2");
-	return;
-}
 
 void MCQualCheck_Write(){
         EffQualCheckMCP1->Write();
@@ -82,7 +69,19 @@ TCanvas *c18=new TCanvas("Quality Sel. Check");
 TH1F * EffQualCheckMCP_TH1F = new TH1F("EffQualCheckMCP_TH1F","EffQualCheckMCP_TH1F",43,0,43);
 
 void MCQualCheck(TFile * file1){
-        cout<<"**** MC QUALITY SEL. CHECK ****"<<endl;
+	TH1F * EffQualCheckMCP1 = (TH1F *)file1->Get("EffQualCheckMCP1");
+	TH1F * EffQualCheckMCP2 = (TH1F *)file1->Get("EffQualCheckMCP2");
+	TH1F *  EffTOFUCheckMCP1 = (TH1F *)file1->Get("EffTOFUCheckMCP1");
+	TH1F *  EffTOFUCheckMCP2 = (TH1F *)file1->Get("EffTOFUCheckMCP2");
+	TH1F *  EffTrackCheckMCP1 = (TH1F *)file1->Get("EffTrackCheckMCP1");
+	TH1F * EffTrackCheckMCP2 = (TH1F *)file1->Get("EffTrackCheckMCP2");
+	TH1F * EffTOFDCheckMCP1 = (TH1F *)file1->Get("EffTOFDCheckMCP1");
+	TH1F * EffTOFDCheckMCP2 = (TH1F *)file1->Get("EffTOFDCheckMCP2");
+	TH1F * EffLikCheckMCP1 = (TH1F *)file1->Get("EffLikCheckMCP1");
+	TH1F *  EffLikCheckMCP2 = (TH1F *)file1->Get("EffLikCheckMCP2");
+
+
+	cout<<"************** MC QUALITY SEL. CHECK **************"<<endl;
 	float EffQualCheckP[43]={0};
         for(int i=1;i<43;i++) EffQualCheckP[i]=EffQualCheckMCP1->GetBinContent(i+1)/(float)EffQualCheckMCP2->GetBinContent(i+1);
 	for(int i=1;i<43;i++) EffQualCheckMCP_TH1F->SetBinContent(i+1,EffQualCheckMCP1->GetBinContent(i+1)/(float)EffQualCheckMCP2->GetBinContent(i+1));
