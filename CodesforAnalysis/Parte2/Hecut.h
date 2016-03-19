@@ -135,4 +135,6 @@ void Hecut(TFile * file1){
 	c36	->Write();	 
  	c36_bis ->Write();	
  	c37	->Write();
+	f_out->Write();
+	f_out->Close();
 }	

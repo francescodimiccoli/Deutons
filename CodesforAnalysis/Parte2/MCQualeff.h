@@ -507,7 +507,6 @@ void MCQualeff(TFile * file1){
 	cout<<"*** Updating Results file ***"<<endl;
         nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
-        f_out->mkdir("MC Results");
         f_out->mkdir("MC Results/Quality");
         f_out->cd("MC Results/Quality");
         c5	->Write();    
