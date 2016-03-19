@@ -158,13 +158,13 @@ void FillIstogram(int INDX,string frac,string mese)
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));
 		MCpreseff_Fill(ntupla0,i);
 		MCUnbiaseff_Fill(ntupla0,i);
-		MCTrackeff_Fill(ntupla0,i);
+		/*MCTrackeff_Fill(ntupla0,i);
 		MCpreSeleff_Fill(ntupla0,i);
 		MCpreCheck_Fill(ntupla0,i);
 		MigrationMatrix_Fill(ntupla0,i);
 		Correlazione_Preselezioni(ntupla0,i);
 		DVSMCpreSeleff_Fill(ntupla0,i);
-		DVSMCTrackeff_Fill(ntupla0,i);
+		DVSMCTrackeff_Fill(ntupla0,i);*/
 	}
 	if(INDX==0||INDX==1){
 	avanzamento=0;
@@ -182,10 +182,10 @@ void FillIstogram(int INDX,string frac,string mese)
 		HecutMC_Fill(ntupla1,i);
 		SlidesforPlot_Fill(ntupla1,i);
 		MCQualeff_Fill(ntupla1,i);
-		DVSMCQualeff2_Fill(ntupla1,i);	
+		/*DVSMCQualeff2_Fill(ntupla1,i);	
 		DeutonsMC_Fill(ntupla1,i);
 		DeutonsMC_Dist_Fill(ntupla1,i);
-		MCMC_Fill(ntupla1,i);
+		MCMC_Fill(ntupla1,i);*/
         }
 	}
 	cout<<"*********************** DATA READING *********************"<<endl;
@@ -231,10 +231,10 @@ void FillIstogram(int INDX,string frac,string mese)
 		if(100*(i/(float)(ntupla2->GetEntries()/fraz))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla2->GetEntries()/fraz)))+1;}
                 
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));    
-		DATAUnbiaseff_Fill(ntupla2,i);
+		/*DATAUnbiaseff_Fill(ntupla2,i);
 		DATApreSeleff_Fill(ntupla2,i,Zona);
 		DVSMCpreSeleff_D_Fill(ntupla2,i,Zona);
-		DVSMCTrackeff_D_Fill(ntupla0,i);		
+		DVSMCTrackeff_D_Fill(ntupla0,i);*/		
 	}
         if(INDX==0||INDX==1){
         avanzamento=0;
@@ -258,12 +258,12 @@ void FillIstogram(int INDX,string frac,string mese)
 		if(100*(i/(float)(ntupla3->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla3->GetEntries())))+1;}
 		HecutD_Fill(ntupla3,i);	
 		SlidesforPlot_D_Fill(ntupla1,i);
-		DATAQualeff_Fill(ntupla3,i,Zona);
+		/*DATAQualeff_Fill(ntupla3,i,Zona);
 		DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		ProtonFlux_Fill(ntupla3,i,Zona);	
 		DeutonsDATA_Fill(ntupla3,i,Zona);
 		DeutonsDATA_Dist_Fill(ntupla3,i,Zona);
-		MCMCDATA_Fill(ntupla3,i);
+		MCMCDATA_Fill(ntupla3,i);*/
 		}
         }
 	
@@ -277,26 +277,26 @@ void FillIstogram(int INDX,string frac,string mese)
 			nomefile=percorso+"/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
 		TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 
-		DATAQualeff_Write();
-		DATApreSeleff_Write();
-		Correlazione_Preselezioni_Write();
+		//DATAQualeff_Write();
+		//DATApreSeleff_Write();
+		//Correlazione_Preselezioni_Write();
 		HecutMC_Write();
 		SlidesforPlot_Write();	
-		DATAUnbiaseff_Write();
+		/*DATAUnbiaseff_Write();
 		DeutonsMC_Write();
 		DeutonsMC_Dist_Write();
 		DVSMCpreSeleff_Write();
 		DVSMCQualeff2_Write();
 		DVSMCTrackeff_Write();
-		MCMC_Write();
+		MCMC_Write();*/
 		MCpreeff_Write();
-		MCpreCheck_Write();
-		MCpreSeleff_Write();
+		/*MCpreCheck_Write();
+		MCpreSeleff_Write();*/
 		MCQualeff_Write();
-		MCTrackeff_Write();	
+		//MCTrackeff_Write();	
 		MCUnbiaseff_Write();
-		MigrationMatrix_Write();
-		ProtonFlux_Write();
+		//MigrationMatrix_Write();
+		//ProtonFlux_Write();
 
 		Tempi->Write();
 		esposizionegeo->Write();

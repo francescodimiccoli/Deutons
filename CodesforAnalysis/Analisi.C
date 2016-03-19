@@ -33,8 +33,9 @@
 #include "Parte2/MCUnbiaseff.h"
 #include "Parte2/Hecut.h"
 #include "Parte2/SlidesforPlot.h"
-/*#include "Parte2/MCQualeff.h"
-#include "Parte2/MCTrackeff.h"
+#include "Parte2/MCQualeff.h"
+#include "Parte2/Cuts.h"
+/*#include "Parte2/MCTrackeff.h"
 #include "Parte2/MCpreSeleff.h"
 #include "Parte2/MCpreCheck.h"
 #include "Parte2/MigrationMatrix.h"
@@ -53,9 +54,8 @@
 #include "Parte2/DeutonsDist.h"
 #include "Parte2/MCMC.h"
 #include "Parte2/DeutonsFlux.h"
-#include "Parte2/DeutonsFlux_Dist.h"
-#include "Parte2/Cuts.h"
-#include "FillIstogram.h"*/
+#include "Parte2/DeutonsFlux_Dist.h"*/
+#include "FillIstogram.h"
 using namespace std;
 
 int main(int argc, char * argv[])
@@ -190,7 +190,7 @@ int main(int argc, char * argv[])
 	////////////////////////////
 
 	cout<<"************************************* ISTOGRAM FILLING **************************************************************************"<<endl;
-	//FillIstogram(INDX,frac,mese);
+	FillIstogram(INDX,frac,mese);
 	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
 	TFile *file1 =TFile::Open(nomefile.c_str());
 	if(!file1){
@@ -204,8 +204,8 @@ int main(int argc, char * argv[])
 		MCUnbiaseff(file1);
 		Hecut(file1);
 		SlidesforPlot(file1);
-		/*  MCQualeff(file1);
-		  MCTrackeff(file1);
+		  MCQualeff(file1);
+		/*MCTrackeff(file1);
 		  MCpreSeleff(file1);
 		  Correlazione_Preselezioni(file1);
 		  MCpreCheck(file1);
