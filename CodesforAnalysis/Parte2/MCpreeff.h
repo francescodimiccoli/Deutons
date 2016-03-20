@@ -91,7 +91,21 @@ void MCpreeff(TFile * file1){
 	string nome;
 
 	cout<<"**** MC PRESELECTIONS EFFICIENCY (FULL SET) ****"<<endl;
+	
+	EffpreselMCP -> Eval_Efficiency();
+	EffpreselMCD -> Eval_Efficiency();
 
+	TH1F * EffPreMCP_R_TH1F  =  (TH1F *)EffpreselMCP->effR	;  
+	TH1F * EffPreMCP_TH1F    =  (TH1F *)EffpreselMCP->effTOF;
+	TH1F * EffPreMCPNaF_TH1F =  (TH1F *)EffpreselMCP->effNaF;
+	TH1F * EffPreMCPAgl_TH1F =  (TH1F *)EffpreselMCP->effAgl;
+	TH2F * EffPreMCD_R_TH2F  =  (TH2F *)EffpreselMCD->effR  ;
+	TH2F * EffPreMCD_TH2F    =  (TH2F *)EffpreselMCD->effTOF;
+	TH2F * EffPreMCDNaF_TH2F =  (TH2F *)EffpreselMCD->effNaF;
+	TH2F * EffPreMCDAgl_TH2F =  (TH2F *)EffpreselMCD->effAgl;
+
+	
+	/*
 	TH1F * EffPreMCP_R_TH1F  = (TH1F *)EffpreselMCP->afterR  ->Clone(); 
 	TH1F * EffPreMCP_TH1F    = (TH1F *)EffpreselMCP->afterTOF->Clone(); 
 	TH1F * EffPreMCPNaF_TH1F = (TH1F *)EffpreselMCP->afterNaF->Clone(); 
@@ -111,7 +125,7 @@ void MCpreeff(TFile * file1){
 	EffPreMCD_R_TH2F  -> Divide( EffpreselMCD->beforeR   ); 
 	EffPreMCD_TH2F    -> Divide( EffpreselMCD->beforeTOF ); 
 	EffPreMCDNaF_TH2F -> Divide( EffpreselMCD->beforeNaF ); 
-	EffPreMCDAgl_TH2F -> Divide( EffpreselMCD->beforeAgl ); 
+	EffPreMCDAgl_TH2F -> Divide( EffpreselMCD->beforeAgl ); */
 
 	cout<<"*** Updating P1 file ****"<<endl;
 	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
