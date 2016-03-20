@@ -95,14 +95,14 @@ void MCpreeff(TFile * file1){
 	EffpreselMCP -> Eval_Efficiency();
 	EffpreselMCD -> Eval_Efficiency();
 
-	TH1F * EffPreMCP_R_TH1F  =  (TH1F *)EffpreselMCP->effR	;  
-	TH1F * EffPreMCP_TH1F    =  (TH1F *)EffpreselMCP->effTOF;
-	TH1F * EffPreMCPNaF_TH1F =  (TH1F *)EffpreselMCP->effNaF;
-	TH1F * EffPreMCPAgl_TH1F =  (TH1F *)EffpreselMCP->effAgl;
-	TH2F * EffPreMCD_R_TH2F  =  (TH2F *)EffpreselMCD->effR  ;
-	TH2F * EffPreMCD_TH2F    =  (TH2F *)EffpreselMCD->effTOF;
-	TH2F * EffPreMCDNaF_TH2F =  (TH2F *)EffpreselMCD->effNaF;
-	TH2F * EffPreMCDAgl_TH2F =  (TH2F *)EffpreselMCD->effAgl;
+	TH1F * EffPreMCP_R_TH1F  =  (TH1F *)EffpreselMCP->effR	->Clone();  
+	TH1F * EffPreMCP_TH1F    =  (TH1F *)EffpreselMCP->effTOF->Clone();
+	TH1F * EffPreMCPNaF_TH1F =  (TH1F *)EffpreselMCP->effNaF->Clone();
+	TH1F * EffPreMCPAgl_TH1F =  (TH1F *)EffpreselMCP->effAgl->Clone();
+	TH2F * EffPreMCD_R_TH2F  =  (TH2F *)EffpreselMCD->effR  ->Clone();
+	TH2F * EffPreMCD_TH2F    =  (TH2F *)EffpreselMCD->effTOF->Clone();
+	TH2F * EffPreMCDNaF_TH2F =  (TH2F *)EffpreselMCD->effNaF->Clone();
+	TH2F * EffPreMCDAgl_TH2F =  (TH2F *)EffpreselMCD->effAgl->Clone();
 
 	
 	/*

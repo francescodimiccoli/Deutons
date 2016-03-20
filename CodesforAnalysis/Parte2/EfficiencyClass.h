@@ -104,19 +104,19 @@ void Efficiency::UpdateErrorbars()
 void Efficiency::Eval_Efficiency(){
 	
 	if(afterR)	 effR     = (TH1 *)afterR	->Clone();
-	if(beforeR)	 effTOF   = (TH1 *)afterTOF	->Clone();	
-	if(beforeTOF)  	 effNaF   = (TH1 *)afterNaF	->Clone();
-	if(beforeNaF) 	 effAgl   = (TH1 *)afterAgl	->Clone();
+	if(afterTOF)	 effTOF   = (TH1 *)afterTOF	->Clone();	
+	if(afterNaF)  	 effNaF   = (TH1 *)afterNaF	->Clone();
+	if(afterAgl) 	 effAgl   = (TH1 *)afterAgl	->Clone();
 	
 	Efficiency::UpdateErrorbars();
-	if(beforeAgl) 	 effR     = (TH1 *)afterR	->Divide( beforeR   );	
-	if(afterTOF)	 effTOF   = (TH1 *)afterTOF	->Divide( beforeTOF );
-	if(afterNaF)	 effNaF   = (TH1 *)afterNaF	->Divide( beforeNaF );
-	if(afterAgl)	 effAgl   = (TH1 *)afterAgl	->Divide( beforeAgl );
+	if(effR)   	effR   ->Divide( beforeR   );	
+        if(effTOF) 	effTOF ->Divide( beforeTOF );
+        if(effNaF) 	effNaF ->Divide( beforeNaF );
+        if(effAgl) 	effAgl ->Divide( beforeAgl );
 
-	effR   ->SetName((name	+ "_EffR"  ).c_str()); 
-        effTOF ->SetName((name	+ "_EffTOF").c_str());
-        effNaF ->SetName((name	+ "_EffNaF").c_str());
-        effAgl ->SetName((name	+ "_EffAgl").c_str());
+	if(effR)  	effR   ->SetName((name	+ "_EffR"  ).c_str()); 
+        if(effTOF)	effTOF ->SetName((name	+ "_EffTOF").c_str());
+        if(effNaF)	effNaF ->SetName((name	+ "_EffNaF").c_str());
+        if(effAgl)	effAgl ->SetName((name	+ "_EffAgl").c_str());
 }
 
