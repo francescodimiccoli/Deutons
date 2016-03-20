@@ -104,28 +104,6 @@ void MCpreeff(TFile * file1){
 	TH2F * EffPreMCDNaF_TH2F =  (TH2F *)EffpreselMCD->effNaF->Clone();
 	TH2F * EffPreMCDAgl_TH2F =  (TH2F *)EffpreselMCD->effAgl->Clone();
 
-	
-	/*
-	TH1F * EffPreMCP_R_TH1F  = (TH1F *)EffpreselMCP->afterR  ->Clone(); 
-	TH1F * EffPreMCP_TH1F    = (TH1F *)EffpreselMCP->afterTOF->Clone(); 
-	TH1F * EffPreMCPNaF_TH1F = (TH1F *)EffpreselMCP->afterNaF->Clone(); 
-	TH1F * EffPreMCPAgl_TH1F = (TH1F *)EffpreselMCP->afterAgl->Clone(); 
-	TH2F * EffPreMCD_R_TH2F  = (TH2F *)EffpreselMCD->afterR  ->Clone(); 
-	TH2F * EffPreMCD_TH2F    = (TH2F *)EffpreselMCD->afterTOF->Clone(); 
-	TH2F * EffPreMCDNaF_TH2F = (TH2F *)EffpreselMCD->afterNaF->Clone(); 
-	TH2F * EffPreMCDAgl_TH2F = (TH2F *)EffpreselMCD->afterAgl->Clone(); 
-	
-	EffpreselMCP -> UpdateErrorbars();
-	EffpreselMCD -> UpdateErrorbars();
-	
-	EffPreMCP_R_TH1F  -> Divide( EffpreselMCP->beforeR   ); 
-	EffPreMCP_TH1F    -> Divide( EffpreselMCP->beforeTOF ); 
-	EffPreMCPNaF_TH1F -> Divide( EffpreselMCP->beforeNaF ); 
-	EffPreMCPAgl_TH1F -> Divide( EffpreselMCP->beforeAgl ); 
-	EffPreMCD_R_TH2F  -> Divide( EffpreselMCD->beforeR   ); 
-	EffPreMCD_TH2F    -> Divide( EffpreselMCD->beforeTOF ); 
-	EffPreMCDNaF_TH2F -> Divide( EffpreselMCD->beforeNaF ); 
-	EffPreMCDAgl_TH2F -> Divide( EffpreselMCD->beforeAgl ); */
 
 	cout<<"*** Updating P1 file ****"<<endl;
 	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
