@@ -60,18 +60,14 @@ void MCUnbiaseff(TFile * file1){
 
 	cout<<"**** MC Unbias TRIGGER EFF. ****"<<endl;
 	
-	TH1F *EffUnbMCP_R_TH1F = (TH1F*)  EffUnbiasMCP->afterR   ->Clone();	
-        TH1F *EffUnbMCP_TH1F   = (TH1F*)  EffUnbiasMCP->afterTOF->Clone();
-        TH2F *EffUnbMCD_R_TH2F = (TH2F*)  EffUnbiasMCD->afterR   ->Clone();
-	TH2F *EffUnbMCD_TH2F   = (TH2F*)  EffUnbiasMCD->afterTOF->Clone();
+	EffUnbiasMCP -> Eval_Efficiency();
+        EffUnbiasMCD -> Eval_Efficiency();
 
-	EffUnbiasMCP -> UpdateErrorbars();	
-        EffUnbiasMCD -> UpdateErrorbars();
-	
-	EffUnbMCP_R_TH1F  -> Divide( EffUnbiasMCP->beforeR	);   
-        EffUnbMCP_TH1F    -> Divide( EffUnbiasMCP->beforeTOF	);
-        EffUnbMCD_R_TH2F  -> Divide( EffUnbiasMCD->beforeR   	);
-	EffUnbMCD_TH2F    -> Divide( EffUnbiasMCD->beforeTOF	);
+	TH1F *EffUnbMCP_R_TH1F = (TH1F*)  EffUnbiasMCP->effR   ->Clone();	
+        TH1F *EffUnbMCP_TH1F   = (TH1F*)  EffUnbiasMCP->effTOF->Clone();
+        TH2F *EffUnbMCD_R_TH2F = (TH2F*)  EffUnbiasMCD->effR   ->Clone();
+	TH2F *EffUnbMCD_TH2F   = (TH2F*)  EffUnbiasMCD->effTOF->Clone();
+
 	
 	cout<<"*** Updating P1 file ****"<<endl;
 	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";

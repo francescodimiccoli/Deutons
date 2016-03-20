@@ -59,14 +59,12 @@ void Hecut(TFile * file1){
 
 	cout<<"*************** He control sample cut Efficiency on P*******************"<<endl;
 	
-	HecutMCP->UpdateErrorbars();
-	HecutMCHe->UpdateErrorbars();
+	HecutMCP->Eval_Efficiency();
+	HecutMCHe->Eval_Efficiency();
 	
-	TH1F * HecutMCP_TH1F = 	(TH1F *)HecutMCP ->afterR->Clone();
-        TH1F * HecutMCHe_TH1F=  (TH1F *)HecutMCHe->afterR->Clone();
+	TH1F * HecutMCP_TH1F = 	(TH1F *)HecutMCP ->effR->Clone();
+        TH1F * HecutMCHe_TH1F=  (TH1F *)HecutMCHe->effR->Clone();
 				
-	HecutMCP_TH1F -> Divide( HecutMCP ->beforeR );
-	HecutMCHe_TH1F-> Divide( HecutMCHe->beforeR );
 	
 
 	cout<<"*** Updating P1 file ****"<<endl;

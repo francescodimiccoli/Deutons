@@ -109,61 +109,42 @@ void MCQualeff(TFile * file1){
 	cout<<"******* MC QUALITY SEL. EFFICIENCIES ********"<<endl;		
 
 
-	TH1F * EffMCLikP_TH1F 		=(TH1F *)EffLikMCP ->afterR  ->Clone();
-	TH2F * EffMCLikD_TH2F 		=(TH2F *)EffLikMCD ->afterR  ->Clone();
-	TH1F * EffMCLikP_Beta_TH1F 	=(TH1F *)EffLikMCP ->afterTOF->Clone();
-	TH2F * EffMCLikD_Beta_TH2F 	=(TH2F *)EffLikMCD ->afterTOF->Clone();
-	TH1F * EffMCLikP_BetaNaF_TH1F 	=(TH1F *)EffLikMCP ->afterNaF->Clone();
-	TH2F * EffMCLikD_BetaNaF_TH2F 	=(TH2F *)EffLikMCD ->afterNaF->Clone();
-	TH1F * EffMCLikP_BetaAgl_TH1F 	=(TH1F *)EffLikMCP ->afterAgl->Clone();
-	TH2F * EffMCLikD_BetaAgl_TH2F 	=(TH2F *)EffLikMCD ->afterAgl->Clone();
+	EffLikMCP ->Eval_Efficiency();
+        EffLikMCD ->Eval_Efficiency();
+        EffLikMCP ->Eval_Efficiency();
+        EffLikMCD ->Eval_Efficiency();
+        EffLikMCP ->Eval_Efficiency();
+        EffLikMCD ->Eval_Efficiency();
+        EffLikMCP ->Eval_Efficiency();
+        EffLikMCD ->Eval_Efficiency();
+                    
+        EffDistMCP->Eval_Efficiency();
+        EffDistMCD->Eval_Efficiency();
+        EffDistMCP->Eval_Efficiency();
+        EffDistMCD->Eval_Efficiency();
+        EffDistMCP->Eval_Efficiency();
+        EffDistMCD->Eval_Efficiency();
+        EffDistMCP->Eval_Efficiency();
+        EffDistMCD->Eval_Efficiency();
+
+
+	TH1F * EffMCLikP_TH1F 		=(TH1F *)EffLikMCP ->effR  ->Clone();
+	TH2F * EffMCLikD_TH2F 		=(TH2F *)EffLikMCD ->effR  ->Clone();
+	TH1F * EffMCLikP_Beta_TH1F 	=(TH1F *)EffLikMCP ->effTOF->Clone();
+	TH2F * EffMCLikD_Beta_TH2F 	=(TH2F *)EffLikMCD ->effTOF->Clone();
+	TH1F * EffMCLikP_BetaNaF_TH1F 	=(TH1F *)EffLikMCP ->effNaF->Clone();
+	TH2F * EffMCLikD_BetaNaF_TH2F 	=(TH2F *)EffLikMCD ->effNaF->Clone();
+	TH1F * EffMCLikP_BetaAgl_TH1F 	=(TH1F *)EffLikMCP ->effAgl->Clone();
+	TH2F * EffMCLikD_BetaAgl_TH2F 	=(TH2F *)EffLikMCD ->effAgl->Clone();
                                                                        
-	TH1F * EffMCDistP_TH1F 		=(TH1F *)EffDistMCP->afterR  ->Clone();
-	TH2F * EffMCDistD_TH2F 		=(TH2F *)EffDistMCD->afterR  ->Clone();
-	TH1F * EffMCDistP_Beta_TH1F 	=(TH1F *)EffDistMCP->afterTOF->Clone();
-	TH2F * EffMCDistD_Beta_TH2F 	=(TH2F *)EffDistMCD->afterTOF->Clone();
-	TH1F * EffMCDistP_BetaNaF_TH1F  =(TH1F *)EffDistMCP->afterNaF->Clone();
-	TH2F * EffMCDistD_BetaNaF_TH2F  =(TH2F *)EffDistMCD->afterNaF->Clone();
-	TH1F * EffMCDistP_BetaAgl_TH1F  =(TH1F *)EffDistMCP->afterAgl->Clone();
-	TH2F * EffMCDistD_BetaAgl_TH2F  =(TH2F *)EffDistMCD->afterAgl->Clone();
-
-
-	EffLikMCP ->UpdateErrorbars();
-	EffLikMCD ->UpdateErrorbars();
-	EffLikMCP ->UpdateErrorbars();
-	EffLikMCD ->UpdateErrorbars();
-	EffLikMCP ->UpdateErrorbars();
-	EffLikMCD ->UpdateErrorbars();
-	EffLikMCP ->UpdateErrorbars();
-	EffLikMCD ->UpdateErrorbars();
-
-	EffDistMCP->UpdateErrorbars();
-	EffDistMCD->UpdateErrorbars();
-	EffDistMCP->UpdateErrorbars();
-	EffDistMCD->UpdateErrorbars();
-	EffDistMCP->UpdateErrorbars();
-	EffDistMCD->UpdateErrorbars();
-	EffDistMCP->UpdateErrorbars();
-	EffDistMCD->UpdateErrorbars();
-
-	
-	EffMCLikP_TH1F 	        ->Divide ( EffLikMCP ->beforeR  );
-        EffMCLikD_TH2F 	        ->Divide ( EffLikMCD ->beforeR  );
-        EffMCLikP_Beta_TH1F      ->Divide ( EffLikMCP ->beforeTOF);
-        EffMCLikD_Beta_TH2F      ->Divide ( EffLikMCD ->beforeTOF);
-        EffMCLikP_BetaNaF_TH1F   ->Divide ( EffLikMCP ->beforeNaF);
-        EffMCLikD_BetaNaF_TH2F   ->Divide ( EffLikMCD ->beforeNaF);
-        EffMCLikP_BetaAgl_TH1F   ->Divide ( EffLikMCP ->beforeAgl);
-        EffMCLikD_BetaAgl_TH2F   ->Divide ( EffLikMCD ->beforeAgl);
-                                 
-        EffMCDistP_TH1F 	       ->Divide ( EffDistMCP ->beforeR  );
-        EffMCDistD_TH2F 	       ->Divide ( EffDistMCD ->beforeR  );
-        EffMCDistP_Beta_TH1F    ->Divide ( EffDistMCP ->beforeTOF);
-        EffMCDistD_Beta_TH2F    ->Divide ( EffDistMCD ->beforeTOF);
-        EffMCDistP_BetaNaF_TH1F ->Divide ( EffDistMCP ->beforeNaF);
-        EffMCDistD_BetaNaF_TH2F ->Divide ( EffDistMCD ->beforeNaF);
-        EffMCDistP_BetaAgl_TH1F ->Divide ( EffDistMCP ->beforeAgl);
-        EffMCDistD_BetaAgl_TH2F ->Divide ( EffDistMCD ->beforeAgl);
+	TH1F * EffMCDistP_TH1F 		=(TH1F *)EffDistMCP->effR  ->Clone();
+	TH2F * EffMCDistD_TH2F 		=(TH2F *)EffDistMCD->effR  ->Clone();
+	TH1F * EffMCDistP_Beta_TH1F 	=(TH1F *)EffDistMCP->effTOF->Clone();
+	TH2F * EffMCDistD_Beta_TH2F 	=(TH2F *)EffDistMCD->effTOF->Clone();
+	TH1F * EffMCDistP_BetaNaF_TH1F  =(TH1F *)EffDistMCP->effNaF->Clone();
+	TH2F * EffMCDistD_BetaNaF_TH2F  =(TH2F *)EffDistMCD->effNaF->Clone();
+	TH1F * EffMCDistP_BetaAgl_TH1F  =(TH1F *)EffDistMCP->effAgl->Clone();
+	TH2F * EffMCDistD_BetaAgl_TH2F  =(TH2F *)EffDistMCD->effAgl->Clone();
 
 
 	cout<<"*** Updating P1 file ****"<<endl;
