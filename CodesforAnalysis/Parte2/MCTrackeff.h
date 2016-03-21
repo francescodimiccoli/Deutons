@@ -36,8 +36,11 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l){
 			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCP->afterTOF->Fill(m);
 		}
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){ 
-			for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]) EffTrackMCP->beforeTOF->Fill(m);
-			for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]) if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCP->afterTOF->Fill(m);
+			for(int m=0;m<18;m++)  
+				if(Var3>BetaP[m]&&Var3<=BetaP[m+1]) {
+						EffTrackMCP->beforeTOF->Fill(m);
+						if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCP->afterTOF->Fill(m);
+						}
 		}
 	}
 
@@ -51,10 +54,11 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l){
 		}	
 
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){
-			for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M])	
-				EffTrackMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
-			for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M])	
-				if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
+			for(int M=0;M<43;M++) 
+				if(Var3<bin[M+1]&&Var3>bin[M]){	
+					EffTrackMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
+					if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
+					}
 		}
 		//Beta bins
 		for(int m=0;m<18;m++) if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
@@ -64,8 +68,11 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l){
 			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
 		}
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){
-			for(int m=0;m<18;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1]) EffTrackMCD->beforeR->Fill(m,(int)(10000*Massa_gen-18570));
-			for(int m=0;m<18;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1]) if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD->afterR->Fill(m,(int)(10000*Massa_gen-18570));
+			for(int m=0;m<18;m++)  
+				if(Var3>BetaD[m]&&Var3<=BetaD[m+1]) {
+					EffTrackMCD->beforeR->Fill(m,(int)(10000*Massa_gen-18570));
+			 		if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD->afterR->Fill(m,(int)(10000*Massa_gen-18570));
+					}
 		}
 
 	}
