@@ -174,7 +174,8 @@ void MCQualeff(TFile * file1){
          EffMCDistD_BetaNaF_TH2F  ->Write();
          EffMCDistP_BetaAgl_TH1F  ->Write();
          EffMCDistD_BetaAgl_TH2F  ->Write();
-
+	 file1->Write();
+         file1->Close();
 	
 
 

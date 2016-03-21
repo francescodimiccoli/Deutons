@@ -158,8 +158,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));
 		MCpreseff_Fill(ntupla0,i);
 		MCUnbiaseff_Fill(ntupla0,i);
-		/*MCTrackeff_Fill(ntupla0,i);
-		MCpreSeleff_Fill(ntupla0,i);
+		MCTrackeff_Fill(ntupla0,i);
+		/*MCpreSeleff_Fill(ntupla0,i);
 		MCpreCheck_Fill(ntupla0,i);
 		MigrationMatrix_Fill(ntupla0,i);
 		Correlazione_Preselezioni(ntupla0,i);
@@ -293,7 +293,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		/*MCpreCheck_Write();
 		MCpreSeleff_Write();*/
 		MCQualeff_Write();
-		//MCTrackeff_Write();	
+		MCTrackeff_Write();	
 		MCUnbiaseff_Write();
 		//MigrationMatrix_Write();
 		//ProtonFlux_Write();

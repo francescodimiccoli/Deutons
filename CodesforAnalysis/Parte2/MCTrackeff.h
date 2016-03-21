@@ -1,126 +1,71 @@
 using namespace std;
 
 
-TH1F * EffQTOFMCP1=new TH1F("EffQTOFMCP1","EffQTOFMCP1",18,0,18);
-TH1F * EffQTOFMCP2=new TH1F("EffQTOFMCP2","EffQTOFMCP2",18,0,18);
-TH1F * EffQTOFMCP1_R=new TH1F("EffQTOFMCP1_R","EffQTOFMCP1_R",43,0,43);
-TH1F * EffQTOFMCP2_R=new TH1F("EffQTOFMCP2_R","EffQTOFMCP2_R",43,0,43);
-TH2F * EffQTOFMCD1=new TH2F("EffQTOFMCD1","EffQTOFMCD1",18,0,18,6,0,6);
-TH2F * EffQTOFMCD2=new TH2F("EffQTOFMCD2","EffQTOFMCD2",18,0,18,6,0,6);
-TH2F * EffQTOFMCD1_R=new TH2F("EffQTOFMCD1_R","EffQTOFMCD1_R",43,0,43,6,0,6);
-TH2F * EffQTOFMCD2_R=new TH2F("EffQTOFMCD2_R","EffQTOFMCD2_R",43,0,43,6,0,6);
+Efficiency * EffTriggMCP = new Efficiency("EffTriggMCP");
+Efficiency * EffTriggMCD = new Efficiency("EffTriggMCD",6);
 
-TH1F * EffTriggMCP1=new TH1F("EffTriggMCP1","EffTriggMCP1",18,0,18);
-TH1F * EffTriggMCP2=new TH1F("EffTriggMCP2","EffTriggMCP2",18,0,18);
-TH1F * EffTriggMCP1_R=new TH1F("EffTriggMCP1_R","EffTriggMCP1_R",43,0,43);
-TH1F * EffTriggMCP2_R=new TH1F("EffTriggMCP2_R","EffTriggMCP2_R",43,0,43);
-TH2F * EffTriggMCD1=new TH2F("EffTriggMCD1","EffTriggMCD1",18,0,18,6,0,6);
-TH2F * EffTriggMCD2=new TH2F("EffTriggMCD2","EffTriggMCD2",18,0,18,6,0,6);
-TH2F * EffTriggMCD1_R=new TH2F("EffTriggMCD1_R","EffTriggMCD1_R",43,0,43,6,0,6);
-TH2F * EffTriggMCD2_R=new TH2F("EffTriggMCD2_R","EffTriggMCD2_R",43,0,43,6,0,6);
+Efficiency * EffTrackMCP = new Efficiency("EffTrackMCP");
+Efficiency * EffTrackMCD = new Efficiency("EffTrackMCD",6);
 
-TH1F * EffTrackMCP1=new TH1F("EffTrackMCP1","EffTrackMCP1",18,0,18);
-TH1F * EffTrackMCP2=new TH1F("EffTrackMCP2","EffTrackMCP2",18,0,18);
-TH1F * EffTrackMCP1_R=new TH1F("EffTrackMCP1_R","EffTrackMCP1_R",43,0,43);
-TH1F * EffTrackMCP2_R=new TH1F("EffTrackMCP2_R","EffTrackMCP2_R",43,0,43);
-TH2F * EffTrackMCD1=new TH2F("EffTrackMCD1","EffTrackMCD1",18,0,18,6,0,6);
-TH2F * EffTrackMCD2=new TH2F("EffTrackMCD2","EffTrackMCD2",18,0,18,6,0,6);
-TH2F * EffTrackMCD1_R=new TH2F("EffTrackMCD1_R","EffTrackMCD1_R",43,0,43,6,0,6);
-TH2F * EffTrackMCD2_R=new TH2F("EffTrackMCD2_R","EffTrackMCD2_R",43,0,43,6,0,6);
-
-TH1F * EffTOFMCP1=new TH1F("EffTOFMCP1","EffTOFMCP1",18,0,18);
-TH1F * EffTOFMCP2=new TH1F("EffTOFMCP2","EffTOFMCP2",18,0,18);
-TH1F * EffTOFMCP1_R=new TH1F("EffTOFMCP1_R","EffTOFMCP1_R",43,0,43);
-TH1F * EffTOFMCP2_R=new TH1F("EffTOFMCP2_R","EffTOFMCP2_R",43,0,43);
-TH2F * EffTOFMCD1=new TH2F("EffTOFMCD1","EffTOFMCD1",18,0,18,6,0,6);
-TH2F * EffTOFMCD2=new TH2F("EffTOFMCD2","EffTOFMCD2",18,0,18,6,0,6);
-TH2F * EffTOFMCD1_R=new TH2F("EffTOFMCD1_R","EffTOFMCD1_R",43,0,43,6,0,6);
-TH2F * EffTOFMCD2_R=new TH2F("EffTOFMCD2_R","EffTOFMCD2_R",43,0,43,6,0,6);
-
-TH1F * EffMassMCP1_R=new TH1F("EffMassMCP1_R","EffMassMCP1_R",43,0,43);
-TH1F * EffMassMCP2_R=new TH1F("EffMassMCP2_R","EffMassMCP2_R",43,0,43);
+Efficiency * EffTOFMCP 	 = new Efficiency("EffTOFMCP");
+Efficiency * EffTOFMCD   = new Efficiency("EffTOFMCD",6);
 
 
 void MCTrackeff_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
-	
+
 	if(Massa_gen<1&&Massa_gen>0.5) {
+		//R bins
 		for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
-			EffTriggMCP1_R->Fill(M);
-			if(((int)Cutmask&1)==1) EffTriggMCP2_R->Fill(M);
-			if(((int)Cutmask&1)==1) EffTOFMCP1_R->Fill(M);
-			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCP2_R->Fill(M);
-		}
-		if(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta_pre)+0.05&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.05&&((int)Cutmask&3)==3&&Beta_pre>0){
-			for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]){
-				EffQTOFMCP1_R->Fill(M);
-				if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1) EffQTOFMCP2_R->Fill(M);
-			}
+			EffTriggMCP->beforeR->Fill(M);
+			if(((int)Cutmask&1)==1) EffTriggMCP->afterR->Fill(M);
+			if(((int)Cutmask&1)==1) EffTOFMCP->beforeR->Fill(M);
+			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCP->afterR->Fill(M);
 		}
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){
 			for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M])	
-				EffTrackMCP1_R->Fill(M);
+				EffTrackMCP->beforeR->Fill(M);
 			for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M])
-				if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCP2_R->Fill(M);
+				if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCP->afterR->Fill(M);
 		}
-		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&11)==11&&Beta_pre>0&&R_pre>0){
-			for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]){
-				EffMassMCP1_R->Fill(M);	
-				if(Beta_pre<protons->Eval(R_pre)+0.1&&Beta_pre>protons->Eval(R_pre)-0.1) 
-					EffMassMCP2_R->Fill(M);				
-			}
-		}
-
+		//Beta bins
 		for(int m=0;m<18;m++)  if(Var3>BetaP[m]&&Var3<=BetaP[m+1]){
-			EffTriggMCP1->Fill(m);
-			if(((int)Cutmask&1)==1) EffTriggMCP2->Fill(m);
-			if(((int)Cutmask&1)==1) EffTOFMCP1->Fill(m);
-			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCP2->Fill(m);
-			if(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta_pre)+0.05&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.05&&((int)Cutmask&3)==3&&Beta_pre>0){
-				EffQTOFMCP1->Fill(m);
-				if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1) EffQTOFMCP2->Fill(m);
-			}
+			EffTriggMCP->beforeTOF->Fill(m);
+			if(((int)Cutmask&1)==1) EffTriggMCP->afterTOF->Fill(m);
+			if(((int)Cutmask&1)==1) EffTOFMCP->beforeTOF->Fill(m);
+			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCP->afterTOF->Fill(m);
 		}
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){ 
-			for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]) EffTrackMCP1->Fill(m);
-			for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]) if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCP2->Fill(m);
+			for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]) EffTrackMCP->beforeTOF->Fill(m);
+			for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]) if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCP->afterTOF->Fill(m);
 		}
 	}
 
 	if(Massa_gen>1&&Massa_gen<2) {
+		//R bins
 		for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
-			EffTriggMCD1_R->Fill(M,(int)(10000*Massa_gen-18570));
-			if(((int)Cutmask&1)==1) EffTriggMCD2_R->Fill(M,(int)(10000*Massa_gen-18570));
-			if(((int)Cutmask&1)==1) EffTOFMCD1_R->Fill(M,(int)(10000*Massa_gen-18570));
-			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCD2_R->Fill(M,(int)(10000*Massa_gen-18570));
+			EffTriggMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
+			if(((int)Cutmask&1)==1) EffTriggMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
+			if(((int)Cutmask&1)==1) EffTOFMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
+			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
 		}	
-		if(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta_pre)+0.05&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.05&&((int)Cutmask&3)==3&&Beta_pre>0){
-			for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]){	
-				EffQTOFMCD1_R->Fill(M,(int)(10000*Massa_gen-18570));
-				if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1) EffQTOFMCD2_R->Fill(M,(int)(10000*Massa_gen-18570));
-			}
-		}
 
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){
 			for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M])	
-				EffTrackMCD1_R->Fill(M,(int)(10000*Massa_gen-18570));
+				EffTrackMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
 			for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M])	
-				if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD2_R->Fill(M,(int)(10000*Massa_gen-18570));
+				if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
 		}
-
+		//Beta bins
 		for(int m=0;m<18;m++) if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
-			EffTriggMCD1->Fill(m,(int)(10000*Massa_gen-18570));
-			if(((int)Cutmask&1)==1) EffTriggMCD2->Fill(m,(int)(10000*Massa_gen-18570));
-			if(((int)Cutmask&1)==1) EffTOFMCD1->Fill(m,(int)(10000*Massa_gen-18570));
-			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCD2->Fill(m,(int)(10000*Massa_gen-18570));
-			if(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta_pre)+0.05&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.05&&((int)Cutmask&3)==3&&Beta_pre>0){
-				EffQTOFMCD1->Fill(m,(int)(10000*Massa_gen-18570));
-				if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1) EffQTOFMCD2->Fill(m,(int)(10000*Massa_gen-18570));
-			}
+			EffTriggMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
+			if(((int)Cutmask&1)==1) EffTriggMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
+			if(((int)Cutmask&1)==1) EffTOFMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
+			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
 		}
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){
-			for(int m=0;m<18;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1]) EffTrackMCD1->Fill(m,(int)(10000*Massa_gen-18570));
-			for(int m=0;m<18;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1]) if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD2->Fill(m,(int)(10000*Massa_gen-18570));
+			for(int m=0;m<18;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1]) EffTrackMCD->beforeR->Fill(m,(int)(10000*Massa_gen-18570));
+			for(int m=0;m<18;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1]) if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD->afterR->Fill(m,(int)(10000*Massa_gen-18570));
 		}
 
 	}
@@ -131,110 +76,28 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l){
 
 
 void MCTrackeff_Write(){
-        EffTriggMCP1->Write();
-        EffTriggMCD1->Write();
-        EffTriggMCP2->Write();
-        EffTriggMCD2->Write();
-        EffTriggMCP1_R->Write();
-        EffTriggMCD1_R->Write();
-        EffTriggMCP2_R->Write();
-        EffTriggMCD2_R->Write();
-        EffQTOFMCP1->Write();
-        EffQTOFMCD1->Write();
-        EffQTOFMCP2->Write();
-        EffQTOFMCD2->Write();
-        EffQTOFMCP1_R->Write();
-        EffQTOFMCD1_R->Write();
-        EffQTOFMCP2_R->Write();
-        EffQTOFMCD2_R->Write();
-        EffTrackMCP1->Write();
-        EffTrackMCD1->Write();
-        EffTrackMCP2->Write();
-        EffTrackMCD2->Write();
-        EffTrackMCP1_R->Write();
-        EffTrackMCD1_R->Write();
-        EffTrackMCP2_R->Write();
-        EffTrackMCD2_R->Write();
-        EffTOFMCP1->Write();
-        EffTOFMCD1->Write();
-        EffTOFMCP2->Write();
-        EffTOFMCD2->Write();
-        EffTOFMCP1_R->Write();
-        EffTOFMCD1_R->Write();
-        EffTOFMCP2_R->Write();
-        EffTOFMCD2_R->Write();
-        EffMassMCP1_R->Write();
-        EffMassMCP2_R->Write();
+        EffTriggMCP->Write();
+        EffTriggMCD->Write();
+        EffTrackMCP->Write();
+        EffTrackMCD->Write();
+        EffTOFMCP  ->Write();
+        EffTOFMCD  ->Write();
+        
         return;
 }
 
 
 
-
-TCanvas *c_7=new TCanvas("Trigger sel. efficiency");
-TCanvas *c7=new TCanvas("Tracker rec. efficiency");
-TCanvas *c8=new TCanvas("TOF rec. efficiency");
-
-TH1F * EffTriggerMCP_R_TH1F=new TH1F("EffTriggerMCP_R_TH1F","EffTriggerMCP_R_TH1F",43,0,43);
-TH1F * EffTriggerMCP_TH1F=new TH1F("EffTriggerMCP_TH1F","EffTriggerMCP_TH1F",18,0,18);
-TH2F * EffTriggerMCD_R_TH2F=new TH2F("EffTriggerMCD_R_TH2F","EffTriggerMCD_R_TH2F",43,0,43,6,0,6);
-TH2F * EffTriggerMCD_TH2F=new TH2F("EffTriggerMCD_TH2F","EffTriggerMCD_TH2F",18,0,18,6,0,6);
-
-TH1F * EffQTOFerMCP_R_TH1F=new TH1F("EffQTOFerMCP_R_TH1F","EffQTOFerMCP_R_TH1F",43,0,43);
-TH1F * EffQTOFerMCP_TH1F=new TH1F("EffQTOFerMCP_TH1F","EffQTOFerMCP_TH1F",18,0,18);
-TH2F * EffQTOFerMCD_R_TH2F=new TH2F("EffQTOFerMCD_R_TH2F","EffQTOFerMCD_R_TH2F",43,0,43,6,0,6);
-TH2F * EffQTOFerMCD_TH2F=new TH2F("EffQTOFerMCD_TH2F","EffQTOFerMCD_TH2F",18,0,18,6,0,6);
-
-TH1F * EffMassMCP_R_TH1F=new TH1F("EffMassMCP_R_TH1F","EffMassMCP_R_TH1F",43,0,43);
-TH1F * EffMassMCP_TH1F=new TH1F("EffMassMCP_TH1F","EffMassMCP_TH1F",18,0,18);
-
-
-TH1F * EffTrackerMCP_R_TH1F=new TH1F("EffTrackerMCP_R_TH1F","EffTrackerMCP_R_TH1F",43,0,43);
-TH1F * EffTrackerMCP_TH1F=new TH1F("EffTrackerMCP_TH1F","EffTrackerMCP_TH1F",18,0,18);
-TH2F * EffTrackerMCD_R_TH2F=new TH2F("EffTrackerMCD_R_TH2F","EffTrackerMCD_R_TH2F",43,0,43,6,0,6);
-TH2F * EffTrackerMCD_TH2F=new TH2F("EffTrackerMCD_TH2F","EffTrackerMCD_TH2F",18,0,18,6,0,6);
-
-TH1F * EffTOF_MCP_R_TH1F=new TH1F("EffTOFMCP_R_TH1F","EffTOFMCP_R_TH1F",43,0,43);
-TH1F * EffTOF_MCP_TH1F=new TH1F("EffTOFMCP_TH1F","EffTOFMCP_TH1F",18,0,18);
-TH2F * EffTOF_MCD_R_TH2F=new TH2F("EffTOFMCD_R_TH2F","EffTOFMCD_R_TH2F",43,0,43,6,0,6);
-TH2F * EffTOF_MCD_TH2F=new TH2F("EffTOFMCD_TH2F","EffTOFMCD_TH2F",18,0,18,6,0,6);
-
 void MCTrackeff(TFile * file1){
 
-	TH1F * EffTriggMCP1= (TH1F*) file1->Get("EffTriggMCP1");
-	TH2F * EffTriggMCD1= (TH2F*) file1->Get("EffTriggMCD1");
-	TH1F * EffTriggMCP2= (TH1F*) file1->Get("EffTriggMCP2");
-	TH2F * EffTriggMCD2= (TH2F*) file1->Get("EffTriggMCD2");
-	TH1F * EffTriggMCP1_R =(TH1F*) file1->Get("EffTriggMCP1_R");
-	TH2F * EffTriggMCD1_R =(TH2F*) file1->Get("EffTriggMCD1_R");
-	TH1F * EffTriggMCP2_R =(TH1F*) file1->Get("EffTriggMCP2_R");
-	TH2F * EffTriggMCD2_R =(TH2F*) file1->Get("EffTriggMCD2_R");
-	TH1F * EffQTOFMCP1= (TH1F*) file1->Get("EffQTOFMCP1");
-	TH2F * EffQTOFMCD1= (TH2F*) file1->Get("EffQTOFMCD1");
-	TH1F * EffQTOFMCP2= (TH1F*) file1->Get("EffQTOFMCP2");
-	TH2F * EffQTOFMCD2= (TH2F*) file1->Get("EffQTOFMCD2");
-	TH1F * EffQTOFMCP1_R =(TH1F*) file1->Get("EffQTOFMCP1_R");
-	TH2F * EffQTOFMCD1_R =(TH2F*) file1->Get("EffQTOFMCD1_R");
-	TH1F * EffQTOFMCP2_R =(TH1F*) file1->Get("EffQTOFMCP2_R");
-	TH2F * EffQTOFMCD2_R =(TH2F*) file1->Get("EffQTOFMCD2_R");
-	TH1F * EffTrackMCP1= (TH1F*) file1->Get("EffTrackMCP1");
-	TH2F * EffTrackMCD1= (TH2F*) file1->Get("EffTrackMCD1");
-	TH1F * EffTrackMCP2= (TH1F*) file1->Get("EffTrackMCP2");
-	TH2F * EffTrackMCD2= (TH2F*) file1->Get("EffTrackMCD2");
-	TH1F * EffTrackMCP1_R =(TH1F*) file1->Get("EffTrackMCP1_R");
-	TH2F * EffTrackMCD1_R =(TH2F*) file1->Get("EffTrackMCD1_R");
-	TH1F * EffTrackMCP2_R =(TH1F*) file1->Get("EffTrackMCP2_R");
-	TH2F * EffTrackMCD2_R =(TH2F*) file1->Get("EffTrackMCD2_R");
-	TH1F * EffTOFMCP1= (TH1F*) file1->Get("EffTOFMCP1");
-	TH2F * EffTOFMCD1= (TH2F*) file1->Get("EffTOFMCD1");
-	TH1F * EffTOFMCP2= (TH1F*) file1->Get("EffTOFMCP2");
-	TH2F * EffTOFMCD2= (TH2F*) file1->Get("EffTOFMCD2");
-	TH1F * EffTOFMCP1_R =(TH1F*) file1->Get("EffTOFMCP1_R");
-	TH2F * EffTOFMCD1_R =(TH2F*) file1->Get("EffTOFMCD1_R");
-	TH1F * EffTOFMCP2_R =(TH1F*) file1->Get("EffTOFMCP2_R");
-	TH2F * EffTOFMCD2_R =(TH2F*) file1->Get("EffTOFMCD2_R");
-	TH1F * EffMassMCP1_R =(TH1F*) file1->Get("EffMassMCP1_R");
-	TH1F * EffMassMCP2_R =(TH1F*) file1->Get("EffMassMCP2_R");
+	Efficiency * EffTriggMCP = new Efficiency(file1,"EffTriggMCP");
+	Efficiency * EffTriggMCD = new Efficiency(file1,"EffTriggMCD");
+
+	Efficiency * EffTrackMCP = new Efficiency(file1,"EffTrackMCP");
+	Efficiency * EffTrackMCD = new Efficiency(file1,"EffTrackMCD");
+
+	Efficiency * EffTOFMCP 	 = new Efficiency(file1,"EffTOFMCP");
+	Efficiency * EffTOFMCD   = new Efficiency(file1,"EffTOFMCD"); 	
 
 	string numero[18]={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17"};
 	string tagli[10]={"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
@@ -242,70 +105,67 @@ void MCTrackeff(TFile * file1){
 	Tempi = (TH1F *)file1->Get("Tempi");
 
 	cout<<"**** MC BASIC SEL. EFFICIENCIES ****"<<endl;
-	float EffQTOFMCP[18]={0};
-        for(int i=0;i<17;i++) if(EffQTOFMCP1->GetBinContent(i+1)>0) if(EffQTOFMCP2->GetBinContent(i+1)<EffQTOFMCP1->GetBinContent(i+1))
-                EffQTOFMCP[i]=EffQTOFMCP2->GetBinContent(i+1)/(float)EffQTOFMCP1->GetBinContent(i+1);
-        float EffQTOFMCD[18][6]={{0}};
-        for(int i=0;i<17;i++) for(int h=0;h<6;h++) if(EffQTOFMCD2->GetBinContent(i+1,h+1)<EffQTOFMCD1->GetBinContent(i+1,h+1))
-                EffQTOFMCD[i][h]=EffQTOFMCD2->GetBinContent(i+1,h+1)/(float)EffQTOFMCD1->GetBinContent(i+1,h+1);
 
-        float EffQTOFMCP_R[43]={0};
-        for(int i=1;i<43;i++) EffQTOFMCP_R[i]=EffQTOFMCP2_R->GetBinContent(i+1)/(float)EffQTOFMCP1_R->GetBinContent(i+1);
-        float EffQTOFMCD_R[43][6]={{0}};
-        for(int i=4;i<43;i++) for(int h=0;h<6;h++) if(EffQTOFMCD1_R->GetBinContent(i+1,h+1)>EffQTOFMCD2_R->GetBinContent(i+1,h+1))
-                EffQTOFMCD_R[i][h]=EffQTOFMCD2_R->GetBinContent(i+1,h+1)/(float)EffQTOFMCD1_R->GetBinContent(i+1,h+1);
-                                                                                                                     
-	float EffMassMCP_R[43]={0};
-        for(int i=1;i<43;i++) EffMassMCP_R[i]=EffMassMCP2_R->GetBinContent(i+1)/(float)EffMassMCP1_R->GetBinContent(i+1);
 
+	EffTriggMCP  -> Eval_Efficiency();
+ 	EffTriggMCD  -> Eval_Efficiency();
+             
+ 	EffTrackMCP  -> Eval_Efficiency();
+ 	EffTrackMCD  -> Eval_Efficiency();
+             
+ 	EffTOFMCP    -> Eval_Efficiency();	 
+ 	EffTOFMCD    -> Eval_Efficiency(); 
+
+
+	TH1F * EffTriggerMCP_R_TH1F 	= (TH1F *)EffTriggMCP  -> effR    ->	Clone(); 	
+	TH1F * EffTriggerMCP_TH1F       = (TH1F *)EffTriggMCP  -> effTOF  ->	Clone();  
+	TH2F * EffTriggerMCD_R_TH2F 	= (TH2F *)EffTriggMCP  -> effR    ->	Clone();  
+	TH2F * EffTriggerMCD_TH2F       = (TH2F *)EffTriggMCP  -> effTOF  ->	Clone();  
+                                                
+	TH1F * EffTrackerMCP_R_TH1F 	= (TH1F *)EffTrackMCP  -> effR    ->	Clone();  
+	TH1F * EffTrackerMCP_TH1F       = (TH1F *)EffTrackMCP  -> effTOF  ->	Clone();  
+	TH2F * EffTrackerMCD_R_TH2F 	= (TH2F *)EffTrackMCP  -> effR    ->	Clone();  
+	TH2F * EffTrackerMCD_TH2F       = (TH2F *)EffTrackMCP  -> effTOF  ->	Clone();  
+                                                
+	TH1F * EffTOF_MCP_R_TH1F        = (TH1F *)EffTOFMCP  	-> effR   ->	Clone();  
+	TH1F * EffTOF_MCP_TH1F	        = (TH1F *)EffTOFMCP  	-> effTOF ->	Clone();  
+	TH2F * EffTOF_MCD_R_TH2F        = (TH2F *)EffTOFMCP  	-> effR   ->	Clone();  
+	TH2F * EffTOF_MCD_TH2F	        = (TH2F *)EffTOFMCP  	-> effTOF ->	Clone();  
+
+
+
+	cout<<"*** Updating P1 file ****"<<endl;
+        string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+        file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+        if(!file1){
+                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
+                file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+        }
+
+        file1->cd("Results");
+
+	EffTriggerMCP_R_TH1F	-> Write();
+	EffTriggerMCP_TH1F 	-> Write(); 	
+	EffTriggerMCD_R_TH2F	-> Write();
+	EffTriggerMCD_TH2F	-> Write();               
+	EffTrackerMCP_R_TH1F	-> Write();
+	EffTrackerMCP_TH1F	-> Write();  
+	EffTrackerMCD_R_TH2F	-> Write();
+	EffTrackerMCD_TH2F	-> Write();                
+	EffTOF_MCP_R_TH1F	-> Write();   
+	EffTOF_MCP_TH1F		-> Write();	   
+	EffTOF_MCD_R_TH2F	-> Write();   
+	EffTOF_MCD_TH2F		-> Write();	   
+	file1->Write();
+	file1->Close();
+
+
+	TCanvas *c_7 	=new TCanvas("Trigger sel. efficiency");
+	TCanvas *c7	=new TCanvas("Tracker rec. efficiency");
+	TCanvas *c8	=new TCanvas("TOF rec. efficiency");	
 	c_7->Divide(2,1);
-        float EffTriggMCP[18]={0};
-        for(int i=0;i<17;i++) if(EffTriggMCP1->GetBinContent(i+1)>0) if(EffTriggMCP2->GetBinContent(i+1)<EffTriggMCP1->GetBinContent(i+1))
-                EffTriggMCP[i]=EffTriggMCP2->GetBinContent(i+1)/(float)EffTriggMCP1->GetBinContent(i+1);
-        float EffTriggMCD[18][6]={{0}};
-        for(int i=0;i<17;i++) for(int h=0;h<6;h++) if(EffTriggMCD2->GetBinContent(i+1,h+1)<EffTriggMCD1->GetBinContent(i+1,h+1))
-                EffTriggMCD[i][h]=EffTriggMCD2->GetBinContent(i+1,h+1)/(float)EffTriggMCD1->GetBinContent(i+1,h+1);
-
-        float EffTriggMCP_R[43]={0};
-        for(int i=1;i<43;i++) EffTriggMCP_R[i]=EffTriggMCP2_R->GetBinContent(i+1)/(float)EffTriggMCP1_R->GetBinContent(i+1);
-        float EffTriggMCD_R[43][6]={{0}};
-        for(int i=4;i<43;i++) for(int h=0;h<6;h++) if(EffTriggMCD1_R->GetBinContent(i+1,h+1)>EffTriggMCD2_R->GetBinContent(i+1,h+1))
-                EffTriggMCD_R[i][h]=EffTriggMCD2_R->GetBinContent(i+1,h+1)/(float)EffTriggMCD1_R->GetBinContent(i+1,h+1);
-	
-	c7->Divide(2,1);
-	float EffTrackMCP[18]={0};
-	for(int i=0;i<17;i++) if(EffTrackMCP1->GetBinContent(i+1)>0) if(EffTrackMCP2->GetBinContent(i+1)<EffTrackMCP1->GetBinContent(i+1))
-		EffTrackMCP[i]=EffTrackMCP2->GetBinContent(i+1)/(float)EffTrackMCP1->GetBinContent(i+1);
-	float EffTrackMCD[18][6]={{0}};
-	for(int i=0;i<17;i++) for(int h=0;h<6;h++) if(EffTrackMCD2->GetBinContent(i+1,h+1)<EffTrackMCD1->GetBinContent(i+1,h+1))
-		EffTrackMCD[i][h]=EffTrackMCD2->GetBinContent(i+1,h+1)/(float)EffTrackMCD1->GetBinContent(i+1,h+1);
-
-	float EffTrackMCP_R[43]={0};
-	for(int i=1;i<43;i++) EffTrackMCP_R[i]=EffTrackMCP2_R->GetBinContent(i+1)/(float)EffTrackMCP1_R->GetBinContent(i+1);
-	float EffTrackMCD_R[43][6]={{0}};
-	for(int i=4;i<43;i++) for(int h=0;h<6;h++) if(EffTrackMCD1_R->GetBinContent(i+1,h+1)>EffTrackMCD2_R->GetBinContent(i+1,h+1))
-		EffTrackMCD_R[i][h]=EffTrackMCD2_R->GetBinContent(i+1,h+1)/(float)EffTrackMCD1_R->GetBinContent(i+1,h+1);
-
+	c_7->Divide(2,1);
 	c8->Divide(2,1);
-	float EffTOFMCP[18]={0};
-	for(int i=0;i<17;i++) if(EffTOFMCP1->GetBinContent(i+1)>0) if(EffTOFMCP2->GetBinContent(i+1)<EffTOFMCP1->GetBinContent(i+1))
-		EffTOFMCP[i]=EffTOFMCP2->GetBinContent(i+1)/(float)EffTOFMCP1->GetBinContent(i+1);
-	float EffTOFMCD[18][6]={{0}};
-	for(int i=0;i<17;i++) for(int h=0;h<6;h++) if(EffTOFMCD2->GetBinContent(i+1,h+1)<EffTOFMCD1->GetBinContent(i+1,h+1))
-		EffTOFMCD[i][h]=EffTOFMCD2->GetBinContent(i+1,h+1)/(float)EffTOFMCD1->GetBinContent(i+1,h+1);
-
-	float EffTOFMCP_R[43]={0};
-	for(int i=1;i<43;i++) EffTOFMCP_R[i]=EffTOFMCP2_R->GetBinContent(i+1)/(float)EffTOFMCP1_R->GetBinContent(i+1);
-	float EffTOFMCD_R[43][6]={{0}};
-	for(int i=4;i<43;i++) for(int h=0;h<6;h++) if(EffTOFMCD1_R->GetBinContent(i+1,h+1)>EffTOFMCD2_R->GetBinContent(i+1,h+1))
-		EffTOFMCD_R[i][h]=EffTOFMCD2_R->GetBinContent(i+1,h+1)/(float)EffTOFMCD1_R->GetBinContent(i+1,h+1);
-	
-
-        for(int i=0;i<43;i++) EffQTOFerMCP_R_TH1F->SetBinContent(i+1,EffQTOFMCP_R[i]);
-        for(int h=0;h<6;h++) for(int i=1;i<43;i++) EffQTOFerMCD_R_TH2F->SetBinContent(i+1,h+1,EffQTOFMCD_R[i][h]);
-	
-	for(int i=0;i<43;i++) EffMassMCP_R_TH1F->SetBinContent(i+1,EffMassMCP_R[i]);
-
 	c_7->cd(1);
         gPad->SetLogx();
         gPad->SetGridx();
@@ -313,8 +173,7 @@ void MCTrackeff(TFile * file1){
         string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
         TGraph * EffTriggerMCP_R = new TGraph();
         EffTriggerMCP_R->SetTitle(MCLegend[0].c_str());
-        for(int i=0;i<43;i++) EffTriggerMCP_R->SetPoint(i,R_cent[i],EffTriggMCP_R[i]);
-        for(int i=0;i<43;i++) EffTriggerMCP_R_TH1F->SetBinContent(i+1,EffTriggMCP_R[i]);
+        for(int i=0;i<43;i++) EffTriggerMCP_R->SetPoint(i,R_cent[i],EffTriggerMCP_R_TH1F->GetBinContent(i+1));
         TGraph * EffTriggerMCD_R[6];
         EffTriggerMCP_R->SetMarkerColor(2);
         EffTriggerMCP_R->SetMarkerStyle(8);
@@ -333,8 +192,7 @@ void MCTrackeff(TFile * file1){
                 for(int h=0;h<6;h++){
                         EffTriggerMCD_R[h]= new TGraph();
                         EffTriggerMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-                        for(int i=1;i<43;i++) EffTriggerMCD_R[h]->SetPoint(i,R_cent[i],EffTriggMCD_R[i][h]);
-                        for(int i=1;i<43;i++) EffTriggerMCD_R_TH2F->SetBinContent(i+1,h+1,EffTriggMCD_R[i][h]);
+                        for(int i=1;i<43;i++) EffTriggerMCD_R[h]->SetPoint(i,R_cent[i],EffTriggerMCD_R_TH2F->GetBinContent(i+1,h+1));
                         leg->AddEntry(EffTriggerMCD_R[h],MCLegend[h+1].c_str(), "ep");
                         EffTriggerMCD_R[h]->SetMarkerColor(4);
                         EffTriggerMCD_R[h]->SetMarkerStyle(h+3);
@@ -350,8 +208,7 @@ void MCTrackeff(TFile * file1){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraph * EffTriggerMCP = new TGraph();
-        for(int i=0;i<17;i++) EffTriggerMCP->SetPoint(i,Ekincent[i],EffTriggMCP[i]);
-        for(int i=0;i<17;i++) EffTriggerMCP_TH1F->SetBinContent(i+1,EffTriggMCP[i]);
+        for(int i=0;i<17;i++) EffTriggerMCP->SetPoint(i,Ekincent[i],EffTriggerMCP_TH1F->GetBinContent(i+1));
         TGraph * EffTriggerMCD[6];
         EffTriggerMCP->SetMarkerColor(2);
         EffTriggerMCP->SetMarkerStyle(8);
@@ -369,8 +226,7 @@ void MCTrackeff(TFile * file1){
 
                 for(int h=0;h<6;h++){
                         EffTriggerMCD[h]= new TGraph();
-                        for(int i=0;i<17;i++) EffTriggerMCD[h]->SetPoint(i,Ekincent[i],EffTriggMCD[i][h]);
-                        for(int i=0;i<17;i++) EffTriggerMCD_TH2F->SetBinContent(i+1,h+1,EffTriggMCD[i][h]);
+                        for(int i=0;i<17;i++) EffTriggerMCD[h]->SetPoint(i,Ekincent[i],EffTriggerMCD_TH2F->GetBinContent(i+1,h+1));
                         EffTriggerMCD[h]->SetMarkerColor(4);
                         EffTriggerMCD[h]->SetMarkerStyle(h+3);
                         leg->AddEntry(EffTriggerMCD[h],MCLegend[h+1].c_str(), "ep");
@@ -388,8 +244,7 @@ void MCTrackeff(TFile * file1){
 	gPad->SetGridy();
 	TGraph * EffTrackerMCP_R = new TGraph();
 	EffTrackerMCP_R->SetTitle(MCLegend[0].c_str());
-	for(int i=0;i<43;i++) EffTrackerMCP_R->SetPoint(i,R_cent[i],EffTrackMCP_R[i]);
-	for(int i=0;i<43;i++) EffTrackerMCP_R_TH1F->SetBinContent(i+1,EffTrackMCP_R[i]);
+	for(int i=0;i<43;i++) EffTrackerMCP_R->SetPoint(i,R_cent[i],EffTrackerMCP_R_TH1F->GetBinContent(i+1));
 	TGraph * EffTrackerMCD_R[6];
 	EffTrackerMCP_R->SetMarkerColor(2);
 	EffTrackerMCP_R->SetMarkerStyle(8);
@@ -408,8 +263,7 @@ void MCTrackeff(TFile * file1){
 		for(int h=0;h<6;h++){
 			EffTrackerMCD_R[h]= new TGraph();
 			EffTrackerMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-			for(int i=1;i<43;i++) EffTrackerMCD_R[h]->SetPoint(i,R_cent[i],EffTrackMCD_R[i][h]);
-			for(int i=1;i<43;i++) EffTrackerMCD_R_TH2F->SetBinContent(i+1,h+1,EffTrackMCD_R[i][h]);
+			for(int i=1;i<43;i++) EffTrackerMCD_R[h]->SetPoint(i,R_cent[i],EffTrackerMCD_R_TH2F->GetBinContent(i+1,h+1));
 			leg->AddEntry(EffTrackerMCD_R[h],MCLegend[h+1].c_str(), "ep");
 			EffTrackerMCD_R[h]->SetMarkerColor(4);
 			EffTrackerMCD_R[h]->SetMarkerStyle(h+3);
@@ -425,8 +279,7 @@ void MCTrackeff(TFile * file1){
 	gPad->SetGridx();
 	gPad->SetGridy();
 	TGraph * EffTrackerMCP = new TGraph();
-	for(int i=0;i<17;i++) EffTrackerMCP->SetPoint(i,Ekincent[i],EffTrackMCP[i]);
-	for(int i=0;i<17;i++) EffTrackerMCP_TH1F->SetBinContent(i+1,EffTrackMCP[i]);
+	for(int i=0;i<17;i++) EffTrackerMCP->SetPoint(i,Ekincent[i],EffTrackerMCP_TH1F->GetBinContent(i+1));
 	TGraph * EffTrackerMCD[6];
 	EffTrackerMCP->SetMarkerColor(2);
 	EffTrackerMCP->SetMarkerStyle(8);
@@ -444,8 +297,7 @@ void MCTrackeff(TFile * file1){
 
 		for(int h=0;h<6;h++){
 			EffTrackerMCD[h]= new TGraph();
-			for(int i=0;i<17;i++) EffTrackerMCD[h]->SetPoint(i,Ekincent[i],EffTrackMCD[i][h]);
-			for(int i=0;i<17;i++) EffTrackerMCD_TH2F->SetBinContent(i+1,h+1,EffTrackMCD[i][h]);
+			for(int i=0;i<17;i++) EffTrackerMCD[h]->SetPoint(i,Ekincent[i],EffTrackerMCD_TH2F->GetBinContent(i+1,h+1));
 			EffTrackerMCD[h]->SetMarkerColor(4);
 			EffTrackerMCD[h]->SetMarkerStyle(h+3);
 			leg->AddEntry(EffTrackerMCD[h],MCLegend[h+1].c_str(), "ep");
@@ -463,8 +315,7 @@ void MCTrackeff(TFile * file1){
 	gPad->SetGridy();
 	TGraph * EffTOF_MCP_R = new TGraph();
 	EffTOF_MCP_R->SetTitle(MCLegend[0].c_str());
-	for(int i=0;i<43;i++) EffTOF_MCP_R->SetPoint(i,R_cent[i],EffTOFMCP_R[i]);
-	for(int i=0;i<43;i++) EffTOF_MCP_R_TH1F->SetBinContent(i+1,EffTOFMCP_R[i]);
+	for(int i=0;i<43;i++) EffTOF_MCP_R->SetPoint(i,R_cent[i],EffTOF_MCP_R_TH1F->GetBinContent(i+1));
 	TGraph * EffTOF_MCD_R[6];
 	EffTOF_MCP_R->SetMarkerColor(2);
 	EffTOF_MCP_R->SetMarkerStyle(8);
@@ -483,8 +334,7 @@ void MCTrackeff(TFile * file1){
 		for(int h=0;h<6;h++){
 			EffTOF_MCD_R[h]= new TGraph();
 			EffTOF_MCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-			for(int i=1;i<43;i++) EffTOF_MCD_R[h]->SetPoint(i,R_cent[i],EffTOFMCD_R[i][h]);
-			for(int i=1;i<43;i++) EffTOF_MCD_R_TH2F->SetBinContent(i+1,h+1,EffTOFMCD_R[i][h]);
+			for(int i=1;i<43;i++) EffTOF_MCD_R[h]->SetPoint(i,R_cent[i],EffTOF_MCD_R_TH2F->GetBinContent(i+1,h+1));
 			leg->AddEntry(EffTOF_MCD_R[h],MCLegend[h+1].c_str(), "ep");
 			EffTOF_MCD_R[h]->SetMarkerColor(4);
 			EffTOF_MCD_R[h]->SetMarkerStyle(h+3);
@@ -501,8 +351,7 @@ void MCTrackeff(TFile * file1){
 	gPad->SetGridx();
 	gPad->SetGridy();
 	TGraph * EffTOF_MCP = new TGraph();
-	for(int i=0;i<17;i++) EffTOF_MCP->SetPoint(i,Ekincent[i],EffTOFMCP[i]);
-	for(int i=0;i<17;i++) EffTOF_MCP_TH1F->SetBinContent(i+1,EffTOFMCP[i]);
+	for(int i=0;i<17;i++) EffTOF_MCP->SetPoint(i,Ekincent[i],EffTOF_MCP_TH1F->GetBinContent(i+1));
 	TGraph * EffTOF_MCD[6];
 	EffTOF_MCP->SetMarkerColor(2);
 	EffTOF_MCP->SetMarkerStyle(8);
@@ -520,8 +369,7 @@ void MCTrackeff(TFile * file1){
 
 		for(int h=0;h<6;h++){
 			EffTOF_MCD[h]= new TGraph();
-			for(int i=0;i<17;i++) EffTOF_MCD[h]->SetPoint(i,Ekincent[i],EffTOFMCD[i][h]);
-			for(int i=0;i<17;i++) EffTOF_MCD_TH2F->SetBinContent(i+1,h+2,EffTOFMCD[i][h]);
+			for(int i=0;i<17;i++) EffTOF_MCD[h]->SetPoint(i,Ekincent[i],EffTOF_MCD_TH2F->GetBinContent(i+1,h+1));
 			EffTOF_MCD[h]->SetMarkerColor(4);
 			EffTOF_MCD[h]->SetMarkerStyle(h+3);
 			leg->AddEntry(EffTOF_MCD[h],MCLegend[h+1].c_str(), "ep");
@@ -534,4 +382,15 @@ void MCTrackeff(TFile * file1){
 	}
 
 
+        cout<<"*** Updating Results file ***"<<endl;
+	nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        f_out->mkdir("MC Results/Preselections/Basic Selections");
+        f_out->cd("MC Results/Preselections/Basic Selections");
+ 	c_7 -> Write();	       
+	c7  -> Write();
+ 	c8  -> Write();
+
+	f_out->Write();
+	f_out->Close();
 }

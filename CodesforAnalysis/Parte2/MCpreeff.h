@@ -123,6 +123,7 @@ void MCpreeff(TFile * file1){
 	EffPreMCD_TH2F->Write();
 	EffPreMCDNaF_TH2F ->Write();
 	EffPreMCDAgl_TH2F->Write();
+	file1->Write();
 	file1->Close();
 
 
