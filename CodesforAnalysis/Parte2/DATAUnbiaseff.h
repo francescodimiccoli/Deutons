@@ -1,11 +1,6 @@
 using namespace std;
 
-
-TH1F * EffUnbiasDATA1=new TH1F("EffUnbiasDATA1","EffUnbiasDATA1",18,0,18);
-TH1F * EffUnbiasDATA2=new TH1F("EffUnbiasDATA2","EffUnbiasDATA2",18,0,18);
-TH1F * EffUnbiasDATA1_R=new TH1F("EffUnbiasDATA1_R","EffUnbiasDATA1_R",43,0,43);
-TH1F * EffUnbiasDATA2_R=new TH1F("EffUnbiasDATA2_R","EffUnbiasDATA2_R",43,0,43);
-
+Efficiency * EffUnbiasDATA = new Efficiency("EffUnbiasDATA");
 
 void DATAUnbiaseff_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
@@ -13,14 +8,14 @@ void DATAUnbiaseff_Fill(TNtuple *ntupla, int l){
 
 	for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]) {
 		if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2){
-			EffUnbiasDATA2_R->Fill(M);
-			if(Unbias==1) EffUnbiasDATA1_R->Fill(M);
+			EffUnbiasDATA->beforeR->Fill(M);
+			if(Unbias==1) EffUnbiasDATA->afterR->Fill(M);
 		}
 	}	
 	for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]){
 		if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2){
-			EffUnbiasDATA2->Fill(m);
-			if(Unbias==1) EffUnbiasDATA1->Fill(m);	
+			EffUnbiasDATA->beforeTOF->Fill(m);
+			if(Unbias==1) EffUnbiasDATA->afterTOF->Fill(m);	
 		}
 	}
 
@@ -29,42 +24,45 @@ void DATAUnbiaseff_Fill(TNtuple *ntupla, int l){
 
 
 void DATAUnbiaseff_Write(){
-        EffUnbiasDATA1->Write();
-        EffUnbiasDATA2->Write();
-        EffUnbiasDATA1_R->Write();
-        EffUnbiasDATA2_R->Write();
-
+        EffUnbiasDATA -> Write();
         return;
 }
 
-//results
-TCanvas *c12=new TCanvas("DATA: Unb. Trigger Efficiency");
-TH1F *EffUnbDATA_R_TH1F = new TH1F("EffUnbDATA_R_TH1F","EffUnbDATA_R_TH1F",43,0,43);
-TH1F *EffUnbDATA_TH1F = new TH1F("EffUnbDATA_TH1F","EffUnbDATA_TH1F",18,0,18);
 
 void DATAUnbiaseff(TFile * file1){
-	TH1F *EffUnbiasDATA1= (TH1F*) file1->Get("EffUnbiasDATA1");
-	TH1F *EffUnbiasDATA2= (TH1F*) file1->Get("EffUnbiasDATA2");
-	TH1F *EffUnbiasDATA1_R =(TH1F*) file1->Get("EffUnbiasDATA1_R");
-	TH1F *EffUnbiasDATA2_R =(TH1F*) file1->Get("EffUnbiasDATA2_R");
-	
-	cout<<"************************************************* DATA Unbias TRIGG. EFFICIENCy **********************************************************************"<<endl;
-	c12->Divide(2,1);
-        float EffUnbiasDATA[18]={0};
-        for(int i=0;i<17;i++) if(EffUnbiasDATA1->GetBinContent(i+1)>0) 
-                EffUnbiasDATA[i]=EffUnbiasDATA2->GetBinContent(i+1)/(EffUnbiasDATA2->GetBinContent(i+1)+100*(float)EffUnbiasDATA1->GetBinContent(i+1));
-	float EffUnbiasDATA_R[43]={0};
-        for(int i=1;i<43;i++) EffUnbiasDATA_R[i]=EffUnbiasDATA2_R->GetBinContent(i+1)/(EffUnbiasDATA2_R->GetBinContent(i+1)+100*(float)EffUnbiasDATA1_R->GetBinContent(i+1));
+	Efficiency * EffUnbiasDATA = new Efficiency(file1,"EffUnbiasDATA");
 
-	 c12->cd(1);
+	cout<<"********** DATA Unbias TRIGG. EFFICIENCY ******************************"<<endl;
+	
+	EffUnbiasDATA -> Eval_Efficiency();
+
+	TH1F *EffUnbDATA_R_TH1F = (TH1F *) EffUnbiasDATA -> effR   ->Clone();
+	TH1F *EffUnbDATA_TH1F   = (TH1F *) EffUnbiasDATA -> effTOF ->Clone();
+
+	cout<<"*** Updating P1 file ****"<<endl;
+        string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+        file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+        if(!file1){
+                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
+                file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+        }
+        file1->cd("Results");
+        EffUnbDATA_R_TH1F ->Write();
+	EffUnbDATA_TH1F	  ->Write();
+	file1-> Write();
+        file1-> Close();
+
+	TCanvas *c12=new TCanvas("DATA: Unb. Trigger Efficiency");
+
+	c12->Divide(2,1);
+	c12->cd(1);
         gPad->SetLogx();
         gPad->SetGridx();
         gPad->SetGridy();
         string MCLegend[2]={"protons","deutons"};
         TGraph * EffUnbDATA_R = new TGraph();
         EffUnbDATA_R->SetTitle(MCLegend[0].c_str());
-        for(int i=0;i<43;i++) EffUnbDATA_R->SetPoint(i,R_cent[i],EffUnbiasDATA_R[i]);
-        for(int i=0;i<43;i++) EffUnbDATA_R_TH1F->SetBinContent(i+1,EffUnbiasDATA_R[i]);
+        for(int i=0;i<43;i++) EffUnbDATA_R->SetPoint(i,R_cent[i],EffUnbDATA_R_TH1F->GetBinContent(i+1));
         TGraph * EffUnbMCD_R[6];
         EffUnbDATA_R->SetMarkerColor(2);
         EffUnbDATA_R->SetMarkerStyle(8);
@@ -87,8 +85,7 @@ void DATAUnbiaseff(TFile * file1){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraph * EffUnbDATA = new TGraph();
-        for(int i=0;i<17;i++) EffUnbDATA->SetPoint(i,Ekincent[i],EffUnbiasDATA[i]);
-        for(int i=0;i<17;i++) EffUnbDATA_TH1F->SetBinContent(i+1,EffUnbiasDATA[i]);
+        for(int i=0;i<18;i++) EffUnbDATA->SetPoint(i,Ekincent[i],EffUnbDATA_TH1F->GetBinContent(i+1));
         TGraph * EffUnbMCD[6];
         EffUnbDATA->SetMarkerColor(2);
         EffUnbDATA->SetMarkerStyle(8);
@@ -106,6 +103,14 @@ void DATAUnbiaseff(TFile * file1){
 
         }
 
+	cout<<"*** Updating Results file ***"<<endl;
+        nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        f_out->mkdir("DATA-driven Results");
+        f_out->cd("DATA-driven Results");
+        c12->Write();
+	f_out->Write();
+        f_out->Close();
 
 	
 }

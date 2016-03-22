@@ -160,10 +160,9 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCUnbiaseff_Fill(ntupla0,i);
 		MCTrackeff_Fill(ntupla0,i);
 		MCpreSeleff_Fill(ntupla0,i);
-		/*MCpreCheck_Fill(ntupla0,i);
 		MigrationMatrix_Fill(ntupla0,i);
 		Correlazione_Preselezioni(ntupla0,i);
-		DVSMCpreSeleff_Fill(ntupla0,i);
+		/*DVSMCpreSeleff_Fill(ntupla0,i);
 		DVSMCTrackeff_Fill(ntupla0,i);*/
 	}
 	if(INDX==0||INDX==1){

@@ -91,6 +91,7 @@ float deltaencinAgl[18];
 float Var=0;
 float Var2=0;
 float Var3=0;
+int Norm[11]={0};
 bool Likcut=false;
 bool Distcut=false;
 bool Herejcut=false;

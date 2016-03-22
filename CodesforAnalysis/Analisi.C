@@ -37,11 +37,10 @@
 #include "Parte2/Cuts.h"
 #include "Parte2/MCTrackeff.h"
 #include "Parte2/MCpreSeleff.h"
-/*#include "Parte2/MCpreCheck.h"
 #include "Parte2/MigrationMatrix.h"
 #include "Parte2/DATAUnbiaseff.h"
 #include "Parte2/CorrelazionePreselezioni.h"
-#include "Parte2/DATApreSeleff.h"
+/*#include "Parte2/DATApreSeleff.h"
 #include "Parte2/DATAQualeff.h"
 #include "Parte2/DVSMCpreSeleff.h"
 #include "Parte2/DVSMCQualeff2.h"
@@ -207,11 +206,10 @@ int main(int argc, char * argv[])
 		  MCQualeff(file1);
 		  MCTrackeff(file1);
 		  MCpreSeleff(file1);
-		  /*Correlazione_Preselezioni(file1);
-		  MCpreCheck(file1);
+		  Correlazione_Preselezioni(file1);
 		  MigrationMatrix(file1);
 		  DATAUnbiaseff(file1);
-		  DATApreSeleff(file1);
+		  /*DATApreSeleff(file1);
 		  DVSMCTrackeff(file1);
 		  DATAQualeff(file1);
 		  DVSMCpreSeleff(file1);
