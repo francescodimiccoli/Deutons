@@ -171,7 +171,7 @@ void MCTrackeff(TFile * file1){
 	TCanvas *c7	=new TCanvas("Tracker rec. efficiency");
 	TCanvas *c8	=new TCanvas("TOF rec. efficiency");	
 	c_7->Divide(2,1);
-	c_7->Divide(2,1);
+	c7->Divide(2,1);
 	c8->Divide(2,1);
 	c_7->cd(1);
         gPad->SetLogx();
