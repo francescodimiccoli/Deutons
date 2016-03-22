@@ -126,18 +126,18 @@ void MCTrackeff(TFile * file1){
 
 	TH1F * EffTriggerMCP_R_TH1F 	= (TH1F *)EffTriggMCP  -> effR    ->	Clone(); 	
 	TH1F * EffTriggerMCP_TH1F       = (TH1F *)EffTriggMCP  -> effTOF  ->	Clone();  
-	TH2F * EffTriggerMCD_R_TH2F 	= (TH2F *)EffTriggMCP  -> effR    ->	Clone();  
-	TH2F * EffTriggerMCD_TH2F       = (TH2F *)EffTriggMCP  -> effTOF  ->	Clone();  
+	TH2F * EffTriggerMCD_R_TH2F 	= (TH2F *)EffTriggMCD  -> effR    ->	Clone();  
+	TH2F * EffTriggerMCD_TH2F       = (TH2F *)EffTriggMCD  -> effTOF  ->	Clone();  
                                                 
 	TH1F * EffTrackerMCP_R_TH1F 	= (TH1F *)EffTrackMCP  -> effR    ->	Clone();  
 	TH1F * EffTrackerMCP_TH1F       = (TH1F *)EffTrackMCP  -> effTOF  ->	Clone();  
-	TH2F * EffTrackerMCD_R_TH2F 	= (TH2F *)EffTrackMCP  -> effR    ->	Clone();  
-	TH2F * EffTrackerMCD_TH2F       = (TH2F *)EffTrackMCP  -> effTOF  ->	Clone();  
+	TH2F * EffTrackerMCD_R_TH2F 	= (TH2F *)EffTrackMCD  -> effR    ->	Clone();  
+	TH2F * EffTrackerMCD_TH2F       = (TH2F *)EffTrackMCD  -> effTOF  ->	Clone();  
                                                 
 	TH1F * EffTOF_MCP_R_TH1F        = (TH1F *)EffTOFMCP  	-> effR   ->	Clone();  
 	TH1F * EffTOF_MCP_TH1F	        = (TH1F *)EffTOFMCP  	-> effTOF ->	Clone();  
-	TH2F * EffTOF_MCD_R_TH2F        = (TH2F *)EffTOFMCP  	-> effR   ->	Clone();  
-	TH2F * EffTOF_MCD_TH2F	        = (TH2F *)EffTOFMCP  	-> effTOF ->	Clone();  
+	TH2F * EffTOF_MCD_R_TH2F        = (TH2F *)EffTOFMCD  	-> effR   ->	Clone();  
+	TH2F * EffTOF_MCD_TH2F	        = (TH2F *)EffTOFMCD  	-> effTOF ->	Clone();  
 
 
 
