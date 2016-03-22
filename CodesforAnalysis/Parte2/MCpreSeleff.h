@@ -10,43 +10,39 @@ TH3F * EffpreSelMCD2=new TH3F("EffpreSelMCD2","EffpreSelMCD2",18,0,18,6,0,6,3,0,
 TH3F * EffpreSelMCD1_R=new TH3F("EffpreSelMCD1_R","EffpreSelMCD1_R",43,0,43,6,0,6,3,0,3);
 TH3F * EffpreSelMCD2_R=new TH3F("EffpreSelMCD2_R","EffpreSelMCD2_R",43,0,43,6,0,6,3,0,3);
 
+Efficiency * EffpreSelMCP = new Efficiency("EffpreSelMCP",3); 
+Efficiency * EffpreSelMCD = new Efficiency("EffpreSelMCD",6,3);
+
+
 
 void MCpreSeleff_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
-	
-	if(Unbias!=0||Beta_pre<=0||R_pre<=0||Beta_pre>protons->Eval(R_pre)+0.1||Beta_pre<protons->Eval(R_pre)-0.1) return;
+	if(Unbias!=0||Beta_pre<=0||R_pre<=0) return;
+
 	for(int S=0;S<3;S++){
 		if(Massa_gen<1&&Massa_gen>0.5) {
-			for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]) {
-				//if(EdepL1>0.04&&EdepL1<EdepL1beta->Eval(Beta_pre)+0.2&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.2){
-				if((S!=3&&EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1)||S==3){
-					if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelMCP1_R->Fill(M,S);
-					if(((int)Cutmask&passed[S])==passed[S]) EffpreSelMCP2_R->Fill(M,S);
+			for(int M=0;M<43;M++) 
+				if(Var<bin[M+1]&&Var>bin[M]) {
+						if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelMCP->beforeR->Fill(M,S);
+						if(((int)Cutmask&passed[S])==passed[S]) EffpreSelMCP->afterR->Fill(M,S);
 				}
-			}	
-			for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]){
-				//if(EdepL1>0.04&&EdepL1<EdepL1beta->Eval(Beta_pre)+0.2&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.2){
-				if((S!=3&&EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1)||S==3){
-					if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelMCP1->Fill(m,S);
-					if(((int)Cutmask&passed[S])==passed[S]) EffpreSelMCP2->Fill(m,S);	
+	
+			for(int m=0;m<18;m++)  
+				if(Var>BetaP[m]&&Var<=BetaP[m+1]){
+						if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelMCP->beforeTOF->Fill(m,S);
+						if(((int)Cutmask&passed[S])==passed[S]) EffpreSelMCP->afterTOF->Fill(m,S);	
 				}
-			}
-		}				 
+			}				 
 
 		if(Massa_gen>1&&Massa_gen<2) {
-			for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]) {
-				//if(EdepL1>0.04&&EdepL1<EdepL1beta->Eval(Beta_pre)+0.2&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.2){
-				if((S!=3&&EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1)||S==3){	
-					if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelMCD1_R->Fill(M,(int)(10000*Massa_gen-18570),S);
-					if(((int)Cutmask&passed[S])==passed[S]) EffpreSelMCD2_R->Fill(M,(int)(10000*Massa_gen-18570),S);
-				}
+			for(int M=0;M<43;M++) 
+				if(Var<bin[M+1]&&Var>bin[M]) {
+				//	if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelMCD->beforeR->Fill(1,2,3);
+				//	if(((int)Cutmask&passed[S])==passed[S]) EffpreSelMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570),S);
 			}
 			for(int m=0;m<18;m++) if(Var>BetaD[m]&&Var<=BetaD[m+1]){
-				//if(EdepL1>0.04&&EdepL1<EdepL1beta->Eval(Beta_pre)+0.2&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.2){
-				if((S!=3&&EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1)||S==3){	
-					if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelMCD1->Fill(m,(int)(10000*Massa_gen-18570),S);
-					if(((int)Cutmask&passed[S])==passed[S]) EffpreSelMCD2->Fill(m,(int)(10000*Massa_gen-18570),S);
-				}
+				//	if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570),S);
+				//	if(((int)Cutmask&passed[S])==passed[S]) EffpreSelMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570),S);
 			}
 		}
 	}
@@ -55,16 +51,9 @@ void MCpreSeleff_Fill(TNtuple *ntupla, int l){
 
 
 void MCpreSeleff_Write(){
-        EffpreSelMCP1->Write();
-        EffpreSelMCD1->Write();
-        EffpreSelMCP2->Write();
-        EffpreSelMCD2->Write();
-        EffpreSelMCP1_R->Write();
-        EffpreSelMCD1_R->Write();
-        EffpreSelMCP2_R->Write();
-        EffpreSelMCD2_R->Write();
-        
-        return; 
+        EffpreSelMCP -> Write();
+        EffpreSelMCD ->Write();
+	return; 
 }
 
 
