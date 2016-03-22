@@ -290,8 +290,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		DVSMCTrackeff_Write();
 		MCMC_Write();*/
 		MCpreeff_Write();
-		/*MCpreCheck_Write();
-		MCpreSeleff_Write();*/
+		//MCpreCheck_Write();
+		MCpreSeleff_Write();
 		MCQualeff_Write();
 		MCTrackeff_Write();	
 		MCUnbiaseff_Write();

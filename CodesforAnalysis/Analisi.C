@@ -206,8 +206,8 @@ int main(int argc, char * argv[])
 		SlidesforPlot(file1);
 		  MCQualeff(file1);
 		  MCTrackeff(file1);
-		 /* MCpreSeleff(file1);
-		  Correlazione_Preselezioni(file1);
+		  MCpreSeleff(file1);
+		  /*Correlazione_Preselezioni(file1);
 		  MCpreCheck(file1);
 		  MigrationMatrix(file1);
 		  DATAUnbiaseff(file1);

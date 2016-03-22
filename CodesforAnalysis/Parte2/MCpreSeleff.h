@@ -179,6 +179,17 @@ void MCpreSeleff(TFile * file1){
 			}
 		}
 	}
+
+	cout<<"*** Updating Results file ***"<<endl;
+        nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        f_out->mkdir("MC Results/Preselections/\"Clean-Event\" Selections");
+        f_out->cd("MC Results/Preselections/\"Clean-Event\" Selections");
+        for(int S=0;S<3;S++) c9[S]->Write();
+	f_out->Write();
+        f_out->Close();
+
+
 return;
 }
 
