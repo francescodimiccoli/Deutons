@@ -28,6 +28,7 @@
 #include "Functions_auto.h"
 #include "Parte2/Definitions.h"
 #include "Parte2/EfficiencyClass.h"
+#include "Parte2/LATcorrClass.h"
 #include "Parte2/FitError.h"
 #include "Parte2/MCpreeff.h"
 #include "Parte2/MCUnbiaseff.h"
@@ -40,9 +41,9 @@
 #include "Parte2/MigrationMatrix.h"
 #include "Parte2/DATAUnbiaseff.h"
 #include "Parte2/CorrelazionePreselezioni.h"
-/*#include "Parte2/DATApreSeleff.h"
+//#include "Parte2/DATApreSeleff.h"
 #include "Parte2/DATAQualeff.h"
-#include "Parte2/DVSMCpreSeleff.h"
+/*#include "Parte2/DVSMCpreSeleff.h"
 #include "Parte2/DVSMCQualeff2.h"
 #include "Parte2/DVSMCTrackeff.h"
 #include "Parte2/AcceptanceP.h"
@@ -209,10 +210,10 @@ int main(int argc, char * argv[])
 		  Correlazione_Preselezioni(file1);
 		  MigrationMatrix(file1);
 		  DATAUnbiaseff(file1);
-		  /*DATApreSeleff(file1);
-		  DVSMCTrackeff(file1);
+		  //DATApreSeleff(file1);
+		  //DVSMCTrackeff(file1);
 		  DATAQualeff(file1);
-		  DVSMCpreSeleff(file1);
+		  /*DVSMCpreSeleff(file1);
 		  DVSMCQualeff2(file1);
 		  AcceptanceP(file1);
 		  AcceptanceD(file1);

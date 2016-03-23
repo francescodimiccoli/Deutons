@@ -257,8 +257,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		if(100*(i/(float)(ntupla3->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla3->GetEntries())))+1;}
 		HecutD_Fill(ntupla3,i);	
 		SlidesforPlot_D_Fill(ntupla1,i);
-		/*DATAQualeff_Fill(ntupla3,i,Zona);
-		DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
+		DATAQualeff_Fill(ntupla3,i,Zona);
+		/*DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		ProtonFlux_Fill(ntupla3,i,Zona);	
 		DeutonsDATA_Fill(ntupla3,i,Zona);
 		DeutonsDATA_Dist_Fill(ntupla3,i,Zona);

@@ -1,7 +1,6 @@
 using namespace std;
 
 
-float Rcut[11]={18,18,16,14,12,10,8,6,4,2,1};
 TH3F * EffpreSelDATA1_R=new TH3F("EffpreSelDATA1_R","EffpreSelDATA1_R",43,0,43,3,0,3,11,0,11);
 TH3F * EffpreSelDATA2_R=new TH3F("EffpreSelDATA2_R","EffpreSelDATA2_R",43,0,43,3,0,3,11,0,11);
 
