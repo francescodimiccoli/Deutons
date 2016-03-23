@@ -278,11 +278,11 @@ void FillIstogram(int INDX,string frac,string mese)
 
 		//DATAQualeff_Write();
 		//DATApreSeleff_Write();
-		//Correlazione_Preselezioni_Write();
+		Correlazione_Preselezioni_Write();
 		HecutMC_Write();
 		SlidesforPlot_Write();	
-		/*DATAUnbiaseff_Write();
-		DeutonsMC_Write();
+		DATAUnbiaseff_Write();
+		/*DeutonsMC_Write();
 		DeutonsMC_Dist_Write();
 		DVSMCpreSeleff_Write();
 		DVSMCQualeff2_Write();
@@ -294,7 +294,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCQualeff_Write();
 		MCTrackeff_Write();	
 		MCUnbiaseff_Write();
-		//MigrationMatrix_Write();
+		MigrationMatrix_Write();
 		//ProtonFlux_Write();
 
 		Tempi->Write();
