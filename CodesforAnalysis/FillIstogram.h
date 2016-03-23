@@ -230,8 +230,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		if(100*(i/(float)(ntupla2->GetEntries()/fraz))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla2->GetEntries()/fraz)))+1;}
                 
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));    
-		/*DATAUnbiaseff_Fill(ntupla2,i);
-		DATApreSeleff_Fill(ntupla2,i,Zona);
+		DATAUnbiaseff_Fill(ntupla2,i);
+		/*DATApreSeleff_Fill(ntupla2,i,Zona);
 		DVSMCpreSeleff_D_Fill(ntupla2,i,Zona);
 		DVSMCTrackeff_D_Fill(ntupla0,i);*/		
 	}
@@ -257,8 +257,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		if(100*(i/(float)(ntupla3->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla3->GetEntries())))+1;}
 		HecutD_Fill(ntupla3,i);	
 		SlidesforPlot_D_Fill(ntupla1,i);
-		/*DATAQualeff_Fill(ntupla3,i,Zona);
-		DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
+		DATAQualeff_Fill(ntupla3,i,Zona);
+		/*DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		ProtonFlux_Fill(ntupla3,i,Zona);	
 		DeutonsDATA_Fill(ntupla3,i,Zona);
 		DeutonsDATA_Dist_Fill(ntupla3,i,Zona);
