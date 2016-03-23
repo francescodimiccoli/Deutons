@@ -1,14 +1,5 @@
 using namespace std;
 
-TH2F * EffDistDATAP = new TH2F("EffDistDATAP","EffDistDATAP",43,0,43,11,0,11);
-TH2F * EffLikDATAP = new TH2F("EffLikDATAP","EffLikDATAP",43,0,43,11,0,11);
-TH2F * EffDistDATANaFP = new TH2F("EffDistDATANaFP","EffDistDATANaFP",43,0,43,11,0,11);
-TH2F * EffLikDATANaFP = new TH2F("EffLikDATANaFP","EffLikDATANaFP",43,0,43,11,0,11);
-TH2F * EffDistDATAAglP = new TH2F("EffDistDATAAglP","EffDistDATAAglP",43,0,43,11,0,11);
-TH2F * EffLikDATAAglP = new TH2F("EffLikDATAAglP","EffLikDATAAglP",43,0,43,11,0,11);
-TH2F * EffQualDATAP = new TH2F("EffQualDATAP","EffQualDATAP",43,0,43,11,0,11);
-TH2F * EffQualDATANaFP = new TH2F("EffQualDATANaFP","EffQualDATANaFP",43,0,43,11,0,11);
-TH2F * EffQualDATAAglP = new TH2F("EffQualDATAAglP","EffQualDATAAglP",43,0,43,11,0,11);
 
 LATcorr * LikelihoodLATcorr = new LATcorr("EffLikDATA",11);
 LATcorr * DistanceLATcorr   = new LATcorr("EffDistDATA",11);
