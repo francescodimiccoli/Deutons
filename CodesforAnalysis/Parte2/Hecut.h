@@ -80,6 +80,8 @@ void Hecut(TFile * file1){
 	Hecut_D   	->Write();
 	HecutMCP_TH1F 	->Write();
 	HecutMCHe_TH1F	->Write();
+	file1->Write();
+	file1->Close();
 	
 	TCanvas * c36	 =new TCanvas("Sigma E. dep. Track vs TOF");
 	TCanvas * c36_bis=new TCanvas("Sigma E. dep. Track vs TOF (MC)");

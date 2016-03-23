@@ -82,7 +82,8 @@ void MCUnbiaseff(TFile * file1){
 	EffUnbMCP_TH1F   -> Write();
 	EffUnbMCD_R_TH2F  -> Write();
 	EffUnbMCD_TH2F    -> Write();
-	
+	file1->Write();
+	file1->Close();	
 
 	TCanvas *c11=new TCanvas("Unbias Trigger Efficiency");
 	c11->Divide(2,1);

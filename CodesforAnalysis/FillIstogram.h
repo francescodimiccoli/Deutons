@@ -276,7 +276,7 @@ void FillIstogram(int INDX,string frac,string mese)
 			nomefile=percorso+"/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
 		TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 
-		//DATAQualeff_Write();
+		DATAQualeff_Write();
 		//DATApreSeleff_Write();
 		Correlazione_Preselezioni_Write();
 		HecutMC_Write();
