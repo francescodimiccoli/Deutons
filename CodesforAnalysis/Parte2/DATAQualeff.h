@@ -1,8 +1,8 @@
 using namespace std;
 
 
-LATcorr * LikelihoodLATcorr = new LATcorr("EffLikDATA",11);
-LATcorr * DistanceLATcorr   = new LATcorr("EffDistDATA",11);
+LATcorr * LikelihoodLATcorr = new LATcorr("EffLikDATA");
+LATcorr * DistanceLATcorr   = new LATcorr("EffDistDATA");
 
 void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 
@@ -88,19 +88,16 @@ void DATAQualeff(TFile * file1){
 
 	cout<<"****************************** LAT. Eff. CORRECTION *************************************************"<<endl;
 
-	LikelihoodLATcorr -> Eval_LATcorr(); 
-        DistanceLATcorr   -> Eval_LATcorr();
+	LikelihoodLATcorr -> Eval_LATcorr(1); 
+        DistanceLATcorr   -> Eval_LATcorr(1);
 
-	TH1F *LikLATcorr_TOF  =	(TH1F *) LikelihoodLATcorr   -> LATcorrTOF -> Clone();
-	TH1F *DistLATcorr_TOF =	(TH1F *) DistanceLATcorr     -> LATcorrTOF -> Clone();
-	TH1F *LikLATcorr_NaF  =	(TH1F *) LikelihoodLATcorr   -> LATcorrNaF -> Clone();
-	TH1F *DistLATcorr_NaF =	(TH1F *) DistanceLATcorr     -> LATcorrNaF -> Clone();
-	TH1F *LikLATcorr_Agl  =	(TH1F *) LikelihoodLATcorr   -> LATcorrAgl -> Clone();
-	TH1F *DistLATcorr_Agl =	(TH1F *) DistanceLATcorr     -> LATcorrAgl -> Clone();
+	TH2F *LikLATcorr_TOF  =	(TH2F *) LikelihoodLATcorr   -> LATcorrTOF -> Clone();
+	TH2F *DistLATcorr_TOF =	(TH2F *) DistanceLATcorr     -> LATcorrTOF -> Clone();
+	TH2F *LikLATcorr_NaF  =	(TH2F *) LikelihoodLATcorr   -> LATcorrNaF -> Clone();
+	TH2F *DistLATcorr_NaF =	(TH2F *) DistanceLATcorr     -> LATcorrNaF -> Clone();
+	TH2F *LikLATcorr_Agl  =	(TH2F *) LikelihoodLATcorr   -> LATcorrAgl -> Clone();
+	TH2F *DistLATcorr_Agl =	(TH2F *) DistanceLATcorr     -> LATcorrAgl -> Clone();
 	
-	
-	LikelihoodLATcorr -> Fit_LATcorr();
-        DistanceLATcorr   -> Fit_LATcorr();
 
         TH1F *LikLATcorr_TOF_fit  	= (TH1F *) LikelihoodLATcorr   -> LATcorrTOF_fit-> Clone();
         TH1F *DistLATcorr_TOF_fit	= (TH1F *) DistanceLATcorr     -> LATcorrTOF_fit-> Clone();
@@ -259,21 +256,21 @@ void DATAQualeff(TFile * file1){
         CorrLATLik->GetYaxis()->SetRangeUser(0.96,1.04);
 	CorrLATLik->SetMarkerStyle(8);
         for(int i=1;i<11;i++) {
-                        CorrLATLik->SetPoint(i-1,geomagC[i],LikLATcorr_TOF->GetBinContent(i+1));
-                        CorrLATLik->SetPointError(i-1,0,LikLATcorr_TOF->GetBinError(i+1));
+                        CorrLATLik->SetPoint(i-1,geomagC[i],LikLATcorr_TOF->GetBinContent(i+1,1));
+                        CorrLATLik->SetPointError(i-1,0,LikLATcorr_TOF->GetBinError(i+1,1));
                 }
 	CorrLATLik->Draw("AP");
 	TGraphErrors *CorrLAT_Lik_Spl=new TGraphErrors("CorrLAT_Lik_Spl");
         CorrLAT_Lik_Spl->SetName("CorrLAT_Lik_Spl");
-	for(int i=1;i<11;i++) { CorrLAT_Lik_Spl->SetPoint(i,geomagC[i],LikLATcorr_TOF_fit->GetBinContent(i+1));
-                                CorrLAT_Lik_Spl->SetPointError(i,0,LikLATcorr_TOF_fit->GetBinError(i+1));
+	for(int i=1;i<11;i++) { CorrLAT_Lik_Spl->SetPoint(i-1,geomagC[i],LikLATcorr_TOF_fit->GetBinContent(i+1));
+                                CorrLAT_Lik_Spl->SetPointError(i-1,0,LikLATcorr_TOF_fit->GetBinError(i+1));
                                 }
         CorrLAT_Lik_Spl->SetLineColor(2);
         CorrLAT_Lik_Spl->SetMarkerColor(2);
         CorrLAT_Lik_Spl->SetFillColor(2);
         CorrLAT_Lik_Spl->SetFillStyle(3001);
         CorrLAT_Lik_Spl->SetLineWidth(2);
-        CorrLAT_Lik_Spl->Draw("Lsame");
+        CorrLAT_Lik_Spl->Draw("Csame");
 
 
 	TGraphErrors *CorrLATLikNaF;
@@ -287,21 +284,21 @@ void DATAQualeff(TFile * file1){
         CorrLATLikNaF->GetYaxis()->SetRangeUser(0.96,1.04);
         CorrLATLikNaF->SetMarkerStyle(8);
         for(int i=1;i<11;i++) {
-                        CorrLATLikNaF->SetPoint(i-1,geomagC[i],LikLATcorr_NaF->GetBinContent(i+1));
-                        CorrLATLikNaF->SetPointError(i-1,0,LikLATcorr_NaF->GetBinError(i+1));
+                        CorrLATLikNaF->SetPoint(i-1,geomagC[i],LikLATcorr_NaF->GetBinContent(i+1,1));
+                        CorrLATLikNaF->SetPointError(i-1,0,LikLATcorr_NaF->GetBinError(i+1,1));
                 }
         CorrLATLikNaF->Draw("AP");
         TGraphErrors *CorrLAT_LikNaF_Spl=new TGraphErrors("CorrLAT_LikNaF_Spl");
         CorrLAT_LikNaF_Spl->SetName("CorrLAT_LikNaF_Spl");
-        for(int i=1;i<11;i++) { CorrLAT_LikNaF_Spl->SetPoint(i,geomagC[i],LikLATcorr_NaF_fit->GetBinContent(i+1));
-                                CorrLAT_LikNaF_Spl->SetPointError(i,0,LikLATcorr_NaF_fit->GetBinError(i+1));
+        for(int i=1;i<11;i++) { CorrLAT_LikNaF_Spl->SetPoint(i-1,geomagC[i],LikLATcorr_NaF_fit->GetBinContent(i+1));
+                                CorrLAT_LikNaF_Spl->SetPointError(i-1,0,LikLATcorr_NaF_fit->GetBinError(i+1));
                                 }
         CorrLAT_LikNaF_Spl->SetLineColor(2);
         CorrLAT_LikNaF_Spl->SetMarkerColor(2);
         CorrLAT_LikNaF_Spl->SetFillColor(2);
         CorrLAT_LikNaF_Spl->SetFillStyle(3001);
         CorrLAT_LikNaF_Spl->SetLineWidth(2);
-        CorrLAT_LikNaF_Spl->Draw("Lsame");
+        CorrLAT_LikNaF_Spl->Draw("Csame");
 
 	TGraphErrors *CorrLATLikAgl;
         c15->cd(6);
@@ -314,21 +311,21 @@ void DATAQualeff(TFile * file1){
         CorrLATLikAgl->GetYaxis()->SetRangeUser(0.96,1.04);
         CorrLATLikAgl->SetMarkerStyle(8);
         for(int i=1;i<11;i++) {
-                        CorrLATLikAgl->SetPoint(i-1,geomagC[i],LikLATcorr_Agl->GetBinContent(i+1));
-                        CorrLATLikAgl->SetPointError(i-1,0,LikLATcorr_Agl->GetBinError(i+1));
+                        CorrLATLikAgl->SetPoint(i-1,geomagC[i],LikLATcorr_Agl->GetBinContent(i+1,1));
+                        CorrLATLikAgl->SetPointError(i-1,0,LikLATcorr_Agl->GetBinError(i+1,1));
                 }
         CorrLATLikAgl->Draw("AP");
         TGraphErrors *CorrLAT_LikAgl_Spl=new TGraphErrors("CorrLAT_LikAgl_Spl");
         CorrLAT_LikAgl_Spl->SetName("CorrLAT_LikAgl_Spl");
-        for(int i=1;i<11;i++) { CorrLAT_LikAgl_Spl->SetPoint(i,geomagC[i],LikLATcorr_Agl_fit->GetBinContent(i+1));
-                                CorrLAT_LikAgl_Spl->SetPointError(i,0,LikLATcorr_Agl_fit->GetBinError(i+1));
+        for(int i=1;i<11;i++) { CorrLAT_LikAgl_Spl->SetPoint(i-1,geomagC[i],LikLATcorr_Agl_fit->GetBinContent(i+1));
+                                CorrLAT_LikAgl_Spl->SetPointError(i-1,0,LikLATcorr_Agl_fit->GetBinError(i+1));
                                 }
         CorrLAT_LikAgl_Spl->SetLineColor(2);
         CorrLAT_LikAgl_Spl->SetMarkerColor(2);
         CorrLAT_LikAgl_Spl->SetFillColor(2);
         CorrLAT_LikAgl_Spl->SetFillStyle(3001);
         CorrLAT_LikAgl_Spl->SetLineWidth(2);
-        CorrLAT_LikAgl_Spl->Draw("Lsame");
+        CorrLAT_LikAgl_Spl->Draw("Csame");
 	
 
 
@@ -436,21 +433,21 @@ void DATAQualeff(TFile * file1){
         CorrLATDist->GetYaxis()->SetRangeUser(0.96,1.04);
         CorrLATDist->SetMarkerStyle(8);
         for(int i=1;i<11;i++) {
-                        CorrLATDist->SetPoint(i-1,geomagC[i],DistLATcorr_TOF->GetBinContent(i+1));
-                        CorrLATDist->SetPointError(i-1,0,DistLATcorr_TOF->GetBinError(i+1));
+                        CorrLATDist->SetPoint(i-1,geomagC[i],DistLATcorr_TOF->GetBinContent(i+1,1));
+                        CorrLATDist->SetPointError(i-1,0,DistLATcorr_TOF->GetBinError(i+1,1));
                 }
         CorrLATDist->Draw("AP");
         TGraphErrors *CorrLAT_Dist_Spl=new TGraphErrors("CorrLAT_Dist_Spl");
         CorrLAT_Dist_Spl->SetName("CorrLAT_Dist_Spl");
-        for(int i=1;i<11;i++) { CorrLAT_Dist_Spl->SetPoint(i,geomagC[i],DistLATcorr_TOF_fit->GetBinContent(i+1));
-                                CorrLAT_Dist_Spl->SetPointError(i,0,DistLATcorr_TOF_fit->GetBinError(i+1));
+        for(int i=1;i<11;i++) { CorrLAT_Dist_Spl->SetPoint(i-1,geomagC[i],DistLATcorr_TOF_fit->GetBinContent(i+1,1));
+                                CorrLAT_Dist_Spl->SetPointError(i-1,0,DistLATcorr_TOF_fit->GetBinError(i+1,1));
                                 }
         CorrLAT_Dist_Spl->SetLineColor(2);
         CorrLAT_Dist_Spl->SetMarkerColor(2);
         CorrLAT_Dist_Spl->SetFillColor(2);
         CorrLAT_Dist_Spl->SetFillStyle(3001);
         CorrLAT_Dist_Spl->SetLineWidth(2);
-        CorrLAT_Dist_Spl->Draw("Lsame");
+        CorrLAT_Dist_Spl->Draw("Csame");
 
 
         TGraphErrors *CorrLATDistNaF;
@@ -464,21 +461,21 @@ void DATAQualeff(TFile * file1){
         CorrLATDistNaF->GetYaxis()->SetRangeUser(0.96,1.04);
         CorrLATDistNaF->SetMarkerStyle(8);
         for(int i=1;i<11;i++) {
-                        CorrLATDistNaF->SetPoint(i-1,geomagC[i],DistLATcorr_NaF->GetBinContent(i+1));
-                        CorrLATDistNaF->SetPointError(i-1,0,DistLATcorr_NaF->GetBinError(i+1));
+                        CorrLATDistNaF->SetPoint(i-1,geomagC[i],DistLATcorr_NaF->GetBinContent(i+1,1));
+                        CorrLATDistNaF->SetPointError(i-1,0,DistLATcorr_NaF->GetBinError(i+1,1));
                 }
         CorrLATDistNaF->Draw("AP");
         TGraphErrors *CorrLAT_DistNaF_Spl=new TGraphErrors("CorrLAT_DistNaF_Spl");
         CorrLAT_DistNaF_Spl->SetName("CorrLAT_DistNaF_Spl");
-        for(int i=1;i<11;i++) { CorrLAT_DistNaF_Spl->SetPoint(i,geomagC[i],DistLATcorr_NaF_fit->GetBinContent(i+1));
-                                CorrLAT_DistNaF_Spl->SetPointError(i,0,DistLATcorr_NaF_fit->GetBinError(i+1));
+        for(int i=1;i<11;i++) { CorrLAT_DistNaF_Spl->SetPoint(i-1,geomagC[i],DistLATcorr_NaF_fit->GetBinContent(i+1));
+                                CorrLAT_DistNaF_Spl->SetPointError(i-1,0,DistLATcorr_NaF_fit->GetBinError(i+1));
                                 }
         CorrLAT_DistNaF_Spl->SetLineColor(2);
         CorrLAT_DistNaF_Spl->SetMarkerColor(2);
         CorrLAT_DistNaF_Spl->SetFillColor(2);
         CorrLAT_DistNaF_Spl->SetFillStyle(3001);
         CorrLAT_DistNaF_Spl->SetLineWidth(2);
-        CorrLAT_DistNaF_Spl->Draw("Lsame");
+        CorrLAT_DistNaF_Spl->Draw("Csame");
 
         TGraphErrors *CorrLATDistAgl;
         c16->cd(6);
@@ -491,21 +488,21 @@ void DATAQualeff(TFile * file1){
         CorrLATDistAgl->GetYaxis()->SetRangeUser(0.96,1.04);
         CorrLATDistAgl->SetMarkerStyle(8);
         for(int i=1;i<11;i++) {
-                        CorrLATDistAgl->SetPoint(i-1,geomagC[i],DistLATcorr_Agl->GetBinContent(i+1));
-                        CorrLATDistAgl->SetPointError(i-1,0,DistLATcorr_Agl->GetBinError(i+1));
+                        CorrLATDistAgl->SetPoint(i-1,geomagC[i],DistLATcorr_Agl->GetBinContent(i+1,1));
+                        CorrLATDistAgl->SetPointError(i-1,0,DistLATcorr_Agl->GetBinError(i+1,1));
                 }
         CorrLATDistAgl->Draw("AP");
         TGraphErrors *CorrLAT_DistAgl_Spl=new TGraphErrors("CorrLAT_DistAgl_Spl");
         CorrLAT_DistAgl_Spl->SetName("CorrLAT_DistAgl_Spl");
-        for(int i=1;i<11;i++) { CorrLAT_DistAgl_Spl->SetPoint(i,geomagC[i],DistLATcorr_Agl_fit->GetBinContent(i+1));
-                                CorrLAT_DistAgl_Spl->SetPointError(i,0,DistLATcorr_Agl_fit->GetBinError(i+1));
+        for(int i=1;i<11;i++) { CorrLAT_DistAgl_Spl->SetPoint(i-1,geomagC[i],DistLATcorr_Agl_fit->GetBinContent(i+1));
+                                CorrLAT_DistAgl_Spl->SetPointError(i-1,0,DistLATcorr_Agl_fit->GetBinError(i+1));
                                 }
         CorrLAT_DistAgl_Spl->SetLineColor(2);
         CorrLAT_DistAgl_Spl->SetMarkerColor(2);
         CorrLAT_DistAgl_Spl->SetFillColor(2);
         CorrLAT_DistAgl_Spl->SetFillStyle(3001);
         CorrLAT_DistAgl_Spl->SetLineWidth(2);
-        CorrLAT_DistAgl_Spl->Draw("Lsame");
+        CorrLAT_DistAgl_Spl->Draw("Csame");
 
 	cout<<"*** Updating Results file ***"<<endl;
         nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";

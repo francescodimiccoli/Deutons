@@ -4,25 +4,26 @@ using namespace std;
 TH3F * EffpreSelDATA1_R=new TH3F("EffpreSelDATA1_R","EffpreSelDATA1_R",43,0,43,3,0,3,11,0,11);
 TH3F * EffpreSelDATA2_R=new TH3F("EffpreSelDATA2_R","EffpreSelDATA2_R",43,0,43,3,0,3,11,0,11);
 
+LATcorr *EffpreSelDATA = new LATcorr("EffpreSelDATA",3);
+ 
+
 void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
 	int k = ntupla->GetEvent(l);
 	if(Unbias!=0||Beta_pre<=0||R_pre<=0||Beta_pre>protons->Eval(R_pre)+0.1||Beta_pre<protons->Eval(R_pre)-0.1) return;
+	if(!(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.1&&EdepL1>EdepL1beta->Eval(Beta)-0.1)) return;	
 	for(int S=0;S<3;S++){
-			for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]&&R_pre>Rcut[zona]) {
-				//if(EdepL1<EdepL1beta->Eval(Beta_pre)+0.2&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.2){
-				if((S!=3&&EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1)||S==3){
-					if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelDATA1_R->Fill(M,S,zona);
-					if(((int)Cutmask&passed[S])==passed[S]) EffpreSelDATA2_R->Fill(M,S,zona);
+			for(int M=0;M<43;M++) 
+				if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]&&R_pre>Rcut[zona]) {
+					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3 *)EffpreSelDATA->beforeR)->Fill(M,zona,S);
+					if(((int)Cutmask&passed[S])==passed[S]) ((TH3 *)EffpreSelDATA->afterR)->Fill(M,zona,S);
 				}
 			}	
-	}
 	return;
 }
 
 
 void DATApreSeleff_Write(){
-        EffpreSelDATA1_R->Write() ;
-        EffpreSelDATA2_R->Write();
+        EffpreSelDATA->Write();
         return;
 }
 

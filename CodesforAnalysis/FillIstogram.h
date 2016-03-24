@@ -231,9 +231,9 @@ void FillIstogram(int INDX,string frac,string mese)
                 
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));    
 		DATAUnbiaseff_Fill(ntupla2,i);
-		/*DATApreSeleff_Fill(ntupla2,i,Zona);
-		DVSMCpreSeleff_D_Fill(ntupla2,i,Zona);
-		DVSMCTrackeff_D_Fill(ntupla0,i);*/		
+		DATApreSeleff_Fill(ntupla2,i,Zona);
+		//DVSMCpreSeleff_D_Fill(ntupla2,i,Zona);
+		//DVSMCTrackeff_D_Fill(ntupla0,i);		
 	}
         if(INDX==0||INDX==1){
         avanzamento=0;
@@ -277,7 +277,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 
 		DATAQualeff_Write();
-		//DATApreSeleff_Write();
+		DATApreSeleff_Write();
 		Correlazione_Preselezioni_Write();
 		HecutMC_Write();
 		SlidesforPlot_Write();	

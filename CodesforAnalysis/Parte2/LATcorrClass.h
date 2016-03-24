@@ -31,22 +31,43 @@ public:
     std::string name;				 
     
     //  Creation constructors:
+    LATcorr(std::string basename){
+        beforeTOF = new TH2F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),43,0,43, 11,0,11);
+        afterTOF  = new TH2F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),43,0,43, 11,0,11);
+        beforeNaF = new TH2F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),43,0,43, 11,0,11);
+        afterNaF  = new TH2F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),43,0,43, 11,0,11);
+        beforeAgl = new TH2F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),43,0,43, 11,0,11);
+        afterAgl  = new TH2F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),43,0,43, 11,0,11);
+        beforeR   = new TH2F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),43,0,43, 11,0,11);
+        afterR    = new TH2F((basename + "2_R" ).c_str(),(basename + "2_R" ).c_str(),43,0,43, 11,0,11);
+	name = basename; 
+    }
 
     LATcorr(std::string basename, int n){
-        beforeTOF = new TH2F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),43,0,43, n, 0 ,n);
-        afterTOF  = new TH2F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),43,0,43, n, 0 ,n);
-        beforeNaF = new TH2F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),43,0,43, n, 0 ,n);
-        afterNaF  = new TH2F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),43,0,43, n, 0 ,n);
-        beforeAgl = new TH2F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),43,0,43, n, 0 ,n);
-        afterAgl  = new TH2F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),43,0,43, n, 0 ,n);
-        beforeR   = new TH2F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),43,0,43, n, 0 ,n);
-        afterR    = new TH2F((basename + "2_R" ).c_str(),(basename + "2_R" ).c_str(),43,0,43, n, 0 ,n);
+        beforeTOF = new TH3F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),43,0,43, 11,0,11, n, 0 ,n);
+        afterTOF  = new TH3F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),43,0,43, 11,0,11, n, 0 ,n);
+        beforeNaF = new TH3F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),43,0,43, 11,0,11, n, 0 ,n);
+        afterNaF  = new TH3F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),43,0,43, 11,0,11, n, 0 ,n);
+        beforeAgl = new TH3F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),43,0,43, 11,0,11, n, 0 ,n);
+        afterAgl  = new TH3F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),43,0,43, 11,0,11, n, 0 ,n);
+        beforeR   = new TH3F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),43,0,43, 11,0,11, n, 0 ,n);
+        afterR    = new TH3F((basename + "2_R" ).c_str(),(basename + "2_R" ).c_str(),43,0,43, 11,0,11, n, 0 ,n);
+	LATcorrR   = new TH2F((basename  + "_LATcorrR"    ).c_str(),(basename  + "_LATcorrR"    ).c_str(),11,0,11,n,0,n);
+	LATcorrTOF = new TH2F((basename  + "_LATcorrTOF"  ).c_str(),(basename  + "_LATcorrTOF"  ).c_str(),11,0,11,n,0,n);
+	LATcorrNaF = new TH2F((basename  + "_LATcorrNaF"  ).c_str(),(basename  + "_LATcorrNaF"  ).c_str(),11,0,11,n,0,n);
+	LATcorrAgl = new TH2F((basename  + "_LATcorrAgl"  ).c_str(),(basename  + "_LATcorrAgl"  ).c_str(),11,0,11,n,0,n);
+	LATcorrR_fit   = new TH2F((basename  + "_LATcorrR_fit"    ).c_str(),(basename  + "_LATcorrR_fit"    ).c_str(),11,0,11,n,0,n);
+	LATcorrTOF_fit= new TH2F((basename  + "_LATcorrTOF_fit"  ).c_str(),(basename  + "_LATcorrTOF_fit"  ).c_str(),11,0,11,n,0,n);
+	LATcorrNaF_fit  = new TH2F((basename  + "_LATcorrNaF_fit"  ).c_str(),(basename  + "_LATcorrNaF_fit"  ).c_str(),11,0,11,n,0,n);
+	LATcorrAgl_fit = new TH2F((basename  + "_LATcorrAgl_fit"  ).c_str(),(basename  + "_LATcorrAgl_fit"  ).c_str(),11,0,11,n,0,n);
+	
 	name = basename; 
    }
 
   //   Reading constructors
     //standard	
-    LATcorr(TFile * file, std::string basename){
+    
+   LATcorr(TFile * file, std::string basename){
         beforeTOF = (TH1 *)file->Get((basename + "1"   ).c_str());
         afterTOF  = (TH1 *)file->Get((basename + "2"   ).c_str());
         beforeNaF = (TH1 *)file->Get((basename + "1NaF").c_str());
@@ -55,7 +76,37 @@ public:
         afterAgl  = (TH1 *)file->Get((basename + "2Agl").c_str());
         beforeR   = (TH1 *)file->Get((basename + "1_R" ).c_str());
         afterR    = (TH1 *)file->Get((basename + "2_R" ).c_str());
-	name = basename;   
+	LATcorrR   = new TH1F((basename  + "_LATcorrR"    ).c_str(),(basename  + "_LATcorrR"    ).c_str(),11,0,11);
+	LATcorrTOF = new TH1F((basename  + "_LATcorrTOF"  ).c_str(),(basename  + "_LATcorrTOF"  ).c_str(),11,0,11);
+	LATcorrNaF = new TH1F((basename  + "_LATcorrNaF"  ).c_str(),(basename  + "_LATcorrNaF"  ).c_str(),11,0,11);
+	LATcorrAgl = new TH1F((basename  + "_LATcorrAgl"  ).c_str(),(basename  + "_LATcorrAgl"  ).c_str(),11,0,11);
+	LATcorrR_fit   = new TH1F((basename  + "_LATcorrR_fit"    ).c_str(),(basename  + "_LATcorrR_fit"    ).c_str(),11,0,11);
+	LATcorrTOF_fit= new TH1F((basename  + "_LATcorrTOF_fit"  ).c_str(),(basename  + "_LATcorrTOF_fit"  ).c_str(),11,0,11);
+	LATcorrNaF_fit  = new TH1F((basename  + "_LATcorrNaF_fit"  ).c_str(),(basename  + "_LATcorrNaF_fit"  ).c_str(),11,0,11);
+	LATcorrAgl_fit = new TH1F((basename  + "_LATcorrAgl_fit"  ).c_str(),(basename  + "_LATcorrAgl_fit"  ).c_str(),11,0,11);
+	name = basename; 
+  
+    }
+
+   LATcorr(TFile * file, std::string basename,int n){
+        beforeTOF = (TH1 *)file->Get((basename + "1"   ).c_str());
+        afterTOF  = (TH1 *)file->Get((basename + "2"   ).c_str());
+        beforeNaF = (TH1 *)file->Get((basename + "1NaF").c_str());
+        afterNaF  = (TH1 *)file->Get((basename + "2NaF").c_str());
+        beforeAgl = (TH1 *)file->Get((basename + "1Agl").c_str());
+        afterAgl  = (TH1 *)file->Get((basename + "2Agl").c_str());
+        beforeR   = (TH1 *)file->Get((basename + "1_R" ).c_str());
+        afterR    = (TH1 *)file->Get((basename + "2_R" ).c_str());
+	LATcorrR   = new TH2F((basename  + "_LATcorrR"    ).c_str(),(basename  + "_LATcorrR"    ).c_str(),11,0,11,n,0,n);
+	LATcorrTOF = new TH2F((basename  + "_LATcorrTOF"  ).c_str(),(basename  + "_LATcorrTOF"  ).c_str(),11,0,11,n,0,n);
+	LATcorrNaF = new TH2F((basename  + "_LATcorrNaF"  ).c_str(),(basename  + "_LATcorrNaF"  ).c_str(),11,0,11,n,0,n);
+	LATcorrAgl = new TH2F((basename  + "_LATcorrAgl"  ).c_str(),(basename  + "_LATcorrAgl"  ).c_str(),11,0,11,n,0,n);
+	LATcorrR_fit   = new TH2F((basename  + "_LATcorrR_fit"    ).c_str(),(basename  + "_LATcorrR_fit"    ).c_str(),11,0,11,n,0,n);
+	LATcorrTOF_fit= new TH2F((basename  + "_LATcorrTOF_fit"  ).c_str(),(basename  + "_LATcorrTOF_fit"  ).c_str(),11,0,11,n,0,n);
+	LATcorrNaF_fit  = new TH2F((basename  + "_LATcorrNaF_fit"  ).c_str(),(basename  + "_LATcorrNaF_fit"  ).c_str(),11,0,11,n,0,n);
+	LATcorrAgl_fit = new TH2F((basename  + "_LATcorrAgl_fit"  ).c_str(),(basename  + "_LATcorrAgl_fit"  ).c_str(),11,0,11,n,0,n);
+	name = basename; 
+  
     }
     //read all results
     LATcorr(TFile * file, std::string basename,std::string dirname){
@@ -81,8 +132,7 @@ public:
     void Write();
     void UpdateErrorbars();	
     void Eval_Efficiency();		
-    void Eval_LATcorr();	
-    void Fit_LATcorr();	
+    void Eval_LATcorr(int n);	
 };
 
 
@@ -132,73 +182,76 @@ void LATcorr::Eval_Efficiency(){
 }
 
 
-void  CalcLATcorr(TH2 * before,TH2 * after, TH1 * LATcorr){
-		float HEeff_before[11];
-                float HEeff_after[11];
+void  CalcLATcorr(TH1 * before,TH1 * after, TH1 * LATcorr,int n){
+	if(n>1){
+		for(int m=0;m<n;m++){
+			float HEeff_before[11];
+			float HEeff_after[11];
 
-                for(int i=1;i<11;i++) {
-                                HEeff_before[i] = before-> Integral(30,43,i+1,i+1);
-                                HEeff_after[i]  = after -> Integral(30,43,i+1,i+1);
-                        } 
+			for(int i=1;i<11;i++) {
+				HEeff_before[i] = ((TH3 *)before)-> Integral(30,43,i+1,i+1,m+1,m+1);
+				HEeff_after[i]  = ((TH3 *)after )-> Integral(30,43,i+1,i+1,m+1,m+1);
+			} 
+			for(int i=1;i<11;i++){
+				LATcorr -> SetBinContent(i+1,m+1,(HEeff_after[1]/HEeff_before[1])/(HEeff_after[i]/HEeff_before[i]));
+				LATcorr -> SetBinError(i+1,m+1,pow(HEeff_after[i],-0.5)*LATcorr -> GetBinContent(i+1));
+			}
+		}
+	}
+	else{
+		float HEeff_before[11];
+		float HEeff_after[11];
+
+		for(int i=1;i<11;i++) {
+			HEeff_before[i] = ((TH2 *)before)-> Integral(30,43,i+1,i+1);
+			HEeff_after[i]  = ((TH2 *)after )-> Integral(30,43,i+1,i+1);
+		}
+			cout<<((TH2 *)after)->GetEntries()<<endl;
+			 
 		for(int i=1;i<11;i++){
-			LATcorr -> SetBinContent(i+1,(HEeff_after[1]/HEeff_before[1])/(HEeff_after[i]/HEeff_before[i]));
-			LATcorr -> SetBinError(i+1,pow(HEeff_after[i],-0.5)*LATcorr -> GetBinContent(i+1));
-                }
+			  LATcorr -> SetBinContent(i+1,1,(HEeff_after[1]/HEeff_before[1])/(HEeff_after[i]/HEeff_before[i]));
+			  LATcorr -> SetBinError(i+1,1,pow(HEeff_after[i],-0.5)*LATcorr -> GetBinContent(i+1));
+		}
+	}	
 }
 
 
-void LATcorr::Eval_LATcorr(){
+void FitLATcorr( TH1 * LATcorr,TH1 * LATcorr_fit,int n){
+	if(n>1)
+	for(int m=0;m<n;m++){
+		TH1 * latcorr = ((TH2 *)LATcorr)->ProjectionX("",m+1,m+2);
+		TF1 * Fitcorr = new TF1("Fitcorr","pol3");
+		latcorr -> Fit ("Fitcorr");
+		for(int i=1;i<11;i++) LATcorr_fit -> SetBinContent(i+1,Fitcorr->Eval(i+0.5));
+                //for(int i=1;i<11;i++) LATcorr_fit -> SetBinError(i+1,FitError(LATcorrR_fit,latcorr,11,3));			
+	}
+	else{
+		TH1 * latcorr = ((TH1 *)LATcorr);
+		TF1 * Fitcorr = new TF1("Fitcorr","pol3");
+		latcorr -> Fit ("Fitcorr");
+		for(int i=1;i<11;i++) LATcorr_fit -> SetBinContent(i+1,Fitcorr->Eval(i+0.5));
+                for(int i=1;i<11;i++) LATcorr_fit -> SetBinError(i+1,FitError(LATcorr_fit,latcorr,11,3));		
+	}
+}
+
+void LATcorr::Eval_LATcorr(int n){
 	if(effR){
-                LATcorrR = new TH1F((name  + "_LATcorrR"  ).c_str(),(name  + "_LATcorrR"  ).c_str(),11,0,11);
-		CalcLATcorr( ((TH2 *)beforeR),((TH2 *)afterR),((TH1 *)LATcorrR));
+		CalcLATcorr( ((TH2 *)beforeR),((TH2 *)afterR),LATcorrR,n);
+		FitLATcorr(LATcorrR,LATcorrR_fit,n);
         }
 
 	if(effTOF){
-		LATcorrTOF = new TH1F((name  + "_LATcorrTOF"  ).c_str(),(name  + "_LATcorrTOF"  ).c_str(),11,0,11);
-		CalcLATcorr( ((TH2 *)beforeTOF),((TH2 *)afterTOF),LATcorrTOF);
+		CalcLATcorr( ((TH2 *)beforeTOF),((TH2 *)afterTOF),((TH2 *)LATcorrTOF),n);
+		FitLATcorr(LATcorrTOF,LATcorrTOF_fit,n);
 	}
 	if(effNaF){
-                LATcorrNaF = new TH1F((name  + "_LATcorrNaF"  ).c_str(),(name  + "_LATcorrNaF"  ).c_str(),11,0,11); 
-		CalcLATcorr( ((TH2 *)beforeNaF),((TH2 *)afterNaF),LATcorrNaF);
+		CalcLATcorr( ((TH2 *)beforeNaF),((TH2 *)afterNaF),LATcorrNaF,n);
+		FitLATcorr(LATcorrNaF,LATcorrNaF_fit,n);
 	}
 	if(effAgl){
-                LATcorrAgl = new TH1F((name  + "_LATcorrAgl"  ).c_str(),(name  + "_LATcorrAgl"  ).c_str(),11,0,11); 
-		CalcLATcorr( ((TH2 *)beforeAgl),((TH2 *)afterAgl),LATcorrAgl);
+		CalcLATcorr( ((TH2 *)beforeAgl),((TH2 *)afterAgl),LATcorrAgl,n);
+		FitLATcorr(LATcorrAgl,LATcorrAgl_fit,n);
 	}
-	
 }
 
 
-void LATcorr::Fit_LATcorr(){
-	if(LATcorrR){
-		TF1 * Fitcorr = new TF1("Fitcorr","pol3");	
-		LATcorrR -> Fit("Fitcorr");
-		LATcorrR_fit = new TH1F((name  + "_LATcorrR_fit"  ).c_str(),(name  + "_LATcorrR_fit"  ).c_str(),11,0,11);
-		for(int i=1;i<11;i++)  LATcorrR_fit -> SetBinContent(i+1,Fitcorr->Eval(i));
-		for(int i=1;i<11;i++) LATcorrR_fit -> SetBinError(i+1,FitError(LATcorrR_fit,LATcorrR,11,3));		
-	}
-
-	if(LATcorrTOF){
-                TF1 * Fitcorr = new TF1("Fitcorr","pol3");
-                LATcorrTOF -> Fit("Fitcorr");
-                LATcorrTOF_fit = new TH1F((name  + "_LATcorrTOF_fit"  ).c_str(),(name  + "_LATcorrTOF_fit"  ).c_str(),11,0,11);
-                for(int i=1;i<11;i++)  LATcorrTOF_fit -> SetBinContent(i+1,Fitcorr->Eval(i));
-		for(int i=1;i<11;i++) LATcorrTOF_fit -> SetBinError(i+1, FitError(LATcorrTOF_fit,LATcorrTOF,11,3));
-        }
-	if(LATcorrNaF){
-                TF1 * Fitcorr = new TF1("Fitcorr","pol3");
-                LATcorrNaF -> Fit("Fitcorr");
-                LATcorrNaF_fit = new TH1F((name  + "_LATcorrNaF_fit"  ).c_str(),(name  + "_LATcorrNaF_fit"  ).c_str(),11,0,11);
-                for(int i=1;i<11;i++)  LATcorrNaF_fit -> SetBinContent(i+1,Fitcorr->Eval(i));
-		for(int i=1;i<11;i++) LATcorrNaF_fit -> SetBinError(i+1,FitError(LATcorrNaF_fit,LATcorrNaF,11,3));
-        }
-	if(LATcorrAgl){
-                TF1 * Fitcorr = new TF1("Fitcorr","pol3");
-                LATcorrAgl -> Fit("Fitcorr");
-                LATcorrAgl_fit = new TH1F((name  + "_LATcorrAgl_fit"  ).c_str(),(name  + "_LATcorrAgl_fit"  ).c_str(),11,0,11);
-                for(int i=1;i<11;i++)  LATcorrAgl_fit -> SetBinContent(i+1,Fitcorr->Eval(i));
-		for(int i=1;i<11;i++) LATcorrAgl_fit -> SetBinError(i+1,FitError(LATcorrAgl_fit,LATcorrAgl,11,3));
-        }
-
-		
-}
