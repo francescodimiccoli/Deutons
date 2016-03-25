@@ -1,37 +1,39 @@
-TCanvas * c26 = new TCanvas("Latitude pile-up correction (R bins)");
-TCanvas * c26_bis = new TCanvas("Latitude pile-up correction (Beta bins)");
-
-TH2F * PCountsgeo = new TH2F("PCountsgeo","PCountsgeo",43,0,43,11,0,11);
-TH2F * PCountsgeo_prim = new TH2F("PCountsgeo_prim","PCountsgeo_prim",43,0,43,11,0,11);
-
-TH2F * CorrLAT_totM1= new TH2F("CorrLAT_totM1","CorrLAT_totM1",43,0,43,2,0,2);
-TH2F * CorrLAT_totM2= new TH2F("CorrLAT_totM2","CorrLAT_totM2",43,0,43,2,0,2);
-
-TH2F * CorrLAT_preM2= new TH2F("CorrLAT_preM2","CorrLAT_preM2",43,0,43,2,0,2);
-
-TH2F * CorrLAT_tot_spl= new TH2F("CorrLAT_tot_spl","CorrLAT_tot_spl",11,0,11,2,0,2);
-TH2F * CorrLAT_pre_spl= new TH2F("CorrLAT_pre_spl","CorrLAT_pre_spl",11,0,11,2,0,2);
-
-TH2F * CorrLATp_TOF_spl= new TH2F("CorrLATp_TOF_spl","CorrLATp_TOF_spl",18,0,18,2,0,2);
-TH2F * CorrLATp_NaF_spl= new TH2F("CorrLATp_NaF_spl","CorrLATp_NaF_spl",18,0,18,2,0,2);
-TH2F * CorrLATp_Agl_spl= new TH2F("CorrLATp_Agl_spl","CorrLATp_Agl_spl",18,0,18,2,0,2);
-TH2F * CorrLATd_TOF_spl= new TH2F("CorrLATd_TOF_spl","CorrLATd_TOF_spl",18,0,18,2,0,2);
-TH2F * CorrLATd_NaF_spl= new TH2F("CorrLATd_NaF_spl","CorrLATd_NaF_spl",18,0,18,2,0,2);
-TH2F * CorrLATd_Agl_spl= new TH2F("CorrLATd_Agl_spl","CorrLATd_Agl_spl",18,0,18,2,0,2);
 
 
 void CorrLAT(TFile * file1){
-	TH2F * esposizionepgeo = (TH2F*)file1->Get("esposizionepgeo");
-        TH2F * esposizionepgeoNaF = (TH2F*)file1->Get("esposizionepgeoNaF");
-        TH2F * esposizionepgeoAgl = (TH2F*)file1->Get("esposizionepgeoAgl");
-        TH2F * esposizionedgeo = (TH2F*)file1->Get("esposizionedgeo");
-        TH2F * esposizionedgeoNaF = (TH2F*)file1->Get("esposizionedgeoNaF");
-        TH2F * esposizionedgeoAgl = (TH2F*)file1->Get("esposizionedgeoAgl");
-	TH2F * PCountsgeo = (TH2F *)file1->Get("PCountsgeo");
-        TH2F * PCountsgeo_prim = (TH2F *)file1->Get("PCountsgeo_prim");
+	TH2F * esposizionepgeo 	   = (TH2F*)file1->Get(	"esposizionepgeo"	);
+        TH2F * esposizionepgeoNaF  = (TH2F*)file1->Get(	"esposizionepgeoNaF"	);
+        TH2F * esposizionepgeoAgl  = (TH2F*)file1->Get(	"esposizionepgeoAgl"	);
+        TH2F * esposizionedgeo 	   = (TH2F*)file1->Get(	"esposizionedgeo"	);
+        TH2F * esposizionedgeoNaF  = (TH2F*)file1->Get(	"esposizionedgeoNaF"	);
+        TH2F * esposizionedgeoAgl  = (TH2F*)file1->Get(	"esposizionedgeoAgl"	);
 
-	cout<<"******* LAT CORRECTION *************"<<endl;
-	float CorrLAT_tot[11]={1,1,1,1,1,1,1,1,1,1,1};
+	LATcorr * EffpreSelDATA     = new LATcorr(file1,"EffpreSelDATA"  ,"Results");	
+	LATcorr * LikelihoodLATcorr = new LATcorr(file1,"EffLikDATA" 	 ,"Results");
+        LATcorr * DistanceLATcorr   = new LATcorr(file1,"EffDistDATA"	 ,"Results");
+
+	cout<<"******* TOTAL LAT. CORRECTION *************"<<endl;
+
+	
+	TH1F * PreLATCorr = ( (TH1F *)( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",1,1));
+
+	PreLATCorr -> Multiply( ( (TH1F *)( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",2,2)));
+	PreLATCorr -> Multiply( ( (TH1F *)( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",3,3)));		
+
+	TH1F *  TOTLATCorr = (TH1F *) PreLATCorr -> Clone();
+	
+	TOTLATCorr  -> Multiply ( ( (TH1F *)LikelihoodLATcorr ->  LATcorrTOF_fit) );
+	TOTLATCorr  -> Multiply ( ( (TH1F *)DistanceLATcorr   ->  LATcorrTOF_fit) );
+
+
+
+
+
+
+
+
+
+/*	float CorrLAT_tot[11]={1,1,1,1,1,1,1,1,1,1,1};
 	float CorrLAT_tot_err[11]={0};
 
 	float CorrLAT_Pre[11]={1,1,1,1,1,1,1,1,1,1,1};
@@ -80,21 +82,6 @@ void CorrLAT(TFile * file1){
 		CorrLATAgl_tot_err[m]=pow(CorrLATAgl_tot_err[m],0.5)*CorrLATAgl_tot[m];
 	}
 
-	//bin R
-	/// METODO 1
-	float uno,unopre=0;
-	float due=0;
-
-	for(int i=0;i<43;i++){
-		uno=0;
-        	unopre=0;
-		due=0;
-		for(int m=0;m<11;m++){
-				uno+=PCountsgeo_prim->GetBinContent(i+1,m+1)*CorrLAT_tot[m];
-				due+=PCountsgeo_prim->GetBinContent(i+1,m+1);
-		}
-		CorrLAT_totM1->SetBinContent(i+1,1,uno/due);	
-	}
 
 	//METODO 2
 	float Espos_R[43]={0};	
@@ -160,7 +147,14 @@ void CorrLAT(TFile * file1){
                 CorrLATp_NaF_spl->SetBinContent(m+1,1,CorrLATp_NaF[m]);
 		CorrLATd_Agl_spl->SetBinContent(m+1,1,CorrLATd_Agl[m]);
                 CorrLATp_Agl_spl->SetBinContent(m+1,1,CorrLATp_Agl[m]);
-	}	
+	}
+*/
+
+	TCanvas * c26 = new TCanvas("Latitude pile-up correction (R bins)");
+	TCanvas * c26_bis = new TCanvas("Latitude pile-up correction (Beta bins)");
+
+
+/*	
 	c26->Divide(1,2);
 	c26->cd(1);
 	gPad->SetGridy();
@@ -286,9 +280,9 @@ void CorrLAT(TFile * file1){
         CorrLATd_Agl_Spl->SetMarkerStyle(8);
         CorrLATd_Agl_Spl->SetFillStyle(3002);
         CorrLATd_Agl_Spl->Draw("PCsame");
+*/
+
 	return;
-
-
 
 
 }

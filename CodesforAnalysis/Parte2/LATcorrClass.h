@@ -129,14 +129,14 @@ public:
         afterAgl  = (TH1 *)file->Get((basename + "2Agl").c_str());
         beforeR   = (TH1 *)file->Get((basename + "1_R" ).c_str());
         afterR    = (TH1 *)file->Get((basename + "2_R" ).c_str());
-	LATcorrR  	= (TH1 *)file->Get(("/" + dirname +"/" + basename + "_LATcorrR 	 	 "  ).c_str());
-        LATcorrTOF 	= (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrTOF	 "  ).c_str());
-        LATcorrNaF 	= (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrNaF	 "  ).c_str());
-        LATcorrAgl 	= (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrAgl	 "  ).c_str());
-	LATcorrR_fit    = (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrR_fit   	 "  ).c_str());
-        LATcorrTOF_fit  = (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrTOF_fit 	 "  ).c_str());
-        LATcorrNaF_fit  = (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrNaF_fit 	 "  ).c_str());
-        LATcorrAgl_fit  = (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrAgl_fit  	 "  ).c_str());
+	LATcorrR  	= (TH1 *)file->Get(("/" + dirname +"/" + basename + "_LATcorrR"  			).c_str());
+        LATcorrTOF 	= (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrTOF"  			).c_str());
+        LATcorrNaF 	= (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrNaF"  			).c_str());
+        LATcorrAgl 	= (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrAgl"  			).c_str());
+	LATcorrR_fit    = (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrR_fit"  			).c_str());
+        LATcorrTOF_fit  = (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrTOF_fit"  			).c_str());
+        LATcorrNaF_fit  = (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrNaF_fit"  			).c_str());
+        LATcorrAgl_fit  = (TH1 *)file->Get(("/" + dirname +"/" +basename  + "_LATcorrAgl_fit"  			).c_str());
 	name = basename;   
     }	
 
@@ -275,9 +275,10 @@ void FitLATcorr( TH1 * LATcorr,TH1 * LATcorr_fit,int n){
 		TH1F * latcorr = ((TH1F *)LATcorr);
 		TF1 * Fitcorr = new TF1("Fitcorr","pol3");
 		latcorr -> Fit ("Fitcorr");
-		for(int i=1;i<11;i++) {
+		for(int i=1;i<11;i++) 
 			LATcorr_fit -> SetBinContent(i+1,Fitcorr->Eval(i+0.5));
-                	LATcorr_fit -> SetBinError(i+1,FitError(((TH1F *)LATcorr_fit),latcorr,11,3));		
-		}
+                for(int i=1;i<11;i++)	
+			LATcorr_fit -> SetBinError(i+1,FitError(((TH1F *)LATcorr_fit),latcorr,11,3));
+		
 	}
 }

@@ -43,12 +43,12 @@
 #include "Parte2/CorrelazionePreselezioni.h"
 #include "Parte2/DATApreSeleff.h"
 #include "Parte2/DATAQualeff.h"
+#include "Parte2/CorrLAT.h"
 /*#include "Parte2/DVSMCpreSeleff.h"
 #include "Parte2/DVSMCQualeff2.h"
 #include "Parte2/DVSMCTrackeff.h"
 #include "Parte2/AcceptanceP.h"
 #include "Parte2/AcceptanceD.h"
-#include "Parte2/CorrLAT.h"
 #include "Parte2/ProtonFlux.h"
 #include "Parte2/Deutons.h"
 #include "Parte2/DeutonsDist.h"
@@ -67,7 +67,7 @@ int main(int argc, char * argv[])
 	FRAC=atoi(argv[3]);
 	INDX=atoi(argv[2]);
 	mese=argv[1];
-	cout<<"********************************************** R BINS ******************************************************************************"<<endl;
+	cout<<"****************************** R BINS ***************************************"<<endl;
 	for(int i=0;i<44;i++)
 	{
 		float temp=i+14;
@@ -217,230 +217,22 @@ int main(int argc, char * argv[])
 		  DVSMCQualeff2(file1);
 		  AcceptanceP(file1);
 		  AcceptanceD(file1);
-		  CorrLAT(file1);
 		  ProtonFlux(file1);
 		  DeutonsTemplFits(file1);
 		  DeutonsTemplFits_Dist(file1);
 		  DeutonFlux(file1);
 		  DeutonFlux_Dist(file1);*/
 	}
+        file1 =TFile::Open(nomefile.c_str());
+        if(!file1){
+                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
+                file1 =TFile::Open(nomefile.c_str());
+        }
+	if(frac=="tot"){	
+		CorrLAT(file1);
+	}
 	cout<<"************************************** OUTPUT **************************************************************"<<endl;
-	/*nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
-	string nome;
-	f_out->mkdir("Slides common plots");
-	f_out->mkdir("MC Results");
-	f_out->mkdir("MC Results/He cut");
-	f_out->mkdir("MC Results/Preselections");
-	f_out->mkdir("MC Results/Quality");
-	f_out->mkdir("Data-driven Results");
-	f_out->mkdir("Data-driven Results/Latitude Effect");
-	f_out->mkdir("Data-driven Results/Data vs MC");
-	f_out->mkdir("Data-driven Results/Data vs MC/Preselections");
-	f_out->mkdir("Data-driven Results/Data vs MC/Quality");
-	f_out->mkdir("Acceptance");
-	f_out->mkdir("P Flux");
-	f_out->mkdir("Mass Template Fits");
-	f_out->mkdir("Dist Template Fits");
-	f_out->mkdir("D Flux (Mass fit)");
-	f_out->mkdir("D Flux (Dist. fit)");
-	for(int l=0;l<11;l++) {
-		nome="Mass Template Fits/Mass TOF Template Fits/Geo.Zones/Zona "+numero[l];
-		f_out->mkdir(nome.c_str());
-	}
-	f_out->mkdir("Mass Template Fits/Mass TOF Template Fits/Primaries/D.bins");
-	f_out->mkdir("Mass Template Fits/Mass TOF Template Fits/Primaries/P.bins");
-	f_out->mkdir("Mass Template Fits/Mass TOF Template Fits/Geo.Zones");
-	for(int l=0;l<11;l++) {
-		nome="Mass Template Fits/Mass NaF Template Fits/Geo.Zones/Zona "+numero[l];
-		f_out->mkdir(nome.c_str());
-	}
-	f_out->mkdir("Mass Template Fits/Mass NaF Template Fits/Primaries/D.bins");
-	f_out->mkdir("Mass Template Fits/Mass NaF Template Fits/Primaries/P.bins");
-	f_out->mkdir("Mass Template Fits/Mass NaF Template Fits/Geo.Zones");
-
-	for(int l=0;l<11;l++) {
-		nome="Mass Template Fits/Mass Agl Template Fits/Geo.Zones/Zona "+numero[l];
-		f_out->mkdir(nome.c_str());
-	}
-	f_out->mkdir("Mass Template Fits/Mass Agl Template Fits/Primaries/D.bins");
-	f_out->mkdir("Mass Template Fits/Mass Agl Template Fits/Primaries/P.bins");
-	f_out->mkdir("Mass Template Fits/Mass Agl Template Fits/Geo.Zones");
-
-	for(int l=0;l<11;l++) {
-                nome="Dist Template Fits/Dist TOF Template Fits/Geo.Zones/Zona "+numero[l];
-                f_out->mkdir(nome.c_str());
-        }
-        f_out->mkdir("Dist Template Fits/Dist TOF Template Fits/Primaries/D.bins");
-	f_out->mkdir("Dist Template Fits/Dist TOF Template Fits/Primaries/P.bins");
-        f_out->mkdir("Dist Template Fits/Dist TOF Template Fits/Geo.Zones");
-
-	for(int l=0;l<11;l++) {
-                nome="Dist Template Fits/Dist NaF Template Fits/Geo.Zones/Zona "+numero[l];
-                f_out->mkdir(nome.c_str());
-        }
-        f_out->mkdir("Dist Template Fits/Dist NaF Template Fits/Primaries/D.bins");
-	f_out->mkdir("Dist Template Fits/Dist NaF Template Fits/Primaries/P.bins");
-        f_out->mkdir("Dist Template Fits/Dist NaF Template Fits/Geo.Zones");
-	for(int l=0;l<11;l++) {
-                nome="Dist Template Fits/Dist Agl Template Fits/Geo.Zones/Zona "+numero[l];
-                f_out->mkdir(nome.c_str());
-        }
-        f_out->mkdir("Dist Template Fits/Dist Agl Template Fits/Primaries/D.bins");
-	f_out->mkdir("Dist Template Fits/Dist Agl Template Fits/Primaries/P.bins");	
-	f_out->mkdir("Dist Template Fits/Dist Agl Template Fits/Geo.Zones");
-
-	f_out->mkdir("Export");
-	f_out->mkdir("Export/Hecut");
-	f_out->mkdir("Export/MCMC");
-	f_out->mkdir("Export/Qual.Sel.Eff.");
-	f_out->mkdir("Export/Acceptance");
-	f_out->mkdir("Export/Slidesplot");
-	
-	f_out->cd("Slides common plots");
-	p1->Write();
-	p2->Write();
-	p3->Write();
-	p4->Write();
-	p5->Write();
-	p6->Write();
-	p7->Write();
-	p8->Write();
-	p9->Write();
-	p10->Write();
-        p11->Write();
-        p12->Write();
-	p13->Write();
-        p14->Write();
-        p15->Write();
-	p10Q->Write();
-        p11Q->Write();
-        p12Q->Write();
-	p13Q->Write();
-        p14Q->Write();
-        p15Q->Write();
-	p16->Write();
-	p17->Write();
-	p18->Write();
-	p19->Write();
-	p20->Write();
-	p21->Write();
-	p22->Write();
-	p23->Write();
-	p24->Write();
-	f_out->cd("MC Results");
-	f_out->cd("MC Results/He cut");
-        c36->Write();
-        c36_bis->Write();
-	c37->Write();
-	f_out->cd("MC Results/Preselections");
-	c4->Write();
-	c4_bis->Write();
-	c11->Write();
-	c_7->Write();
-	c7->Write();
-	c8->Write();
-	c10->Write();
-	c13->Write();
-	for(int S=0;S<3;S++) c9[S]->Write();
-	c27->Write();
-	f_out->cd("MC Results/Quality");
-	c5->Write();
-	c5_bis->Write();
-	c6->Write();
-	c6_bis->Write();
-	f_out->cd("Data-driven Results");
-	c12->Write();
-	c28->Write();
-	f_out->cd("Data-driven Results/Latitude Effect");
-	for(int S=0;S<3;S++) c14[S]->Write();
-	c15->Write();
-	c16->Write();
-	c26->Write();
-	c26_bis->Write();
-	f_out->cd("Data-driven Results/Data vs MC");
-	f_out->cd("Data-driven Results/Data vs MC/Preselections");
-	for(int S=0;S<3;S++) c17[S]->Write();
-	f_out->cd("Data-driven Results/Data vs MC/Quality");
-	c20->Write();
-	c21->Write();
-	f_out->cd("Acceptance");
-	c22->Write();
-	c31->Write();
-	c31_tris->Write();
-	c31_bis->Write();
-	f_out->cd("P Flux");
-	c23->Write();
-	c24->Write();
-	c25->Write();
-	if(frac=="lol"){
-		for(int l=1;l<11;l++) {
-			nome="Mass Template Fits/Mass TOF Template Fits/Geo.Zones/Zona "+numero[l];
-			f_out->cd(nome.c_str());
-			for(int m=0;m<18;m++) c30[l][m]->Write();
-		}
-		f_out->cd("Mass Template Fits/Mass TOF Template Fits/Primaries/D.bins");
-		for(int m=0;m<18;m++) c30[11][m]->Write();
-		f_out->cd("Mass Template Fits/Mass TOF Template Fits/Primaries/P.bins");
-		for(int m=0;m<18;m++) c30[0][m]->Write();
-		for(int l=1;l<11;l++) {
-			nome="Mass Template Fits/Mass NaF Template Fits/Geo.Zones/Zona "+numero[l];
-			f_out->cd(nome.c_str());
-			for(int m=0;m<18;m++) c30_bis[l][m]->Write();
-		}
-		f_out->cd("Mass Template Fits/Mass NaF Template Fits/Primaries/D.bins");
-		for(int m=0;m<18;m++) c30_bis[11][m]->Write();
-		f_out->cd("Mass Template Fits/Mass NaF Template Fits/Primaries/P.bins");
-		for(int m=0;m<18;m++) c30_bis[0][m]->Write();
-		for(int l=1;l<11;l++) {
-			nome="Mass Template Fits/Mass Agl Template Fits/Geo.Zones/Zona "+numero[l];
-			f_out->cd(nome.c_str());
-			for(int m=0;m<18;m++) c30_tris[l][m]->Write();
-		}
-		f_out->cd("Mass Template Fits/Mass Agl Template Fits/Primaries/D.bins");
-		for(int m=0;m<18;m++) c30_tris[11][m]->Write();
-		f_out->cd("Mass Template Fits/Mass Agl Template Fits/Primaries/P.bins");
-		for(int m=0;m<18;m++) c30_tris[0][m]->Write();
-		for(int l=1;l<11;l++) {
-			nome="Dist Template Fits/Dist TOF Template Fits/Geo.Zones/Zona "+numero[l];
-			f_out->cd(nome.c_str());
-			for(int m=0;m<18;m++) c40[l][m]->Write();
-		}
-		f_out->cd("Dist Template Fits/Dist TOF Template Fits/Primaries/D.bins");
-		for(int m=0;m<18;m++) c40[11][m]->Write();
-		f_out->cd("Dist Template Fits/Dist TOF Template Fits/Primaries/P.bins");
-		for(int m=0;m<18;m++) c40[0][m]->Write();
-		for(int l=1;l<11;l++) {
-			nome="Dist Template Fits/Dist NaF Template Fits/Geo.Zones/Zona "+numero[l];
-			f_out->cd(nome.c_str());
-			for(int m=0;m<18;m++) c40_bis[l][m]->Write();
-		}
-		f_out->cd("Dist Template Fits/Dist NaF Template Fits/Primaries/D.bins");
-		for(int m=0;m<18;m++) c40_bis[11][m]->Write();
-		f_out->cd("Dist Template Fits/Dist NaF Template Fits/Primaries/P.bins");
-		for(int m=0;m<18;m++) c40_bis[0][m]->Write();
-		for(int l=1;l<11;l++) {
-			nome="Dist Template Fits/Dist Agl Template Fits/Geo.Zones/Zona "+numero[l];
-			f_out->cd(nome.c_str());
-			for(int m=0;m<18;m++) c40_tris[l][m]->Write();
-		}
-		f_out->cd("Dist Template Fits/Dist Agl Template Fits/Primaries/D.bins");
-		for(int m=0;m<18;m++) c40_tris[11][m]->Write();
-		f_out->cd("Dist Template Fits/Dist Agl Template Fits/Primaries/P.bins");
-		for(int m=0;m<18;m++) c40_tris[0][m]->Write();
-
-	}
-	f_out->cd("D Flux (Mass fit)");
-	c33->Write();
-	c32->Write();
-	c34->Write();
-	c35->Write();
-	f_out->cd("D Flux (Dist. fit)");
-        c43->Write();
-        c42->Write();
-        c44->Write();
-        c45->Write();
-	f_out->cd("Export");
+	/*f_out->cd("Export");
 	MigrMatrix->Write();
 	EffTrackerMCP_R_TH1F->Write();
 	EffTrackerMCP_TH1F->Write();
