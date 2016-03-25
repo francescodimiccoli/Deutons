@@ -1,9 +1,6 @@
 using namespace std;
 
 
-TH3F * EffpreSelDATA1_R=new TH3F("EffpreSelDATA1_R","EffpreSelDATA1_R",43,0,43,3,0,3,11,0,11);
-TH3F * EffpreSelDATA2_R=new TH3F("EffpreSelDATA2_R","EffpreSelDATA2_R",43,0,43,3,0,3,11,0,11);
-
 LATcorr *EffpreSelDATA = new LATcorr("EffpreSelDATA",3);
  
 
@@ -27,8 +24,6 @@ void DATApreSeleff_Write(){
         return;
 }
 
-// results
-TCanvas *c14[4];
 TF1 * CorrLAT_pre[3];
 TH2F *CorrLATpre_spl[3];
 TGraphErrors *CorrLATpre_Spl[3];
@@ -36,76 +31,68 @@ TGraphErrors *CorrLATpre_Spl[3];
 
 void DATApreSeleff(TFile * file1){
 
-	TH3F * EffpreSelDATA1_R =(TH3F*) file1->Get("EffpreSelDATA1_R");
-        TH3F * EffpreSelDATA2_R =(TH3F*) file1->Get("EffpreSelDATA2_R");
-
+	LATcorr * EffpreSelDATA = new LATcorr(file1,"EffpreSelDATA",3);	
+	
 	string tagli[3]={"Matching TOF","Chi^2 R","1 Tr. Track"};
         string nome;
 
-	cout<<"************************************************* MC PRESELECTIONS EFFICIENCIES **********************************************************************"<<endl;
-	float EffpreSelDATA_R[43][3][11];
-	for(int i=1;i<43;i++) for(int h=0;h<6;h++) for(int l=0;l<11;l++) for(int S=0;S<3;S++){
-        EffpreSelDATA_R[i][S][l]=0;
-	}
+	cout<<"********************** DATA PRESELECTIONS EFFICIENCIES ****************************************"<<endl;
+
+	EffpreSelDATA -> Eval_Efficiency();
+
+	TH3F *EffpreSelDATA_R = (TH3F *) EffpreSelDATA     -> effR -> Clone();	
+	
+	cout<<"********************** LAT. Eff. CORRECTION **************************************************"<<endl;
+
+
+	cout<<"*** Updating P1 file ****"<<endl;
+        string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+        file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+        if(!file1){
+                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
+                file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+        }
+
+        file1->cd("Results");
+	EffpreSelDATA_R -> Write();
+	file1->Write();
+	file1->Close();
+
 	TGraphErrors * Eff_preSelLAT[3][11];
+	TCanvas *c14[4];
 	for(int S=0;S<3;S++){
 		nome="Latitude Efficiency: "+tagli[S];
 		c14[S]=new TCanvas(nome.c_str());
 		c14[S]->Divide(2,1);
-		for(int l=0;l<11;l++)
-		for(int i=1;i<43;i++) if(EffpreSelDATA1_R->GetBinContent(i+1,S+1,l+1)>0) 
-			EffpreSelDATA_R[i][S][l]=EffpreSelDATA2_R->GetBinContent(i+1,S+1,l+1)/(float)EffpreSelDATA1_R->GetBinContent(i+1,S+1,l+1);
 		c14[S]->cd(1);
 		gPad->SetLogx();
 		gPad->SetGridx();
 		gPad->SetGridy();
-		for(int l=0;l<11;l++){
+		for(int l=1;l<11;l++){
 			Eff_preSelLAT[S][l]=new TGraphErrors();
-			int point=0;
-			for(int i=1;i<43;i++)
-				if(EffpreSelDATA_R[i][S][l]>0){ 
-				Eff_preSelLAT[S][l]->SetPoint(point,R_cent[i],EffpreSelDATA_R[i][S][l]);
-				Eff_preSelLAT[S][l]->SetPointError(point,0,pow(EffpreSelDATA2_R->GetBinContent(i+1,S+1,l+1),0.5)/EffpreSelDATA2_R->GetBinContent(i+1,S+1,l+1)*EffpreSelDATA_R[i][S][l]);
-				point++;	
+			for(int i=1;i<43;i++){
+				Eff_preSelLAT[S][l]->SetPoint(i,R_cent[i],EffpreSelDATA_R->GetBinContent(i+1,l+1,S+1));
+				Eff_preSelLAT[S][l]->SetPointError(i,0,EffpreSelDATA_R->GetBinError(i+1,l+1,S+1));
+				}
 			}
-		}
+
 		Eff_preSelLAT[S][10]->SetMarkerColor(1);
 		Eff_preSelLAT[S][10]->SetLineColor(1);
 		Eff_preSelLAT[S][10]->SetMarkerStyle(8);
 		Eff_preSelLAT[S][10]->GetXaxis()->SetTitle("R [GV]");
-        	Eff_preSelLAT[S][10]->GetYaxis()->SetTitle("Efficiency");
+		Eff_preSelLAT[S][10]->GetYaxis()->SetTitle("Efficiency");
 		Eff_preSelLAT[S][10]->GetYaxis()->SetRangeUser(0.1,1);
 		Eff_preSelLAT[S][10]->Draw("AP");
 		for(int l=0;l<10;l++){
-		Eff_preSelLAT[S][l]->SetMarkerColor(l);
-		Eff_preSelLAT[S][l]->SetLineColor(l);
-                Eff_preSelLAT[S][l]->SetMarkerStyle(8);
-		Eff_preSelLAT[S][l]->Draw("Psame");
+			Eff_preSelLAT[S][l]->SetMarkerColor(l);
+			Eff_preSelLAT[S][l]->SetLineColor(l);
+			Eff_preSelLAT[S][l]->SetMarkerStyle(8);
+			Eff_preSelLAT[S][l]->Draw("Psame");
 		}
 	}
 
-	cout<<"************************************************************ LAT. Eff. CORRECTION ************************************************************"<<endl;
+/*
 
-	double Tau_D[3][11]={{0}};
-	double Tau_D_err[3][11]={{0}};
-	float HEeff1[3][11]={{0}};
-	float HEeff2[3][11]={{0}};
-	float HEeff[3][11]={{0}};
-
-	for(int S=0;S<3;S++){
-		for(int i=1;i<11;i++)
-			for(int j=30;j<43;j++) {
-				HEeff1[S][i]+=EffpreSelDATA1_R->GetBinContent(j+1,S+1,i+1);
-				HEeff2[S][i]+=EffpreSelDATA2_R->GetBinContent(j+1,S+1,i+1);}
-	}
-	for(int S=0;S<3;S++)
-		for(int i=1;i<11;i++){HEeff[S][i]=HEeff2[S][i]/HEeff1[S][i];}
-
-	for(int S=0;S<3;S++)
-		for(int i=1;i<11;i++) {
-					Tau_D[S][i]=(HEeff[S][1])/HEeff[S][i];
-					Tau_D_err[S][i]=pow(HEeff1[S][i],0.5)/HEeff1[S][i]*Tau_D[S][i];
-					}
 	TGraphErrors *CorrLATpre[3];
 	for(int S=0;S<3;S++){
 	c14[S]->cd(2);
@@ -145,5 +132,15 @@ void DATApreSeleff(TFile * file1){
 	CorrLATpre_Spl[S]->Draw("PLsame");	
 
 	}
+*/
+	cout<<"*** Updating Results file ***"<<endl;
+        nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        f_out->mkdir("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
+        f_out->cd("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
+        for(int S=0;S<3;S++) c14[S]->Write();
+        f_out->Write();
+        f_out->Close();
+
 }
 

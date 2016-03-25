@@ -507,8 +507,8 @@ void DATAQualeff(TFile * file1){
 	cout<<"*** Updating Results file ***"<<endl;
         nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
-        f_out->mkdir("DATA-driven Results/Latitude effect");
-	f_out->cd("DATA-driven Results/Latitude effect");
+        f_out->mkdir("DATA-driven Results/Latitude effect/Quality");
+	f_out->cd("DATA-driven Results/Latitude effect/Quality");
 	c15->Write();
 	c16->Write();
         f_out->Write();
