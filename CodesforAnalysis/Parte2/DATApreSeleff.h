@@ -24,10 +24,6 @@ void DATApreSeleff_Write(){
         return;
 }
 
-TF1 * CorrLAT_pre[3];
-TH2F *CorrLATpre_spl[3];
-TGraphErrors *CorrLATpre_Spl[3];
-
 
 void DATApreSeleff(TFile * file1){
 
@@ -120,6 +116,7 @@ void DATApreSeleff(TFile * file1){
 	CorrLATpre[S]->Fit(nome.c_str());
 	CorrLATpre[S]->Draw("AP");	
 
+	TGraphErrors *CorrLATpre_Spl[3];
 	nome="CorrLATpre_spl"+tagli[S];
 	CorrLATpre_Spl[S]=new TGraphErrors(tagli[S].c_str());
 	CorrLATpre_Spl[S]->SetName(tagli[S].c_str());
