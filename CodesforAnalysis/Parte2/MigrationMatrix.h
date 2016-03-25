@@ -40,7 +40,6 @@ void MigrationMatrix(TFile * file1){
 	cout<<"*** Updating Results file ***"<<endl;
         string nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
-        f_out->mkdir("MC Results");
         f_out->cd("MC Results");
 	c27 -> Write();
         f_out->Write();
