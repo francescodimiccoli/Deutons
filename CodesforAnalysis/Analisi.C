@@ -210,7 +210,7 @@ int main(int argc, char * argv[])
 		  Correlazione_Preselezioni(file1);
 		  MigrationMatrix(file1);
 		  DATAUnbiaseff(file1);
-		  //DATApreSeleff(file1);
+		  DATApreSeleff(file1);
 		  //DVSMCTrackeff(file1);
 		  DATAQualeff(file1);
 		  /*DVSMCpreSeleff(file1);
