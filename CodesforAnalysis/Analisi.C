@@ -30,6 +30,7 @@
 #include "Parte2/FitError.h"
 #include "Parte2/EfficiencyClass.h"
 #include "Parte2/LATcorrClass.h"
+#include "Parte2/ACCEPTANCEClass.h"
 #include "Parte2/MCpreeff.h"
 #include "Parte2/MCUnbiaseff.h"
 #include "Parte2/Hecut.h"
@@ -44,6 +45,7 @@
 #include "Parte2/DATApreSeleff.h"
 #include "Parte2/DATAQualeff.h"
 #include "Parte2/CorrLAT.h"
+#include "Parte2/Acceptance.h"
 /*#include "Parte2/DVSMCpreSeleff.h"
 #include "Parte2/DVSMCQualeff2.h"
 #include "Parte2/DVSMCTrackeff.h"
@@ -230,6 +232,7 @@ int main(int argc, char * argv[])
         }
 	if(frac=="tot"){	
 		CorrLAT(file1);
+		Acceptance(file1);
 	}
 	cout<<"************************************** OUTPUT **************************************************************"<<endl;
 	/*f_out->cd("Export");

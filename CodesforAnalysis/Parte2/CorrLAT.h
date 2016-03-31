@@ -23,23 +23,30 @@ void CorrLAT(TFile * file1){
 	PreLATCorr -> Multiply( ( (TH1F *)( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",2,2)));
 	PreLATCorr -> Multiply( ( (TH1F *)( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",3,3)));		
 
-	TH1F *  TOTLATCorr = (TH1F *) PreLATCorr -> Clone();
-	
-	TOTLATCorr  -> Multiply ( ( (TH1F *)LikelihoodLATcorr ->  LATcorrTOF_fit) );
-	TOTLATCorr  -> Multiply ( ( (TH1F *)DistanceLATcorr   ->  LATcorrTOF_fit) );
+	TH1F *  TOTLATCorrTOF = (TH1F *) PreLATCorr -> Clone();
+	TH1F *  TOTLATCorrNaF = (TH1F *) PreLATCorr -> Clone();
+	TH1F *  TOTLATCorrAgl = (TH1F *) PreLATCorr -> Clone();
+
+	TOTLATCorrTOF  -> Multiply ( ( (TH1F *)LikelihoodLATcorr ->  LATcorrTOF_fit) );
+	TOTLATCorrTOF  -> Multiply ( ( (TH1F *)DistanceLATcorr   ->  LATcorrTOF_fit) );
+	TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LikelihoodLATcorr ->  LATcorrNaF_fit) );
+	TOTLATCorrNaF  -> Multiply ( ( (TH1F *)DistanceLATcorr   ->  LATcorrNaF_fit) );
+	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LikelihoodLATcorr ->  LATcorrAgl_fit) );
+	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)DistanceLATcorr   ->  LATcorrAgl_fit) );
+
 
 	//R bins
-	TH1F * CorrezioneLAT_Pre = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorr );
-	TH1F * CorrezioneLAT_TOT = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , TOTLATCorr );
+	TH1F * CorrezioneLAT_Pre = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorr   	 	);
+	TH1F * CorrezioneLAT_TOT = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , TOTLATCorrTOF 	);
 
 	//Beta bins
-	TH1F * CorrezioneLAT_pTOF = (TH1F *) Weighted_CorrLAT ( esposizionepgeoTOF , TOTLATCorr );
-	TH1F * CorrezioneLAT_pNaF = (TH1F *) Weighted_CorrLAT ( esposizionepgeoNaF , TOTLATCorr );
-	TH1F * CorrezioneLAT_pAgl = (TH1F *) Weighted_CorrLAT ( esposizionepgeoAgl , TOTLATCorr );
+	TH1F * CorrezioneLAT_pTOF = (TH1F *) Weighted_CorrLAT ( esposizionepgeoTOF , TOTLATCorrTOF 	);
+	TH1F * CorrezioneLAT_pNaF = (TH1F *) Weighted_CorrLAT ( esposizionepgeoNaF , TOTLATCorrNaF 	);
+	TH1F * CorrezioneLAT_pAgl = (TH1F *) Weighted_CorrLAT ( esposizionepgeoAgl , TOTLATCorrAgl 	);
 
-	TH1F * CorrezioneLAT_dTOF = (TH1F *) Weighted_CorrLAT ( esposizionedgeoTOF , TOTLATCorr );
-	TH1F * CorrezioneLAT_dNaF = (TH1F *) Weighted_CorrLAT ( esposizionedgeoNaF , TOTLATCorr );
-	TH1F * CorrezioneLAT_dAgl = (TH1F *) Weighted_CorrLAT ( esposizionedgeoAgl , TOTLATCorr );
+	TH1F * CorrezioneLAT_dTOF = (TH1F *) Weighted_CorrLAT ( esposizionedgeoTOF , TOTLATCorrTOF	);
+	TH1F * CorrezioneLAT_dNaF = (TH1F *) Weighted_CorrLAT ( esposizionedgeoNaF , TOTLATCorrNaF	);
+	TH1F * CorrezioneLAT_dAgl = (TH1F *) Weighted_CorrLAT ( esposizionedgeoAgl , TOTLATCorrAgl	);
 
 	 cout<<"*** Updating P1 file ****"<<endl;
         string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
@@ -51,16 +58,21 @@ void CorrLAT(TFile * file1){
 
         file1->cd("Results");
 
-	CorrezioneLAT_Pre -> Write("CorrezioneLAT_Pre ");
-	CorrezioneLAT_TOT -> Write("CorrezioneLAT_TOT ");
+	TOTLATCorrTOF  -> Write("TOTLATCorrTOF"	);
+	TOTLATCorrNaF  -> Write("TOTLATCorrNaF" );
+	TOTLATCorrAgl  -> Write("TOTLATCorrAgl" );
+	
+	CorrezioneLAT_Pre -> Write("CorrezioneLATPre_R ");
+	CorrezioneLAT_TOT -> Write("CorrezioneLATp_R   ");
                                               
-	CorrezioneLAT_pTOF-> Write("CorrezioneLAT_pTOF"); 
-	CorrezioneLAT_pNaF-> Write("CorrezioneLAT_pNaF");
-	CorrezioneLAT_pAgl-> Write("CorrezioneLAT_pAgl");
+	CorrezioneLAT_pTOF-> Write("CorrezioneLATp_TOF"); 
+	CorrezioneLAT_pNaF-> Write("CorrezioneLATp_NaF");
+	CorrezioneLAT_pAgl-> Write("CorrezioneLATp_Agl");
                                               
-	CorrezioneLAT_dTOF-> Write("CorrezioneLAT_dTOF");
-	CorrezioneLAT_dNaF-> Write("CorrezioneLAT_dNaF");
-	CorrezioneLAT_dAgl-> Write("CorrezioneLAT_dAgl");
+	CorrezioneLAT_TOT -> Write("CorrezioneLATd_R   ");
+	CorrezioneLAT_dTOF-> Write("CorrezioneLATd_TOF");
+	CorrezioneLAT_dNaF-> Write("CorrezioneLATd_NaF");
+	CorrezioneLAT_dAgl-> Write("CorrezioneLATd_Agl");
 
         file1->Write();
         file1->Close();
@@ -78,8 +90,8 @@ void CorrLAT(TFile * file1){
         gPad->SetGridx();
 	TGraphErrors *CorrLAT_tot_Spl=new TGraphErrors();
 	for(int m=1;m<11;m++) {
-		CorrLAT_tot_Spl->SetPoint(m-1,geomagC[m],TOTLATCorr -> GetBinContent(m+1));
-		CorrLAT_tot_Spl->SetPointError(m-1,0,TOTLATCorr -> GetBinError(m+1));
+		CorrLAT_tot_Spl->SetPoint(m-1,geomagC[m],TOTLATCorrTOF -> GetBinContent(m+1));
+		CorrLAT_tot_Spl->SetPointError(m-1,0,TOTLATCorrTOF -> GetBinError(m+1));
 	}
 	TGraphErrors *CorrLAT_pre_Spl=new TGraphErrors();
 	for(int m=1;m<11;m++) {
