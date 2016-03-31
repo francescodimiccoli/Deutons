@@ -111,20 +111,8 @@ void MCQualeff(TFile * file1){
 
 	EffLikMCP ->Eval_Efficiency();
         EffLikMCD ->Eval_Efficiency();
-        EffLikMCP ->Eval_Efficiency();
-        EffLikMCD ->Eval_Efficiency();
-        EffLikMCP ->Eval_Efficiency();
-        EffLikMCD ->Eval_Efficiency();
-        EffLikMCP ->Eval_Efficiency();
-        EffLikMCD ->Eval_Efficiency();
-                    
-        EffDistMCP->Eval_Efficiency();
-        EffDistMCD->Eval_Efficiency();
-        EffDistMCP->Eval_Efficiency();
-        EffDistMCD->Eval_Efficiency();
-        EffDistMCP->Eval_Efficiency();
-        EffDistMCD->Eval_Efficiency();
-        EffDistMCP->Eval_Efficiency();
+        
+	EffDistMCP->Eval_Efficiency();
         EffDistMCD->Eval_Efficiency();
 
 

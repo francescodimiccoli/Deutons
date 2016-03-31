@@ -40,6 +40,7 @@
 #include "Parte2/MCTrackeff.h"
 #include "Parte2/MCpreSeleff.h"
 #include "Parte2/MigrationMatrix.h"
+#include "Parte2/MCFullSeteff.h"
 #include "Parte2/DATAUnbiaseff.h"
 #include "Parte2/CorrelazionePreselezioni.h"
 #include "Parte2/DATApreSeleff.h"
@@ -208,6 +209,7 @@ int main(int argc, char * argv[])
 		SlidesforPlot(file1);
 		  MCQualeff(file1);
 		  MCTrackeff(file1);
+		  MCFullseteff(file1);
 		  MCpreSeleff(file1);
 		  Correlazione_Preselezioni(file1);
 		  MigrationMatrix(file1);
