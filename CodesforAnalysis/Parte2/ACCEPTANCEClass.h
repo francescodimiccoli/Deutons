@@ -14,7 +14,7 @@ public:
 	//triggered/generated eff.
 	float trigrate;
 	//sel. eff.
-	TH1 * Efficiency_R;
+	TH1 * Efficiency_R  ;
 	TH1 * Efficiency_TOF;
 	TH1 * Efficiency_NaF;
 	TH1 * Efficiency_Agl;
@@ -47,7 +47,7 @@ public:
 	
 	// reading constructor
 
-	ACCEPTANCE(TFile * file , float bin[] , float binBetaTOF[], float binBetaNaF[], float binBetaAgl[],  float Trigrate, std::string dirname , std::string basename, std::string latcorrname , std::string wlatcorrname, int n)
+	ACCEPTANCE(TFile * file , float bin[] , float binBetaTOF[], float binBetaNaF[], float binBetaAgl[],  float Trigrate, std::string dirname , std::string basename, std::string effname,std::string latcorrname , std::string wlatcorrname, int n)
 		{
 		after_TOF   = (TH1 *)file->Get((basename + "1"   ).c_str());
 		after_NaF   = (TH1 *)file->Get((basename + "1NaF").c_str());
@@ -58,6 +58,11 @@ public:
 		before_NaF  = new TH2F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),18,0,18, n, 0 ,n);
 		before_Agl  = new TH2F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18, n, 0 ,n);
 		before_R    = new TH2F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),43,0,43, n, 0 ,n);
+
+		Efficiency_R  = (TH1 *)file->Get(("/" + dirname +"/" +effname + "TOF"         ).c_str());
+                Efficiency_TOF= (TH1 *)file->Get(("/" + dirname +"/" +effname + "TOF"         ).c_str());
+		Efficiency_NaF= (TH1 *)file->Get(("/" + dirname +"/" +effname + "NaF"         ).c_str());
+                Efficiency_Agl= (TH1 *)file->Get(("/" + dirname +"/" +effname + "Agl"         ).c_str());
 
 		LATcorr_R  = (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "TOF"         ).c_str());
 		LATcorr_TOF= (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "TOF"         ).c_str());
@@ -82,7 +87,8 @@ public:
 
 
 TH1 * Triggerbin(int n , TH1 * after, float trigrate, float bins[]);
-void Eval_Gen_Acceptance(int n);
+void Eval_Gen_Acceptance( int n);
+void Eval_MC_Acceptance();
 
 };
 
@@ -114,7 +120,7 @@ TH1 * ACCEPTANCE::Triggerbin(int n , TH1 * after , float trigrate, float bins[])
 
 
 
-void ACCEPTANCE::Eval_Gen_Acceptance( int n){
+void ACCEPTANCE::Eval_Gen_Acceptance(int n){
 	before_R	= ACCEPTANCE::Triggerbin( n, after_R   ,trigrate , binsR);	
 	before_TOF	= ACCEPTANCE::Triggerbin( n, after_TOF ,trigrate , binsBetaTOF);
 	before_NaF	= ACCEPTANCE::Triggerbin( n, after_NaF ,trigrate , binsBetaNaF);	
@@ -137,3 +143,20 @@ void ACCEPTANCE::Eval_Gen_Acceptance( int n){
         Gen_Acceptance_Agl  -> Scale ( 47.78 ) ;
 
 } 
+
+
+void ACCEPTANCE::Eval_MC_Acceptance(){
+
+if(Gen_Acceptance_R  )  MCAcceptance_R   =(TH1 *) Gen_Acceptance_R  ->Clone();
+if(Gen_Acceptance_TOF)  MCAcceptance_TOF =(TH1 *) Gen_Acceptance_TOF->Clone();
+if(Gen_Acceptance_NaF)  MCAcceptance_NaF =(TH1 *) Gen_Acceptance_NaF->Clone();
+if(Gen_Acceptance_Agl)  MCAcceptance_Agl =(TH1 *) Gen_Acceptance_Agl->Clone();
+
+Gen_Acceptance_R  -> Multiply (	Efficiency_R  	);
+Gen_Acceptance_TOF-> Multiply (	Efficiency_TOF	);
+Gen_Acceptance_NaF-> Multiply (	Efficiency_NaF	);
+Gen_Acceptance_Agl-> Multiply (	Efficiency_Agl	);
+
+}
+
+

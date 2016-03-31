@@ -2,8 +2,8 @@ using namespace std;
 
 
 void Acceptance(TFile * file1){
-	ACCEPTANCE * AcceptanceP = new ACCEPTANCE (file1, bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D,0.0308232619,"Results","EffpreselMCP","TOTLATCorr","CorrezioneLATp",1);
-	ACCEPTANCE * AcceptanceD = new ACCEPTANCE (file1, bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D,0.0308232619,"Results","EffpreselMCD","TOTLATCorr","CorrezioneLATd",6);
+	ACCEPTANCE * AcceptanceP = new ACCEPTANCE (file1, bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D,0.0308232619,"Results","EffpreselMCP","EffpreselMCP","TOTLATCorr","CorrezioneLATp",1);
+	ACCEPTANCE * AcceptanceD = new ACCEPTANCE (file1, bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D,0.0308232619,"Results","EffpreselMCD","EffpreselMCD","TOTLATCorr","CorrezioneLATd",6);
 	
         cout<<"****************** ACCEPTANCE CALCULATION ******************"<<endl;
 
