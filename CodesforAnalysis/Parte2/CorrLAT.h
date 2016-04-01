@@ -2,7 +2,14 @@ TH1 * ExposureTime(TH2 * esposizionegeo);
 
 TH1 * Weighted_CorrLAT(TH2 * esposizionegeo, TH1 * LATcorr);
 
-void CorrLAT(TFile * file1){
+void CorrLAT(){
+	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+        TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
+        if(!file1){
+                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
+                file1 =TFile::Open(nomefile.c_str(),"READ");
+        }
+
 	TH2F * esposizionegeo_R    = (TH2F*)file1->Get( "esposizionegeo"       );
 	TH2F * esposizionepgeoTOF  = (TH2F*)file1->Get(	"esposizionepgeo"	);
         TH2F * esposizionepgeoNaF  = (TH2F*)file1->Get(	"esposizionepgeoNaF"	);
@@ -18,15 +25,18 @@ void CorrLAT(TFile * file1){
 	cout<<"******* TOTAL LAT. CORRECTION *************"<<endl;
 
 	
-	TH1F * PreLATCorr = ( (TH1F *)( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",1,1));
+	TH1F * PreLATCorrR = (TH1F *)(( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",1,1)) -> Clone();
+	
+	PreLATCorrR -> Multiply( (TH1F *)( ( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",2,2))->Clone()	);
+	PreLATCorrR -> Multiply( (TH1F *)( ( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",3,3))->Clone()	);		
 
-	PreLATCorr -> Multiply( ( (TH1F *)( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",2,2)));
-	PreLATCorr -> Multiply( ( (TH1F *)( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",3,3)));		
+	TH1F *  TOTLATCorrR   = (TH1F *) PreLATCorrR -> Clone();
+	TH1F *  TOTLATCorrTOF = (TH1F *) PreLATCorrR -> Clone();
+	TH1F *  TOTLATCorrNaF = (TH1F *) PreLATCorrR -> Clone();
+	TH1F *  TOTLATCorrAgl = (TH1F *) PreLATCorrR -> Clone();
 
-	TH1F *  TOTLATCorrTOF = (TH1F *) PreLATCorr -> Clone();
-	TH1F *  TOTLATCorrNaF = (TH1F *) PreLATCorr -> Clone();
-	TH1F *  TOTLATCorrAgl = (TH1F *) PreLATCorr -> Clone();
-
+	TOTLATCorrR    -> Multiply ( ( (TH1F *)LikelihoodLATcorr ->  LATcorrTOF_fit) );
+	TOTLATCorrR    -> Multiply ( ( (TH1F *)DistanceLATcorr   ->  LATcorrTOF_fit) );	
 	TOTLATCorrTOF  -> Multiply ( ( (TH1F *)LikelihoodLATcorr ->  LATcorrTOF_fit) );
 	TOTLATCorrTOF  -> Multiply ( ( (TH1F *)DistanceLATcorr   ->  LATcorrTOF_fit) );
 	TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LikelihoodLATcorr ->  LATcorrNaF_fit) );
@@ -34,9 +44,8 @@ void CorrLAT(TFile * file1){
 	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LikelihoodLATcorr ->  LATcorrAgl_fit) );
 	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)DistanceLATcorr   ->  LATcorrAgl_fit) );
 
-
 	//R bins
-	TH1F * CorrezioneLAT_Pre = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorr   	 	);
+	TH1F * CorrezioneLAT_Pre = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorrR  	 	);
 	TH1F * CorrezioneLAT_TOT = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , TOTLATCorrTOF 	);
 
 	//Beta bins
@@ -48,34 +57,35 @@ void CorrLAT(TFile * file1){
 	TH1F * CorrezioneLAT_dNaF = (TH1F *) Weighted_CorrLAT ( esposizionedgeoNaF , TOTLATCorrNaF	);
 	TH1F * CorrezioneLAT_dAgl = (TH1F *) Weighted_CorrLAT ( esposizionedgeoAgl , TOTLATCorrAgl	);
 
-	 cout<<"*** Updating P1 file ****"<<endl;
-        string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
-        file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+	cout<<"*** Updating P1 file ****"<<endl;
+        nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+        file1 = TFile::Open(nomefile.c_str(),"UPDATE");
         if(!file1){
                 nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
                 file1 =TFile::Open(nomefile.c_str(),"UPDATE");
         }
-
-        file1->cd("Results");
-
-	TOTLATCorrTOF  -> Write("TOTLATCorrTOF"	);
-	TOTLATCorrNaF  -> Write("TOTLATCorrNaF" );
-	TOTLATCorrAgl  -> Write("TOTLATCorrAgl" );
+	file1->cd("Results");
 	
-	CorrezioneLAT_Pre -> Write("CorrezioneLATPre_R ");
-	CorrezioneLAT_TOT -> Write("CorrezioneLATp_R   ");
-                                              
-	CorrezioneLAT_pTOF-> Write("CorrezioneLATp_TOF"); 
-	CorrezioneLAT_pNaF-> Write("CorrezioneLATp_NaF");
-	CorrezioneLAT_pAgl-> Write("CorrezioneLATp_Agl");
-                                              
-	CorrezioneLAT_TOT -> Write("CorrezioneLATd_R   ");
-	CorrezioneLAT_dTOF-> Write("CorrezioneLATd_TOF");
-	CorrezioneLAT_dNaF-> Write("CorrezioneLATd_NaF");
-	CorrezioneLAT_dAgl-> Write("CorrezioneLATd_Agl");
+	PreLATCorrR    -> Write(     "PreLATCorr_LATcorrR_fit" 	);
+                                                                        
+	TOTLATCorrR    -> Write(     "TOTLATCorr_LATcorrR_fit"  ); 	
+	TOTLATCorrTOF  -> Write(     "TOTLATCorr_LATcorrTOF_fit"); 	
+	TOTLATCorrNaF  -> Write(     "TOTLATCorr_LATcorrNaF_fit"); 	
+	TOTLATCorrAgl  -> Write(     "TOTLATCorr_LATcorrAgl_fit");
+	
+	CorrezioneLAT_Pre -> Write(  "CorrezioneLATPre_R"	);       
+	CorrezioneLAT_TOT -> Write(  "CorrezioneLATp_R"  	);      
+        CorrezioneLAT_pTOF-> Write(  "CorrezioneLATp_TOF"	);      
+	CorrezioneLAT_pNaF-> Write(  "CorrezioneLATp_NaF"       );
+	CorrezioneLAT_pAgl-> Write(  "CorrezioneLATp_Agl"	);
+
+	CorrezioneLAT_TOT -> Write(  "CorrezioneLATd_R"  	);
+	CorrezioneLAT_dTOF-> Write(  "CorrezioneLATd_TOF"	);
+	CorrezioneLAT_dNaF-> Write(  "CorrezioneLATd_NaF"	);
+	CorrezioneLAT_dAgl-> Write(  "CorrezioneLATd_Agl"       );		
 
         file1->Write();
-        file1->Close();
+	file1->Close();
 
 
 
@@ -95,8 +105,8 @@ void CorrLAT(TFile * file1){
 	}
 	TGraphErrors *CorrLAT_pre_Spl=new TGraphErrors();
 	for(int m=1;m<11;m++) {
-		CorrLAT_pre_Spl->SetPoint(m-1,geomagC[m],PreLATCorr -> GetBinContent(m+1));
-		CorrLAT_pre_Spl->SetPointError(m-1,0,PreLATCorr -> GetBinError(m+1));
+		CorrLAT_pre_Spl->SetPoint(m-1,geomagC[m],PreLATCorrR -> GetBinContent(m+1));
+		CorrLAT_pre_Spl->SetPointError(m-1,0,PreLATCorrR -> GetBinError(m+1));
 	}
 	CorrLAT_tot_Spl->SetLineColor(2);
 	CorrLAT_tot_Spl->SetMarkerColor(2);

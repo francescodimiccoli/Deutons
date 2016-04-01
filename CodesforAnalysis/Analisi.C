@@ -192,7 +192,7 @@ int main(int argc, char * argv[])
 	}
 	////////////////////////////
 
-	cout<<"************************************* ISTOGRAM FILLING **************************************************************************"<<endl;
+	cout<<"************************ ISTOGRAM FILLING **************************************************************"<<endl;
 	FillIstogram(INDX,frac,mese);
 	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
 	TFile *file1 =TFile::Open(nomefile.c_str());
@@ -201,7 +201,7 @@ int main(int argc, char * argv[])
 		file1 =TFile::Open(nomefile.c_str());
 	}
 
-	cout<<"********************************** ANALYSIS *************************************************************************************"<<endl;
+	cout<<"************************* ANALYSIS **********************************************************************"<<endl;
 	if(frac=="tot"){
 		MCpreeff(file1);
 		MCUnbiaseff(file1);
@@ -227,115 +227,12 @@ int main(int argc, char * argv[])
 		  DeutonFlux(file1);
 		  DeutonFlux_Dist(file1);*/
 	}
-        file1 =TFile::Open(nomefile.c_str());
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str());
-        }
+	cout<<"************************* RESULTS  **********************************************************************"<<endl;
+	
 	if(frac=="tot"){	
-		CorrLAT(file1);
-		Acceptance(file1);
+		CorrLAT();
+		Acceptance();
 	}
-	cout<<"************************************** OUTPUT **************************************************************"<<endl;
-	/*f_out->cd("Export");
-	MigrMatrix->Write();
-	EffTrackerMCP_R_TH1F->Write();
-	EffTrackerMCP_TH1F->Write();
-	EffTrackerMCD_R_TH2F->Write();
-	EffTrackerMCD_TH2F->Write();
-	EffTOF_MCP_R_TH1F->Write();
-	EffTOF_MCP_TH1F->Write();
-	EffTOF_MCD_R_TH2F->Write();
-	EffTOF_MCD_TH2F->Write();
-	EffMCLikP_TH1F->Write();
-	EffMCLikD_TH2F->Write();
-	EffMCLikP_Beta_TH1F->Write();
-	EffMCLikD_Beta_TH2F->Write();
-	EffPreSelMCP_R_TH2F->Write();
-	EffPreSelMCP_TH2F->Write();
-	EffPreSelMCD_R_TH3F->Write();
-	EffPreSelMCD_TH3F->Write();
-	for(int S=0;S<3;S++) CorrLAT_pre[S]->Write();
-	for(int S=0;S<3;S++) CorrLATpre_spl[S]->Write();
-	for(int S=0;S<3;S++) CorrLATpre_Spl[S]->Write();
-	CorrLAT_Lik->Write();
-	CorrLAT_Dist->Write();
-	CorrLAT_Dist_spl->Write();
-	CorrLAT_Dist_Spl->Write();
-	CorrLAT_Lik_spl->Write();
-	CorrLAT_Lik_Spl->Write();
-	CorrLAT_LikNaF->Write();
-        CorrLAT_DistNaF->Write();
-        CorrLAT_DistNaF_spl->Write();
-        CorrLAT_DistNaF_Spl->Write();
-        CorrLAT_LikNaF_spl->Write();
-        CorrLAT_LikNaF_Spl->Write();
-	CorrLAT_LikAgl->Write();
-        CorrLAT_DistAgl->Write();
-        CorrLAT_DistAgl_spl->Write();
-        CorrLAT_DistAgl_Spl->Write();
-        CorrLAT_LikAgl_spl->Write();
-        CorrLAT_LikAgl_Spl->Write();
-	LikDVSMC_P_Graph->Write();
-	DistDVSMC_P_Graph->Write();
-	LikDVSMC_P_graph->Write();
-	DistDVSMC_P_graph->Write();
-	for(int S=0;S<3;S++) PreDVSMC_P_Graph[S]->Write();
-	for(int S=0;S<3;S++) PreDVSMC_P[S]->Write();
-	CorrLAT_tot_spl->Write();
-	CorrLAT_pre_spl->Write();
-	CorrLAT_totM2->Write();
-	CorrLAT_preM2->Write();
-	for(int i=0;i<11;i++) P_Fluxgeo[i]->Write();
-	PFlux->Write();
-	P_Flux->Write();
-	P_Flux_pre->Write();
-	DFluxgeoTOF->Write();
-	f_out->cd("Export/Hecut");
-	HecutMC_P->Write();
-        HecutMC_He->Write();
-        Hecut_D->Write();
-        HecutMC_P1->Write();
-        HecutMC_P2->Write();
-        HecutMC_He1->Write();
-        HecutMC_He2->Write();
-	f_out->cd("Export/MCMC");
-	MCMCPTemplatesTOF->Write();
-        MCMCDTemplatesTOF->Write();
-        MCMCHeTemplatesTOF->Write();
-        MCMCPTemplatesNaF->Write();
-        MCMCDTemplatesNaF->Write();
-        MCMCHeTemplatesNaF->Write();
-        MCMCPTemplatesAgl->Write();
-        MCMCDTemplatesAgl->Write();
-        MCMCHeTemplatesAgl->Write();
-        MCMCDataTOF->Write();
-        MCMCDataNaF->Write();
-        MCMCDataAgl->Write();
-	f_out->cd("Export/Qual.Sel.Eff.");
-	EffMCDistP_TH1F->Write();
-	EffMCDistD_TH2F->Write();
-	EffMCDistP_Beta_TH1F->Write();
-	EffMCDistD_Beta_TH2F->Write();
-	EffMCDistP_BetaNaF_TH1F->Write();
-	EffMCDistD_BetaNaF_TH2F->Write();
-	EffMCDistP_BetaAgl_TH1F->Write();
-	EffMCDistD_BetaAgl_TH2F->Write();	
-	f_out->cd("Export/Acceptance");
-	AcceptPzone->Write();
-        AcceptDzoneTOF->Write();
-        AcceptDzoneNaF->Write();
-        AcceptDzoneAgl->Write();
-	AcceptPTOF->Write();
-	AcceptPNaF->Write();
-	AcceptPAgl->Write();
-	AcceptDTOF->Write();
-	AcceptDNaF->Write();
-	AcceptDAgl->Write();
-	f_out->cd("Export/Slidesplot");
-	SlidesforPlot_Write();	
-	f_out->Write();
-        f_out->Close();
-	*/	
+	cout<<"************************** OUTPUT **************************************************************"<<endl;
 	return 1;
 }

@@ -39,10 +39,10 @@ public:
 
 	//Acceptance
 	
-	TH1 * MCAcceptance_R   , * CorrectedAcceptance_R   ,  * Geom_Acceptance_R   ,  * Gen_Acceptance_R    ;
-	TH1 * MCAcceptance_TOF , * CorrectedAcceptance_TOF ,  * Geom_Acceptance_TOF ,  * Gen_Acceptance_TOF  ;
-	TH1 * MCAcceptance_NaF , * CorrectedAcceptance_NaF ,  * Geom_Acceptance_NaF ,  * Gen_Acceptance_NaF  ;
-	TH1 * MCAcceptance_Agl , * CorrectedAcceptance_Agl ,  * Geom_Acceptance_Agl ,  * Gen_Acceptance_Agl  ;
+	TH1 * MCAcceptance_R   , * CorrectedAcceptance_R   ,  * Geomag_Acceptance_R   ,  * Gen_Acceptance_R    ;
+	TH1 * MCAcceptance_TOF , * CorrectedAcceptance_TOF ,  * Geomag_Acceptance_TOF ,  * Gen_Acceptance_TOF  ;
+	TH1 * MCAcceptance_NaF , * CorrectedAcceptance_NaF ,  * Geomag_Acceptance_NaF ,  * Gen_Acceptance_NaF  ;
+	TH1 * MCAcceptance_Agl , * CorrectedAcceptance_Agl ,  * Geomag_Acceptance_Agl ,  * Gen_Acceptance_Agl  ;
 
 	
 	// reading constructor
@@ -59,28 +59,27 @@ public:
 		before_Agl  = new TH2F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18, n, 0 ,n);
 		before_R    = new TH2F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),43,0,43, n, 0 ,n);
 
-		Efficiency_R  = (TH1 *)file->Get(("/" + dirname +"/" +effname + "TOF"         ).c_str());
-                Efficiency_TOF= (TH1 *)file->Get(("/" + dirname +"/" +effname + "TOF"         ).c_str());
-		Efficiency_NaF= (TH1 *)file->Get(("/" + dirname +"/" +effname + "NaF"         ).c_str());
-                Efficiency_Agl= (TH1 *)file->Get(("/" + dirname +"/" +effname + "Agl"         ).c_str());
-
-		LATcorr_R  = (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "TOF"         ).c_str());
-		LATcorr_TOF= (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "TOF"         ).c_str());
-		LATcorr_NaF= (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "NaF"         ).c_str());
-		LATcorr_Agl= (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "Agl"         ).c_str());
-
+		Efficiency_R  = (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffR"         ).c_str());
+                Efficiency_TOF= (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffTOF"         ).c_str());
+		Efficiency_NaF= (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffNaF"         ).c_str());
+                Efficiency_Agl= (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffAgl"         ).c_str());
+		
+		LATcorr_R  = (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "_LATcorrR_fit"   ).c_str());
+		LATcorr_TOF= (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "_LATcorrTOF_fit" ).c_str());
+		LATcorr_NaF= (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "_LATcorrNaF_fit" ).c_str());
+		LATcorr_Agl= (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "_LATcorrAgl_fit" ).c_str());
+			
 		LATcorrW_R  = (TH1 *)file->Get(("/" + dirname +"/" +wlatcorrname + "_R"         ).c_str());
 		LATcorrW_TOF= (TH1 *)file->Get(("/" + dirname +"/" +wlatcorrname + "_TOF"       ).c_str());
 		LATcorrW_NaF= (TH1 *)file->Get(("/" + dirname +"/" +wlatcorrname + "_NaF"       ).c_str());
 		LATcorrW_Agl= (TH1 *)file->Get(("/" + dirname +"/" +wlatcorrname + "_Agl"       ).c_str());
 		
-		for(int i=0;i<44; i++) {binsR[i] = bin[i];cout<<bin[i]<<endl;}
+		for(int i=0;i<44; i++) binsR[i] = bin[i];
 		for(int i=0;i<19; i++) {
 		
 			binsBetaTOF[i] = binBetaTOF[i]; 
                         binsBetaNaF[i] = binBetaNaF[i]; 
 			binsBetaAgl[i] = binBetaAgl[i]; 	
-			cout<<binsBetaTOF[i]<<" "<<binsBetaNaF[i]<<" "<<binsBetaAgl[i]<<endl;
 		}
 		trigrate = Trigrate;
 	}
@@ -88,8 +87,11 @@ public:
 
 TH1 * Triggerbin(int n , TH1 * after, float trigrate, float bins[]);
 void Eval_Gen_Acceptance( int n);
+
 void Eval_MC_Acceptance();
 
+TH1 * Geomag_Acceptance(int n, TH1* MCAcceptance, TH1* LATcorr);
+void Eval_Geomag_Acceptance(int n);
 };
 
 
@@ -152,11 +154,36 @@ if(Gen_Acceptance_TOF)  MCAcceptance_TOF =(TH1 *) Gen_Acceptance_TOF->Clone();
 if(Gen_Acceptance_NaF)  MCAcceptance_NaF =(TH1 *) Gen_Acceptance_NaF->Clone();
 if(Gen_Acceptance_Agl)  MCAcceptance_Agl =(TH1 *) Gen_Acceptance_Agl->Clone();
 
-Gen_Acceptance_R  -> Multiply (	Efficiency_R  	);
-Gen_Acceptance_TOF-> Multiply (	Efficiency_TOF	);
-Gen_Acceptance_NaF-> Multiply (	Efficiency_NaF	);
-Gen_Acceptance_Agl-> Multiply (	Efficiency_Agl	);
+MCAcceptance_R  -> Multiply (	Efficiency_R  	);
+MCAcceptance_TOF-> Multiply (	Efficiency_TOF	);
+MCAcceptance_NaF-> Multiply (	Efficiency_NaF	);
+MCAcceptance_Agl-> Multiply (	Efficiency_Agl	);
 
 }
 
+TH1 * ACCEPTANCE::Geomag_Acceptance(int n, TH1* MCAcceptance, TH1* LATcorr){
+	TH1 * Geomag_Acceptance;
+	if(n>1){
+		Geomag_Acceptance = new TH3F ("","",MCAcceptance->GetNbinsX(),0,MCAcceptance->GetNbinsX(),LATcorr->GetNbinsX(),0,LATcorr->GetNbinsX(),n,0,n);		      for(int m=0;m<n;m++)
+			for(int R=0;R<MCAcceptance->GetNbinsX();R++)
+				for(int lat=0;lat<LATcorr->GetNbinsX();lat++)
+					Geomag_Acceptance->SetBinContent(R+1,lat+1,m+1,MCAcceptance->GetBinContent(R+1,m+1)*LATcorr->GetBinContent(lat));							
+	}
+	else{
+		Geomag_Acceptance = new TH2F ("","",MCAcceptance->GetNbinsX(),0,MCAcceptance->GetNbinsX(),LATcorr->GetNbinsX(),0,LATcorr->GetNbinsX());
+		for(int R=0;R<MCAcceptance->GetNbinsX();R++)
+			for(int lat=0;lat<LATcorr->GetNbinsX();lat++)
+				Geomag_Acceptance->SetBinContent(R+1,lat+1,MCAcceptance->GetBinContent(R+1)*LATcorr->GetBinContent(lat));							
+	}
 
+	return Geomag_Acceptance; 
+}
+
+void ACCEPTANCE::Eval_Geomag_Acceptance(int n){
+
+if(MCAcceptance_R  )   Geomag_Acceptance_R   = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_R	, LATcorr_R	);
+if(MCAcceptance_TOF)   Geomag_Acceptance_TOF = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_TOF	, LATcorr_TOF	);
+if(MCAcceptance_NaF)   Geomag_Acceptance_NaF = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_NaF	, LATcorr_NaF	);
+if(MCAcceptance_Agl)   Geomag_Acceptance_Agl = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_Agl	, LATcorr_Agl	);
+
+}
