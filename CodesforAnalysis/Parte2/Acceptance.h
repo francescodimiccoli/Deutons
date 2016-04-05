@@ -17,7 +17,7 @@ void Acceptance(){
 	cout<<"****************** ACCEPTANCE CALCULATION ******************"<<endl;
 
  	AcceptanceP -> Set_MC_Par  (0.0308232619, 0.5, 100); 
- 	AcceptanceP -> Set_Binning (bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D);
+ 	AcceptanceP -> Set_Binning (bin, BetabinsR_P, BetabinsNaFR_P,BetabinsAglR_P);
 
 	AcceptanceD -> Set_MC_Par  (0.0242236931, 0.5, 20); 
 	AcceptanceD -> Set_Binning (bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D);
@@ -34,7 +34,7 @@ void Acceptance(){
 	
 
 	AcceptancePreP -> Set_MC_Par  (0.0308232619, 0.5, 100); 
- 	AcceptancePreP -> Set_Binning (bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D);
+ 	AcceptancePreP -> Set_Binning (bin, BetabinsR_P, BetabinsNaFR_P,BetabinsAglR_P);
 
 	AcceptancePreD -> Set_MC_Par  (0.0242236931, 0.5, 20); 
 	AcceptancePreD -> Set_Binning (bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D);
