@@ -30,6 +30,10 @@ void CorrLAT(){
 	PreLATCorrR -> Multiply( (TH1F *)( ( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",2,2))->Clone()	);
 	PreLATCorrR -> Multiply( (TH1F *)( ( (TH2F *)EffpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",3,3))->Clone()	);		
 
+	TH1F * PreLATCorrTOF = (TH1F *) PreLATCorrR -> Clone();
+	TH1F * PreLATCorrNaF = (TH1F *) PreLATCorrR -> Clone();
+	TH1F * PreLATCorrAgl = (TH1F *) PreLATCorrR -> Clone(); //preselections don't have difference in TOF,NaF,Agl
+
 	TH1F *  TOTLATCorrR   = (TH1F *) PreLATCorrR -> Clone();
 	TH1F *  TOTLATCorrTOF = (TH1F *) PreLATCorrR -> Clone();
 	TH1F *  TOTLATCorrNaF = (TH1F *) PreLATCorrR -> Clone();
@@ -44,15 +48,19 @@ void CorrLAT(){
 	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LikelihoodLATcorr ->  LATcorrAgl_fit) );
 	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)DistanceLATcorr   ->  LATcorrAgl_fit) );
 
-	//R bins
-	TH1F * CorrezioneLAT_Pre = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorrR  	 	);
-	TH1F * CorrezioneLAT_TOT = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , TOTLATCorrTOF 	);
+	
+	//Only pres.
+	TH1F * CorrezioneLATpre_pR = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorrR  	);
+	
+	TH1F * CorrezioneLATpre_dR = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorrR  	);
 
-	//Beta bins
+	//Full set
+	TH1F * CorrezioneLAT_pR   = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R   , TOTLATCorrTOF 	);
 	TH1F * CorrezioneLAT_pTOF = (TH1F *) Weighted_CorrLAT ( esposizionepgeoTOF , TOTLATCorrTOF 	);
 	TH1F * CorrezioneLAT_pNaF = (TH1F *) Weighted_CorrLAT ( esposizionepgeoNaF , TOTLATCorrNaF 	);
 	TH1F * CorrezioneLAT_pAgl = (TH1F *) Weighted_CorrLAT ( esposizionepgeoAgl , TOTLATCorrAgl 	);
 
+	TH1F * CorrezioneLAT_dR   = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R   , TOTLATCorrTOF 	);
 	TH1F * CorrezioneLAT_dTOF = (TH1F *) Weighted_CorrLAT ( esposizionedgeoTOF , TOTLATCorrTOF	);
 	TH1F * CorrezioneLAT_dNaF = (TH1F *) Weighted_CorrLAT ( esposizionedgeoNaF , TOTLATCorrNaF	);
 	TH1F * CorrezioneLAT_dAgl = (TH1F *) Weighted_CorrLAT ( esposizionedgeoAgl , TOTLATCorrAgl	);
@@ -67,19 +75,25 @@ void CorrLAT(){
 	file1->cd("Results");
 	
 	PreLATCorrR    -> Write(     "PreLATCorr_LATcorrR_fit" 	);
-                                                                        
+ 	PreLATCorrTOF  -> Write(     "PreLATCorr_LATcorrTOF_fit"); 	
+	PreLATCorrNaF  -> Write(     "PreLATCorr_LATcorrNaF_fit"); 	
+	PreLATCorrAgl  -> Write(     "PreLATCorr_LATcorrAgl_fit");       
+
+                                                                
 	TOTLATCorrR    -> Write(     "TOTLATCorr_LATcorrR_fit"  ); 	
 	TOTLATCorrTOF  -> Write(     "TOTLATCorr_LATcorrTOF_fit"); 	
 	TOTLATCorrNaF  -> Write(     "TOTLATCorr_LATcorrNaF_fit"); 	
 	TOTLATCorrAgl  -> Write(     "TOTLATCorr_LATcorrAgl_fit");
 	
-	CorrezioneLAT_Pre -> Write(  "CorrezioneLATPre_R"	);       
-	CorrezioneLAT_TOT -> Write(  "CorrezioneLATp_R"  	);      
+	CorrezioneLATpre_pR -> Write(  "CorrezioneLATPrep_R"	);       
+	CorrezioneLATpre_dR -> Write(  "CorrezioneLATPred_R"	);
+	
+	CorrezioneLAT_pR  -> Write(  "CorrezioneLATp_R"  	);      
         CorrezioneLAT_pTOF-> Write(  "CorrezioneLATp_TOF"	);      
 	CorrezioneLAT_pNaF-> Write(  "CorrezioneLATp_NaF"       );
 	CorrezioneLAT_pAgl-> Write(  "CorrezioneLATp_Agl"	);
 
-	CorrezioneLAT_TOT -> Write(  "CorrezioneLATd_R"  	);
+	CorrezioneLAT_dR  -> Write(  "CorrezioneLATd_R"  	);
 	CorrezioneLAT_dTOF-> Write(  "CorrezioneLATd_TOF"	);
 	CorrezioneLAT_dNaF-> Write(  "CorrezioneLATd_NaF"	);
 	CorrezioneLAT_dAgl-> Write(  "CorrezioneLATd_Agl"       );		
@@ -129,7 +143,7 @@ void CorrLAT(){
 	gPad->SetLogx();
 	TGraphErrors *CorrLAT_totM1_Spl=new TGraphErrors();
 	for(int i=0;i<43;i++){
-			CorrLAT_totM1_Spl->SetPoint(i,R_cent[i],CorrezioneLAT_TOT->GetBinContent(i+1));
+			CorrLAT_totM1_Spl->SetPoint(i,R_cent[i],CorrezioneLAT_pR->GetBinContent(i+1));
 		}
 	CorrLAT_totM1_Spl->SetLineColor(2);
         CorrLAT_totM1_Spl->SetMarkerColor(2);
@@ -141,7 +155,7 @@ void CorrLAT(){
 	CorrLAT_totM1_Spl->Draw("APC");
 	TGraphErrors *CorrLAT_totM2_Spl=new TGraphErrors();
         for(int i=0;i<43;i++){
-                CorrLAT_totM2_Spl->SetPoint(i,R_cent[i],CorrezioneLAT_Pre->GetBinContent(i+1));
+                CorrLAT_totM2_Spl->SetPoint(i,R_cent[i],CorrezioneLATpre_pR->GetBinContent(i+1));
         }
         CorrLAT_totM2_Spl->SetLineColor(4);
         CorrLAT_totM2_Spl->SetMarkerColor(4);

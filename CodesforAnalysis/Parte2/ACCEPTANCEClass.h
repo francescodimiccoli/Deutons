@@ -57,10 +57,10 @@ class ACCEPTANCE
 			after_Agl   = (TH1 *)file->Get((basename + "1Agl").c_str());
 			after_R     = (TH1 *)file->Get((basename + "1_R" ).c_str());
 
-			before_TOF  = new TH2F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),18,0,18, n, 0 ,n);
-			before_NaF  = new TH2F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),18,0,18, n, 0 ,n);
-			before_Agl  = new TH2F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18, n, 0 ,n);
-			before_R    = new TH2F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),43,0,43, n, 0 ,n);
+			before_TOF  = new TH2F((basename + "Trig"   ).c_str(),(basename + "Trig"   ).c_str(),18,0,18, n, 0 ,n);
+			before_NaF  = new TH2F((basename + "TrigNaF").c_str(),(basename + "TrigNaF").c_str(),18,0,18, n, 0 ,n);
+			before_Agl  = new TH2F((basename + "TrigAgl").c_str(),(basename + "TrigAgl").c_str(),18,0,18, n, 0 ,n);
+			before_R    = new TH2F((basename + "Trig_R" ).c_str(),(basename + "Trig_R" ).c_str(),43,0,43, n, 0 ,n);
 
 			Efficiency_R  = (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffR"         ).c_str());
 			Efficiency_TOF= (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffTOF"         ).c_str());
@@ -93,6 +93,9 @@ class ACCEPTANCE
 
 		void Eval_Geomag_Acceptance(int n);
 
+		TH1 * Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW);
+		
+		void Eval_Corrected_Acceptance(int n);	
 };
 
 
@@ -126,7 +129,6 @@ TH1 * ACCEPTANCE::Triggerbin(int n , TH1 * after , float trigrate, float bins[])
 	if(n>1)	
 		for(int m=0;m<n;m++){
 			eventiprova[m]   = ((TH2 *) after_R ) -> Integral(0,(int)after_R  ->GetNbinsX(),m+1,m+1);
-			cout<<eventiprova[m]<<endl;
 			for(int i=0; i<(int)after ->GetNbinsX();i++ ){
 				gen_bin = eventiprova[m]*(pow(trigrate,-1))*(log(bins[i+1])-log(bins[i]))/(log(Rmax)-log(Rmin));
 				triggerbin -> SetBinContent(i+1,m+1,gen_bin);
@@ -136,7 +138,6 @@ TH1 * ACCEPTANCE::Triggerbin(int n , TH1 * after , float trigrate, float bins[])
 	else
 		for(int m=0;m<n;m++){
 			eventiprova[m]   = ((TH1 *) after_R  ) -> Integral(0,(int)after_R   ->GetNbinsX());
-			cout<<eventiprova[m]<<endl;
 			for(int i=0; i<(int)after ->GetNbinsX();i++ ){
 				gen_bin = eventiprova[m]*(pow(trigrate,-1))*(log(bins[i+1])-log(bins[i]))/(log(Rmax)-log(Rmin));
 				triggerbin -> SetBinContent(i+1,gen_bin);
@@ -189,16 +190,17 @@ void ACCEPTANCE::Eval_MC_Acceptance(){
 TH1 * ACCEPTANCE::Geomag_Acceptance(int n, TH1* MCAcceptance, TH1* LATcorr){
 	TH1 * Geomag_Acceptance;
 	if(n>1){
-		Geomag_Acceptance = new TH3F ("","",MCAcceptance->GetNbinsX(),0,MCAcceptance->GetNbinsX(),LATcorr->GetNbinsX(),0,LATcorr->GetNbinsX(),n,0,n);		      for(int m=0;m<n;m++)
+		Geomag_Acceptance = new TH3F ("","",MCAcceptance->GetNbinsX(),0,MCAcceptance->GetNbinsX(),LATcorr->GetNbinsX(),0,LATcorr->GetNbinsX(),n,0,n);		      
+		for(int m=0;m<n;m++)
 			for(int R=0;R<MCAcceptance->GetNbinsX();R++)
 				for(int lat=0;lat<LATcorr->GetNbinsX();lat++)
-					Geomag_Acceptance->SetBinContent(R+1,lat+1,m+1,MCAcceptance->GetBinContent(R+1,m+1)*LATcorr->GetBinContent(lat));							
+					Geomag_Acceptance->SetBinContent(R+1,lat+1,m+1,MCAcceptance->GetBinContent(R+1,m+1)/LATcorr->GetBinContent(lat));							
 	}
 	else{
 		Geomag_Acceptance = new TH2F ("","",MCAcceptance->GetNbinsX(),0,MCAcceptance->GetNbinsX(),LATcorr->GetNbinsX(),0,LATcorr->GetNbinsX());
 		for(int R=0;R<MCAcceptance->GetNbinsX();R++)
 			for(int lat=0;lat<LATcorr->GetNbinsX();lat++)
-				Geomag_Acceptance->SetBinContent(R+1,lat+1,MCAcceptance->GetBinContent(R+1)*LATcorr->GetBinContent(lat));							
+				Geomag_Acceptance->SetBinContent(R+1,lat+1,MCAcceptance->GetBinContent(R+1)/LATcorr->GetBinContent(lat));							
 	}
 
 	return Geomag_Acceptance; 
@@ -211,4 +213,36 @@ void ACCEPTANCE::Eval_Geomag_Acceptance(int n){
 	if(MCAcceptance_NaF)   Geomag_Acceptance_NaF = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_NaF	, LATcorr_NaF	);
 	if(MCAcceptance_Agl)   Geomag_Acceptance_Agl = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_Agl	, LATcorr_Agl	);
 
+	return;
 }
+
+
+
+TH1 * ACCEPTANCE::Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW){
+	TH1 * Corrected_Acceptance = (TH1 *) MCAcceptance -> Clone();
+	if(n>1){
+		for(int m=0;m<n;m++)
+				for(int R=0;R<MCAcceptance->GetNbinsX();R++)
+					if(MCAcceptance->GetBinContent(R+1,m+1)>0&&LATcorrW->GetBinContent(R)>0)
+						Corrected_Acceptance -> SetBinContent(R+1,m+1,MCAcceptance->GetBinContent(R+1,m+1)/LATcorrW->GetBinContent(R));
+	}	
+
+	else{
+		for(int R=0;R<MCAcceptance->GetNbinsX();R++){
+					if(MCAcceptance->GetBinContent(R+1)>0&&LATcorrW->GetBinContent(R)>0)
+						Corrected_Acceptance -> SetBinContent(R+1,MCAcceptance->GetBinContent(R+1)/LATcorrW->GetBinContent(R));}
+	}
+	return Corrected_Acceptance;
+}
+
+
+void ACCEPTANCE::Eval_Corrected_Acceptance(int n){
+	if(LATcorrW_R   )  CorrectedAcceptance_R    = ACCEPTANCE::Corrected_Acceptance(n, MCAcceptance_R  , LATcorrW_R  );
+	if(LATcorrW_TOF )  CorrectedAcceptance_TOF  = ACCEPTANCE::Corrected_Acceptance(n, MCAcceptance_TOF, LATcorrW_TOF);
+	if(LATcorrW_NaF )  CorrectedAcceptance_NaF  = ACCEPTANCE::Corrected_Acceptance(n, MCAcceptance_NaF, LATcorrW_NaF);
+	if(LATcorrW_Agl )  CorrectedAcceptance_Agl  = ACCEPTANCE::Corrected_Acceptance(n, MCAcceptance_Agl, LATcorrW_Agl);
+
+	return;
+
+}
+

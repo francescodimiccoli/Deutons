@@ -50,8 +50,6 @@
 /*#include "Parte2/DVSMCpreSeleff.h"
 #include "Parte2/DVSMCQualeff2.h"
 #include "Parte2/DVSMCTrackeff.h"
-#include "Parte2/AcceptanceP.h"
-#include "Parte2/AcceptanceD.h"
 #include "Parte2/ProtonFlux.h"
 #include "Parte2/Deutons.h"
 #include "Parte2/DeutonsDist.h"
@@ -219,8 +217,6 @@ int main(int argc, char * argv[])
 		  DATAQualeff(file1);
 		  /*DVSMCpreSeleff(file1);
 		  DVSMCQualeff2(file1);
-		  AcceptanceP(file1);
-		  AcceptanceD(file1);
 		  ProtonFlux(file1);
 		  DeutonsTemplFits(file1);
 		  DeutonsTemplFits_Dist(file1);

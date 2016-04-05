@@ -2,46 +2,73 @@ using namespace std;
 
 
 void Acceptance(){
-
 	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
         TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
         if(!file1){
                 nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
                 file1 =TFile::Open(nomefile.c_str(),"READ");
         }
+	ACCEPTANCE * AcceptanceP = new ACCEPTANCE (file1,"Results","EffpreselMCP","EffFullsetMCP","TOTLATCorr","CorrezioneLATp",1);
+	ACCEPTANCE * AcceptanceD = new ACCEPTANCE (file1,"Results","EffpreselMCD","EffFullsetMCD","TOTLATCorr","CorrezioneLATd",6);
 	
-	ACCEPTANCE * AcceptanceP = new ACCEPTANCE (file1,"Results","EffpreselMCP","EffpreselMCP","TOTLATCorr","CorrezioneLATp",1);
-	ACCEPTANCE * AcceptanceD = new ACCEPTANCE (file1,"Results","EffpreselMCD","EffpreselMCD","TOTLATCorr","CorrezioneLATd",6);
-	
-        cout<<"****************** ACCEPTANCE CALCULATION ******************"<<endl;
+	ACCEPTANCE * AcceptancePreP = new ACCEPTANCE (file1,"Results","EffpreselMCP","EffpreselMCP","PreLATCorr","CorrezioneLATPrep",1);
+	ACCEPTANCE * AcceptancePreD = new ACCEPTANCE (file1,"Results","EffpreselMCD","EffpreselMCD","PreLATCorr","CorrezioneLATPred",6);
+        
+	cout<<"****************** ACCEPTANCE CALCULATION ******************"<<endl;
 
  	AcceptanceP -> Set_MC_Par  (0.0308232619, 0.5, 100); 
  	AcceptanceP -> Set_Binning (bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D);
 
 	AcceptanceD -> Set_MC_Par  (0.0242236931, 0.5, 20); 
 	AcceptanceD -> Set_Binning (bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D);
-
+	
 	AcceptanceP-> Eval_Gen_Acceptance(1);
 	AcceptanceP-> Eval_MC_Acceptance();
 	AcceptanceP-> Eval_Geomag_Acceptance(1);
-	cout<<"D"<<endl;
+	AcceptanceP-> Eval_Corrected_Acceptance(1);
 	AcceptanceD-> Eval_Gen_Acceptance(6);
+
 	AcceptanceD-> Eval_MC_Acceptance();
 	AcceptanceD-> Eval_Geomag_Acceptance(6);
+	AcceptanceD-> Eval_Corrected_Acceptance(6);
 	
+
+	AcceptancePreP -> Set_MC_Par  (0.0308232619, 0.5, 100); 
+ 	AcceptancePreP -> Set_Binning (bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D);
+
+	AcceptancePreD -> Set_MC_Par  (0.0242236931, 0.5, 20); 
+	AcceptancePreD -> Set_Binning (bin, BetabinsR_D, BetabinsNaFR_D,BetabinsAglR_D);
+
+	AcceptancePreP-> Eval_Gen_Acceptance(1);
+	AcceptancePreP-> Eval_MC_Acceptance();
+	AcceptancePreP-> Eval_Geomag_Acceptance(1);
+	AcceptancePreP-> Eval_Corrected_Acceptance(1);
+
+	AcceptancePreD-> Eval_Gen_Acceptance(6);
+	AcceptancePreD-> Eval_MC_Acceptance();
+	AcceptancePreD-> Eval_Geomag_Acceptance(6);	
+	AcceptancePreD-> Eval_Corrected_Acceptance(6);	
+
 	cout<<"*** Updating P1 file ****"<<endl;
-    	nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+    	
+	nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
         file1 = TFile::Open(nomefile.c_str(),"UPDATE");
         if(!file1){
                 nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
                 file1 =TFile::Open(nomefile.c_str(),"UPDATE");
         }
 	file1->cd("Results");
-	
+
+	//Protons
 	AcceptanceP ->Gen_Acceptance_R  ->Write("Gen_AcceptanceP_R"  ); 
 	AcceptanceP ->Gen_Acceptance_TOF->Write("Gen_AcceptanceP_TOF");
 	AcceptanceP ->Gen_Acceptance_NaF->Write("Gen_AcceptanceP_NaF"); 
 	AcceptanceP ->Gen_Acceptance_Agl->Write("Gen_AcceptanceP_Agl");
+	
+	AcceptancePreP ->MCAcceptance_R  ->Write("MC_AcceptancePreP_R"  );
+	AcceptancePreD ->MCAcceptance_R  ->Write("MC_AcceptancePreD_R"  );
+	AcceptancePreP ->CorrectedAcceptance_R  ->Write("Corr_AcceptancePreP_R"  );
+	AcceptancePreD ->CorrectedAcceptance_R  ->Write("Corr_AcceptancePreD_R"  );
 	
 	AcceptanceP ->MCAcceptance_R  ->Write("MC_AcceptanceP_R"  );       
 	AcceptanceP ->MCAcceptance_TOF->Write("MC_AcceptanceP_TOF");
@@ -53,7 +80,13 @@ void Acceptance(){
 	AcceptanceP ->Geomag_Acceptance_NaF->Write("Geomag_AcceptanceP_NaF");
 	AcceptanceP ->Geomag_Acceptance_Agl->Write("Geomag_AcceptanceP_Agl");
 
+	AcceptanceP ->CorrectedAcceptance_R    ->Write("Corr_AcceptanceP_R"  );
+	AcceptanceP ->CorrectedAcceptance_TOF  ->Write("Corr_AcceptanceP_TOF");	
+	AcceptanceP ->CorrectedAcceptance_NaF  ->Write("Corr_AcceptanceP_NaF");
+	AcceptanceP ->CorrectedAcceptance_Agl  ->Write("Corr_AcceptanceP_Agl");
 
+	
+	//Deutons
 	AcceptanceD ->Gen_Acceptance_R  ->Write("Gen_AcceptanceD_R"  ); 
 	AcceptanceD ->Gen_Acceptance_TOF->Write("Gen_AcceptanceD_TOF");
 	AcceptanceD ->Gen_Acceptance_NaF->Write("Gen_AcceptanceD_NaF");      	
@@ -68,6 +101,11 @@ void Acceptance(){
 	AcceptanceD ->Geomag_Acceptance_TOF->Write("Geomag_AcceptanceD_TOF");
 	AcceptanceD ->Geomag_Acceptance_NaF->Write("Geomag_AcceptanceD_NaF");
 	AcceptanceD ->Geomag_Acceptance_Agl->Write("Geomag_AcceptanceD_Agl");	
+
+	AcceptanceD ->CorrectedAcceptance_R    ->Write("Corr_AcceptanceD_R"  );
+	AcceptanceD ->CorrectedAcceptance_TOF  ->Write("Corr_AcceptanceD_TOF");
+	AcceptanceD ->CorrectedAcceptance_NaF  ->Write("Corr_AcceptanceD_NaF");
+	AcceptanceD ->CorrectedAcceptance_Agl  ->Write("Corr_AcceptanceD_Agl");
 
 	file1->Write();
 	file1->Close();
@@ -250,6 +288,69 @@ void Acceptance(){
 	EffgenbetaPAgl->GetYaxis()->SetTitleSize(0.045);
 	EffgenbetaPAgl->Draw("CPsame");
 
+	TCanvas * c22 = new TCanvas("Protons Acceptance");
+	c22->cd();
+	gPad->SetLogx();
+        gPad->SetLogy();
+	gPad->SetGridx();
+        gPad->SetGridy();
+	TGraphErrors * AccgeoP= new TGraphErrors();
+	TGraphErrors * AccPreMCP= new TGraphErrors();
+	TGraphErrors * AccSelMCP= new TGraphErrors();
+	TGraphErrors * AccSelP[11];
+	TGraphErrors * AccpreP[11];
+	p=0;
+	for(int i=0;i<43;i++) {AccgeoP->SetPoint(p,encinprot[i],AcceptanceP ->Gen_Acceptance_R->GetBinContent(i+1));p++;}	
+	p=0;
+        for(int i=0;i<43;i++) {AccPreMCP->SetPoint(p,encinprot[i],AcceptancePreP ->MCAcceptance_R->GetBinContent(i+1));p++;}
+	p=0;
+	for(int i=0;i<43;i++) {AccSelMCP->SetPoint(p,encinprot[i],AcceptanceP ->MCAcceptance_R->GetBinContent(i+1));p++;}
+	
+
+	for(int j=0;j<11;j++) {
+		AccSelP[j]=new TGraphErrors();
+		p=0;
+		for(int i=0;i<43;i++) {AccSelP[j]->SetPoint(p,encinprot[i],AcceptanceP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1) );p++;}
+		AccSelP[j]->SetMarkerStyle(8);
+        	AccSelP[j]->SetMarkerColor(j-1);
+        	AccSelP[j]->SetLineColor(j-1);
+        	AccSelP[j]->SetLineWidth(2);
+	}
+	for(int j=0;j<11;j++) {
+                AccpreP[j]=new TGraphErrors();
+                p=0;
+		for(int i=0;i<43;i++) {AccpreP[j]->SetPoint(p,encinprot[i],AcceptancePreP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1));p++;}
+                AccpreP[j]->SetMarkerStyle(8);
+                AccpreP[j]->SetMarkerColor(j-1);
+                AccpreP[j]->SetLineColor(j-1);
+                AccpreP[j]->SetLineWidth(2);
+        }
+
+	AccgeoP->SetMarkerStyle(8);
+	AccgeoP->SetMarkerColor(2);
+	AccgeoP->SetLineColor(2);
+	AccgeoP->SetLineWidth(4);
+	AccPreMCP->SetMarkerStyle(8);
+        AccPreMCP->SetMarkerColor(1);
+        AccPreMCP->SetLineColor(2);
+        AccPreMCP->SetLineWidth(4);
+	AccSelMCP->SetMarkerStyle(8);
+        AccSelMCP->SetMarkerColor(1);
+        AccSelMCP->SetLineColor(2);
+	AccgeoP->SetTitle("Protons Acceptance");
+        AccgeoP->GetXaxis()->SetTitle("R [GV]");
+        AccgeoP->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
+        AccgeoP->GetXaxis()->SetTitleSize(0.045);
+        AccgeoP->GetYaxis()->SetTitleSize(0.045);
+	AccgeoP->GetYaxis()->SetRangeUser(1e-2,1.3);
+	AccgeoP->Draw("AC");
+	for(int j=0;j<11;j++) AccSelP[j]->Draw("PCsame");
+	for(int j=0;j<11;j++) AccpreP[j]->Draw("PCsame");
+	AccPreMCP->Draw("Csame");
+	AccSelMCP->Draw("Csame");
+
+
+
 	TCanvas * c31_bis = new TCanvas("MC Final Acceptance (Beta bins) (Beta bins)");
 	string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
 	
@@ -394,6 +495,7 @@ void Acceptance(){
 	f_out->mkdir("Acceptance");
 	f_out->cd("Acceptance");
 	c31_tris -> Write();
+	c22 -> Write();
 	c31_bis  -> Write();
 	f_out->Write();
 	f_out->Close();

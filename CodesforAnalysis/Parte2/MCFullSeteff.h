@@ -58,14 +58,14 @@ void MCFullseteff(TFile * file1){
 
 	file1->mkdir("Results");
 	file1->cd("Results");
-	EffFullsetMCP_R_TH1F	->Write();
-	EffFullsetMCP_TH1F 	->Write();
-	EffFullsetMCPNaF_TH1F	->Write();
-	EffFullsetMCPAgl_TH1F 	->Write();
-	EffFullsetMCD_R_TH2F	->Write();
-	EffFullsetMCD_TH2F	->Write();
-	EffFullsetMCDNaF_TH2F 	->Write();
-	EffFullsetMCDAgl_TH2F	->Write();
+	EffFullsetMCP_R_TH1F	->Write("EffFullsetMCP_EffR");
+	EffFullsetMCP_TH1F 	->Write("EffFullsetMCP_EffTOF");
+	EffFullsetMCPNaF_TH1F	->Write("EffFullsetMCP_EffNaF");
+	EffFullsetMCPAgl_TH1F 	->Write("EffFullsetMCP_EffAgl");
+	EffFullsetMCD_R_TH2F	->Write("EffFullsetMCD_EffR");
+	EffFullsetMCD_TH2F	->Write("EffFullsetMCD_EffTOF");
+	EffFullsetMCDNaF_TH2F 	->Write("EffFullsetMCD_EffNaF");
+	EffFullsetMCDAgl_TH2F	->Write("EffFullsetMCD_EffAgl");
 	file1->Write();
 	file1->Close();
 
