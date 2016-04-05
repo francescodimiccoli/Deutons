@@ -81,7 +81,7 @@ class ACCEPTANCE
 
 		void Set_MC_Par( float Trigrate, float rmin, float rmax); 
 
-		void Set_Binning(float binsR[], float binsBetaTOF[], float binsBetaNaF[], float binsBetaAgl[]);
+		void Set_Binning(bool deutons=1);
 
 		TH1 * Triggerbin(int n , TH1 * after, float trigrate, float bins[]);
 
@@ -106,17 +106,34 @@ void ACCEPTANCE::Set_MC_Par( float Trigrate, float rmin, float rmax){
 	return;
 }
 
-void ACCEPTANCE::Set_Binning(float BINR[], float BINTOF[], float BINNaF[], float BINAgl[]){
+
+
+void ACCEPTANCE::Set_Binning(bool deutons){
+
 	int nbins_R    =   after_R   -> GetNbinsX() + 1;
 	int nbins_beta =   after_TOF -> GetNbinsX() + 1; //TOF,NaF,Agl: same number of bins
-	for(int i=0;i<nbins_R; i++) 
-		binsR[i] = BINR[i];
-	for(int i=0;i<nbins_beta; i++) {
 
-		binsBetaTOF[i] = BINTOF[i]; 
-		binsBetaNaF[i] = BINNaF[i]; 
-		binsBetaAgl[i] = BINAgl[i]; 	
+	for(int i=0;i<nbins_R; i++)   binsR[i] = bin[i];
+			
+	if (deutons) {
+		
+		for(int i=0;i<nbins_beta; i++) {
+			binsBetaTOF[i] = BetabinsR_D   [i]; 
+			binsBetaNaF[i] = BetabinsNaFR_D[i]; 
+			binsBetaAgl[i] = BetabinsAglR_D[i]; 	
+		}
+		
+	} else { // protons
+		
+		for(int i=0;i<nbins_beta; i++) {
+			binsBetaTOF[i] = BetabinsR_P   [i]; 
+			binsBetaNaF[i] = BetabinsNaFR_P[i]; 
+			binsBetaAgl[i] = BetabinsAglR_P[i]; 	
+		}
+		
 	}
+	
+
 }
 
 
