@@ -389,35 +389,46 @@ int main()
          double geo2=geomag[z+1];
          if(Latitude>geo && Latitude<geo2) Zona=z;
       }
+
+
+    int binK=-1;
+    for(int K=0; K<43; K++)
+      if( fabs(R) > bin[K] && fabs(R) < bin[K+1] )
+      {
+         binK=K;
+         break;
+      }
+    
+      
       ///////////////// LAT EFFECT ////////////////////
       if(IsPrescaled==1) {
 
          if((((int)CUTMASK>>0)&UnbiasPre)==UnbiasPre&&DistTOF<4&&DistTrack<4) {
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
+
                   if(R>Rcut[Zona]) {
-                     Unbias[Zona]->Fill(K);
-                     if((CUTMASK&1019)==1019) UPreselected[Zona]->Fill(K);
+                     Unbias[Zona]->Fill(binK);
+                     if((CUTMASK&1019)==1019) UPreselected[Zona]->Fill(binK);
                   }
-               }
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
+
+
                   if(Latitude>1&&R>1.2*Rcutoff) {
-                     UnbiasHL->Fill(K);
-                     if((CUTMASK&1019)==1019) UPreselectedHL->Fill(K);
+                     UnbiasHL->Fill(binK);
+                     if((CUTMASK&1019)==1019) UPreselectedHL->Fill(binK);
                   }
-               }
+
          }
          for(int S=0; S<10; S++)
             if((((int)CUTMASK>>0)&notpassed[S])==notpassed[S]&&DistTOF<4&&DistTrack<4) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
+
                      if(R>Rcut[Zona]) {
-                        selezioni_P[S]->Fill(K,Zona);
-                        if((((int)CUTMASK>>S)&1==1)) selected_P[S]->Fill(K,Zona);
+                        selezioni_P[S]->Fill(binK,Zona);
+                        if((((int)CUTMASK>>S)&1==1)) selected_P[S]->Fill(binK,Zona);
                      }
                      if(Latitude>1&&R>1.2*Rcutoff) {
-                        selezioni_PHL[S]->Fill(K);
-                        if((((int)CUTMASK>>S)&1==1)) selected_PHL[S]->Fill(K);
+                        selezioni_PHL[S]->Fill(binK);
+                        if((((int)CUTMASK>>S)&1==1)) selected_PHL[S]->Fill(binK);
                      }
-                  }
+
             }
       }
       /////////////////////////////////////////////////
@@ -441,70 +452,70 @@ int main()
          ////////////////////////////////////////
          ///////////// QUAL. LAT. EFFECT ////////
          if(EdepL1>0.04&&EdepL1<0.15) {
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                  if(R>Rcut[Zona]) selezioniQ->Fill(K,Zona);
-                  if(Latitude>1&&R>1.2*Rcutoff)selezioniQHL->Fill(K);
-               }
-            if(DistTOF<4&&DistTrack<4)for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                     if(R>Rcut[Zona]) selectedQD->Fill(K,Zona);
-                     if(Latitude>1&&R>1.2*Rcutoff) selectedQDHL->Fill(K);
+
+                  if(R>Rcut[Zona]) selezioniQ->Fill(binK,Zona);
+                  if(Latitude>1&&R>1.2*Rcutoff)selezioniQHL->Fill(binK);
+
+            if(DistTOF<4&&DistTrack<4) {
+                     if(R>Rcut[Zona]) selectedQD->Fill(binK,Zona);
+                     if(Latitude>1&&R>1.2*Rcutoff) selectedQDHL->Fill(binK);
                   }
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) if(R>Rcut[Zona]) {
-                     if(DistTOF<4) selectedQDTOF->Fill(K,Zona);
-                     if(DistTrack<4) selectedQDTrack->Fill(K,Zona);
-                     if(DistTRD<4) selectedQDTRD->Fill(K,Zona);
+             if(R>Rcut[Zona]) {
+                     if(DistTOF<4) selectedQDTOF->Fill(binK,Zona);
+                     if(DistTrack<4) selectedQDTrack->Fill(binK,Zona);
+                     if(DistTRD<4) selectedQDTRD->Fill(binK,Zona);
                   }
-            if(LDiscriminant>0.95) for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                     if(R>Rcut[Zona]) selectedQL->Fill(K,Zona);
-                     if(Latitude>1&&R>1.2*Rcutoff) selectedQLHL->Fill(K);
+            if(LDiscriminant>0.95)  {
+                     if(R>Rcut[Zona]) selectedQL->Fill(binK,Zona);
+                     if(Latitude>1&&R>1.2*Rcutoff) selectedQLHL->Fill(binK);
                   }
-            if(LDiscriminant>0.95&&DistTOF<4&&DistTrack<4) for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                     if(R>Rcut[Zona]) selectedQLD->Fill(K,Zona);
-                     if(Latitude>1&&R>1.2*Rcutoff) selectedQLDHL->Fill(K);
+            if(LDiscriminant>0.95&&DistTOF<4&&DistTrack<4)  {
+                     if(R>Rcut[Zona]) selectedQLD->Fill(binK,Zona);
+                     if(Latitude>1&&R>1.2*Rcutoff) selectedQLDHL->Fill(binK);
                   }
          }
          ////////////////////////////////////////
          //////////// DISTANCE EFFICIENCIES CHECK /////////////////////
          if(fabs(YTOF)<3&&fabs(YTrack)<3) {
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                   if(XTOF<3&&XTOF>-3&&XTrack<3&&XTrack>-3)
                   {
                      if(Latitude>1&&R>1.2*Rcutoff) {
-                        selezioniQHL1_P->Fill(K);
-                        if(DistTRD<4) selectedQHL1_P->Fill(K);
+                        selezioniQHL1_P->Fill(binK);
+                        if(DistTRD<4) selectedQHL1_P->Fill(binK);
                      }
                   }
 
          }
          if(fabs(YTrack)<3&&fabs(YTRD)<3) {
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                   if(XTrack<3&&XTrack>-3&&XTRD<3&&XTRD>-3)
                   {
                      if(Latitude>1&&R>1.2*Rcutoff) {
-                        selezioniQHL2_P->Fill(K);
-                        if(DistTOF<4) selectedQHL2_P->Fill(K);
+                        selezioniQHL2_P->Fill(binK);
+                        if(DistTOF<4) selectedQHL2_P->Fill(binK);
                      }
                   }
 
          }
          if(fabs(YTOF)<3&&fabs(YTRD)<3) {
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                   if(XTOF<3&&XTOF>-3&&XTRD<3&&XTRD>-3)
                   {
                      if(Latitude>1&&R>1.2*Rcutoff) {
-                        selezioniQHL3_P->Fill(K);
-                        if(DistTrack<4)selectedQHL3_P->Fill(K);
+                        selezioniQHL3_P->Fill(binK);
+                        if(DistTrack<4)selectedQHL3_P->Fill(binK);
                      }
                   }
 
          }
          if(fabs(YTOF)<3&&fabs(YTrack)<3) {
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                   if(XTOF<3&&XTOF>-3&&XTrack<3&&XTrack>-3)
                   {
                      if(Latitude>1&&R>1.2*Rcutoff) {
-                        selezioniQHL4_P->Fill(K);
-                        if(LDiscriminant>0.95) selectedQHL4_P->Fill(K);
+                        selezioniQHL4_P->Fill(binK);
+                        if(LDiscriminant>0.95) selectedQHL4_P->Fill(binK);
                      }
                   }
 
@@ -514,19 +525,19 @@ int main()
          bool IsHe=false;
          if((fabs(YTOF)>5&&fabs(YTrack)>5&&fabs(YTRD)>5)) IsHe=true;
          if(DistTOF<4&&DistTrack<4)
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                  PCountsD[Zona]->Fill(K);
+             {
+                  PCountsD[Zona]->Fill(binK);
                   if(R>1.2*Rcutoff) {
-                     PCountsDPrim[Zona]->Fill(K);
-                     PCountsDPrimLat->Fill(K,Latitude);
+                     PCountsDPrim[Zona]->Fill(binK);
+                     PCountsDPrimLat->Fill(binK,Latitude);
                   }
                }
          if(!IsHe&&LDiscriminant>0.95)
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                  PCountsQ[Zona]->Fill(K);
+            {
+                  PCountsQ[Zona]->Fill(binK);
                   if(R>1.2*Rcutoff) {
-                     PCountsQPrim[Zona]->Fill(K);
-                     PCountsLPrimLat->Fill(K,Latitude);
+                     PCountsQPrim[Zona]->Fill(binK);
+                     PCountsLPrimLat->Fill(binK,Latitude);
                   }
                }
          /////////////////////////////////////////
@@ -544,62 +555,62 @@ int main()
       float Discr3=Massa;
       if(IsPrescaled==1) {
          bool cleanD=false;
-         for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                if(XTOF<DXWind[K]&&XTOF>-3&&XTrack<DXWind[K]&&XTrack>-3&&XTRD<DXWind[K]&&XTRD>-3&&fabs(YTOF)<5&&fabs(YTrack)<5&&fabs(YTRD)<5) cleanD=true;
 
          for(int S=0; S<10; S++)
             if((((int)CUTMASK>>0)&notpassed[S])==notpassed[S]&&cleanD&&Beta_corr<0.85&&R<4) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
+
                      if(Latitude>1&&R>1.2*Rcutoff) {
-                        selezioni_DHL[S]->Fill(K);
-                        if((((int)CUTMASK>>S)&1==1)) selected_DHL[S]->Fill(K);
+                        selezioni_DHL[S]->Fill(binK);
+                        if((((int)CUTMASK>>S)&1==1)) selected_DHL[S]->Fill(binK);
                      }
-                  }
+
             }
       }
       if(IsPrescaled==0) {
          ///////////// QUAL. EFFICIENCIES /////////////////
          if(Beta_corr<0.95&&R<4) {
             if(fabs(YTOF)<3&&fabs(YTrack)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTOF<DXWind[K]&&XTOF>-3&&XTrack<DXWind[K]&&XTrack>-3)
                      {
                         if(Latitude>1&&R>1.2*Rcutoff) {
-                           selezioniQHL1->Fill(K);
-                           if(DistTRD<4) selectedQHL1->Fill(K);
+                           selezioniQHL1->Fill(binK);
+                           if(DistTRD<4) selectedQHL1->Fill(binK);
                         }
                      }
 
             }
             if(fabs(YTrack)<3&&fabs(YTRD)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTrack<DXWind[K]&&XTrack>-3&&XTRD<DXWind[K]&&XTRD>-3)
                      {
                         if(Latitude>1&&R>1.2*Rcutoff) {
-                           selezioniQHL2->Fill(K);
-                           if(DistTOF<4) selectedQHL2->Fill(K);
+                           selezioniQHL2->Fill(binK);
+                           if(DistTOF<4) selectedQHL2->Fill(binK);
                         }
                      }
 
             }
             if(fabs(YTOF)<3&&fabs(YTRD)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTOF<DXWind[K]&&XTOF>-3&&XTRD<DXWind[K]&&XTRD>-3)
                      {
                         if(Latitude>1&&R>1.2*Rcutoff) {
-                           selezioniQHL3->Fill(K);
-                           if(DistTrack<4)selectedQHL3->Fill(K);
+                           selezioniQHL3->Fill(binK);
+                           if(DistTrack<4)selectedQHL3->Fill(binK);
                         }
                      }
 
             }
             if(fabs(YTOF)<3&&fabs(YTRD)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTOF<DXWind[K]&&XTOF>-3&&XTRD<DXWind[K]&&XTRD>-3)
                      {
                         if(Latitude>1&&R>1.2*Rcutoff) {
-                           selezioniQHL4->Fill(K);
-                           if(LDiscriminant>0.95) selectedQHL4->Fill(K);
+                           selezioniQHL4->Fill(binK);
+                           if(LDiscriminant>0.95) selectedQHL4->Fill(binK);
                         }
                      }
 
@@ -653,70 +664,70 @@ int main()
       DistTRD=pow(pow(XTRD,2)+pow(YTRD,2),0.5);
       if(IsPrescaled==1) {
          if(Massagen<1) {
-            for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) PrescaledMC->Fill(K);
+            PrescaledMC->Fill(binK);
             if((((int)CUTMASK>>0)&UnbiasPre)==UnbiasPre&&DistTOF<4&&DistTrack<4) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                     UnbiasMC->Fill(K);
-                     if((CUTMASK&1019)==1019) UPreselectedMC->Fill(K);
-                  }
+
+                     UnbiasMC->Fill(binK);
+                     if((CUTMASK&1019)==1019) UPreselectedMC->Fill(binK);
+
             }
             for(int S=0; S<10; S++)
                if((((int)CUTMASK>>0)&notpassed[S])==notpassed[S]&&DistTOF<4&&DistTrack<4) {
-                  for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                        selezioni_PHLMC[S]->Fill(K);
-                        if((((int)CUTMASK>>S)&1==1)) selected_PHLMC[S]->Fill(K);
-                     }
+
+                        selezioni_PHLMC[S]->Fill(binK);
+                        if((((int)CUTMASK>>S)&1==1)) selected_PHLMC[S]->Fill(binK);
+
                }
          }
       }
       if(IsPrescaled==0) {
          if(Massagen<1) {
-            if(DistTOF<4&&DistTrack<4)	for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                     EffDistMCP->Fill(K);
-                  }
-            if(LDiscriminant>0.95) for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                     EffQualMCP->Fill(K);
-                  }
+            if(DistTOF<4&&DistTrack<4)	
+                     EffDistMCP->Fill(binK);
+
+            if(LDiscriminant>0.95) 
+                     EffQualMCP->Fill(binK);
+
             if(EdepL1>0.04&&EdepL1<0.15) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) selezioniQHLMC->Fill(K);
-               if(DistTOF<4&&DistTrack<4)   for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) selectedQDHLMC->Fill(K);
-               if(LDiscriminant>0.95) for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) selectedQLHLMC->Fill(K);
-               if(LDiscriminant>0.95&&DistTOF<4&&DistTrack<4)for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) selectedQLDHLMC->Fill(K);
+                selezioniQHLMC->Fill(binK);
+               if(DistTOF<4&&DistTrack<4)   selectedQDHLMC->Fill(binK);
+               if(LDiscriminant>0.95)  selectedQLHLMC->Fill(binK);
+               if(LDiscriminant>0.95&&DistTOF<4&&DistTrack<4) selectedQLDHLMC->Fill(binK);
             }
             //////////// DISTANCE EFFICIENCIES CHECK /////////////////////
             if(fabs(YTOF)<3&&fabs(YTrack)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+              
                      if(XTOF<3&&XTOF>-3&&XTrack<3&&XTrack>-3)
                      {
-                        selezioniQHLMC1_P->Fill(K);
-                        if(DistTRD<4) selectedQHLMC1_P->Fill(K);
+                        selezioniQHLMC1_P->Fill(binK);
+                        if(DistTRD<4) selectedQHLMC1_P->Fill(binK);
                      }
 
             }
             if(fabs(YTrack)<3&&fabs(YTRD)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTrack<3&&XTrack>-3&&XTRD<3&&XTRD>-3)
                      {
-                        selezioniQHLMC2_P->Fill(K);
-                        if(DistTOF<4) selectedQHLMC2_P->Fill(K);
+                        selezioniQHLMC2_P->Fill(binK);
+                        if(DistTOF<4) selectedQHLMC2_P->Fill(binK);
                      }
 
             }
             if(fabs(YTOF)<3&&fabs(YTRD)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTOF<3&&XTOF>-3&&XTRD<3&&XTRD>-3)
                      {
-                        selezioniQHLMC3_P->Fill(K);
-                        if(DistTrack<4)selectedQHLMC3_P->Fill(K);
+                        selezioniQHLMC3_P->Fill(binK);
+                        if(DistTrack<4)selectedQHLMC3_P->Fill(binK);
                      }
 
             }
             if(fabs(YTOF)<3&&fabs(YTrack)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTOF<3&&XTOF>-3&&XTrack<3&&XTrack>-3)
                      {
-                        selezioniQHLMC4_P->Fill(K);
-                        if(LDiscriminant>0.95) selectedQHLMC4_P->Fill(K);
+                        selezioniQHLMC4_P->Fill(binK);
+                        if(LDiscriminant>0.95) selectedQHLMC4_P->Fill(binK);
                      }
 
             }
@@ -741,14 +752,14 @@ int main()
       /////////////////////// DEUTONI SEL: DATA VS MC ////////////////////
       if(IsPrescaled==1) {
          bool cleanD=false;
-         for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                if(XTOF<DXWind[K]&&XTOF>-3&&XTrack<DXWind[K]&&XTrack>-3&&XTRD<DXWind[K]&&XTRD>-3&&fabs(YTOF)<5&&fabs(YTrack)<5&&fabs(YTRD)<5) cleanD=true;
 
          for(int S=0; S<10; S++)
             if((((int)CUTMASK>>0)&notpassed[S])==notpassed[S]&&cleanD) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]&&Massagen>1&&Massagen<2&&Beta_corr<0.85&&R<4) {
-                     selezioni_DHLMC[S]->Fill(K,10000*Massagen-18570);
-                     if((((int)CUTMASK>>S)&1==1)) selected_DHLMC[S]->Fill(K,10000*Massagen-18570);
+                if (Massagen>1&&Massagen<2&&Beta_corr<0.85&&R<4) {
+                     selezioni_DHLMC[S]->Fill(binK,10000*Massagen-18570);
+                     if((((int)CUTMASK>>S)&1==1)) selected_DHLMC[S]->Fill(binK,10000*Massagen-18570);
                   }
             }
 
@@ -756,48 +767,48 @@ int main()
       ///////////////////////////////////////////////////////////////////////
       if(IsPrescaled==0) {
          if(Massagen>1&&Massagen<2) {
-            if(DistTOF<4&&DistTrack<4)   for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                     EffDistMCD->Fill(K,10000*Massagen-18570);
-                  }
-            if(LDiscriminant>0.95) for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K]) {
-                     EffQualMCD->Fill(K,10000*Massagen-18570);
-                  }
+            if(DistTOF<4&&DistTrack<4)   
+                     EffDistMCD->Fill(binK,10000*Massagen-18570);
+
+            if(LDiscriminant>0.95) 
+                     EffQualMCD->Fill(binK,10000*Massagen-18570);
+
          }
          ///////////// QUAL. EFFICIENCIES /////////////////
          if(Beta_corr<0.95&&R<4) {
             if(fabs(YTOF)<3&&fabs(YTrack)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTOF<DXWind[K]&&XTOF>-3&&XTrack<DXWind[K]&&XTrack>-3&&Massagen>1&&Massagen<2)
                      {
-                        selezioniQHLMC1->Fill(K,10000*Massagen-18570);
-                        if(DistTRD<4) selectedQHLMC1->Fill(K,10000*Massagen-18570);
+                        selezioniQHLMC1->Fill(binK,10000*Massagen-18570);
+                        if(DistTRD<4) selectedQHLMC1->Fill(binK,10000*Massagen-18570);
                      }
 
             }
             if(fabs(YTrack)<3&&fabs(YTRD)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTrack<DXWind[K]&&XTrack>-3&&XTRD<DXWind[K]&&XTRD>-3&&Massagen>1&&Massagen<2)
                      {
-                        selezioniQHLMC2->Fill(K,10000*Massagen-18570);
-                        if(DistTOF<4) selectedQHLMC2->Fill(K,10000*Massagen-18570);
+                        selezioniQHLMC2->Fill(binK,10000*Massagen-18570);
+                        if(DistTOF<4) selectedQHLMC2->Fill(binK,10000*Massagen-18570);
                      }
 
             }
             if(fabs(YTOF)<3&&fabs(YTRD)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTOF<DXWind[K]&&XTOF>-3&&XTRD<DXWind[K]&&XTRD>-3&&Massagen>1&&Massagen<2)
                      {
-                        selezioniQHLMC3->Fill(K,10000*Massagen-18570);
-                        if(DistTrack<4)selectedQHLMC3->Fill(K,10000*Massagen-18570);
+                        selezioniQHLMC3->Fill(binK,10000*Massagen-18570);
+                        if(DistTrack<4)selectedQHLMC3->Fill(binK,10000*Massagen-18570);
                      }
 
             }
             if(fabs(YTOF)<3&&fabs(YTRD)<3) {
-               for(int K=0; K<43; K++) if(fabs(R)<bin[K+1]&&fabs(R)>bin[K])
+
                      if(XTOF<DXWind[K]&&XTOF>-3&&XTRD<DXWind[K]&&XTRD>-3&&Massagen>1&&Massagen<2)
                      {
-                        selezioniQHLMC4->Fill(K,10000*Massagen-18570);
-                        if(LDiscriminant>0.95) selectedQHLMC4->Fill(K,10000*Massagen-18570);
+                        selezioniQHLMC4->Fill(binK,10000*Massagen-18570);
+                        if(LDiscriminant>0.95) selectedQHLMC4->Fill(binK,10000*Massagen-18570);
                      }
 
             }
