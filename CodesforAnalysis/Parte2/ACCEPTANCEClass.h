@@ -210,14 +210,14 @@ TH1 * ACCEPTANCE::Geomag_Acceptance(int n, TH1* MCAcceptance, TH1* LATcorr){
 		Geomag_Acceptance = new TH3F ("","",MCAcceptance->GetNbinsX(),0,MCAcceptance->GetNbinsX(),LATcorr->GetNbinsX(),0,LATcorr->GetNbinsX(),n,0,n);		      
 		for(int m=0;m<n;m++)
 			for(int R=0;R<MCAcceptance->GetNbinsX();R++)
-				for(int lat=0;lat<LATcorr->GetNbinsX();lat++)
-					Geomag_Acceptance->SetBinContent(R+1,lat+1,m+1,MCAcceptance->GetBinContent(R+1,m+1)/LATcorr->GetBinContent(lat));							
+				for(int lat=1;lat<LATcorr->GetNbinsX();lat++)
+					Geomag_Acceptance->SetBinContent(R+1,lat+1,m+1,MCAcceptance->GetBinContent(R+1,m+1)/LATcorr->GetBinContent(lat+1));							
 	}
 	else{
 		Geomag_Acceptance = new TH2F ("","",MCAcceptance->GetNbinsX(),0,MCAcceptance->GetNbinsX(),LATcorr->GetNbinsX(),0,LATcorr->GetNbinsX());
 		for(int R=0;R<MCAcceptance->GetNbinsX();R++)
-			for(int lat=0;lat<LATcorr->GetNbinsX();lat++)
-				Geomag_Acceptance->SetBinContent(R+1,lat+1,MCAcceptance->GetBinContent(R+1)/LATcorr->GetBinContent(lat));							
+			for(int lat=1;lat<LATcorr->GetNbinsX();lat++)
+				Geomag_Acceptance->SetBinContent(R+1,lat+1,MCAcceptance->GetBinContent(R+1)/LATcorr->GetBinContent(lat+1));							
 	}
 
 	return Geomag_Acceptance; 
