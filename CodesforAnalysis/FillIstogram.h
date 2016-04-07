@@ -258,8 +258,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		HecutD_Fill(ntupla3,i);	
 		SlidesforPlot_D_Fill(ntupla1,i);
 		DATAQualeff_Fill(ntupla3,i,Zona);
+		ProtonFlux_Fill(ntupla3,i,Zona);
 		/*DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
-		ProtonFlux_Fill(ntupla3,i,Zona);	
 		DeutonsDATA_Fill(ntupla3,i,Zona);
 		DeutonsDATA_Dist_Fill(ntupla3,i,Zona);
 		MCMCDATA_Fill(ntupla3,i);*/
@@ -295,7 +295,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCTrackeff_Write();	
 		MCUnbiaseff_Write();
 		MigrationMatrix_Write();
-		//ProtonFlux_Write();
+		ProtonFlux_Write();
 
 		Tempi->Write();
 		esposizionegeo->Write();

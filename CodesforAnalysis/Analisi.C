@@ -31,6 +31,7 @@
 #include "Parte2/EfficiencyClass.h"
 #include "Parte2/LATcorrClass.h"
 #include "Parte2/ACCEPTANCEClass.h"
+#include "Parte2/FluxClass.h"
 #include "Parte2/MCpreeff.h"
 #include "Parte2/MCUnbiaseff.h"
 #include "Parte2/Hecut.h"
@@ -47,10 +48,10 @@
 #include "Parte2/DATAQualeff.h"
 #include "Parte2/CorrLAT.h"
 #include "Parte2/Acceptance.h"
+#include "Parte2/ProtonFlux.h"
 /*#include "Parte2/DVSMCpreSeleff.h"
 #include "Parte2/DVSMCQualeff2.h"
 #include "Parte2/DVSMCTrackeff.h"
-#include "Parte2/ProtonFlux.h"
 #include "Parte2/Deutons.h"
 #include "Parte2/DeutonsDist.h"
 #include "Parte2/MCMC.h"
@@ -217,7 +218,6 @@ int main(int argc, char * argv[])
 		  DATAQualeff(file1);
 		  /*DVSMCpreSeleff(file1);
 		  DVSMCQualeff2(file1);
-		  ProtonFlux(file1);
 		  DeutonsTemplFits(file1);
 		  DeutonsTemplFits_Dist(file1);
 		  DeutonFlux(file1);
@@ -228,6 +228,7 @@ int main(int argc, char * argv[])
 	if(frac=="tot"){	
 		CorrLAT();
 		Acceptance();
+		ProtonFlux();
 	}
 	cout<<"************************** OUTPUT **************************************************************"<<endl;
 	return 1;
