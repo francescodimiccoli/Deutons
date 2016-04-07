@@ -39,7 +39,7 @@
 #include "Parte2/MCQualeff.h"
 #include "Parte2/Cuts.h"
 #include "Parte2/MCTrackeff.h"
-#include "Parte2/MCpreSeleff.h"
+#include "Parte2/MC_do_preSeleff.h"
 #include "Parte2/MigrationMatrix.h"
 #include "Parte2/MCFullSeteff.h"
 #include "Parte2/DATAUnbiaseff.h"
@@ -209,7 +209,7 @@ int main(int argc, char * argv[])
 		  MCQualeff(file1);
 		  MCTrackeff(file1);
 		  MCFullseteff(file1);
-		  MCpreSeleff(file1);
+		  MC_do_preSeleff(file1);
 		  Correlazione_Preselezioni(file1);
 		  MigrationMatrix(file1);
 		  DATAUnbiaseff(file1);

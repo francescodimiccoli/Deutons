@@ -66,7 +66,6 @@ void DATAQualeff_Write(){
 
 
 void DATAQualeff(TFile * file1){
-	cout<<"inii"<<endl;
 	LATcorr * LikelihoodLATcorr = new LATcorr(file1,"EffLikDATA");
 	LATcorr * DistanceLATcorr   = new LATcorr(file1,"EffDistDATA");
 

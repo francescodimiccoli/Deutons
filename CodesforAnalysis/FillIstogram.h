@@ -159,7 +159,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCpreseff_Fill(ntupla0,i);
 		MCUnbiaseff_Fill(ntupla0,i);
 		MCTrackeff_Fill(ntupla0,i);
-		MCpreSeleff_Fill(ntupla0,i);
+		MC_do_preSeleff_Fill(ntupla0,i);
 		MigrationMatrix_Fill(ntupla0,i);
 		Correlazione_Preselezioni(ntupla0,i);
 		/*DVSMCpreSeleff_Fill(ntupla0,i);
@@ -290,7 +290,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCMC_Write();*/
 		MCpreeff_Write();
 		//MCpreCheck_Write();
-		MCpreSeleff_Write();
+		MC_do_preSeleff_Write();
 		MCQualeff_Write();
 		MCTrackeff_Write();	
 		MCUnbiaseff_Write();
