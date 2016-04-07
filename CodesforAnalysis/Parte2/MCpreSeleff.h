@@ -1,18 +1,7 @@
 using namespace std;
 
-
-TH2F * EffpreSelMCP1=new TH2F("EffpreSelMCP1","EffpreSelMCP1",18,0,18,3,0,3);
-TH2F * EffpreSelMCP2=new TH2F("EffpreSelMCP2","EffpreSelMCP2",18,0,18,3,0,3);
-TH2F * EffpreSelMCP1_R=new TH2F("EffpreSelMCP1_R","EffpreSelMCP1_R",43,0,43,3,0,3);
-TH2F * EffpreSelMCP2_R=new TH2F("EffpreSelMCP2_R","EffpreSelMCP2_R",43,0,43,3,0,3);
-TH3F * EffpreSelMCD1=new TH3F("EffpreSelMCD1","EffpreSelMCD1",18,0,18,6,0,6,3,0,3);
-TH3F * EffpreSelMCD2=new TH3F("EffpreSelMCD2","EffpreSelMCD2",18,0,18,6,0,6,3,0,3);
-TH3F * EffpreSelMCD1_R=new TH3F("EffpreSelMCD1_R","EffpreSelMCD1_R",43,0,43,6,0,6,3,0,3);
-TH3F * EffpreSelMCD2_R=new TH3F("EffpreSelMCD2_R","EffpreSelMCD2_R",43,0,43,6,0,6,3,0,3);
-
 Efficiency * EffpreSelMCP = new Efficiency("EffpreSelMCP",3); 
 Efficiency * EffpreSelMCD = new Efficiency("EffpreSelMCD",6,3);
-
 
 
 void MCpreSeleff_Fill(TNtuple *ntupla, int l){
