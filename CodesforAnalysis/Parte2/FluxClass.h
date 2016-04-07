@@ -157,26 +157,26 @@ void Flux::Set_DeltaE(int n,bool deutons){
 
 void Flux::Eval_Flux(int n,bool deutons){
 	Flux::Set_DeltaE(n,deutons);
-
+	
 	if(Counts_R  )  Flux_R	= (TH1 *) Counts_R   -> Clone(); 
 	if(Counts_TOF)	Flux_TOF= (TH1 *) Counts_TOF -> Clone();
 	if(Counts_NaF)	Flux_NaF= (TH1 *) Counts_NaF -> Clone();
 	if(Counts_Agl)	Flux_Agl= (TH1 *) Counts_Agl -> Clone();
+	
+	if(Counts_R  ) 	Flux_R	->Divide (Acceptance_R  	);	
+	if(Counts_TOF)	Flux_TOF->Divide (Acceptance_TOF	);	
+	if(Counts_NaF)	Flux_NaF->Divide (Acceptance_NaF	);
+	if(Counts_Agl)	Flux_Agl->Divide (Acceptance_Agl	);
 
-	if(Flux_R  ) 	Flux_R	->Divide (Acceptance_R  	);	
-	if(Flux_TOF)	Flux_TOF->Divide (Acceptance_TOF	);
-	if(Flux_NaF)	Flux_NaF->Divide (Acceptance_NaF	);
-	if(Flux_Agl)	Flux_Agl->Divide (Acceptance_Agl	);
+	if(Counts_R  )	Flux_R	->Divide (Exposure_R 		);	 
+	if(Counts_TOF)  Flux_TOF->Divide (Exposure_TOF          );
+	if(Counts_NaF)  Flux_NaF->Divide (Exposure_NaF          );
+	if(Counts_Agl)  Flux_Agl->Divide (Exposure_Agl          );	
 
-	if(Flux_R  ) 	Flux_R	->Divide (Exposure_R 		);	 
-	if(Flux_TOF)	Flux_TOF->Divide (Exposure_TOF          );
-	if(Flux_NaF)	Flux_NaF->Divide (Exposure_NaF          );
-	if(Flux_Agl)	Flux_Agl->Divide (Exposure_Agl          );	
-
-	if(Flux_R  ) 	Flux_R	->Divide (DeltaE_R 		); 
-	if(Flux_TOF)	Flux_TOF->Divide (DeltaE_TOF            );
-	if(Flux_NaF)	Flux_NaF->Divide (DeltaE_NaF            );
-	if(Flux_Agl)	Flux_Agl->Divide (DeltaE_Agl            );
+	if(Counts_R  )	Flux_R	->Divide (DeltaE_R 		); 
+	if(Counts_TOF)  Flux_TOF->Divide (DeltaE_TOF            );
+	if(Counts_NaF)  Flux_NaF->Divide (DeltaE_NaF            );
+	if(Counts_Agl)  Flux_Agl->Divide (DeltaE_Agl            );
 	
 	return;
 }

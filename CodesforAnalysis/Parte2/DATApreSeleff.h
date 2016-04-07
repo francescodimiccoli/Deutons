@@ -1,7 +1,7 @@
 using namespace std;
 
 
-LATcorr *EffpreSelDATA = new LATcorr("EffpreSelDATA",3);
+LATcorr *LATpreSelDATA = new LATcorr("LATpreSelDATA",3);
  
 
 void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
@@ -11,8 +11,8 @@ void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
 	for(int S=0;S<3;S++){
 			for(int M=0;M<43;M++) 
 				if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]&&R_pre>Rcut[zona]) {
-					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3 *)EffpreSelDATA->beforeR)->Fill(M,zona,S);
-					if(((int)Cutmask&passed[S])==passed[S]) ((TH3 *)EffpreSelDATA->afterR)->Fill(M,zona,S);
+					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3 *)LATpreSelDATA->beforeR)->Fill(M,zona,S);
+					if(((int)Cutmask&passed[S])==passed[S]) ((TH3 *)LATpreSelDATA->afterR)->Fill(M,zona,S);
 				}
 			}	
 	return;
@@ -20,29 +20,29 @@ void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
 
 
 void DATApreSeleff_Write(){
-        EffpreSelDATA->Write();
+        LATpreSelDATA->Write();
         return;
 }
 
 
 void DATApreSeleff(TFile * file1){
 
-	LATcorr * EffpreSelDATA = new LATcorr(file1,"EffpreSelDATA",3);	
+	LATcorr * LATpreSelDATA = new LATcorr(file1,"LATpreSelDATA",3);	
 	
 	string tagli[3]={"Matching TOF","Chi^2 R","1 Tr. Track"};
         string nome;
 
 	cout<<"********************** DATA PRESELECTIONS EFFICIENCIES ****************************************"<<endl;
 
-	EffpreSelDATA -> Eval_Efficiency();
-	TH3F *EffpreSelDATA_R = (TH3F *) EffpreSelDATA     -> effR -> Clone();	
+	LATpreSelDATA -> Eval_Efficiency();
+	TH3F *LATpreSelDATA_R = (TH3F *) LATpreSelDATA     -> effR -> Clone();	
 	cout<<"********************** LAT. Eff. CORRECTION **************************************************"<<endl;
 
-	EffpreSelDATA -> Eval_LATcorr(3);
+	LATpreSelDATA -> Eval_LATcorr(3);
 		
-	TH2F * preSelLATcorr = (TH2F *) EffpreSelDATA   -> LATcorrR -> Clone();
+	TH2F * preSelLATcorr = (TH2F *) LATpreSelDATA   -> LATcorrR -> Clone();
 
-	TH2F * preSelLATcorr_fit = (TH2F *) EffpreSelDATA   -> LATcorrR_fit -> Clone();
+	TH2F * preSelLATcorr_fit = (TH2F *) LATpreSelDATA   -> LATcorrR_fit -> Clone();
 
 	cout<<"*** Updating P1 file ****"<<endl;
         string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
@@ -53,7 +53,7 @@ void DATApreSeleff(TFile * file1){
         }
 
         file1->cd("Results");
-	EffpreSelDATA_R  -> Write();
+	LATpreSelDATA_R  -> Write();
 	preSelLATcorr    -> Write();
 	preSelLATcorr_fit-> Write();
 	file1->Write();
@@ -74,9 +74,9 @@ void DATApreSeleff(TFile * file1){
 			Eff_preSelLAT[S][l]=new TGraphErrors();
 			int point=0;
 			for(int i=1;i<43;i++){
-				if(EffpreSelDATA_R->GetBinContent(i+1,l+1,S+1)>0){
-					Eff_preSelLAT[S][l]->SetPoint(point,R_cent[i],EffpreSelDATA_R->GetBinContent(i+1,l+1,S+1));
-					Eff_preSelLAT[S][l]->SetPointError(point,0,EffpreSelDATA_R->GetBinError(i+1,l+1,S+1));
+				if(LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1)>0){
+					Eff_preSelLAT[S][l]->SetPoint(point,R_cent[i],LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1));
+					Eff_preSelLAT[S][l]->SetPointError(point,0,LATpreSelDATA_R->GetBinError(i+1,l+1,S+1));
 					point++;
 				}
 			}

@@ -1,8 +1,17 @@
 using namespace std;
 
 
-LATcorr * LikelihoodLATcorr = new LATcorr("EffLikDATA");
-LATcorr * DistanceLATcorr   = new LATcorr("EffDistDATA");
+LATcorr * LATLikelihoodDATA_TOF = new LATcorr("LATLikDATA_TOF");
+LATcorr * LATDistanceDATA_TOF   = new LATcorr("LATDistDATA_TOF");
+
+LATcorr * LATLikelihoodDATA_NaF = new LATcorr("LATLikDATA_NaF");
+LATcorr * LATDistanceDATA_NaF   = new LATcorr("LATDistDATA_NaF");
+
+LATcorr * LATLikelihoodDATA_Agl = new LATcorr("LATLikDATA_Agl");
+LATcorr * LATDistanceDATA_Agl   = new LATcorr("LATDistDATA_Agl");
+
+
+
 
 void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 
@@ -13,13 +22,13 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 	if(!(((int)Cutmask>>11)==0||((int)Cutmask>>11)==512)){
 		for(int K=0;K<43;K++) 
 			if(R<bin[K+1]&&R>bin[K]&&R>Rcut[zona]) {
-					DistanceLATcorr->beforeTOF->Fill(K,zona);				
+					LATDistanceDATA_TOF->beforeR->Fill(K,zona);				
 					if(Dist5D_P<6) {
-						DistanceLATcorr->afterTOF->Fill(K,zona);
-						LikelihoodLATcorr->beforeTOF->Fill(K,zona);	
+						LATDistanceDATA_TOF->afterR->Fill(K,zona);
+						LATLikelihoodDATA_TOF->beforeR->Fill(K,zona);	
 						}
 					if(Dist5D_P<6&Likcut){
-						LikelihoodLATcorr->afterTOF->Fill(K,zona);
+						LATLikelihoodDATA_TOF->afterR->Fill(K,zona);
 						}
 			}
 		}
@@ -27,13 +36,13 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 	if(((int)Cutmask>>11)==512){
 		for(int K=0;K<43;K++) 
 			if(R<bin[K+1]&&R>bin[K]&&R>Rcut[zona]) {
-					DistanceLATcorr->beforeNaF->Fill(K,zona);				
+					LATDistanceDATA_NaF->beforeR->Fill(K,zona);				
 					if(Dist5D_P<6) {
-						DistanceLATcorr->afterNaF->Fill(K,zona);
-						LikelihoodLATcorr->beforeNaF->Fill(K,zona);	
+						LATDistanceDATA_NaF->afterR->Fill(K,zona);
+						LATLikelihoodDATA_NaF->beforeR->Fill(K,zona);	
 						}
 					if(Dist5D_P<6&Likcut){
-						LikelihoodLATcorr->afterNaF->Fill(K,zona);
+						LATLikelihoodDATA_NaF->afterR->Fill(K,zona);
 						}
 			}
 	}
@@ -41,13 +50,13 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 	if(((int)Cutmask>>11)==0){
         		for(int K=0;K<43;K++) 
 			if(R<bin[K+1]&&R>bin[K]&&R>Rcut[zona]) {
-					DistanceLATcorr->beforeAgl->Fill(K,zona);				
+					LATDistanceDATA_Agl->beforeR->Fill(K,zona);				
 					if(Dist5D_P<6) {
-						DistanceLATcorr->afterAgl->Fill(K,zona);
-						LikelihoodLATcorr->beforeAgl->Fill(K,zona);	
+						LATDistanceDATA_Agl->afterR->Fill(K,zona);
+						LATLikelihoodDATA_Agl->beforeR->Fill(K,zona);	
 						}
 					if(Dist5D_P<6&Likcut){
-						LikelihoodLATcorr->afterAgl->Fill(K,zona);
+						LATLikelihoodDATA_Agl->afterR->Fill(K,zona);
 						}
 			}
 
@@ -57,53 +66,86 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 }
 
 void DATAQualeff_Write(){
-  LikelihoodLATcorr->Write();       
-  DistanceLATcorr  ->Write();
-  return;
+	LATLikelihoodDATA_TOF->Write();       
+	LATDistanceDATA_TOF  ->Write();
+	LATLikelihoodDATA_NaF->Write();       
+	LATDistanceDATA_NaF  ->Write();
+	LATLikelihoodDATA_Agl->Write();       
+	LATDistanceDATA_Agl  ->Write();
+
+	return;
 }
 
 
 
 
 void DATAQualeff(TFile * file1){
-	LATcorr * LikelihoodLATcorr = new LATcorr(file1,"EffLikDATA");
-	LATcorr * DistanceLATcorr   = new LATcorr(file1,"EffDistDATA");
+	LATcorr * LATLikelihoodDATA_TOF = new LATcorr(file1,"LATLikDATA_TOF" );
+	LATcorr * LATDistanceDATA_TOF   = new LATcorr(file1,"LATDistDATA_TOF");
+	
+	LATcorr * LATLikelihoodDATA_NaF = new LATcorr(file1,"LATLikDATA_NaF" );
+	LATcorr * LATDistanceDATA_NaF   = new LATcorr(file1,"LATDistDATA_NaF");
+	
+	LATcorr * LATLikelihoodDATA_Agl = new LATcorr(file1,"LATLikDATA_Agl" );
+	LATcorr * LATDistanceDATA_Agl   = new LATcorr(file1,"LATDistDATA_Agl");
 
 
 	cout<<"****************************** DATA QUALITY SEL. EFFICIENCIES **************************************"<<endl;		
 	
-	LikelihoodLATcorr -> Eval_Efficiency(); 
-        DistanceLATcorr   -> Eval_Efficiency();
+	LATLikelihoodDATA_TOF -> Eval_Efficiency(); 
+        LATDistanceDATA_TOF   -> Eval_Efficiency();
+	
+	LATLikelihoodDATA_NaF -> Eval_Efficiency(); 
+        LATDistanceDATA_NaF   -> Eval_Efficiency();
+	
+	LATLikelihoodDATA_Agl -> Eval_Efficiency(); 
+        LATDistanceDATA_Agl   -> Eval_Efficiency();
 	
 
-	TH2F *EffDistDATATOF = (TH2F *) DistanceLATcorr     -> effTOF -> Clone();
-        TH2F *EffLikDATATOF  = (TH2F *) LikelihoodLATcorr   -> effTOF -> Clone();
-        TH2F *EffDistDATANaF = (TH2F *) DistanceLATcorr     -> effNaF -> Clone();
-        TH2F *EffLikDATANaF  = (TH2F *) LikelihoodLATcorr   -> effNaF -> Clone();
-        TH2F *EffDistDATAAgl = (TH2F *) DistanceLATcorr     -> effAgl -> Clone();
-        TH2F *EffLikDATAAgl  = (TH2F *) LikelihoodLATcorr   -> effAgl -> Clone();
+
+
+	TH2F *LATDistDATATOF = (TH2F *) LATDistanceDATA_TOF     -> effR -> Clone();
+        TH2F *LATLikDATATOF  = (TH2F *) LATLikelihoodDATA_TOF   -> effR -> Clone();
+        
+	TH2F *LATDistDATANaF = (TH2F *) LATDistanceDATA_NaF     -> effR -> Clone();
+        TH2F *LATLikDATANaF  = (TH2F *) LATLikelihoodDATA_NaF   -> effR -> Clone();
+        
+	TH2F *LATDistDATAAgl = (TH2F *) LATDistanceDATA_Agl     -> effR -> Clone();
+        TH2F *LATLikDATAAgl  = (TH2F *) LATLikelihoodDATA_Agl   -> effR -> Clone();
 
 
 
 	cout<<"****************************** LAT. Eff. CORRECTION *************************************************"<<endl;
 
-	LikelihoodLATcorr -> Eval_LATcorr(1); 
-        DistanceLATcorr   -> Eval_LATcorr(1);
+	LATLikelihoodDATA_TOF ->  Eval_LATcorr(1); 
+        LATDistanceDATA_TOF   ->  Eval_LATcorr(1);
+        
+        LATLikelihoodDATA_NaF ->  Eval_LATcorr(1);
+        LATDistanceDATA_NaF   ->  Eval_LATcorr(1);
+        
+        LATLikelihoodDATA_Agl ->  Eval_LATcorr(1);
+        LATDistanceDATA_Agl   ->  Eval_LATcorr(1);
 
-	TH2F *LikLATcorr_TOF  =	(TH2F *) LikelihoodLATcorr   -> LATcorrTOF -> Clone();
-	TH2F *DistLATcorr_TOF =	(TH2F *) DistanceLATcorr     -> LATcorrTOF -> Clone();
-	TH2F *LikLATcorr_NaF  =	(TH2F *) LikelihoodLATcorr   -> LATcorrNaF -> Clone();
-	TH2F *DistLATcorr_NaF =	(TH2F *) DistanceLATcorr     -> LATcorrNaF -> Clone();
-	TH2F *LikLATcorr_Agl  =	(TH2F *) LikelihoodLATcorr   -> LATcorrAgl -> Clone();
-	TH2F *DistLATcorr_Agl =	(TH2F *) DistanceLATcorr     -> LATcorrAgl -> Clone();
+
+
+	TH2F *LikLATcorr_TOF  =	(TH2F *) LATLikelihoodDATA_TOF  -> LATcorrR -> Clone();
+	TH2F *DistLATcorr_TOF =	(TH2F *) LATDistanceDATA_TOF    -> LATcorrR -> Clone();
+	                                 
+	TH2F *LikLATcorr_NaF  =	(TH2F *) LATLikelihoodDATA_NaF  -> LATcorrR -> Clone();
+	TH2F *DistLATcorr_NaF =	(TH2F *) LATDistanceDATA_NaF    -> LATcorrR -> Clone();
+	                                 
+	TH2F *LikLATcorr_Agl  =	(TH2F *) LATLikelihoodDATA_Agl  -> LATcorrR -> Clone();
+	TH2F *DistLATcorr_Agl =	(TH2F *) LATDistanceDATA_Agl    -> LATcorrR -> Clone();
 	
 
-        TH1F *LikLATcorr_TOF_fit  	= (TH1F *) LikelihoodLATcorr   -> LATcorrTOF_fit-> Clone();
-        TH1F *DistLATcorr_TOF_fit	= (TH1F *) DistanceLATcorr     -> LATcorrTOF_fit-> Clone();
-        TH1F *LikLATcorr_NaF_fit    	= (TH1F *) LikelihoodLATcorr   -> LATcorrNaF_fit-> Clone();
-        TH1F *DistLATcorr_NaF_fit  	= (TH1F *) DistanceLATcorr     -> LATcorrNaF_fit-> Clone();
-        TH1F *LikLATcorr_Agl_fit   	= (TH1F *) LikelihoodLATcorr   -> LATcorrAgl_fit-> Clone();
-        TH1F *DistLATcorr_Agl_fit  	= (TH1F *) DistanceLATcorr     -> LATcorrAgl_fit-> Clone();
+        TH1F *LikLATcorr_TOF_fit  	= (TH1F *) LATLikelihoodDATA_TOF   -> LATcorrR_fit-> Clone();
+        TH1F *DistLATcorr_TOF_fit	= (TH1F *) LATDistanceDATA_TOF     -> LATcorrR_fit-> Clone();
+                                                   
+	TH1F *LikLATcorr_NaF_fit    	= (TH1F *) LATLikelihoodDATA_NaF   -> LATcorrR_fit-> Clone();
+        TH1F *DistLATcorr_NaF_fit  	= (TH1F *) LATDistanceDATA_NaF     -> LATcorrR_fit-> Clone();
+                                                   
+	TH1F *LikLATcorr_Agl_fit   	= (TH1F *) LATLikelihoodDATA_Agl   -> LATcorrR_fit-> Clone();
+        TH1F *DistLATcorr_Agl_fit  	= (TH1F *) LATDistanceDATA_Agl     -> LATcorrR_fit-> Clone();
 	
 	
 	cout<<"*** Updating P1 file ****"<<endl;
@@ -116,12 +158,12 @@ void DATAQualeff(TFile * file1){
 
         file1->cd("Results");
 
-	EffDistDATATOF ->Write();
-	EffLikDATATOF  ->Write();
-	EffDistDATANaF ->Write();
-	EffLikDATANaF  ->Write();
-	EffDistDATAAgl ->Write();
-	EffLikDATAAgl  ->Write();
+	LATDistDATATOF ->Write();
+	LATLikDATATOF  ->Write();
+	LATDistDATANaF ->Write();
+	LATLikDATANaF  ->Write();
+	LATDistDATAAgl ->Write();
+	LATLikDATAAgl  ->Write();
         
 	LikLATcorr_TOF  ->Write();
         DistLATcorr_TOF ->Write();
@@ -157,8 +199,8 @@ void DATAQualeff(TFile * file1){
 		EffDATALikP[l]=new TGraphErrors();
 		int j=0;
 		for(int i=1;i<43;i++) {
-			EffDATALikP[l]->SetPoint(j,R_cent[i],EffLikDATATOF->GetBinContent(i+1,l+1));
-			EffDATALikP[l]->SetPointError(j,0,EffLikDATATOF->GetBinError(i+1,l+1));
+			EffDATALikP[l]->SetPoint(j,R_cent[i],LATLikDATATOF->GetBinContent(i+1,l+1));
+			EffDATALikP[l]->SetPointError(j,0,LATLikDATATOF->GetBinError(i+1,l+1));
 			j++;
 		}	
 	}
@@ -191,8 +233,8 @@ void DATAQualeff(TFile * file1){
                 EffDATALikNaFP[l]=new TGraphErrors();
                 int j=0;
                 for(int i=1;i<43;i++) {
-                        EffDATALikNaFP[l]->SetPoint(j,R_cent[i],EffLikDATANaF ->GetBinContent(i+1,l+1));
-                        EffDATALikNaFP[l]->SetPointError(j,0,EffLikDATANaF ->GetBinError(i+1,l+1));
+                        EffDATALikNaFP[l]->SetPoint(j,R_cent[i],LATLikDATANaF ->GetBinContent(i+1,l+1));
+                        EffDATALikNaFP[l]->SetPointError(j,0,LATLikDATANaF ->GetBinError(i+1,l+1));
                         j++;
                 }
         }
@@ -222,8 +264,8 @@ void DATAQualeff(TFile * file1){
                 EffDATALikAglP[l]=new TGraphErrors();
                 int j=0;
                 for(int i=1;i<43;i++) {
-                        EffDATALikAglP[l]->SetPoint(j,R_cent[i],EffLikDATAAgl ->GetBinContent(i+1,l+1));
-                        EffDATALikAglP[l]->SetPointError(j,0,EffLikDATAAgl ->GetBinError(i+1,l+1));
+                        EffDATALikAglP[l]->SetPoint(j,R_cent[i],LATLikDATAAgl ->GetBinContent(i+1,l+1));
+                        EffDATALikAglP[l]->SetPointError(j,0,LATLikDATAAgl ->GetBinError(i+1,l+1));
                         j++;
                 }
         }
@@ -337,8 +379,8 @@ void DATAQualeff(TFile * file1){
 		EffDATADistP[l]=new TGraphErrors();
 		int j=0;
 		for(int i=1;i<43;i++) {
-			EffDATADistP[l]->SetPoint(j,R_cent[i],EffDistDATATOF ->GetBinContent(i+1,l+1));
-			EffDATADistP[l]->SetPointError(j,0, EffDistDATATOF ->GetBinError(i+1,l+1));
+			EffDATADistP[l]->SetPoint(j,R_cent[i],LATDistDATATOF ->GetBinContent(i+1,l+1));
+			EffDATADistP[l]->SetPointError(j,0, LATDistDATATOF ->GetBinError(i+1,l+1));
 			j++;
 		}
 	}
@@ -368,8 +410,8 @@ void DATAQualeff(TFile * file1){
                 EffDATADistNaFP[l]=new TGraphErrors();
                 int j=0;
                 for(int i=1;i<43;i++) {
-                        EffDATADistNaFP[l]->SetPoint(j,R_cent[i],EffDistDATANaF ->GetBinContent(i+1,l+1));
-			EffDATADistNaFP[l]->SetPointError(j,0, EffDistDATANaF ->GetBinError(i+1,l+1));
+                        EffDATADistNaFP[l]->SetPoint(j,R_cent[i],LATDistDATANaF ->GetBinContent(i+1,l+1));
+			EffDATADistNaFP[l]->SetPointError(j,0, LATDistDATANaF ->GetBinError(i+1,l+1));
                         j++;
                 }
         }
@@ -399,8 +441,8 @@ void DATAQualeff(TFile * file1){
                 EffDATADistAglP[l]=new TGraphErrors();
                 int j=0;
                 for(int i=1;i<43;i++) {
-                        EffDATADistAglP[l]->SetPoint(j,R_cent[i],EffDistDATAAgl ->GetBinContent(i+1,l+1));
-			EffDATADistAglP[l]->SetPointError(j,0, EffDistDATAAgl ->GetBinError(i+1,l+1));
+                        EffDATADistAglP[l]->SetPoint(j,R_cent[i],LATDistDATAAgl ->GetBinContent(i+1,l+1));
+			EffDATADistAglP[l]->SetPointError(j,0, LATDistDATAAgl ->GetBinError(i+1,l+1));
                         j++;
                 }
         }

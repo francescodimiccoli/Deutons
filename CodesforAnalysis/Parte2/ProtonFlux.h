@@ -67,7 +67,7 @@ void ProtonFlux(){
 	Flux * P_Flux_pre     = new Flux(file1, "P_Flux_pre" 	 ,"Results","Corr_AcceptancePreP",1);
 	Flux * P_Flux_sel     = new Flux(file1, "P_Flux_sel"     ,"Results","Corr_AcceptanceP",1);
 
-	cout<<"*************** POTONS FLUXES CALCULATION *******************"<<endl;
+	cout<<"*************** PROTONS FLUXES CALCULATION *******************"<<endl;
 
 	P_Flux         -> Set_Exposure_Time (esposizionegeo_R,esposizionepgeoTOF,esposizionepgeoNaF,esposizionepgeoAgl);
 	P_Flux_geo     -> Set_Exposure_Time (Tempi);
@@ -83,9 +83,8 @@ void ProtonFlux(){
         P_Flux_geo_prim-> Eval_Flux(11, protons);
 	
 	P_Flux_pre     -> Eval_Flux(1 , protons);
-        P_Flux_sel     -> Eval_Flux(1 , protons);
-
-	
+	P_Flux_sel     -> Eval_Flux(1 , protons);
+	cout<<"fwds"<<endl;	
 	TH1F * ProtonsPrimaryFlux = (TH1F *)P_Flux     -> Flux_R ;
 	TH2F * ProtonsGeomagFlux  = (TH2F *)P_Flux_geo -> Flux_R ;
 	TH1F * P_pre_PrimaryFlux  = (TH1F *)P_Flux_pre -> Flux_R ; //P flux with pre-selections alone

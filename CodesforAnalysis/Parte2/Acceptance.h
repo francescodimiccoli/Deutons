@@ -61,7 +61,6 @@ void Acceptance(){
                 file1 =TFile::Open(nomefile.c_str(),"UPDATE");
         }
 	file1->cd("Results");
-
 	//Protons
 	AcceptanceP ->Gen_Acceptance_R  ->Write("Gen_AcceptanceP_R"  ); 
 	AcceptanceP ->Gen_Acceptance_TOF->Write("Gen_AcceptanceP_TOF");
@@ -87,7 +86,6 @@ void Acceptance(){
 	AcceptanceP ->CorrectedAcceptance_TOF  ->Write("Corr_AcceptanceP_TOF");	
 	AcceptanceP ->CorrectedAcceptance_NaF  ->Write("Corr_AcceptanceP_NaF");
 	AcceptanceP ->CorrectedAcceptance_Agl  ->Write("Corr_AcceptanceP_Agl");
-
 	
 	//Deutons
 	AcceptanceD ->Gen_Acceptance_R  ->Write("Gen_AcceptanceD_R"  ); 
@@ -112,7 +110,6 @@ void Acceptance(){
 
 	file1->Write();
 	file1->Close();
-
 
 	TCanvas * c31_tris = new TCanvas("Gen. Efficiency");
 

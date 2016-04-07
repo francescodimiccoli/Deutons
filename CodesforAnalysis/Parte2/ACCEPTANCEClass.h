@@ -225,10 +225,10 @@ TH1 * ACCEPTANCE::Geomag_Acceptance(int n, TH1* MCAcceptance, TH1* LATcorr){
 
 void ACCEPTANCE::Eval_Geomag_Acceptance(int n){
 
-	if(MCAcceptance_R  )   Geomag_Acceptance_R   = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_R	, LATcorr_R	);
-	if(MCAcceptance_TOF)   Geomag_Acceptance_TOF = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_TOF	, LATcorr_TOF	);
-	if(MCAcceptance_NaF)   Geomag_Acceptance_NaF = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_NaF	, LATcorr_NaF	);
-	if(MCAcceptance_Agl)   Geomag_Acceptance_Agl = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_Agl	, LATcorr_Agl	);
+	if(LATcorr_R	)   Geomag_Acceptance_R   = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_R	, LATcorr_R	);
+	if(LATcorr_TOF	)   Geomag_Acceptance_TOF = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_TOF	, LATcorr_TOF	);
+	if(LATcorr_NaF	)   Geomag_Acceptance_NaF = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_NaF	, LATcorr_NaF	);
+	if(LATcorr_Agl	)   Geomag_Acceptance_Agl = ACCEPTANCE::Geomag_Acceptance(n,MCAcceptance_Agl	, LATcorr_Agl	);
 
 	return;
 }
