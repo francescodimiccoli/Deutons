@@ -1,7 +1,8 @@
 #/usr/bin/perl
 
-$inizio=11;
-$fine=12;
+$inizio=$ARGV[1]//11;
+$fine  =$ARGV[2]//12;
+$mode  =$ARGV[0]//0;
 $n=$inizio;
 $secondi=0;
 print $jobs;
@@ -12,7 +13,7 @@ while($n<=$fine){
 	$jobs = `bjobs|wc -l`;
 	$jobsrun = `bjobs|grep RUN|wc -l`;
 	if($jobs==0){
-		if($ARGV[0]==0||$ARGV[0]==1){
+		if($mode==0||$mode==1){
 			$time = `date`;
 			print $jobs." ".$time;
 			$secondi=0;
@@ -27,8 +28,9 @@ while($n<=$fine){
 				print "Sto Lanciando $mesi[$n+1] : da $date[$n] a $date[$n+1]";
 			}
 		}
-		if($ARGV[0]==3){
+		if($mode==2){
 			if($n!=$fine){
+				system("mkdir $workdir/Histos/$mesi[$n+1]");
 				system("perl $workdir/perl/lsf.pl $mesi[$n+1] 1");
                                 system("perl $workdir/Lancia/Lancia.pl $date[$n] $date[$n+1] 1");
                                 system("bjobs|wc -l");
@@ -36,12 +38,12 @@ while($n<=$fine){
 			}
 		}
 		if($n!=$inizio) {
-			if($ARGV[0]==1){
+			if($mode==1){
 				{system("perl $workdir/Sommarisultati.pl $mesi[$n]");
 			    	system("$workdir/CodesforAnalysis/Preliminar.exe $mesi[$n]");
 				}
 			}
-			if($ARGV[0]==2||$ARGV[0]==0||$ARGV[0]==3) {system("perl $workdir/SommaParte1.pl $mesi[$n]");}	
+			if($mode==2||$mode==0) {system("perl $workdir/SommaParte1.pl $mesi[$n]");}	
 		}	
 		$n++;
 	}

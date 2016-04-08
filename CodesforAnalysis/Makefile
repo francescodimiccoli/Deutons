@@ -1,14 +1,14 @@
 #define compiler
 Compiler = g++
 #exe
-exedue = Analisi
+exedue = Analysis
 exetre = QualityLKLHOOD.exe
 exesex = QualityLKLHOOD_NaF.exe
 exesev = QualityLKLHOOD_Agl.exe
 exequad = Preliminar.exe
 exequint = TimeAnalysis.exe
 #file to compile
-CCdue = Analisi.C
+CCdue = Analysis.C
 CCtre = QualityLKLHOOD.C
 CCsex = QualityLKLHOOD_NaF.C
 CCsev = QualityLKLHOOD_Agl.C
