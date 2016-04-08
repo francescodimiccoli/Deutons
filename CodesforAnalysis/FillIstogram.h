@@ -5,8 +5,6 @@ void FillIstogram(int INDX,string frac,string mese)
 {
 
 
-	//string percorso="/home/francesco/PhD/LocalCNAF/";
-	string percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
 	TH1F * Esposizione[11];
 	string numero[11]={"0","1","2","3","4","5","6","7","8","9","10"};
 	string tagli[10]={"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
@@ -275,7 +273,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		else
 			nomefile=percorso+"/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
 		TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
-
+		
 		DATAQualeff_Write();
 		DATApreSeleff_Write();
 		Correlazione_Preselezioni_Write();

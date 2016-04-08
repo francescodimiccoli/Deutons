@@ -96,7 +96,6 @@ int Norm[11]={0};
 bool Likcut=false;
 bool Distcut=false;
 bool Herejcut=false;
-//string percorso="/home/francesco/PhD/LocalCNAF/";
 string percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
 string mese;
 string frac;
