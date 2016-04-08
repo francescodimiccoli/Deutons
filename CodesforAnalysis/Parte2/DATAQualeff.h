@@ -149,14 +149,10 @@ void DATAQualeff(TFile * file1){
 	
 	
 	cout<<"*** Updating P1 file ****"<<endl;
-        string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
-        file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        }
+	string nomefile= "../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
 
-        file1->cd("Results");
+	file1->cd("Results");
 
 	LATDistDATATOF ->Write();
 	LATLikDATATOF  ->Write();
@@ -546,7 +542,7 @@ void DATAQualeff(TFile * file1){
         CorrLAT_DistAgl_Spl->Draw("Csame");
 
 	cout<<"*** Updating Results file ***"<<endl;
-        nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        nomefile="./Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
         f_out->mkdir("DATA-driven Results/Latitude effect/Quality");
 	f_out->cd("DATA-driven Results/Latitude effect/Quality");

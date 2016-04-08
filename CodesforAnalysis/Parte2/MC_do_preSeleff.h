@@ -66,12 +66,8 @@ void MC_do_preSeleff(TFile * file1){
 	TH3F * Eff_do_preSelMCD_TH3F	= (TH3F *) Eff_do_preSelMCD -> effTOF-> Clone();
 
 	cout<<"*** Updating P1 file ****"<<endl;
-        string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+        string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
         file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        }
 
         file1->cd("Results");
 	Eff_do_preSelMCP_R_TH2F	-> Write();
@@ -167,7 +163,7 @@ void MC_do_preSeleff(TFile * file1){
 	}
 
 	cout<<"*** Updating Results file ***"<<endl;
-        nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        nomefile="./Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
         f_out->mkdir("MC Results/Preselections/\"Clean-Event\" Selections");
         f_out->cd("MC Results/Preselections/\"Clean-Event\" Selections");

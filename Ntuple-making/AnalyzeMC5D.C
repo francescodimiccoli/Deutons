@@ -170,7 +170,7 @@ int main(int argc, char * argv[]){
 	TFile *file =TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/sommaMC_smear.root");
 	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string ARGV(argv[1]);
-	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/risultati/RisultatiMC_"+ARGV+".root";
+	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/"+calib+"/RisultatiMC_"+ARGV+".root";
 	TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
 	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Massa_gen:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD:IsCharge1");
 	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Massagen:Cutmask:Rmin:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:BDT_response:Dist5D:Dist5D_P");

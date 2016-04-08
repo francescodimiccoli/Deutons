@@ -249,7 +249,7 @@ void DeutonFlux_Dist(TFile * file1){
 	float x,y=0;
 	int j=0;
 	{
-		string nomefile=percorso+"/CodesforAnalysis/Galprop/Trotta2011/Def/new_D500.txt";
+		string nomefile="./Galprop/Trotta2011/Def/new_D500.txt";
 		cout<<nomefile<<endl;
 		ifstream fp(nomefile.c_str());
 		while (!fp.eof()){
@@ -262,7 +262,7 @@ void DeutonFlux_Dist(TFile * file1){
 
 	j=0;
 	{
-		string nomefile=percorso+"/CodesforAnalysis/Galprop/Trotta2011/Def/new_D1250.txt";
+		string nomefile="./Galprop/Trotta2011/Def/new_D1250.txt";
 		cout<<nomefile<<endl;
 		ifstream fp(nomefile.c_str());
 		while (!fp.eof()){
@@ -438,7 +438,7 @@ void DeutonFlux_Dist(TFile * file1){
 	x,y=0;
 	j=0;
 	{
-		string nomefile=percorso+"/CodesforAnalysis/Galprop/Trotta2011/PDratio/500.dat";
+		string nomefile="./Galprop/Trotta2011/PDratio/500.dat";
 		cout<<nomefile<<endl;
 		ifstream fp(nomefile.c_str());
 		while (!fp.eof()){
@@ -451,7 +451,7 @@ void DeutonFlux_Dist(TFile * file1){
 
 	j=0;
 	{
-		string nomefile=percorso+"/CodesforAnalysis/Galprop/Trotta2011/PDratio/1000.dat";
+		string nomefile="./Galprop/Trotta2011/PDratio/1000.dat";
 		cout<<nomefile<<endl;
 		ifstream fp(nomefile.c_str());
 		while (!fp.eof()){

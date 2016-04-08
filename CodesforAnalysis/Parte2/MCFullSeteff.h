@@ -49,12 +49,8 @@ void MCFullseteff(TFile * file1){
 
 
 	cout<<"*** Updating P1 file ****"<<endl;
-	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-	if(!file1){
-		nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-		file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-	}
 
 	file1->mkdir("Results");
 	file1->cd("Results");
@@ -220,7 +216,7 @@ void MCFullseteff(TFile * file1){
 	
 
 	cout<<"*** Updating Results file ***"<<endl;
-	nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+	nomefile="./Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
 	f_out->mkdir("MC Results");
 	f_out->mkdir("MC Results/Full-set selections");

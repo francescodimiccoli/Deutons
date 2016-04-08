@@ -47,12 +47,8 @@ void ProtonFlux_Write(){
 }
 
 void ProtonFlux(){
-	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
         TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str(),"READ");
-        }
 	
 	TH2F * esposizionegeo_R    = (TH2F*)file1->Get( "esposizionegeo"        );
 	TH2F * esposizionepgeoTOF  = (TH2F*)file1->Get(	"esposizionepgeo"	);
@@ -84,7 +80,7 @@ void ProtonFlux(){
 	
 	P_Flux_pre     -> Eval_Flux(1 , protons);
 	P_Flux_sel     -> Eval_Flux(1 , protons);
-	cout<<"fwds"<<endl;	
+	
 	TH1F * ProtonsPrimaryFlux = (TH1F *)P_Flux     -> Flux_R ;
 	TH2F * ProtonsGeomagFlux  = (TH2F *)P_Flux_geo -> Flux_R ;
 	TH1F * P_pre_PrimaryFlux  = (TH1F *)P_Flux_pre -> Flux_R ; //P flux with pre-selections alone
@@ -92,12 +88,8 @@ void ProtonFlux(){
 
 	cout<<"*** Updating P1 file ****"<<endl;
     	
-	nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+	nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
         file1 = TFile::Open(nomefile.c_str(),"UPDATE");
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        }
 	file1->cd("Results");
 
 	ProtonsPrimaryFlux  ->Write("ProtonsPrimaryFlux" 	);
@@ -175,7 +167,7 @@ void ProtonFlux(){
 	float x,y=0;
 	int j=0;
 	{
-		string nomefile=percorso+"/CodesforAnalysis/Galprop/Trotta2011/Def/new_P200.txt";
+		string nomefile="./Galprop/Trotta2011/Def/new_P200.txt";
 		ifstream fp(nomefile.c_str());
 		while (!fp.eof()){
 			fp>>x>>y;
@@ -187,7 +179,7 @@ void ProtonFlux(){
 
 	j=0;
 	{
-		string nomefile=percorso+"/CodesforAnalysis/Galprop/Trotta2011/Def/new_P1250.txt";
+		string nomefile="./Galprop/Trotta2011/Def/new_P1250.txt";
 		ifstream fp(nomefile.c_str());
 		while (!fp.eof()){
 			fp>>x>>y;
@@ -241,7 +233,7 @@ void ProtonFlux(){
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-	nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+	nomefile="./Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
 	f_out->mkdir("P Fluxes");
 	f_out->cd("P Fluxes");

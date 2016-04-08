@@ -2,12 +2,8 @@
 TH1 * Weighted_CorrLAT(TH2 * esposizionegeo, TH1 * LATcorr);
 
 void CorrLAT(){
-	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
-        TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str(),"READ");
-        }
+	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
 
 	TH2F * esposizionegeo_R    = (TH2F*)file1->Get( "esposizionegeo"       );
 	TH2F * esposizionepgeoTOF  = (TH2F*)file1->Get(	"esposizionepgeo"	);
@@ -68,12 +64,8 @@ void CorrLAT(){
 	TH1F * CorrezioneLAT_dAgl = (TH1F *) Weighted_CorrLAT ( esposizionedgeoAgl , TOTLATCorrAgl	);
 
 	cout<<"*** Updating P1 file ****"<<endl;
-        nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
-        file1 = TFile::Open(nomefile.c_str(),"UPDATE");
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        }
+        nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+        file1 =TFile::Open(nomefile.c_str(),"UPDATE");
 	file1->cd("Results");
 	
 	PreLATCorr     -> Write(     "PreLATCorr_LATcorrR_fit" 	);
@@ -251,7 +243,7 @@ void CorrLAT(){
         CorrLATd_Agl_Spl->Draw("PCsame");
 
 	cout<<"*** Updating Results file ***"<<endl;
-        nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        nomefile="./Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
         f_out->mkdir("DATA-driven Results/Latitude effect/Correction");
         f_out->cd("DATA-driven Results/Latitude effect/Correction");

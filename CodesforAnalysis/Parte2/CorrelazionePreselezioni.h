@@ -38,13 +38,10 @@ void Correlazione_Preselezioni(TFile * file1){
 			if(Norm[S]>0) CorrelazionePreselezioni->SetBinContent(S+1,F+1,CorrelazionePreselezioni->GetBinContent(S+1,F+1)/(float)Norm[S]);
 	
 	cout<<"*** Updating P1 file ****"<<endl;
-        string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+        string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
         file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        }
-        file1->cd("Results");
+        
+	file1->cd("Results");
         CorrelazionePreselezioni->Write();
 	file1-> Write();
         file1-> Close();
@@ -54,7 +51,7 @@ void Correlazione_Preselezioni(TFile * file1){
 	CorrelazionePreselezioni->Draw("col");
 
 	cout<<"*** Updating Results file ***"<<endl;
-        nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        nomefile="./Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
         f_out->cd("MC Results");
         c13->Write();

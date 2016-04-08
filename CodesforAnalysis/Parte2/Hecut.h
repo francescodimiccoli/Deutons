@@ -68,12 +68,9 @@ void Hecut(TFile * file1){
 	
 
 	cout<<"*** Updating P1 file ****"<<endl;
-        string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+        string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
         file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        }
+	
 	file1->cd("Results");
 	HecutMC_P 	->Write();
 	HecutMC_He	->Write();
@@ -128,7 +125,7 @@ void Hecut(TFile * file1){
 	//effHecutHe->Draw("Psame");
 
 	cout<<"*** Updating Results file ***"<<endl;
-        nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        nomefile="./Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
         f_out->mkdir("MC Results/He control sample cut");
         f_out->cd("MC Results/He control sample cut");		

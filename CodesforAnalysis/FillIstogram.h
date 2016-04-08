@@ -28,7 +28,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	
 	cout<<"*********************** CALIB. READING *********************"<<endl;
 
-	string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/CodesforAnalysis/CALIBRAZIONI/"+mese+".root");
+	string nomecal=inputpath + "/CodesforAnalysis/CALIBRAZIONI/"+mese+".root";
         TFile *calib = TFile::Open(nomecal.c_str());
         cout<<"calibrazione: "<<calib<<endl;	
 	Rig = (TSpline3 *) calib->Get("Fit Results/Splines/Rig");
@@ -50,12 +50,9 @@ void FillIstogram(int INDX,string frac,string mese)
         cout<<Rig<<" "<<beta<<" "<<" "<<betaNaF<<" "<<betaAgl<<" "<<eL1<<" "<<etofu<<" "<<etrack<<" "<<etofd<<" "<<EdepL1beta<<" "<<EdepTOFbeta<<" "<<EdepTrackbeta<<" "<<EdepTOFDbeta<<" "<<Corr_L1<<" "<<Corr_TOFU<<" "<<Corr_Track<<" "<<Corr_TOFD<<endl;
 	cout<<"******************************"<<endl;
 
-	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
- 	TFile *file =TFile::Open(nomefile.c_str());	
-	if(!file){
-	nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-	file =TFile::Open(nomefile.c_str());
-	}
+	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+	TFile * file =TFile::Open(nomefile.c_str());
+	
 	TFile *file1;
 	TNtuple *ntupla1;
 	TNtuple *ntupla0;
@@ -63,83 +60,81 @@ void FillIstogram(int INDX,string frac,string mese)
         TNtuple *ntupla3;
         TNtuple *ntupla2;
 	if(!file) {cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl; INDX=0;}
+	
 	if(INDX!=2){	
-	nomefile=percorso+"/Risultati/risultati/RisultatiMC_"+frac+".root";	
-	file1 =TFile::Open(nomefile.c_str());
-	if(!file1)  {nomefile=percorso + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
-		    file1 =TFile::Open(nomefile.c_str());}
-	ntupla1=(TNtuple*)file1->Get("grandezzesepd");
-	ntupla0=(TNtuple*)file1->Get("trig");
-	nomefile=percorso+"/Risultati/risultati/RisultatiDATI_"+frac+".root";	
-	file2 =TFile::Open(nomefile.c_str());
-	if(!file2)  {nomefile=percorso+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
-                    file2 =TFile::Open(nomefile.c_str());}
-        ntupla3=(TNtuple*)file2->Get("grandezzesepd");
-        ntupla2=(TNtuple*)file2->Get("trig");
-	
-	ntupla0->SetBranchAddress("Momento_gen",&Momento_gen);
-	ntupla0->SetBranchAddress("Ev_Num",&Ev_Num);
-	ntupla0->SetBranchAddress("Trig_Num",&Trig_Num);	
-	ntupla0->SetBranchAddress("R_pre",&R_pre);
-	ntupla0->SetBranchAddress("Beta_pre",&Beta_pre);
-	ntupla0->SetBranchAddress("Cutmask",&CUTMASK);	
-	ntupla0->SetBranchAddress("Massagen",&Massa_gen);
-	ntupla0->SetBranchAddress("EdepL1",&EdepL1);	
-	ntupla0->SetBranchAddress("EdepTOFU",&EdepTOFU);	
-	ntupla0->SetBranchAddress("EdepTOFD",&EdepTOFD);
-	ntupla0->SetBranchAddress("EdepTrack",&EdepTrack);
-	ntupla0->SetBranchAddress("EdepECAL",&EdepECAL);
-	ntupla0->SetBranchAddress("BetaRICH",&BetaRICH);
-	ntupla0->SetBranchAddress("Unbias",&Unbias);
+		nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
+			file1 =TFile::Open(nomefile.c_str());
+		ntupla1=(TNtuple*)file1->Get("grandezzesepd");
+		ntupla0=(TNtuple*)file1->Get("trig");
 
-	ntupla1->SetBranchAddress("Momentogen",&Momento_gen);
-	ntupla1->SetBranchAddress("R",&R);
-        ntupla1->SetBranchAddress("Beta",&Beta);
-	ntupla1->SetBranchAddress("BetaRICH_new",&BetaRICH);
-        ntupla1->SetBranchAddress("EdepL1",&EdepL1);
-        ntupla1->SetBranchAddress("Rmin",&Rmin);
-        ntupla1->SetBranchAddress("EdepTOF",&EdepTOFU);
-        ntupla1->SetBranchAddress("EdepTrack",&EdepTrack);
-        ntupla1->SetBranchAddress("EdepTOFD",&EdepTOFD);
-	ntupla1->SetBranchAddress("Massagen",&Massa_gen);
-        ntupla1->SetBranchAddress("LDiscriminant",&LDiscriminant);
-        ntupla1->SetBranchAddress("BDT_response",&BDT_response);
-        ntupla1->SetBranchAddress("Cutmask",&CUTMASK);
-	ntupla1->SetBranchAddress("Dist5D",&Dist5D);
-	ntupla1->SetBranchAddress("Dist5D_P",&Dist5D_P);	
-	
-	ntupla2->SetBranchAddress("Rcutoff",&Rcutoff);
-        ntupla2->SetBranchAddress("Ev_Num",&Ev_Num);
-        ntupla2->SetBranchAddress("Trig_Num",&Trig_Num);
-        ntupla2->SetBranchAddress("R_pre",&R_pre);
-        ntupla2->SetBranchAddress("Beta_pre",&Beta_pre);
-	ntupla2->SetBranchAddress("Cutmask",&CUTMASK);
-        ntupla2->SetBranchAddress("Latitude",&Latitude);
-	ntupla2->SetBranchAddress("EdepECAL",&EdepECAL);
-	ntupla2->SetBranchAddress("EdepL1",&EdepL1);
-        ntupla2->SetBranchAddress("EdepTOFU",&EdepTOFU);
-        ntupla2->SetBranchAddress("EdepTOFD",&EdepTOFD);
-        ntupla2->SetBranchAddress("EdepTrack",&EdepTrack);
-        ntupla2->SetBranchAddress("BetaRICH",&BetaRICH);
-        ntupla2->SetBranchAddress("Unbias",&Unbias);
+		nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
+		file2 =TFile::Open(nomefile.c_str());
+		ntupla3=(TNtuple*)file2->Get("grandezzesepd");
+		ntupla2=(TNtuple*)file2->Get("trig");
+
+		ntupla0->SetBranchAddress("Momento_gen",&Momento_gen);
+		ntupla0->SetBranchAddress("Ev_Num",&Ev_Num);
+		ntupla0->SetBranchAddress("Trig_Num",&Trig_Num);	
+		ntupla0->SetBranchAddress("R_pre",&R_pre);
+		ntupla0->SetBranchAddress("Beta_pre",&Beta_pre);
+		ntupla0->SetBranchAddress("Cutmask",&CUTMASK);	
+		ntupla0->SetBranchAddress("Massagen",&Massa_gen);
+		ntupla0->SetBranchAddress("EdepL1",&EdepL1);	
+		ntupla0->SetBranchAddress("EdepTOFU",&EdepTOFU);	
+		ntupla0->SetBranchAddress("EdepTOFD",&EdepTOFD);
+		ntupla0->SetBranchAddress("EdepTrack",&EdepTrack);
+		ntupla0->SetBranchAddress("EdepECAL",&EdepECAL);
+		ntupla0->SetBranchAddress("BetaRICH",&BetaRICH);
+		ntupla0->SetBranchAddress("Unbias",&Unbias);
+
+		ntupla1->SetBranchAddress("Momentogen",&Momento_gen);
+		ntupla1->SetBranchAddress("R",&R);
+		ntupla1->SetBranchAddress("Beta",&Beta);
+		ntupla1->SetBranchAddress("BetaRICH_new",&BetaRICH);
+		ntupla1->SetBranchAddress("EdepL1",&EdepL1);
+		ntupla1->SetBranchAddress("Rmin",&Rmin);
+		ntupla1->SetBranchAddress("EdepTOF",&EdepTOFU);
+		ntupla1->SetBranchAddress("EdepTrack",&EdepTrack);
+		ntupla1->SetBranchAddress("EdepTOFD",&EdepTOFD);
+		ntupla1->SetBranchAddress("Massagen",&Massa_gen);
+		ntupla1->SetBranchAddress("LDiscriminant",&LDiscriminant);
+		ntupla1->SetBranchAddress("BDT_response",&BDT_response);
+		ntupla1->SetBranchAddress("Cutmask",&CUTMASK);
+		ntupla1->SetBranchAddress("Dist5D",&Dist5D);
+		ntupla1->SetBranchAddress("Dist5D_P",&Dist5D_P);	
+
+		ntupla2->SetBranchAddress("Rcutoff",&Rcutoff);
+		ntupla2->SetBranchAddress("Ev_Num",&Ev_Num);
+		ntupla2->SetBranchAddress("Trig_Num",&Trig_Num);
+		ntupla2->SetBranchAddress("R_pre",&R_pre);
+		ntupla2->SetBranchAddress("Beta_pre",&Beta_pre);
+		ntupla2->SetBranchAddress("Cutmask",&CUTMASK);
+		ntupla2->SetBranchAddress("Latitude",&Latitude);
+		ntupla2->SetBranchAddress("EdepECAL",&EdepECAL);
+		ntupla2->SetBranchAddress("EdepL1",&EdepL1);
+		ntupla2->SetBranchAddress("EdepTOFU",&EdepTOFU);
+		ntupla2->SetBranchAddress("EdepTOFD",&EdepTOFD);
+		ntupla2->SetBranchAddress("EdepTrack",&EdepTrack);
+		ntupla2->SetBranchAddress("BetaRICH",&BetaRICH);
+		ntupla2->SetBranchAddress("Unbias",&Unbias);
 
 
-        ntupla3->SetBranchAddress("R",&R);
-        ntupla3->SetBranchAddress("Beta",&Beta);
-        ntupla3->SetBranchAddress("BetaRICH_new",&BetaRICH);
-	ntupla3->SetBranchAddress("EdepL1",&EdepL1);
-        ntupla3->SetBranchAddress("Rcutoff",&Rcutoff);
-	ntupla3->SetBranchAddress("Rmin",&Rmin);
-        ntupla3->SetBranchAddress("EdepTOFU",&EdepTOFU);
-        ntupla3->SetBranchAddress("EdepTrack",&EdepTrack);
-        ntupla3->SetBranchAddress("EdepTOFD",&EdepTOFD);
-        ntupla3->SetBranchAddress("Latitude",&Latitude);
-	ntupla3->SetBranchAddress("Massagen",&Massa_gen);
-        ntupla3->SetBranchAddress("LDiscriminant",&LDiscriminant);
-        ntupla3->SetBranchAddress("BDT_response",&BDT_response);
-        ntupla3->SetBranchAddress("Cutmask",&CUTMASK);
-        ntupla3->SetBranchAddress("Dist5D",&Dist5D);
-        ntupla3->SetBranchAddress("Dist5D_P",&Dist5D_P);
+		ntupla3->SetBranchAddress("R",&R);
+		ntupla3->SetBranchAddress("Beta",&Beta);
+		ntupla3->SetBranchAddress("BetaRICH_new",&BetaRICH);
+		ntupla3->SetBranchAddress("EdepL1",&EdepL1);
+		ntupla3->SetBranchAddress("Rcutoff",&Rcutoff);
+		ntupla3->SetBranchAddress("Rmin",&Rmin);
+		ntupla3->SetBranchAddress("EdepTOFU",&EdepTOFU);
+		ntupla3->SetBranchAddress("EdepTrack",&EdepTrack);
+		ntupla3->SetBranchAddress("EdepTOFD",&EdepTOFD);
+		ntupla3->SetBranchAddress("Latitude",&Latitude);
+		ntupla3->SetBranchAddress("Massagen",&Massa_gen);
+		ntupla3->SetBranchAddress("LDiscriminant",&LDiscriminant);
+		ntupla3->SetBranchAddress("BDT_response",&BDT_response);
+		ntupla3->SetBranchAddress("Cutmask",&CUTMASK);
+		ntupla3->SetBranchAddress("Dist5D",&Dist5D);
+		ntupla3->SetBranchAddress("Dist5D_P",&Dist5D_P);
 	}
 	cout<<"*********************** MC READING *********************"<<endl;
 	if(INDX==0)
@@ -266,12 +261,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	
 	cout<<"************************ SAVING DATA ************************"<<endl;
 	if(INDX==0||INDX==1){
-		nomefile=percorso+"/Risultati/risultati/RisultatiMC_"+frac+".root";
-		file1 =TFile::Open(nomefile.c_str());
-		if(file1)
-			nomefile=percorso+"/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
-		else
-			nomefile=percorso+"/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
+		nomefile=inputpath+"/Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 		TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 		
 		DATAQualeff_Write();

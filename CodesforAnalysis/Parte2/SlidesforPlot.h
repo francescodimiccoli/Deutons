@@ -905,7 +905,7 @@ LikvsDistAgl_P->Draw("same");
 
 
         cout<<"*** Updating Results file ***"<<endl;
-        string nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+        string nomefile="./Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
         f_out->mkdir("Common plots for slides");
         f_out->cd("Common plots for slides");

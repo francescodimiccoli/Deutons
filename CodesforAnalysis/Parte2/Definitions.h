@@ -1,4 +1,15 @@
 using namespace std;
+
+
+//// Input-Output Variables
+
+string inputpath="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
+string mese;
+string frac;
+
+
+
+//// Global Variables
 float R=0;
 float Beta=0;
 float BetaRICH=0;
@@ -96,9 +107,6 @@ int Norm[11]={0};
 bool Likcut=false;
 bool Distcut=false;
 bool Herejcut=false;
-string percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
-string mese;
-string frac;
 
 TH1F * Esposizione[10];
 TH1F * Tempi;

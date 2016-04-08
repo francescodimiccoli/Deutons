@@ -2,12 +2,9 @@ using namespace std;
 
 
 void Acceptance(){
-	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+	string nomefile="../Histos/"+mese +"/"+mese+"_"+frac+"_P1.root";
         TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str(),"READ");
-        }
+	
 	ACCEPTANCE * AcceptanceP = new ACCEPTANCE (file1,"Results","EffpreselMCP","EffFullsetMCP","TOTLATCorr","CorrezioneLATp",1);
 	ACCEPTANCE * AcceptanceD = new ACCEPTANCE (file1,"Results","EffpreselMCD","EffFullsetMCD","TOTLATCorr","CorrezioneLATd",6);
 	
@@ -53,13 +50,9 @@ void Acceptance(){
 	AcceptancePreD-> Eval_Corrected_Acceptance(6);	
 
 	cout<<"*** Updating P1 file ****"<<endl;
-    	
-	nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
-        file1 = TFile::Open(nomefile.c_str(),"UPDATE");
-        if(!file1){
-                nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-                file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        }
+    	nomefile="../Histos/"+mese +"/"+mese+"_"+frac+"_P1.root";
+	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+	
 	file1->cd("Results");
 	//Protons
 	AcceptanceP ->Gen_Acceptance_R  ->Write("Gen_AcceptanceP_R"  ); 
@@ -490,7 +483,7 @@ void Acceptance(){
         }
 
 	cout<<"*** Updating Results file ***"<<endl;
-	nomefile=percorso + "/CodesforAnalysis/Final_plots/"+mese+".root";
+	nomefile="./Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
 	f_out->mkdir("Acceptance");
 	f_out->cd("Acceptance");

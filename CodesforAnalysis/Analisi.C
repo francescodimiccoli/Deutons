@@ -191,12 +191,8 @@ int main(int argc, char * argv[])
 
 	cout<<"************************ ISTOGRAM FILLING **************************************************************"<<endl;
 	FillIstogram(INDX,frac,mese);
-	string nomefile=percorso + "/Risultati/risultati/"+mese+"_"+frac+"_P1.root";
+	string	nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 	TFile *file1 =TFile::Open(nomefile.c_str());
-	if(!file1){
-		nomefile=percorso + "/Risultati/"+mese+"/"+mese+"_"+frac+"_P1.root";
-		file1 =TFile::Open(nomefile.c_str());
-	}
 
 	cout<<"************************* ANALYSIS **********************************************************************"<<endl;
 	if(frac=="tot"){
@@ -204,17 +200,17 @@ int main(int argc, char * argv[])
 		MCUnbiaseff(file1);
 		Hecut(file1);
 		SlidesforPlot(file1);
-		  MCQualeff(file1);
-		  MCTrackeff(file1);
-		  MCFullseteff(file1);
-		  MC_do_preSeleff(file1);
-		  Correlazione_Preselezioni(file1);
-		  MigrationMatrix(file1);
-		  DATAUnbiaseff(file1);
-		  DATApreSeleff(file1);
-		  //DVSMCTrackeff(file1);
-		  DATAQualeff(file1);
-		  /*DVSMCpreSeleff(file1);
+		MCQualeff(file1);
+		MCTrackeff(file1);
+		MCFullseteff(file1);
+		MC_do_preSeleff(file1);
+		Correlazione_Preselezioni(file1);
+		MigrationMatrix(file1);
+		DATAUnbiaseff(file1);
+		DATApreSeleff(file1);
+		//DVSMCTrackeff(file1);
+		DATAQualeff(file1);
+		/*DVSMCpreSeleff(file1);
 		  DVSMCQualeff2(file1);
 		  DeutonsTemplFits(file1);
 		  DeutonsTemplFits_Dist(file1);
