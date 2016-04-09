@@ -195,7 +195,7 @@ int main(int argc, char * argv[])
 	TFile *file1 =TFile::Open(nomefile.c_str());
 
 	cout<<"************************* ANALYSIS **********************************************************************"<<endl;
-	if(frac=="tot"){
+	if(INDX==2){
 		MCpreeff(file1);
 		MCUnbiaseff(file1);
 		Hecut(file1);
@@ -217,9 +217,9 @@ int main(int argc, char * argv[])
 		  DeutonFlux(file1);
 		  DeutonFlux_Dist(file1);*/
 	}
-	cout<<"************************* RESULTS  **********************************************************************"<<endl;
+	cout<<"************************* RESULTS  **************************************************************"<<endl;
 	
-	if(frac=="tot"){	
+	if(INDX==2){	
 		CorrLAT();
 		Acceptance();
 		ProtonFlux();

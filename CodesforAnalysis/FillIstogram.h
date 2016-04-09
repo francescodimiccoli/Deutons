@@ -59,7 +59,8 @@ void FillIstogram(int INDX,string frac,string mese)
 	TFile *file2;
         TNtuple *ntupla3;
         TNtuple *ntupla2;
-	if(!file) {cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl; INDX=0;}
+	bool histonotexist = false;
+	if(!file) {cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl; INDX=0; histonotexist = true;}
 	
 	if(INDX!=2){	
 		nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
@@ -297,6 +298,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		f_out->Write();
 		f_out->Close();
 	}
-
+	
+	if(histonotexist) INDX=2;	
 	return;
 }

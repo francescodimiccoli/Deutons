@@ -2,7 +2,7 @@
 
 $inizio=$ARGV[1]//11;
 $fine  =$ARGV[2]//12;
-$mode  =$ARGV[0]//0;
+$mode  =$ARGV[0]//2;
 $n=$inizio;
 $secondi=0;
 print $jobs;
