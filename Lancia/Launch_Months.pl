@@ -6,9 +6,13 @@ $mode  =$ARGV[0]//2;
 $n=$inizio;
 $secondi=0;
 print $jobs;
-$workdir="/home/AMS/fdimicco/fdimicco/Deutons";
+
+chomp($workdir =`pwd -P |sed 's\\Lancia\\\\g'`);
+
 @date=(1306886400,1309478400,1312156800,1314835200,1317427200,1320105600,1322697600,1325376000,1328054400,1330560000,1333238400,1335830400,1338508800,1341100800,1343779200,1346457600,1349049600,1351728000,1354320000,1356998400,1359676800,1362096000,1364774400,1367366400,1370044800,1372636800,1375315200,1377993600,1380585600,1383264000,1385856000);
 @mesi=("2011_05","2011_06","2011_07","2011_08","2011_09","2011_10","2011_11","2011_12","2012_01","2012_02","2012_03","2012_04","2012_05","2012_06","2012_07","2012_08","2012_09","2012_10","2012_11","2012_12","2013_01","2013_02","2013_03","2013_04","2013_05","2013_06","2013_07","2013_08","2013_09","2013_10");
+
+
 while($n<=$fine){
 	$jobs = `bjobs|wc -l`;
 	$jobsrun = `bjobs|grep RUN|wc -l`;
@@ -20,10 +24,11 @@ while($n<=$fine){
 			print "creating $mesi[$n+1] directories...";
 			system("mkdir $workdir/Risultati/$mesi[$n+1]");
 			system("mkdir $workdir/Histos/$mesi[$n+1]");
-			print "created\n";
+			print "created\n\n";
 			if($n!=$fine){
 				print "Launching $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
 				system("perl $workdir/perl/lsf.pl $mesi[$n+1] 0");
+				system("perl $workdir/perl/Lancia.pl");
 				system("perl $workdir/Lancia/Lancia.pl $date[$n] $date[$n+1] 0");
 				print "Launched $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
 			}
@@ -33,7 +38,8 @@ while($n<=$fine){
 				system("mkdir $workdir/Histos/$mesi[$n+1]");
 				print "Launching $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
 				system("perl $workdir/perl/lsf.pl $mesi[$n+1] 1");
-                                system("perl $workdir/Lancia/Lancia.pl $date[$n] $date[$n+1] 1");
+                                system("perl $workdir/perl/Lancia.pl"); 
+				system("perl $workdir/Lancia/Lancia.pl $date[$n] $date[$n+1] 1");
                                 print "Launched $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
 				}
 		}
@@ -43,12 +49,14 @@ while($n<=$fine){
 			    	system("$workdir/CodesforAnalysis/Preliminar.exe $mesi[$n]");
 				}
 			}
-			if($mode==2||$mode==0) {system("perl $workdir/SommaParte1.pl $mesi[$n]");}	
+			if($mode==2||$mode==0) {system("perl ./SommaParte1.pl $mesi[$n]");}	
 		}	
 		$n++;
 	}
-	system("sleep 20");
+	$jobs = `bjobs|wc -l`;
+	$jobsrun = `bjobs|grep RUN|wc -l`;
 	print "tot jobs: ".$jobs." running: ".$jobsrun."\n";
+	system("sleep 20");
 	if($jobs>0&&$jobs<5){ $secondi++;}
 	if($secondi>90) {system("bkill -u fdimicco 0");}
 
