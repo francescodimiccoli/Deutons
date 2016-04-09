@@ -22,20 +22,20 @@ while($n<=$fine){
 			system("mkdir $workdir/Histos/$mesi[$n+1]");
 			print "created\n";
 			if($n!=$fine){
+				print "Launching $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
 				system("perl $workdir/perl/lsf.pl $mesi[$n+1] 0");
 				system("perl $workdir/Lancia/Lancia.pl $date[$n] $date[$n+1] 0");
-				system("bjobs|wc -l");
-				print "Sto Lanciando $mesi[$n+1] : da $date[$n] a $date[$n+1]";
+				print "Launched $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
 			}
 		}
 		if($mode==2){
 			if($n!=$fine){
 				system("mkdir $workdir/Histos/$mesi[$n+1]");
+				print "Launching $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
 				system("perl $workdir/perl/lsf.pl $mesi[$n+1] 1");
                                 system("perl $workdir/Lancia/Lancia.pl $date[$n] $date[$n+1] 1");
-                                system("bjobs|wc -l");
-                                print "Sto Lanciando $mesi[$n+1] : da $date[$n] a $date[$n+1]";				
-			}
+                                print "Launched $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
+				}
 		}
 		if($n!=$inizio) {
 			if($mode==1){
@@ -48,7 +48,7 @@ while($n<=$fine){
 		$n++;
 	}
 	system("sleep 20");
-	print $jobs." jobs: ".$jobsrun." running...";
+	print "tot jobs: ".$jobs." running: ".$jobsrun."\n";
 	if($jobs>0&&$jobs<5){ $secondi++;}
 	if($secondi>90) {system("bkill -u fdimicco 0");}
 

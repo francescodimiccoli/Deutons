@@ -1,7 +1,7 @@
 #!/bin/perl
 
 system("source ../amsvar.sh");
-$workdir="/home/AMS/fdimicco/fdimicco/Deutons";
+$workdir="./";
 $mese = $ARGV[0];
 system("rm $workdir/Histos/$mese/*tot*");
 for($n=0;$n<10;$n++) {
