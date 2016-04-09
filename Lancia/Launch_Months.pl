@@ -58,7 +58,7 @@ while($n<=$fine){
 	print "tot jobs: ".$jobs." running: ".$jobsrun."\n";
 	system("sleep 20");
 	if($jobs>0&&$jobs<5){ $secondi++;}
-	if($secondi>90) {system("bkill -u fdimicco 0");}
+	if($secondi>90) {system("bkill 0");}
 
 }
 
