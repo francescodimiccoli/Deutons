@@ -1,11 +1,12 @@
 #!/bin/perl
 
-system("source ../amsvar.sh");
-$workdir="/home/AMS/fdimicco/fdimicco/Deutons";
+chomp($workdir =`pwd -P |sed 's\\Lancia\\\\g'`);
+system("source $workdir/amsvar.sh");
+
 $mese = $ARGV[0];
 for($n=0;$n<10;$n++) {
 system("mv $workdir/Risultati/$mese/RisultatiDATI_$n.root $workdir/Risultati/$mese/RisultatiDATI_0$n.root");
-system("mv ./$mese/RisultatiMC_$n.root ./$mese/RisultatiMC_0$n.root");
+system("mv $workdir/Risultati/$mese/RisultatiMC_$n.root $workdir/Risultati/$mese/RisultatiMC_0$n.root");
 }
 
 system("hadd -f $workdir/Risultati/$mese/RisultatiDATI.root $workdir/Risultati/$mese/RisultatiDATI_*;");
