@@ -6,7 +6,7 @@ void DATAUnbiaseff_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
 	if(((int)Cutmask&187)!=187||R_pre<=0||Beta_pre<=0||R_pre<1.2*Rcutoff) return;
 
-	for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]) {
+	for(int M=0;M<nbinsr;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]) {
 		if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2){
 			EffUnbiasDATA->beforeR->Fill(M);
 			if(Unbias==1) EffUnbiasDATA->afterR->Fill(M);
@@ -59,7 +59,7 @@ void DATAUnbiaseff(TFile * file1){
         string MCLegend[2]={"protons","deutons"};
         TGraph * EffUnbDATA_R = new TGraph();
         EffUnbDATA_R->SetTitle(MCLegend[0].c_str());
-        for(int i=0;i<43;i++) EffUnbDATA_R->SetPoint(i,R_cent[i],EffUnbDATA_R_TH1F->GetBinContent(i+1));
+        for(int i=0;i<nbinsr;i++) EffUnbDATA_R->SetPoint(i,R_cent[i],EffUnbDATA_R_TH1F->GetBinContent(i+1));
         TGraph * EffUnbMCD_R[6];
         EffUnbDATA_R->SetMarkerColor(2);
         EffUnbDATA_R->SetMarkerStyle(8);

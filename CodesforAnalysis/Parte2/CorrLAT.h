@@ -135,7 +135,7 @@ void CorrLAT(){
         gPad->SetGridx();
 	gPad->SetLogx();
 	TGraphErrors *CorrLAT_totM1_Spl=new TGraphErrors();
-	for(int i=0;i<43;i++){
+	for(int i=0;i<nbinsr;i++){
 			CorrLAT_totM1_Spl->SetPoint(i,R_cent[i],CorrezioneLAT_pR->GetBinContent(i+1));
 		}
 	CorrLAT_totM1_Spl->SetLineColor(2);
@@ -147,7 +147,7 @@ void CorrLAT(){
         CorrLAT_totM1_Spl->GetYaxis()->SetTitle("Eff. Corr. Factor");
 	CorrLAT_totM1_Spl->Draw("APC");
 	TGraphErrors *CorrLAT_totM2_Spl=new TGraphErrors();
-        for(int i=0;i<43;i++){
+        for(int i=0;i<nbinsr;i++){
                 CorrLAT_totM2_Spl->SetPoint(i,R_cent[i],CorrezioneLATpre_pR->GetBinContent(i+1));
         }
         CorrLAT_totM2_Spl->SetLineColor(4);

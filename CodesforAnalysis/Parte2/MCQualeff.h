@@ -13,7 +13,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l){
 	if(Beta<=0||R<=0) return;
 	if(Massa_gen<1){
 		//R bins
-		for(int K=0;K<43;K++) {
+		for(int K=0;K<nbinsr;K++) {
 			if(R<bin[K+1]&&R>bin[K]) { 
 					EffLikMCP->beforeR->Fill(K);
                 			EffDistMCP->beforeR->Fill(K);
@@ -48,7 +48,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l){
 	}
 	if(Massa_gen<2&&Massa_gen>1){   
 		//R bins
-		for(int K=0;K<43;K++) {
+		for(int K=0;K<nbinsr;K++) {
 			if(R<bin[K+1]&&R>bin[K]) { 
 					EffLikMCD->beforeR->Fill(K,(int)(10000*Massa_gen-18570));
                 			EffDistMCD->beforeR->Fill(K,(int)(10000*Massa_gen-18570));
@@ -175,7 +175,7 @@ void MCQualeff(TFile * file1){
 	TGraph *EffMCLikP= new TGraph();
 	TGraph *EffMCLikD[6];
 	int j=0;
-	for(int i=1;i<43;i++) {EffMCLikP->SetPoint(j,R_cent[i],EffMCLikP_TH1F->GetBinContent(i+1));j++;}	
+	for(int i=1;i<nbinsr;i++) {EffMCLikP->SetPoint(j,R_cent[i],EffMCLikP_TH1F->GetBinContent(i+1));j++;}	
 	EffMCLikP->SetMarkerColor(2);
         EffMCLikP->SetMarkerStyle(8);
         EffMCLikP->SetLineColor(2);
@@ -194,7 +194,7 @@ void MCQualeff(TFile * file1){
                 for(int h=0;h<6;h++){
                         EffMCLikD[h]= new TGraph();
                         EffMCLikD[h]->SetTitle(MCLegend[h+1].c_str());
-                        for(int i=1;i<43;i++) EffMCLikD[h]->SetPoint(i,R_cent[i], EffMCLikD_TH2F->GetBinContent(i+1,h+1));
+                        for(int i=1;i<nbinsr;i++) EffMCLikD[h]->SetPoint(i,R_cent[i], EffMCLikD_TH2F->GetBinContent(i+1,h+1));
 			//leg->AddEntry(EffMCLikD[h],MCLegend[h+1].c_str(), "ep");
                         EffMCLikD[h]->SetMarkerColor(4);
                         EffMCLikD[h]->SetMarkerStyle(h+3);
@@ -325,7 +325,7 @@ void MCQualeff(TFile * file1){
         TGraph *EffMCDistP= new TGraph();
 	TGraph *EffMCDistD[6];
         j=0;
-        for(int i=1;i<43;i++) {EffMCDistP->SetPoint(j,R_cent[i],EffMCDistP_TH1F->GetBinContent(i+1));j++;}
+        for(int i=1;i<nbinsr;i++) {EffMCDistP->SetPoint(j,R_cent[i],EffMCDistP_TH1F->GetBinContent(i+1));j++;}
         EffMCDistP->SetMarkerColor(2);
         EffMCDistP->SetMarkerStyle(8);
         EffMCDistP->SetLineColor(2);
@@ -344,7 +344,7 @@ void MCQualeff(TFile * file1){
                 for(int h=0;h<6;h++){
                         EffMCDistD[h]= new TGraph();
                         EffMCDistD[h]->SetTitle(MCLegend[h+1].c_str());
-                        for(int i=1;i<43;i++) EffMCDistD[h]->SetPoint(i,R_cent[i],EffMCDistD_TH2F->GetBinContent(i+1,h+1));
+                        for(int i=1;i<nbinsr;i++) EffMCDistD[h]->SetPoint(i,R_cent[i],EffMCDistD_TH2F->GetBinContent(i+1,h+1));
 			leg->AddEntry(EffMCDistD[h],MCLegend[h+1].c_str(), "ep");
                         EffMCDistD[h]->SetMarkerColor(4);
                         EffMCDistD[h]->SetMarkerStyle(h+3);

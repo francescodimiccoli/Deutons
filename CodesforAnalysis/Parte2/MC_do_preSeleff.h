@@ -10,7 +10,7 @@ void MC_do_preSeleff_Fill(TNtuple *ntupla, int l){
 
 	for(int S=0;S<3;S++){
 		if(Massa_gen<1&&Massa_gen>0.5) {
-			for(int M=0;M<43;M++) 
+			for(int M=0;M<nbinsr;M++) 
 				if(Var<bin[M+1]&&Var>bin[M]) {
 						if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeR->Fill(M,S);
 						if(((int)Cutmask&passed[S])==passed[S]) Eff_do_preSelMCP->afterR->Fill(M,S);
@@ -24,7 +24,7 @@ void MC_do_preSeleff_Fill(TNtuple *ntupla, int l){
 			}				 
 
 		if(Massa_gen>1&&Massa_gen<2) {
-			for(int M=0;M<43;M++) 
+			for(int M=0;M<nbinsr;M++) 
 				if(Var<bin[M+1]&&Var>bin[M]) {
 					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)(Eff_do_preSelMCD->beforeR))->Fill(1,2,3);
 					if(((int)Cutmask&passed[S])==passed[S]) ((TH3*)Eff_do_preSelMCD->afterR)->Fill(M,(int)(10000*Massa_gen-18570),S);
@@ -94,7 +94,7 @@ void MC_do_preSeleff(TFile * file1){
 		gPad->SetGridy();
 		TGraph * Eff_do_preSelMCP_R = new TGraph();
 		Eff_do_preSelMCP_R->SetTitle(MCLegend[0].c_str());
-		for(int i=0;i<43;i++) Eff_do_preSelMCP_R->SetPoint(i,R_cent[i],Eff_do_preSelMCP_R_TH2F->GetBinContent(i+1,S+1));
+		for(int i=0;i<nbinsr;i++) Eff_do_preSelMCP_R->SetPoint(i,R_cent[i],Eff_do_preSelMCP_R_TH2F->GetBinContent(i+1,S+1));
 		TGraph * Eff_do_preSelMCD_R[6][3];
 		Eff_do_preSelMCP_R->SetMarkerColor(2);
 		Eff_do_preSelMCP_R->SetMarkerStyle(8);
@@ -114,7 +114,7 @@ void MC_do_preSeleff(TFile * file1){
 			for(int h=0;h<6;h++){
 				Eff_do_preSelMCD_R[h][S]= new TGraph();
 				Eff_do_preSelMCD_R[h][S]->SetTitle(MCLegend[h+1].c_str());
-				for(int i=1;i<43;i++) Eff_do_preSelMCD_R[h][S]->SetPoint(i,R_cent[i],Eff_do_preSelMCD_R_TH3F->GetBinContent(i+1,h+1,S+1));
+				for(int i=1;i<nbinsr;i++) Eff_do_preSelMCD_R[h][S]->SetPoint(i,R_cent[i],Eff_do_preSelMCD_R_TH3F->GetBinContent(i+1,h+1,S+1));
 				leg->AddEntry(Eff_do_preSelMCD_R[h][S],MCLegend[h+1].c_str(), "ep");
 				Eff_do_preSelMCD_R[h][S]->SetMarkerColor(4);
 				Eff_do_preSelMCD_R[h][S]->SetMarkerStyle(h+3);

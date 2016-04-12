@@ -12,7 +12,7 @@ void HecutMC_Fill(TNtuple *ntupla,int l){
 	float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
 	if(Massa_gen<1){
 		HecutMC_P->Fill(fabs(EdepTOFbeta->Eval(Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta)),fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta)));
-		for(int K=0;K<43;K++) 
+		for(int K=0;K<nbinsr;K++) 
 			if(Momento_gen<bin[K+1]&&Momento_gen>bin[K]){
 					 HecutMCP->beforeR->Fill(K);
 					 if(Herejcut)
@@ -21,7 +21,7 @@ void HecutMC_Fill(TNtuple *ntupla,int l){
 	}
 	if(Massa_gen>2){
 		HecutMC_He->Fill(fabs(EdepTOFbeta->Eval(Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta)),fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta)));	
-		for(int K=0;K<43;K++) 
+		for(int K=0;K<nbinsr;K++) 
 			if(Momento_gen<bin[K+1]&&Momento_gen>bin[K]) {
 					HecutMCHe->beforeR->Fill(K);
                 			if(Herejcut)
@@ -108,10 +108,10 @@ void Hecut(TFile * file1){
 	gPad->SetGridy();
 	gPad->SetLogx();
 	TGraphErrors *effHecut=new TGraphErrors();
-	for(int K=0;K<43;K++) {effHecut->SetPoint(K,R_cent[K], HecutMCP_TH1F->GetBinContent(K+1));
+	for(int K=0;K<nbinsr;K++) {effHecut->SetPoint(K,R_cent[K], HecutMCP_TH1F->GetBinContent(K+1));
 			       effHecut->SetPointError(K,0,    HecutMCP_TH1F->GetBinError(K+1));}
 	TGraphErrors *effHecutHe=new TGraphErrors();
-        for(int K=0;K<43;K++) {effHecutHe->SetPoint(K,R_cent[K], HecutMCHe_TH1F->GetBinContent(K+1));
+        for(int K=0;K<nbinsr;K++) {effHecutHe->SetPoint(K,R_cent[K], HecutMCHe_TH1F->GetBinContent(K+1));
                                effHecutHe->SetPointError(K,0,    HecutMCHe_TH1F->GetBinError(K+1));}
 	effHecut->SetMarkerColor(2);
 	effHecut->SetLineColor(2);

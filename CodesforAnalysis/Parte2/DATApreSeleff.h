@@ -9,7 +9,7 @@ void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
 	if(Unbias!=0||Beta_pre<=0||R_pre<=0||Beta_pre>protons->Eval(R_pre)+0.1||Beta_pre<protons->Eval(R_pre)-0.1) return;
 	if(!(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.1&&EdepL1>EdepL1beta->Eval(Beta)-0.1)) return;	
 	for(int S=0;S<3;S++){
-			for(int M=0;M<43;M++) 
+			for(int M=0;M<nbinsr;M++) 
 				if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]&&R_pre>Rcut[zona]) {
 					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3 *)LATpreSelDATA->beforeR)->Fill(M,zona,S);
 					if(((int)Cutmask&passed[S])==passed[S]) ((TH3 *)LATpreSelDATA->afterR)->Fill(M,zona,S);
@@ -70,7 +70,7 @@ void DATApreSeleff(TFile * file1){
 		for(int l=1;l<11;l++){
 			Eff_preSelLAT[S][l]=new TGraphErrors();
 			int point=0;
-			for(int i=1;i<43;i++){
+			for(int i=1;i<nbinsr;i++){
 				if(LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1)>0){
 					Eff_preSelLAT[S][l]->SetPoint(point,R_cent[i],LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1));
 					Eff_preSelLAT[S][l]->SetPointError(point,0,LATpreSelDATA_R->GetBinError(i+1,l+1,S+1));

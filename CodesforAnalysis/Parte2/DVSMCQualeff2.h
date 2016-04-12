@@ -1,14 +1,14 @@
 using namespace std;
 
-TH1F * EffDistMCvsDP1 = new TH1F("EffDistMCvsDP1","EffDistMCvsDP1",43,0,43);
-TH1F * EffDistMCvsDP2 = new TH1F("EffDistMCvsDP2","EffDistMCvsDP2",43,0,43);
-TH1F * EffLik2MCvsDP1 = new TH1F("EffLik2MCvsDP1","EffLik2MCvsDP1",43,0,43);
-TH1F * EffLik2MCvsDP2 = new TH1F("EffLik2MCvsDP2","EffLik2MCvsDP2",43,0,43);
+TH1F * EffDistMCvsDP1 = new TH1F("EffDistMCvsDP1","EffDistMCvsDP1",nbinsr,0,nbinsr);
+TH1F * EffDistMCvsDP2 = new TH1F("EffDistMCvsDP2","EffDistMCvsDP2",nbinsr,0,nbinsr);
+TH1F * EffLik2MCvsDP1 = new TH1F("EffLik2MCvsDP1","EffLik2MCvsDP1",nbinsr,0,nbinsr);
+TH1F * EffLik2MCvsDP2 = new TH1F("EffLik2MCvsDP2","EffLik2MCvsDP2",nbinsr,0,nbinsr);
 
-TH2F * EffDistMCvsDP_D_1 = new TH2F("EffDistMCvsDP_D_1","EffDistMCvsDP_D_1",43,0,43,11,0,11);
-TH2F * EffDistMCvsDP_D_2 = new TH2F("EffDistMCvsDP_D_2","EffDistMCvsDP_D_2",43,0,43,11,0,11);
-TH2F * EffLik2MCvsDP_D_1 = new TH2F("EffLik2MCvsDP_D_1","EffLik2MCvsDP_D_1",43,0,43,11,0,11);
-TH2F * EffLik2MCvsDP_D_2 = new TH2F("EffLik2MCvsDP_D_2","EffLik2MCvsDP_D_2",43,0,43,11,0,11);
+TH2F * EffDistMCvsDP_D_1 = new TH2F("EffDistMCvsDP_D_1","EffDistMCvsDP_D_1",nbinsr,0,nbinsr,11,0,11);
+TH2F * EffDistMCvsDP_D_2 = new TH2F("EffDistMCvsDP_D_2","EffDistMCvsDP_D_2",nbinsr,0,nbinsr,11,0,11);
+TH2F * EffLik2MCvsDP_D_1 = new TH2F("EffLik2MCvsDP_D_1","EffLik2MCvsDP_D_1",nbinsr,0,nbinsr,11,0,11);
+TH2F * EffLik2MCvsDP_D_2 = new TH2F("EffLik2MCvsDP_D_2","EffLik2MCvsDP_D_2",nbinsr,0,nbinsr,11,0,11);
 
 
 void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
@@ -18,13 +18,13 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 	if((R>Rcut[zona]&&zona<10)||(zona==10)) {
 		if(Herejcut){
 			//if(Likcut){
-			for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_2->Fill(K,zona);}
-			        if(Dist5D_P<6) for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_1->Fill(K,zona);}
+			for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_2->Fill(K,zona);}
+			        if(Dist5D_P<6) for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_1->Fill(K,zona);}
 			//}
 			if(Dist5D_P<6) {
-				for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP_D_1->Fill(K,zona);}
+				for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP_D_1->Fill(K,zona);}
 				if(Likcut)
-					for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP_D_2->Fill(K,zona);}
+					for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP_D_2->Fill(K,zona);}
 			}
 
 		}
@@ -38,13 +38,13 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 	if(Massa_gen<1){
 	if(Herejcut){
 		//if(Likcut){
-			for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP2->Fill(K);}
-			if(Dist5D_P<6) for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP1->Fill(K);}
+			for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP2->Fill(K);}
+			if(Dist5D_P<6) for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP1->Fill(K);}
 		//}
 		if(Dist5D_P<6) {
-			for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP1->Fill(K);}
+			for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP1->Fill(K);}
 			if(Likcut)
-				for(int K=0;K<43;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP2->Fill(K);}
+				for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP2->Fill(K);}
 		}
 
 	}
@@ -71,8 +71,8 @@ TCanvas *c20=new TCanvas("Data vs MC: Likelihood");
 TCanvas *c21=new TCanvas("Data vs MC: Distance");
 TGraphErrors *LikDVSMC_P_Graph;
 TGraphErrors *DistDVSMC_P_Graph;
-TH2F * LikDVSMC_P_graph=new TH2F("LikDVSMC_P_graph","LikDVSMC_P_graph",43,0,43,2,0,2);
-TH2F * DistDVSMC_P_graph=new TH2F("DistDVSMC_P_graph","DistDVSMC_P_graph",43,0,43,2,0,2);
+TH2F * LikDVSMC_P_graph=new TH2F("LikDVSMC_P_graph","LikDVSMC_P_graph",nbinsr,0,nbinsr,2,0,2);
+TH2F * DistDVSMC_P_graph=new TH2F("DistDVSMC_P_graph","DistDVSMC_P_graph",nbinsr,0,nbinsr,2,0,2);
 
 
 void DVSMCQualeff2(TFile * file1){
@@ -86,34 +86,34 @@ void DVSMCQualeff2(TFile * file1){
 	TH1F * EffLik2MCvsDP2 = (TH1F *)file1->Get("EffLik2MCvsDP2");
 
 	cout<<"************************************************************ MC QUALITY SEL. EFFICIENCIES ************************************************************"<<endl;		
-	float EffLik2MCvsDP[43][11]={{0}};
+	float EffLik2MCvsDP[nbinsr][11]={{0}};
 	for(int l=0;l<11;l++)
-	for(int i=1;i<43;i++) if(EffLik2MCvsDP_D_2->GetBinContent(i+1,l+1)>100&&EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1)>100)
+	for(int i=1;i<nbinsr;i++) if(EffLik2MCvsDP_D_2->GetBinContent(i+1,l+1)>100&&EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1)>100)
 		EffLik2MCvsDP[i][l]=EffLik2MCvsDP_D_2->GetBinContent(i+1,l+1)/(float)EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1)*CorrLAT_Lik->Eval(geomagC[l]);
 
-	float EffDistMCvsDP[43][11]={{0}};
+	float EffDistMCvsDP[nbinsr][11]={{0}};
 	for(int l=0;l<11;l++)
-	for(int i=1;i<43;i++) if(EffDistMCvsDP_D_2->GetBinContent(i+1,l+1)>100&&EffDistMCvsDP_D_1->GetBinContent(i+1,l+1)>100)
+	for(int i=1;i<nbinsr;i++) if(EffDistMCvsDP_D_2->GetBinContent(i+1,l+1)>100&&EffDistMCvsDP_D_1->GetBinContent(i+1,l+1)>100)
 		EffDistMCvsDP[i][l]=EffDistMCvsDP_D_1->GetBinContent(i+1,l+1)/(float)EffDistMCvsDP_D_2->GetBinContent(i+1,l+1)*CorrLAT_Dist->Eval(geomagC[l]);
 	
-	float EffLik2MCvsDP_MC[43]={0};
-        for(int i=1;i<43;i++) if(EffLik2MCvsDP2->GetBinContent(i+1)>100&&EffLik2MCvsDP1->GetBinContent(i+1)>100)
+	float EffLik2MCvsDP_MC[nbinsr]={0};
+        for(int i=1;i<nbinsr;i++) if(EffLik2MCvsDP2->GetBinContent(i+1)>100&&EffLik2MCvsDP1->GetBinContent(i+1)>100)
                 EffLik2MCvsDP_MC[i]=EffLik2MCvsDP2->GetBinContent(i+1)/(float)EffLik2MCvsDP1->GetBinContent(i+1);
 
-        float EffDistMCvsDP_MC[43]={0};
-        for(int i=1;i<43;i++) if(EffDistMCvsDP2->GetBinContent(i+1)>100&&EffDistMCvsDP1->GetBinContent(i+1)>100)
+        float EffDistMCvsDP_MC[nbinsr]={0};
+        for(int i=1;i<nbinsr;i++) if(EffDistMCvsDP2->GetBinContent(i+1)>100&&EffDistMCvsDP1->GetBinContent(i+1)>100)
                 EffDistMCvsDP_MC[i]=EffDistMCvsDP1->GetBinContent(i+1)/(float)EffDistMCvsDP2->GetBinContent(i+1);
 
 	//WEIGHTED MEAN over LAT
-	float EffDistMCvsDP_mean[43]={0};
-	float EffLik2MCvsDP_mean[43]={0};
-	float EffDistMCvsDP_meanerr[43]={0};
-        float EffLik2MCvsDP_meanerr[43]={0};
+	float EffDistMCvsDP_mean[nbinsr]={0};
+	float EffLik2MCvsDP_mean[nbinsr]={0};
+	float EffDistMCvsDP_meanerr[nbinsr]={0};
+        float EffLik2MCvsDP_meanerr[nbinsr]={0};
 	TGraphErrors * EffDistMCvsDP_Mean=new TGraphErrors();
 	TGraphErrors * EffLik2MCvsDP_Mean=new TGraphErrors();
 	float denom=0;
 	int p=0;
-	for(int i=1;i<43;i++) {
+	for(int i=1;i<nbinsr;i++) {
 		for(int l=0;l<11;l++) {
 			if(EffLik2MCvsDP_D_2->GetBinContent(i+1,l+1)>100&&EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1)>100){
 				denom=pow(EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1),0.5)/EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1)*EffLik2MCvsDP[i][l]/EffLik2MCvsDP_MC[i];
@@ -132,7 +132,7 @@ void DVSMCQualeff2(TFile * file1){
 	
 	denom=0;
 	p=0;
-        for(int i=1;i<43;i++) {
+        for(int i=1;i<nbinsr;i++) {
                 for(int l=0;l<11;l++) {
                         if(EffDistMCvsDP_D_2->GetBinContent(i+1,l+1)>100&&EffDistMCvsDP_D_1->GetBinContent(i+1,l+1)>100){
                                 denom=pow(EffDistMCvsDP_D_1->GetBinContent(i+1,l+1),0.5)/EffDistMCvsDP_D_1->GetBinContent(i+1,l+1)*EffDistMCvsDP[i][l]/EffDistMCvsDP_MC[i];
@@ -149,10 +149,10 @@ void DVSMCQualeff2(TFile * file1){
 		}
         }
 	//SMOOTHING & FIT
-	float ratioL_smooth[43]={0};
-	float ratioD_smooth[43]={0};
+	float ratioL_smooth[nbinsr]={0};
+	float ratioD_smooth[nbinsr]={0};
 
-	for(int j=1;j<43;j++){
+	for(int j=1;j<nbinsr;j++){
 		ratioL_smooth[j]=EffLik2MCvsDP_mean[j];
 		ratioD_smooth[j]=EffDistMCvsDP_mean[j];
 	}
@@ -161,12 +161,12 @@ void DVSMCQualeff2(TFile * file1){
 	
         TGraphErrors *EffMCvsDLikP_MC=new TGraphErrors();
         int j=0;
-        for(int i=1;i<43;i++) if(EffLik2MCvsDP_MC[i]>0)
+        for(int i=1;i<nbinsr;i++) if(EffLik2MCvsDP_MC[i]>0)
                 {EffMCvsDLikP_MC->SetPoint(j,R_cent[i],EffLik2MCvsDP_MC[i]/EffLik2MCvsDP_MC[i]);j++;}
 	
         TGraphErrors *EffMCvsDDistP_MC= new TGraphErrors();
         j=0;
-        for(int i=1;i<43;i++) if(EffDistMCvsDP_MC[i]>0)
+        for(int i=1;i<nbinsr;i++) if(EffDistMCvsDP_MC[i]>0)
                 {EffMCvsDDistP_MC->SetPoint(j,R_cent[i],EffDistMCvsDP_MC[i]/EffDistMCvsDP_MC[i]);j++;}
 
 	TF1 *polL=new TF1("polL","pol3");
@@ -175,7 +175,7 @@ void DVSMCQualeff2(TFile * file1){
 	EffLik2MCvsDP_Mean->Fit("polL","","",8,70);
 	EffDistMCvsDP_Mean->Fit("polD","","",8,70);
 
-	for(int j=3;j<43;j++){
+	for(int j=3;j<nbinsr;j++){
 		if(R_cent[j]<8){
 		ratioL_smooth[j]=(ratioL_smooth[j]+ratioL_smooth[j-1]+ratioL_smooth[j+1])/3;
 		ratioD_smooth[j]=(ratioD_smooth[j]+ratioD_smooth[j-1]+ratioD_smooth[j+1])/3;
@@ -186,8 +186,8 @@ void DVSMCQualeff2(TFile * file1){
 		}
 	}
 	///errore fit
-        float errorefitL=FitError(ratioL_smooth,EffLik2MCvsDP_mean,EffLik2MCvsDP_meanerr,43,3);
-        float errorefitD=FitError(ratioD_smooth,EffDistMCvsDP_mean,EffDistMCvsDP_meanerr,43,3);
+        float errorefitL=FitError(ratioL_smooth,EffLik2MCvsDP_mean,EffLik2MCvsDP_meanerr,nbinsr,3);
+        float errorefitD=FitError(ratioD_smooth,EffDistMCvsDP_mean,EffDistMCvsDP_meanerr,nbinsr,3);
 	///////////
 	
 
@@ -199,7 +199,7 @@ void DVSMCQualeff2(TFile * file1){
 	LikDVSMC_P_Graph->SetName("LikDVSMC_P_Graph");
 	j=0;
 	
-	for(int i=1;i<43;i++) {
+	for(int i=1;i<nbinsr;i++) {
 		if(EffLik2MCvsDP_MC[i]>0){
 		LikDVSMC_P_Graph->SetPoint(j,R_cent[i],ratioL_smooth[i]);
 		LikDVSMC_P_graph->SetBinContent(i+1,1,ratioL_smooth[i]);
@@ -242,7 +242,7 @@ void DVSMCQualeff2(TFile * file1){
 	DistDVSMC_P_Graph=new TGraphErrors();
         DistDVSMC_P_Graph->SetName("DistDVSMC_P_Graph");
 	j=0;
-        for(int i=1;i<43;i++) {
+        for(int i=1;i<nbinsr;i++) {
                 if(EffLik2MCvsDP_MC[i]>0){
                 DistDVSMC_P_Graph->SetPoint(j,R_cent[i],ratioD_smooth[i]);
                	DistDVSMC_P_graph->SetBinContent(i+1,1,ratioD_smooth[i]);

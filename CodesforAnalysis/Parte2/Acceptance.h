@@ -117,7 +117,7 @@ void Acceptance(){
 	for(int h=0;h<6;h++){
 		EffgenbetaD[h]=new TGraphErrors();
 		p=0;
-		for(int i=0;i<43;i++) {EffgenbetaD[h]->SetPoint(p,encindeut[i],AcceptanceD ->Gen_Acceptance_R  ->GetBinContent(i+1,h+1));p++;}			
+		for(int i=0;i<nbinsr;i++) {EffgenbetaD[h]->SetPoint(p,encindeut[i],AcceptanceD ->Gen_Acceptance_R  ->GetBinContent(i+1,h+1));p++;}			
 	
 	EffgenbetaD[h]->SetMarkerStyle(8);
         EffgenbetaD[h]->SetMarkerColor(4);
@@ -216,7 +216,7 @@ void Acceptance(){
 	p =0;
 	EffgenbetaP=new TGraphErrors();
 	p=0;
-	for(int i=0;i<43;i++) {EffgenbetaP->SetPoint(p,encinprot[i],AcceptanceP ->Gen_Acceptance_R  ->GetBinContent(i+1));p++;}
+	for(int i=0;i<nbinsr;i++) {EffgenbetaP->SetPoint(p,encinprot[i],AcceptanceP ->Gen_Acceptance_R  ->GetBinContent(i+1));p++;}
 
 	EffgenbetaP->SetMarkerStyle(8);
 	EffgenbetaP->SetMarkerColor(2);
@@ -293,17 +293,17 @@ void Acceptance(){
 	TGraphErrors * AccSelP[11];
 	TGraphErrors * AccpreP[11];
 	p=0;
-	for(int i=0;i<43;i++) {AccgeoP->SetPoint(p,encinprot[i],AcceptanceP ->Gen_Acceptance_R->GetBinContent(i+1));p++;}	
+	for(int i=0;i<nbinsr;i++) {AccgeoP->SetPoint(p,encinprot[i],AcceptanceP ->Gen_Acceptance_R->GetBinContent(i+1));p++;}	
 	p=0;
-        for(int i=0;i<43;i++) {AccPreMCP->SetPoint(p,encinprot[i],AcceptancePreP ->MCAcceptance_R->GetBinContent(i+1));p++;}
+        for(int i=0;i<nbinsr;i++) {AccPreMCP->SetPoint(p,encinprot[i],AcceptancePreP ->MCAcceptance_R->GetBinContent(i+1));p++;}
 	p=0;
-	for(int i=0;i<43;i++) {AccSelMCP->SetPoint(p,encinprot[i],AcceptanceP ->MCAcceptance_R->GetBinContent(i+1));p++;}
+	for(int i=0;i<nbinsr;i++) {AccSelMCP->SetPoint(p,encinprot[i],AcceptanceP ->MCAcceptance_R->GetBinContent(i+1));p++;}
 	
 
 	for(int j=0;j<11;j++) {
 		AccSelP[j]=new TGraphErrors();
 		p=0;
-		for(int i=0;i<43;i++) {AccSelP[j]->SetPoint(p,encinprot[i],AcceptanceP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1) );p++;}
+		for(int i=0;i<nbinsr;i++) {AccSelP[j]->SetPoint(p,encinprot[i],AcceptanceP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1) );p++;}
 		AccSelP[j]->SetMarkerStyle(8);
         	AccSelP[j]->SetMarkerColor(j-1);
         	AccSelP[j]->SetLineColor(j-1);
@@ -312,7 +312,7 @@ void Acceptance(){
 	for(int j=0;j<11;j++) {
                 AccpreP[j]=new TGraphErrors();
                 p=0;
-		for(int i=0;i<43;i++) {AccpreP[j]->SetPoint(p,encinprot[i],AcceptancePreP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1));p++;}
+		for(int i=0;i<nbinsr;i++) {AccpreP[j]->SetPoint(p,encinprot[i],AcceptancePreP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1));p++;}
                 AccpreP[j]->SetMarkerStyle(8);
                 AccpreP[j]->SetMarkerColor(j-1);
                 AccpreP[j]->SetLineColor(j-1);

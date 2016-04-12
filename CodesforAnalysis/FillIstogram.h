@@ -9,10 +9,10 @@ void FillIstogram(int INDX,string frac,string mese)
 	string numero[11]={"0","1","2","3","4","5","6","7","8","9","10"};
 	string tagli[10]={"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
 	string nome;
-	float DXWind[43];
+	float DXWind[nbinsr];
 	for(int i=0;i<11;i++) {
 		nome="Esposizione"+numero[i];
-		Esposizione[i]= new TH1F(nome.c_str(),nome.c_str(),43,0,43);
+		Esposizione[i]= new TH1F(nome.c_str(),nome.c_str(),nbinsr,0,nbinsr);
 	}
 
 
@@ -22,7 +22,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	float Zona=0;
 	int UnbiasPre=9;
 	float tempi[11]={0};
-	float Esposizionegeo[43][11]={{0}};
+	float Esposizionegeo[nbinsr][11]={{0}};
 	double geomag[12]={0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
 	float DistTOF,DistTrack,DistTRD=0;
 	

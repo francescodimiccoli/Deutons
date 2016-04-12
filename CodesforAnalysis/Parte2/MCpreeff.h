@@ -11,7 +11,7 @@ void MCpreseff_Fill(TNtuple *ntupla, int l){
 
 	if(Massa_gen<1&&Massa_gen>0.5) {
 		//R bins
-		for(int M=0;M<43;M++) 
+		for(int M=0;M<nbinsr;M++) 
 		{
 			if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) EffpreselMCP->beforeR->Fill(M);
 			if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]) 	
@@ -37,7 +37,7 @@ void MCpreseff_Fill(TNtuple *ntupla, int l){
 
 	if(Massa_gen>1&&Massa_gen<2) {
 		// R bins
-		for(int M=0;M<43;M++) 
+		for(int M=0;M<nbinsr;M++) 
 		{
 			if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) 
 				EffpreselMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
@@ -134,7 +134,7 @@ void MCpreeff(TFile * file1){
 	string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
 	TGraph * EffPreMCP_R = new TGraph();
 	EffPreMCP_R->SetTitle(MCLegend[0].c_str());
-	for(int i=0;i<43;i++) EffPreMCP_R->SetPoint(i,R_cent[i],EffPreMCP_R_TH1F->GetBinContent(i+1));
+	for(int i=0;i<nbinsr;i++) EffPreMCP_R->SetPoint(i,R_cent[i],EffPreMCP_R_TH1F->GetBinContent(i+1));
 	TGraph * EffPreMCD_R[6];
 	EffPreMCP_R->SetMarkerColor(2);
 	EffPreMCP_R->SetMarkerStyle(8);
@@ -153,7 +153,7 @@ void MCpreeff(TFile * file1){
 		for(int h=0;h<6;h++){
 			EffPreMCD_R[h]= new TGraph();
 			EffPreMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-			for(int i=1;i<43;i++) EffPreMCD_R[h]->SetPoint(i,R_cent[i],EffPreMCD_R_TH2F->GetBinContent(i+1,h+1));
+			for(int i=1;i<nbinsr;i++) EffPreMCD_R[h]->SetPoint(i,R_cent[i],EffPreMCD_R_TH2F->GetBinContent(i+1,h+1));
 			leg->AddEntry(EffPreMCD_R[h],MCLegend[h+1].c_str(), "ep");
 			EffPreMCD_R[h]->SetMarkerColor(4);
 			EffPreMCD_R[h]->SetMarkerStyle(h+3);

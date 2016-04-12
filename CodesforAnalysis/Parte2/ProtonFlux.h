@@ -13,7 +13,7 @@ void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona){
 	if(Beta<=0||R<=0) return;
 
 	if(Dist5D_P<6&&Likcut){
-		for(int K=0;K<43;K++) 
+		for(int K=0;K<nbinsr;K++) 
 			if(R<bin[K+1]&&R>bin[K]) {
 				P_Flux_geo-> Counts_R -> Fill(K,zona);
 				if(R>1.2*Rcutoff){		
@@ -26,7 +26,7 @@ void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona){
 
 	if(Herejcut) {
 		if(R>1.2*Rcutoff){
-			for(int K=0;K<43;K++) 
+			for(int K=0;K<nbinsr;K++) 
 				if(R<bin[K+1]&&R>bin[K]) {
 					P_Flux_pre -> Counts_R -> Fill(K);
 					if(Dist5D_P<6&&Likcut)  P_Flux_sel -> Counts_R -> Fill(K);
@@ -122,7 +122,7 @@ void ProtonFlux(){
 		nome="Protons Flux: Geo. Zone "+numero[j];
 		P_Fluxgeo[j]=new TGraphErrors();
 		P_Fluxgeo[j]->SetName(nome.c_str());
-		for(int i=0;i<43;i++){
+		for(int i=0;i<nbinsr;i++){
 				      P_Fluxgeo[j]->SetPoint(i,encinprot[i],ProtonsGeomagFlux->GetBinContent(i+1,j+1)*pow(encinprot[i],potenza));
 				      P_Fluxgeo[j]->SetPointError(i,0,0);
 					}	
@@ -148,7 +148,7 @@ void ProtonFlux(){
 	gPad->SetGridx();
 	gPad->SetGridy();
 	PFlux=new TGraphErrors();
-	for(int i=0;i<43;i++) {PFlux->SetPoint(i,encinprot[i],ProtonsPrimaryFlux->GetBinContent(i+1)*pow(encinprot[i],potenza));
+	for(int i=0;i<nbinsr;i++) {PFlux->SetPoint(i,encinprot[i],ProtonsPrimaryFlux->GetBinContent(i+1)*pow(encinprot[i],potenza));
 			       PFlux->SetPointError(i,0,0*pow(encinprot[i],potenza));	
 	}
 	PFlux->SetName("Protons Primary Flux");
@@ -201,13 +201,13 @@ void ProtonFlux(){
 	PFlux_pre=new TGraphErrors();
 	PFlux_pre->SetName("Protons Primary Flux (only pres.)");
 	int p=0;
-	for(int i=1;i<43;i++) {
+	for(int i=1;i<nbinsr;i++) {
 		PFlux_->SetPoint(p,R_cent[i],1);
 		PFlux_pre->SetPoint(p,encinprot[i],1);
 			PFlux_->SetPointError(p,0,0/*(PFluxpre->GetBinContent(i+1,2)+PFluxsel->GetBinContent(i+1,2))/PFluxpre->GetBinContent(i+1,1)*/);
 		p++;}
 	p=0;
-	for(int i=1;i<43;i++) {
+	for(int i=1;i<nbinsr;i++) {
 			PFluxpre->SetPoint(p,R_cent[i],P_sel_PrimaryFlux->GetBinContent(i+1)/P_pre_PrimaryFlux->GetBinContent(i+1,1));
 			p++;}
 	PFluxpre->SetMarkerStyle(8);

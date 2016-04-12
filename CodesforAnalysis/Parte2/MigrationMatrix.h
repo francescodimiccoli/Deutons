@@ -1,15 +1,15 @@
 using namespace std;
 
 
-TH2F * MigrMatrix = new TH2F("MigrMatrix","MigrMatrix",43,0,43,43,0,43);
+TH2F * MigrMatrix = new TH2F("MigrMatrix","MigrMatrix",nbinsr,0,nbinsr,nbinsr,0,nbinsr);
 
 void MigrationMatrix_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
 	if(!(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0))	return;
 	if(Massa_gen<1&&Massa_gen>0.5) {
-                for(int M=0;M<43;M++) 
+                for(int M=0;M<nbinsr;M++) 
 			if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]){
-				for(int l=0;l<43;l++) 
+				for(int l=0;l<nbinsr;l++) 
 					if(fabs(R_pre)<bin[l+1]&&fabs(R_pre)>bin[l]) 
 						MigrMatrix->Fill(l,M);
 				}
@@ -26,9 +26,9 @@ void MigrationMatrix(TFile * file1){
 	TH2F * MigrMatrix= (TH2F*) file1->Get("MigrMatrix");
 	
 	cout<<"****** Migration Matrix **********"<<endl;
-	float norm[43]={0};
-	for(int M=0;M<43;M++)for(int l=0;l<43;l++) norm[M]+=MigrMatrix->GetBinContent(l+1,M+1);
-	for(int M=0;M<43;M++)for(int l=0;l<43;l++) MigrMatrix->SetBinContent(l+1,M+1,MigrMatrix->GetBinContent(l+1,M+1)/norm[M]);
+	float norm[nbinsr]={0};
+	for(int M=0;M<nbinsr;M++)for(int l=0;l<nbinsr;l++) norm[M]+=MigrMatrix->GetBinContent(l+1,M+1);
+	for(int M=0;M<nbinsr;M++)for(int l=0;l<nbinsr;l++) MigrMatrix->SetBinContent(l+1,M+1,MigrMatrix->GetBinContent(l+1,M+1)/norm[M]);
 	
 	TCanvas * c27 = new TCanvas("Rigidity Migration matrix");
 	c27->cd();
