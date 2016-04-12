@@ -25,6 +25,11 @@
 #include "TTree.h"
 #include "TMath.h"
 #include <math.h>
+
+
+extern const int nbinsr=43;
+
+
 #include "Functions_auto.h"
 #include "Parte2/Definitions.h"
 #include "Parte2/FitError.h"
