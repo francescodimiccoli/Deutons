@@ -6,7 +6,7 @@ class ACCEPTANCE
 private:
 
 	//binning
-	float binsR[44];
+	float binsR[nbinsr+1];
 	float binsBetaTOF[19];
 	float binsBetaNaF[19];
 	float binsBetaAgl[19];

@@ -91,7 +91,7 @@ float BetaAglD[18]={0};
 float Unbias=0;
 float BetacentAgl[18]={0};
 float EkincentAgl[18]={0};
-float bin[44];
+float bin[nbinsr+1];
 double R_cent[nbinsr];
 float encinprot[nbinsr];
 float encindeut[nbinsr];

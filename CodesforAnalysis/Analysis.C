@@ -73,7 +73,7 @@ int main(int argc, char * argv[])
 	INDX=atoi(argv[2]);
 	mese=argv[1];
 	cout<<"****************************** R BINS ***************************************"<<endl;
-	for(int i=0;i<44;i++)
+	for(int i=0;i<nbinsr+1;i++)
 	{
 		float temp=i+14;
 		bin[i]=0.1*pow(10,temp/(9.5*2));
