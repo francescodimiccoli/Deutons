@@ -22,9 +22,9 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
 
       // Beta bins
 
-      if(Var3>BetaP[m]    && Var3<=BetaP[m+1])    EffpreselMCP->beforeTOF->Fill(m);
-      if(Var3>BetaNaFP[m] && Var3<=BetaNaFP[m+1]) EffpreselMCP->beforeNaF->Fill(m);
-      if(Var3>BetaAglP[m] && Var3<=BetaAglP[m+1]) EffpreselMCP->beforeAgl->Fill(m);
+      for(int m=0; m<nbinsToF; m++)  if(Var3>BetaP[m]    && Var3<=BetaP[m+1])    EffpreselMCP->beforeTOF->Fill(m);
+      for(int m=0; m<nbinsNaF; m++)  if(Var3>BetaNaFP[m] && Var3<=BetaNaFP[m+1]) EffpreselMCP->beforeNaF->Fill(m);
+      for(int m=0; m<nbinsAgl; m++)  if(Var3>BetaAglP[m] && Var3<=BetaAglP[m+1]) EffpreselMCP->beforeAgl->Fill(m);
 
       if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0)
       {
