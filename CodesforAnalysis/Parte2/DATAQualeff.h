@@ -20,7 +20,7 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 	if(!(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.1&&EdepL1>EdepL1beta->Eval(Beta)-0.1)) return;
 	//TOF
 	if(!(((int)Cutmask>>11)==0||((int)Cutmask>>11)==512)){
-		for(int K=0;K<43;K++) 
+		for(int K=0;K<nbinsr;K++) 
 			if(R<bin[K+1]&&R>bin[K]&&R>Rcut[zona]) {
 					LATDistanceDATA_TOF->beforeR->Fill(K,zona);				
 					if(Dist5D_P<6) {
@@ -34,7 +34,7 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 		}
 	//NaF	
 	if(((int)Cutmask>>11)==512){
-		for(int K=0;K<43;K++) 
+		for(int K=0;K<nbinsr;K++) 
 			if(R<bin[K+1]&&R>bin[K]&&R>Rcut[zona]) {
 					LATDistanceDATA_NaF->beforeR->Fill(K,zona);				
 					if(Dist5D_P<6) {
@@ -48,7 +48,7 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona){
 	}
 	//Agl
 	if(((int)Cutmask>>11)==0){
-        		for(int K=0;K<43;K++) 
+        		for(int K=0;K<nbinsr;K++) 
 			if(R<bin[K+1]&&R>bin[K]&&R>Rcut[zona]) {
 					LATDistanceDATA_Agl->beforeR->Fill(K,zona);				
 					if(Dist5D_P<6) {
@@ -194,7 +194,7 @@ void DATAQualeff(TFile * file1){
 	for(int l=0;l<11;l++){
 		EffDATALikP[l]=new TGraphErrors();
 		int j=0;
-		for(int i=1;i<43;i++) {
+		for(int i=1;i<nbinsr;i++) {
 			EffDATALikP[l]->SetPoint(j,R_cent[i],LATLikDATATOF->GetBinContent(i+1,l+1));
 			EffDATALikP[l]->SetPointError(j,0,LATLikDATATOF->GetBinError(i+1,l+1));
 			j++;
@@ -228,7 +228,7 @@ void DATAQualeff(TFile * file1){
         for(int l=0;l<11;l++){
                 EffDATALikNaFP[l]=new TGraphErrors();
                 int j=0;
-                for(int i=1;i<43;i++) {
+                for(int i=1;i<nbinsr;i++) {
                         EffDATALikNaFP[l]->SetPoint(j,R_cent[i],LATLikDATANaF ->GetBinContent(i+1,l+1));
                         EffDATALikNaFP[l]->SetPointError(j,0,LATLikDATANaF ->GetBinError(i+1,l+1));
                         j++;
@@ -259,7 +259,7 @@ void DATAQualeff(TFile * file1){
         for(int l=0;l<11;l++){
                 EffDATALikAglP[l]=new TGraphErrors();
                 int j=0;
-                for(int i=1;i<43;i++) {
+                for(int i=1;i<nbinsr;i++) {
                         EffDATALikAglP[l]->SetPoint(j,R_cent[i],LATLikDATAAgl ->GetBinContent(i+1,l+1));
                         EffDATALikAglP[l]->SetPointError(j,0,LATLikDATAAgl ->GetBinError(i+1,l+1));
                         j++;
@@ -374,7 +374,7 @@ void DATAQualeff(TFile * file1){
 	for(int l=0;l<11;l++){
 		EffDATADistP[l]=new TGraphErrors();
 		int j=0;
-		for(int i=1;i<43;i++) {
+		for(int i=1;i<nbinsr;i++) {
 			EffDATADistP[l]->SetPoint(j,R_cent[i],LATDistDATATOF ->GetBinContent(i+1,l+1));
 			EffDATADistP[l]->SetPointError(j,0, LATDistDATATOF ->GetBinError(i+1,l+1));
 			j++;
@@ -405,7 +405,7 @@ void DATAQualeff(TFile * file1){
         for(int l=0;l<11;l++){
                 EffDATADistNaFP[l]=new TGraphErrors();
                 int j=0;
-                for(int i=1;i<43;i++) {
+                for(int i=1;i<nbinsr;i++) {
                         EffDATADistNaFP[l]->SetPoint(j,R_cent[i],LATDistDATANaF ->GetBinContent(i+1,l+1));
 			EffDATADistNaFP[l]->SetPointError(j,0, LATDistDATANaF ->GetBinError(i+1,l+1));
                         j++;
@@ -436,7 +436,7 @@ void DATAQualeff(TFile * file1){
         for(int l=0;l<11;l++){
                 EffDATADistAglP[l]=new TGraphErrors();
                 int j=0;
-                for(int i=1;i<43;i++) {
+                for(int i=1;i<nbinsr;i++) {
                         EffDATADistAglP[l]->SetPoint(j,R_cent[i],LATDistDATAAgl ->GetBinContent(i+1,l+1));
 			EffDATADistAglP[l]->SetPointError(j,0, LATDistDATAAgl ->GetBinError(i+1,l+1));
                         j++;

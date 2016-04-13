@@ -6,7 +6,7 @@ class ACCEPTANCE
 private:
 
 	//binning
-	float binsR[44];
+	float binsR[nbinsr+1];
 	float binsBetaTOF[19];
 	float binsBetaNaF[19];
 	float binsBetaAgl[19];
@@ -57,10 +57,10 @@ public:
 		after_Agl   = (TH1 *)file->Get((basename + "1Agl").c_str());
 		after_R     = (TH1 *)file->Get((basename + "1_R" ).c_str());
 
-		before_TOF  = new TH2F((basename + "Trig"   ).c_str(),(basename + "Trig"   ).c_str(),18,0,18, n, 0 ,n);
-		before_NaF  = new TH2F((basename + "TrigNaF").c_str(),(basename + "TrigNaF").c_str(),18,0,18, n, 0 ,n);
-		before_Agl  = new TH2F((basename + "TrigAgl").c_str(),(basename + "TrigAgl").c_str(),18,0,18, n, 0 ,n);
-		before_R    = new TH2F((basename + "Trig_R" ).c_str(),(basename + "Trig_R" ).c_str(),43,0,43, n, 0 ,n);
+		before_TOF  = new TH2F((basename + "Trig"   ).c_str(),(basename + "Trig"   ).c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n);
+		before_NaF  = new TH2F((basename + "TrigNaF").c_str(),(basename + "TrigNaF").c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n);
+		before_Agl  = new TH2F((basename + "TrigAgl").c_str(),(basename + "TrigAgl").c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n);
+		before_R    = new TH2F((basename + "Trig_R" ).c_str(),(basename + "Trig_R" ).c_str(),nbinsr,0,nbinsr, n, 0 ,n);
 
 		Efficiency_R  = (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffR"         ).c_str());
 		Efficiency_TOF= (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffTOF"         ).c_str());

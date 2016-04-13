@@ -151,15 +151,15 @@ void DeutonsTemplFits(){
 /*
 
 
-TCanvas *c30[12][18];
-TCanvas *c30_bis[12][18];
-TCanvas *c30_tris[12][18];
-TH3F * DCountsgeoTOF = new TH3F("DCountsgeoTOF","DCountsgeoTOF",18,0,18,12,0,12,2,0,2);
-TH3F * DCountsgeoNaF = new TH3F("DCountsgeoNaF","DCountsgeoNaF",18,0,18,12,0,12,2,0,2);
-TH3F * DCountsgeoAgl = new TH3F("DCountsgeoAgl","DCountsgeoAgl",18,0,18,12,0,12,2,0,2);
-TH2F * PCountsTOF = new TH2F("PCountsTOF","PCountsTOF",18,0,18,2,0,2);
-TH2F * PCountsNaF = new TH2F("PCountsNaF","PCountsNaF",18,0,18,2,0,2);
-TH2F * PCountsAgl = new TH2F("PCountsAgl","PCountsAgl",18,0,18,2,0,2);
+TCanvas *c30[12][nbinsbeta];
+TCanvas *c30_bis[12][nbinsbeta];
+TCanvas *c30_tris[12][nbinsbeta];
+TH3F * DCountsgeoTOF = new TH3F("DCountsgeoTOF","DCountsgeoTOF",nbinsbeta,0,nbinsbeta,12,0,12,2,0,2);
+TH3F * DCountsgeoNaF = new TH3F("DCountsgeoNaF","DCountsgeoNaF",nbinsbeta,0,nbinsbeta,12,0,12,2,0,2);
+TH3F * DCountsgeoAgl = new TH3F("DCountsgeoAgl","DCountsgeoAgl",nbinsbeta,0,nbinsbeta,12,0,12,2,0,2);
+TH2F * PCountsTOF = new TH2F("PCountsTOF","PCountsTOF",nbinsbeta,0,nbinsbeta,2,0,2);
+TH2F * PCountsNaF = new TH2F("PCountsNaF","PCountsNaF",nbinsbeta,0,nbinsbeta,2,0,2);
+TH2F * PCountsAgl = new TH2F("PCountsAgl","PCountsAgl",nbinsbeta,0,nbinsbeta,2,0,2);
 
 void DeutonsTemplFits(TFile * file1){
 	TH2F* DTemplatesTOF=(TH2F*)file1->Get("DTemplatesTOF");
@@ -191,16 +191,16 @@ void DeutonsTemplFits(TFile * file1){
 	TH2F* DhistosAgl2=(TH2F*)file1->Get("DhistosAgl2");
 	
 	cout<<"******************** Mass TOF TEMPLATE FITS *******************"<<endl;
-	TH1F *DataMassTOF[12][18];
-	TH1F *DTemplTOF[18];
-	TH1F *PTemplTOF[18];
-	TH1F *HeTemplTOF[18];
-	TH1F *DTemplTOF2[18];
-        TH1F *PTemplTOF2[18];
-        TH1F *HeTemplTOF2[18];	
+	TH1F *DataMassTOF[12][nbinsbeta];
+	TH1F *DTemplTOF[nbinsbeta];
+	TH1F *PTemplTOF[nbinsbeta];
+	TH1F *HeTemplTOF[nbinsbeta];
+	TH1F *DTemplTOF2[nbinsbeta];
+        TH1F *PTemplTOF2[nbinsbeta];
+        TH1F *HeTemplTOF2[nbinsbeta];	
 	
 	string nome;
-	for(int m=0;m<18;m++){
+	for(int m=0;m<nbinsbeta;m++){
 		DTemplTOF[m]=new TH1F("","",50,0,3);
 		PTemplTOF[m]=new TH1F("","",50,0,3);
 		HeTemplTOF[m]=new TH1F("","",50,0,3);
@@ -211,7 +211,7 @@ void DeutonsTemplFits(TFile * file1){
 			DataMassTOF[l][m]=new TH1F("","",50,0,3);	
 		}	
 	}
-	for(int m=0;m<18;m++){
+	for(int m=0;m<nbinsbeta;m++){
 		for(int i=0;i<50;i++){
 		DTemplTOF[m]->SetBinContent(i+1,DTemplatesTOF->GetBinContent(i+1,m+1));
 		PTemplTOF[m]->SetBinContent(i+1,PTemplatesTOF->GetBinContent(i+1,m+1));
@@ -226,17 +226,17 @@ void DeutonsTemplFits(TFile * file1){
 	}
 	
 	
-	TFractionFitter * fitT[18][12]={{NULL}};
-	TObjArray *Tpl[18][12]={{NULL}};
+	TFractionFitter * fitT[nbinsbeta][12]={{NULL}};
+	TObjArray *Tpl[nbinsbeta][12]={{NULL}};
 	int cut=17;
-	int s1[18][12]={{0}};
-	float Err[18][12]={{0}};
-	TH1F *PTemplTOFW[18][12];
-	TH1F *DTemplTOFW[18][12];
-	TH1F *HeTemplTOFW[18][12];
-	for(int i=0;i<12;i++) for(int m=0;m<18;m++)c30[i][m]=new TCanvas(); 	
+	int s1[nbinsbeta][12]={{0}};
+	float Err[nbinsbeta][12]={{0}};
+	TH1F *PTemplTOFW[nbinsbeta][12];
+	TH1F *DTemplTOFW[nbinsbeta][12];
+	TH1F *HeTemplTOFW[nbinsbeta][12];
+	for(int i=0;i<12;i++) for(int m=0;m<nbinsbeta;m++)c30[i][m]=new TCanvas(); 	
 		bool He=true;
-	for(int i=0;i<12;i++) for(int m=0;m<18;m++) {
+	for(int i=0;i<12;i++) for(int m=0;m<nbinsbeta;m++) {
 		c30[i][m]->cd();
 		PTemplTOFW[m][i]=new TH1F("","",50,0,3);
 		DTemplTOFW[m][i]=new TH1F("","",50,0,3);
@@ -359,14 +359,14 @@ void DeutonsTemplFits(TFile * file1){
 	}
 
 	cout<<"******************** MASS NaF TEMPLATE FITS *******************"<<endl;
-        TH1F *DataMassNaF[12][18];
-        TH1F *DTemplNaF[18];
-        TH1F *PTemplNaF[18];
-        TH1F *HeTemplNaF[18];
-	TH1F *DTemplNaF2[18];
-        TH1F *PTemplNaF2[18];
-        TH1F *HeTemplNaF2[18];
-        for(int m=0;m<18;m++){
+        TH1F *DataMassNaF[12][nbinsbeta];
+        TH1F *DTemplNaF[nbinsbeta];
+        TH1F *PTemplNaF[nbinsbeta];
+        TH1F *HeTemplNaF[nbinsbeta];
+	TH1F *DTemplNaF2[nbinsbeta];
+        TH1F *PTemplNaF2[nbinsbeta];
+        TH1F *HeTemplNaF2[nbinsbeta];
+        for(int m=0;m<nbinsbeta;m++){
                 DTemplNaF[m]=new TH1F("","",50,0,3);
                 PTemplNaF[m]=new TH1F("","",50,0,3);
                 HeTemplNaF[m]=new TH1F("","",50,0,3);
@@ -377,7 +377,7 @@ void DeutonsTemplFits(TFile * file1){
                         DataMassNaF[l][m]=new TH1F("","",50,0,3);
                 }
         }
-        for(int m=0;m<18;m++){
+        for(int m=0;m<nbinsbeta;m++){
                 for(int i=0;i<50;i++){
                 DTemplNaF[m]->SetBinContent(i+1,DTemplatesNaF->GetBinContent(i+1,m+1));
                 PTemplNaF[m]->SetBinContent(i+1,PTemplatesNaF->GetBinContent(i+1,m+1));
@@ -390,17 +390,17 @@ void DeutonsTemplFits(TFile * file1){
 		DataMassNaF[0][m]->SetBinContent(i+1,DhistosNaF2->GetBinContent(i+1,m+1));
 		}
         }
-	TFractionFitter * fitTNaF[18][12]={{NULL}};
-	TObjArray *TplNaF[18][12]={{NULL}};
+	TFractionFitter * fitTNaF[nbinsbeta][12]={{NULL}};
+	TObjArray *TplNaF[nbinsbeta][12]={{NULL}};
 	int cutNaF=17;
-	int s1NaF[18][12]={{0}};
-	float ErrNaF[18][12]={{0}};
-	TH1F *PTemplNaFW[18][12];
-	TH1F *DTemplNaFW[18][12];
-	TH1F *HeTemplNaFW[18][12];
-	for(int i=0;i<12;i++) for(int m=0;m<18;m++) c30_bis[i][m]=new TCanvas(); 	
+	int s1NaF[nbinsbeta][12]={{0}};
+	float ErrNaF[nbinsbeta][12]={{0}};
+	TH1F *PTemplNaFW[nbinsbeta][12];
+	TH1F *DTemplNaFW[nbinsbeta][12];
+	TH1F *HeTemplNaFW[nbinsbeta][12];
+	for(int i=0;i<12;i++) for(int m=0;m<nbinsbeta;m++) c30_bis[i][m]=new TCanvas(); 	
 		He=false;
-	for(int i=0;i<12;i++) for(int m=0;m<18;m++) {
+	for(int i=0;i<12;i++) for(int m=0;m<nbinsbeta;m++) {
 		c30_bis[i][m]->cd();
 		PTemplNaFW[m][i]=new TH1F("","",50,0,3);
 		DTemplNaFW[m][i]=new TH1F("","",50,0,3);
@@ -510,14 +510,14 @@ void DeutonsTemplFits(TFile * file1){
 
 	}
 	cout<<"******************** MASS Agl TEMPLATE FITS *******************"<<endl;
-        TH1F *DataMassAgl[12][18];
-        TH1F *DTemplAgl[18];
-        TH1F *PTemplAgl[18];
-        TH1F *HeTemplAgl[18];
-	TH1F *DTemplAgl2[18];
-        TH1F *PTemplAgl2[18];
-        TH1F *HeTemplAgl2[18];
-        for(int m=0;m<18;m++){
+        TH1F *DataMassAgl[12][nbinsbeta];
+        TH1F *DTemplAgl[nbinsbeta];
+        TH1F *PTemplAgl[nbinsbeta];
+        TH1F *HeTemplAgl[nbinsbeta];
+	TH1F *DTemplAgl2[nbinsbeta];
+        TH1F *PTemplAgl2[nbinsbeta];
+        TH1F *HeTemplAgl2[nbinsbeta];
+        for(int m=0;m<nbinsbeta;m++){
                 DTemplAgl[m]=new TH1F("","",50,0,3);
                 PTemplAgl[m]=new TH1F("","",50,0,3);
                 HeTemplAgl[m]=new TH1F("","",50,0,3);
@@ -528,7 +528,7 @@ void DeutonsTemplFits(TFile * file1){
                         DataMassAgl[l][m]=new TH1F("","",50,0,3);
                 }
         }
-        for(int m=0;m<18;m++){
+        for(int m=0;m<nbinsbeta;m++){
                 for(int i=0;i<50;i++){
                 DTemplAgl[m]->SetBinContent(i+1,DTemplatesAgl->GetBinContent(i+1,m+1));
                 PTemplAgl[m]->SetBinContent(i+1,PTemplatesAgl->GetBinContent(i+1,m+1));
@@ -542,17 +542,17 @@ void DeutonsTemplFits(TFile * file1){
 		}
         }
 
-        TFractionFitter * fitTAgl[18][12]={{NULL}};
-        TObjArray *TplAgl[18][12]={{NULL}};
+        TFractionFitter * fitTAgl[nbinsbeta][12]={{NULL}};
+        TObjArray *TplAgl[nbinsbeta][12]={{NULL}};
         int cutAgl=16;
-        int s1Agl[18][12]={{0}};
-        float ErrAgl[18][12]={{0}};
-        TH1F *PTemplAglW[18][12];
-        TH1F *DTemplAglW[18][12];
-        TH1F *HeTemplAglW[18][12];
-        for(int i=0;i<12;i++) for(int m=0;m<18;m++) c30_tris[i][m]=new TCanvas();
+        int s1Agl[nbinsbeta][12]={{0}};
+        float ErrAgl[nbinsbeta][12]={{0}};
+        TH1F *PTemplAglW[nbinsbeta][12];
+        TH1F *DTemplAglW[nbinsbeta][12];
+        TH1F *HeTemplAglW[nbinsbeta][12];
+        for(int i=0;i<12;i++) for(int m=0;m<nbinsbeta;m++) c30_tris[i][m]=new TCanvas();
                 He=true;
-        for(int i=0;i<12;i++) for(int m=0;m<18;m++) {
+        for(int i=0;i<12;i++) for(int m=0;m<nbinsbeta;m++) {
                 c30_tris[i][m]->cd();
                 cutAgl=16;
 		PTemplAglW[m][i]=new TH1F("","",50,0,3);
@@ -673,17 +673,17 @@ void DeutonsTemplFits(TFile * file1){
 	cout<<"********** TEMPL: FIT RESULTS ********************"<<endl;
 	cout<<"**** TOF ********"<<endl;
 	for(int i=0;i<12;i++){
-		for(int m=0;m<18;m++) cout<<s1[m][i]<<" ";
+		for(int m=0;m<nbinsbeta;m++) cout<<s1[m][i]<<" ";
 		cout<<endl;
 	}
 	cout<<"**** NaF ********"<<endl;
         for(int i=0;i<12;i++){
-                for(int m=0;m<18;m++) cout<<s1NaF[m][i]<<" ";
+                for(int m=0;m<nbinsbeta;m++) cout<<s1NaF[m][i]<<" ";
                 cout<<endl;
         }
 	cout<<"**** Agl ********"<<endl;
         for(int i=0;i<12;i++){
-                for(int m=0;m<18;m++) cout<<s1Agl[m][i]<<" ";
+                for(int m=0;m<nbinsbeta;m++) cout<<s1Agl[m][i]<<" ";
                 cout<<endl;
         }
 

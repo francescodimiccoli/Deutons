@@ -5,17 +5,17 @@ TCanvas * c33 = new TCanvas("Exposure Time");
 TCanvas * c34 = new TCanvas("Deutons Flux: Primaries");
 TCanvas * c35 = new TCanvas("D/P ratio");
 
-TH3F * DFluxgeoTOF = new TH3F("DFluxsgeoTOF","DFluxsgeoTOF",18,0,18,11,0,11,2,0,2);
-TH3F * DFluxgeoNaF = new TH3F("DFluxsgeoNaF","DFluxsgeoNaF",18,0,18,11,0,11,2,0,2);
-TH3F * DFluxgeoAgl = new TH3F("DFluxsgeoAgl","DFluxsgeoAgl",18,0,18,11,0,11,2,0,2);
+TH3F * DFluxgeoTOF = new TH3F("DFluxsgeoTOF","DFluxsgeoTOF",nbinsbeta,0,nbinsbeta,11,0,11,2,0,2);
+TH3F * DFluxgeoNaF = new TH3F("DFluxsgeoNaF","DFluxsgeoNaF",nbinsbeta,0,nbinsbeta,11,0,11,2,0,2);
+TH3F * DFluxgeoAgl = new TH3F("DFluxsgeoAgl","DFluxsgeoAgl",nbinsbeta,0,nbinsbeta,11,0,11,2,0,2);
 
-TH2F * DFluxTOF= new TH2F("DFluxTOF","DFluxTOF",18,0,18,2,0,2);
-TH2F * DFluxNaF= new TH2F("DFluxNaF","DFluxNaF",18,0,18,2,0,2);
-TH2F * DFluxAgl= new TH2F("DFluxAgl","DFluxAgl",18,0,18,2,0,2);
+TH2F * DFluxTOF= new TH2F("DFluxTOF","DFluxTOF",nbinsbeta,0,nbinsbeta,2,0,2);
+TH2F * DFluxNaF= new TH2F("DFluxNaF","DFluxNaF",nbinsbeta,0,nbinsbeta,2,0,2);
+TH2F * DFluxAgl= new TH2F("DFluxAgl","DFluxAgl",nbinsbeta,0,nbinsbeta,2,0,2);
 
-TH2F * PDratioTOF= new TH2F("PDratioTOF","PDratioTOF",18,0,18,2,0,2);
-TH2F * PDratioNaF= new TH2F("PDratioNaF","PDratioNaF",18,0,18,2,0,2);
-TH2F * PDratioAgl= new TH2F("PDratioAgl","PDratioAgl",18,0,18,2,0,2);
+TH2F * PDratioTOF= new TH2F("PDratioTOF","PDratioTOF",nbinsbeta,0,nbinsbeta,2,0,2);
+TH2F * PDratioNaF= new TH2F("PDratioNaF","PDratioNaF",nbinsbeta,0,nbinsbeta,2,0,2);
+TH2F * PDratioAgl= new TH2F("PDratioAgl","PDratioAgl",nbinsbeta,0,nbinsbeta,2,0,2);
 
 TGraphErrors * D_FluxgeoTOF[11];
 TGraphErrors * D_FluxgeoNaF[11];
@@ -38,14 +38,14 @@ void DeutonFlux(TFile * file1){
 	TH2F * esposizionedgeoAgl = (TH2F*)file1->Get("esposizionedgeoAgl");	
 
 	cout<<"*************** Deutons Fluxes Calculation ******************"<<endl;
-	float Esposd_TOF[18]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	float Esposd_NaF[18]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	float Esposd_Agl[18]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	float Esposp_TOF[18]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	float Esposp_NaF[18]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	float Esposp_Agl[18]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};	
+	float Esposd_TOF[nbinsbeta]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	float Esposd_NaF[nbinsbeta]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	float Esposd_Agl[nbinsbeta]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	float Esposp_TOF[nbinsbeta]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	float Esposp_NaF[nbinsbeta]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	float Esposp_Agl[nbinsbeta]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};	
 
-	for(int m=0;m<18;m++)
+	for(int m=0;m<nbinsbeta;m++)
 		for(int i=1;i<11;i++) {
 			Esposd_TOF[m]+=esposizionedgeo->GetBinContent(m+1,i);
 			Esposp_TOF[m]+=esposizionepgeo->GetBinContent(m+1,i);
@@ -55,14 +55,14 @@ void DeutonFlux(TFile * file1){
 			Esposp_Agl[m]+=esposizionepgeoAgl->GetBinContent(m+1,i);
 		}
 
-	float AcceptLATpTOF[18]={0};
-	float AcceptLATpNaF[18]={0};
-	float AcceptLATpAgl[18]={0};
-	float AcceptLATdTOF[18]={0};
-	float AcceptLATdNaF[18]={0};
-	float AcceptLATdAgl[18]={0};
+	float AcceptLATpTOF[nbinsbeta]={0};
+	float AcceptLATpNaF[nbinsbeta]={0};
+	float AcceptLATpAgl[nbinsbeta]={0};
+	float AcceptLATdTOF[nbinsbeta]={0};
+	float AcceptLATdNaF[nbinsbeta]={0};
+	float AcceptLATdAgl[nbinsbeta]={0};
 
-	for(int m=0;m<18;m++){
+	for(int m=0;m<nbinsbeta;m++){
 		AcceptLATdTOF[m]=AcceptDzoneTOF->GetBinContent(m+1,1,2);
 		AcceptLATdNaF[m]=AcceptDzoneNaF->GetBinContent(m+1,1,2);
 		AcceptLATdAgl[m]=AcceptDzoneAgl->GetBinContent(m+1,1,2);
@@ -70,7 +70,7 @@ void DeutonFlux(TFile * file1){
 		AcceptLATpNaF[m]=AcceptPNaF->GetBinContent(m+1);
 		AcceptLATpAgl[m]=AcceptPAgl->GetBinContent(m+1);
 	}
-	for(int m=0;m<18;m++){
+	for(int m=0;m<nbinsbeta;m++){
 		AcceptLATdTOF[m]/=CorrLATd_TOF_spl->GetBinContent(m+1,1);
 		AcceptLATdNaF[m]/=CorrLATd_NaF_spl->GetBinContent(m+1,1);
 		AcceptLATdAgl[m]/=CorrLATd_Agl_spl->GetBinContent(m+1,1);
@@ -81,7 +81,7 @@ void DeutonFlux(TFile * file1){
 	float errore=0;	
 	//Geo zone
 	for(int l =0;l<11;l++)
-		for(int m=0;m<18;m++)
+		for(int m=0;m<nbinsbeta;m++)
 			if(AcceptDzoneTOF->GetBinContent(m+1,l+1,2)>0&&Tempi->GetBinContent(l)>0){
 				DFluxgeoTOF->SetBinContent(m+1,l+1,0,DCountsgeoTOF->GetBinContent(m+1,l+1,0)/(AcceptDzoneTOF->GetBinContent(m+1,l+1,2)*Tempi->GetBinContent(l)*deltaencinTOF[m]));
 				//err stat
@@ -99,7 +99,7 @@ void DeutonFlux(TFile * file1){
 			}
 
 	for(int l =0;l<11;l++)
-		for(int m=0;m<18;m++)
+		for(int m=0;m<nbinsbeta;m++)
 			if(AcceptDzoneNaF->GetBinContent(m+1,l+1,2)>0&&Tempi->GetBinContent(l)>0){
 				DFluxgeoNaF->SetBinContent(m+1,l+1,0,DCountsgeoNaF->GetBinContent(m+1,l+1,0)/(AcceptDzoneNaF->GetBinContent(m+1,l+1,2)*Tempi->GetBinContent(l)*deltaencinNaF[m]));
 				//err stat
@@ -109,7 +109,7 @@ void DeutonFlux(TFile * file1){
 				DFluxgeoNaF->SetBinContent(m+1,l+1,1,errore*DFluxgeoNaF->GetBinContent(m+1,l+1,0));		
 			}	
 	for(int l =0;l<11;l++)
-		for(int m=0;m<18;m++)
+		for(int m=0;m<nbinsbeta;m++)
 			if(AcceptDzoneAgl->GetBinContent(m+1,l+1,2)>0&&Tempi->GetBinContent(l)>0){
 				DFluxgeoAgl->SetBinContent(m+1,l+1,0,DCountsgeoAgl->GetBinContent(m+1,l+1,0)/(AcceptDzoneAgl->GetBinContent(m+1,l+1,2)*Tempi->GetBinContent(l)*deltaencinAgl[m]));
 				//err stat
@@ -121,7 +121,7 @@ void DeutonFlux(TFile * file1){
 
 
 	//Primaries
-	for(int m=0;m<18;m++)
+	for(int m=0;m<nbinsbeta;m++)
 		if( AcceptLATdTOF[m]>0&&Esposd_TOF[m]>0){	
 			DFluxTOF->SetBinContent(m+1,0,DCountsgeoTOF->GetBinContent(m+1,12,0)/(AcceptLATdTOF[m]*Esposd_TOF[m]*deltaencinTOF[m]));
 			//err stat
@@ -130,7 +130,7 @@ void DeutonFlux(TFile * file1){
 			if(errore>1) errore=0.5;
 			if(errore>0) DFluxTOF->SetBinContent(m+1,1,errore*DFluxTOF->GetBinContent(m+1,0));
 		}
-	for(int m=0;m<18;m++)
+	for(int m=0;m<nbinsbeta;m++)
 		if( AcceptLATdNaF[m]>0&&Esposd_NaF[m]>0){       
 			DFluxNaF->SetBinContent(m+1,0,DCountsgeoNaF->GetBinContent(m+1,12,0)/(AcceptLATdNaF[m]*Esposd_NaF[m]*deltaencinNaF[m]));
 			//err stat
@@ -139,7 +139,7 @@ void DeutonFlux(TFile * file1){
 			if(errore>1) errore=0.5;
 			if(errore>0) DFluxNaF->SetBinContent(m+1,1,errore*DFluxNaF->GetBinContent(m+1,0));		
 		}
-	for(int m=0;m<18;m++)
+	for(int m=0;m<nbinsbeta;m++)
 		if( AcceptLATdAgl[m]>0&&Esposd_Agl[m]>0){
 			DFluxAgl->SetBinContent(m+1,0,DCountsgeoAgl->GetBinContent(m+1,12,0)/(AcceptLATdAgl[m]*Esposd_Agl[m]*deltaencinAgl[m]));
 			//err stat
@@ -150,20 +150,20 @@ void DeutonFlux(TFile * file1){
 		}
 
 	//ratio
-	for(int m=0;m<18;m++)
+	for(int m=0;m<nbinsbeta;m++)
 		if( AcceptLATdTOF[m]>0&&Esposd_TOF[m]>0&&AcceptLATpTOF[m]>0&&Esposp_TOF[m]>0&&PCountsTOF->GetBinContent(m+1,0)>0){
 			PDratioTOF->SetBinContent(m+1,0,(DCountsgeoTOF->GetBinContent(m+1,12,0)/(AcceptLATdTOF[m]*Esposd_TOF[m]*deltaencinTOF[m]))/(PCountsTOF->GetBinContent(m+1,0)/(AcceptLATpTOF[m]*Esposp_TOF[m]*deltaencinTOF[m])));
 			//err
 			PDratioTOF->SetBinContent(m+1,1,pow(2,0.5)*DFluxTOF->GetBinContent(m+1,1)/DFluxTOF->GetBinContent(m+1,0)*PDratioTOF->GetBinContent(m+1,0));
 
 		}
-	for(int m=0;m<18;m++)
+	for(int m=0;m<nbinsbeta;m++)
 		if( AcceptLATdNaF[m]>0&&Esposd_NaF[m]>0&&AcceptLATpNaF[m]>0&&Esposp_NaF[m]>0){
 			PDratioNaF->SetBinContent(m+1,0,(DCountsgeoNaF->GetBinContent(m+1,12,0)/(AcceptLATdNaF[m]*Esposd_NaF[m]*deltaencinNaF[m]))/(PCountsNaF->GetBinContent(m+1,0)/(AcceptLATpNaF[m]*Esposp_NaF[m]*deltaencinNaF[m])));
 		//err
 		PDratioNaF->SetBinContent(m+1,1,pow(2,0.5)*DFluxNaF->GetBinContent(m+1,1)/DFluxNaF->GetBinContent(m+1,0)*PDratioNaF->GetBinContent(m+1,0));
 		}
-	for(int m=0;m<18;m++)
+	for(int m=0;m<nbinsbeta;m++)
 		if( AcceptLATdAgl[m]>0&&Esposd_Agl[m]>0&&AcceptLATpAgl[m]>0&&Esposp_Agl[m]>0){
 			PDratioAgl->SetBinContent(m+1,0,(DCountsgeoAgl->GetBinContent(m+1,12,0)/(AcceptLATdAgl[m]*Esposd_Agl[m]*deltaencinAgl[m]))/(PCountsAgl->GetBinContent(m+1,0)/(AcceptLATpAgl[m]*Esposp_Agl[m]*deltaencinAgl[m])));
 		//err
@@ -182,7 +182,7 @@ void DeutonFlux(TFile * file1){
 	TGraphErrors * esposp_TOF=new TGraphErrors();
 	TGraphErrors * esposp_NaF=new TGraphErrors();
 	TGraphErrors * esposp_Agl=new TGraphErrors();
-	for(int m=0;m<18;m++){
+	for(int m=0;m<nbinsbeta;m++){
 		esposd_TOF->SetPoint(m,Ekincent[m],Esposd_TOF[m]);
 		esposp_TOF->SetPoint(m,Ekincent[m],Esposp_TOF[m]);
 		esposd_NaF->SetPoint(m,EkincentNaF[m],Esposd_NaF[m]);
@@ -287,7 +287,7 @@ void DeutonFlux(TFile * file1){
 		D_FluxgeoTOF[j]=new TGraphErrors();
 		D_FluxgeoTOF[j]->SetName(nome.c_str());
 		p=0;
-		for(int m=1;m<18;m++){
+		for(int m=1;m<nbinsbeta;m++){
 			D_FluxgeoTOF[j]->SetPoint(p,Ekincent[m],DFluxgeoTOF->GetBinContent(m+1,j+1,0));
 			D_FluxgeoTOF[j]->SetPointError(p,0,DFluxgeoTOF->GetBinContent(m+1,j+1,1));
 			p++;
@@ -313,7 +313,7 @@ void DeutonFlux(TFile * file1){
 		D_FluxgeoNaF[j]=new TGraphErrors();
 		D_FluxgeoNaF[j]->SetName(nome.c_str());
 		p=0;
-		for(int m=1;m<18;m++){
+		for(int m=1;m<nbinsbeta;m++){
 			D_FluxgeoNaF[j]->SetPoint(p,EkincentNaF[m],DFluxgeoNaF->GetBinContent(m+1,j+1,0));
 			D_FluxgeoNaF[j]->SetPointError(p,0,DFluxgeoNaF->GetBinContent(m+1,j+1,1));
 			p++;
@@ -339,7 +339,7 @@ void DeutonFlux(TFile * file1){
 		D_FluxgeoAgl[j]=new TGraphErrors();
 		D_FluxgeoAgl[j]->SetName(nome.c_str());
 		p=0;
-		for(int m=1;m<18;m++){
+		for(int m=1;m<nbinsbeta;m++){
 			D_FluxgeoAgl[j]->SetPoint(p,EkincentAgl[m],DFluxgeoAgl->GetBinContent(m+1,j+1,0));
 			D_FluxgeoAgl[j]->SetPointError(p,0,DFluxgeoAgl->GetBinContent(m+1,j+1,1));
 			p++;
@@ -374,7 +374,7 @@ void DeutonFlux(TFile * file1){
 	D_FluxTOF=new TGraphErrors();
 	D_FluxTOF->SetName(nome.c_str());
 	p=0;
-	for(int m=1;m<18;m++){
+	for(int m=1;m<nbinsbeta;m++){
 		D_FluxTOF->SetPoint(p,Ekincent[m],DFluxTOF->GetBinContent(m+1,0));
 		cout<<DFluxTOF->GetBinContent(m+1,1)<<" "<<DFluxTOF->GetBinContent(m+1,0)<<endl;
 		D_FluxTOF->SetPointError(p,0,DFluxTOF->GetBinContent(m+1,1));
@@ -395,7 +395,7 @@ void DeutonFlux(TFile * file1){
 	D_FluxNaF=new TGraphErrors();
 	D_FluxNaF->SetName(nome.c_str());
 	p=0;
-	for(int m=1;m<18;m++){
+	for(int m=1;m<nbinsbeta;m++){
 		D_FluxNaF->SetPoint(p,EkincentNaF[m],DFluxNaF->GetBinContent(m+1,0));
 		D_FluxNaF->SetPointError(p,0,DFluxNaF->GetBinContent(m+1,1));
 		p++;
@@ -415,7 +415,7 @@ void DeutonFlux(TFile * file1){
 	D_FluxAgl=new TGraphErrors();
 	D_FluxAgl->SetName(nome.c_str());
 	p=0;
-	for(int m=1;m<18;m++){
+	for(int m=1;m<nbinsbeta;m++){
 		D_FluxAgl->SetPoint(p,EkincentAgl[m],DFluxAgl->GetBinContent(m+1,0));
 		D_FluxAgl->SetPointError(p,0,DFluxAgl->GetBinContent(m+1,1));
 		p++;
@@ -471,7 +471,7 @@ void DeutonFlux(TFile * file1){
         galpropratio1->GetYaxis()->SetTitle("Flux ratio");
 	galpropratio1->Draw("AC");
 	galpropratio2->Draw("sameC");
-	float encinPamela[18]={0.120,0.132,0.144,0.158,0.173,0.190,0.208,0.228,0.250,0.274,0.300,0.329,0.361,0.395,0.433,0.475,0.520,0.570};
+	float encinPamela[nbinsbeta]={0.120,0.132,0.144,0.158,0.173,0.190,0.208,0.228,0.250,0.274,0.300,0.329,0.361,0.395,0.433,0.475,0.520,0.570};
         float RatioPamela[17]={3.12,3.10,3.01,2.97,2.86,2.81,2.74,2.58,2.37,2.28,2.25,2.22,2.10,2.11,2.07,2.00,2.03};
         float ErrPamela[17]={0.19+0.20,0.15+0.18,0.13+0.16,0.12+0.14,0.11+0.13,0.10+0.12,0.09+0.11,0.08+0.10,0.07+0.09,0.06+0.08,0.06+0.08,0.06+0.08,0.06+0.07,0.05+0.07,0.05+0.07,0.05+0.07,0.06+0.07};
         TGraphAsymmErrors *pamelaratio=new TGraphAsymmErrors();
@@ -487,7 +487,7 @@ void DeutonFlux(TFile * file1){
 	pamelaratio->Draw("Psame");
 	PD_ratioTOF=new TGraphErrors();
 	p=0;
-	for(int m=1;m<18;m++){
+	for(int m=1;m<nbinsbeta;m++){
 		PD_ratioTOF->SetPoint(p,Ekincent[m],PDratioTOF->GetBinContent(m+1,0));
 		PD_ratioTOF->SetPointError(p,0,PDratioTOF->GetBinContent(m+1,1));
 		p++;
@@ -506,7 +506,7 @@ void DeutonFlux(TFile * file1){
 
 	PD_ratioNaF=new TGraphErrors();
 	p=0;
-	for(int m=1;m<18;m++){
+	for(int m=1;m<nbinsbeta;m++){
 		PD_ratioNaF->SetPoint(p,EkincentNaF[m],PDratioNaF->GetBinContent(m+1,0));
 		PD_ratioNaF->SetPointError(p,0,PDratioNaF->GetBinContent(m+1,1));
 		p++;
@@ -525,7 +525,7 @@ void DeutonFlux(TFile * file1){
 
 	PD_ratioAgl=new TGraphErrors();
 	p=0;
-	for(int m=1;m<18;m++){
+	for(int m=1;m<nbinsbeta;m++){
 		PD_ratioAgl->SetPoint(p,EkincentAgl[m],PDratioAgl->GetBinContent(m+1,0));
 		PD_ratioAgl->SetPointError(p,0,PDratioAgl->GetBinContent(m+1,1));
 		p++;

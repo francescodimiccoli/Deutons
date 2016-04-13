@@ -23,16 +23,16 @@ public:
     
     //  Creation constructors:
     LATcorr(std::string basename){
-        beforeR    	= new TH2F((basename  + "1" 		  ).c_str(),(basename  + "1" 		  ).c_str(),43,0,43, 11,0,11);
-        afterR     	= new TH2F((basename  + "2" 		  ).c_str(),(basename  + "2" 		  ).c_str(),43,0,43, 11,0,11);
+        beforeR    	= new TH2F((basename  + "1" 		  ).c_str(),(basename  + "1" 		  ).c_str(),nbinsr,0,nbinsr, 11,0,11);
+        afterR     	= new TH2F((basename  + "2" 		  ).c_str(),(basename  + "2" 		  ).c_str(),nbinsr,0,nbinsr, 11,0,11);
 	LATcorrR   	= new TH1F((basename  + "_LATcorr"       ).c_str(),(basename  + "_LATcorr"      ).c_str(),11,0,11);
         LATcorrR_fit    = new TH1F((basename  + "_LATcorr_fit"   ).c_str(),(basename  + "_LATcorr_fit"  ).c_str(),11,0,11);
 	name = basename; 
     }
 
     LATcorr(std::string basename, int n){
-        beforeR   	= new TH3F((basename  + "1" 		  ).c_str(),(basename  + "1" 		  ).c_str(),43,0,43, 11,0,11, n, 0 ,n);
-        afterR    	= new TH3F((basename  + "2" 		  ).c_str(),(basename  + "2" 		  ).c_str(),43,0,43, 11,0,11, n, 0 ,n);
+        beforeR   	= new TH3F((basename  + "1" 		  ).c_str(),(basename  + "1" 		  ).c_str(),nbinsr,0,nbinsr, 11,0,11, n, 0 ,n);
+        afterR    	= new TH3F((basename  + "2" 		  ).c_str(),(basename  + "2" 		  ).c_str(),nbinsr,0,nbinsr, 11,0,11, n, 0 ,n);
 	LATcorrR   	= new TH2F((basename  + "_LATcorr"    	  ).c_str(),(basename  + "_LATcorr"      ).c_str(),11,0,11,n,0,n);
 	LATcorrR_fit   	= new TH2F((basename  + "_LATcorr_fit"   ).c_str(),(basename  + "_LATcorr_fit"  ).c_str(),11,0,11,n,0,n);
 	
@@ -118,8 +118,8 @@ void  CalcLATcorr(TH1 * before,TH1 * after, TH1 * LATcorr,int n){
 			float HEeff_after[11];
 
 			for(int i=1;i<11;i++) {
-				HEeff_before[i] = ((TH3 *)before)-> Integral(30,43,i+1,i+1,m+1,m+1);
-				HEeff_after[i]  = ((TH3 *)after )-> Integral(30,43,i+1,i+1,m+1,m+1);
+				HEeff_before[i] = ((TH3 *)before)-> Integral(30,nbinsr,i+1,i+1,m+1,m+1);
+				HEeff_after[i]  = ((TH3 *)after )-> Integral(30,nbinsr,i+1,i+1,m+1,m+1);
 			} 
 			for(int i=1;i<11;i++){
 				LATcorr -> SetBinContent(i+1,m+1,(HEeff_after[1]/HEeff_before[1])/(HEeff_after[i]/HEeff_before[i]));
@@ -132,8 +132,8 @@ void  CalcLATcorr(TH1 * before,TH1 * after, TH1 * LATcorr,int n){
 		float HEeff_after[11];
 
 		for(int i=1;i<11;i++) {
-			HEeff_before[i] = ((TH2 *)before)-> Integral(30,43,i+1,i+1);
-			HEeff_after[i]  = ((TH2 *)after )-> Integral(30,43,i+1,i+1);
+			HEeff_before[i] = ((TH2 *)before)-> Integral(30,nbinsr,i+1,i+1);
+			HEeff_after[i]  = ((TH2 *)after )-> Integral(30,nbinsr,i+1,i+1);
 		}
 		for(int i=1;i<11;i++){
 			  LATcorr -> SetBinContent(i+1,1,(HEeff_after[1]/HEeff_before[1])/(HEeff_after[i]/HEeff_before[i]));

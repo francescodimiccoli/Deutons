@@ -1,21 +1,36 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <math.h>
+#include <cstring>
+#include <vector>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <cstdlib>
+#include <string>
+
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1.h"
 #include "TH2.h"
 #include "TH3.h"
 #include "TF2.h"
-#include <TVector3.h>
-#include <fstream>
-#include <sstream>
-#include <math.h>
-#include <cstring>
-#include <vector>
+#include "TVector3.h"
 #include "TMath.h"
-#include <stdio.h>
-#include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
+#include "TCanvas.h"
+#include "TLegend.h"
+#include "TSpline.h"
+#include "TFractionFitter.h"
+#include "THStack.h"
+#include "TNtuple.h"
+#include "TObject.h"
+#include "TGraphAsymmErrors.h"
+#include "TGraphErrors.h"
+
+
+extern const int nbinsr=43;
+extern const int nbinsbeta=18;
 
 ////////////// VALORI CENTRALI BINS //////////////////
 double Beta_cent[30]={0.41,0.43,0.45,0.47,0.49,0.51,0.53,0.55,0.57,0.59,0.61,0.63,0.65,0.67,0.69,0.71,0.73,0.75,0.77,0.79,0.81,0.83,0.85,0.87,0.89,0.91,0.93,0.95,0.97,0.99,};

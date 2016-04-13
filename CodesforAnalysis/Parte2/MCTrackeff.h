@@ -16,27 +16,27 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l){
 
 	if(Massa_gen<1&&Massa_gen>0.5) {
 		//R bins
-		for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
+		for(int M=0;M<nbinsr;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
 			EffTriggMCP->beforeR->Fill(M);
 			if(((int)Cutmask&1)==1) EffTriggMCP->afterR->Fill(M);
 			if(((int)Cutmask&1)==1) EffTOFMCP->beforeR->Fill(M);
 			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCP->afterR->Fill(M);
 		}
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){
-			for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M])	
+			for(int M=0;M<nbinsr;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M])	
 				EffTrackMCP->beforeR->Fill(M);
-			for(int M=0;M<43;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M])
+			for(int M=0;M<nbinsr;M++) if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M])
 				if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCP->afterR->Fill(M);
 		}
 		//Beta bins
-		for(int m=0;m<18;m++)  if(Var3>BetaP[m]&&Var3<=BetaP[m+1]){
+		for(int m=0;m<nbinsbeta;m++)  if(Var3>BetaP[m]&&Var3<=BetaP[m+1]){
 			EffTriggMCP->beforeTOF->Fill(m);
 			if(((int)Cutmask&1)==1) EffTriggMCP->afterTOF->Fill(m);
 			if(((int)Cutmask&1)==1) EffTOFMCP->beforeTOF->Fill(m);
 			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCP->afterTOF->Fill(m);
 		}
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){ 
-			for(int m=0;m<18;m++)  
+			for(int m=0;m<nbinsbeta;m++)  
 				if(Var3>BetaP[m]&&Var3<=BetaP[m+1]) {
 						EffTrackMCP->beforeTOF->Fill(m);
 						if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCP->afterTOF->Fill(m);
@@ -46,7 +46,7 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l){
 
 	if(Massa_gen>1&&Massa_gen<2) {
 		//R bins
-		for(int M=0;M<43;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
+		for(int M=0;M<nbinsr;M++) if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
 			EffTriggMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
 			if(((int)Cutmask&1)==1) EffTriggMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
 			if(((int)Cutmask&1)==1) EffTOFMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
@@ -54,21 +54,21 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l){
 		}	
 
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){
-			for(int M=0;M<43;M++) 
+			for(int M=0;M<nbinsr;M++) 
 				if(Var3<bin[M+1]&&Var3>bin[M]){	
 					EffTrackMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
 					if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
 					}
 		}
 		//Beta bins
-		for(int m=0;m<18;m++) if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
+		for(int m=0;m<nbinsbeta;m++) if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
 			EffTriggMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
 			if(((int)Cutmask&1)==1) EffTriggMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
 			if(((int)Cutmask&1)==1) EffTOFMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
 			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
 		}
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){
-			for(int m=0;m<18;m++)  
+			for(int m=0;m<nbinsbeta;m++)  
 				if(Var3>BetaD[m]&&Var3<=BetaD[m+1]) {
 					EffTrackMCD->beforeR->Fill(m,(int)(10000*Massa_gen-18570));
 			 		if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD->afterR->Fill(m,(int)(10000*Massa_gen-18570));
@@ -176,7 +176,7 @@ void MCTrackeff(TFile * file1){
         string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
         TGraph * EffTriggerMCP_R = new TGraph();
         EffTriggerMCP_R->SetTitle(MCLegend[0].c_str());
-        for(int i=0;i<43;i++) EffTriggerMCP_R->SetPoint(i,R_cent[i],EffTriggerMCP_R_TH1F->GetBinContent(i+1));
+        for(int i=0;i<nbinsr;i++) EffTriggerMCP_R->SetPoint(i,R_cent[i],EffTriggerMCP_R_TH1F->GetBinContent(i+1));
         TGraph * EffTriggerMCD_R[6];
         EffTriggerMCP_R->SetMarkerColor(2);
         EffTriggerMCP_R->SetMarkerStyle(8);
@@ -195,7 +195,7 @@ void MCTrackeff(TFile * file1){
                 for(int h=0;h<6;h++){
                         EffTriggerMCD_R[h]= new TGraph();
                         EffTriggerMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-                        for(int i=1;i<43;i++) EffTriggerMCD_R[h]->SetPoint(i,R_cent[i],EffTriggerMCD_R_TH2F->GetBinContent(i+1,h+1));
+                        for(int i=1;i<nbinsr;i++) EffTriggerMCD_R[h]->SetPoint(i,R_cent[i],EffTriggerMCD_R_TH2F->GetBinContent(i+1,h+1));
                         leg->AddEntry(EffTriggerMCD_R[h],MCLegend[h+1].c_str(), "ep");
                         EffTriggerMCD_R[h]->SetMarkerColor(4);
                         EffTriggerMCD_R[h]->SetMarkerStyle(h+3);
@@ -247,7 +247,7 @@ void MCTrackeff(TFile * file1){
 	gPad->SetGridy();
 	TGraph * EffTrackerMCP_R = new TGraph();
 	EffTrackerMCP_R->SetTitle(MCLegend[0].c_str());
-	for(int i=0;i<43;i++) EffTrackerMCP_R->SetPoint(i,R_cent[i],EffTrackerMCP_R_TH1F->GetBinContent(i+1));
+	for(int i=0;i<nbinsr;i++) EffTrackerMCP_R->SetPoint(i,R_cent[i],EffTrackerMCP_R_TH1F->GetBinContent(i+1));
 	TGraph * EffTrackerMCD_R[6];
 	EffTrackerMCP_R->SetMarkerColor(2);
 	EffTrackerMCP_R->SetMarkerStyle(8);
@@ -266,7 +266,7 @@ void MCTrackeff(TFile * file1){
 		for(int h=0;h<6;h++){
 			EffTrackerMCD_R[h]= new TGraph();
 			EffTrackerMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-			for(int i=1;i<43;i++) EffTrackerMCD_R[h]->SetPoint(i,R_cent[i],EffTrackerMCD_R_TH2F->GetBinContent(i+1,h+1));
+			for(int i=1;i<nbinsr;i++) EffTrackerMCD_R[h]->SetPoint(i,R_cent[i],EffTrackerMCD_R_TH2F->GetBinContent(i+1,h+1));
 			leg->AddEntry(EffTrackerMCD_R[h],MCLegend[h+1].c_str(), "ep");
 			EffTrackerMCD_R[h]->SetMarkerColor(4);
 			EffTrackerMCD_R[h]->SetMarkerStyle(h+3);
@@ -318,7 +318,7 @@ void MCTrackeff(TFile * file1){
 	gPad->SetGridy();
 	TGraph * EffTOF_MCP_R = new TGraph();
 	EffTOF_MCP_R->SetTitle(MCLegend[0].c_str());
-	for(int i=0;i<43;i++) EffTOF_MCP_R->SetPoint(i,R_cent[i],EffTOF_MCP_R_TH1F->GetBinContent(i+1));
+	for(int i=0;i<nbinsr;i++) EffTOF_MCP_R->SetPoint(i,R_cent[i],EffTOF_MCP_R_TH1F->GetBinContent(i+1));
 	TGraph * EffTOF_MCD_R[6];
 	EffTOF_MCP_R->SetMarkerColor(2);
 	EffTOF_MCP_R->SetMarkerStyle(8);
@@ -337,7 +337,7 @@ void MCTrackeff(TFile * file1){
 		for(int h=0;h<6;h++){
 			EffTOF_MCD_R[h]= new TGraph();
 			EffTOF_MCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-			for(int i=1;i<43;i++) EffTOF_MCD_R[h]->SetPoint(i,R_cent[i],EffTOF_MCD_R_TH2F->GetBinContent(i+1,h+1));
+			for(int i=1;i<nbinsr;i++) EffTOF_MCD_R[h]->SetPoint(i,R_cent[i],EffTOF_MCD_R_TH2F->GetBinContent(i+1,h+1));
 			leg->AddEntry(EffTOF_MCD_R[h],MCLegend[h+1].c_str(), "ep");
 			EffTOF_MCD_R[h]->SetMarkerColor(4);
 			EffTOF_MCD_R[h]->SetMarkerStyle(h+3);

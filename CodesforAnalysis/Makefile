@@ -1,5 +1,5 @@
 #define compiler
-Compiler = g++
+Compiler = g++ -std=c++11
 #exe
 exedue = Analysis
 exetre = QualityLKLHOOD.exe

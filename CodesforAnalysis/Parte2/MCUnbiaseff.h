@@ -10,13 +10,13 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l){
 		
 		if(Massa_gen<1&&Massa_gen>0.5) {
 			//R bins
-			for(int M=0;M<43;M++) 
+			for(int M=0;M<nbinsr;M++) 
 				if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
 					EffUnbiasMCP->beforeR->Fill(M);
 					if(Unbias==0) EffUnbiasMCP->afterR->Fill(M);
 			}	
 			//Beta bins
-			for(int m=0;m<18;m++)  
+			for(int m=0;m<nbinsbeta;m++)  
 				if(Var3>BetaP[m]&&Var3<=BetaP[m+1]){
 					EffUnbiasMCP->beforeTOF->Fill(m);
 					if(Unbias==0) EffUnbiasMCP->afterTOF->Fill(m);	
@@ -25,13 +25,13 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l){
 
 		if(Massa_gen>1&&Massa_gen<2) {
 			//R bins
-			for(int M=0;M<43;M++) 
+			for(int M=0;M<nbinsr;M++) 
 				if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
 					EffUnbiasMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
 					if(Unbias==0) EffUnbiasMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
 				}
 			//Beta bins
-			for(int m=0;m<18;m++) 
+			for(int m=0;m<nbinsbeta;m++) 
 				if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
 					EffUnbiasMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
 					if(Unbias==0) EffUnbiasMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
@@ -90,7 +90,7 @@ void MCUnbiaseff(TFile * file1){
         string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
         TGraph * EffUnbMCP_R = new TGraph();
         EffUnbMCP_R->SetTitle(MCLegend[0].c_str());
-        for(int i=0;i<43;i++) EffUnbMCP_R->SetPoint(i,R_cent[i],EffUnbMCP_R_TH1F->GetBinContent(i+1));
+        for(int i=0;i<nbinsr;i++) EffUnbMCP_R->SetPoint(i,R_cent[i],EffUnbMCP_R_TH1F->GetBinContent(i+1));
         TGraph * EffUnbMCD_R[6];
         EffUnbMCP_R->SetMarkerColor(2);
         EffUnbMCP_R->SetMarkerStyle(8);
@@ -109,7 +109,7 @@ void MCUnbiaseff(TFile * file1){
                 for(int h=0;h<6;h++){
                         EffUnbMCD_R[h]= new TGraph();
                         EffUnbMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-                        for(int i=1;i<43;i++) EffUnbMCD_R[h]->SetPoint(i,R_cent[i],EffUnbMCD_R_TH2F->GetBinContent(i+1,h+1));
+                        for(int i=1;i<nbinsr;i++) EffUnbMCD_R[h]->SetPoint(i,R_cent[i],EffUnbMCD_R_TH2F->GetBinContent(i+1,h+1));
                         leg->AddEntry(EffUnbMCD_R[h],MCLegend[h+1].c_str(), "ep");
                         EffUnbMCD_R[h]->SetMarkerColor(4);
                         EffUnbMCD_R[h]->SetMarkerStyle(h+3);

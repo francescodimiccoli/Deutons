@@ -40,18 +40,18 @@ public:
 	std::string name;	
 	//creation constructor
 	Flux(std::string basename){
-		Counts_R	= new TH1F((basename + "Counts_R"      ).c_str(),(basename + "Counts_R"      ).c_str(),43,0,43);
-		Counts_TOF      = new TH1F((basename + "Counts_TOF"    ).c_str(),(basename + "Counts_TOF"    ).c_str(),18,0,18);
-		Counts_NaF      = new TH1F((basename + "Counts_NaF"    ).c_str(),(basename + "Counts_NaF"    ).c_str(),18,0,18);
-		Counts_Agl      = new TH1F((basename + "Counts_Agl"    ).c_str(),(basename + "Counts_Agl"    ).c_str(),18,0,18);
+		Counts_R	= new TH1F((basename + "Counts_R"      ).c_str(),(basename + "Counts_R"      ).c_str(),nbinsr,0,nbinsr);
+		Counts_TOF      = new TH1F((basename + "Counts_TOF"    ).c_str(),(basename + "Counts_TOF"    ).c_str(),nbinsbeta,0,nbinsbeta);
+		Counts_NaF      = new TH1F((basename + "Counts_NaF"    ).c_str(),(basename + "Counts_NaF"    ).c_str(),nbinsbeta,0,nbinsbeta);
+		Counts_Agl      = new TH1F((basename + "Counts_Agl"    ).c_str(),(basename + "Counts_Agl"    ).c_str(),nbinsbeta,0,nbinsbeta);
 		name = basename;
 	}
 	
 	Flux(std::string basename,int n){
-		Counts_R    = new TH2F((basename + "Counts_R"   ).c_str(),(basename + "Counts_R"   ).c_str(),43,0,43,n,0,n);
-		Counts_TOF  = new TH2F((basename + "Counts_TOF" ).c_str(),(basename + "Counts_TOF" ).c_str(),18,0,18,n,0,n);
-		Counts_NaF  = new TH2F((basename + "Counts_NaF" ).c_str(),(basename + "Counts_NaF" ).c_str(),18,0,18,n,0,n);
-		Counts_Agl  = new TH2F((basename + "Counts_Agl" ).c_str(),(basename + "Counts_Agl" ).c_str(),18,0,18,n,0,n);	
+		Counts_R    = new TH2F((basename + "Counts_R"   ).c_str(),(basename + "Counts_R"   ).c_str(),nbinsr,0,nbinsr,n,0,n);
+		Counts_TOF  = new TH2F((basename + "Counts_TOF" ).c_str(),(basename + "Counts_TOF" ).c_str(),nbinsbeta,0,nbinsbeta,n,0,n);
+		Counts_NaF  = new TH2F((basename + "Counts_NaF" ).c_str(),(basename + "Counts_NaF" ).c_str(),nbinsbeta,0,nbinsbeta,n,0,n);
+		Counts_Agl  = new TH2F((basename + "Counts_Agl" ).c_str(),(basename + "Counts_Agl" ).c_str(),nbinsbeta,0,nbinsbeta,n,0,n);	
 		name = basename;
 	}
 
@@ -100,10 +100,10 @@ void Flux::Set_Exposure_Time(TH2 * ExposureR ,TH2 * ExposureTOF,TH2 * ExposureNa
 
 void Flux::Set_Exposure_Time(TH1 * Tempi){
 		
-	Exposure_R  = new TH2F ((name + "TimeZone_R"   ).c_str(),(name + "TimeZone_R"   ).c_str(),43,0,43,Tempi->GetNbinsX(),0,Tempi->GetNbinsX());
-	Exposure_TOF= new TH2F ((name + "TimeZone_TOF" ).c_str(),(name + "TimeZone_TOF" ).c_str(),18,0,18,Tempi->GetNbinsX(),0,Tempi->GetNbinsX());
-	Exposure_NaF= new TH2F ((name + "TimeZone_NaF" ).c_str(),(name + "TimeZone_NaF" ).c_str(),18,0,18,Tempi->GetNbinsX(),0,Tempi->GetNbinsX());
-	Exposure_Agl= new TH2F ((name + "TimeZone_Agl" ).c_str(),(name + "TimeZone_Agl" ).c_str(),18,0,18,Tempi->GetNbinsX(),0,Tempi->GetNbinsX());	
+	Exposure_R  = new TH2F ((name + "TimeZone_R"   ).c_str(),(name + "TimeZone_R"   ).c_str(),nbinsr,0,nbinsr,Tempi->GetNbinsX(),0,Tempi->GetNbinsX());
+	Exposure_TOF= new TH2F ((name + "TimeZone_TOF" ).c_str(),(name + "TimeZone_TOF" ).c_str(),nbinsbeta,0,nbinsbeta,Tempi->GetNbinsX(),0,Tempi->GetNbinsX());
+	Exposure_NaF= new TH2F ((name + "TimeZone_NaF" ).c_str(),(name + "TimeZone_NaF" ).c_str(),nbinsbeta,0,nbinsbeta,Tempi->GetNbinsX(),0,Tempi->GetNbinsX());
+	Exposure_Agl= new TH2F ((name + "TimeZone_Agl" ).c_str(),(name + "TimeZone_Agl" ).c_str(),nbinsbeta,0,nbinsbeta,Tempi->GetNbinsX(),0,Tempi->GetNbinsX());	
 
 	TimeGeo((TH2 *)Exposure_R  ,Tempi);
 	TimeGeo((TH2 *)Exposure_TOF,Tempi);
@@ -116,10 +116,10 @@ void Flux::Set_Exposure_Time(TH1 * Tempi){
 
 void Flux::Set_DeltaE(int n,bool deutons){
 	if(n>1){
-		DeltaE_R   = new TH2F ((name + "DeltaE_R"   ).c_str(),(name + "DeltaE_R"   ).c_str(),43,0,43,n,0,n);
-        	DeltaE_TOF = new TH2F ((name + "DeltaE_TOF" ).c_str(),(name + "DeltaE_TOF" ).c_str(),18,0,18,n,0,n);
-        	DeltaE_NaF = new TH2F ((name + "DeltaE_NaF" ).c_str(),(name + "DeltaE_NaF" ).c_str(),18,0,18,n,0,n);
-        	DeltaE_Agl = new TH2F ((name + "DeltaE_Agl" ).c_str(),(name + "DeltaE_Agl" ).c_str(),18,0,18,n,0,n);
+		DeltaE_R   = new TH2F ((name + "DeltaE_R"   ).c_str(),(name + "DeltaE_R"   ).c_str(),nbinsr,0,nbinsr,n,0,n);
+        	DeltaE_TOF = new TH2F ((name + "DeltaE_TOF" ).c_str(),(name + "DeltaE_TOF" ).c_str(),nbinsbeta,0,nbinsbeta,n,0,n);
+        	DeltaE_NaF = new TH2F ((name + "DeltaE_NaF" ).c_str(),(name + "DeltaE_NaF" ).c_str(),nbinsbeta,0,nbinsbeta,n,0,n);
+        	DeltaE_Agl = new TH2F ((name + "DeltaE_Agl" ).c_str(),(name + "DeltaE_Agl" ).c_str(),nbinsbeta,0,nbinsbeta,n,0,n);
 		
 		if(deutons){
 			for(int R=0;R<DeltaE_R->GetNbinsX();R++) 
@@ -138,10 +138,10 @@ void Flux::Set_DeltaE(int n,bool deutons){
 				
 	}
 	else{
-		DeltaE_R   = new TH1F ((name + "DeltaE_R"   ).c_str(),(name + "DeltaE_R"   ).c_str(),43,0,43);
-        	DeltaE_TOF = new TH1F ((name + "DeltaE_TOF" ).c_str(),(name + "DeltaE_TOF" ).c_str(),18,0,18);
-        	DeltaE_NaF = new TH1F ((name + "DeltaE_NaF" ).c_str(),(name + "DeltaE_NaF" ).c_str(),18,0,18);
-        	DeltaE_Agl = new TH1F ((name + "DeltaE_Agl" ).c_str(),(name + "DeltaE_Agl" ).c_str(),18,0,18);
+		DeltaE_R   = new TH1F ((name + "DeltaE_R"   ).c_str(),(name + "DeltaE_R"   ).c_str(),nbinsr,0,nbinsr);
+        	DeltaE_TOF = new TH1F ((name + "DeltaE_TOF" ).c_str(),(name + "DeltaE_TOF" ).c_str(),nbinsbeta,0,nbinsbeta);
+        	DeltaE_NaF = new TH1F ((name + "DeltaE_NaF" ).c_str(),(name + "DeltaE_NaF" ).c_str(),nbinsbeta,0,nbinsbeta);
+        	DeltaE_Agl = new TH1F ((name + "DeltaE_Agl" ).c_str(),(name + "DeltaE_Agl" ).c_str(),nbinsbeta,0,nbinsbeta);
 		if(deutons){
 			for(int R=0;R<DeltaE_R->GetNbinsX();R++)  DeltaE_R->SetBinContent(R+1,deltaencindeut[R]);
 		}

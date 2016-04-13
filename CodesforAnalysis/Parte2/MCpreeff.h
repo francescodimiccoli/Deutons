@@ -11,7 +11,7 @@ void MCpreseff_Fill(TNtuple *ntupla, int l){
 
 	if(Massa_gen<1&&Massa_gen>0.5) {
 		//R bins
-		for(int M=0;M<43;M++) 
+		for(int M=0;M<nbinsr;M++) 
 		{
 			if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) EffpreselMCP->beforeR->Fill(M);
 			if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]) 	
@@ -21,7 +21,7 @@ void MCpreseff_Fill(TNtuple *ntupla, int l){
 		}
 
 		// Beta bins
-		for(int m=0;m<18;m++) { 
+		for(int m=0;m<nbinsbeta;m++) { 
 			if(Var3>BetaP[m]   &&Var3<=BetaP[m+1])    EffpreselMCP->beforeTOF->Fill(m);
 			if(Var3>BetaNaFP[m]&&Var3<=BetaNaFP[m+1]) EffpreselMCP->beforeNaF->Fill(m);
 			if(Var3>BetaAglP[m]&&Var3<=BetaAglP[m+1]) EffpreselMCP->beforeAgl->Fill(m);
@@ -37,7 +37,7 @@ void MCpreseff_Fill(TNtuple *ntupla, int l){
 
 	if(Massa_gen>1&&Massa_gen<2) {
 		// R bins
-		for(int M=0;M<43;M++) 
+		for(int M=0;M<nbinsr;M++) 
 		{
 			if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) 
 				EffpreselMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
@@ -50,7 +50,7 @@ void MCpreseff_Fill(TNtuple *ntupla, int l){
 		}
 
 		// Beta bins
-		for(int m=0;m<18;m++) 
+		for(int m=0;m<nbinsbeta;m++) 
 		{
 			if(Var3>BetaD[m]&&Var3<=BetaD[m+1])
 				EffpreselMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
@@ -134,7 +134,7 @@ void MCpreeff(TFile * file1){
 	string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
 	TGraph * EffPreMCP_R = new TGraph();
 	EffPreMCP_R->SetTitle(MCLegend[0].c_str());
-	for(int i=0;i<43;i++) EffPreMCP_R->SetPoint(i,R_cent[i],EffPreMCP_R_TH1F->GetBinContent(i+1));
+	for(int i=0;i<nbinsr;i++) EffPreMCP_R->SetPoint(i,R_cent[i],EffPreMCP_R_TH1F->GetBinContent(i+1));
 	TGraph * EffPreMCD_R[6];
 	EffPreMCP_R->SetMarkerColor(2);
 	EffPreMCP_R->SetMarkerStyle(8);
@@ -153,7 +153,7 @@ void MCpreeff(TFile * file1){
 		for(int h=0;h<6;h++){
 			EffPreMCD_R[h]= new TGraph();
 			EffPreMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-			for(int i=1;i<43;i++) EffPreMCD_R[h]->SetPoint(i,R_cent[i],EffPreMCD_R_TH2F->GetBinContent(i+1,h+1));
+			for(int i=1;i<nbinsr;i++) EffPreMCD_R[h]->SetPoint(i,R_cent[i],EffPreMCD_R_TH2F->GetBinContent(i+1,h+1));
 			leg->AddEntry(EffPreMCD_R[h],MCLegend[h+1].c_str(), "ep");
 			EffPreMCD_R[h]->SetMarkerColor(4);
 			EffPreMCD_R[h]->SetMarkerStyle(h+3);
@@ -170,7 +170,7 @@ void MCpreeff(TFile * file1){
 	gPad->SetGridx();
 	gPad->SetGridy();
 	TGraph * EffPreMCP = new TGraph();
-	for(int i=0;i<18;i++) EffPreMCP->SetPoint(i,Ekincent[i],EffPreMCP_TH1F->GetBinContent(i+1));
+	for(int i=0;i<nbinsbeta;i++) EffPreMCP->SetPoint(i,Ekincent[i],EffPreMCP_TH1F->GetBinContent(i+1));
 	TGraph * EffPreMCD[6];
 	EffPreMCP->SetMarkerColor(2);
 	EffPreMCP->SetMarkerStyle(8);
@@ -188,7 +188,7 @@ void MCpreeff(TFile * file1){
 
 		for(int h=0;h<6;h++){
 			EffPreMCD[h]= new TGraph();
-			for(int i=0;i<18;i++) EffPreMCD[h]->SetPoint(i,Ekincent[i], EffPreMCD_TH2F->GetBinContent(i+1,h+1));
+			for(int i=0;i<nbinsbeta;i++) EffPreMCD[h]->SetPoint(i,Ekincent[i], EffPreMCD_TH2F->GetBinContent(i+1,h+1));
 			EffPreMCD[h]->SetMarkerColor(4);
 			EffPreMCD[h]->SetMarkerStyle(h+3);
 			leg->AddEntry(EffPreMCD[h],MCLegend[h+1].c_str(), "ep");
@@ -205,7 +205,7 @@ void MCpreeff(TFile * file1){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraph * EffPreMCPNaF = new TGraph();
-        for(int i=0;i<18;i++) EffPreMCPNaF->SetPoint(i,EkincentNaF[i],EffPreMCPNaF_TH1F->GetBinContent(i+1));
+        for(int i=0;i<nbinsbeta;i++) EffPreMCPNaF->SetPoint(i,EkincentNaF[i],EffPreMCPNaF_TH1F->GetBinContent(i+1));
         TGraph * EffPreMCDNaF[6];
         EffPreMCPNaF->SetMarkerColor(2);
         EffPreMCPNaF->SetMarkerStyle(8);
@@ -223,7 +223,7 @@ void MCpreeff(TFile * file1){
 
                 for(int h=0;h<6;h++){
                         EffPreMCDNaF[h]= new TGraph();
-                        for(int i=0;i<18;i++) EffPreMCDNaF[h]->SetPoint(i,EkincentNaF[i], 
+                        for(int i=0;i<nbinsbeta;i++) EffPreMCDNaF[h]->SetPoint(i,EkincentNaF[i], 
                             EffPreMCDNaF_TH2F->GetBinContent(i+1,h+1));
                         EffPreMCDNaF[h]->SetMarkerColor(4);
                         EffPreMCDNaF[h]->SetMarkerStyle(h+3);
@@ -241,7 +241,7 @@ void MCpreeff(TFile * file1){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraph * EffPreMCPAgl = new TGraph();
-        for(int i=0;i<18;i++) EffPreMCPAgl->SetPoint(i,EkincentAgl[i],EffPreMCPAgl_TH1F->GetBinContent(i+1));
+        for(int i=0;i<nbinsbeta;i++) EffPreMCPAgl->SetPoint(i,EkincentAgl[i],EffPreMCPAgl_TH1F->GetBinContent(i+1));
         TGraph * EffPreMCDAgl[6];
         EffPreMCPAgl->SetMarkerColor(2);
         EffPreMCPAgl->SetMarkerStyle(8);
@@ -259,7 +259,7 @@ void MCpreeff(TFile * file1){
 
                 for(int h=0;h<6;h++){
                         EffPreMCDAgl[h]= new TGraph();
-                        for(int i=0;i<18;i++) EffPreMCDAgl[h]->SetPoint(i,EkincentAgl[i], EffPreMCDAgl_TH2F->GetBinContent(i+1,h+1));
+                        for(int i=0;i<nbinsbeta;i++) EffPreMCDAgl[h]->SetPoint(i,EkincentAgl[i], EffPreMCDAgl_TH2F->GetBinContent(i+1,h+1));
                         EffPreMCDAgl[h]->SetMarkerColor(4);
                         EffPreMCDAgl[h]->SetMarkerStyle(h+3);
                         leg->AddEntry(EffPreMCDAgl[h],MCLegend[h+1].c_str(), "ep");
