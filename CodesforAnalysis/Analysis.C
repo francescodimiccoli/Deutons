@@ -67,7 +67,7 @@ int main(int argc, char * argv[])
 	float B2=0;
 	float E=0.1;
 	int binnum=0;
-	float a=(log(1)-log(0.1))/nbinsbeta;
+	float a=(log(1)-log(0.1))/nbinsToF;
 	float E2=exp(log(0.1)+1.5*a);
 	while(B1<0.85){
 		E=exp(log(0.1)+binnum*a);
@@ -81,10 +81,12 @@ int main(int argc, char * argv[])
 		Ekincent[binnum]=1/pow(1-pow(B2,2),0.5)-1;
 		binnum++;
 	}
-	for(int i=0;i<nbinsbeta;i++) deltaencinTOF[i]=(1/pow(1-pow(Betabins[i+1],2),0.5)-1)-(1/pow(1-pow(Betabins[i],2),0.5)-1);
-	for(int i=0;i<nbinsbeta;i++) cout<<Betabins[i]<<" "<<BetabinsR_D[i]<<" "<<BetabinsR_P[i]<<endl;
-	string TitoliTOF[nbinsbeta];
-	for(int i=0;i<nbinsbeta;i++){
+
+	string TitoliTOF[nbinsToF];
+	for(int i=0;i<nbinsToF ;i++) {
+		deltaencinTOF[i]=(1/pow(1-pow(Betabins[i+1],2),0.5)-1)-(1/pow(1-pow(Betabins[i],2),0.5)-1);
+		cout<<Betabins[i]<<" "<<BetabinsR_D[i]<<" "<<BetabinsR_P[i]<<endl;
+		
 		ostringstream ss;
 		ss<<Betabins[i];
 		TitoliTOF[i]= ss.str();
@@ -93,7 +95,7 @@ int main(int argc, char * argv[])
 	cout<<endl;
 
 	cout<<"**************************** BETA BINS NaF***********************************"<<endl;
-	a=(log(4.025)-log(0.666))/nbinsbeta;
+	a=(log(4.025)-log(0.666))/nbinsNaF;
 	E2=exp(log(0.666)+1.5*a);
 	binnum=0;
 	while(B1<0.98){
@@ -108,10 +110,13 @@ int main(int argc, char * argv[])
 		EkincentNaF[binnum]=1/pow(1-pow(B1,2),0.5)-1;
 		binnum++;
 	}
-	for(int i=0;i<nbinsbeta;i++) deltaencinNaF[i]=(1/pow(1-pow(BetabinsNaF[i+1],2),0.5)-1)-(1/pow(1-pow(BetabinsNaF[i],2),0.5)-1);
-	for(int i=0;i<nbinsbeta;i++) cout<<BetabinsNaF[i]<<" "<<BetabinsNaFR_D[i]<<" "<<EkincentNaF[i]<<" "<<deltaencinNaF[i]<<endl;
-	string TitoliNaF[nbinsbeta];
-	for(int i=0;i<nbinsbeta;i++){
+
+	string TitoliNaF[nbinsNaF];
+	
+	for(int i=0;i<nbinsNaF;i++) {	
+		deltaencinNaF[i]=(1/pow(1-pow(BetabinsNaF[i+1],2),0.5)-1)-(1/pow(1-pow(BetabinsNaF[i],2),0.5)-1);
+		cout<<BetabinsNaF[i]<<" "<<BetabinsNaFR_D[i]<<" "<<EkincentNaF[i]<<" "<<deltaencinNaF[i]<<endl;
+		
 		ostringstream ss;
 		ss<<BetabinsNaF[i];
 		TitoliNaF[i]= ss.str();
@@ -119,7 +124,8 @@ int main(int argc, char * argv[])
 	}
 	cout<<endl;
 	cout<<"**************************** BETA BINS Agl***********************************"<<endl;
-	a=(log(9.01)-log(2.57))/nbinsbeta;
+	
+	a=(log(9.01)-log(2.57))/nbinsAgl ;
 	E2=exp(log(2.57)+1.5*a);
 	binnum=0;
 	while(B1<0.995){
@@ -134,10 +140,12 @@ int main(int argc, char * argv[])
 		EkincentAgl[binnum]=1/pow(1-pow(B2,2),0.5)-1;
 		binnum++;
 	}
-	for(int i=0;i<nbinsbeta;i++) deltaencinAgl[i]=(1/pow(1-pow(BetabinsAgl[i+1],2),0.5)-1)-(1/pow(1-pow(BetabinsAgl[i],2),0.5)-1);
-	for(int i=0;i<nbinsbeta;i++) cout<<BetabinsAgl[i]<<" "<<BetabinsAglR_D[i]<<" "<<EkincentAgl[i]<<" "<<deltaencinAgl[i]<<endl;
-	string TitoliAgl[nbinsbeta];
-	for(int i=0;i<nbinsbeta;i++){
+
+	string TitoliAgl[nbinsAgl];
+	for(int i=0;i<nbinsAgl; i++) {
+		deltaencinAgl[i]=(1/pow(1-pow(BetabinsAgl[i+1],2),0.5)-1)-(1/pow(1-pow(BetabinsAgl[i],2),0.5)-1);
+		cout<<BetabinsAgl[i]<<" "<<BetabinsAglR_D[i]<<" "<<EkincentAgl[i]<<" "<<deltaencinAgl[i]<<endl;
+		
 		ostringstream ss;
 		ss<<BetabinsAgl[i];
 		TitoliAgl[i]= ss.str();
