@@ -1,169 +1,154 @@
 
-TH2F *DTemplatesTOF=new TH2F("DTemplatesTOF","DTemplatesTOF",50,0,3,18,0,18);
-TH2F *PTemplatesTOF=new TH2F("PTemplatesTOF","PTemplatesTOF",50,0,3,18,0,18);
-TH2F *HeTemplatesTOF=new TH2F("HeTemplatesTOF","HeTemplatesTOF",50,0,3,18,0,18);
+TemplateFIT * FitTOF_Dbins	= new TemplateFIT("FitTOF_Dbins",0,3,11);
+TemplateFIT * FitNaF_Dbins	= new TemplateFIT("FitNaF_Dbins",0,3,11);
+TemplateFIT * FitAgl_Dbins	= new TemplateFIT("FitAgl_Dbins",0,3,11);
 
-TH2F *DTemplatesNaF=new TH2F("DTemplatesNaF","DTemplatesNaF",50,0,3,18,0,18);
-TH2F *PTemplatesNaF=new TH2F("PTemplatesNaF","PTemplatesNaF",50,0,3,18,0,18);
-TH2F *HeTemplatesNaF=new TH2F("HeTemplatesNaF","HeTemplatesNaF",50,0,3,18,0,18);
+TemplateFIT * FitTOF_Pbins	= new TemplateFIT("FitTOF_Pbins",0,3,11);
+TemplateFIT * FitNaF_Pbins	= new TemplateFIT("FitNaF_Pbins",0,3,11);
+TemplateFIT * FitAgl_Pbins	= new TemplateFIT("FitAgl_Pbins",0,3,11);
 
-TH2F *DTemplatesAgl=new TH2F("DTemplatesAgl","DTemplatesAgl",50,0,3,18,0,18);
-TH2F *PTemplatesAgl=new TH2F("PTemplatesAgl","PTemplatesAgl",50,0,3,18,0,18);
-TH2F *HeTemplatesAgl=new TH2F("HeTemplatesAgl","HeTemplatesAgl",50,0,3,18,0,18);
 
-TH2F *DTemplatesTOF2=new TH2F("DTemplatesTOF2","DTemplatesTOF2",50,0,3,18,0,18);
-TH2F *PTemplatesTOF2=new TH2F("PTemplatesTOF2","PTemplatesTOF2",50,0,3,18,0,18);
-TH2F *HeTemplatesTOF2=new TH2F("HeTemplatesTOF2","HeTemplatesTOF2",50,0,3,18,0,18);
-
-TH2F *DTemplatesNaF2=new TH2F("DTemplatesNaF2","DTemplatesNaF2",50,0,3,18,0,18);
-TH2F *PTemplatesNaF2=new TH2F("PTemplatesNaF2","PTemplatesNaF2",50,0,3,18,0,18);
-TH2F *HeTemplatesNaF2=new TH2F("HeTemplatesNaF2","HeTemplatesNaF2",50,0,3,18,0,18);
-
-TH2F *DTemplatesAgl2=new TH2F("DTemplatesAgl2","DTemplatesAgl2",50,0,3,18,0,18);
-TH2F *PTemplatesAgl2=new TH2F("PTemplatesAgl2","PTemplatesAgl2",50,0,3,18,0,18);
-TH2F *HeTemplatesAgl2=new TH2F("HeTemplatesAgl2","HeTemplatesAgl2",50,0,3,18,0,18);
-
-TH3F *DhistosgeoTOF=new TH3F("DhistosgeoTOF","DhistosgeoTOF",11,0,11,50,0,3,18,0,18);
-TH3F *DhistosgeoNaF=new TH3F("DhistosgeoNaF","DhistosgeoNaF",11,0,11,50,0,3,18,0,18);
-TH3F *DhistosgeoAgl=new TH3F("DhistosgeoAgl","DhistosgeoAgl",11,0,11,50,0,3,18,0,18);
-
-TH2F *DhistosTOF=new TH2F("DhistosTOF","DhistosTOF",50,0,3,18,0,18);
-TH2F *DhistosNaF=new TH2F("DhistosNaF","DhistosNaF",50,0,3,18,0,18);
-TH2F *DhistosAgl=new TH2F("DhistosAgl","DhistosAgl",50,0,3,18,0,18);
-
-TH2F *DhistosTOF2=new TH2F("DhistosTOF2","DhistosTOF2",50,0,3,18,0,18);
-TH2F *DhistosNaF2=new TH2F("DhistosNaF2","DhistosNaF2",50,0,3,18,0,18);
-TH2F *DhistosAgl2=new TH2F("DhistosAgl2","DhistosAgl2",50,0,3,18,0,18);
 
 void DeutonsMC_Fill(TNtuple *ntupla, int l){
-        int k = ntupla->GetEvent(l);
+	int k = ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
-        float mm=0;
-	if(Likcut&&R<4&&Distcut){
-		mm=1;
-		if(((R/Beta)*pow((1-pow(Beta,2)),0.5))<0.5) cout<<BetaRICH<<endl;
-		if(Massa_gen<1&&Massa_gen>0.5) 
-			for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) PTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1); ;
-						if(Var>BetaP[m]&&Var<=BetaP[m+1]) PTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);} 
-		if(Massa_gen<2&&Massa_gen>1.5)
-                        for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) DTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);	
-						if(Var>BetaP[m]&&Var<=BetaP[m+1]) DTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);}
-		 if(Massa_gen<4&&Massa_gen>2.5)
-                        for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) HeTemplatesTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);
-						if(Var>BetaP[m]&&Var<=BetaP[m+1]) HeTemplatesTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);}
-	}
-	if(Likcut&&R<20&&Distcut){
-		mm=1;
-		//if(Dist5D>distcut) mm=2;
-		if(Massa_gen<1&&Massa_gen>0.5)
-			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) PTemplatesNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
-			if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) PTemplatesNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}	
-		if(Massa_gen<2&&Massa_gen>1.5)
-			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) DTemplatesNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
-				if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) DTemplatesNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}	
-		if(Massa_gen<4&&Massa_gen>2.5)
-			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) HeTemplatesNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
-			if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) HeTemplatesNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}
-	}
-	if(Likcut&&R<40&&Distcut){
-		mm=1;
-                //if(Dist5D>distcut) mm=2;
-		if(Massa_gen<1&&Massa_gen>0.5)
-			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {PTemplatesAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}
-			 if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) PTemplatesAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}
-		if(Massa_gen<2&&Massa_gen>1.5)
-			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) DTemplatesAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
-			if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) DTemplatesAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}
-		if(Massa_gen<4&&Massa_gen>2.5)
-			for(int m=0;m<18;m++) 
-			{if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) HeTemplatesAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
-			if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) HeTemplatesAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);}
-	}
+	float mass = 0;
+	if(!(Likcut&&Distcut)) return;	
 
-	
-        return;
-}
+	for(int m=0;m<18;m++){
+		//TOF
+		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
+		if(Var>BetaD[m]&&Var<=BetaD[m+1]){ 
+			if(Massa_gen<1&&Massa_gen>0.5)	FitTOF_Dbins -> TemplateP -> Fill(mass,m);
+			if(Massa_gen<2&&Massa_gen>1.5)	FitTOF_Dbins -> TemplateD -> Fill(mass,m);	
+			if(Massa_gen<4&&Massa_gen>2.5)	FitTOF_Dbins -> TemplateHe-> Fill(mass,m);
+		}
+		if(Var>BetaP[m]&&Var<=BetaP[m+1]) {
+			if(Massa_gen<1&&Massa_gen>0.5)	FitTOF_Pbins -> TemplateP -> Fill(mass,m);
+			if(Massa_gen<2&&Massa_gen>1.5)	FitTOF_Pbins -> TemplateD -> Fill(mass,m);	
+			if(Massa_gen<4&&Massa_gen>2.5)	FitTOF_Pbins -> TemplateHe-> Fill(mass,m);
+
+		}
+		//NaF
+		if((((int)Cutmask)>>11)==512){
+			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
+			if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
+				if(Massa_gen<1&&Massa_gen>0.5)	FitNaF_Dbins -> TemplateP -> Fill(mass,m);	
+				if(Massa_gen<2&&Massa_gen>1.5)	FitNaF_Dbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<4&&Massa_gen>2.5)	FitNaF_Dbins -> TemplateHe-> Fill(mass,m);
+			}
+			if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) {
+				if(Massa_gen<1&&Massa_gen>0.5)	FitNaF_Pbins -> TemplateP -> Fill(mass,m);	
+				if(Massa_gen<2&&Massa_gen>1.5)	FitNaF_Pbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<4&&Massa_gen>2.5)	FitNaF_Pbins -> TemplateHe-> Fill(mass,m);
+			}
+
+		} 
+		//Agl
+		if((((int)Cutmask)>>11)==0){
+			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
+			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
+				if(Massa_gen<1&&Massa_gen>0.5)	FitAgl_Dbins -> TemplateP -> Fill(mass,m);	
+				if(Massa_gen<2&&Massa_gen>1.5)	FitAgl_Dbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<4&&Massa_gen>2.5)	FitAgl_Dbins -> TemplateHe-> Fill(mass,m);
+			}
+			if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) {
+				if(Massa_gen<1&&Massa_gen>0.5)	FitAgl_Pbins -> TemplateP -> Fill(mass,m);	
+				if(Massa_gen<2&&Massa_gen>1.5)	FitAgl_Pbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<4&&Massa_gen>2.5)	FitAgl_Pbins -> TemplateHe-> Fill(mass,m);
+			}
+
+		}
+
+	}
+}			
+
 
 void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
-        int k = ntupla->GetEvent(l);
+	int k = ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
-	float mm=1;
-	if(Likcut&&R<4&&Distcut)
-		 for(int m=0;m<18;m++)  {if(Var>BetaD[m]&&Var<=BetaD[m+1]) {
-						DhistosgeoTOF->Fill(zona,mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);
-						if(R>1.2*Rcutoff) DhistosTOF->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);
-						}
-					 if(Var>BetaP[m]&&Var<=BetaP[m+1]) if(R>1.2*Rcutoff) DhistosTOF2->Fill(mm*((R/Beta)*pow((1-pow(Beta,2)),0.5)),m+0.1);	 
-					}
-	if(Likcut&&R<20&&Distcut){
-		mm=1;
-                //if(Dist5D>distcut) mm=2; 
-		for(int m=0;m<18;m++) 
-				if((((int)Cutmask)>>11)==512)
-					{if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
-						DhistosgeoNaF->Fill(zona,mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
-						if(R>1.2*Rcutoff) DhistosNaF->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1); 
-						}
-					if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) if(R>1.2*Rcutoff) DhistosNaF2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
-					}
+	float mass = 0;
+	if(!(Likcut&&Distcut)) return;	
+
+	for(int m=0;m<18;m++){
+		//TOF
+		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
+		if(Var>BetaD[m]&&Var<=BetaD[m+1]){ 
+			if(R>1.2*Rcutoff)	FitTOF_Dbins -> Data_Prim -> Fill(mass,m);
+			((TH3*)FitTOF_Dbins -> Data_Geomag) -> Fill(mass,m,zona);
+		}
+		if(Var>BetaP[m]&&Var<=BetaP[m+1]) {
+			if(R>1.2*Rcutoff)	FitTOF_Pbins -> Data_Prim -> Fill(mass,m);
+
+		}
+		//NaF
+		if((((int)Cutmask)>>11)==512){
+			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
+			if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
+				if(R>1.2*Rcutoff)	FitNaF_Dbins -> Data_Prim -> Fill(mass,m);	
+				((TH3*)FitNaF_Dbins -> Data_Geomag) -> Fill(mass,m,zona);
+			}
+			if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) {
+				if(R>1.2*Rcutoff)	FitNaF_Pbins -> Data_Prim -> Fill(mass,m);	
+			}
+
+		} 
+		//Agl
+		if((((int)Cutmask)>>11)==0){
+			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
+			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
+				if(R>1.2*Rcutoff)	FitAgl_Dbins -> Data_Prim -> Fill(mass,m);	
+				((TH3*)FitAgl_Dbins -> Data_Geomag) -> Fill(mass,m,zona);
+			}
+			if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) {
+				if(R>1.2*Rcutoff)	FitAgl_Pbins -> Data_Prim -> Fill(mass,m);	
+			}
+
+		}
+
 	}
-	if((((int)Cutmask)>>11)==0&&Dist5D+Dist5D_P>20) return;
-	if(Likcut&&R<40&&Distcut){
-                mm=1;
-                //if(Dist5D>distcut) mm=2; 
-		for(int m=0;m<18;m++) 
-				if((((int)Cutmask)>>11)==0)	
-					{if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
-						DhistosgeoAgl->Fill(zona,mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1); 
-						if(R>1.2*Rcutoff) DhistosAgl->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1); 
-						}
-						
-					 if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) if(R>1.2*Rcutoff) DhistosAgl2->Fill(mm*((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5)),m+0.1);
-					}
-	}
-}
+	return;
+}		
 
 
 void DeutonsMC_Write(){
-        DTemplatesTOF->Write();
-        PTemplatesTOF->Write();
-        HeTemplatesTOF->Write();
-	DTemplatesNaF->Write();
-        PTemplatesNaF->Write();
-        HeTemplatesNaF->Write();
-        DTemplatesAgl->Write();
-        PTemplatesAgl->Write();
-        HeTemplatesAgl->Write();
-        DTemplatesTOF2->Write();
-        PTemplatesTOF2->Write();
-        HeTemplatesTOF2->Write();
-        DTemplatesNaF2->Write();
-        PTemplatesNaF2->Write();
-        HeTemplatesNaF2->Write();
-        DTemplatesAgl2->Write();
-        PTemplatesAgl2->Write();
-        HeTemplatesAgl2->Write();
-        DhistosgeoTOF->Write();
-        DhistosgeoNaF->Write();
-        DhistosgeoAgl->Write();
-        DhistosTOF->Write();
-        DhistosNaF->Write();
-        DhistosAgl->Write();
-        DhistosTOF2->Write();
-        DhistosNaF2->Write();
-        DhistosAgl2->Write();
+
+	FitTOF_Dbins -> Write();
+	FitNaF_Dbins -> Write();
+	FitAgl_Dbins -> Write();
+
+	FitTOF_Pbins -> Write();
+	FitNaF_Pbins -> Write();
+	FitAgl_Pbins -> Write();
+	return;
 }
 
 
+void DeutonsTemplFits(){
+	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+        TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
+	
+	TemplateFIT * FitTOF_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins",0,3,11);
+	TemplateFIT * FitNaF_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins",0,3,11);
+	TemplateFIT * FitAgl_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins",0,3,11);
 
+	TemplateFIT * FitTOF_Pbins	= new TemplateFIT(file1,"FitTOF_Pbins",0,3,11);
+	TemplateFIT * FitNaF_Pbins	= new TemplateFIT(file1,"FitNaF_Pbins",0,3,11);
+	TemplateFIT * FitAgl_Pbins	= new TemplateFIT(file1,"FitAgl_Pbins",0,3,11);
 
+	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
+	cout<<	FitTOF_Dbins -> TemplateHe <<endl; 
+        cout<<	FitNaF_Dbins -> TemplateHe <<endl;
+        cout<<  FitAgl_Dbins -> TemplateHe <<endl;
+                            
+        cout<<  FitTOF_Pbins -> TemplateHe <<endl;
+        cout<<  FitNaF_Pbins -> TemplateHe <<endl;
+        cout<<  FitAgl_Pbins -> TemplateHe <<endl;
 
+	return;
+	}
+/*
 
 
 TCanvas *c30[12][18];
@@ -702,4 +687,4 @@ void DeutonsTemplFits(TFile * file1){
                 cout<<endl;
         }
 
-}
+}*/
