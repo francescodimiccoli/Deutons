@@ -41,7 +41,12 @@ public:
 	}
 
 	void Write();
-
+	
+	TH1F * Extract_Bin_histos(TH1 * Histo, int bin);
+	
+	void Do_TemplateFIT(int bin, TH1F * PMC, TH1F *DMC, TH1F *HeMC, TH1F* Data);
+	
+	void TemplateFits();
 
 };
 
