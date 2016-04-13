@@ -106,7 +106,7 @@ void ProtonFlux(){
 	TCanvas * c24 = new TCanvas("Primary Protons Flux");
 	TCanvas * c25 = new TCanvas("Protons Flux: Pre vs Qual");
 
-	string numero[11]={"0","1","2","3","4","5","6","7","8","9","10"};
+
 	TGraphErrors * P_Fluxgeo[11];
 	TGraphErrors * PFlux;
 	TGraphErrors * PFlux_pre;
@@ -119,7 +119,7 @@ void ProtonFlux(){
 	gPad->SetGridy();
 	string nome;
 	for(int j=0;j<11;j++) {
-		nome="Protons Flux: Geo. Zone "+numero[j];
+		nome="Protons Flux: Geo. Zone "+to_string(j);
 		P_Fluxgeo[j]=new TGraphErrors();
 		P_Fluxgeo[j]->SetName(nome.c_str());
 		for(int i=0;i<nbinsr;i++){

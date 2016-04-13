@@ -149,7 +149,7 @@ TH2F * Discr3_TMCD= new TH2F("Discr3_TMCD","Discr3_TMCD",150,0,12,18,0,18);
 TH2F * Discr3_TMCHe= new TH2F("Discr3_TMCHe","Discr3_TMCHe",150,0,12,18,0,18);
 TH2F * ContCheckDTOF= new TH2F("ContCheckDTOF","ContCheckDTOF",1000,-20,20,43,0,43);
 TH2F * ContCheckPTOF= new TH2F("ContCheckPTOF","ContCheckPTOF",1000,-20,20,43,0,43);
-string numero[11]= {"0","1","2","3","4","5","6","7","8","9","10"};
+
 float Rcut[11]= {18,18,16,14,12,10,8,6,4,2,1};
 string tagli[10]= {"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
 string nome;
@@ -193,25 +193,25 @@ int main()
 
 
    for(int i=0; i<11; i++) {
-      nome="PCountsD"+numero[i];
+      nome="PCountsD"+to_string(i);
       PCountsD[i]= new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-      nome="PCountsQ"+numero[i];
+      nome="PCountsQ"+to_string(i);
       PCountsQ[i]= new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-      nome="PCountsDPrim"+numero[i];
+      nome="PCountsDPrim"+to_string(i);
       PCountsDPrim[i]= new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-      nome="PCountsQPrim"+numero[i];
+      nome="PCountsQPrim"+to_string(i);
       PCountsQPrim[i]= new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-      nome="Esposizione"+numero[i];
+      nome="Esposizione"+to_string(i);
       Esposizione[i]= new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-      nome="Unbias"+numero[i];
+      nome="Unbias"+to_string(i);
       Unbias[i]= new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-      nome="UPreselected"+numero[i];
+      nome="UPreselected"+to_string(i);
       UPreselected[i]= new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-      nome="Discr1_T"+numero[i];
+      nome="Discr1_T"+to_string(i);
       Discr1_T[i]= new TH2F(nome.c_str(),nome.c_str(),100,0,40,18,0,18);
-      nome="Discr2_T"+numero[i];
+      nome="Discr2_T"+to_string(i);
       Discr2_T[i]= new TH2F(nome.c_str(),nome.c_str(),150,0,12,18,0,18);
-      nome="Discr3_T"+numero[i];
+      nome="Discr3_T"+to_string(i);
       Discr3_T[i]= new TH2F(nome.c_str(),nome.c_str(),150,0,12,18,0,18);
    }
 

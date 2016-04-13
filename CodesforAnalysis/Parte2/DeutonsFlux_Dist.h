@@ -280,7 +280,7 @@ void DeutonFlux_Dist(TFile * file1){
 	string nome;
 	int p=0;
 	for(int j=0;j<11;j++) {
-		nome="Deutons Flux: Geo. Zone "+numero[j];
+		nome="Deutons Flux: Geo. Zone "+to_string(j);
 		D_FluxgeoTOF_Dist[j]=new TGraphErrors();
 		D_FluxgeoTOF_Dist[j]->SetName(nome.c_str());
 		p=0;
@@ -306,7 +306,7 @@ void DeutonFlux_Dist(TFile * file1){
 
 	p=0;
 	for(int j=0;j<11;j++) {
-		nome="Deutons Flux: Geo. Zone "+numero[j];
+		nome="Deutons Flux: Geo. Zone "+to_string(j);
 		D_FluxgeoNaF_Dist[j]=new TGraphErrors();
 		D_FluxgeoNaF_Dist[j]->SetName(nome.c_str());
 		p=0;
@@ -332,7 +332,7 @@ void DeutonFlux_Dist(TFile * file1){
 
 	p=0;
 	for(int j=0;j<11;j++) {
-		nome="Deutons Flux: Geo. Zone "+numero[j];
+		nome="Deutons Flux: Geo. Zone "+to_string(j);
 		D_FluxgeoAgl_Dist[j]=new TGraphErrors();
 		D_FluxgeoAgl_Dist[j]->SetName(nome.c_str());
 		p=0;

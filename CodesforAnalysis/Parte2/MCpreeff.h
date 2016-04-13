@@ -79,7 +79,6 @@ void MCpreeff(TFile * file1) {
    Efficiency * EffpreselMCP = new Efficiency(file1, "EffpreselMCP");
    Efficiency * EffpreselMCD = new Efficiency(file1, "EffpreselMCD");
 
-   string numero[18]= {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","18"};
    string tagli[10]= {"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
    string nome;
 

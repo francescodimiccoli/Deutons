@@ -950,7 +950,6 @@ int main(int argc, char * argv[]){
         TF1 *m_betaNaF_D[24];
         TF1 *m_betaAgl_MC[24];
         TF1 *m_betaAgl_D[24];
-	string numero[30]={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29"};
 	string gausMC="gausMC_";
 	string gausD="gausD_";
 	float mean_L1_MC[30];
@@ -1085,30 +1084,30 @@ int main(int argc, char * argv[]){
 		PiccoTrack[j]=RisoluzioniTrack[j]->GetBinCenter(RisoluzioniTrack[j]->GetMaximumBin());
 		PiccoTOFD[j]=RisoluzioniTOFD[j]->GetBinCenter(RisoluzioniTOFD[j]->GetMaximumBin());
 
-		nomefunz=gausMC+"L1"+numero[j];
+		nomefunz=gausMC+"L1"+to_string(j);
 		f1_MC_L1[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTrack[j]-2,PiccoTrack[j]+2);
-		nomefunz=gausD+"L1"+numero[j];
+		nomefunz=gausD+"L1"+to_string(j);
 		f1_D_L1[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTrack[j]-2,PiccoTrack[j]+2);
 
-		nomefunz=gausMC+"TOFU"+numero[j];
+		nomefunz=gausMC+"TOFU"+to_string(j);
 		f1_MC_TOFU[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTOFU[j]-0.1,PiccoTOFU[j]+0.1);
-		nomefunz=gausD+"TOFU"+numero[j];
+		nomefunz=gausD+"TOFU"+to_string(j);
 		f1_D_TOFU[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTOFU[j]-0.1,PiccoTOFU[j]+0.1);
-		nomefunz=gausMC+"TOFU_inv"+numero[j];
+		nomefunz=gausMC+"TOFU_inv"+to_string(j);
 		f1_D_TOFU_inv[j] = new TF1(nomefunz.c_str(),"gaus",0,20);
 
-		nomefunz=gausMC+"Track"+numero[j];
+		nomefunz=gausMC+"Track"+to_string(j);
 		f1_MC_Track[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTrack[j]-2,PiccoTrack[j]+2);
-		nomefunz=gausD+"Track"+numero[j];
+		nomefunz=gausD+"Track"+to_string(j);
 		f1_D_Track[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTrack[j]-2,PiccoTrack[j]+2);
-		nomefunz=gausMC+"Track_inv"+numero[j];
+		nomefunz=gausMC+"Track_inv"+to_string(j);
 		f1_D_Track_inv[j] = new TF1(nomefunz.c_str(),"gaus",0,20);
 
-		nomefunz=gausMC+"TOFD"+numero[j];
+		nomefunz=gausMC+"TOFD"+to_string(j);
 		f1_MC_TOFD[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTOFD[j]-0.1,PiccoTOFD[j]+0.1);
-		nomefunz=gausD+"TOFD"+numero[j];
+		nomefunz=gausD+"TOFD"+to_string(j);
 		f1_D_TOFD[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTOFD[j]-0.1,PiccoTOFD[j]+0.1);
-		nomefunz=gausMC+"TOFD_inv"+numero[j];
+		nomefunz=gausMC+"TOFD_inv"+to_string(j);
 		f1_D_TOFD_inv[j] = new TF1(nomefunz.c_str(),"gaus",0,20);
 
 		f1_D_L1[j]->SetLineColor(4);
@@ -1117,9 +1116,9 @@ int main(int argc, char * argv[]){
 		f1_D_TOFD[j]->SetLineColor(4);
 
 		//L1 Tracker
-		nomefunz=gausMC+"L1"+numero[j];
+		nomefunz=gausMC+"L1"+to_string(j);
 		RisoluzioniL1[j]->Fit(nomefunz.c_str(),"","",PiccoL1[j]-2,PiccoL1[j]+3);
-		nomefunz=gausD+"L1"+numero[j];
+		nomefunz=gausD+"L1"+to_string(j);
 		RisoluzioniL1_D[j]->Fit(nomefunz.c_str(),"","",PiccoL1[j]-2,PiccoL1[j]+3);
 		mean_L1_MC[j]=f1_MC_L1[j]->GetParameter(1);
 		mean_L1_D[j]=f1_D_L1[j]->GetParameter(1);
@@ -1133,9 +1132,9 @@ int main(int argc, char * argv[]){
 		delete fitmean;
 
 		//UPPER TOF
-		nomefunz=gausMC+"TOFU"+numero[j];
+		nomefunz=gausMC+"TOFU"+to_string(j);
 		RisoluzioniTOFU[j]->Fit(nomefunz.c_str(),"","",PiccoTOFU[j]-0.05,PiccoTOFU[j]+0.1);
-		nomefunz=gausD+"TOFU"+numero[j];
+		nomefunz=gausD+"TOFU"+to_string(j);
 		RisoluzioniTOFU_D[j]->Fit(nomefunz.c_str(),"","",PiccoTOFU[j]-0.05,PiccoTOFU[j]+0.1);
 		mean_TOFU_MC[j]=f1_MC_TOFU[j]->GetParameter(1);
 		mean_TOFU_D[j]=f1_D_TOFU[j]->GetParameter(1);
@@ -1144,14 +1143,14 @@ int main(int argc, char * argv[]){
 		sigma_TOFU_MC_err[j]=f1_MC_TOFU[j]->GetParError(2);
 		sigma_TOFU_D_err[j]=f1_D_TOFU[j]->GetParError(2);
 
-		nomefunz=gausMC+"TOFU_inv"+numero[j];
+		nomefunz=gausMC+"TOFU_inv"+to_string(j);
 		DistribuzioniTOFU_D[j]->Fit(nomefunz.c_str(),"","",DistribuzioniTOFU_D[j]->GetBinCenter(DistribuzioniTOFU_D[j]->GetMaximumBin())-1,DistribuzioniTOFU_D[j]->GetBinCenter(DistribuzioniTOFU_D[j]->GetMaximumBin())+0.5);
 		mean_TOFU_D_inv[j]=f1_D_TOFU_inv[j]->GetParameter(1);
 
 		//Track
-		nomefunz=gausMC+"Track"+numero[j];
+		nomefunz=gausMC+"Track"+to_string(j);
 		RisoluzioniTrack[j]->Fit(nomefunz.c_str(),"","",PiccoTrack[j]-2,PiccoTrack[j]+2);
-		nomefunz=gausD+"Track"+numero[j];
+		nomefunz=gausD+"Track"+to_string(j);
 		RisoluzioniTrack_D[j]->Fit(nomefunz.c_str(),"","",PiccoTrack[j]-2,PiccoTrack[j]+2);
 		mean_Track_MC[j]=f1_MC_Track[j]->GetParameter(1);
 		mean_Track_D[j]=f1_D_Track[j]->GetParameter(1);
@@ -1160,15 +1159,15 @@ int main(int argc, char * argv[]){
 		sigma_Track_MC_err[j]=f1_MC_Track[j]->GetParError(2);
 		sigma_Track_D_err[j]=f1_D_Track[j]->GetParError(2);
 
-		nomefunz=gausMC+"Track_inv"+numero[j];
+		nomefunz=gausMC+"Track_inv"+to_string(j);
 		DistribuzioniTrack_D[j]->Fit(nomefunz.c_str(),"","",DistribuzioniTrack_D[j]->GetBinCenter(DistribuzioniTrack_D[j]->GetMaximumBin())-0.1,DistribuzioniTrack_D[j]->GetBinCenter(DistribuzioniTrack_D[j]->GetMaximumBin())+0.05);
 		mean_Track_D_inv[j]=f1_D_Track_inv[j]->GetParameter(1);
 
 
 		//LOWER TOF
-		nomefunz=gausMC+"TOFD"+numero[j];
+		nomefunz=gausMC+"TOFD"+to_string(j);
 		RisoluzioniTOFD[j]->Fit(nomefunz.c_str(),"","",PiccoTOFD[j]-0.05,PiccoTOFD[j]+0.05);
-		nomefunz=gausD+"TOFD"+numero[j];
+		nomefunz=gausD+"TOFD"+to_string(j);
 		RisoluzioniTOFD_D[j]->Fit(nomefunz.c_str(),"","",PiccoTOFD[j]-0.05,PiccoTOFD[j]+0.05);
 		mean_TOFD_MC[j]=f1_MC_TOFD[j]->GetParameter(1);
 		mean_TOFD_D[j]=f1_D_TOFD[j]->GetParameter(1);
@@ -1177,7 +1176,7 @@ int main(int argc, char * argv[]){
 		sigma_TOFD_MC_err[j]=f1_MC_TOFD[j]->GetParError(2);
 		sigma_TOFD_D_err[j]=f1_D_TOFD[j]->GetParError(2);
 
-		nomefunz=gausMC+"TOFD_inv"+numero[j];
+		nomefunz=gausMC+"TOFD_inv"+to_string(j);
 		DistribuzioniTOFD_D[j]->Fit(nomefunz.c_str(),"","",DistribuzioniTOFD_D[j]->GetBinCenter(DistribuzioniTOFD_D[j]->GetMaximumBin())-1,DistribuzioniTOFD_D[j]->GetBinCenter(DistribuzioniTOFD_D[j]->GetMaximumBin())+0.5);
 		mean_TOFD_D_inv[j]=f1_D_TOFD_inv[j]->GetParameter(1);
 
