@@ -136,3 +136,12 @@ void FillBinMGen(TH3* h, int bin, int S) {
 	h->Fill(bin, mass, S);
 	return;
 }
+
+int GetArrayBin(float var, float* array, int nbins) {
+	for (int ib=0; ib<nbins; ib++)  {
+		if(var>array[ib] && var<=array[ib+1])
+		return ib;
+	}
+	return -1;
+	}
+}

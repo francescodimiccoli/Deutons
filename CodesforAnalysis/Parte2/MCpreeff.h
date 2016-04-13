@@ -22,9 +22,9 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
 
       // Beta bins
 
-      for(int m=0; m<nbinsToF; m++)  if(Var3>BetaP[m]    && Var3<=BetaP[m+1])    EffpreselMCP->beforeTOF->Fill(m);
-      for(int m=0; m<nbinsNaF; m++)  if(Var3>BetaNaFP[m] && Var3<=BetaNaFP[m+1]) EffpreselMCP->beforeNaF->Fill(m);
-      for(int m=0; m<nbinsAgl; m++)  if(Var3>BetaAglP[m] && Var3<=BetaAglP[m+1]) EffpreselMCP->beforeAgl->Fill(m);
+      EffpreselMCP->beforeTOF->Fill( GetArrayBin(Var3, BetaP,     nbinsToF) );
+      EffpreselMCP->beforeNaF->Fill( GetArrayBin(Var3, BetaNaFP , nbinsNaF));
+      EffpreselMCP->beforeAgl->Fill( GetArrayBin(Var3, BetaAglP , nbinsAgl) );
 
       if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0)
       {
@@ -51,15 +51,15 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
 
       // Beta bins
 
-         for(int m=0;m<nbinsToF;m++)  if(Var3>BetaD[m]&&Var3<=BetaD[m+1])       FillBinMGen(EffpreselMCD->beforeTOF, m);
-         for(int m=0;m<nbinsNaF;m++)  if(Var3>BetaNaFD[m]&&Var3<=BetaNaFD[m+1]) FillBinMGen(EffpreselMCD->beforeNaF, m);
-         for(int m=0;m<nbinsAgl;m++)  if(Var3>BetaAglD[m]&&Var3<=BetaAglD[m+1]) FillBinMGen(EffpreselMCD->beforeAgl, m);
+         FillBinMGen(EffpreselMCD->beforeTOF, GetArrayBin(Var3, BetaD,    nbinsToF) );
+         FillBinMGen(EffpreselMCD->beforeNaF, GetArrayBin(Var3, BetaNaFD, nbinsNaF) );
+         FillBinMGen(EffpreselMCD->beforeAgl, GetArrayBin(Var3, BetaAglD, nbinsAgl) );
 
          if(((int)Cutmask&187)==187&&Beta_pre>0&&Unbias==0&&R_pre>0)
          {
-	    for(int m=0;m<nbinsToF;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1])                                             FillBinMGen(EffpreselMCD->afterTOF, m);
-            for(int m=0;m<nbinsNaF;m++)  if((((int)Cutmask)>>11)==512 && Var2>BetaNaFD[m] && Var2<=BetaNaFD[m+1]) FillBinMGen(EffpreselMCD->afterNaF, m);
-            for(int m=0;m<nbinsAgl;m++)  if((((int)Cutmask)>>11)==0   && Var2>BetaAglD[m] && Var2<=BetaAglD[m+1]) FillBinMGen(EffpreselMCD->afterAgl, m);
+                                           FillBinMGen(EffpreselMCD->afterTOF, GetArrayBin(Var,  BetaD,    nbinsToF));
+            if(((int)Cutmask)>>11 == 512 ) FillBinMGen(EffpreselMCD->afterNaF, GetArrayBin(Var2, BetaNaFD, nbinsNaF));
+            if(((int)Cutmask)>>11 == 0   ) FillBinMGen(EffpreselMCD->afterAgl, GetArrayBin(Var2, BetaAglD, nbinsAgl));
          }
       
    }
