@@ -15,7 +15,7 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 	float mass = 0;
 	if(!(Likcut&&Distcut)) return;	
 
-	for(int m=0;m<18;m++){
+	for(int m=0;m<nbinsbeta;m++){
 		//TOF
 		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
 		if(Var>BetaD[m]&&Var<=BetaD[m+1]){ 
@@ -70,7 +70,7 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 	float mass = 0;
 	if(!(Likcut&&Distcut)) return;	
 
-	for(int m=0;m<18;m++){
+	for(int m=0;m<nbinsbeta;m++){
 		//TOF
 		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
 		if(Var>BetaD[m]&&Var<=BetaD[m+1]){ 
