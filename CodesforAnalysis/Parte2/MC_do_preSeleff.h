@@ -27,11 +27,11 @@ void MC_do_preSeleff_Fill(TNtuple *ntupla, int l){
 			for(int M=0;M<nbinsr;M++) 
 				if(Var<bin[M+1]&&Var>bin[M]) {
 					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)(Eff_do_preSelMCD->beforeR))->Fill(1,2,3);
-					if(((int)Cutmask&passed[S])==passed[S]) ((TH3*)Eff_do_preSelMCD->afterR)->Fill(M,(int)(10000*Massa_gen-18570),S);
+					if(((int)Cutmask&passed[S])==passed[S])       FillBinMGen((TH3*)Eff_do_preSelMCD->afterR, M, S);
 			}
 			for(int m=0;m<nbinsToF;m++) if(Var>BetaD[m]&&Var<=BetaD[m+1]){
-					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)Eff_do_preSelMCD->beforeTOF)->Fill(m,(int)(10000*Massa_gen-18570),S);
-					if(((int)Cutmask&passed[S])==passed[S]) ((TH3*)Eff_do_preSelMCD->afterTOF)->Fill(m,(int)(10000*Massa_gen-18570),S);
+					if(((int)Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeTOF,m, S);
+					if(((int)Cutmask&passed[S])==passed[S])       FillBinMGen((TH3*)Eff_do_preSelMCD->afterTOF, m, S);
 			}
 		}
 	}

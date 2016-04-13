@@ -120,3 +120,19 @@ TH2F * esposizionepgeoAgl;
 TH2F * esposizionedgeo;
 TH2F * esposizionedgeoNaF;
 TH2F * esposizionedgeoAgl;
+
+
+
+void FillBinMGen(TH1* h, int bin) {
+	int moffset=18570;
+	int mass=(int)(10000*Massa_gen-moffset);
+	h->Fill(bin, mass);
+	return;
+}
+
+void FillBinMGen(TH3* h, int bin, int S) {
+	int moffset=18570;
+	int mass=(int)(10000*Massa_gen-moffset);
+	h->Fill(bin, mass, S);
+	return;
+}

@@ -53,33 +53,34 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
       //R bins
       for(int K=0; K<nbinsr; K++) {
          if(R<bin[K+1]&&R>bin[K]) {
-            EffLikMCD->beforeR->Fill(K,(int)(10000*Massa_gen-18570));
-            EffDistMCD->beforeR->Fill(K,(int)(10000*Massa_gen-18570));
-            if(Likcut) EffLikMCD->afterR->Fill(K,(int)(10000*Massa_gen-18570));
-            if(Dist5D_P<6&&Likcut)	EffDistMCD->afterR->Fill(K,(int)(10000*Massa_gen-18570));
+                                    FillBinMGen(EffLikMCD ->beforeR, K);
+                                    FillBinMGen(EffDistMCD->beforeR, K);
+            if(Likcut)              FillBinMGen(EffLikMCD ->afterR,  K);
+            if(Dist5D_P<6&&Likcut)	FillBinMGen(EffDistMCD->afterR,  K);
          }
       }
+
 
       //Beta bins
       for(int m=0; m<nbinsToF; m++) {
          if(Var<BetaD[m+1]&&Var>BetaD[m]) {
-            EffLikMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
-            EffDistMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
-            if(Likcut) EffLikMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
-            if(Dist5D<6&&Likcut)	EffDistMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
+                                 FillBinMGen(EffLikMCD ->beforeTOF, m);
+                                 FillBinMGen(EffDistMCD->beforeTOF, m);
+            if(Likcut)           FillBinMGen(EffLikMCD ->afterTOF , m);
+            if(Dist5D<6&&Likcut)	FillBinMGen(EffDistMCD->afterTOF , m);
          }
          if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
-            EffLikMCD->beforeNaF->Fill(m,(int)(10000*Massa_gen-18570));
-            EffDistMCD->beforeNaF->Fill(m,(int)(10000*Massa_gen-18570));
-            if(Likcut) EffLikMCD->afterNaF->Fill(m,(int)(10000*Massa_gen-18570));
-            if(Dist5D<6&&Likcut)	EffDistMCD->afterNaF->Fill(m,(int)(10000*Massa_gen-18570));
+                                 FillBinMGen(EffLikMCD ->beforeNaF, m);
+                                 FillBinMGen(EffDistMCD->beforeNaF, m);
+            if(Likcut)           FillBinMGen(EffLikMCD ->afterNaF , m);
+            if(Dist5D<6&&Likcut)	FillBinMGen(EffDistMCD->afterNaF , m);
          }
 
          if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
-            EffLikMCD->beforeAgl->Fill(m,(int)(10000*Massa_gen-18570));
-            EffDistMCD->beforeAgl->Fill(m,(int)(10000*Massa_gen-18570));
-            if(Likcut) EffLikMCD->afterAgl->Fill(m,(int)(10000*Massa_gen-18570));
-            if(Dist5D<6&&Likcut)	EffDistMCD->afterAgl->Fill(m,(int)(10000*Massa_gen-18570));
+                                 FillBinMGen(EffLikMCD ->beforeAgl, m);
+                                 FillBinMGen(EffDistMCD->beforeAgl, m);
+            if(Likcut)           FillBinMGen(EffLikMCD ->afterAgl , m);
+            if(Dist5D<6&&Likcut)	FillBinMGen(EffDistMCD->afterAgl , m);
          }
       }
 

@@ -27,14 +27,14 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l){
 			//R bins
 			for(int M=0;M<nbinsr;M++) 
 				if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
-					EffUnbiasMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
-					if(Unbias==0) EffUnbiasMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
+					              FillBinMGen(EffUnbiasMCD->beforeR, M);
+					if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , M);
 				}
 			//Beta bins
 			for(int m=0;m<nbinsToF;m++) 
 				if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
-					EffUnbiasMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
-					if(Unbias==0) EffUnbiasMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
+					              FillBinMGen(EffUnbiasMCD->beforeTOF, m);
+					if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterTOF , m);
 				}
 		}
 		

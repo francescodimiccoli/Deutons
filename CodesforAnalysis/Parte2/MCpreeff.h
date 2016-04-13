@@ -39,27 +39,27 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
       // R bins
       for(int M=0; M<nbinsr; M++)
       {
-         if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M])
-            EffpreselMCD->beforeR->Fill(M,(int)(10000*Massa_gen-18570));
+         if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) 
+            FillBinMGen(EffpreselMCD->beforeR, M);
 
          if(((int)Cutmask&187)==187&&Beta_pre>0&&Unbias==0&&R_pre>0)
          {
             if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M])
-               EffpreselMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
+               FillBinMGen(EffpreselMCD->afterR, M);
          }
       }
 
       // Beta bins
 
-         for(int m=0;m<nbinsToF;m++)  if(Var3>BetaD[m]&&Var3<=BetaD[m+1])       EffpreselMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
-         for(int m=0;m<nbinsNaF;m++)  if(Var3>BetaNaFD[m]&&Var3<=BetaNaFD[m+1]) EffpreselMCD->beforeNaF->Fill(m,(int)(10000*Massa_gen-18570));
-         for(int m=0;m<nbinsAgl;m++)  if(Var3>BetaAglD[m]&&Var3<=BetaAglD[m+1]) EffpreselMCD->beforeAgl->Fill(m,(int)(10000*Massa_gen-18570));
+         for(int m=0;m<nbinsToF;m++)  if(Var3>BetaD[m]&&Var3<=BetaD[m+1])       FillBinMGen(EffpreselMCD->beforeTOF, m);
+         for(int m=0;m<nbinsNaF;m++)  if(Var3>BetaNaFD[m]&&Var3<=BetaNaFD[m+1]) FillBinMGen(EffpreselMCD->beforeNaF, m);
+         for(int m=0;m<nbinsAgl;m++)  if(Var3>BetaAglD[m]&&Var3<=BetaAglD[m+1]) FillBinMGen(EffpreselMCD->beforeAgl, m);
 
          if(((int)Cutmask&187)==187&&Beta_pre>0&&Unbias==0&&R_pre>0)
          {
-	    for(int m=0;m<nbinsToF;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1])                                        EffpreselMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
-            for(int m=0;m<nbinsNaF;m++)  if((((int)Cutmask)>>11)==512 && Var2>BetaNaFD[m] && Var2<=BetaNaFD[m+1]) EffpreselMCD->afterNaF->Fill(m,(int)(10000*Massa_gen-18570));
-            for(int m=0;m<nbinsAgl;m++)  if((((int)Cutmask)>>11)==0   && Var2>BetaAglD[m] && Var2<=BetaAglD[m+1]) EffpreselMCD->afterAgl->Fill(m,(int)(10000*Massa_gen-18570));
+	    for(int m=0;m<nbinsToF;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1])                                             FillBinMGen(EffpreselMCD->afterTOF, m);
+            for(int m=0;m<nbinsNaF;m++)  if((((int)Cutmask)>>11)==512 && Var2>BetaNaFD[m] && Var2<=BetaNaFD[m+1]) FillBinMGen(EffpreselMCD->afterNaF, m);
+            for(int m=0;m<nbinsAgl;m++)  if((((int)Cutmask)>>11)==0   && Var2>BetaAglD[m] && Var2<=BetaAglD[m+1]) FillBinMGen(EffpreselMCD->afterAgl, m);
          }
       
    }
