@@ -29,14 +29,14 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l){
 				if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCP->afterR->Fill(M);
 		}
 		//Beta bins
-		for(int m=0;m<nbinsbeta;m++)  if(Var3>BetaP[m]&&Var3<=BetaP[m+1]){
+		for(int m=0;m<nbinsToF;m++)  if(Var3>BetaP[m]&&Var3<=BetaP[m+1]){
 			EffTriggMCP->beforeTOF->Fill(m);
 			if(((int)Cutmask&1)==1) EffTriggMCP->afterTOF->Fill(m);
 			if(((int)Cutmask&1)==1) EffTOFMCP->beforeTOF->Fill(m);
 			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCP->afterTOF->Fill(m);
 		}
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){ 
-			for(int m=0;m<nbinsbeta;m++)  
+			for(int m=0;m<nbinsToF;m++)  
 				if(Var3>BetaP[m]&&Var3<=BetaP[m+1]) {
 						EffTrackMCP->beforeTOF->Fill(m);
 						if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCP->afterTOF->Fill(m);
@@ -61,14 +61,14 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l){
 					}
 		}
 		//Beta bins
-		for(int m=0;m<nbinsbeta;m++) if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
+		for(int m=0;m<nbinsToF;m++) if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
 			EffTriggMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
 			if(((int)Cutmask&1)==1) EffTriggMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
 			if(((int)Cutmask&1)==1) EffTOFMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
 			if(((int)Cutmask&3)==3&&Beta_pre>0) EffTOFMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));
 		}
 		if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&3)==3&&Beta_pre>0){
-			for(int m=0;m<nbinsbeta;m++)  
+			for(int m=0;m<nbinsToF;m++)  
 				if(Var3>BetaD[m]&&Var3<=BetaD[m+1]) {
 					EffTrackMCD->beforeR->Fill(m,(int)(10000*Massa_gen-18570));
 			 		if(((int)Cutmask&11)==11&&R_pre>0) EffTrackMCD->afterR->Fill(m,(int)(10000*Massa_gen-18570));
