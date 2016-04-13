@@ -15,8 +15,8 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 	float mass = 0;
 	if(!(Likcut&&Distcut)) return;	
 
-	for(int m=0;m<nbinsbeta;m++){
-		//TOF
+	for(int m=0;m<nbinsToF;m++){ //TOF
+		
 		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
 		if(Var>BetaD[m]&&Var<=BetaD[m+1]){ 
 			if(Massa_gen<1&&Massa_gen>0.5)	FitTOF_Dbins -> TemplateP -> Fill(mass,m);
@@ -29,7 +29,9 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 			if(Massa_gen<4&&Massa_gen>2.5)	FitTOF_Pbins -> TemplateHe-> Fill(mass,m);
 
 		}
-		//NaF
+	}
+	for(int m=0;m<nbinsNaF;m++) { //NaF
+		
 		if((((int)Cutmask)>>11)==512){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
@@ -43,8 +45,9 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 				if(Massa_gen<4&&Massa_gen>2.5)	FitNaF_Pbins -> TemplateHe-> Fill(mass,m);
 			}
 
-		} 
-		//Agl
+		}
+	}
+	for(int m=0;m<nbinsAgl;m++) {	//Agl
 		if((((int)Cutmask)>>11)==0){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
@@ -70,8 +73,7 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 	float mass = 0;
 	if(!(Likcut&&Distcut)) return;	
 
-	for(int m=0;m<nbinsbeta;m++){
-		//TOF
+	for(int m=0;m<nbinsToF;m++){ //TOF
 		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
 		if(Var>BetaD[m]&&Var<=BetaD[m+1]){ 
 			if(R>1.2*Rcutoff)	FitTOF_Dbins -> Data_Prim -> Fill(mass,m);
@@ -81,7 +83,9 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 			if(R>1.2*Rcutoff)	FitTOF_Pbins -> Data_Prim -> Fill(mass,m);
 
 		}
-		//NaF
+	}
+	for(int m=0;m<nbinsNaF;m++){//NaF
+		
 		if((((int)Cutmask)>>11)==512){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
@@ -92,8 +96,9 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 				if(R>1.2*Rcutoff)	FitNaF_Pbins -> Data_Prim -> Fill(mass,m);	
 			}
 
-		} 
-		//Agl
+		}
+			}
+	for(int m=0;m<nbinsAgl;m++){ //Agl
 		if((((int)Cutmask)>>11)==0){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
