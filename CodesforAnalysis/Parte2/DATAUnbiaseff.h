@@ -12,7 +12,7 @@ void DATAUnbiaseff_Fill(TNtuple *ntupla, int l){
 			if(Unbias==1) EffUnbiasDATA->afterR->Fill(M);
 		}
 	}	
-	for(int m=0;m<nbinsbeta;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]){
+	for(int m=0;m<nbinsToF;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]){
 		if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2){
 			EffUnbiasDATA->beforeTOF->Fill(m);
 			if(Unbias==1) EffUnbiasDATA->afterTOF->Fill(m);	
