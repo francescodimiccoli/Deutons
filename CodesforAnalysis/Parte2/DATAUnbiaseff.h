@@ -12,7 +12,7 @@ void DATAUnbiaseff_Fill(TNtuple *ntupla, int l){
 			if(Unbias==1) EffUnbiasDATA->afterR->Fill(M);
 		}
 	}	
-	for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]){
+	for(int m=0;m<nbinsbeta;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]){
 		if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2){
 			EffUnbiasDATA->beforeTOF->Fill(m);
 			if(Unbias==1) EffUnbiasDATA->afterTOF->Fill(m);	
@@ -82,7 +82,7 @@ void DATAUnbiaseff(TFile * file1){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraph * EffUnbDATA = new TGraph();
-        for(int i=0;i<18;i++) EffUnbDATA->SetPoint(i,Ekincent[i],EffUnbDATA_TH1F->GetBinContent(i+1));
+        for(int i=0;i<nbinsbeta;i++) EffUnbDATA->SetPoint(i,Ekincent[i],EffUnbDATA_TH1F->GetBinContent(i+1));
         TGraph * EffUnbMCD[6];
         EffUnbDATA->SetMarkerColor(2);
         EffUnbDATA->SetMarkerStyle(8);

@@ -20,36 +20,36 @@ public:
     //  Creation constructors:
    
      Efficiency(std::string basename){
-        beforeTOF = new TH1F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),18,0,18);
-        afterTOF  = new TH1F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),18,0,18);
-        beforeNaF = new TH1F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),18,0,18);
-        afterNaF  = new TH1F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),18,0,18);
-        beforeAgl = new TH1F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18);
-        afterAgl  = new TH1F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),18,0,18);
+        beforeTOF = new TH1F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),nbinsbeta,0,nbinsbeta);
+        afterTOF  = new TH1F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),nbinsbeta,0,nbinsbeta);
+        beforeNaF = new TH1F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),nbinsbeta,0,nbinsbeta);
+        afterNaF  = new TH1F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),nbinsbeta,0,nbinsbeta);
+        beforeAgl = new TH1F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),nbinsbeta,0,nbinsbeta);
+        afterAgl  = new TH1F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),nbinsbeta,0,nbinsbeta);
         beforeR   = new TH1F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),nbinsr,0,nbinsr);
         afterR    = new TH1F((basename + "2_R" ).c_str(),(basename + "2_R" ).c_str(),nbinsr,0,nbinsr);
         name = basename;
     }
 
     Efficiency(std::string basename, int n){
-        beforeTOF = new TH2F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),18,0,18, n, 0 ,n);
-        afterTOF  = new TH2F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),18,0,18, n, 0 ,n);
-        beforeNaF = new TH2F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),18,0,18, n, 0 ,n);
-        afterNaF  = new TH2F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),18,0,18, n, 0 ,n);
-        beforeAgl = new TH2F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18, n, 0 ,n);
-        afterAgl  = new TH2F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),18,0,18, n, 0 ,n);
+        beforeTOF = new TH2F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n);
+        afterTOF  = new TH2F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n);
+        beforeNaF = new TH2F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n);
+        afterNaF  = new TH2F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n);
+        beforeAgl = new TH2F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n);
+        afterAgl  = new TH2F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n);
         beforeR   = new TH2F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),nbinsr,0,nbinsr, n, 0 ,n);
         afterR    = new TH2F((basename + "2_R" ).c_str(),(basename + "2_R" ).c_str(),nbinsr,0,nbinsr, n, 0 ,n);
    	 name = basename; 
    }
 
     Efficiency(std::string basename, int n, int m){
-        beforeTOF = new TH3F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),18,0,18, n, 0 ,n, m, 0,m);
-        afterTOF  = new TH3F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),18,0,18, n, 0 ,n, m, 0,m);
-        beforeNaF = new TH3F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),18,0,18, n, 0 ,n, m, 0,m);
-        afterNaF  = new TH3F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),18,0,18, n, 0 ,n, m, 0,m);
-        beforeAgl = new TH3F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),18,0,18, n, 0 ,n, m, 0,m);
-        afterAgl  = new TH3F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),18,0,18, n, 0 ,n, m, 0,m);
+        beforeTOF = new TH3F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n, m, 0,m);
+        afterTOF  = new TH3F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n, m, 0,m);
+        beforeNaF = new TH3F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n, m, 0,m);
+        afterNaF  = new TH3F((basename + "2NaF").c_str(),(basename + "2NaF").c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n, m, 0,m);
+        beforeAgl = new TH3F((basename + "1Agl").c_str(),(basename + "1Agl").c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n, m, 0,m);
+        afterAgl  = new TH3F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),nbinsbeta,0,nbinsbeta, n, 0 ,n, m, 0,m);
         beforeR   = new TH3F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),nbinsr,0,nbinsr, n, 0 ,n, m, 0,m);
         afterR    = new TH3F((basename + "2_R" ).c_str(),(basename + "2_R" ).c_str(),nbinsr,0,nbinsr, n, 0 ,n, m, 0,m);
    	name = basename; 

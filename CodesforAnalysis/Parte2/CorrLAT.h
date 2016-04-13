@@ -163,7 +163,7 @@ void CorrLAT(){
         gPad->SetGridx();
 	TGraphErrors * CorrLATp_TOF_Spl=new TGraphErrors();
 	int point =0;
-	for(int m=0;m<18;m++){
+	for(int m=0;m<nbinsbeta;m++){
 			if(CorrezioneLAT_pTOF->GetBinContent(m+1)>0)
 			CorrLATp_TOF_Spl->SetPoint(point,Ekincent[m],CorrezioneLAT_pTOF->GetBinContent(m+1));		
 			point++;
@@ -178,7 +178,7 @@ void CorrLAT(){
         CorrLATp_TOF_Spl->Draw("APC");
 	TGraphErrors * CorrLATd_TOF_Spl=new TGraphErrors();
         point=0;
-	for(int m=0;m<18;m++){
+	for(int m=0;m<nbinsbeta;m++){
                         if(CorrezioneLAT_dTOF->GetBinContent(m+1)>0)
 			CorrLATd_TOF_Spl->SetPoint(point,Ekincent[m],CorrezioneLAT_dTOF->GetBinContent(m+1));
                 	point++;
@@ -194,7 +194,7 @@ void CorrLAT(){
         gPad->SetGridy();
         gPad->SetGridx();
         TGraphErrors * CorrLATp_NaF_Spl=new TGraphErrors();
-        for(int m=0;m<18;m++){
+        for(int m=0;m<nbinsbeta;m++){
                         CorrLATp_NaF_Spl->SetPoint(m,EkincentNaF[m],CorrezioneLAT_pNaF->GetBinContent(m+1));
                 }
         CorrLATp_NaF_Spl->SetLineColor(2);
@@ -206,7 +206,7 @@ void CorrLAT(){
         CorrLATp_NaF_Spl->GetYaxis()->SetTitle("Eff. Corr. Factor");
         CorrLATp_NaF_Spl->Draw("APC");
         TGraphErrors * CorrLATd_NaF_Spl=new TGraphErrors();
-        for(int m=0;m<18;m++){
+        for(int m=0;m<nbinsbeta;m++){
                         CorrLATd_NaF_Spl->SetPoint(m,EkincentNaF[m],CorrezioneLAT_dNaF->GetBinContent(m+1));
                 }
         CorrLATd_NaF_Spl->SetLineColor(4);
@@ -220,7 +220,7 @@ void CorrLAT(){
         gPad->SetGridy();
         gPad->SetGridx();
         TGraphErrors * CorrLATp_Agl_Spl=new TGraphErrors();
-        for(int m=0;m<18;m++){
+        for(int m=0;m<nbinsbeta;m++){
                         CorrLATp_Agl_Spl->SetPoint(m,EkincentAgl[m],CorrezioneLAT_pAgl->GetBinContent(m+1));
                 }
         CorrLATp_Agl_Spl->SetLineColor(2);
@@ -232,7 +232,7 @@ void CorrLAT(){
         CorrLATp_Agl_Spl->GetYaxis()->SetTitle("Eff. Corr. Factor");
         CorrLATp_Agl_Spl->Draw("APC");
         TGraphErrors * CorrLATd_Agl_Spl=new TGraphErrors();
-        for(int m=0;m<18;m++){
+        for(int m=0;m<nbinsbeta;m++){
                         CorrLATd_Agl_Spl->SetPoint(m,EkincentAgl[m],CorrezioneLAT_dAgl->GetBinContent(m+1));
                 }
         CorrLATd_Agl_Spl->SetLineColor(4);

@@ -16,7 +16,7 @@ void MC_do_preSeleff_Fill(TNtuple *ntupla, int l){
 						if(((int)Cutmask&passed[S])==passed[S]) Eff_do_preSelMCP->afterR->Fill(M,S);
 				}
 	
-			for(int m=0;m<18;m++)  
+			for(int m=0;m<nbinsbeta;m++)  
 				if(Var>BetaP[m]&&Var<=BetaP[m+1]){
 						if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeTOF->Fill(m,S);
 						if(((int)Cutmask&passed[S])==passed[S]) Eff_do_preSelMCP->afterTOF->Fill(m,S);	
@@ -29,7 +29,7 @@ void MC_do_preSeleff_Fill(TNtuple *ntupla, int l){
 					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)(Eff_do_preSelMCD->beforeR))->Fill(1,2,3);
 					if(((int)Cutmask&passed[S])==passed[S]) ((TH3*)Eff_do_preSelMCD->afterR)->Fill(M,(int)(10000*Massa_gen-18570),S);
 			}
-			for(int m=0;m<18;m++) if(Var>BetaD[m]&&Var<=BetaD[m+1]){
+			for(int m=0;m<nbinsbeta;m++) if(Var>BetaD[m]&&Var<=BetaD[m+1]){
 					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)Eff_do_preSelMCD->beforeTOF)->Fill(m,(int)(10000*Massa_gen-18570),S);
 					if(((int)Cutmask&passed[S])==passed[S]) ((TH3*)Eff_do_preSelMCD->afterTOF)->Fill(m,(int)(10000*Massa_gen-18570),S);
 			}
@@ -131,7 +131,7 @@ void MC_do_preSeleff(TFile * file1){
 		gPad->SetGridx();
 		gPad->SetGridy();
 		TGraph * Eff_do_preSelMCP = new TGraph();
-		for(int i=0;i<18;i++) Eff_do_preSelMCP->SetPoint(i,Ekincent[i],Eff_do_preSelMCP_TH2F->GetBinContent(i+1,S+1));
+		for(int i=0;i<nbinsbeta;i++) Eff_do_preSelMCP->SetPoint(i,Ekincent[i],Eff_do_preSelMCP_TH2F->GetBinContent(i+1,S+1));
 		TGraph * Eff_do_preSelMCD[6][3];
 		Eff_do_preSelMCP->SetMarkerColor(2);
 		Eff_do_preSelMCP->SetMarkerStyle(8);
@@ -149,7 +149,7 @@ void MC_do_preSeleff(TFile * file1){
 
 			for(int h=0;h<6;h++){
 				Eff_do_preSelMCD[h][S]= new TGraph();
-				for(int i=0;i<18;i++) Eff_do_preSelMCD[h][S]->SetPoint(i,Ekincent[i],Eff_do_preSelMCD_TH3F->GetBinContent(i+1,h+1,S+1));
+				for(int i=0;i<nbinsbeta;i++) Eff_do_preSelMCD[h][S]->SetPoint(i,Ekincent[i],Eff_do_preSelMCD_TH3F->GetBinContent(i+1,h+1,S+1));
 				Eff_do_preSelMCD[h][S]->SetMarkerColor(4);
 				Eff_do_preSelMCD[h][S]->SetMarkerStyle(h+3);
 				leg->AddEntry(Eff_do_preSelMCD[h][S],MCLegend[h+1].c_str(), "ep");

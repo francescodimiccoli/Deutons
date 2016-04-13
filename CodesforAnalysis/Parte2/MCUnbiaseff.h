@@ -16,7 +16,7 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l){
 					if(Unbias==0) EffUnbiasMCP->afterR->Fill(M);
 			}	
 			//Beta bins
-			for(int m=0;m<18;m++)  
+			for(int m=0;m<nbinsbeta;m++)  
 				if(Var3>BetaP[m]&&Var3<=BetaP[m+1]){
 					EffUnbiasMCP->beforeTOF->Fill(m);
 					if(Unbias==0) EffUnbiasMCP->afterTOF->Fill(m);	
@@ -31,7 +31,7 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l){
 					if(Unbias==0) EffUnbiasMCD->afterR->Fill(M,(int)(10000*Massa_gen-18570));
 				}
 			//Beta bins
-			for(int m=0;m<18;m++) 
+			for(int m=0;m<nbinsbeta;m++) 
 				if(Var3>BetaD[m]&&Var3<=BetaD[m+1]){
 					EffUnbiasMCD->beforeTOF->Fill(m,(int)(10000*Massa_gen-18570));
 					if(Unbias==0) EffUnbiasMCD->afterTOF->Fill(m,(int)(10000*Massa_gen-18570));

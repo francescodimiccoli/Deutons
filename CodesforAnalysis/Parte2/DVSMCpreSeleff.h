@@ -1,11 +1,11 @@
 
-TH2F * EffpreSelMCvsD1=new TH2F("EffpreSelMCvsD1","EffpreSelMCvsD1",18,0,18,3,0,3);
-TH2F * EffpreSelMCvsD2=new TH2F("EffpreSelMCvsD2","EffpreSelMCvsD2",18,0,18,3,0,3);
+TH2F * EffpreSelMCvsD1=new TH2F("EffpreSelMCvsD1","EffpreSelMCvsD1",nbinsbeta,0,nbinsbeta,3,0,3);
+TH2F * EffpreSelMCvsD2=new TH2F("EffpreSelMCvsD2","EffpreSelMCvsD2",nbinsbeta,0,nbinsbeta,3,0,3);
 TH2F * EffpreSelMCvsD1_R=new TH2F("EffpreSelMCvsD1_R","EffpreSelMCvsD1_R",nbinsr,0,nbinsr,3,0,3);
 TH2F * EffpreSelMCvsD2_R=new TH2F("EffpreSelMCvsD2_R","EffpreSelMCvsD2_R",nbinsr,0,nbinsr,3,0,3);
 
-TH3F * EffpreSelMCvsD1_D=new TH3F("EffpreSelMCvsD1_D","EffpreSelMCvsD1_D",18,0,18,3,0,3,11,0,11);
-TH3F * EffpreSelMCvsD2_D=new TH3F("EffpreSelMCvsD2_D","EffpreSelMCvsD2_D",18,0,18,3,0,3,11,0,11);
+TH3F * EffpreSelMCvsD1_D=new TH3F("EffpreSelMCvsD1_D","EffpreSelMCvsD1_D",nbinsbeta,0,nbinsbeta,3,0,3,11,0,11);
+TH3F * EffpreSelMCvsD2_D=new TH3F("EffpreSelMCvsD2_D","EffpreSelMCvsD2_D",nbinsbeta,0,nbinsbeta,3,0,3,11,0,11);
 TH3F * EffpreSelMCvsD1_R_D=new TH3F("EffpreSelMCvsD1_R_D","EffpreSelMCvsD1_R_D",nbinsr,0,nbinsr,3,0,3,11,0,11);
 TH3F * EffpreSelMCvsD2_R_D=new TH3F("EffpreSelMCvsD2_R_D","EffpreSelMCvsD2_R_D",nbinsr,0,nbinsr,3,0,3,11,0,11);
 
@@ -22,7 +22,7 @@ void DVSMCpreSeleff_D_Fill(TNtuple *ntupla, int l,int zona){
                                 	if(((int)Cutmask&passed[S])==passed[S]) EffpreSelMCvsD2_R_D->Fill(M,S,zona);
                                 }
                         }
-                        for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]){
+                        for(int m=0;m<nbinsbeta;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]){
                                 //if(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta_pre)+0.2&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.2){
                                 if((S!=3&&EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1)||S!=7){
 					if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelMCvsD1_D->Fill(m,S,zona);
@@ -47,7 +47,7 @@ void DVSMCpreSeleff_Fill(TNtuple *ntupla, int l){
                                 if(((int)Cutmask&passed[S])==passed[S]) EffpreSelMCvsD2_R->Fill(M,S);
                                 }
                         }
-                        for(int m=0;m<18;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]){
+                        for(int m=0;m<nbinsbeta;m++)  if(Var>BetaP[m]&&Var<=BetaP[m+1]){
                              // if(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta_pre)+0.2&&EdepL1>EdepL1beta->Eval(Beta_pre)-0.2){
                              if((S!=3&&EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1)||S!=7){
 				if(((int)Cutmask&notpassed[S])==notpassed[S]) EffpreSelMCvsD1->Fill(m,S);
@@ -81,13 +81,13 @@ void DVSMCpreSeleff_Write(){
 
 TCanvas *c17[4];
 TH2F * EffPreSelMCvsD_R_TH2F=new TH2F("EffPreSelMCvsD_R_TH2F","EffPreSelMCvsD_R_TH2F",nbinsr,0,nbinsr,3,0,3);
-TH2F * EffPreSelMCvsD_TH2F=new TH2F("EffPreSelMCvsD_TH2F","EffPreSelMCvsD_TH2F",18,0,18,3,0,3);
+TH2F * EffPreSelMCvsD_TH2F=new TH2F("EffPreSelMCvsD_TH2F","EffPreSelMCvsD_TH2F",nbinsbeta,0,nbinsbeta,3,0,3);
 TGraphErrors *PreDVSMC_P_Graph[3];
 TH2F *PreDVSMC_P[3];
 
 
 void DVSMCpreSeleff(TFile * file){
-	string numero[18]={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17"};
+	string numero[nbinsbeta]={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17"};
         string tagli[3]={"Matching TOF","Chi^2 R","1 Tr. Track"};
         string nome;
 
@@ -102,9 +102,9 @@ void DVSMCpreSeleff(TFile * file){
 
 	cout<<"************************************************* DATA vs MC PRESELECTIONS EFFICIENCIES **********************************************************************"<<endl;
         string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
-        float EffpreSelMCvsD[18][3];
+        float EffpreSelMCvsD[nbinsbeta][3];
         float EffpreSelMCvsD_R[nbinsr][3];
-	float EffpreSelMCvsD_D[18][3][11];
+	float EffpreSelMCvsD_D[nbinsbeta][3][11];
 	float EffpreSelMCvsD_R_D[nbinsr][3][11];
         float EffpreSelMCvsD_R_mean[nbinsr][3];
 	float EffpreSelMCvsD_R_meanerr[nbinsr][3];

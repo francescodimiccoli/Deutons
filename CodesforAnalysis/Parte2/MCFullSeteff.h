@@ -113,7 +113,7 @@ void MCFullseteff(TFile * file1){
 	gPad->SetGridx();
 	gPad->SetGridy();
 	TGraph * EffFullsetMCP = new TGraph();
-	for(int i=0;i<18;i++) EffFullsetMCP->SetPoint(i,Ekincent[i],EffFullsetMCP_TH1F->GetBinContent(i+1));
+	for(int i=0;i<nbinsbeta;i++) EffFullsetMCP->SetPoint(i,Ekincent[i],EffFullsetMCP_TH1F->GetBinContent(i+1));
 	TGraph * EffFullsetMCD[6];
 	EffFullsetMCP->SetMarkerColor(2);
 	EffFullsetMCP->SetMarkerStyle(8);
@@ -131,7 +131,7 @@ void MCFullseteff(TFile * file1){
 
 		for(int h=0;h<6;h++){
 			EffFullsetMCD[h]= new TGraph();
-			for(int i=0;i<18;i++) EffFullsetMCD[h]->SetPoint(i,Ekincent[i], EffFullsetMCD_TH2F->GetBinContent(i+1,h+1));
+			for(int i=0;i<nbinsbeta;i++) EffFullsetMCD[h]->SetPoint(i,Ekincent[i], EffFullsetMCD_TH2F->GetBinContent(i+1,h+1));
 			EffFullsetMCD[h]->SetMarkerColor(4);
 			EffFullsetMCD[h]->SetMarkerStyle(h+3);
 			leg->AddEntry(EffFullsetMCD[h],MCLegend[h+1].c_str(), "ep");
@@ -148,7 +148,7 @@ void MCFullseteff(TFile * file1){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraph * EffFullsetMCPNaF = new TGraph();
-        for(int i=0;i<18;i++) EffFullsetMCPNaF->SetPoint(i,EkincentNaF[i],EffFullsetMCPNaF_TH1F->GetBinContent(i+1));
+        for(int i=0;i<nbinsbeta;i++) EffFullsetMCPNaF->SetPoint(i,EkincentNaF[i],EffFullsetMCPNaF_TH1F->GetBinContent(i+1));
         TGraph * EffFullsetMCDNaF[6];
         EffFullsetMCPNaF->SetMarkerColor(2);
         EffFullsetMCPNaF->SetMarkerStyle(8);
@@ -166,7 +166,7 @@ void MCFullseteff(TFile * file1){
 
                 for(int h=0;h<6;h++){
                         EffFullsetMCDNaF[h]= new TGraph();
-                        for(int i=0;i<18;i++) EffFullsetMCDNaF[h]->SetPoint(i,EkincentNaF[i], 
+                        for(int i=0;i<nbinsbeta;i++) EffFullsetMCDNaF[h]->SetPoint(i,EkincentNaF[i], 
                             EffFullsetMCDNaF_TH2F->GetBinContent(i+1,h+1));
                         EffFullsetMCDNaF[h]->SetMarkerColor(4);
                         EffFullsetMCDNaF[h]->SetMarkerStyle(h+3);
@@ -184,7 +184,7 @@ void MCFullseteff(TFile * file1){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraph * EffFullsetMCPAgl = new TGraph();
-        for(int i=0;i<18;i++) EffFullsetMCPAgl->SetPoint(i,EkincentAgl[i],EffFullsetMCPAgl_TH1F->GetBinContent(i+1));
+        for(int i=0;i<nbinsbeta;i++) EffFullsetMCPAgl->SetPoint(i,EkincentAgl[i],EffFullsetMCPAgl_TH1F->GetBinContent(i+1));
         TGraph * EffFullsetMCDAgl[6];
         EffFullsetMCPAgl->SetMarkerColor(2);
         EffFullsetMCPAgl->SetMarkerStyle(8);
@@ -202,7 +202,7 @@ void MCFullseteff(TFile * file1){
 
                 for(int h=0;h<6;h++){
                         EffFullsetMCDAgl[h]= new TGraph();
-                        for(int i=0;i<18;i++) EffFullsetMCDAgl[h]->SetPoint(i,EkincentAgl[i], EffFullsetMCDAgl_TH2F->GetBinContent(i+1,h+1));
+                        for(int i=0;i<nbinsbeta;i++) EffFullsetMCDAgl[h]->SetPoint(i,EkincentAgl[i], EffFullsetMCDAgl_TH2F->GetBinContent(i+1,h+1));
                         EffFullsetMCDAgl[h]->SetMarkerColor(4);
                         EffFullsetMCDAgl[h]->SetMarkerStyle(h+3);
                         leg->AddEntry(EffFullsetMCDAgl[h],MCLegend[h+1].c_str(), "ep");
