@@ -1,17 +1,7 @@
-#include "TH2.h"
-#include "TH3.h"
-#include <TVector3.h>
-#include <fstream>
-#include <sstream>
 #include <vector>
 #include "TCanvas.h"
 #include "TLegend.h"
-#include <stdio.h>
-#include <iostream>
-#include <stdlib.h>
 #include <cstdlib>
-#include <stdio.h>
-#include <stdarg.h>
 #include <TSpline.h>
 #include "TFractionFitter.h"
 #include "THStack.h"
@@ -19,16 +9,7 @@
 #include "TObject.h"
 #include "TGraphAsymmErrors.h"
 #include "TGraphErrors.h"
-#include <cstring>
 #include <string>
-#include "TFile.h"
-#include "TTree.h"
-#include "TMath.h"
-#include <math.h>
-
-
-extern const int nbinsr=43;
-
 
 #include "Functions_auto.h"
 #include "Parte2/Definitions.h"
