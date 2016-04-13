@@ -7,6 +7,7 @@
 #include "Parte2/LATcorrClass.h"
 #include "Parte2/ACCEPTANCEClass.h"
 #include "Parte2/FluxClass.h"
+#include "Parte2/TemplateFITClass.h"
 #include "Parte2/MCpreeff.h"
 #include "Parte2/MCUnbiaseff.h"
 #include "Parte2/Hecut.h"
@@ -24,6 +25,7 @@
 #include "Parte2/CorrLAT.h"
 #include "Parte2/Acceptance.h"
 #include "Parte2/ProtonFlux.h"
+#include "Parte2/Deutons.h"
 
 #include "FillIstogram.h"
 
@@ -197,9 +199,9 @@ int main(int argc, char * argv[])
 		//DVSMCTrackeff(file1);
 		DATAQualeff(file1);
 		/*DVSMCpreSeleff(file1);
-		  DVSMCQualeff2(file1);
-		  DeutonsTemplFits(file1);
-		  DeutonsTemplFits_Dist(file1);
+		  DVSMCQualeff2(file1);*/
+		  DeutonsTemplFits();
+		/*DeutonsTemplFits_Dist(file1);
 		  DeutonFlux(file1);
 		  DeutonFlux_Dist(file1);*/
 	}
