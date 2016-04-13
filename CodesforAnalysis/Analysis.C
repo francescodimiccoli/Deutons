@@ -1,17 +1,5 @@
-#include <vector>
-#include "TCanvas.h"
-#include "TLegend.h"
-#include <cstdlib>
-#include <TSpline.h>
-#include "TFractionFitter.h"
-#include "THStack.h"
-#include "TNtuple.h"
-#include "TObject.h"
-#include "TGraphAsymmErrors.h"
-#include "TGraphErrors.h"
-#include <string>
-
 #include "Functions_auto.h"
+
 #include "Parte2/Definitions.h"
 #include "Parte2/FitError.h"
 #include "Parte2/EfficiencyClass.h"
