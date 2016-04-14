@@ -54,9 +54,14 @@ void TemplateFIT::Write(){
 
 	if(TemplateP  -> GetEntries() > 0)  TemplateP  -> Write();
         if(TemplateD  -> GetEntries() > 0)  TemplateD  -> Write();
-        if(TemplateHe -> GetEntries() > 0)  TemplateHe -> Write();
-                                                     
-        if(Data_Prim  -> GetEntries() > 0)  Data_Prim  -> Write();
+        TemplateHe -> Write();
+        
+	if(Data_Prim  -> GetEntries() > 0)  Data_Prim  -> Write();
         if(Data_Geomag-> GetEntries() > 0)  Data_Geomag-> Write();
 	return;
+}
+
+TH1F * TemplateFIT::Extract_Bin_histos(TH1 * Histo, int bin){
+	return (TH1F *)((TH2*)Histo) -> ProjectionX ("",bin+1,bin+1);	
+	    
 }

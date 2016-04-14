@@ -261,7 +261,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	
 	cout<<"************************ SAVING DATA ************************"<<endl;
 	if(INDX==0||INDX==1){
-		nomefile=inputpath+"/Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+		nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 		TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 		
 		DATAQualeff_Write();

@@ -121,7 +121,7 @@ void DeutonsMC_Write(){
 	FitTOF_Dbins -> Write();
 	FitNaF_Dbins -> Write();
 	FitAgl_Dbins -> Write();
-
+	
 	FitTOF_Pbins -> Write();
 	FitNaF_Pbins -> Write();
 	FitAgl_Pbins -> Write();
@@ -143,13 +143,13 @@ void DeutonsTemplFits(){
 
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
-	cout<<	FitTOF_Dbins -> TemplateHe <<endl; 
-        cout<<	FitNaF_Dbins -> TemplateHe <<endl;
-        cout<<  FitAgl_Dbins -> TemplateHe <<endl;
+	cout<<	FitTOF_Dbins -> TemplateD <<endl; 
+        cout<<	FitNaF_Dbins -> TemplateD <<endl;
+        cout<<  FitAgl_Dbins -> TemplateD <<endl;
                             
-        cout<<  FitTOF_Pbins -> TemplateHe <<endl;
-        cout<<  FitNaF_Pbins -> TemplateHe <<endl;
-        cout<<  FitAgl_Pbins -> TemplateHe <<endl;
+        cout<<  FitTOF_Pbins -> TemplateD <<endl;
+        cout<<  FitNaF_Pbins -> TemplateD <<endl;
+        cout<<  FitAgl_Pbins -> TemplateD <<endl;
 
 	return;
 	}
