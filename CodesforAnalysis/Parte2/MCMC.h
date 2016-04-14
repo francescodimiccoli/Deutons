@@ -22,14 +22,13 @@ public:
         MCMCData        = new TH2D(nT.c_str(), nT.c_str(), nBm, minBm, maxBm, nRm, minRm, maxRm );
     }
 
-    void FillMC(double Rm , double Bm, double Rt)
+    void FillMC(double Bm, double Rm, double Rt)
     {
-        if( Massa_gen < 1 && Massa_gen > 0.5) MCMCPTemplates->Fill(Rm, Bm, Rt);
-        if( Massa_gen < 2 && Massa_gen > 1.5) MCMCDTemplates->Fill(Rm, Bm, Rt);
-        if( Massa_gen < 4 && Massa_gen > 2.5) MCMCHeTemplates->Fill(Rm, Bm, Rt);
+        if( Massa_gen < 1 && Massa_gen > 0.5) MCMCPTemplates->Fill(Bm, Rm, Rt);
+        if( Massa_gen < 2 && Massa_gen > 1.5) MCMCDTemplates->Fill(Bm, Rm, Rt);
+        if( Massa_gen < 4 && Massa_gen > 2.5) MCMCHeTemplates->Fill(Bm, Rm, Rt);
     }
-    void FillData(double Rm , double Bm, double Rt)
-    { MCMCData->Fill(Rm, Bm); }
+    void FillData(double Bm , double Rm) { MCMCData->Fill(Bm, Rm); }
 
     void Write()
     {
@@ -38,8 +37,9 @@ public:
         MCMCHeTemplates->Write();
         MCMCData->Write();
     }
+
 };
-                                   /*| B measured   | R measured     | R true    |*/
+                                        /*| B measured   | R measured     | R true    |*/
 MCMCEntry * MCMC_TOF = new MCMCEntry("TOF", 50, 0.3,  1.2, 200, 0.0, 100.0, 300, 0, 30);
 MCMCEntry * MCMC_NaF = new MCMCEntry("NaF", 50, 0.75, 1.2, 200, 0.0, 100.0, 300, 0, 30);
 MCMCEntry * MCMC_Agl = new MCMCEntry("Agl", 50, 0.95, 1.1, 200, 0.0, 100.0, 300, 0, 30);
@@ -49,9 +49,9 @@ void MCMC_Fill(TNtuple *ntupla, int l)
     int k = ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	if(Likcut&&Distcut){
-		MCMC_TOF->FillMC( R, Beta, Momento_gen);
-        if((((int)Cutmask)>>11)==512) MCMC_NaF->FillMC( R, BetaRICH, Momento_gen);
-        if((((int)Cutmask)>>11)==0  ) MCMC_Agl->FillMC( R, BetaRICH, Momento_gen);
+		MCMC_TOF->FillMC( Beta, R, Momento_gen);
+        if((((int)Cutmask)>>11)==512) MCMC_NaF->FillMC( BetaRICH, R, Momento_gen);
+        if((((int)Cutmask)>>11)==0  ) MCMC_Agl->FillMC( BetaRICH, R, Momento_gen);
 	}
 }
 
@@ -60,9 +60,9 @@ void MCMCDATA_Fill(TNtuple *ntupla, int l){
 	if(Beta<=0||R<=0) return;
 	if( Likcut && Distcut && R>1.2*Rcutoff)
     {
-		MCMC_TOF->FillData( R, Beta, Momento_gen);
-        if((((int)Cutmask)>>11)==512) MCMC_NaF->FillData( R, BetaRICH, Momento_gen);
-        if((((int)Cutmask)>>11)==0  ) MCMC_Agl->FillData( R, BetaRICH, Momento_gen);
+		MCMC_TOF->FillData( Beta, R );
+        if((((int)Cutmask)>>11)==512) MCMC_NaF->FillData( BetaRICH, R );
+        if((((int)Cutmask)>>11)==0  ) MCMC_Agl->FillData( BetaRICH, R );
     }
 }
 
