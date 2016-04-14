@@ -11,82 +11,81 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 
    int k = ntupla->GetEvent(l);
    if(Beta<=0||R<=0) return;
+   int Kbin;
    if(Massa_gen<1) {
       //R bins
-      for(int K=0; K<nbinsr; K++) {
-         if(R<bin[K+1]&&R>bin[K]) {
-            EffLikMCP->beforeR->Fill(K);
-            EffDistMCP->beforeR->Fill(K);
-            if(Likcut) EffLikMCP->afterR->Fill(K);
-            if(Dist5D_P<6&&Likcut)	EffDistMCP->afterR->Fill(K);
-         }
-      }
+      Kbin=GetArrayBin(R, bin, nbinsr);
+
+      EffLikMCP->beforeR->Fill(Kbin);
+      EffDistMCP->beforeR->Fill(Kbin);
+      if(Likcut)              EffLikMCP->afterR->Fill(Kbin);
+      if(Dist5D_P<6&&Likcut)	EffDistMCP->afterR->Fill(Kbin);
+
 
       //Beta bins
-      for(int m=0; m<nbinsToF; m++) {
-         if(Var<BetaP[m+1]&&Var>BetaP[m]) {
-            EffLikMCP->beforeTOF->Fill(m);
-            EffDistMCP->beforeTOF->Fill(m);
-            if(Likcut) EffLikMCP->afterTOF->Fill(m);
-            if(Dist5D_P<6&&Likcut)	EffDistMCP->afterTOF->Fill(m);
-         }
+      Kbin=GetArrayBin(Var, BetaP, nbinsToF);
+
+      EffLikMCP ->beforeTOF->Fill(Kbin);
+      EffDistMCP->beforeTOF->Fill(Kbin);
+      if(Likcut)              EffLikMCP ->afterTOF ->Fill(Kbin);
+      if(Dist5D_P<6&&Likcut)	EffDistMCP->afterTOF ->Fill(Kbin);
+
+
+      if(((int)Cutmask)>>11 ==512) {
+         Kbin=GetArrayBin(Var2, BetaNaFP, nbinsNaF);
+         EffLikMCP  ->beforeNaF->Fill(Kbin);
+         EffDistMCP ->beforeNaF->Fill(Kbin);
+         if(Likcut)              EffLikMCP  ->afterNaF ->Fill(Kbin);
+         if(Dist5D_P<6&&Likcut)	EffDistMCP ->afterNaF ->Fill(Kbin);
       }
-      for(int m=0; m<nbinsNaF; m++) {
-         if((((int)Cutmask)>>11)==512&&Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) {
-            EffLikMCP->beforeNaF->Fill(m);
-            EffDistMCP->beforeNaF->Fill(m);
-            if(Likcut) EffLikMCP->afterNaF->Fill(m);
-            if(Dist5D_P<6&&Likcut)	EffDistMCP->afterNaF->Fill(m);
-         }
+
+      if(((int)Cutmask)>>11==0) {
+         Kbin=GetArrayBin(Var2, BetaAglP, nbinsAgl);
+         EffLikMCP->beforeAgl->Fill(m);
+         EffDistMCP->beforeAgl->Fill(m);
+         if(Likcut) EffLikMCP->afterAgl->Fill(m);
+         if(Dist5D_P<6&&Likcut)	EffDistMCP->afterAgl->Fill(m);
       }
-      for(int m=0; m<nbinsAgl; m++) {
-         if((((int)Cutmask)>>11)==0&&Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) {
-            EffLikMCP->beforeAgl->Fill(m);
-            EffDistMCP->beforeAgl->Fill(m);
-            if(Likcut) EffLikMCP->afterAgl->Fill(m);
-            if(Dist5D_P<6&&Likcut)	EffDistMCP->afterAgl->Fill(m);
-         }
-      }
+
 
    }
    if(Massa_gen<2&&Massa_gen>1) {
       //R bins
-      for(int K=0; K<nbinsr; K++) {
-         if(R<bin[K+1]&&R>bin[K]) {
-                                    FillBinMGen(EffLikMCD ->beforeR, K);
-                                    FillBinMGen(EffDistMCD->beforeR, K);
-            if(Likcut)              FillBinMGen(EffLikMCD ->afterR,  K);
-            if(Dist5D_P<6&&Likcut)	FillBinMGen(EffDistMCD->afterR,  K);
-         }
-      }
+      Kbin=GetArrayBin(R, bin, nbinsr);
+
+      FillBinMGen(EffLikMCD ->beforeR, Kbin);
+      FillBinMGen(EffDistMCD->beforeR, Kbin);
+      if(Likcut)              FillBinMGen(EffLikMCD ->afterR,  Kbin);
+      if(Dist5D_P<6&&Likcut)	FillBinMGen(EffDistMCD->afterR,  Kbin);
 
 
       //Beta bins
-      for(int m=0; m<nbinsToF; m++) {
-         if(Var<BetaD[m+1]&&Var>BetaD[m]) {
-                                 FillBinMGen(EffLikMCD ->beforeTOF, m);
-                                 FillBinMGen(EffDistMCD->beforeTOF, m);
-            if(Likcut)           FillBinMGen(EffLikMCD ->afterTOF , m);
-            if(Dist5D<6&&Likcut)	FillBinMGen(EffDistMCD->afterTOF , m);
-         }
-         if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
-                                 FillBinMGen(EffLikMCD ->beforeNaF, m);
-                                 FillBinMGen(EffDistMCD->beforeNaF, m);
-            if(Likcut)           FillBinMGen(EffLikMCD ->afterNaF , m);
-            if(Dist5D<6&&Likcut)	FillBinMGen(EffDistMCD->afterNaF , m);
-         }
+      Kbin=GetArrayBin(Var, BetaD, nbinsToF);
+      FillBinMGen(EffLikMCD ->beforeTOF, Kbin);
+      FillBinMGen(EffDistMCD->beforeTOF, Kbin);
+      if(Likcut)           FillBinMGen(EffLikMCD ->afterTOF , Kbin);
+      if(Dist5D<6&&Likcut)	FillBinMGen(EffDistMCD->afterTOF , Kbin);
 
-         if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
-                                 FillBinMGen(EffLikMCD ->beforeAgl, m);
-                                 FillBinMGen(EffDistMCD->beforeAgl, m);
-            if(Likcut)           FillBinMGen(EffLikMCD ->afterAgl , m);
-            if(Dist5D<6&&Likcut)	FillBinMGen(EffDistMCD->afterAgl , m);
-         }
+      if(((int)Cutmask)>>11==512) {
+         Kbin=GetArrayBin(Var2, BetaNaFD, nbinsNaF);
+         FillBinMGen(EffLikMCD ->beforeNaF, Kbin);
+         FillBinMGen(EffDistMCD->beforeNaF, Kbin);
+         if(Likcut)           FillBinMGen(EffLikMCD ->afterNaF , Kbin);
+         if(Dist5D<6&&Likcut)	FillBinMGen(EffDistMCD->afterNaF , Kbin);
       }
 
+      if(((int)Cutmask)>>11==0&) {
+         Kbin=GetArrayBin(Var2, BetaAglD, nbinsAgl);
+         FillBinMGen(EffLikMCD ->beforeAgl, Kbin);
+         FillBinMGen(EffDistMCD->beforeAgl, Kbin);
+         if(Likcut)           FillBinMGen(EffLikMCD ->afterAgl , Kbin);
+         if(Dist5D<6&&Likcut)	FillBinMGen(EffDistMCD->afterAgl , Kbin);
+      }
    }
 
-   return;
+}
+
+return;
 }
 
 
