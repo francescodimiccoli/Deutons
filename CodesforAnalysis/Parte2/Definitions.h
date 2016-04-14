@@ -143,5 +143,5 @@ int GetArrayBin(float var, float* array, int nbins) {
 		return ib;
 	}
 	return -1;
-	}
+	
 }
