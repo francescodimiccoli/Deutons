@@ -20,7 +20,7 @@ sh \$WORKDIR/../MAIN/Sommaisto$j.sh;
 \$WORKDIR/CodesforAnalysis/Analysis $ARGV[0] 0 $j >>\$WORKDIR/logs/logAnalysis$j.log;\n";
 }
 if($ARGV[1]==1){
-open(OUT,">","/storage/gpfs_ams/ams/users/fdimicco/Deutons/lsf/lsf$j.tcsh");
+open(OUT,">","$workdir/lsf/lsf$j.tcsh");
 
 print OUT "#!/bin/bash
 
