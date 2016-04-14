@@ -1,7 +1,6 @@
 using namespace std;
 
 void FillIstogram(int INDX,string frac,string mese)
-
 {
 
 
@@ -63,7 +62,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	
 	if(INDX!=2){	
 		nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
-			file1 =TFile::Open(nomefile.c_str());
+        file1 =TFile::Open(nomefile.c_str());
 		ntupla1=(TNtuple*)file1->Get("grandezzesepd");
 		ntupla0=(TNtuple*)file1->Get("trig");
 
@@ -155,6 +154,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		MC_do_preSeleff_Fill(ntupla0,i);
 		MigrationMatrix_Fill(ntupla0,i);
 		Correlazione_Preselezioni(ntupla0,i);
+
 		/*DVSMCpreSeleff_Fill(ntupla0,i);
 		DVSMCTrackeff_Fill(ntupla0,i);*/
 	}
@@ -176,8 +176,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCQualeff_Fill(ntupla1,i);
 		//DVSMCQualeff2_Fill(ntupla1,i);	
 		DeutonsMC_Fill(ntupla1,i);
-		/*DeutonsMC_Dist_Fill(ntupla1,i);
-		MCMC_Fill(ntupla1,i);*/
+		/*DeutonsMC_Dist_Fill(ntupla1,i);*/
+		MCMC_Fill(ntupla1,i);
         }
 	}
 	cout<<"*********************** DATA READING *********************"<<endl;
@@ -255,7 +255,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		//DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		DeutonsDATA_Fill(ntupla3,i,Zona);
 		//DeutonsDATA_Dist_Fill(ntupla3,i,Zona);
-		//MCMCDATA_Fill(ntupla3,i);
+		MCMCDATA_Fill(ntupla3,i);
 		}
         }
 	
@@ -274,8 +274,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		/*DeutonsMC_Dist_Write();
 		DVSMCpreSeleff_Write();
 		DVSMCQualeff2_Write();
-		DVSMCTrackeff_Write();
-		MCMC_Write();*/
+		DVSMCTrackeff_Write();*/
+		MCMC_Write();
 		MCpreeff_Write();
 		//MCpreCheck_Write();
 		MC_do_preSeleff_Write();

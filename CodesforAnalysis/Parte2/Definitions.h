@@ -70,27 +70,27 @@ bool qualcut=true;
 float a=(log(0.9)-log(0.1))/nbinsbeta;
 float E2=exp(log(0.1)+1.5*a);
 
-float Betabins      [nbinsbeta] = {0.4};
+float Betabins      [nbinsbeta] = {0};
 float Betacent      [nbinsbeta] = {0};
 float Ekincent      [nbinsbeta] = {0};
 float BetabinsR_P   [nbinsbeta] = {0};
 float BetabinsR_D   [nbinsbeta] = {0};
-float BetabinsNaF   [nbinsNaF]  = {0.4};
+float BetabinsNaF   [nbinsNaF]  = {0};
 float BetacentNaF   [nbinsNaF]  = {0};
 float EkincentNaF   [nbinsNaF]  = {0};
 float BetabinsNaFR_P[nbinsNaF]  = {0};
 float BetabinsNaFR_D[nbinsNaF]  = {0};
-float BetabinsAgl   [nbinsAgl]  = {0.4};
+float BetabinsAgl   [nbinsAgl]  = {0};
 float BetabinsAglR_P[nbinsAgl]  = {0};
 float BetabinsAglR_D[nbinsAgl]  = {0};
-float BetaP         [nbinsbeta] = {0};
-float BetaD         [nbinsbeta] = {0};
+float BetaP         [nbinsToF]  = {0};
+float BetaD         [nbinsToF]  = {0};
 float BetaNaFP      [nbinsNaF]  = {0};
 float BetaNaFD      [nbinsNaF]  = {0};
 float BetaAglP      [nbinsAgl]  = {0};
 float BetaAglD      [nbinsAgl]  = {0};
-float BetacentAgl   [nbinsAgl] = {0};
-float EkincentAgl   [nbinsAgl] = {0};
+float BetacentAgl   [nbinsAgl]  = {0};
+float EkincentAgl   [nbinsAgl]  = {0};
 
 float Unbias=0;
 
@@ -138,7 +138,7 @@ void FillBinMGen(TH3* h, int bin, int S) {
 }
 
 int GetArrayBin(float var, float* array, int nbins) {
-	for (int ib=0; ib<nbins; ib++)  {
+	for (int ib=0; ib<nbins-1; ib++)  {
 		if(var>array[ib] && var<=array[ib+1])
 		return ib;
 	}

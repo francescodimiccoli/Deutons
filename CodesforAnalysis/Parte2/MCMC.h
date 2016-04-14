@@ -1,98 +1,78 @@
-TH3D *MCMCPTemplatesTOF = new TH3D("MCMCPTemplatesTOF","MCMCPTemplatesTOF",nbinsbeta,0,nbinsbeta,500,0,1.3,500,0,30);
-TH3D *MCMCPTemplatesNaF = new TH3D("MCMCPTemplatesNaF","MCMCPTemplatesNaF",nbinsbeta,0,nbinsbeta,500,0,1.3,500,0,30);
-TH3D *MCMCPTemplatesAgl = new TH3D("MCMCPTemplatesAgl","MCMCPTemplatesAgl",nbinsbeta,0,nbinsbeta,500,0.8,1.3,500,0,30);
+class MCMCEntry {
+    std::string suffix;
+    TH3D * MCMCPTemplates;
+    TH3D * MCMCDTemplates;
+    TH3D * MCMCHeTemplates;
+    TH2D * MCMCData;
+public:
 
-TH3D *MCMCDTemplatesTOF = new TH3D("MCMCDTemplatesTOF","MCMCDTemplatesTOF",nbinsbeta,0,nbinsbeta,500,0,1.3,500,0,30);
-TH3D *MCMCDTemplatesNaF = new TH3D("MCMCDTemplatesNaF","MCMCDTemplatesNaF",nbinsbeta,0,nbinsbeta,500,0,1.3,500,0,30);
-TH3D *MCMCDTemplatesAgl = new TH3D("MCMCDTemplatesAgl","MCMCDTemplatesAgl",nbinsbeta,0,nbinsbeta,500,0.8,1.3,500,0,30);
+    MCMCEntry( const std::string & suffix,
+               int nBm, double minBm, double maxBm,
+               int nRm, double minRm, double maxRm,
+               int nRt, double minRt, double maxRt ) 
+    {
+        std::string nP = "MCMCPTemplates"  + suffix;
+        std::string nD = "MCMCDTemplates"  + suffix;
+        std::string nH = "MCMCHeTemplates" + suffix;
+        std::string nT = "MCMCData" + suffix;
 
-TH3D *MCMCHeTemplatesTOF = new TH3D("MCMCHeTemplatesTOF","MCMCHeTemplatesTOF",nbinsbeta,0,nbinsbeta,500,0,1.3,500,0,30);
-TH3D *MCMCHeTemplatesNaF = new TH3D("MCMCHeTemplatesNaF","MCMCHeTemplatesNaF",nbinsbeta,0,nbinsbeta,500,0,1.3,500,0,30);
-TH3D *MCMCHeTemplatesAgl = new TH3D("MCMCHeTemplatesAgl","MCMCHeTemplatesAgl",nbinsbeta,0,nbinsbeta,500,0.8,1.3,500,0,30);
+        MCMCPTemplates  = new TH3D(nP.c_str(), nP.c_str(), nBm, minBm, maxBm, nRm, minRm, maxRm, nRt, minRt, maxRt);
+        MCMCPTemplates  = new TH3D(nD.c_str(), nD.c_str(), nBm, minBm, maxBm, nRm, minRm, maxRm, nRt, minRt, maxRt);
+        MCMCHeTemplates = new TH3D(nH.c_str(), nH.c_str(), nBm, minBm, maxBm, nRm, minRm, maxRm, nRt, minRt, maxRt);
+        MCMCData        = new TH2D(nT.c_str(), nT.c_str(), nBm, minBm, maxBm, nRm, minRm, maxRm );
+    }
 
-TH2D *MCMCDataTOF = new TH2D("MCMCDataTOF","MCMCDataTOF",nbinsbeta,0,nbinsbeta,500,0,1.3);
-TH2D *MCMCDataNaF = new TH2D("MCMCDataNaF","MCMCDataNaF",nbinsbeta,0,nbinsbeta,500,0,1.3);
-TH2D *MCMCDataAgl = new TH2D("MCMCDataAgl","MCMCDataAgl",nbinsbeta,0,nbinsbeta,500,0.8,1.3);
+    void FillMC(double Rm , double Bm, double Rt)
+    {
+        if( Massa_gen < 1 && Massa_gen > 0.5) MCMCPTemplates->Fill(Rm, Bm, Rt);
+        if( Massa_gen < 2 && Massa_gen > 1.5) MCMCDTemplates->Fill(Rm, Bm, Rt);
+        if( Massa_gen < 4 && Massa_gen > 2.5) MCMCHeTemplates->Fill(Rm, Bm, Rt);
+    }
+    void FillData(double Rm , double Bm, double Rt)
+    { MCMCData->Fill(Rm, Bm); }
 
-void MCMC_Fill(TNtuple *ntupla, int l){
-        int k = ntupla->GetEvent(l);
-	
+    void Write()
+    {
+        MCMCPTemplates->Write();
+        MCMCPTemplates->Write(); 
+        MCMCHeTemplates->Write();
+        MCMCData->Write();
+    }
+};
+                                   /*| B measured   | R measured     | R true    |*/
+MCMCEntry * MCMC_TOF = new MCMCEntry("TOF", 50, 0.3,  1.2, 200, 0.0, 100.0, 300, 0, 30);
+MCMCEntry * MCMC_NaF = new MCMCEntry("NaF", 50, 0.75, 1.2, 200, 0.0, 100.0, 300, 0, 30);
+MCMCEntry * MCMC_Agl = new MCMCEntry("Agl", 50, 0.95, 1.1, 200, 0.0, 100.0, 300, 0, 30);
+
+void MCMC_Fill(TNtuple *ntupla, int l)
+{
+    int k = ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
-        float mm=0;
 	if(Likcut&&Distcut){
-		if(Massa_gen<1&&Massa_gen>0.5) 
-			for(int m=0;m<nbinsbeta;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1]) MCMCPTemplatesTOF->Fill(m,Beta,Momento_gen);
-		if(Massa_gen<2&&Massa_gen>1.5)
-                        for(int m=0;m<nbinsbeta;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1]) MCMCDTemplatesTOF->Fill(m,Beta,Momento_gen);	
-		 if(Massa_gen<4&&Massa_gen>2.5)
-                        for(int m=0;m<nbinsbeta;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1]) MCMCHeTemplatesTOF->Fill(m,Beta,Momento_gen);
+		MCMC_TOF->FillMC( R, Beta, Momento_gen);
+        if((((int)Cutmask)>>11)==512) MCMC_NaF->FillMC( R, BetaRICH, Momento_gen);
+        if((((int)Cutmask)>>11)==0  ) MCMC_Agl->FillMC( R, BetaRICH, Momento_gen);
 	}
-	if(Likcut&&Distcut){
-		if(Massa_gen<1&&Massa_gen>0.5)
-			for(int m=0;m<nbinsbeta;m++) if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) MCMCPTemplatesNaF->Fill(m,BetaRICH,Momento_gen);
-		if(Massa_gen<2&&Massa_gen>1.5)
-			for(int m=0;m<nbinsbeta;m++) if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) MCMCDTemplatesNaF->Fill(m,BetaRICH,Momento_gen);
-		if(Massa_gen<4&&Massa_gen>2.5)
-			for(int m=0;m<nbinsbeta;m++) if((((int)Cutmask)>>11)==512&&Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) MCMCHeTemplatesNaF->Fill(m,BetaRICH,Momento_gen);
-	}
-	if(Likcut&&Distcut){
-		if(Massa_gen<1&&Massa_gen>0.5)
-			for(int m=0;m<nbinsbeta;m++) if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) MCMCPTemplatesAgl->Fill(m,BetaRICH,Momento_gen);
-		if(Massa_gen<2&&Massa_gen>1.5)
-			for(int m=0;m<nbinsbeta;m++) if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) MCMCDTemplatesAgl->Fill(m,BetaRICH,Momento_gen);
-		if(Massa_gen<4&&Massa_gen>2.5)
-			for(int m=0;m<nbinsbeta;m++) if((((int)Cutmask)>>11)==0&&Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) MCMCHeTemplatesAgl->Fill(m,BetaRICH,Momento_gen);
-	}
-
-	
-        return;
 }
 
 void MCMCDATA_Fill(TNtuple *ntupla, int l){
-        int k = ntupla->GetEvent(l);
+    int k = ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
-	
-	float mm=0;
-	if(Likcut&&Distcut)
-		 for(int m=0;m<nbinsbeta;m++)  if(Var>BetaD[m]&&Var<=BetaD[m+1]) if(R>1.2*Rcutoff)  MCMCDataTOF->Fill(m,Beta);
-						
-					
-	if(Likcut&&Distcut)
-		for(int m=0;m<nbinsbeta;m++) 
-				if((((int)Cutmask)>>11)==512) if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) if(R>1.2*Rcutoff) MCMCDataNaF->Fill(m,BetaRICH);
-
-	if(Likcut&&Distcut)
-                for(int m=0;m<nbinsbeta;m++) 
-                                if((((int)Cutmask)>>11)==0) if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) if(R>1.2*Rcutoff) MCMCDataAgl->Fill(m,BetaRICH);
+	if( Likcut && Distcut && R>1.2*Rcutoff)
+    {
+		MCMC_TOF->FillData( R, Beta, Momento_gen);
+        if((((int)Cutmask)>>11)==512) MCMC_NaF->FillData( R, BetaRICH, Momento_gen);
+        if((((int)Cutmask)>>11)==0  ) MCMC_Agl->FillData( R, BetaRICH, Momento_gen);
+    }
 }
 
 void MCMC_Write(){
-        MCMCPTemplatesTOF->Write();
-        MCMCDTemplatesTOF->Write();
-        MCMCHeTemplatesTOF->Write();
-        MCMCPTemplatesNaF->Write();
-        MCMCDTemplatesNaF->Write();
-        MCMCHeTemplatesNaF->Write();
-        MCMCPTemplatesAgl->Write();
-        MCMCDTemplatesAgl->Write();
-        MCMCHeTemplatesAgl->Write();
-        MCMCDataTOF->Write();
-        MCMCDataNaF->Write();
-        MCMCDataAgl->Write();
+    MCMC_TOF->Write();
+    MCMC_NaF->Write();
+    MCMC_Agl->Write();
 }
 
 void MCMC(TFile * file){
-	TH3D * MCMCPTemplatesTOF=(TH3D*)file->Get("MCMCPTemplatesTOF");
-	TH3D * MCMCDTemplatesTOF=(TH3D*)file->Get("MCMCDTemplatesTOF");
-	TH3D * MCMCHeTemplatesTOF=(TH3D*)file->Get("MCMCHeTemplatesTOF");
-	TH3D * MCMCPTemplatesNaF=(TH3D*)file->Get("MCMCPTemplatesNaF");
-	TH3D * MCMCDTemplatesNaF=(TH3D*)file->Get("MCMCDTemplatesNaF");
-	TH3D * MCMCHeTemplatesNaF=(TH3D*)file->Get("MCMCHeTemplatesNaF");
-	TH3D * MCMCPTemplatesAgl=(TH3D*)file->Get("MCMCPTemplatesAgl");
-	TH3D * MCMCDTemplatesAgl=(TH3D*)file->Get("MCMCDTemplatesAgl");
-	TH3D * MCMCHeTemplatesAgl=(TH3D*)file->Get("MCMCHeTemplatesAgl");
-	TH2D * MCMCDataTOF=(TH2D*)file->Get("MCMCDataTOF");
-	TH2D * MCMCDataNaF=(TH2D*)file->Get("MCMCDataNaF");
-	TH2D * MCMCDataAgl=(TH2D*)file->Get("MCMCDataAgl");
+    std::cout << "That function should not be called.\n";
 }
 
