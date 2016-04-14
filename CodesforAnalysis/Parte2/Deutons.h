@@ -1,11 +1,11 @@
 
-TemplateFIT * FitTOF_Dbins	= new TemplateFIT("FitTOF_Dbins",0,3,11);
-TemplateFIT * FitNaF_Dbins	= new TemplateFIT("FitNaF_Dbins",0,3,11);
-TemplateFIT * FitAgl_Dbins	= new TemplateFIT("FitAgl_Dbins",0,3,11);
+TemplateFIT * FitTOF_Dbins	= new TemplateFIT("FitTOF_Dbins",18,0,3,11);
+TemplateFIT * FitNaF_Dbins	= new TemplateFIT("FitNaF_Dbins",18,0,3,11);
+TemplateFIT * FitAgl_Dbins	= new TemplateFIT("FitAgl_Dbins",18,0,3,11);
 
-TemplateFIT * FitTOF_Pbins	= new TemplateFIT("FitTOF_Pbins",0,3,11);
-TemplateFIT * FitNaF_Pbins	= new TemplateFIT("FitNaF_Pbins",0,3,11);
-TemplateFIT * FitAgl_Pbins	= new TemplateFIT("FitAgl_Pbins",0,3,11);
+TemplateFIT * FitTOF_Pbins	= new TemplateFIT("FitTOF_Pbins",18,0,3,11);
+TemplateFIT * FitNaF_Pbins	= new TemplateFIT("FitNaF_Pbins",18,0,3,11);
+TemplateFIT * FitAgl_Pbins	= new TemplateFIT("FitAgl_Pbins",18,0,3,11);
 
 
 
@@ -131,8 +131,8 @@ void DeutonsMC_Write(){
 
 void DeutonsTemplFits(){
 	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-        TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
-	
+	TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
+
 	TemplateFIT * FitTOF_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins",0,3,11);
 	TemplateFIT * FitNaF_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins",0,3,11);
 	TemplateFIT * FitAgl_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins",0,3,11);
@@ -144,15 +144,17 @@ void DeutonsTemplFits(){
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
 	cout<<	FitTOF_Dbins -> TemplateD <<endl; 
-        cout<<	FitNaF_Dbins -> TemplateD <<endl;
-        cout<<  FitAgl_Dbins -> TemplateD <<endl;
-                            
-        cout<<  FitTOF_Pbins -> TemplateD <<endl;
-        cout<<  FitNaF_Pbins -> TemplateD <<endl;
-        cout<<  FitAgl_Pbins -> TemplateD <<endl;
+	cout<<	FitNaF_Dbins -> TemplateD <<endl;
+	cout<<  FitAgl_Dbins -> TemplateD <<endl;
+
+	cout<<  FitTOF_Pbins -> TemplateD <<endl;
+	cout<<  FitNaF_Pbins -> TemplateD <<endl;
+	cout<<  FitAgl_Pbins -> TemplateD <<endl;
 
 	return;
-	}
+
+
+}
 /*
 
 
