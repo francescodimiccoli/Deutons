@@ -3,11 +3,19 @@
 
 use warnings;
 
-#$percorso="/home/francesco/PhD/LocalCNAF/";
-#$percorso="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
+$month = $ARGV[0]//"ALL";
+
 system("cp  ../Histos/*/*tot*  ../Histos/TOT");
-chomp (@Rootuple = `ls  ../Histos/TOT/|grep tot  |  sed s/_tot_P1.root//g`);
+
+if($ARGV[0]=="ALL"){
+	chomp (@Rootuple = `ls  ../Histos/TOT/|grep tot  |  sed s/_tot_P1.root//g`);
+}
+if($ARGV[0]!="ALL"){
+	@Rootuple = $ARGV[0];
+}
+
 $num_Rootuple = scalar(@Rootuple);
+
 open(OUT,">","./Mesi.h");
 print $num_Rootuple."\n";
 
