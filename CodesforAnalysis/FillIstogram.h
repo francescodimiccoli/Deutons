@@ -171,7 +171,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		Cutmask=CUTMASK;
         	if(100*(i/(float)(ntupla1->GetEntries()))>progress) {
 			cout<<'\r' << progress;
-			progress=(int)(100*(i/(float)(ntupla0->GetEntries()/fraz)))+1;
+			progress=(int)(100*(i/(float)(ntupla1->GetEntries()/fraz)))+1;
 		}
 		Cuts();
 		Var3=Momento_gen;
@@ -231,7 +231,7 @@ void FillIstogram(int INDX,string frac,string mese)
                   Var3=Beta_gen;*/
 		if(100*(i/(float)(ntupla2->GetEntries()/fraz))>progress) {
 			cout<<'\r' << progress;
-			progress=(int)(100*(i/(float)(ntupla0->GetEntries()/fraz)))+1;
+			progress=(int)(100*(i/(float)(ntupla2->GetEntries()/fraz)))+1;
 		}
                 
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));    
@@ -261,7 +261,7 @@ void FillIstogram(int INDX,string frac,string mese)
                   Var3=Beta_gen;*/
 		if(100*(i/(float)(ntupla3->GetEntries()))>progress) {
 			cout<<'\r' << progress;
-			progress=(int)(100*(i/(float)(ntupla0->GetEntries()/fraz)))+1;
+			progress=(int)(100*(i/(float)(ntupla3->GetEntries()/fraz)))+1;
 		}
 		HecutD_Fill(ntupla3,i);	
 		SlidesforPlot_D_Fill(ntupla1,i);
