@@ -8,34 +8,32 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l) {
    if((Cutmask&187)!=187||Beta_pre<=0||R_pre<=0) return;
    if(!(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2)) return;
 
+   int Kbin;
+
    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
-      for(int M=0; M<nbinsr; M++)
-         if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
-            EffUnbiasMCP->beforeR->Fill(M);
-            if(Unbias==0) EffUnbiasMCP->afterR->Fill(M);
-         }
+      Kbin=GetArrayBin(fabs(Momento_gen), bin, nbinsr);
+      EffUnbiasMCP->beforeR->Fill(Kbin);
+      if(Unbias==0) EffUnbiasMCP->afterR->Fill(Kbin);
+
       //Beta bins
-      for(int m=0; m<nbinsToF; m++)
-         if(Var3>BetaP[m]&&Var3<=BetaP[m+1]) {
-            EffUnbiasMCP->beforeTOF->Fill(m);
-            if(Unbias==0) EffUnbiasMCP->afterTOF->Fill(m);
-         }
+      Kbin=GetArrayBin(Var3, BetaP, nbinsToF);
+      EffUnbiasMCP->beforeTOF->Fill(Kbin);
+      if(Unbias==0) EffUnbiasMCP->afterTOF->Fill(Kbin);
+      
    }
 
    if(Massa_gen>1&&Massa_gen<2) {
       //R bins
-      for(int M=0; M<nbinsr; M++)
-         if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]) {
-            FillBinMGen(EffUnbiasMCD->beforeR, M);
-            if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , M);
-         }
+      Kbin=GetArrayBin(fabs(Momento_gen), bin, nbinsr);
+      FillBinMGen(EffUnbiasMCD->beforeR, Kbin);
+      if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
+      
       //Beta bins
-      for(int m=0; m<nbinsToF; m++)
-         if(Var3>BetaD[m]&&Var3<=BetaD[m+1]) {
-            FillBinMGen(EffUnbiasMCD->beforeTOF, m);
-            if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterTOF , m);
-         }
+      Kbin=GetArrayBin(Var3, BetaD, nbinsToF);
+      FillBinMGen(EffUnbiasMCD->beforeTOF, Kbin);
+      if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin);
+      
    }
 
    return;
