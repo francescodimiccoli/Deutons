@@ -151,6 +151,30 @@ void DeutonsTemplFits(){
 	FitNaF_Pbins -> TemplateFits();
 	FitAgl_Pbins -> TemplateFits();
 
+	cout<<"*** Updating P1 file ****"<<endl;
+
+        nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+        file1 = TFile::Open(nomefile.c_str(),"UPDATE");
+
+	FitTOF_Dbins -> DCounts -> Write ("D_FluxCounts_TOF");
+	FitNaF_Dbins -> DCounts -> Write ("D_FluxCounts_NaF");
+        FitAgl_Dbins -> DCounts -> Write ("D_FluxCounts_Agl");
+                       
+        FitTOF_Pbins -> PCounts -> Write ("P_FluxCounts_TOF");
+	FitNaF_Pbins -> PCounts -> Write ("P_FluxCounts_NaF");
+        FitAgl_Pbins -> PCounts -> Write ("P_FluxCounts_Agl");
+
+	file1 -> Write();
+	file1 -> Close(); 	
+	
+	TCanvas *c30TOF[12][nbinsbeta];
+	TCanvas *c30_NaF[12][nbinsbeta];
+	TCanvas *c30_Agl[12][nbinsbeta];
+	
+
+
+
+
 	return;
 
 

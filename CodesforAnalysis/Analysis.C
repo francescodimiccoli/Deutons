@@ -236,9 +236,9 @@ int main(int argc, char * argv[])
 		DATApreSeleff(file1);
 		//DVSMCTrackeff(file1);
 		DATAQualeff(file1);
+		if(frac=="tot") DeutonsTemplFits();
 		/*DVSMCpreSeleff(file1);
 		  DVSMCQualeff2(file1);*/
-		if(frac=="tot") DeutonsTemplFits();
 		/*DeutonsTemplFits_Dist(file1);
 		  DeutonFlux(file1);
 		  DeutonFlux_Dist(file1);*/

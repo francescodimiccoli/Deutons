@@ -42,7 +42,7 @@ class Flux
 
       //creation constructor
       Flux(std::string basename) {
-         Counts_R	= new TH1F((basename + "Counts_R"      ).c_str(),(basename + "Counts_R"      ).c_str(),nbinsr,0,nbinsr);
+         Counts_R	 = new TH1F((basename + "Counts_R"      ).c_str(),(basename + "Counts_R"      ).c_str(),nbinsr,0,nbinsr);
          Counts_TOF      = new TH1F((basename + "Counts_TOF"    ).c_str(),(basename + "Counts_TOF"    ).c_str(),nbinsToF,0,nbinsToF);
          Counts_NaF      = new TH1F((basename + "Counts_NaF"    ).c_str(),(basename + "Counts_NaF"    ).c_str(),nbinsNaF,0,nbinsNaF);
          Counts_Agl      = new TH1F((basename + "Counts_Agl"    ).c_str(),(basename + "Counts_Agl"    ).c_str(),nbinsAgl,0,nbinsAgl);
