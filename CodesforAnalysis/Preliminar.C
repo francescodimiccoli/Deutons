@@ -64,6 +64,18 @@ float BetabinsNaFR_D[18]={0};
 float BetabinsR_P[18]={0};
 float BetabinsR_D[18]={0};
 
+
+
+int GetArrayBin(float var, float* array, int nbins) {
+	for (int ib=0; ib<nbins-1; ib++)  {
+		if(var>array[ib] && var<=array[ib+1])
+		return ib;
+	}
+	return -1;
+	
+}
+
+
 int main(int argc, char * argv[]){
 
 	TCanvas *a1=new TCanvas("Beta vs R - TOF");
@@ -438,7 +450,7 @@ int main(int argc, char * argv[]){
 			B2=B2+0.02;	
 		}
 		if(EdepL1>0.04&&EdepL1<0.15) {
-			RisoluzioniBeta_R_D[GetArrayBin(R,bin, 24 )]->Fill(1/Beta);
+			RisoluzioniBeta_R_D[GetArrayBin(R,   bin, 24 )]->Fill(1/Beta);
 			RisoluzioniBetaTOF_R_D[GetArrayBin(R, BetabinsR_D, 18)]->Fill(1/Beta);
 			if(((int)Cutmask)>>11==512) RisoluzioniBetaNaF_R_D[GetArrayBin(R, BetabinsNaFR_D, 18)]->Fill(1/BetaRICH);
 			if(((int)Cutmask)>>11==0)   RisoluzioniBetaAgl_R_D[GetArrayBin(R, BetabinsNaFR_D, 18)]->Fill(1/BetaRICH);	

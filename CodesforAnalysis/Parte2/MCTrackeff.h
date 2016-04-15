@@ -28,7 +28,7 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l) {
       if(EdepTOFU < EdepTOFbeta->Eval(Beta_pre)+1 && EdepTOFU > EdepTOFbeta->Eval(Beta_pre)-1 && ((int)Cutmask&3)==3 && Beta_pre>0) {
          EffTrackMCP->beforeR->Fill(Kbin);
          if(((int)Cutmask&11)==11&&R_pre>0)
-            EffTrackMCP->afterR->Fill(GetArrayBin(fabs(R_pre, bin, nbinsr)));
+            EffTrackMCP->afterR->Fill(GetArrayBin(fabs(R_pre), bin, nbinsr));
       }
 
       //Beta bins
@@ -57,7 +57,7 @@ void MCTrackeff_Fill(TNtuple *ntupla, int l) {
          FillBinMGen(EffTriggMCD->afterR , Kbin);
          FillBinMGen(EffTOFMCD  ->beforeR, Kbin);
       }
-      if(((int)Cutmask&3)==3&&Beta_pre>0) FilllBinMGen(EffTOFMCD  ->afterR , Kbin);
+      if(((int)Cutmask&3)==3&&Beta_pre>0) FillBinMGen(EffTOFMCD  ->afterR , Kbin);
 
 
       if(EdepTOFU < EdepTOFbeta->Eval(Beta_pre)+1 && EdepTOFU > EdepTOFbeta->Eval(Beta_pre)-1 && (int)Cutmask&3 == 3 && Beta_pre > 0) {
