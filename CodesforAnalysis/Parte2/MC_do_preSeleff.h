@@ -9,30 +9,26 @@ void MC_do_preSeleff_Fill(TNtuple *ntupla, int l){
 	if(Unbias!=0||Beta_pre<=0||R_pre<=0) return;
 
 	for(int S=0;S<3;S++){
+		int Kbin;
 		if(Massa_gen<1&&Massa_gen>0.5) {
-			for(int M=0;M<nbinsr;M++) 
-				if(Var<bin[M+1]&&Var>bin[M]) {
-						if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeR->Fill(M,S);
-						if(((int)Cutmask&passed[S])==passed[S]) Eff_do_preSelMCP->afterR->Fill(M,S);
-				}
-	
-			for(int m=0;m<nbinsToF;m++)  
-				if(Var>BetaP[m]&&Var<=BetaP[m+1]){
-						if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeTOF->Fill(m,S);
-						if(((int)Cutmask&passed[S])==passed[S]) Eff_do_preSelMCP->afterTOF->Fill(m,S);	
-				}
-			}				 
+			Kbin=GetArrayBin(Var, bin, nbinsr);
+			if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeR->Fill(Kbin,S);
+			if(((int)Cutmask&   passed[S])==   passed[S]) Eff_do_preSelMCP->afterR ->Fill(Kbin,S);
+
+			Kbin=GetArrayBin(Var, BetaP, nbinsToF);
+			if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeTOF->Fill(Kbin,S);
+			if(((int)Cutmask&passed[S])   ==passed[S])    Eff_do_preSelMCP->afterTOF ->Fill(Kbin,S);	
+		}				 
 
 		if(Massa_gen>1&&Massa_gen<2) {
-			for(int M=0;M<nbinsr;M++) 
-				if(Var<bin[M+1]&&Var>bin[M]) {
-					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)(Eff_do_preSelMCD->beforeR))->Fill(1,2,3);
-					if(((int)Cutmask&passed[S])==passed[S])       FillBinMGen((TH3*)Eff_do_preSelMCD->afterR, M, S);
-			}
-			for(int m=0;m<nbinsToF;m++) if(Var>BetaD[m]&&Var<=BetaD[m+1]){
-					if(((int)Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeTOF,m, S);
-					if(((int)Cutmask&passed[S])==passed[S])       FillBinMGen((TH3*)Eff_do_preSelMCD->afterTOF, m, S);
-			}
+			Kbin=GetArrayBin(Var, bin, nbinsr);
+			if(((int)Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeR, Kbin, S);
+			if(((int)Cutmask&passed[S])   ==passed[S]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterR,  Kbin, S);
+
+			Kbin=GetArrayBin(Var, BetaD, nbinsToF);
+			if(((int)Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeTOF,Kbin, S);
+			if(((int)Cutmask&passed[S])   ==passed[S]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterTOF, Kbin, S);
+			
 		}
 	}
 	return;
