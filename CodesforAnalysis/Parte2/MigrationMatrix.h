@@ -6,15 +6,9 @@ TH2F * MigrMatrix = new TH2F("MigrMatrix","MigrMatrix",nbinsr,0,nbinsr,nbinsr,0,
 void MigrationMatrix_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
 	if(!(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0))	return;
-	if(Massa_gen<1&&Massa_gen>0.5) {
-                for(int M=0;M<nbinsr;M++) 
-			if(fabs(Momento_gen)<bin[M+1]&&fabs(Momento_gen)>bin[M]){
-				for(int l=0;l<nbinsr;l++) 
-					if(fabs(R_pre)<bin[l+1]&&fabs(R_pre)>bin[l]) 
-						MigrMatrix->Fill(l,M);
-				}
-	}
-	
+	if(Massa_gen<1&&Massa_gen>0.5) 
+		MigrMatrix->Fill(GetArrayBin(fabs(R_pre),       bin, nbinsr),
+		                 GetArrayBin(fabs(Momento_gen), bin, nbinsr) );
 }
 
 void MigrationMatrix_Write(){
