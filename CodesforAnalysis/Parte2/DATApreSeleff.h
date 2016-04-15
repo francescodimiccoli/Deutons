@@ -7,14 +7,13 @@ LATcorr *LATpreSelDATA = new LATcorr("LATpreSelDATA",3);
 void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
 	int k = ntupla->GetEvent(l);
 	if(Unbias!=0||Beta_pre<=0||R_pre<=0||Beta_pre>protons->Eval(R_pre)+0.1||Beta_pre<protons->Eval(R_pre)-0.1) return;
-	if(!(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.1&&EdepL1>EdepL1beta->Eval(Beta)-0.1)) return;	
+	if(!(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.1&&EdepL1>EdepL1beta->Eval(Beta)-0.1)) return;
+	if(R_pre <= Rcut[zona]) return;
 	for(int S=0;S<3;S++){
-			for(int M=0;M<nbinsr;M++) 
-				if(fabs(R_pre)<bin[M+1]&&fabs(R_pre)>bin[M]&&R_pre>Rcut[zona]) {
-					if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3 *)LATpreSelDATA->beforeR)->Fill(M,zona,S);
-					if(((int)Cutmask&passed[S])==passed[S]) ((TH3 *)LATpreSelDATA->afterR)->Fill(M,zona,S);
-				}
-			}	
+		int Kbin=GetArrayBin(fabs(R_pre), bin, nbinsr);
+		if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3 *)LATpreSelDATA->beforeR)->Fill(Kbin,zona,S);
+		if(((int)Cutmask&   passed[S])==   passed[S]) ((TH3 *)LATpreSelDATA->afterR )->Fill(Kbin,zona,S);
+	}	
 	return;
 }
 
@@ -118,10 +117,11 @@ void DATApreSeleff(TFile * file1){
 	CorrLATpre_Spl[S]=new TGraphErrors(tagli[S].c_str());
 	CorrLATpre_Spl[S]->SetName(tagli[S].c_str());
 	int j=0;
-	for(int i=1;i<11;i++) { CorrLATpre_Spl[S]->SetPoint(j,geomagC[i],preSelLATcorr_fit->GetBinContent(i+1,S+1));
-				CorrLATpre_Spl[S]->SetPointError(j,0,preSelLATcorr_fit->GetBinError(i+1,S+1));
-				j++;
-				}
+	for(int i=1;i<11;i++) {
+		CorrLATpre_Spl[S]->SetPoint(j,geomagC[i],preSelLATcorr_fit->GetBinContent(i+1,S+1));
+		CorrLATpre_Spl[S]->SetPointError(j,0,preSelLATcorr_fit->GetBinError(i+1,S+1));
+		j++;
+	}
 	CorrLATpre_Spl[S]->SetLineColor(2);
 	CorrLATpre_Spl[S]->SetMarkerColor(2);
 	CorrLATpre_Spl[S]->SetFillColor(2);

@@ -54,7 +54,6 @@ float EdepTrack=0;
 float BetaRICH_new=0;
 double geomag[12]={0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
 float Rcut[11]={18,18,16,14,12,10,8,6,4,2,1};
-int avanzamento=0;
 int INDX=0;
 int FRAC=0;
 double geomagC[11]={0,0.05,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95,1.15};

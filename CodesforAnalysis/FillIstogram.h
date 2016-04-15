@@ -23,6 +23,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	float Esposizionegeo[nbinsr][11]={{0}};
 	double geomag[12]={0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
 	float DistTOF,DistTrack,DistTRD=0;
+	int progress=0;
 	
 	cout<<"*********************** CALIB. READING *********************"<<endl;
 
@@ -148,7 +149,10 @@ void FillIstogram(int INDX,string frac,string mese)
                 /*Var=Beta_pre;
                   Var2=BetaRICH;  
                   Var3=Beta_gen;*/
-		if(100*(i/(float)(ntupla0->GetEntries()/fraz))>avanzamento) {cout<<avanzamento<<endl; avanzamento=(int)(100*(i/(float)(ntupla0->GetEntries()/fraz)))+1;}
+		if(100*(i/(float)(ntupla0->GetEntries()/fraz))>progress) {
+			cout<<'\r' << "Progress : "<<progress << " %"<< flush;
+			progress=(int)(100*(i/(float)(ntupla0->GetEntries()/fraz)))+1;
+		}
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));
 		MCpreseff_Fill(ntupla0,i);
 		MCUnbiaseff_Fill(ntupla0,i);
@@ -161,11 +165,14 @@ void FillIstogram(int INDX,string frac,string mese)
 		DVSMCTrackeff_Fill(ntupla0,i);*/
 	}
 	if(INDX==0||INDX==1){
-	avanzamento=0;
+	progress=0;
 	for(int i=0; i<ntupla1->GetEntries();i++) {
 		int k = ntupla1->GetEvent(i);
 		Cutmask=CUTMASK;
-        	if(100*(i/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla1->GetEntries())))+1;}
+        	if(100*(i/(float)(ntupla1->GetEntries()))>progress) {
+			cout<<'\r' << "Progress : "<<progress << " %"<< flush;
+			progress=(int)(100*(i/(float)(ntupla1->GetEntries()/fraz)))+1;
+		}
 		Cuts();
 		Var3=Momento_gen;
  	        Var=R;
@@ -182,7 +189,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		//MCMC_Fill(ntupla1,i);
         }
 	}
-	cout<<"*********************** DATA READING *********************"<<endl;
+	cout<<endl<<"*********************** DATA READING *********************"<<endl;
         if(INDX!=2){
 	Tempi = (TH1F *)file2->Get("Tempi");
 	esposizionegeo = (TH2F *)file2->Get("esposizionegeo");
@@ -203,7 +210,7 @@ void FillIstogram(int INDX,string frac,string mese)
         esposizionedgeoNaF = (TH2F*)file->Get("esposizionedgeoNaF");
         esposizionedgeoAgl = (TH2F*)file->Get("esposizionedgeoAgl");
 	}
-	avanzamento=0;
+	progress=0;
 	if(INDX==0)
 	for(int i=0; i<ntupla2->GetEntries()/fraz;i++) {
                 int k = ntupla2->GetEvent(i);
@@ -222,7 +229,10 @@ void FillIstogram(int INDX,string frac,string mese)
                 /*Var=Beta_pre;
                   Var2=BetaRICH;  
                   Var3=Beta_gen;*/
-		if(100*(i/(float)(ntupla2->GetEntries()/fraz))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla2->GetEntries()/fraz)))+1;}
+		if(100*(i/(float)(ntupla2->GetEntries()/fraz))>progress) {
+			cout<<'\r' << "Progress : "<<progress << " %"<< flush;
+			progress=(int)(100*(i/(float)(ntupla2->GetEntries()/fraz)))+1;
+		}
                 
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));    
 		DATAUnbiaseff_Fill(ntupla2,i);
@@ -231,7 +241,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		//DVSMCTrackeff_D_Fill(ntupla0,i);		
 	}
         if(INDX==0||INDX==1){
-        avanzamento=0;
+        progress=0;
         for(int i=0; i<ntupla3->GetEntries();i++) {
                 int k = ntupla3->GetEvent(i);
                 Cutmask=CUTMASK;
@@ -249,7 +259,10 @@ void FillIstogram(int INDX,string frac,string mese)
                 /*Var=Beta;
                   Var2=BetaRICH;  
                   Var3=Beta_gen;*/
-		if(100*(i/(float)(ntupla3->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla3->GetEntries())))+1;}
+		if(100*(i/(float)(ntupla3->GetEntries()))>progress) {
+			cout<<'\r' << "Progress : "<<progress << " %"<< flush;
+			progress=(int)(100*(i/(float)(ntupla3->GetEntries()/fraz)))+1;
+		}
 		HecutD_Fill(ntupla3,i);	
 		SlidesforPlot_D_Fill(ntupla1,i);
 		DATAQualeff_Fill(ntupla3,i,Zona);
@@ -261,7 +274,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		}
         }
 	
-	cout<<"************************ SAVING DATA ************************"<<endl;
+	cout<<endl<<"************************ SAVING DATA ************************"<<endl;
 	if(INDX==0||INDX==1){
 		nomefile= outputpath + "Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 		TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
