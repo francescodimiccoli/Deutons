@@ -423,7 +423,7 @@ int main(int argc, char * argv[]){
 		int k = ntupla2->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
-		if(i%100000==0) cout<<i<<endl;
+		if(i%100000==0) cout<< '\r ' << i;
 		BetavsR_TOF_D->Fill(R,Beta);
 		if((((int)Cutmask)>>11)==512) BetavsR_NaF_D->Fill(R,BetaRICH);
 		if((((int)Cutmask)>>11)==0) BetavsR_Agl_D->Fill(R,BetaRICH);
@@ -594,7 +594,7 @@ int main(int argc, char * argv[]){
 		int k = ntupla1->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
-		if(i%100000==0) cout<<i<<endl;
+		if(i%100000==0) cout<< '\r ' << i;
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
 		if((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0) Massa=pow(fabs(pow(fabs(R)*pow((1-pow(BetaRICH,2)),0.5)/BetaRICH,2)),0.5);
 		if(Massagen<1){
@@ -1597,7 +1597,7 @@ int main(int argc, char * argv[]){
 		int k = ntupla1->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
-		if(i%100000==0) cout<<i<<endl;
+		if(i%100000==0) cout<< '\r ' << i;
 		for(int j=0; j<30;j++){
 			if(Beta>B1&&Beta<=B2&&Massagen>0.5&&Massagen<1){
 				DistribuzioniTOFU_corr[j]->Fill(EdepTOFU*CorrTOFU->Eval(Beta));
