@@ -75,11 +75,11 @@ public:
 	
 	void TemplateFits();
 	
-	TH1F * GetResult_P (int bin){ TemplateFIT::Extract_Bin_histos(TemplateP, bin);}	
-	TH1F * GetResult_D (int bin){ TemplateFIT::Extract_Bin_histos(TemplateD, bin);}
-	TH1F * GetResult_He(int bin){ TemplateFIT::Extract_Bin_histos(TemplateHe,bin);}
+	TH1F * GetResult_P (int bin){ return TemplateFIT::Extract_Bin_histos(TemplateP, bin);}	
+	TH1F * GetResult_D (int bin){ return TemplateFIT::Extract_Bin_histos(TemplateD, bin);}
+	TH1F * GetResult_He(int bin){ return TemplateFIT::Extract_Bin_histos(TemplateHe,bin);}
 
-	TH1F * GetResult_Data(int bin){TemplateFIT::Extract_Bin_histos(Data_Prim ,bin);}
+	TH1F * GetResult_Data(int bin){return TemplateFIT::Extract_Bin_histos(Data_Prim ,bin);}
 	TH1F * GetResult_Data(int bin,int lat){ return TemplateFIT::Extract_Bin_histos_geo(Data_Prim,bin,lat);  }
 
 	int GetFitOutcome(int bin){if(fits_outcome[bin]) return fits_outcome[bin]; else {cout<<"Fit not yet performed: bin nr. "<<bin<<endl; return 0;}}
