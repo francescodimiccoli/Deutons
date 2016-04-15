@@ -23,6 +23,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	float Esposizionegeo[nbinsr][11]={{0}};
 	double geomag[12]={0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
 	float DistTOF,DistTrack,DistTRD=0;
+	int progress=0;
 	
 	cout<<"*********************** CALIB. READING *********************"<<endl;
 
@@ -139,7 +140,6 @@ void FillIstogram(int INDX,string frac,string mese)
 	}
 	cout<<"*********************** MC READING *********************"<<endl;
 	if(INDX==0)
-	int progress=0;
 	for(int i=0; i<ntupla0->GetEntries()/fraz;i++) {
 		int k = ntupla0->GetEvent(i);
 		Cutmask=CUTMASK;
