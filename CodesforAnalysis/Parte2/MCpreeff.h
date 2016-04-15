@@ -251,7 +251,7 @@ void MCpreeff(TFile * file1) {
 
    cout<<"*** Updating Results file ***"<<endl;
    nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+   TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
    f_out->mkdir("MC Results");
    f_out->mkdir("MC Results/Preselections");
    f_out->cd("MC Results/Preselections");

@@ -22,7 +22,9 @@ public:
 	//Counts
 	TH1 * PCounts	;
         TH1 * DCounts	;	
-
+	TH1 * PCountsgeo;	
+        TH1 * DCountsgeo;	
+	
 	int nbins;
 	//creation constructors
 	TemplateFIT(std::string basename ,int Nbins ,float val_min , float val_max,int n){
@@ -37,8 +39,14 @@ public:
 		ResultP  =	TemplateP ; 
 	        ResultD  =      TemplateD ; 
         	ResultHe =      TemplateHe; 
-
+		
+		PCounts	   =	new TH1F((basename + "_PCounts"  	 ).c_str(),(basename + "_PCounts"   	).c_str(),Nbins,0,Nbins);
+		DCounts	   =	new TH1F((basename + "_DCounts"  	 ).c_str(),(basename + "_DCounts"   	).c_str(),Nbins,0,Nbins);
+        	PCountsgeo = 	new TH2F((basename + "_PCounts_geo"      ).c_str(),(basename + "_PCounts_geo"   ).c_str(),Nbins,0,Nbins,n,0,n);
+        	DCountsgeo = 	new TH2F((basename + "_DCounts_geo"      ).c_str(),(basename + "_DCounts_geo"   ).c_str(),Nbins,0,Nbins,n,0,n);
+	
 		nbins = Nbins;
+
 		
 	}
 
@@ -57,8 +65,15 @@ public:
 		ResultP  =	TemplateP ; 
 	        ResultD  =      TemplateD ; 
         	ResultHe =      TemplateHe; 	
-	}
+	
+		nbins = TemplateP -> GetNbinsY();
+	
+		PCounts	   =	new TH1F((basename + "_PCounts"  	 ).c_str(),(basename + "_PCounts"   	).c_str(),nbins,0,nbins);
+		DCounts	   =	new TH1F((basename + "_DCounts"  	 ).c_str(),(basename + "_DCounts"   	).c_str(),nbins,0,nbins);
+        	PCountsgeo = 	new TH2F((basename + "_PCounts_geo"      ).c_str(),(basename + "_PCounts_geo"   ).c_str(),nbins,0,nbins,n,0,n);
+        	DCountsgeo = 	new TH2F((basename + "_DCounts_geo"      ).c_str(),(basename + "_DCounts_geo"   ).c_str(),nbins,0,nbins,n,0,n);
 
+	}
 	void Write();
 	
 	TH1F * Extract_Bin_histos(TH1 * Histo, int bin);
@@ -100,6 +115,7 @@ TH1F * TemplateFIT::Extract_Bin_histos_geo(TH1 * Histo, int bin, int lat){
 
 TFractionFitter * TemplateFIT::Do_TemplateFIT(int bin, TH1F * PMC, TH1F *DMC, TH1F *HeMC, TH1F* Data){
 	TObjArray *Tpl;
+	Tpl = new TObjArray(3);
 	Tpl -> Add(PMC);
 	Tpl -> Add(DMC);
 	Tpl -> Add(HeMC);
@@ -115,7 +131,7 @@ void TemplateFIT::TemplateFits(){
 		TH1F * Templ_D =  TemplateFIT::Extract_Bin_histos(TemplateD, bin);	
 		TH1F * Templ_He=  TemplateFIT::Extract_Bin_histos(TemplateHe,bin);
 		TH1F * Data    =  TemplateFIT::Extract_Bin_histos(TemplateHe,bin);
-
+		
 		TFractionFitter * fit = TemplateFIT::Do_TemplateFIT(bin, Templ_P, Templ_D, Templ_He, Data);
 
 		Templ_P ->Scale(1);
@@ -127,6 +143,8 @@ void TemplateFIT::TemplateFits(){
 			ResultD ->SetBinContent(R+1,bin +1,Templ_P -> GetBinContent(R+1));	
 			ResultHe->SetBinContent(R+1,bin +1,Templ_P -> GetBinContent(R+1));
 		}
+		PCounts -> SetBinContent(bin+1,Templ_P->Integral());
+		DCounts -> SetBinContent(bin+1,Templ_D->Integral());
 	}
 	return;
 }
