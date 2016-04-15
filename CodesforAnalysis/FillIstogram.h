@@ -150,7 +150,7 @@ void FillIstogram(int INDX,string frac,string mese)
                   Var2=BetaRICH;  
                   Var3=Beta_gen;*/
 		if(100*(i/(float)(ntupla0->GetEntries()/fraz))>progress) {
-			cout<<'\r' << progress;
+			cout<<'\r' << progress << flush;
 			progress=(int)(100*(i/(float)(ntupla0->GetEntries()/fraz)))+1;
 		}
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));
@@ -170,7 +170,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		int k = ntupla1->GetEvent(i);
 		Cutmask=CUTMASK;
         	if(100*(i/(float)(ntupla1->GetEntries()))>progress) {
-			cout<<'\r' << progress;
+			cout<<'\r' << progress << flush;
 			progress=(int)(100*(i/(float)(ntupla1->GetEntries()/fraz)))+1;
 		}
 		Cuts();
@@ -189,7 +189,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		//MCMC_Fill(ntupla1,i);
         }
 	}
-	cout<<"*********************** DATA READING *********************"<<endl;
+	cout<<endl<<"*********************** DATA READING *********************"<<endl;
         if(INDX!=2){
 	Tempi = (TH1F *)file2->Get("Tempi");
 	esposizionegeo = (TH2F *)file2->Get("esposizionegeo");
@@ -230,7 +230,7 @@ void FillIstogram(int INDX,string frac,string mese)
                   Var2=BetaRICH;  
                   Var3=Beta_gen;*/
 		if(100*(i/(float)(ntupla2->GetEntries()/fraz))>progress) {
-			cout<<'\r' << progress;
+			cout<<'\r' << progress << flush;
 			progress=(int)(100*(i/(float)(ntupla2->GetEntries()/fraz)))+1;
 		}
                 
@@ -260,7 +260,7 @@ void FillIstogram(int INDX,string frac,string mese)
                   Var2=BetaRICH;  
                   Var3=Beta_gen;*/
 		if(100*(i/(float)(ntupla3->GetEntries()))>progress) {
-			cout<<'\r' << progress;
+			cout<<'\r' << progress << flush;
 			progress=(int)(100*(i/(float)(ntupla3->GetEntries()/fraz)))+1;
 		}
 		HecutD_Fill(ntupla3,i);	
@@ -274,7 +274,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		}
         }
 	
-	cout<<"************************ SAVING DATA ************************"<<endl;
+	cout<<endl<<"************************ SAVING DATA ************************"<<endl;
 	if(INDX==0||INDX==1){
 		nomefile= outputpath + "Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 		TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
