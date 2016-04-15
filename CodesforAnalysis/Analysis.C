@@ -26,7 +26,7 @@
 #include "Parte2/Acceptance.h"
 #include "Parte2/ProtonFlux.h"
 #include "Parte2/Deutons.h"
-#include "Parte2/MCMC.h"
+//#include "Parte2/MCMC.h"
 #include "FillIstogram.h"
 
 /*#include "Parte2/DVSMCpreSeleff.h"
@@ -41,11 +41,58 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
-	cout<<"Month _ Indx _ Frac "<<endl;
-	frac=argv[3];
-	FRAC=atoi(argv[3]);
-	INDX=atoi(argv[2]);
-	mese=argv[1];
+	cout<<"Month _ Indx _ Frac _ output"<<endl;
+	cout<<argc<<endl;
+	if(argc == 1 ) {
+		cout<<"No Month specified: running 2012_05"<<endl;
+		mese = "2012_05";
+		cout<<"No Mode specified: running Mode 2"<<endl;
+		INDX = 0;
+		cout<<"No fraction specified: running 35"<<endl;
+		frac = "35";
+		cout<<"No output path specified: writing locally"<<endl;
+                outputpath = "../";
+	}
+	if(argc == 2 ) {
+                mese=argv[1];
+		cout<<"No Mode specified: running Mode 2"<<endl;
+                INDX = 2;
+                cout<<"No fraction specified: running 35"<<endl;
+                frac = "35"; 
+                cout<<"No output path specified: writing locally"<<endl;
+                outputpath = "../";
+        }
+	if(argc == 3 ) {
+                mese=argv[1];
+		INDX=atoi(argv[2]);
+		cout<<"No fraction specified: running 35"<<endl;
+                frac = "35"; 
+                cout<<"No output path specified: writing locally"<<endl;
+                outputpath = "../";
+        }
+	if(argc == 4) {
+		mese=argv[1];
+                INDX=atoi(argv[2]);
+		frac= argv[3];
+		cout<<"No output path specified: writing locally"<<endl;
+		outputpath = "../";
+	}
+	if(argc == 5) {
+		mese=argv[1];
+                INDX=atoi(argv[2]);
+                frac=argv[3];
+		outputpath=argv[4];
+	}
+	cout<<"****************************** INPUT PAR. ***********************************"<<endl;
+	cout<<endl;
+	cout<<"Month: "<<mese<<endl; 
+	cout<<endl;
+        cout<<"Mode: "<<INDX<<endl;
+	cout<<endl;
+        cout<<"Fraction: "<<frac<<endl;
+	cout<<endl;
+        cout<<"Output dir: "<<outputpath<<"Histos/"<<mese<<endl;
+	cout<<endl;
 	cout<<"****************************** R BINS ***************************************"<<endl;
 	for(int i=0;i<nbinsr+1;i++)
 	{
@@ -55,7 +102,6 @@ int main(int argc, char * argv[])
 			encindeut[i]=pow(((1+pow((R_cent[i]/1.875),2))),0.5)-1;
 			encinprot[i]=pow(((1+pow((R_cent[i]/0.938),2))),0.5)-1;
 		}
-		cout<<bin[i]<<endl;
 	}
 	for(int i=0;i<nbinsr;i++) {
 		deltaencinprot[i]=(pow(((1+pow((bin[i+1]/0.938),2))),0.5)-1)-(pow(((1+pow((bin[i]/0.938),2))),0.5)-1);
@@ -86,12 +132,10 @@ int main(int argc, char * argv[])
 	string TitoliTOF[nbinsToF];
 	for(int i=0;i<nbinsToF ;i++) {
 		deltaencinTOF[i]=(1/pow(1-pow(Betabins[i+1],2),0.5)-1)-(1/pow(1-pow(Betabins[i],2),0.5)-1);
-		cout<<Betabins[i]<<" "<<BetabinsR_D[i]<<" "<<BetabinsR_P[i]<<endl;
 		
 		ostringstream ss;
 		ss<<Betabins[i];
 		TitoliTOF[i]= ss.str();
-		cout<<TitoliTOF[i]<<", ";
 	}
 	cout<<endl;
 
@@ -116,12 +160,10 @@ int main(int argc, char * argv[])
 	
 	for(int i=0;i<nbinsNaF;i++) {	
 		deltaencinNaF[i]=(1/pow(1-pow(BetabinsNaF[i+1],2),0.5)-1)-(1/pow(1-pow(BetabinsNaF[i],2),0.5)-1);
-		cout<<BetabinsNaF[i]<<" "<<BetabinsNaFR_D[i]<<" "<<EkincentNaF[i]<<" "<<deltaencinNaF[i]<<endl;
 		
 		ostringstream ss;
 		ss<<BetabinsNaF[i];
 		TitoliNaF[i]= ss.str();
-		cout<<TitoliNaF[i]<<", ";
 	}
 	cout<<endl;
 	cout<<"**************************** BETA BINS Agl***********************************"<<endl;
@@ -145,12 +187,10 @@ int main(int argc, char * argv[])
 	string TitoliAgl[nbinsAgl];
 	for(int i=0;i<nbinsAgl; i++) {
 		deltaencinAgl[i]=(1/pow(1-pow(BetabinsAgl[i+1],2),0.5)-1)-(1/pow(1-pow(BetabinsAgl[i],2),0.5)-1);
-		cout<<BetabinsAgl[i]<<" "<<BetabinsAglR_D[i]<<" "<<EkincentAgl[i]<<" "<<deltaencinAgl[i]<<endl;
 		
 		ostringstream ss;
 		ss<<BetabinsAgl[i];
 		TitoliAgl[i]= ss.str();
-		cout<<TitoliAgl[i]<<", ";
 	}
 	cout<<endl;
 
@@ -172,7 +212,6 @@ int main(int argc, char * argv[])
 		BetaNaFP[i]=BetabinsNaFR_P[i];
 		BetaAglD[i]=BetabinsAglR_D[i];
 		BetaAglP[i]=BetabinsAglR_P[i];
-		cout<<"TOF: "<<BetaD[i]<<" "<<BetaP[i]<<" NaF "<<BetaNaFD[i]<<" "<<BetaNaFP[i]<<" Agl "<<BetaAglD[i]<<" "<<BetaAglP[i]<<endl;
 	}
 	////////////////////////////
 
@@ -199,7 +238,7 @@ int main(int argc, char * argv[])
 		DATAQualeff(file1);
 		/*DVSMCpreSeleff(file1);
 		  DVSMCQualeff2(file1);*/
-		  DeutonsTemplFits();
+		if(frac=="tot") DeutonsTemplFits();
 		/*DeutonsTemplFits_Dist(file1);
 		  DeutonFlux(file1);
 		  DeutonFlux_Dist(file1);*/

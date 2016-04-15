@@ -48,7 +48,7 @@ void FillIstogram(int INDX,string frac,string mese)
         cout<<Rig<<" "<<beta<<" "<<" "<<betaNaF<<" "<<betaAgl<<" "<<eL1<<" "<<etofu<<" "<<etrack<<" "<<etofd<<" "<<EdepL1beta<<" "<<EdepTOFbeta<<" "<<EdepTrackbeta<<" "<<EdepTOFDbeta<<" "<<Corr_L1<<" "<<Corr_TOFU<<" "<<Corr_Track<<" "<<Corr_TOFD<<endl;
 	cout<<"******************************"<<endl;
 
-	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+	string nomefile=outputpath + "/Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 	TFile * file =TFile::Open(nomefile.c_str());
 	
 	TFile *file1;
@@ -58,7 +58,12 @@ void FillIstogram(int INDX,string frac,string mese)
         TNtuple *ntupla3;
         TNtuple *ntupla2;
 	bool histonotexist = false;
-	if(!file) {cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl; INDX=0; histonotexist = true;}
+	if(!file) {
+		   cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl; 
+		   INDX=0; 
+		   histonotexist = true;
+		   cout<<"Running in Mode 0 ..."<<endl; 
+		  }
 	
 	if(INDX!=2){	
 		nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
@@ -103,8 +108,6 @@ void FillIstogram(int INDX,string frac,string mese)
 		ntupla1->SetBranchAddress("Dist5D_P",&Dist5D_P);	
 
 		ntupla2->SetBranchAddress("Rcutoff",&Rcutoff);
-		ntupla2->SetBranchAddress("Ev_Num",&Ev_Num);
-		ntupla2->SetBranchAddress("Trig_Num",&Trig_Num);
 		ntupla2->SetBranchAddress("R_pre",&R_pre);
 		ntupla2->SetBranchAddress("Beta_pre",&Beta_pre);
 		ntupla2->SetBranchAddress("Cutmask",&CUTMASK);
@@ -128,7 +131,6 @@ void FillIstogram(int INDX,string frac,string mese)
 		ntupla3->SetBranchAddress("EdepTrack",&EdepTrack);
 		ntupla3->SetBranchAddress("EdepTOFD",&EdepTOFD);
 		ntupla3->SetBranchAddress("Latitude",&Latitude);
-		ntupla3->SetBranchAddress("Massagen",&Massa_gen);
 		ntupla3->SetBranchAddress("LDiscriminant",&LDiscriminant);
 		ntupla3->SetBranchAddress("BDT_response",&BDT_response);
 		ntupla3->SetBranchAddress("Cutmask",&CUTMASK);
@@ -177,7 +179,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		//DVSMCQualeff2_Fill(ntupla1,i);	
 		DeutonsMC_Fill(ntupla1,i);
 		/*DeutonsMC_Dist_Fill(ntupla1,i);*/
-		MCMC_Fill(ntupla1,i);
+		//MCMC_Fill(ntupla1,i);
         }
 	}
 	cout<<"*********************** DATA READING *********************"<<endl;
@@ -255,13 +257,13 @@ void FillIstogram(int INDX,string frac,string mese)
 		//DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		DeutonsDATA_Fill(ntupla3,i,Zona);
 		//DeutonsDATA_Dist_Fill(ntupla3,i,Zona);
-		MCMCDATA_Fill(ntupla3,i);
+		//MCMCDATA_Fill(ntupla3,i);
 		}
         }
 	
 	cout<<"************************ SAVING DATA ************************"<<endl;
 	if(INDX==0||INDX==1){
-		nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+		nomefile= outputpath + "Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 		TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 		
 		DATAQualeff_Write();
@@ -275,7 +277,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		DVSMCpreSeleff_Write();
 		DVSMCQualeff2_Write();
 		DVSMCTrackeff_Write();*/
-		MCMC_Write();
+		//MCMC_Write();
 		MCpreeff_Write();
 		//MCpreCheck_Write();
 		MC_do_preSeleff_Write();

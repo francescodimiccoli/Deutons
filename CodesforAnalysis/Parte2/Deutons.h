@@ -143,13 +143,13 @@ void DeutonsTemplFits(){
 
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
-	cout<<	FitTOF_Dbins -> TemplateD <<endl; 
-	cout<<	FitNaF_Dbins -> TemplateD <<endl;
-	cout<<  FitAgl_Dbins -> TemplateD <<endl;
+	FitTOF_Dbins -> TemplateFits(); 
+	FitNaF_Dbins -> TemplateFits();
+	FitAgl_Dbins -> TemplateFits();
 
-	cout<<  FitTOF_Pbins -> TemplateD <<endl;
-	cout<<  FitNaF_Pbins -> TemplateD <<endl;
-	cout<<  FitAgl_Pbins -> TemplateD <<endl;
+	FitTOF_Pbins -> TemplateFits();
+	FitNaF_Pbins -> TemplateFits();
+	FitAgl_Pbins -> TemplateFits();
 
 	return;
 
