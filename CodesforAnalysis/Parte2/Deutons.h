@@ -1,119 +1,104 @@
 
-TemplateFIT * FitTOF_Dbins	= new TemplateFIT("FitTOF_Dbins",18,0,3,11);
-TemplateFIT * FitNaF_Dbins	= new TemplateFIT("FitNaF_Dbins",18,0,3,11);
-TemplateFIT * FitAgl_Dbins	= new TemplateFIT("FitAgl_Dbins",18,0,3,11);
-
-TemplateFIT * FitTOF_Pbins	= new TemplateFIT("FitTOF_Pbins",18,0,3,11);
-TemplateFIT * FitNaF_Pbins	= new TemplateFIT("FitNaF_Pbins",18,0,3,11);
-TemplateFIT * FitAgl_Pbins	= new TemplateFIT("FitAgl_Pbins",18,0,3,11);
-
+TemplateFIT * FitTOF_Dbins = new TemplateFIT("FitTOF_Dbins",18,0,3,11);
+TemplateFIT * FitNaF_Dbins = new TemplateFIT("FitNaF_Dbins",18,0,3,11);
+TemplateFIT * FitAgl_Dbins = new TemplateFIT("FitAgl_Dbins",18,0,3,11);
+TemplateFIT * FitTOF_Pbins = new TemplateFIT("FitTOF_Pbins",18,0,3,11);
+TemplateFIT * FitNaF_Pbins = new TemplateFIT("FitNaF_Pbins",18,0,3,11);
+TemplateFIT * FitAgl_Pbins = new TemplateFIT("FitAgl_Pbins",18,0,3,11);
 
 
 void DeutonsMC_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float mass = 0;
-	if(!(Likcut&&Distcut)) return;	
-
+	if(!(Likcut&&Distcut)) return;
 	for(int m=0;m<nbinsToF;m++){ //TOF
-		
 		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
-		if(Var>BetaD[m]&&Var<=BetaD[m+1]){ 
-			if(Massa_gen<1&&Massa_gen>0.5)	FitTOF_Dbins -> TemplateP -> Fill(mass,m);
-			if(Massa_gen<2&&Massa_gen>1.5)	FitTOF_Dbins -> TemplateD -> Fill(mass,m);	
-			if(Massa_gen<4&&Massa_gen>2.5)	FitTOF_Dbins -> TemplateHe-> Fill(mass,m);
+		if(Var>BetaD[m]&&Var<=BetaD[m+1]){
+			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Dbins -> TemplateP -> Fill(mass,m);
+			if(Massa_gen<2&&Massa_gen>1.5) FitTOF_Dbins -> TemplateD -> Fill(mass,m);
+			if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Dbins -> TemplateHe-> Fill(mass,m);
 		}
 		if(Var>BetaP[m]&&Var<=BetaP[m+1]) {
-			if(Massa_gen<1&&Massa_gen>0.5)	FitTOF_Pbins -> TemplateP -> Fill(mass,m);
-			if(Massa_gen<2&&Massa_gen>1.5)	FitTOF_Pbins -> TemplateD -> Fill(mass,m);	
-			if(Massa_gen<4&&Massa_gen>2.5)	FitTOF_Pbins -> TemplateHe-> Fill(mass,m);
-
+			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Pbins -> TemplateP -> Fill(mass,m);
+			if(Massa_gen<2&&Massa_gen>1.5) FitTOF_Pbins -> TemplateD -> Fill(mass,m);
+			if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Pbins -> TemplateHe-> Fill(mass,m);
 		}
 	}
 	for(int m=0;m<nbinsNaF;m++) { //NaF
-		
 		if((((int)Cutmask)>>11)==512){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
-				if(Massa_gen<1&&Massa_gen>0.5)	FitNaF_Dbins -> TemplateP -> Fill(mass,m);	
-				if(Massa_gen<2&&Massa_gen>1.5)	FitNaF_Dbins -> TemplateD -> Fill(mass,m);
-				if(Massa_gen<4&&Massa_gen>2.5)	FitNaF_Dbins -> TemplateHe-> Fill(mass,m);
+				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Dbins -> TemplateP -> Fill(mass,m);
+				if(Massa_gen<2&&Massa_gen>1.5) FitNaF_Dbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Dbins -> TemplateHe-> Fill(mass,m);
 			}
 			if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) {
-				if(Massa_gen<1&&Massa_gen>0.5)	FitNaF_Pbins -> TemplateP -> Fill(mass,m);	
-				if(Massa_gen<2&&Massa_gen>1.5)	FitNaF_Pbins -> TemplateD -> Fill(mass,m);
-				if(Massa_gen<4&&Massa_gen>2.5)	FitNaF_Pbins -> TemplateHe-> Fill(mass,m);
+				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Pbins -> TemplateP -> Fill(mass,m);
+				if(Massa_gen<2&&Massa_gen>1.5) FitNaF_Pbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Pbins -> TemplateHe-> Fill(mass,m);
 			}
-
 		}
 	}
-	for(int m=0;m<nbinsAgl;m++) {	//Agl
+	for(int m=0;m<nbinsAgl;m++) { //Agl
 		if((((int)Cutmask)>>11)==0){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
-				if(Massa_gen<1&&Massa_gen>0.5)	FitAgl_Dbins -> TemplateP -> Fill(mass,m);	
-				if(Massa_gen<2&&Massa_gen>1.5)	FitAgl_Dbins -> TemplateD -> Fill(mass,m);
-				if(Massa_gen<4&&Massa_gen>2.5)	FitAgl_Dbins -> TemplateHe-> Fill(mass,m);
+				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Dbins -> TemplateP -> Fill(mass,m);
+				if(Massa_gen<2&&Massa_gen>1.5) FitAgl_Dbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Dbins -> TemplateHe-> Fill(mass,m);
 			}
 			if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) {
-				if(Massa_gen<1&&Massa_gen>0.5)	FitAgl_Pbins -> TemplateP -> Fill(mass,m);	
-				if(Massa_gen<2&&Massa_gen>1.5)	FitAgl_Pbins -> TemplateD -> Fill(mass,m);
-				if(Massa_gen<4&&Massa_gen>2.5)	FitAgl_Pbins -> TemplateHe-> Fill(mass,m);
+				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Pbins -> TemplateP -> Fill(mass,m);
+				if(Massa_gen<2&&Massa_gen>1.5) FitAgl_Pbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Pbins -> TemplateHe-> Fill(mass,m);
 			}
-
 		}
-
 	}
-}			
+} 
 
 
 void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 	int k = ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float mass = 0;
-	if(!(Likcut&&Distcut)) return;	
-
+	if(!(Likcut&&Distcut)) return;
 	for(int m=0;m<nbinsToF;m++){ //TOF
 		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
-		if(Var>BetaD[m]&&Var<=BetaD[m+1]){ 
-			if(R>1.2*Rcutoff)	FitTOF_Dbins -> Data_Prim -> Fill(mass,m);
+		if(Var>BetaD[m]&&Var<=BetaD[m+1]){
+			if(R>1.2*Rcutoff) FitTOF_Dbins -> Data_Prim -> Fill(mass,m);
 			((TH3*)FitTOF_Dbins -> Data_Geomag) -> Fill(mass,m,zona);
 		}
 		if(Var>BetaP[m]&&Var<=BetaP[m+1]) {
-			if(R>1.2*Rcutoff)	FitTOF_Pbins -> Data_Prim -> Fill(mass,m);
-
+			if(R>1.2*Rcutoff) FitTOF_Pbins -> Data_Prim -> Fill(mass,m);
 		}
 	}
 	for(int m=0;m<nbinsNaF;m++){//NaF
-		
 		if((((int)Cutmask)>>11)==512){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
-				if(R>1.2*Rcutoff)	FitNaF_Dbins -> Data_Prim -> Fill(mass,m);	
+				if(R>1.2*Rcutoff) FitNaF_Dbins -> Data_Prim -> Fill(mass,m);
 				((TH3*)FitNaF_Dbins -> Data_Geomag) -> Fill(mass,m,zona);
 			}
 			if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) {
-				if(R>1.2*Rcutoff)	FitNaF_Pbins -> Data_Prim -> Fill(mass,m);	
+				if(R>1.2*Rcutoff) FitNaF_Pbins -> Data_Prim -> Fill(mass,m);
 			}
-
 		}
-			}
+	}
 	for(int m=0;m<nbinsAgl;m++){ //Agl
 		if((((int)Cutmask)>>11)==0){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
-				if(R>1.2*Rcutoff)	FitAgl_Dbins -> Data_Prim -> Fill(mass,m);	
+				if(R>1.2*Rcutoff) FitAgl_Dbins -> Data_Prim -> Fill(mass,m);
 				((TH3*)FitAgl_Dbins -> Data_Geomag) -> Fill(mass,m,zona);
 			}
 			if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) {
-				if(R>1.2*Rcutoff)	FitAgl_Pbins -> Data_Prim -> Fill(mass,m);	
+				if(R>1.2*Rcutoff) FitAgl_Pbins -> Data_Prim -> Fill(mass,m);
 			}
-
 		}
-
 	}
 	return;
-}		
+}
 
 
 void DeutonsMC_Write(){
@@ -167,11 +152,39 @@ void DeutonsTemplFits(){
 	file1 -> Write();
 	file1 -> Close(); 	
 	
-	TCanvas *c30TOF[12][nbinsbeta];
+	TCanvas *c30_TOF[12][nbinsbeta];
 	TCanvas *c30_NaF[12][nbinsbeta];
 	TCanvas *c30_Agl[12][nbinsbeta];
 	
-
+	for(int bin=0; bin <nbinsbeta; bin++){
+		c30_TOF[0][bin] = new TCanvas(("bin:" + to_string(bin)).c_str());
+		c30_TOF[0][bin] -> cd();
+		gPad-> SetLogy();
+		 THStack *Stack=new THStack("","");
+		 TH1F *PMC  = FitTOF_Dbins -> GetResult_P(bin);
+		 TH1F *DMC  = FitTOF_Dbins -> GetResult_D(bin);
+		 TH1F *HeMC = FitTOF_Dbins -> GetResult_He(bin); 
+		 TH1F *Data = FitTOF_Dbins -> GetResult_Data(bin);
+		 /*PMC -> SetFillColor(2); 		
+                 DMC -> SetFillColor(4);
+                 HeMC-> SetFillColor(3);
+ 		 Data->SetMarkerStyle(8);	
+		 Stack->Add(PMC);
+                 Stack->Add(DMC);
+                 Stack->Add(HeMC);
+                 Stack->Draw();
+                 Data->Draw("epsame");*/
+	}
+	
+	cout<<"*** Updating Results file ***"<<endl;
+        nomefile="./Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        f_out->mkdir("Mass Template Fits/TOF/Primaries/Dbins");
+        f_out->cd("Mass Template Fits/TOF/Primaries/Dbins");
+        for(int bin=0; bin <nbinsbeta; bin++)
+		c30_TOF[0][bin]->Write();
+        f_out->Write();
+        f_out->Close();
 
 
 
@@ -665,29 +678,6 @@ void DeutonsTemplFits(TFile * file1){
 			}
 			Stack->Add(PTemplAglW[m][i]);
                         Stack->Add(DTemplAglW[m][i]);
-                        if(He) Stack->Add(HeTemplAglW[m][i]);
-                        DataMassAgl[i][m]->SetMarkerStyle(8);
-                        Stack->Draw();
-                        DataMassAgl[i][m]->Draw("epsame");
-                        Result->SetLineColor(5);
-                        Result->SetLineWidth(2);
-                        Result->Draw("SAME");
-                        float Cov01=fitTAgl[m][i]->GetFitter()->GetCovarianceMatrixElement(0,1);
-                        float Cov02=fitTAgl[m][i]->GetFitter()->GetCovarianceMatrixElement(0,2);
-                        float Cov12=fitTAgl[m][i]->GetFitter()->GetCovarianceMatrixElement(1,2);
-                        float Sigma=pow((pow(e2/w2,2)+pow(e1/w1,2))/2,0.5);
-                        ErrAgl[m][i]= Sigma*DTemplAglW[m][i]->Integral();
-                        DCountsgeoAgl->SetBinContent(m+1,i+1,0,DTemplAglW[m][i]->Integral(0,50));
-			DCountsgeoAgl->SetBinContent(m+1,i+1,1,ErrAgl[m][i]);
-                	if(i==0){
-                                PCountsAgl->SetBinContent(m+1,0,PTemplAglW[m][0]->Integral(0,50));
-                                PCountsAgl->SetBinContent(m+1,1,Err[m][i]);
-                        }
-
-		}
-                else{
-                        DataMassAgl[i][m]->SetMarkerStyle(8);
-                        DataMassAgl[i][m]->Draw("ep");
                         if(i!=0){PTemplAgl[m]->Draw("same");
                         	DTemplAgl[m]->Draw("same");
                         	if(He) HeTemplAgl[m]->Draw("same");
@@ -704,18 +694,19 @@ void DeutonsTemplFits(TFile * file1){
 	cout<<"********** TEMPL: FIT RESULTS ********************"<<endl;
 	cout<<"**** TOF ********"<<endl;
 	for(int i=0;i<12;i++){
-		for(int m=0;m<nbinsbeta;m++) cout<<s1[m][i]<<" ";
+		for(int m=0;m<18;m++) cout<<s1[m][i]<<" ";
 		cout<<endl;
 	}
 	cout<<"**** NaF ********"<<endl;
         for(int i=0;i<12;i++){
-                for(int m=0;m<nbinsbeta;m++) cout<<s1NaF[m][i]<<" ";
+                for(int m=0;m<18;m++) cout<<s1NaF[m][i]<<" ";
                 cout<<endl;
         }
 	cout<<"**** Agl ********"<<endl;
         for(int i=0;i<12;i++){
-                for(int m=0;m<nbinsbeta;m++) cout<<s1Agl[m][i]<<" ";
+                for(int m=0;m<18;m++) cout<<s1Agl[m][i]<<" ";
                 cout<<endl;
         }
 
-}*/
+}
+*/

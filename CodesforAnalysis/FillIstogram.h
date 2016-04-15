@@ -148,7 +148,7 @@ void FillIstogram(int INDX,string frac,string mese)
                 /*Var=Beta_pre;
                   Var2=BetaRICH;  
                   Var3=Beta_gen;*/
-		if(100*(i/(float)(ntupla0->GetEntries()/fraz))>avanzamento) {cout<<avanzamento<<endl;avanzamento=(int)(100*(i/(float)(ntupla0->GetEntries()/fraz)))+1;}
+		if(100*(i/(float)(ntupla0->GetEntries()/fraz))>avanzamento) {cout<<avanzamento<<endl; avanzamento=(int)(100*(i/(float)(ntupla0->GetEntries()/fraz)))+1;}
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));
 		MCpreseff_Fill(ntupla0,i);
 		MCUnbiaseff_Fill(ntupla0,i);

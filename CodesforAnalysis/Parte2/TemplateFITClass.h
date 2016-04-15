@@ -3,12 +3,12 @@ using namespace std;
 
 class TemplateFIT
 {
-private:
-
+public:
 	TH1 * ResultP;
 	TH1 * ResultD;
 	TH1 * ResultHe;
-public:
+		
+	std::vector<int> fits_outcome;
 
 	// Templates
 	TH1 * TemplateP	;	
@@ -36,9 +36,6 @@ public:
 		Data_Prim   =	new TH2F((basename + "_Data_Prim"  ).c_str(),(basename + "_Data_Prim"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
 		Data_Geomag =	new TH3F((basename + "_Data_Geomag").c_str(),(basename + "_Data_Geomag").c_str(),100,val_min,val_max,Nbins,0,Nbins,n,0,n);		
 		
-		ResultP  =	TemplateP ; 
-	        ResultD  =      TemplateD ; 
-        	ResultHe =      TemplateHe; 
 		
 		PCounts	   =	new TH1F((basename + "_PCounts"  	 ).c_str(),(basename + "_PCounts"   	).c_str(),Nbins,0,Nbins);
 		DCounts	   =	new TH1F((basename + "_DCounts"  	 ).c_str(),(basename + "_DCounts"   	).c_str(),Nbins,0,Nbins);
@@ -61,18 +58,12 @@ public:
 	        Data_Geomag =	(TH1 *)file->Get((basename + "_Data_Geomag"   ).c_str());
 		
 		nbins =  TemplateP -> GetNbinsY();
-		
-		ResultP  =	TemplateP ; 
-	        ResultD  =      TemplateD ; 
-        	ResultHe =      TemplateHe; 	
-	
-		nbins = TemplateP -> GetNbinsY();
-	
+			
 		PCounts	   =	new TH1F((basename + "_PCounts"  	 ).c_str(),(basename + "_PCounts"   	).c_str(),nbins,0,nbins);
 		DCounts	   =	new TH1F((basename + "_DCounts"  	 ).c_str(),(basename + "_DCounts"   	).c_str(),nbins,0,nbins);
         	PCountsgeo = 	new TH2F((basename + "_PCounts_geo"      ).c_str(),(basename + "_PCounts_geo"   ).c_str(),nbins,0,nbins,n,0,n);
         	DCountsgeo = 	new TH2F((basename + "_DCounts_geo"      ).c_str(),(basename + "_DCounts_geo"   ).c_str(),nbins,0,nbins,n,0,n);
-
+		
 	}
 	void Write();
 	
@@ -80,16 +71,18 @@ public:
 
 	TH1F * Extract_Bin_histos_geo(TH1 * Histo, int bin, int lat);
 	
-	TFractionFitter * Do_TemplateFIT(int bin, TH1F * PMC, TH1F *DMC, TH1F *HeMC, TH1F* Data);
+	int Do_TemplateFIT(TH1F * PMC, TH1F *DMC, TH1F *HeMC, TH1F* Data);
 	
 	void TemplateFits();
 	
-	TH1F * GetResult_P (int bin){ return Extract_Bin_histos(ResultP ,bin);	}	
-	TH1F * GetResult_D (int bin){ return Extract_Bin_histos(ResultD ,bin);	}
-	TH1F * GetResult_He(int bin){ return Extract_Bin_histos(ResultHe,bin);	}
+	TH1F * GetResult_P (int bin){ TemplateFIT::Extract_Bin_histos(TemplateP, bin);}	
+	TH1F * GetResult_D (int bin){ TemplateFIT::Extract_Bin_histos(TemplateD, bin);}
+	TH1F * GetResult_He(int bin){ TemplateFIT::Extract_Bin_histos(TemplateHe,bin);}
 
-	TH1F * GetResult_Data(int bin){ return Extract_Bin_histos(Data_Prim,bin);  }
-	TH1F * GetResult_Data(int bin,int lat){ return Extract_Bin_histos_geo(Data_Prim,bin,lat);  }
+	TH1F * GetResult_Data(int bin){TemplateFIT::Extract_Bin_histos(Data_Prim ,bin);}
+	TH1F * GetResult_Data(int bin,int lat){ return TemplateFIT::Extract_Bin_histos_geo(Data_Prim,bin,lat);  }
+
+	int GetFitOutcome(int bin){if(fits_outcome[bin]) return fits_outcome[bin]; else {cout<<"Fit not yet performed: bin nr. "<<bin<<endl; return 0;}}
 };
 
 void TemplateFIT::Write(){
@@ -104,35 +97,41 @@ void TemplateFIT::Write(){
 }
 
 TH1F * TemplateFIT::Extract_Bin_histos(TH1 * Histo, int bin){
-	return (TH1F *)((TH2*)Histo) -> ProjectionX ("",bin+1,bin+1);	
+	TH1F * Slice =(TH1F*)((TH2F*)Histo) -> ProjectionX ("",bin+1,bin+1) -> Clone();
+	return Slice;	
 	    
 }
 
 TH1F * TemplateFIT::Extract_Bin_histos_geo(TH1 * Histo, int bin, int lat){
-        return (TH1F *)((TH3*)Histo) -> ProjectionX ("",bin+1,bin+1,lat+1,lat+1) -> Clone();
-
+        TH1F * Slice = (TH1F *)((TH3F*)Histo) -> ProjectionX ("",bin+1,bin+1,lat+1,lat+1) -> Clone();
+        return Slice;
 }
 
-TFractionFitter * TemplateFIT::Do_TemplateFIT(int bin, TH1F * PMC, TH1F *DMC, TH1F *HeMC, TH1F* Data){
+int TemplateFIT::Do_TemplateFIT(TH1F * PMC, TH1F *DMC, TH1F *HeMC, TH1F* Data){
 	TObjArray *Tpl;
 	Tpl = new TObjArray(3);
 	Tpl -> Add(PMC);
 	Tpl -> Add(DMC);
 	Tpl -> Add(HeMC);
 	TFractionFitter * fit = new TFractionFitter(Data,Tpl,"q");
-	return fit;
+	return 0;
 }
 
 
 
 void TemplateFIT::TemplateFits(){
+	
+	ResultP   = (TH2F*) TemplateP -> Clone();
+	ResultD   = (TH2F*) TemplateD -> Clone();
+	ResultHe  = (TH2F*) TemplateHe -> Clone(); 
+	
 	for(int bin=0; bin<nbins ; bin++){
 		TH1F * Templ_P =  TemplateFIT::Extract_Bin_histos(TemplateP, bin);	
 		TH1F * Templ_D =  TemplateFIT::Extract_Bin_histos(TemplateD, bin);	
 		TH1F * Templ_He=  TemplateFIT::Extract_Bin_histos(TemplateHe,bin);
-		TH1F * Data    =  TemplateFIT::Extract_Bin_histos(TemplateHe,bin);
+		TH1F * Data    =  TemplateFIT::Extract_Bin_histos(Data_Prim ,bin);
 		
-		TFractionFitter * fit = TemplateFIT::Do_TemplateFIT(bin, Templ_P, Templ_D, Templ_He, Data);
+		fits_outcome.push_back (TemplateFIT::Do_TemplateFIT(Templ_P, Templ_D, Templ_He, Data));
 
 		Templ_P ->Scale(1);
 		Templ_D ->Scale(1);
