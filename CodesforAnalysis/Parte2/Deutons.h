@@ -165,7 +165,7 @@ void DeutonsTemplFits(){
 		 TH1F *DMC  = FitTOF_Dbins -> GetResult_D(bin);
 		 TH1F *HeMC = FitTOF_Dbins -> GetResult_He(bin); 
 		 TH1F *Data = FitTOF_Dbins -> GetResult_Data(bin);
-		 /*PMC -> SetFillColor(2); 		
+		 PMC -> SetFillColor(2); 		
                  DMC -> SetFillColor(4);
                  HeMC-> SetFillColor(3);
  		 Data->SetMarkerStyle(8);	
@@ -173,7 +173,7 @@ void DeutonsTemplFits(){
                  Stack->Add(DMC);
                  Stack->Add(HeMC);
                  Stack->Draw();
-                 Data->Draw("epsame");*/
+                 Data->Draw("epsame");
 	}
 	
 	cout<<"*** Updating Results file ***"<<endl;

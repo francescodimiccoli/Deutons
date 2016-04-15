@@ -96,10 +96,12 @@ void TemplateFIT::Write(){
 	return;
 }
 
+
 TH1F * TemplateFIT::Extract_Bin_histos(TH1 * Histo, int bin){
-	TH1F * Slice =(TH1F*)((TH2F*)Histo) -> ProjectionX ("",bin+1,bin+1) -> Clone();
-	return Slice;	
-	    
+	TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),0,Histo->GetXaxis()->GetBinLowEdge(101));
+	for(int i = 0; i< Histo->GetNbinsX();i++)
+		Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1));
+	return Slice;
 }
 
 TH1F * TemplateFIT::Extract_Bin_histos_geo(TH1 * Histo, int bin, int lat){
@@ -126,10 +128,10 @@ void TemplateFIT::TemplateFits(){
 	ResultHe  = (TH2F*) TemplateHe -> Clone(); 
 	
 	for(int bin=0; bin<nbins ; bin++){
-		TH1F * Templ_P =  TemplateFIT::Extract_Bin_histos(TemplateP, bin);	
-		TH1F * Templ_D =  TemplateFIT::Extract_Bin_histos(TemplateD, bin);	
-		TH1F * Templ_He=  TemplateFIT::Extract_Bin_histos(TemplateHe,bin);
-		TH1F * Data    =  TemplateFIT::Extract_Bin_histos(Data_Prim ,bin);
+		TH1F * Templ_P =  (TH1F *)TemplateFIT::Extract_Bin_histos(TemplateP, bin);	
+		TH1F * Templ_D =  (TH1F *)TemplateFIT::Extract_Bin_histos(TemplateD, bin);	
+		TH1F * Templ_He=  (TH1F *)TemplateFIT::Extract_Bin_histos(TemplateHe,bin);
+		TH1F * Data    =  (TH1F *)TemplateFIT::Extract_Bin_histos(Data_Prim ,bin);
 		
 		fits_outcome.push_back (TemplateFIT::Do_TemplateFIT(Templ_P, Templ_D, Templ_He, Data));
 
