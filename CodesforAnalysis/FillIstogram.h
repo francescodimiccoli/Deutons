@@ -186,7 +186,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		//DVSMCQualeff2_Fill(ntupla1,i);	
 		DeutonsMC_Fill(ntupla1,i);
 		/*DeutonsMC_Dist_Fill(ntupla1,i);*/
-		//MCMC_Fill(ntupla1,i);
+		MCMC_Fill(ntupla1,i);
         }
 	}
 	cout<<endl<<"*********************** DATA READING *********************"<<endl;
@@ -270,7 +270,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		//DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		DeutonsDATA_Fill(ntupla3,i,Zona);
 		//DeutonsDATA_Dist_Fill(ntupla3,i,Zona);
-		//MCMCDATA_Fill(ntupla3,i);
+		MCMCDATA_Fill(ntupla3,i);
 		}
         }
 	
@@ -290,7 +290,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		DVSMCpreSeleff_Write();
 		DVSMCQualeff2_Write();
 		DVSMCTrackeff_Write();*/
-		//MCMC_Write();
+		MCMC_Write();
 		MCpreeff_Write();
 		//MCpreCheck_Write();
 		MC_do_preSeleff_Write();
