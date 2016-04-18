@@ -26,7 +26,7 @@
 #include "Parte2/Acceptance.h"
 #include "Parte2/ProtonFlux.h"
 #include "Parte2/Deutons.h"
-//#include "Parte2/MCMC.h"
+#include "Parte2/MCMC.h"
 #include "FillIstogram.h"
 
 /*#include "Parte2/DVSMCpreSeleff.h"
