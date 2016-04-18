@@ -29,7 +29,8 @@ void FillIstogram(int INDX,string frac,string mese)
 
 	string nomecal=inputpath + "/CodesforAnalysis/CALIBRAZIONI/"+mese+".root";
         TFile *calib = TFile::Open(nomecal.c_str());
-        cout<<"calibrazione: "<<calib<<endl;	
+        if(calib) cout<<"MC calibration for month "<<mese<<" ... ok"<<endl;
+	else cout<<"ERROR: MC calibration not found"<<endl;
 	Rig = (TSpline3 *) calib->Get("Fit Results/Splines/Rig");
         beta = (TSpline3 *) calib->Get("Fit Results/Splines/beta");
         betaNaF = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaNaF_spl");
@@ -46,7 +47,6 @@ void FillIstogram(int INDX,string frac,string mese)
         Corr_TOFU =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFU");
         Corr_Track =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_Track");
         Corr_TOFD =  (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFD");
-        cout<<Rig<<" "<<beta<<" "<<" "<<betaNaF<<" "<<betaAgl<<" "<<eL1<<" "<<etofu<<" "<<etrack<<" "<<etofd<<" "<<EdepL1beta<<" "<<EdepTOFbeta<<" "<<EdepTrackbeta<<" "<<EdepTOFDbeta<<" "<<Corr_L1<<" "<<Corr_TOFU<<" "<<Corr_Track<<" "<<Corr_TOFD<<endl;
 	cout<<"******************************"<<endl;
 
 	string nomefile=outputpath + "/Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
