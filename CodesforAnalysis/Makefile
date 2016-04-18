@@ -8,12 +8,12 @@ exesev = QualityLKLHOOD_Agl.exe
 exequad = Preliminar.exe
 exequint = TimeAnalysis.exe
 #file to compile
-CCdue = Analysis.C
-CCtre = QualityLKLHOOD.C
-CCsex = QualityLKLHOOD_NaF.C
-CCsev = QualityLKLHOOD_Agl.C
-CCquad = Preliminar.C
-CCquint = TimeAnalysis.C
+CCdue = Analysis.cpp
+CCtre = QualityLKLHOOD.cpp
+CCsex = QualityLKLHOOD_NaF.cpp
+CCsev = QualityLKLHOOD_Agl.cpp
+CCquad = Preliminar.cpp
+CCquint = TimeAnalysis.cpp
 
 #root libs
 rootlibs=`root-config --libs --cflags` 
