@@ -1,26 +1,34 @@
-#define compiler
-Compiler = g++ -std=c++11
-#exe
-exedue = Analysis
-exetre = QualityLKLHOOD.exe
-exesex = QualityLKLHOOD_NaF.exe
-exesev = QualityLKLHOOD_Agl.exe
-exequad = Preliminar.exe
-exequint = TimeAnalysis.exe
-#file to compile
-CCdue = Analysis.cpp
-CCtre = QualityLKLHOOD.cpp
-CCsex = QualityLKLHOOD_NaF.cpp
-CCsev = QualityLKLHOOD_Agl.cpp
-CCquad = Preliminar.cpp
-CCquint = TimeAnalysis.cpp
+#Compiler options
+Compiler = g++  
+FLAGS	:=-std=c++11  -Wfatal-errors
 
-#root libs
-rootlibs=`root-config --libs --cflags` 
-all:
-	$(Compiler) -o $(exedue) $(CCdue) $(rootlibs) -lTMVA 
-	$(Compiler) -o $(exetre) $(CCtre) $(rootlibs) -lTMVA
-	$(Compiler) -o $(exesex) $(CCsex) $(rootlibs) -lTMVA
-	$(Compiler) -o $(exesev) $(CCsev) $(rootlibs) -lTMVA
-	$(Compiler) -o $(exequad) $(CCquad) $(rootlibs) -lTMVA
-	$(Compiler) -o $(exequint) $(CCquint) $(rootlibs) -lTMVA
+# Source files
+EXEC	= Analysis QualityLKLHOOD QualityLKLHOOD_NaF QualityLKLHOOD_Agl Preliminar TimeAnalysis
+CLASS = TemplateFITClass
+BIN = $(EXEC:%=%.exe)
+
+# Libs
+rootlibs=`root-config --libs --cflags`
+
+
+#$?  List of dependencies changed more recently than current target.
+#$^  List of dependencies.
+#$@  Name of current target.
+#$<  Name of current dependency.
+#$*  Name of current dependency without extension.
+
+
+all: $(CLASS) $(BIN) 
+
+
+$(BIN): $(EXEC)
+	$(Compiler) $(FLAGS) -o $@  $(<:%=obj/%.o)  $(CLASS:%=obj/%.o) $(rootlibs) -lTMVA
+
+$(EXEC):
+	$(Compiler) $(FLAGS) -o obj/$@.o -c $@.cpp  $(rootlibs) -lTMVA
+
+$(CLASS):
+	$(Compiler) $(FLAGS) -o obj/$@.o -c Parte2/$@.cpp  $(rootlibs) -lTMVA
+
+clean:
+	rm -rf obj/*.o

@@ -156,9 +156,23 @@ void DeutonsTemplFits(){
 	TCanvas *c30_NaF[12][nbinsNaF];
 	TCanvas *c30_Agl[12][nbinsAgl];
 	
+<<<<<<< HEAD:CodesforAnalysis/Parte2/DeutonsCountsExtraction.cpp
 	for(int bin=0; bin <nbinsToF; bin++){
 		c30_TOF[0][bin] = new TCanvas(("TOF bin:" + to_string(bin)).c_str());
 		FitTOF_Dbins -> TemplateFitPlot(c30_TOF[0][bin],"Mass [GeV/C^2]",bin);
+=======
+	for(int bin=0; bin <nbinsbeta; bin++){
+		c30_TOF[0][bin] = new TCanvas(("TOF bin:" + to_string(bin)).c_str());
+		FitTOF_Dbins -> TemplateFitPlot(c30_TOF[0][bin],"Mass [GeV/C^2]",bin);
+	}
+	for(int bin=0; bin <nbinsbeta; bin++){
+		c30_NaF[0][bin] = new TCanvas(("NaF bin:" + to_string(bin)).c_str());
+		FitNaF_Dbins -> TemplateFitPlot(c30_NaF[0][bin],"Mass [GeV/C^2]",bin);
+	}
+	for(int bin=0; bin <nbinsbeta; bin++){
+		c30_Agl[0][bin] = new TCanvas(("Agl bin:" + to_string(bin)).c_str());
+		FitAgl_Dbins -> TemplateFitPlot(c30_Agl[0][bin],"Mass [GeV/C^2]",bin);
+>>>>>>> 05f5d16ff4bfc3b80bd21c43977e43cd23e0eefb:CodesforAnalysis/Parte2/DeutonsCountsExtraction.cpp
 	}
 	for(int bin=0; bin <nbinsNaF; bin++){
 		c30_NaF[0][bin] = new TCanvas(("NaF bin:" + to_string(bin)).c_str());
