@@ -92,6 +92,7 @@ public:
 	
 	void TemplateFits();
 	
+	void TemplateFitPlot(TCanvas * c, std::string var_name,int bin);
 };
 
 void TemplateFIT::Write(){
@@ -170,4 +171,32 @@ void TemplateFIT::TemplateFits(){
 }
 
 
+void TemplateFIT::TemplateFitPlot(TCanvas * c, std::string var_name,int bin){
+	c -> cd();
+	gPad-> SetLogy();
+	gPad-> SetGridx();
+	gPad-> SetGridy();
+	THStack *Stack=new THStack("","");
+	TH1F *PMC  = GetResult_P(bin);
+	TH1F *DMC  = GetResult_D(bin);
+	TH1F *HeMC = GetResult_He(bin);
+	TH1F *Data = GetResult_Data(bin);
+	if(fits[bin]->Tfit_outcome==0) TH1F * Result = (TH1F*)fits[bin] -> Tfit -> GetPlot();	
+	PMC -> SetFillColor(2);
+	DMC -> SetFillColor(4);
+	HeMC-> SetFillColor(3);
+	Data->SetMarkerStyle(8);
+	if(fits[bin]->Tfit_outcome!=0){
+		PMC -> SetFillStyle(3001);
+        	DMC -> SetFillStyle(3001);
+        	HeMC-> SetFillStyle(3001);
+	}
+	Stack->Add(PMC);
+	Stack->Add(DMC);
+	Stack->Add(HeMC);
+	Stack->Draw();
+	Stack-> GetXaxis()->SetTitle(var_name.c_str());
+	Stack-> GetYaxis()->SetTitle("Counts");
+	Data->Draw("epsame");
 
+}
