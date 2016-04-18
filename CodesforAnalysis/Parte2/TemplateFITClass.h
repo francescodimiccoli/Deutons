@@ -3,13 +3,16 @@ using namespace std;
 
 class TemplateFIT
 {
-public:
+
+private:
 	TH1 * ResultP;
 	TH1 * ResultD;
 	TH1 * ResultHe;
 		
 	std::vector<int> fits_outcome;
+	std::vector<TFractionFitter *> fits;
 
+public:
 	// Templates
 	TH1 * TemplateP	;	
 	TH1 * TemplateD	;
@@ -71,15 +74,15 @@ public:
 
 	TH1F * Extract_Bin_histos_geo(TH1 * Histo, int bin, int lat);
 	
-	int Do_TemplateFIT(TH1F * PMC, TH1F *DMC, TH1F *HeMC, TH1F* Data);
+	void Do_TemplateFIT(TH1F * PMC, TH1F *DMC, TH1F *HeMC, TH1F* Data);
 	
 	void TemplateFits();
 	
-	TH1F * GetResult_P (int bin){ return TemplateFIT::Extract_Bin_histos(TemplateP, bin);}	
-	TH1F * GetResult_D (int bin){ return TemplateFIT::Extract_Bin_histos(TemplateD, bin);}
-	TH1F * GetResult_He(int bin){ return TemplateFIT::Extract_Bin_histos(TemplateHe,bin);}
+	TH1F * GetResult_P (int bin){ return TemplateFIT::Extract_Bin_histos(ResultP, bin); }	
+	TH1F * GetResult_D (int bin){ return TemplateFIT::Extract_Bin_histos(ResultD, bin); }
+	TH1F * GetResult_He(int bin){ return TemplateFIT::Extract_Bin_histos(ResultHe,bin); }
 
-	TH1F * GetResult_Data(int bin){return TemplateFIT::Extract_Bin_histos(Data_Prim ,bin);}
+	TH1F * GetResult_Data(int bin)	      { return TemplateFIT::Extract_Bin_histos(Data_Prim ,bin); }
 	TH1F * GetResult_Data(int bin,int lat){ return TemplateFIT::Extract_Bin_histos_geo(Data_Prim,bin,lat);  }
 
 	int GetFitOutcome(int bin){if(fits_outcome[bin]) return fits_outcome[bin]; else {cout<<"Fit not yet performed: bin nr. "<<bin<<endl; return 0;}}
@@ -109,14 +112,19 @@ TH1F * TemplateFIT::Extract_Bin_histos_geo(TH1 * Histo, int bin, int lat){
         return Slice;
 }
 
-int TemplateFIT::Do_TemplateFIT(TH1F * PMC, TH1F *DMC, TH1F *HeMC, TH1F* Data){
+void TemplateFIT::Do_TemplateFIT(TH1F * PMC, TH1F *DMC, TH1F *HeMC, TH1F* Data){
 	TObjArray *Tpl;
 	Tpl = new TObjArray(3);
 	Tpl -> Add(PMC);
 	Tpl -> Add(DMC);
 	Tpl -> Add(HeMC);
+	
 	TFractionFitter * fit = new TFractionFitter(Data,Tpl,"q");
-	return 0;
+	int outcome = 0;//fit -> Fit();
+	fits_outcome.push_back (outcome);
+	fits.push_back(fit);
+	
+	return;
 }
 
 
@@ -133,7 +141,7 @@ void TemplateFIT::TemplateFits(){
 		TH1F * Templ_He=  (TH1F *)TemplateFIT::Extract_Bin_histos(TemplateHe,bin);
 		TH1F * Data    =  (TH1F *)TemplateFIT::Extract_Bin_histos(Data_Prim ,bin);
 		
-		fits_outcome.push_back (TemplateFIT::Do_TemplateFIT(Templ_P, Templ_D, Templ_He, Data));
+		TemplateFIT::Do_TemplateFIT(Templ_P, Templ_D, Templ_He, Data);
 
 		Templ_P ->Scale(1);
 		Templ_D ->Scale(1);
