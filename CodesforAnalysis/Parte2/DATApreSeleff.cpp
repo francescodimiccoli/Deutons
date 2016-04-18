@@ -10,7 +10,7 @@ void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
 	if(!(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.1&&EdepL1>EdepL1beta->Eval(Beta)-0.1)) return;
 	if(R_pre <= Rcut[zona]) return;
 	for(int S=0;S<3;S++){
-		int Kbin=GetArrayBin(fabs(R_pre), bin, nbinsr);
+		int Kbin=GetRBin(fabs(R_pre));
 		if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3 *)LATpreSelDATA->beforeR)->Fill(Kbin,zona,S);
 		if(((int)Cutmask&   passed[S])==   passed[S]) ((TH3 *)LATpreSelDATA->afterR )->Fill(Kbin,zona,S);
 	}	

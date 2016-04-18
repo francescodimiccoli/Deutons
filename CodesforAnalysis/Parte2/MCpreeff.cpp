@@ -11,8 +11,8 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
 
    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
-      EffpreselMCP->beforeR->Fill(GetArrayBin(fabs(Momento_gen), bin, nbinsr));
-      if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0) EffpreselMCP->afterR->Fill(GetArrayBin(fabs(R_pre), bin, nbinsr));
+      EffpreselMCP->beforeR->Fill(GetRBin(fabs(Momento_gen)));
+      if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0) EffpreselMCP->afterR->Fill(GetRBin(fabs(R_pre)));
          
       // Beta bins
       EffpreselMCP->beforeTOF->Fill( GetArrayBin(Var3, BetaP,     nbinsToF) );
@@ -30,9 +30,9 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
 
    if(Massa_gen>1&&Massa_gen<2) {
       // R bins      
-      FillBinMGen(EffpreselMCD->beforeR, GetArrayBin(fabs(Momento_gen), bin, nbinsr));
+      FillBinMGen(EffpreselMCD->beforeR, GetRBin(fabs(Momento_gen)));
       if(((int)Cutmask&187)==187&&Beta_pre>0&&Unbias==0&&R_pre>0)
-         FillBinMGen(EffpreselMCD->afterR, GetArrayBin(fabs(R_pre), bin, nbinsr));
+         FillBinMGen(EffpreselMCD->afterR, GetRBin(fabs(R_pre)));
 
       // Beta bins
 

@@ -17,7 +17,7 @@ public:
         std::string nT = "MCMCData" + suffix;
 
         MCMCPTemplates  = new TH3D(nP.c_str(), nP.c_str(), nBm, minBm, maxBm, nRm, minRm, maxRm, nRt, minRt, maxRt);
-        MCMCPTemplates  = new TH3D(nD.c_str(), nD.c_str(), nBm, minBm, maxBm, nRm, minRm, maxRm, nRt, minRt, maxRt);
+        MCMCDTemplates  = new TH3D(nD.c_str(), nD.c_str(), nBm, minBm, maxBm, nRm, minRm, maxRm, nRt, minRt, maxRt);
         MCMCHeTemplates = new TH3D(nH.c_str(), nH.c_str(), nBm, minBm, maxBm, nRm, minRm, maxRm, nRt, minRt, maxRt);
         MCMCData        = new TH2D(nT.c_str(), nT.c_str(), nBm, minBm, maxBm, nRm, minRm, maxRm );
     }
@@ -33,7 +33,7 @@ public:
     void Write()
     {
         MCMCPTemplates->Write();
-        MCMCPTemplates->Write(); 
+        MCMCDTemplates->Write(); 
         MCMCHeTemplates->Write();
         MCMCData->Write();
     }

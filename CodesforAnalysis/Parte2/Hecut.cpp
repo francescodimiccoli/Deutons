@@ -10,7 +10,7 @@ void HecutMC_Fill(TNtuple *ntupla,int l) {
    int k = ntupla->GetEvent(l);
    if(Beta<=0||R<=0) return;
    float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
-   int Kbin=GetArrayBin(Momento_gen, bin, nbinsr);
+   int Kbin=GetRBin(Momento_gen);
 
    if(Massa_gen<1) {
       HecutMC_P->Fill( fabs(EdepTOFbeta  ->Eval(Beta)-EdepTOFud) / (pow(EdepTOFbeta  ->Eval(Beta),2)*etofu ->Eval(Beta)) ,

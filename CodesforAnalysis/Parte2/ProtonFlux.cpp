@@ -11,7 +11,7 @@ Flux * P_Flux_sel = new Flux("P_Flux_sel" );
 void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona) {
    int k = ntupla->GetEvent(l);
    if(Beta<=0||R<=0) return;
-   int Kbin=GetArrayBin(R, bin, nbinsr);
+   int Kbin=GetRBin(R);
 
    if(Dist5D_P<6 && Likcut) {
       P_Flux_geo-> Counts_R -> Fill(Kbin,zona);

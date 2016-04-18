@@ -1,41 +1,40 @@
-#include "Functions_auto.h"
+#include "Functions_auto.cpp"
 
 
-#include "Parte2/Definitions.h"
-#include "Parte2/FitError.h"
-#include "Parte2/EfficiencyClass.h"
-#include "Parte2/LATcorrClass.h"
-#include "Parte2/ACCEPTANCEClass.h"
-#include "Parte2/FluxClass.h"
-#include "Parte2/TemplateFITClass.h"
-#include "Parte2/MCpreeff.h"
-#include "Parte2/MCUnbiaseff.h"
-#include "Parte2/Hecut.h"
-#include "Parte2/SlidesforPlot.h"
-#include "Parte2/MCQualeff.h"
-#include "Parte2/Cuts.h"
-#include "Parte2/MCTrackeff.h"
-#include "Parte2/MC_do_preSeleff.h"
-#include "Parte2/MigrationMatrix.h"
-#include "Parte2/MCFullSeteff.h"
-#include "Parte2/DATAUnbiaseff.h"
-#include "Parte2/CorrelazionePreselezioni.h"
-#include "Parte2/DATApreSeleff.h"
-#include "Parte2/DATAQualeff.h"
-#include "Parte2/CorrLAT.h"
-#include "Parte2/Acceptance.h"
-#include "Parte2/ProtonFlux.h"
-#include "Parte2/Deutons.h"
-//#include "Parte2/MCMC.h"
-#include "FillIstogram.h"
+#include "Parte2/Definitions.cpp"
+#include "Parte2/FitError.cpp"
+#include "Parte2/EfficiencyClass.cpp"
+#include "Parte2/LATcorrClass.cpp"
+#include "Parte2/ACCEPTANCEClass.cpp"
+#include "Parte2/FluxClass.cpp"
+#include "Parte2/TemplateFITClass.cpp"
+#include "Parte2/MCpreeff.cpp"
+#include "Parte2/MCUnbiaseff.cpp"
+#include "Parte2/Hecut.cpp"
+#include "Parte2/SlidesforPlot.cpp"
+#include "Parte2/MCQualeff.cpp"
+#include "Parte2/Cuts.cpp"
+#include "Parte2/MCTrackeff.cpp"
+#include "Parte2/MC_do_preSeleff.cpp"
+#include "Parte2/MigrationMatrix.cpp"
+#include "Parte2/MCFullSeteff.cpp"
+#include "Parte2/DATAUnbiaseff.cpp"
+#include "Parte2/CorrelazionePreselezioni.cpp"
+#include "Parte2/DATApreSeleff.cpp"
+#include "Parte2/DATAQualeff.cpp"
+#include "Parte2/CorrLAT.cpp"
+#include "Parte2/Acceptance.cpp"
+#include "Parte2/ProtonFlux.cpp"
+#include "Parte2/DeutonsCountsExtraction.cpp"
+#include "Parte2/MCMC.cpp"
+#include "FillIstogram.cpp"
 
-/*#include "Parte2/DVSMCpreSeleff.h"
-#include "Parte2/DVSMCQualeff2.h"
-#include "Parte2/DVSMCTrackeff.h"
-#include "Parte2/Deutons.h"
-#include "Parte2/DeutonsDist.h"
-#include "Parte2/DeutonsFlux.h"
-#include "Parte2/DeutonsFlux_Dist.h"*/
+/*#include "Parte2/DVSMCpreSeleff.cpp"
+#include "Parte2/DVSMCQualeff2.cpp"
+#include "Parte2/DVSMCTrackeff.cpp"
+#include "Parte2/DeutonsDist.cpp"
+#include "Parte2/DeutonsFlux.cpp"
+#include "Parte2/DeutonsFlux_Dist.cpp"*/
 
 using namespace std;
 
@@ -98,14 +97,15 @@ int main(int argc, char * argv[])
 	{
 		float temp=i+14;
 		bin[i]=0.1*pow(10,temp/(9.5*2));
+		Rbins[i]=bin[i];
 		if(i<nbinsr) {R_cent[i]=0.1*pow(10,(temp+0.5)/(9.5*2));
 			encindeut[i]=pow(((1+pow((R_cent[i]/1.875),2))),0.5)-1;
 			encinprot[i]=pow(((1+pow((R_cent[i]/0.938),2))),0.5)-1;
 		}
 	}
-	for(int i=0;i<nbinsr;i++) {
-		deltaencinprot[i]=(pow(((1+pow((bin[i+1]/0.938),2))),0.5)-1)-(pow(((1+pow((bin[i]/0.938),2))),0.5)-1);
-		deltaencindeut[i]=(pow(((1+pow((bin[i+1]/1.875),2))),0.5)-1)-(pow(((1+pow((bin[i]/1.875),2))),0.5)-1);
+	for(int i=0;i<Rbins.size();i++) {
+		deltaencinprot[i]=(pow(((1+pow((Rbins[i+1]/0.938),2))),0.5)-1)-(pow(((1+pow((Rbins[i]/0.938),2))),0.5)-1);
+		deltaencindeut[i]=(pow(((1+pow((Rbins[i+1]/1.875),2))),0.5)-1)-(pow(((1+pow((Rbins[i]/1.875),2))),0.5)-1);
 	}
 
 	cout<<"**************************** BETA BINS TOF***********************************"<<endl;

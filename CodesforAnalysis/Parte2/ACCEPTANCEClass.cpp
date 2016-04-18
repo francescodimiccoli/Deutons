@@ -113,7 +113,7 @@ void ACCEPTANCE::Set_Binning(bool deutons){
 	int nbins_R    =   after_R   -> GetNbinsX() + 1;
 	int nbins_beta =   after_TOF -> GetNbinsX() + 1; //TOF,NaF,Agl: same number of bins
 
-	for(int i=0;i<nbins_R; i++)   binsR[i] = bin[i];
+	for(int i=0;i<nbins_R; i++)   binsR[i] = Rbins[i];
 
 	if (deutons) {
 

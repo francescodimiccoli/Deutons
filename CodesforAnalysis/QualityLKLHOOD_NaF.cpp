@@ -27,7 +27,7 @@
 #include "TF2.h"
 #include <math.h>
 #include <cstring>
-#include "Functions_auto.h"
+#include "Functions_auto.cpp"
 #include <TMVA/Factory.h>
 #include <TMVA/Reader.h>
 #include <TMVA/Tools.h>
@@ -96,6 +96,8 @@ float IsCharge1=0;
 float Rcutoff=0;
 float MassLimit=0.5;
 float Cutmask=0;
+float Richtotused=0;
+float RichPhEl=0;
 TMVA::Reader *reader;
 
 void BDTreader();
@@ -128,13 +130,13 @@ int main()
 
 	TFile *file1 =TFile::Open("../Risultati/2012_01/RisultatiMC.root");
 	TFile *file2 =TFile::Open("../Risultati/2012_01/RisultatiDATI.root");
-	TNtuple *ntupla1=(TNtuple*)file1->Get("grandezzequal");
-	TNtuple *ntupla2=(TNtuple*)file2->Get("grandezzequal");
+	TNtuple *ntupla1=(TNtuple*)file1->Get("grandezzequalRICH");
+	TNtuple *ntupla2=(TNtuple*)file2->Get("grandezzequalRICH");
 	//grandezzequal
 
 	ntupla1->SetBranchAddress("NAnticluster",&NAnticluster);
 	ntupla1->SetBranchAddress("NTRDSegments",&NTRDSegments);
-	ntupla1->SetBranchAddress("Beta",&Beta);
+	ntupla1->SetBranchAddress("BetaRICH_new",&Beta);
 	ntupla1->SetBranchAddress("R",&R);
 	ntupla1->SetBranchAddress("Massa_gen",&Massagen);
 	ntupla1->SetBranchAddress("ClusterTOFusati",&ClusterTOFusati);
@@ -149,18 +151,19 @@ int main()
 	ntupla1->SetBranchAddress("fuoriX",&fuoriX);
 	ntupla1->SetBranchAddress("fuoriY",&fuoriY);
 	ntupla1->SetBranchAddress("Chisquare",&Chisquare);
-	ntupla1->SetBranchAddress("EdepTOFU",&EdepTOFU);	
-	ntupla1->SetBranchAddress("EdepTOFD",&EdepTOFD);
+	ntupla1->SetBranchAddress("Richtotused",&Richtotused);	
+	ntupla1->SetBranchAddress("RichPhEl",&RichPhEl);
 	ntupla1->SetBranchAddress("DistD",&DistD);
 	ntupla1->SetBranchAddress("EdepL1",&EdepL1);
 	ntupla1->SetBranchAddress("Track_Up_Down",&Track_Up_Down);
 	ntupla1->SetBranchAddress("DiffTrackEdep",&DiffTrackEdep);
 	ntupla1->SetBranchAddress("Momentogen",&Momentogen);
+	ntupla1->SetBranchAddress("LDiscriminant",&LDiscriminant);
 	ntupla1->SetBranchAddress("BDT_response",&BDTresponse);
 
 	ntupla2->SetBranchAddress("NAnticluster",&NAnticluster);
 	ntupla2->SetBranchAddress("NTRDSegments",&NTRDSegments);
-	ntupla2->SetBranchAddress("Beta",&Beta);
+	ntupla2->SetBranchAddress("BetaRICH_new",&Beta);
 	ntupla2->SetBranchAddress("R",&R);
 	ntupla2->SetBranchAddress("Rcutoff",&Rcutoff);
 	ntupla2->SetBranchAddress("Cutmask",&Cutmask);
@@ -175,12 +178,13 @@ int main()
 	ntupla2->SetBranchAddress("fuoriX",&fuoriX);
 	ntupla2->SetBranchAddress("fuoriY",&fuoriY);
 	ntupla2->SetBranchAddress("Chisquare",&Chisquare);
-	ntupla2->SetBranchAddress("EdepTOFU",&EdepTOFU);  
-	ntupla2->SetBranchAddress("EdepTOFD",&EdepTOFD);
+	ntupla2->SetBranchAddress("Richtotused",&Richtotused);  
+	ntupla2->SetBranchAddress("RichPhEl",&RichPhEl);
 	ntupla2->SetBranchAddress("DistD",&DistD);
 	ntupla2->SetBranchAddress("EdepL1",&EdepL1);
 	ntupla2->SetBranchAddress("Track_Up_Down",&Track_Up_Down);
 	ntupla2->SetBranchAddress("DiffTrackEdep",&DiffTrackEdep);
+	ntupla2->SetBranchAddress("LDiscriminant",&LDiscriminant);
 	ntupla2->SetBranchAddress("BDT_response",&BDTresponse);
 
 
@@ -209,8 +213,8 @@ int main()
 	TH1F *grafico3[9];
 	TH1F *RisoluzioniBeta[30];
 	TH1F *RisoluzioniR[24];
-	TH2F *RvsRgen_bad =new TH2F("","",500,0,5,500,0,5);
-	TH2F *RvsRgen_sigma =new TH2F("","",500,0,5,500,0,5);
+	TH2F *RvsRgen_bad =new TH2F("","",500,0,5,500,0,10.5);
+	TH2F *RvsRgen_sigma =new TH2F("","",500,0,5,500,0,10.5);
 	TH2F *sigmagen_bad =new TH2F("","",500,0,30,500,0,30);
 	for(int i=0;i<RvsRgen_sigma->GetNbinsX();i++)
                         for(int j=0;j<RvsRgen_sigma->GetNbinsY();j++){
@@ -243,9 +247,13 @@ int main()
 	TH1F *R_bad_2[18];
 	for(int n=0;n<18;n++)  R_bad_2[n]=new TH1F("","",200,-3,3);
 	TH1F *Mass[18];
-        for(int n=0;n<18;n++)  Mass[n]=new TH1F("","",50,0,1);
+        for(int n=0;n<18;n++)  Mass[n]=new TH1F("","",100,0,3);
 	TH1F *MassQ[18];
-        for(int n=0;n<18;n++)  MassQ[n]=new TH1F("","",50,0,1);
+        for(int n=0;n<18;n++)  MassQ[n]=new TH1F("","",100,0,3);
+	TH1F *MassD[18];
+        for(int n=0;n<18;n++)  MassD[n]=new TH1F("","",100,0,3);
+        TH1F *MassQD[18];
+        for(int n=0;n<18;n++)  MassQD[n]=new TH1F("","",100,0,3);
 	TH1F *RisoluzioniTOFU[18];
 	for(int n=0;n<18;n++) RisoluzioniTOFU[n]=new TH1F("","",150,0,1);
 	TH1F *RisoluzioniTOFU_bad[18];
@@ -265,67 +273,68 @@ int main()
         TH2F * h2_bad=new TH2F("","",1000,0,1,1000,0,1);
         TH2F * h3_bad=new TH2F("","",1000,0,1,1000,0,20);
 
-	string Variables[9]={"N. Anti-clusters","Unused TOF Clusters","|Rup-Rdown|:R","Unused Tracker layers","Tracker: Y Hits without X","Track Chi^2","|E.dep(lower TOF) - E.dep(upper TOF)|","|E.dep(layer 2)-E.dep(layer 1)|","|E. dep.(tot)-E.dep.(track)|"};
-	grafico1[0]=new TH1F("Anticl",Variables[0].c_str(),10,0,10);
-	grafico1[1]=new TH1F("Un. TOF",Variables[1].c_str(),20,0,20);
-	grafico1[2]=new TH1F("R Diff.",Variables[2].c_str(),50,0,1);
-	grafico1[3]=new TH1F("Un. layers",Variables[3].c_str(),10,0,10);
-	grafico1[4]=new TH1F("fuori X",Variables[4].c_str(),10,0,10);
-	grafico1[5]=new TH1F("Track Chi^2",Variables[5].c_str(),50,0,25);
-	grafico1[6]=new TH1F("TOF Up-Down",Variables[6].c_str(),200,0,100);
-	grafico1[7]=new TH1F("Track Up-Down",Variables[7].c_str(),300,0,30);	    
-	grafico1[8]=new TH1F("Track Edep: Tot - Track",Variables[8].c_str(),300,0,30);
+	string Variables[9]={"N. Anti-clusters","Unused TOF Clusters","|Rup-Rdown|:R","Unused Tracker layers","Tracker: Y Hits without X","Track Chi^2","RICH Hits: tot - used","Rich Photoelectrons","|E. dep.(tot)-E.dep.(track)|"};
+        grafico1[0]=new TH1F("Anticl",Variables[0].c_str(),10,0,10);
+        grafico1[1]=new TH1F("Un. TOF",Variables[1].c_str(),20,0,20);
+        grafico1[2]=new TH1F("R Diff.",Variables[2].c_str(),50,0,1);
+        grafico1[3]=new TH1F("Un. layers",Variables[3].c_str(),10,0,10);
+        grafico1[4]=new TH1F("fuori X",Variables[4].c_str(),10,0,10);
+        grafico1[5]=new TH1F("Track Chi^2",Variables[5].c_str(),50,0,25);
+        grafico1[6]=new TH1F("RICH Hits: tot - used",Variables[6].c_str(),100,0,30);
+        grafico1[7]=new TH1F("Rich Photoelectrons",Variables[7].c_str(),300,0,30);
+        grafico1[8]=new TH1F("Track Edep: Tot - Track",Variables[8].c_str(),300,0,30);
 
-	grafico2[0]=new TH1F("Anticl-good",Variables[0].c_str(),10,0,10);
-	grafico2[1]=new TH1F("Un. TOF-good",Variables[1].c_str(),20,0,20);
-	grafico2[2]=new TH1F("R Diff.-good",Variables[2].c_str(),50,0,1);
-	grafico2[3]=new TH1F("Un. layers-good",Variables[3].c_str(),10,0,10);
-	grafico2[4]=new TH1F("fuori X-good",Variables[4].c_str(),10,0,10);
-	grafico2[5]=new TH1F("Track Chi^2-good",Variables[5].c_str(),50,0,25);
-	grafico2[6]=new TH1F("TOF Up-Down-good",Variables[6].c_str(),200,0,100);
-	grafico2[7]=new TH1F("Track Up-Down-good",Variables[7].c_str(),300,0,30);
-	grafico2[8]=new TH1F("Track Edep: Tot - Track-good",Variables[8].c_str(),300,0,30);
+        grafico2[0]=new TH1F("Anticl-good",Variables[0].c_str(),10,0,10);
+        grafico2[1]=new TH1F("Un. TOF-good",Variables[1].c_str(),20,0,20);
+        grafico2[2]=new TH1F("R Diff.-good",Variables[2].c_str(),50,0,1);
+        grafico2[3]=new TH1F("Un. layers-good",Variables[3].c_str(),10,0,10);
+        grafico2[4]=new TH1F("fuori X-good",Variables[4].c_str(),10,0,10);
+        grafico2[5]=new TH1F("Track Chi^2-good",Variables[5].c_str(),50,0,25);
+        grafico2[6]=new TH1F("RICH Hits: tot - used-good",Variables[6].c_str(),100,0,30);
+        grafico2[7]=new TH1F("Rich Photoelectrons-good",Variables[7].c_str(),300,0,30);
+        grafico2[8]=new TH1F("Track Edep: Tot - Track-good",Variables[8].c_str(),300,0,30);
 
-	grafico3[0]=new TH1F("Anticl-He",Variables[0].c_str(),10,0,10);
-	grafico3[1]=new TH1F("Un. TOF-He",Variables[1].c_str(),20,0,20);
-	grafico3[2]=new TH1F("R Diff.-He",Variables[2].c_str(),50,0,1);
-	grafico3[3]=new TH1F("Un. layers-He",Variables[3].c_str(),10,0,10);
-	grafico3[4]=new TH1F("fuori X-He",Variables[4].c_str(),10,0,10);
-	grafico3[5]=new TH1F("Track Chi^2-He",Variables[5].c_str(),50,0,25);
-	grafico3[6]=new TH1F("TOF Up-Down-He",Variables[6].c_str(),200,0,100);
-	grafico3[7]=new TH1F("Track Up-Down-He",Variables[7].c_str(),300,0,30);
-	grafico3[8]=new TH1F("Track Edep: Tot - Track-good-He",Variables[8].c_str(),300,0,30);
+        grafico3[0]=new TH1F("Anticl-He",Variables[0].c_str(),10,0,10);
+        grafico3[1]=new TH1F("Un. TOF-He",Variables[1].c_str(),20,0,20);
+        grafico3[2]=new TH1F("R Diff.-He",Variables[2].c_str(),50,0,1);
+        grafico3[3]=new TH1F("Un. layers-He",Variables[3].c_str(),10,0,10);
+        grafico3[4]=new TH1F("fuori X-He",Variables[4].c_str(),10,0,10);
+        grafico3[5]=new TH1F("Track Chi^2-He",Variables[5].c_str(),50,0,25);
+        grafico3[6]=new TH1F("RICH Hits: tot - used-He",Variables[6].c_str(),100,0,30);
+        grafico3[7]=new TH1F("Rich Photoelectrons-He",Variables[7].c_str(),300,0,30);
+        grafico3[8]=new TH1F("Track Edep: Tot - Track-good-He",Variables[8].c_str(),300,0,30);
 
-	cout<<"**************************** BETA BINS TOF***********************************"<<endl;
-        float B=0.4;
+
+	cout<<"**************************** BETA BINS NaF***********************************"<<endl;
+	float B=0.4;
         float B1=0;
         float B2=0;
         float E=0.1;
         int binnum=0;
-        float a=(log(0.9)-log(0.1))/18;
-        float E2=exp(log(0.1)+1.5*a);
         float Betabins[18]={0.4};
         float Betacent[18]={0};
         float Ekincent[18]={0};
-        while(B1<0.85){
-                E=exp(log(0.1)+binnum*a);
-                E2=exp(log(0.1)+(binnum+0.5)*a);
+        float a=(log(4.025)-log(0.666))/18;
+        float E2=exp(log(0.666)+1.5*a);
+        binnum=0;
+        while(B1<0.98){
+                E=exp(log(0.666)+binnum*a);
+                E2=exp(log(0.666)+(binnum+0.5)*a);
                 B1=sqrt(1-1/(pow(E+1,2)));
                 B2=sqrt(1-1/(pow(E2+1,2)));
                 Betabins[binnum]=B1;
                 Betacent[binnum]=B2;
-                Ekincent[binnum]=1/pow(1-pow(B2,2),0.5)-1;
+                Ekincent[binnum]=1/pow(1-pow(B1,2),0.5)-1;
                 binnum++;
         }
-        for(int i=0;i<18;i++) cout<<Betabins[i]<<" "<<Betabins[i+1]-Betabins[i]<<endl;
-        string TitoliTOF[18];
+        string TitoliNaF[18];
         for(int i=0;i<18;i++){
                 ostringstream ss;
                 ss<<Betabins[i];
-                TitoliTOF[i]= ss.str();
-                cout<<TitoliTOF[i]<<", ";
+                TitoliNaF[i]= ss.str();
+                cout<<TitoliNaF[i]<<", ";
         }
-        cout<<endl;
+
 
 	float Rcut[17]={0.6,0.6,0.67,0.68,0.7,0.72,0.75,0.8,0.85,1,1.1,1.17,1.22,1.4,1.6,1.7,1.8};
 	TF1 *RBeta = new TF1("f1","pow((pow(0.938,2)*(pow(x,2)/(1-pow(x,2)))),0.5)",0.1,0.999999999999999999999999999999);
@@ -346,21 +355,20 @@ int main()
 
 	cout<<"************************************** TRAINING *****************************************************"<<endl;
 	int avanzamento=0;
-	bool Hecut=false;
 	for(int i=0; i<ntupla1->GetEntries();i++) {
 		int k = ntupla1->GetEvent(i);
 		if(100*(i/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
 		IsCharge1=0;
-		 float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
 		if(EdepL1>0.04&&EdepL1<0.15) IsCharge1=1;
 		//Clusterinutili=ClusterTOFtotali-ClusterTOFusati;
 		TOF_Up_Down=fabs(EdepTOFD-EdepTOFU);
 		Betagen=(pow(pow(Momentogen/Massagen,2)/(1+pow(Momentogen/Massagen,2)),0.5));
-		for(int m=0; m<18;m++) if(Beta>Betabins[m]&&Beta<=Betabins[m+1]&&Massagen<1&&R<4&&R>=0){
+		for(int m=0; m<18;m++) if(((int)Cutmask>>11)==512&&Beta>Betabins[m]&&Beta<=Betabins[m+1]&&R>=0){
+			if(Massagen<1){
 			R_[m]->Fill(1/R-1/Momentogen);
 			Beta_[m]->Fill(1/Beta-1/Betagen);
-			Mass[m]->Fill(1/Massa);
+			Mass[m]->Fill(Massa);
 			RisoluzioniTOFU[m]->Fill(1/EdepTOFU);
 			RisoluzioniTOFD[m]->Fill(1/EdepTOFD);
 			if((1/Massa)<MassLimit){
@@ -369,14 +377,16 @@ int main()
 				RisoluzioniTOFU_bad[m]->Fill(1/EdepTOFU);
                         	RisoluzioniTOFD_bad[m]->Fill(1/EdepTOFD);
 			}
+			}
+			if(Massagen>1&&Massagen<2) MassD[m]->Fill(Massa);	
 		}
-		if(Beta<0.8&&Beta>0&&(1/Massa)<MassLimit&&R<4&&R>=0&&IsPrescaled==0&&Massagen<1) {
+		if(((int)Cutmask>>11)==512&&Beta<0.97&&Beta>0&&(1/Massa)<MassLimit&&R>=0&&IsPrescaled==0&&Massagen<1) {
 				RvsRgen_bad->Fill(R,Momentogen);
-				if(R<100){
+				if(R<5){
 				sigmagen_bad->Fill(fabs(R-Momentogen)/(pow(Momentogen,2)*Rig->Eval(Momentogen)),fabs(Beta-Betagen)/(pow(Beta,2)*beta->Eval(Beta)));
 				}
 		}
-		if(Beta<0.8&&Beta>0&&(1/Massa)<MassLimit&&R<4&&R>=0&&IsPrescaled==0/*&&!(Momentogen<1.2&&R<1.5)*/){ 	
+		if(((int)Cutmask>>11)==512&&Beta<0.96&&Beta>0&&(1/Massa)<MassLimit&&R>=0&&IsPrescaled==0/*&&!(Momentogen<1.2&&R<1.5)*/){ 	
 			if(Massagen<1&&Massagen>0.5)
 			{
 				grafico1[0]->Fill(NAnticluster);
@@ -385,8 +395,8 @@ int main()
 				grafico1[3]->Fill(layernonusati);
 				grafico1[4]->Fill(fuoriX);
 				grafico1[5]->Fill(Chisquare);
-				grafico1[6]->Fill(TOF_Up_Down);
-				grafico1[7]->Fill(Track_Up_Down);
+				grafico1[6]->Fill(Richtotused);
+				grafico1[7]->Fill(RichPhEl);
 				grafico1[8]->Fill(DiffTrackEdep);
 			}
 			if(Massagen<2&&Massagen>1.5)
@@ -397,8 +407,8 @@ int main()
 				grafico2[3]->Fill(layernonusati);
 				grafico2[4]->Fill(fuoriX);
 				grafico2[5]->Fill(Chisquare);
-				grafico2[6]->Fill(TOF_Up_Down);
-				grafico2[7]->Fill(Track_Up_Down);
+				grafico2[6]->Fill(Richtotused);
+				grafico2[7]->Fill(RichPhEl);
 				grafico2[8]->Fill(DiffTrackEdep);
 			}
 			if(Massagen<4.5&&Massagen>2.5&&IsCharge1==1)
@@ -409,8 +419,8 @@ int main()
 				grafico3[3]->Fill(layernonusati);
 				grafico3[4]->Fill(fuoriX);
 				grafico3[5]->Fill(Chisquare);
-				grafico3[6]->Fill(TOF_Up_Down);
-				grafico3[7]->Fill(Track_Up_Down);
+				grafico3[6]->Fill(Richtotused);
+				grafico3[7]->Fill(RichPhEl);
 				grafico3[8]->Fill(DiffTrackEdep);
 			}
 
@@ -508,30 +518,20 @@ int main()
 	TCanvas *c2_bis=new TCanvas("Likelihood + Dist. CUT response");
 	TCanvas *c4=new TCanvas("BDT response");
 	cout<<"Likelihood calculation..."<<endl;
-	TH1F *Sl =new TH1F("Signal","Signal",50,0,1);
-	TH1F *Bd =new TH1F("Bkgnd","Bkgnd",50,0,1);
-	TH1F *He =new TH1F("Bkgnd","Bkgnd",50,0,1);
-	TH1F *Sl_BDT =new TH1F("Signal","Signal",50,-1,1);
-	TH1F *Bd_BDT =new TH1F("Bkgnd","Bkgnd",50,-1,1);
-	TH1F *He_BDT =new TH1F("Bkgnd","Bkgnd",50,-1,1);		
-	TH1F *Sl_old =new TH1F("Signal_old","Signal_old",50,0,1);
-	TH1F *Bd_old =new TH1F("Bkgnd_old","Bkgnd_old",50,0,1);
-	TH1F *He_old =new TH1F("He_old","He_old",50,0,1);
-	TH1F *LKL_Data=new TH1F("Lk_Data","Signal",50,0,1);
-	TH1F *BDT_Data=new TH1F("BDT_Data","Signal",50,-1,1);
-	TH1F *LKLold_Data=new TH1F("Lkold_Data","Signal",50,0,1);
-	TH2F *LkvsDist_P=new TH2F("LkvsDist_P","",500,0,1,500,-1,1);
-	TH2F *LkvsDist_D=new TH2F("LkvsDist_D","",500,0,1,500,-1,1);
-	TH2F *RvsBetaTOF_P=new TH2F("RvsBetaTOF_P","RvsBetaTOF_P",500,0,6,500,0.4,1);
-        TH2F *RvsBetaNaF_P=new TH2F("RvsBetaNaF_P","RvsBetaNaF_P",500,1,10,500,0.75,1);
-        TH2F *RvsBetaAgl_P=new TH2F("RvsBetaAgl_P","RvsBetaAgl_P",500,3,15,500,0.95,1);
-        TH2F *RvsBetaTOF_D=new TH2F("RvsBetaTOF_D","RvsBetaTOF_D",500,0,6,500,0.4,1);
-        TH2F *RvsBetaNaF_D=new TH2F("RvsBetaNaF_D","RvsBetaNaF_D",500,1,10,500,0.75,1);
-        TH2F *RvsBetaAgl_D=new TH2F("RvsBetaAgl_D","RvsBetaAgl_D",500,3,15,500,0.95,1);
-        TH2F *RvsBetaTOF_He=new TH2F("RvsBetaTOF_He","RvsBetaTOF_He",500,0,6,500,0.4,1);
-        TH2F *RvsBetaNaF_He=new TH2F("RvsBetaNaF_He","RvsBetaNaF_He",500,1,10,500,0.75,1);
-        TH2F *RvsBetaAgl_He=new TH2F("RvsBetaAgl_He","RvsBetaAgl_He",500,3,15,500,0.95,1);
-
+	TH1F *Sl =new TH1F("Signal","Signal",50,0,7);
+	TH1F *Bd =new TH1F("Bkgnd","Bkgnd",50,0,7);
+	TH1F *He =new TH1F("Bkgnd","Bkgnd",50,0,7);
+	TH1F *Sl_BDT =new TH1F("Signal","Signal",50,0,1);
+	TH1F *Bd_BDT =new TH1F("Bkgnd","Bkgnd",50,0,1);
+	TH1F *He_BDT =new TH1F("Bkgnd","Bkgnd",50,0,1);		
+	TH1F *Sl_old =new TH1F("Signal_old","Signal_old",50,0,7);
+	TH1F *Bd_old =new TH1F("Bkgnd_old","Bkgnd_old",50,0,7);
+	TH1F *He_old =new TH1F("He_old","He_old",50,0,7);
+	TH1F *LKL_Data=new TH1F("Lk_Data","Signal",50,0,7);
+	TH1F *BDT_Data=new TH1F("BDT_Data","Signal",50,0,1);
+	TH1F *LKLold_Data=new TH1F("Lkold_Data","Signal",50,0,7);
+	TH2F *LkvsDist_P=new TH2F("LkvsDist_P","",50,0,7,500,-1,1);
+	TH2F *LkvsDist_D=new TH2F("LkvsDist_D","",50,0,7,500,-1,1);
 	float var[9]={0,0,0,0,0,0,0,0,0};
 	BDTreader();
 	avanzamento=0;
@@ -544,17 +544,6 @@ int main()
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
 		Betagen=(pow(pow(Momentogen/Massagen,2)/(1+pow(Momentogen/Massagen,2)),0.5));
 		//Clusterinutili=fabs(ClusterTOFtotali-ClusterTOFusati);
-		if(IsCharge1==1){
-                if(Massagen<1&&Massagen>0.5){
-                                RvsBetaTOF_P->Fill(R,Beta);
-				}
-                if(Massagen<2&&Massagen>1.5){
-				RvsBetaTOF_D->Fill(R,Beta);
-                        }
-                if(Massagen<4.5&&Massagen>2.5){
-				RvsBetaTOF_He->Fill(R,Beta);
-                       }
-                }
 		TOF_Up_Down=fabs(EdepTOFD-EdepTOFU);
 		var[0]=NAnticluster;
 		var[1]=Clusterinutili;
@@ -562,71 +551,68 @@ int main()
 		var[3]=layernonusati;
 		var[4]=fuoriX;
 		var[5]=Chisquare;
-		var[6]=TOF_Up_Down;
-		var[7]=Track_Up_Down;
+		var[6]=Richtotused;
+		var[7]=RichPhEl;
 		var[8]=DiffTrackEdep;
 		double L_true=1;
 		double L_false=1;
 		double L_true_old=1;
 		double L_false_old=1;
-		for(int m=0;m<6;m++)
+		for(int m=0;m<8;m++)
 		{
 			L_false=L_false*Bkgnd[m]->Eval(var[m]);
 			L_true=L_true*Signal[m]->Eval(var[m]);
 		}
-		for(int m=0;m<6;m++)
+		for(int m=0;m<8;m++)
 		{
 			L_false_old=L_false_old*Bkgnd[m]->Eval(var[m]);
 			L_true_old=L_true_old*Signal[m]->Eval(var[m]);
 		}
 		float L_Discr=(L_true/(L_false+L_true));
 		float L_Discr_old=(L_true_old/(L_false_old+L_true_old));
-		if(Beta<0.8&&Beta>0&&(1/Massa)<MassLimit&&R<4&&R>=0&&IsPrescaled==0&&IsCharge1==1)
+		if(((int)Cutmask>>11)==512&&Beta<0.97&&Beta>0&&(1/Massa)<MassLimit&&R>=0&&IsPrescaled==0&&IsCharge1==1)
 		{
 			BDTresponse=reader->EvaluateMVA("BDTmethod");
 			if(Massagen<1&&Massagen>0.5){	    
 				qu++;
-				Bd->Fill(L_Discr);
-				if(fabs(DistD)>0.15) Bd_old->Fill(L_Discr_old);
+				Bd->Fill(-log(1-L_Discr));
+				if(fabs(DistD)>0.2)  Bd_old->Fill(-log(1-L_Discr_old));
 				Bd_BDT->Fill(BDTresponse);
-				LkvsDist_P->Fill(L_Discr,DistD);
+				LkvsDist_P->Fill(-log(1-L_Discr),DistD);
 			}
 			if(Massagen<2&&Massagen>1.5){
-				Sl->Fill(L_Discr);
-				if(fabs(DistD)>0.15) Sl_old->Fill(L_Discr_old);
+				Sl->Fill(-log(1-L_Discr));
+				if(fabs(DistD)>0.2) Sl_old->Fill(-log(1-L_Discr_old));
 				Sl_BDT->Fill(BDTresponse);	
-				LkvsDist_D->Fill(L_Discr,DistD);
+				LkvsDist_D->Fill(-log(1-L_Discr),DistD);
 			}
 			if(Massagen<4&&Massagen>2.5){
-				He->Fill(L_Discr);
-				if(fabs(DistD)>0.15) He_old->Fill(L_Discr_old);
+				He->Fill(-log(1-L_Discr));
+				if(fabs(DistD)>0.2) He_old->Fill(-log(1-L_Discr_old));
 				He_BDT->Fill(BDTresponse);
 			}
 
 		}
-		if(Massagen<1&&Beta<0.75&&(1/Massa)<MassLimit&&R<4&&R>=0){
+		if(((int)Cutmask>>11)==512&&Massagen<1&&Beta<0.97&&(1/Massa)<MassLimit&&R>=0){
 			h1_bad->Fill(Beta,EdepTOFU);
                 	h3_bad->Fill(Beta,EdepTOFD);	
 		}
-		for(int m=0; m<18;m++) if(Beta>Betabins[m]&&Beta<=Betabins[m+1]&&Massagen<1&&R<4&&R>=0){
-                        if(fabs(DistD)>0.15) MassQ[m]->Fill(1/Massa);
-			if((1/Massa)<MassLimit&&L_Discr>0.8&&fabs(DistD)>0.15){
+		for(int m=0; m<18;m++) if(((int)Cutmask>>11)==512&&Beta>Betabins[m]&&Beta<=Betabins[m+1]&&R>=0){
+                        if(Massagen<1){
+			if(-log(1-L_Discr)>2&&fabs(DistD)>0.2) MassQ[m]->Fill(Massa);
+			if((1/Massa)<MassLimit&&-log(1-L_Discr)>2&&fabs(DistD)>0.2){
                                 R_bad_1[m]->Fill(1/R-1/Momentogen);
                                 Beta_bad_1[m]->Fill(1/Beta-1/Betagen);
 				RisoluzioniTOFU_bad_1[m]->Fill(1/EdepTOFU);
                                 RisoluzioniTOFD_bad_1[m]->Fill(1/EdepTOFD);
                         }
+			}
+			if(Massagen>1&&Massagen<2&&-log(1-L_Discr)>2&&fabs(DistD)>0.2) MassQD[m]->Fill(Massa);
                 }
 		
-		if(IsCharge1==1&&L_Discr>0.8&&R<4&&R>=0)for(int z=0;z<17;z++) if(Beta>Betabins[z]&&Beta<Betabins[z+1]&&Massagen<2&&Massagen>1.5) cutoffMC[z]->Fill(pow(1/Massa,2));
-		if(IsCharge1==1&&L_Discr>0.8&&R<4&&R>=0)for(int z=0;z<17;z++) if(Beta>Betabins[z]&&Beta<Betabins[z+1]&&Massagen<1&&Massagen>0.5) cutoffMC_P[z]->Fill(pow(1/Massa,2));
+		if(((int)Cutmask>>11)==512&&IsCharge1==1&&-log(1-L_Discr)>2&&R>=0)for(int z=0;z<17;z++) if(Beta>Betabins[z]&&Beta<Betabins[z+1]&&Massagen<2&&Massagen>1.5) cutoffMC[z]->Fill(pow(1/Massa,2));
+		if(((int)Cutmask>>11)==512&&IsCharge1==1&&-log(1-L_Discr)>2&&R>=0)for(int z=0;z<17;z++) if(Beta>Betabins[z]&&Beta<Betabins[z+1]&&Massagen<1&&Massagen>0.5) cutoffMC_P[z]->Fill(pow(1/Massa,2));
 	}
-	
-
-	TH2F *RvsBetaTOF=new TH2F("RvsBetaTOF","RvsBetaTOF",500,0,6,500,0.4,1);
-        TH2F *RvsBetaNaF=new TH2F("RvsBetaNaF","RvsBetaNaF",500,1,10,500,0.75,1);
-        TH2F *RvsBetaAgl=new TH2F("RvsBetaAgl","RvsBetaAgl",500,3,15,500,0.95,1);
-
 	avanzamento=0;
 	for(int l=0; l<ntupla2->GetEntries();l++) {
 		int k = ntupla2->GetEvent(l);
@@ -635,10 +621,6 @@ int main()
 		if(100*(l/(float)(ntupla2->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
 		//Clusterinutili=fabs(ClusterTOFtotali-ClusterTOFusati);
-		if(IsCharge1==1&&Rcutoff<1){
-                                RvsBetaTOF->Fill(R,Beta);
-                }
-
 		TOF_Up_Down=fabs(EdepTOFD-EdepTOFU);
 		Betagen=(pow(pow(Momentogen/Massagen,2)/(1+pow(Momentogen/Massagen,2)),0.5));
 		var[0]=NAnticluster;
@@ -647,78 +629,56 @@ int main()
 		var[3]=layernonusati;
 		var[4]=fuoriX;
 		var[5]=Chisquare;
-		var[6]=TOF_Up_Down;
-		var[7]=Track_Up_Down;
+		var[6]=Richtotused;
+		var[7]=RichPhEl;
 		var[8]=DiffTrackEdep;
 		double L_true=1;
 		double L_false=1;
 		double L_true_old=1;
 		double L_false_old=1;
-		for(int m=0;m<6;m++)
+		for(int m=0;m<8;m++)
 		{
 			L_false=L_false*Bkgnd[m]->Eval(var[m]);
 			L_true=L_true*Signal[m]->Eval(var[m]);
 		}
-		for(int m=0;m<6;m++)
+		for(int m=0;m<8;m++)
 		{
 			L_false_old=L_false_old*Bkgnd[m]->Eval(var[m]);
 			L_true_old=L_true_old*Signal[m]->Eval(var[m]);
 		}
 		float L_Discr=(L_true/(L_false+L_true));
 		float L_Discr_old=(L_true_old/(L_false_old+L_true_old));
-		if(Beta<0.75&&(1/Massa)<MassLimit){
+		if(((int)Cutmask>>11)==512&&Beta<0.97&&(1/Massa)<MassLimit){
 			h1->Fill(Beta,EdepTOFU);
                 	h3->Fill(Beta,EdepTOFD);
 		}
-		if(Beta<0.8&&Beta>0&&(1/Massa)<MassLimit&&R<4&&R>=0&&IsPrescaled==0&&IsCharge1==1)
+		if(((int)Cutmask>>11)==512&&Beta<0.97&&Beta>0&&(1/Massa)<MassLimit&&IsPrescaled==0&&IsCharge1==1)
 		{
-			LKL_Data->Fill(L_Discr);
-			if(fabs(DistD)>0.15) LKLold_Data->Fill(L_Discr_old);
+			LKL_Data->Fill(-log(1-L_Discr));
+			if(fabs(DistD)>0.2) LKLold_Data->Fill(-log(1-L_Discr_old));
 			BDTresponse=reader->EvaluateMVA("BDTmethod");
 			BDT_Data->Fill(BDTresponse); 
 		}
-		if(R>1.2*Rcutoff&&IsCharge1==1&&L_Discr>0.8&&R<4&&R>=0)
+		if(((int)Cutmask>>11)==512&&R>1.2*Rcutoff&&IsCharge1==1&&-log(1-L_Discr)>2&&R>=0)
 			for(int z=0;z<17;z++)
 				if(Beta>Betabins[z]&&Beta<Betabins[z+1]) {nocutoff[z]->Fill(1/Massa);
 					if(Rcutoff>1.2*RBeta->Eval(Beta)) cutoff[z]->Fill(pow(1/Massa,2));
 				}
-		if(R<1.2*Rcutoff&&IsCharge1==1&&L_Discr>0.8&&R<4&&R>=0)
+		if(((int)Cutmask>>11)==512&&R<1.2*Rcutoff&&IsCharge1==1&&-log(1-L_Discr)>2&&R>=0)
 			for(int z=0;z<17;z++)
 				if(Beta>Betabins[z]&&Beta<Betabins[z+1]) {if(Rcutoff<0.7*RBeta_P->Eval(Beta)&&z<14) cutoff_P[z]->Fill(pow(1/Massa,2));
 					if(Rcutoff<0.8*RBeta_P->Eval(Beta)&&z>=14) cutoff_P[z]->Fill(pow(1/Massa,2));	}
 	}
-	/////////////// R vs BETA ////////////////////
-	TCanvas *uno=new TCanvas("RvsBeta: MC");
-	uno->cd();
-	gPad->SetGridx();
-	gPad->SetGridy();
-	RvsBetaTOF_P->SetMarkerColor(2);
-	RvsBetaTOF_D->SetMarkerColor(4);
-	RvsBetaTOF_He->SetMarkerColor(3);
-	RvsBetaTOF_D->GetXaxis()->SetTitle("R [GV]");
-	RvsBetaTOF_D->GetYaxis()->SetTitle("Beta TOF");
-	RvsBetaTOF_D->Draw();
-	RvsBetaTOF_P->Draw("same");
-	RvsBetaTOF_He->Draw("same");
-		
-	TCanvas *due=new TCanvas("RvsBeta: Dati");
-	due->cd();
-        gPad->SetGridx();
-        gPad->SetGridy();
-	gPad->SetLogz();
-	RvsBetaTOF->Draw("col");
-	protons->Draw("same");
-	deutons->Draw("same");	
 	/////////////// DISTR. TOT E BAD //////////////////////
 	g1->cd();
-	h1->GetXaxis()->SetTitle("Beta TOF");
+	h1->GetXaxis()->SetTitle("Beta NaF");
 	h1->GetYaxis()->SetTitle("E. dep. Upper TOF");
 	h1->SetTitle("MC protons with D-like Mass over Data");
 	h1->Draw();
 	h1_bad->SetMarkerColor(2);
 	h1_bad->Draw("same");
 	g3->cd();
-	h3->GetXaxis()->SetTitle("Beta TOF");
+	h3->GetXaxis()->SetTitle("Beta NaF");
         h3->GetYaxis()->SetTitle("E. dep. Lower TOF");
         h3->SetTitle("MC protons with D-like Mass over Data");
         h3->Draw();
@@ -726,8 +686,8 @@ int main()
         h3_bad->Draw("same");
 	f->cd();
 	gPad->SetLogz();
-	RvsRgen_bad->GetXaxis()->SetRangeUser(0.55,4.5);
-	RvsRgen_bad->GetYaxis()->SetRangeUser(0,4.5);
+	RvsRgen_bad->GetXaxis()->SetRangeUser(2,10.5);
+	RvsRgen_bad->GetYaxis()->SetRangeUser(2,10.5);
 	RvsRgen_bad->GetXaxis()->SetTitle("R [GV]");
 	RvsRgen_bad->GetYaxis()->SetTitle("R gen [GV]");
 	RvsRgen_bad->Draw();
@@ -735,8 +695,8 @@ int main()
 	RvsRgen_sigma->Draw("same,CONT2");
 	d_tris->cd();
 	gPad->SetLogz();
-        sigmagen_bad->GetXaxis()->SetRangeUser(0.55,4.5);
-        sigmagen_bad->GetYaxis()->SetRangeUser(0,4.5);
+        sigmagen_bad->GetXaxis()->SetRangeUser(2,10.5);
+        sigmagen_bad->GetYaxis()->SetRangeUser(2,10.5);
         sigmagen_bad->GetXaxis()->SetTitle("(R-Rgen)/sigma");
         sigmagen_bad->GetYaxis()->SetTitle("(Beta-Betagen)/sigma");
         sigmagen_bad->Draw();
@@ -745,7 +705,7 @@ int main()
 	for(int m=0; m<17;m++){
                 d->cd(m+1);
                 gPad->SetLogy();
-                Titolo="Beta TOF: "+TitoliTOF[m]+"-"+TitoliTOF[m+1];
+                Titolo="Beta NaF: "+TitoliNaF[m]+"-"+TitoliNaF[m+1];
 		R_[m]->SetTitle(Titolo.c_str());
 		R_[m]->GetXaxis()->SetTitle("1/R_gen-1/R");
 		R_bad[m]->SetLineColor(2);
@@ -757,7 +717,7 @@ int main()
         for(int m=0; m<17;m++){
                 d_bis->cd(m+1);
                 gPad->SetLogy();
-		Titolo="Beta TOF: "+TitoliTOF[m]+"-"+TitoliTOF[m+1];
+		Titolo="Beta NaF: "+TitoliNaF[m]+"-"+TitoliNaF[m+1];
                 Beta_[m]->SetTitle(Titolo.c_str());
 		Beta_[m]->GetXaxis()->SetTitle("1/Beta_gen-1/Beta");
                 Beta_bad[m]->SetLineColor(2);
@@ -769,7 +729,7 @@ int main()
 	for(int m=0; m<17;m++){
                 e->cd(m+1);
                 gPad->SetLogy();
-                Titolo="Beta TOF: "+TitoliTOF[m]+"-"+TitoliTOF[m+1];
+                Titolo="Beta NaF: "+TitoliNaF[m]+"-"+TitoliNaF[m+1];
 		RisoluzioniTOFU[m]->GetXaxis()->SetTitle("Inverse E. dep.");
                 RisoluzioniTOFU[m]->SetTitle(Titolo.c_str());
 		RisoluzioniTOFU_bad[m]->SetLineColor(2);
@@ -781,7 +741,7 @@ int main()
         for(int m=0; m<17;m++){
                 e_bis->cd(m+1);
                 gPad->SetLogy();
-		Titolo="Beta TOF: "+TitoliTOF[m]+"-"+TitoliTOF[m+1];
+		Titolo="Beta NaF: "+TitoliNaF[m]+"-"+TitoliNaF[m+1];
                 RisoluzioniTOFD[m]->GetXaxis()->SetTitle("Inverse E. dep.");
 		RisoluzioniTOFD[m]->SetTitle(Titolo.c_str());
                	RisoluzioniTOFD_bad[m]->SetLineColor(2);
@@ -801,14 +761,18 @@ int main()
                 gPad->SetLogy();
                 Mass[m]->SetLineColor(4);
                 MassQ[m]->SetLineColor(2);
+		MassD[m]->SetLineColor(4);
+                MassQD[m]->SetLineColor(2);
 		Mass[m]->Draw();
 		MassQ[m]->Draw("same");
+		MassD[m]->Draw("same");
+                MassQD[m]->Draw("same");
 		fitmean = new TF1("fitmean","gaus");
 		fitmean->SetLineColor(4);
-		Mass[m]->Fit("fitmean","","",0,1);
+		//Mass[m]->Fit("fitmean","","",0,1);
 		fitmeanQ = new TF1("fitmeanQ","gaus");
                 fitmean->SetLineColor(2);
-                MassQ[m]->Fit("fitmeanQ","","",0,0.8);
+                //MassQ[m]->Fit("fitmeanQ","","",0,0.8);
         }
 
 	///////////////////////////////////////////////////////
@@ -822,17 +786,27 @@ int main()
 	LkvsDist_P->Draw("same");
 	/////////////// TEMPLATE FIT //////////////////////////
 	c2->cd();
+	 TH1F *Sl_w =new TH1F("Signal_w","Signal_w",50,0,7);
+        TH1F *Bd_w =new TH1F("Bkgnd_w","Bkgnd_w",50,0,7);
+        TH1F *He_w =new TH1F("He_w","He_w",50,0,7);
+        for(int i=0; i<Sl_w->GetNbinsX();i++)
+          Sl_w->SetBinContent(i,Sl->GetBinContent(i));
+          for(int i=0; i<Bd_w->GetNbinsX();i++)
+          Bd_w->SetBinContent(i,Bd->GetBinContent(i));
+        for(int i=0; i<He_w->GetNbinsX();i++)
+          He_w->SetBinContent(i,He->GetBinContent(i));
+
 	TObjArray *mc = new TObjArray(2);
-	mc->Add(Sl);
-	mc->Add(Bd);
+	mc->Add(Sl_w);
+	mc->Add(Bd_w);
 	//mc->Add(He); 
-	TFractionFitter* fit = new TFractionFitter(LKL_Data, mc);
+	TFractionFitter* fit= new TFractionFitter(LKL_Data, mc);
 	/*fit->Constrain(1,0.65,0.7);
 	fit->Constrain(2,0.3,0.4);*/
+	//fit->SetRangeX(3,50);
 	int status = fit->Fit();
 	std::cout << "fit status: " << status << std::endl;
-	float pesoP=0;
-	float pesoD=0;
+	
 	if (status == 0) {                       // check on fit status
 		double w1,e1,w2,e2,w3,e3=1;
 		fit->GetResult(0,w1,e1);
@@ -840,69 +814,74 @@ int main()
 		//fit->GetResult(2,w3,e3);
 		TH1F * result = (TH1F*) fit->GetPlot();
 		float itot= result->Integral();
-		float i1 = Sl->Integral();
-		float i2 = Bd->Integral();
-		float i3 = He->Integral();
+		float i1 = Sl_w->Integral();
+		float i2 = Bd_w->Integral();
+		float i3 = He_w->Integral();
 		cout<<itot<<endl;
 		cout<<w1<<" "<<w2<<" "<<w3<<endl;
-		pesoP=w2/i2*itot;
-		pesoD=w1/i1*itot;
-		for(int i=0; i<Sl->GetNbinsX();i++)
-			Sl->SetBinContent(i,w1*Sl->GetBinContent(i)/i1*itot);
-		for(int i=0; i<Bd->GetNbinsX();i++)
-			Bd->SetBinContent(i,w2*Bd->GetBinContent(i)/i2*itot);
+		for(int i=0; i<Sl_w->GetNbinsX();i++)
+			Sl_w->SetBinContent(i,w1*Sl_w->GetBinContent(i)/i1*itot);
+		for(int i=0; i<Bd_w->GetNbinsX();i++)
+			Bd_w->SetBinContent(i,w2*Bd_w->GetBinContent(i)/i2*itot);
+		
 		//for(int i=0; i<He->GetNbinsX();i++)
 		//	He->SetBinContent(i,w3*He->GetBinContent(i)/i3*itot);
-		Sl->SetFillColor(4);
-		He->SetFillColor(3);
-		Bd->SetFillColor(2);
+		Sl_w->SetFillColor(4);
+		He_w->SetFillColor(3);
+		Bd_w->SetFillColor(2);
 		//Bd->Draw();
 		//Sl->Draw("same");
 		//He->Draw("same");
 		THStack *hs= new THStack("hs","Likelihood response (stacked)");
-		Sl->SetFillStyle(3001);
-        	Bd->SetFillStyle(3001);
-		hs->Add(Sl);
-		hs->Add(Bd);
+		Sl_w->SetFillStyle(3001);
+        	Bd_w->SetFillStyle(3001);
+		hs->Add(Bd_w);
+		hs->Add(Sl_w);
 		//hs->Add(He);        
 		LKL_Data->GetXaxis()->SetTitle("Likelihood response");
 		LKL_Data->SetMarkerStyle(8);
-		LKL_Data->Draw("ep");
-		hs->Draw("same");
+		hs->Draw();
+		LKL_Data->Draw("epsame");
 		result->SetLineColor(5);
 		result->Draw("SAME");
 	}
 	if (status != 0) {
-        Sl->SetFillColor(4);
-        He->SetFillColor(3);
-        Bd->SetFillColor(2);
-        Sl->SetFillStyle(3001);
-        He->SetFillStyle(3001);
-        Bd->SetFillStyle(3001);
-        Bd->Draw();
-        Sl->Draw("same");
+        Sl_w->SetFillColor(4);
+        He_w->SetFillColor(3);
+        Bd_w->SetFillColor(2);
+        Sl_w->SetFillStyle(3001);
+        He_w->SetFillStyle(3001);
+        Bd_w->SetFillStyle(3001);
+        Bd_w->Draw();
+        Sl_w->Draw("same");
         //He->Draw("same");
         LKL_Data->SetMarkerStyle(8);
         LKL_Data->Draw("epsame");
         }
 
+
+
 	c2_bis->cd();
-	TH1F *Sl_old_weight =new TH1F("Signal_old","Signal_old",50,0,1);
-        TH1F *Bd_old_weight =new TH1F("Bkgnd_old","Bkgnd_old",50,0,1);
-	for(int i=0; i<Sl_old->GetNbinsX();i++)
-          Sl_old_weight->SetBinContent(i,pesoD*Sl_old->GetBinContent(i));
-          for(int i=0; i<Bd_old->GetNbinsX();i++)
-          Bd_old_weight->SetBinContent(i,pesoP*Bd_old->GetBinContent(i));
+	 TH1F *Sl_old_w =new TH1F("Signal_old_w","Signal_old_w",50,0,7);
+        TH1F *Bd_old_w =new TH1F("Bkgnd_old_w","Bkgnd_old_w",50,0,7);
+        TH1F *He_old_w =new TH1F("He_old_w","He_old_w",50,0,7);
+        for(int i=0; i<Sl_old_w->GetNbinsX();i++)
+          Sl_old_w->SetBinContent(i,Sl_old->GetBinContent(i));
+          for(int i=0; i<Bd_old_w->GetNbinsX();i++)
+          Bd_old_w->SetBinContent(i,Bd_old->GetBinContent(i));
+        for(int i=0; i<He_old_w->GetNbinsX();i++)
+          He_old_w->SetBinContent(i,He_old->GetBinContent(i));
 
 	TObjArray *mc_old = new TObjArray(2);
-	  mc_old->Add(Sl_old);
-	  mc_old->Add(Bd_old);
+	  mc_old->Add(Sl_old_w);
+	  mc_old->Add(Bd_old_w);
 	  //mc_old->Add(He_old);	
 	  TFractionFitter* fit_old = new TFractionFitter(LKLold_Data, mc_old);
 	  /*fit_old->Constrain(1,0.10,0.16);
 	  fit_old->Constrain(2,0.03,0.06);
 	  fit_old->Constrain(3,0.84,0.90);*/
-	  int status_old =  fit_old->Fit();
+	  //fit_old->SetRangeX(3,50);
+	  int status_old = fit_old->Fit();
 	  std::cout << "fit status: " << status_old << std::endl;
 	  if (status_old == 0) {                       // check on fit status
 	  double w1,e1, w2,e2,w3,e3;
@@ -911,44 +890,45 @@ int main()
 	  //fit_old->GetResult(2,w3,e3);	
 	  TH1F * result = (TH1F*) fit_old->GetPlot();
 	  float itot= result->Integral();
-	  float i1 = Sl_old->Integral();
-	  float i2 = Bd_old->Integral();
+	  float i1 = Sl_old_w->Integral();
+	  float i2 = Bd_old_w->Integral();
 	  //float i3 = He_old->Integral();
 	  cout<<itot<<endl;
-	  for(int i=0; i<Sl_old->GetNbinsX();i++)
-	  Sl_old->SetBinContent(i,w1*Sl_old->GetBinContent(i)/i1*itot);
-	  for(int i=0; i<Bd_old->GetNbinsX();i++)
-	  Bd_old->SetBinContent(i,w2*Bd_old->GetBinContent(i)/i2*itot);
+	  for(int i=0; i<Sl_old_w->GetNbinsX();i++)
+	  Sl_old_w->SetBinContent(i,w1*Sl_old_w->GetBinContent(i)/i1*itot);
+	  for(int i=0; i<Bd_old_w->GetNbinsX();i++)
+	  Bd_old_w->SetBinContent(i,w2*Bd_old_w->GetBinContent(i)/i2*itot);
 	  //for(int i=0; i<He_old->GetNbinsX();i++)
 	  //He_old->SetBinContent(i,w3*He_old->GetBinContent(i)/i3*itot);	
-	  
-	  Sl_old->SetFillColor(4);
-	  Bd_old->SetFillColor(2);
-	  He_old->SetFillColor(3);
+	 	 
+	  Sl_old_w->SetFillColor(4);
+	  Bd_old_w->SetFillColor(2);
+	  He_old_w->SetFillColor(3);
 	  THStack *hs= new THStack("hs","Likelihood + Distance CUT response (stacked)");
-	  Sl_old->SetFillStyle(3001);
-	  Bd_old->SetFillStyle(3001);	
-	  hs->Add(Sl_old);
-	  hs->Add(Bd_old);
+	  Sl_old_w->SetFillStyle(3001);
+	  Bd_old_w->SetFillStyle(3001);	
+	  hs->Add(Bd_old_w);
+	  hs->Add(Sl_old_w);
 	  //hs->Add(He_old);
 	LKLold_Data->GetXaxis()->SetTitle("Likelihood response");	
 	 LKLold_Data->SetMarkerStyle(8); 	
 	 LKLold_Data->Draw("ep");
 	hs->Draw("same");
-	//result->SetLineColor(7);
-	//result->Draw("SAME"); 
+	cout<<w1<<" "<<w2<<" "<<w3<<endl;
+	result->SetLineColor(7);
+	result->Draw("SAME"); 
 	 }
 	if (status_old != 0) {
-        for(int i=0; i<Sl_old->GetNbinsX();i++) Sl_old->SetBinContent(i,pesoD*Sl_old->GetBinContent(i));
-	for(int i=0; i<Bd_old->GetNbinsX();i++) Bd_old->SetBinContent(i,pesoP*Bd_old->GetBinContent(i));
-	Sl_old->SetFillColor(4);
-        He_old->SetFillColor(3);
-        Bd_old->SetFillColor(2);
-        Sl_old->SetFillStyle(3001);
-        //He_old->SetFillStyle(3001);
-        Bd_old->SetFillStyle(3001);
-        Bd_old->Draw();
-        Sl_old->Draw("same");
+        //for(int i=0; i<Sl_old->GetNbinsX();i++) Sl_old->SetBinContent(i,pesoD*Sl_old->GetBinContent(i));
+	//for(int i=0; i<Bd_old->GetNbinsX();i++) Bd_old->SetBinContent(i,pesoP*Bd_old->GetBinContent(i));
+	Sl_old_w->SetFillColor(4);
+        He_old_w->SetFillColor(3);
+        Bd_old_w->SetFillColor(2);
+        Sl_old_w->SetFillStyle(3001);
+        //He_old_w->SetFillStyle(3001);
+        Bd_old_w->SetFillStyle(3001);
+        Bd_old_w->Draw();
+        Sl_old_w->Draw("same");
         //He_old->Draw("same");
         LKLold_Data->SetMarkerStyle(8);
         LKLold_Data->Draw("epsame");
@@ -1062,11 +1042,11 @@ int main()
 		EffvsCut_old->SetPoint(j,taglio,efficienza1_old);
 		EffvsCut_BDT->SetPoint(j,taglio,efficienza1_BDT);
 		S=efficienza1*Sl->Integral(); B=182.601*(1-efficienza2)*Bd->Integral();
-		if(S+B>0) Ott->SetPoint(j,taglio,S/pow(B,0.5));
+		if(S+B>0) Ott->SetPoint(j,taglio,S/pow(S+B,0.5));
 		S=efficienza1_old*Sl_old->Integral(); B=182.601*(1-efficienza2_old)*Bd_old->Integral(); 
-		if(S+B>0) Ott_old->SetPoint(j,taglio,S/pow(B,0.5));
+		if(S+B>0) Ott_old->SetPoint(j,taglio,S/pow(S+B,0.5));
 		S=efficienza1_BDT*Sl_BDT->Integral(); B=182.601*(1-efficienza2_BDT)*Bd_BDT->Integral(); 
-		if(S+B>0) Ott_BDT->SetPoint(j,taglio,S/pow(B,0.5));  
+		if(S+B>0) Ott_BDT->SetPoint(j,taglio,S/pow(S+B,0.5));  
 	}
 	RPvsEff->GetXaxis()->SetTitle("Efficiency");
 	RPvsEff->GetYaxis()->SetTitle("Background rejection");
@@ -1168,18 +1148,14 @@ int main()
 
 	////////////////////////////////
 	/////////OUTPUT////////////
-	string nomefile="./QualityVariables.root";
+	string nomefile="./QualityVariables_NaF.root";
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
-	f_out->mkdir("RvsBeta");
 	f_out->mkdir("Bad Events Study");
 	f_out->mkdir("Variables");
 	f_out->mkdir("Distributions");
 	f_out->mkdir("Performances");
 	f_out->mkdir("Cutoff Templates");
 	f_out->mkdir("Splines");
-	f_out->cd("RvsBeta");
-	uno->Write();
-	due->Write();
 	f_out->cd("Variables");
 	for(int m=0;m<9;m++) {c1[m]->Write();}
 	f_out->cd("Bad Events Study");
@@ -1207,7 +1183,7 @@ int main()
         d2_bis->Write();
 	f_out->cd("Splines");
 	string nome;
-	string Spline="Spline: ";
+	string Spline="Spline NaF: ";
 	string signal="_SGNL";
 	string bkgnd="_BKGND";
 	for(int m=0;m<9;m++) {

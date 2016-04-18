@@ -1,10 +1,10 @@
 
-TemplateFIT * FitTOF_Dbins = new TemplateFIT("FitTOF_Dbins",18,0,3,11);
-TemplateFIT * FitNaF_Dbins = new TemplateFIT("FitNaF_Dbins",18,0,3,11);
-TemplateFIT * FitAgl_Dbins = new TemplateFIT("FitAgl_Dbins",18,0,3,11);
-TemplateFIT * FitTOF_Pbins = new TemplateFIT("FitTOF_Pbins",18,0,3,11);
-TemplateFIT * FitNaF_Pbins = new TemplateFIT("FitNaF_Pbins",18,0,3,11);
-TemplateFIT * FitAgl_Pbins = new TemplateFIT("FitAgl_Pbins",18,0,3,11);
+TemplateFIT * FitTOF_Dbins = new TemplateFIT("FitTOF_Dbins",nbinsToF,0,3,11);
+TemplateFIT * FitNaF_Dbins = new TemplateFIT("FitNaF_Dbins",nbinsNaF,0,3,11);
+TemplateFIT * FitAgl_Dbins = new TemplateFIT("FitAgl_Dbins",nbinsAgl,0,3,11);
+TemplateFIT * FitTOF_Pbins = new TemplateFIT("FitTOF_Pbins",nbinsToF,0,3,11);
+TemplateFIT * FitNaF_Pbins = new TemplateFIT("FitNaF_Pbins",nbinsNaF,0,3,11);
+TemplateFIT * FitAgl_Pbins = new TemplateFIT("FitAgl_Pbins",nbinsAgl,0,3,11);
 
 
 void DeutonsMC_Fill(TNtuple *ntupla, int l){
@@ -152,38 +152,43 @@ void DeutonsTemplFits(){
 	file1 -> Write();
 	file1 -> Close(); 	
 	
-	TCanvas *c30_TOF[12][nbinsbeta];
-	TCanvas *c30_NaF[12][nbinsbeta];
-	TCanvas *c30_Agl[12][nbinsbeta];
+	TCanvas *c30_TOF[12][nbinsToF];
+	TCanvas *c30_NaF[12][nbinsNaF];
+	TCanvas *c30_Agl[12][nbinsAgl];
 	
-	for(int bin=0; bin <nbinsbeta; bin++){
-		c30_TOF[0][bin] = new TCanvas(("bin:" + to_string(bin)).c_str());
-		c30_TOF[0][bin] -> cd();
-		gPad-> SetLogy();
-		 THStack *Stack=new THStack("","");
-		 TH1F *PMC  = FitTOF_Dbins -> GetResult_P(bin);
-		 TH1F *DMC  = FitTOF_Dbins -> GetResult_D(bin);
-		 TH1F *HeMC = FitTOF_Dbins -> GetResult_He(bin); 
-		 TH1F *Data = FitTOF_Dbins -> GetResult_Data(bin);
-		 PMC -> SetFillColor(2); 		
-                 DMC -> SetFillColor(4);
-                 HeMC-> SetFillColor(3);
- 		 Data->SetMarkerStyle(8);	
-		 Stack->Add(PMC);
-                 Stack->Add(DMC);
-                 Stack->Add(HeMC);
-                 Stack->Draw();
-                 Data->Draw("epsame");
+	for(int bin=0; bin <nbinsToF; bin++){
+		c30_TOF[0][bin] = new TCanvas(("TOF bin:" + to_string(bin)).c_str());
+		FitTOF_Dbins -> TemplateFitPlot(c30_TOF[0][bin],"Mass [GeV/C^2]",bin);
+	}
+	for(int bin=0; bin <nbinsNaF; bin++){
+		c30_NaF[0][bin] = new TCanvas(("NaF bin:" + to_string(bin)).c_str());
+		FitNaF_Dbins -> TemplateFitPlot(c30_NaF[0][bin],"Mass [GeV/C^2]",bin);
+	}
+	for(int bin=0; bin <nbinsAgl; bin++){
+		c30_Agl[0][bin] = new TCanvas(("Agl bin:" + to_string(bin)).c_str());
+		FitAgl_Dbins -> TemplateFitPlot(c30_Agl[0][bin],"Mass [GeV/C^2]",bin);
 	}
 	
+	
+	
+
 	cout<<"*** Updating Results file ***"<<endl;
         nomefile="./Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
         f_out->mkdir("Mass Template Fits/TOF/Primaries/Dbins");
         f_out->cd("Mass Template Fits/TOF/Primaries/Dbins");
-        for(int bin=0; bin <nbinsbeta; bin++)
+        for(int bin=0; bin <nbinsToF; bin++)
 		c30_TOF[0][bin]->Write();
-        f_out->Write();
+        f_out->mkdir("Mass Template Fits/NaF/Primaries/Dbins");
+        f_out->cd("Mass Template Fits/NaF/Primaries/Dbins");
+	for(int bin=0; bin <nbinsNaF; bin++)
+		c30_NaF[0][bin]->Write();
+	f_out->mkdir("Mass Template Fits/Agl/Primaries/Dbins");
+        f_out->cd("Mass Template Fits/Agl/Primaries/Dbins");
+	for(int bin=0; bin <nbinsAgl; bin++)
+		c30_Agl[0][bin]->Write();
+
+	f_out->Write();
         f_out->Close();
 
 
