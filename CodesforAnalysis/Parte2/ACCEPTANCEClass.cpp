@@ -1,15 +1,25 @@
 using namespace std;
 
 
+#ifndef ACCEPTANCE_H
+#define ACCEPTANCE_H
+
 class ACCEPTANCE
 {
 private:
 
 	//binning
+	static const int nbinsr=43;
+	static const int nbinsToF=18;
+	static const int nbinsNaF=18;
+	static const int nbinsAgl=18;
+	static const int nbinsbeta=18;
+
 	float binsR[nbinsr+1];
 	float binsBetaTOF[19];
 	float binsBetaNaF[19];
 	float binsBetaAgl[19];
+	
 public:
 	//MC parameters
 	float trigrate;
@@ -97,7 +107,6 @@ public:
 
 	void Eval_Corrected_Acceptance(int n);	
 };
-
 
 void ACCEPTANCE::Set_MC_Par( float Trigrate, float rmin, float rmax){
 	trigrate = Trigrate;
@@ -263,3 +272,4 @@ void ACCEPTANCE::Eval_Corrected_Acceptance(int n){
 
 }
 
+#endif
