@@ -18,7 +18,7 @@ rootlibs=`root-config --libs --cflags`
 #$*  Name of current dependency without extension.
 
 
-all :  $(BIN) 
+all: $(CLASS) $(BIN) 
 
 
 $(BIN): $(EXEC)
@@ -31,4 +31,4 @@ $(CLASS):
 	$(Compiler) $(FLAGS) -o obj/$@.o -c Parte2/$@.cpp  $(rootlibs) -lTMVA
 
 clean:
-	rm -rf $(OBJECTS)
+	rm -rf obj/*.o

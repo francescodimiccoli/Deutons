@@ -25,14 +25,13 @@
 #include "Parte2/CorrLAT.cpp"
 #include "Parte2/Acceptance.cpp"
 #include "Parte2/ProtonFlux.cpp"
-#include "Parte2/Deutons.cpp"
+#include "Parte2/DeutonsCountsExtraction.cpp"
 #include "Parte2/MCMC.cpp"
 #include "FillIstogram.cpp"
 
 /*#include "Parte2/DVSMCpreSeleff.cpp"
 #include "Parte2/DVSMCQualeff2.cpp"
 #include "Parte2/DVSMCTrackeff.cpp"
-#include "Parte2/Deutons.cpp"
 #include "Parte2/DeutonsDist.cpp"
 #include "Parte2/DeutonsFlux.cpp"
 #include "Parte2/DeutonsFlux_Dist.cpp"*/
