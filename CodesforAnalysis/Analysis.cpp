@@ -7,7 +7,7 @@
 #include "Parte2/LATcorrClass.cpp"
 #include "Parte2/ACCEPTANCEClass.cpp"
 #include "Parte2/FluxClass.cpp"
-#include "Parte2/TemplateFITClass.h"
+#include "Parte2/TemplateFITClass.cpp"
 #include "Parte2/MCpreeff.cpp"
 #include "Parte2/MCUnbiaseff.cpp"
 #include "Parte2/Hecut.cpp"
