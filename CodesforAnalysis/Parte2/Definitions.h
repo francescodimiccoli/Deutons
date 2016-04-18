@@ -9,7 +9,6 @@ string mese;
 string frac;
 
 
-
 //// Global Variables
 float R=0;
 float Beta=0;
@@ -95,6 +94,8 @@ float EkincentAgl   [nbinsAgl]  = {0};
 float Unbias=0;
 
 float bin[nbinsr+1];
+std::array <float, nbinsr+1> Rbins;
+
 double R_cent[nbinsr];
 float encinprot     [nbinsr];
 float encindeut     [nbinsr];
@@ -137,11 +138,43 @@ void FillBinMGen(TH3* h, int bin, int S) {
 	return;
 }
 
-int GetArrayBin(float var, float* array, int nbins) {
+
+/** @brief Returns the bin of arr (of length nbins) where var belongs
+ *  @param float* arr : the (C-)array in which to search
+ *  @param nbins      : the length of the array
+ *  @param float var  : the variable whose location to search
+ *  @return int       : the bin number of var in array
+ */
+int GetArrayBin(float var, float* arr, int nbins) {
 	for (int ib=0; ib<nbins-1; ib++)  {
-		if(var>array[ib] && var<=array[ib+1])
+		if(var>arr[ib] && var<=arr[ib+1])
 		return ib;
 	}
 	return -1;
-	
 }
+
+
+
+
+/** @brief Returns the bin of arr where var belongs
+ *  @param array arr : the (std::)array in which to search
+ *  @param float var : the variable whose location to search
+ *  @return int      : the bin number of var in arr
+ */
+template <std::size_t N>
+int GetArrayBin(float var, std::array<float, N> arr) {
+	return GetArrayBin(var, arr.data(), N);
+}
+
+
+
+
+/** @brief Returns the rigidity bin where var belongs
+ *  @param float var : the variable whose rigidity bin to determine
+ *  @return int      : the rigidity bin of var
+ */
+int GetRBin(float var) { 
+	return GetArrayBin(var, Rbins);
+}
+
+

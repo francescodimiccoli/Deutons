@@ -6,7 +6,7 @@ void DATAUnbiaseff_Fill(TNtuple *ntupla, int l) {
    int k = ntupla->GetEvent(l);
    if(((int)Cutmask&187)!=187||R_pre<=0||Beta_pre<=0||R_pre<1.2*Rcutoff) return;
    
-   int Kbin=GetArrayBin(fabs(R_pre), bin, nbinsr);
+   int Kbin=GetRBin(fabs(R_pre));
    if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2) {
       EffUnbiasDATA->beforeR->Fill(Kbin);
       if(Unbias==1) EffUnbiasDATA->afterR->Fill(Kbin);

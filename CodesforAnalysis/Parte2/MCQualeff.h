@@ -14,7 +14,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 	int Kbin;
 	if(Massa_gen<1) {
 		//R bins
-		Kbin=GetArrayBin(R, bin, nbinsr);
+		Kbin=GetRBin(R);
 
 		EffLikMCP->beforeR->Fill(Kbin);
 		EffDistMCP->beforeR->Fill(Kbin);
@@ -51,7 +51,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 	}
 	if(Massa_gen<2&&Massa_gen>1) {
 		//R bins
-		Kbin=GetArrayBin(R, bin, nbinsr);
+		Kbin=GetRBin(R);
 
 		FillBinMGen(EffLikMCD ->beforeR, Kbin);
 		FillBinMGen(EffDistMCD->beforeR, Kbin);

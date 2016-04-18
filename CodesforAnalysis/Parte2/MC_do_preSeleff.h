@@ -10,10 +10,10 @@ void MC_do_preSeleff_Fill(TNtuple *ntupla, int l){
 
 	for(int S=0;S<3;S++){
 		int Kbin;
+		int Rbin=GetRBin(Var);
 		if(Massa_gen<1&&Massa_gen>0.5) {
-			Kbin=GetArrayBin(Var, bin, nbinsr);
-			if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeR->Fill(Kbin,S);
-			if(((int)Cutmask&   passed[S])==   passed[S]) Eff_do_preSelMCP->afterR ->Fill(Kbin,S);
+			if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeR->Fill(Rbin,S);
+			if(((int)Cutmask&   passed[S])==   passed[S]) Eff_do_preSelMCP->afterR ->Fill(Rbin,S);
 
 			Kbin=GetArrayBin(Var, BetaP, nbinsToF);
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeTOF->Fill(Kbin,S);
@@ -21,9 +21,8 @@ void MC_do_preSeleff_Fill(TNtuple *ntupla, int l){
 		}				 
 
 		if(Massa_gen>1&&Massa_gen<2) {
-			Kbin=GetArrayBin(Var, bin, nbinsr);
-			if(((int)Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeR, Kbin, S);
-			if(((int)Cutmask&passed[S])   ==passed[S]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterR,  Kbin, S);
+			if(((int)Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeR, Rbin, S);
+			if(((int)Cutmask&passed[S])   ==passed[S]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterR,  Rbin, S);
 
 			Kbin=GetArrayBin(Var, BetaD, nbinsToF);
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeTOF,Kbin, S);

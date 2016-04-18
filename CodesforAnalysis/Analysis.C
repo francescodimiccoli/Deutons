@@ -98,14 +98,15 @@ int main(int argc, char * argv[])
 	{
 		float temp=i+14;
 		bin[i]=0.1*pow(10,temp/(9.5*2));
+		Rbins[i]=bin[i];
 		if(i<nbinsr) {R_cent[i]=0.1*pow(10,(temp+0.5)/(9.5*2));
 			encindeut[i]=pow(((1+pow((R_cent[i]/1.875),2))),0.5)-1;
 			encinprot[i]=pow(((1+pow((R_cent[i]/0.938),2))),0.5)-1;
 		}
 	}
-	for(int i=0;i<nbinsr;i++) {
-		deltaencinprot[i]=(pow(((1+pow((bin[i+1]/0.938),2))),0.5)-1)-(pow(((1+pow((bin[i]/0.938),2))),0.5)-1);
-		deltaencindeut[i]=(pow(((1+pow((bin[i+1]/1.875),2))),0.5)-1)-(pow(((1+pow((bin[i]/1.875),2))),0.5)-1);
+	for(int i=0;i<Rbins.size();i++) {
+		deltaencinprot[i]=(pow(((1+pow((Rbins[i+1]/0.938),2))),0.5)-1)-(pow(((1+pow((Rbins[i]/0.938),2))),0.5)-1);
+		deltaencindeut[i]=(pow(((1+pow((Rbins[i+1]/1.875),2))),0.5)-1)-(pow(((1+pow((Rbins[i]/1.875),2))),0.5)-1);
 	}
 
 	cout<<"**************************** BETA BINS TOF***********************************"<<endl;

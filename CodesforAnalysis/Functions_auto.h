@@ -9,6 +9,7 @@
 #include <stdarg.h>
 #include <cstdlib>
 #include <string>
+#include <array>
 
 #include "TFile.h"
 #include "TTree.h"

@@ -19,7 +19,7 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona) {
    if(Beta<=0 || R<=0 || R<=Rcut[zona]) return;
    if(! (EdepL1 > 0 && EdepL1 < EdepL1beta->Eval(Beta)+0.1 && EdepL1 > EdepL1beta->Eval(Beta)-0.1 )) return;
 
-   int Kbin=GetArrayBin(R, bin, nbinsr); // LulZ for the Kbin
+   int Kbin=GetRBin(R);
 
    //TOF
    if(!(((int)Cutmask>>11)==0||((int)Cutmask>>11)==512)) {

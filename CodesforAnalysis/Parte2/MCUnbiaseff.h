@@ -12,7 +12,7 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l) {
 
    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
-      Kbin=GetArrayBin(fabs(Momento_gen), bin, nbinsr);
+      Kbin=GetRBin(fabs(Momento_gen));
       EffUnbiasMCP->beforeR->Fill(Kbin);
       if(Unbias==0) EffUnbiasMCP->afterR->Fill(Kbin);
 
@@ -25,7 +25,7 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l) {
 
    if(Massa_gen>1&&Massa_gen<2) {
       //R bins
-      Kbin=GetArrayBin(fabs(Momento_gen), bin, nbinsr);
+      Kbin=GetRBin(fabs(Momento_gen));
       FillBinMGen(EffUnbiasMCD->beforeR, Kbin);
       if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
       

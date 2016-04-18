@@ -3,3 +3,4 @@ err
 Lancia/*.sh
 Histos
 lsf
+*.exe
