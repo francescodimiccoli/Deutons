@@ -59,7 +59,7 @@ class Flux
 
       //reading constructor
       Flux(TFile * file, std::string basename, std::string dirname, std::string acceptname,int n) {
-         Counts_R	=(TH1 *)file->Get((basename + "Counts_R"        ).c_str());
+         Counts_R	 =(TH1 *)file->Get((basename + "Counts_R"        ).c_str());
          Counts_TOF      =(TH1 *)file->Get((basename + "Counts_TOF"      ).c_str());
          Counts_NaF      =(TH1 *)file->Get((basename + "Counts_NaF"      ).c_str());
          Counts_Agl      =(TH1 *)file->Get((basename + "Counts_Agl"      ).c_str());

@@ -1,10 +1,14 @@
+TemplateFIT * FitTOF_Dbins = new TemplateFIT("FitTOF_Pbins",nbinsToF,0,3);
+TemplateFIT * FitNaF_Dbins = new TemplateFIT("FitNaF_Pbins",nbinsNaF,0,3);
+TemplateFIT * FitAgl_Dbins = new TemplateFIT("FitAgl_Pbins",nbinsAgl,0,3);
 
-TemplateFIT * FitTOF_Dbins = new TemplateFIT("FitTOF_Dbins",nbinsToF,0,3,11);
-TemplateFIT * FitNaF_Dbins = new TemplateFIT("FitNaF_Dbins",nbinsNaF,0,3,11);
-TemplateFIT * FitAgl_Dbins = new TemplateFIT("FitAgl_Dbins",nbinsAgl,0,3,11);
-TemplateFIT * FitTOF_Pbins = new TemplateFIT("FitTOF_Pbins",nbinsToF,0,3,11);
-TemplateFIT * FitNaF_Pbins = new TemplateFIT("FitNaF_Pbins",nbinsNaF,0,3,11);
-TemplateFIT * FitAgl_Pbins = new TemplateFIT("FitAgl_Pbins",nbinsAgl,0,3,11);
+TemplateFIT * FitTOFgeo_Dbins = new TemplateFIT("FitTOFgeo_Dbins",nbinsToF,0,3,11);
+TemplateFIT * FitNaFgeo_Dbins = new TemplateFIT("FitNaFgeo_Dbins",nbinsNaF,0,3,11);
+TemplateFIT * FitAglgeo_Dbins = new TemplateFIT("FitAglgeo_Dbins",nbinsAgl,0,3,11);
+
+TemplateFIT * FitTOF_Pbins = new TemplateFIT("FitTOF_Pbins",nbinsToF,0,3);
+TemplateFIT * FitNaF_Pbins = new TemplateFIT("FitNaF_Pbins",nbinsNaF,0,3);
+TemplateFIT * FitAgl_Pbins = new TemplateFIT("FitAgl_Pbins",nbinsAgl,0,3);
 
 
 void DeutonsMC_Fill(TNtuple *ntupla, int l){
@@ -66,22 +70,22 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 	for(int m=0;m<nbinsToF;m++){ //TOF
 		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
 		if(Var>BetaD[m]&&Var<=BetaD[m+1]){
-			if(R>1.2*Rcutoff) FitTOF_Dbins -> Data_Prim -> Fill(mass,m);
-			((TH3*)FitTOF_Dbins -> Data_Geomag) -> Fill(mass,m,zona);
+			if(R>1.2*Rcutoff) FitTOF_Dbins -> DATA -> Fill(mass,m);
+			((TH3*)FitTOFgeo_Dbins -> DATA) -> Fill(mass,m,zona);
 		}
 		if(Var>BetaP[m]&&Var<=BetaP[m+1]) {
-			if(R>1.2*Rcutoff) FitTOF_Pbins -> Data_Prim -> Fill(mass,m);
+			if(R>1.2*Rcutoff) FitTOF_Pbins -> DATA -> Fill(mass,m);
 		}
 	}
 	for(int m=0;m<nbinsNaF;m++){//NaF
 		if((((int)Cutmask)>>11)==512){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
-				if(R>1.2*Rcutoff) FitNaF_Dbins -> Data_Prim -> Fill(mass,m);
-				((TH3*)FitNaF_Dbins -> Data_Geomag) -> Fill(mass,m,zona);
+				if(R>1.2*Rcutoff) FitNaF_Dbins -> DATA -> Fill(mass,m);
+				((TH3*)FitNaFgeo_Dbins -> DATA) -> Fill(mass,m,zona);
 			}
 			if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) {
-				if(R>1.2*Rcutoff) FitNaF_Pbins -> Data_Prim -> Fill(mass,m);
+				if(R>1.2*Rcutoff) FitNaF_Pbins -> DATA -> Fill(mass,m);
 			}
 		}
 	}
@@ -89,11 +93,11 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 		if((((int)Cutmask)>>11)==0){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
-				if(R>1.2*Rcutoff) FitAgl_Dbins -> Data_Prim -> Fill(mass,m);
-				((TH3*)FitAgl_Dbins -> Data_Geomag) -> Fill(mass,m,zona);
+				if(R>1.2*Rcutoff) FitAgl_Dbins -> DATA -> Fill(mass,m);
+				((TH3*)FitAglgeo_Dbins -> DATA) -> Fill(mass,m,zona);
 			}
 			if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) {
-				if(R>1.2*Rcutoff) FitAgl_Pbins -> Data_Prim -> Fill(mass,m);
+				if(R>1.2*Rcutoff) FitAgl_Pbins -> DATA -> Fill(mass,m);
 			}
 		}
 	}
@@ -106,6 +110,11 @@ void DeutonsMC_Write(){
 	FitTOF_Dbins -> Write();
 	FitNaF_Dbins -> Write();
 	FitAgl_Dbins -> Write();
+
+	FitTOFgeo_Dbins -> Write();
+	FitNaFgeo_Dbins -> Write();
+	FitAglgeo_Dbins -> Write();
+
 	
 	FitTOF_Pbins -> Write();
 	FitNaF_Pbins -> Write();
@@ -118,13 +127,17 @@ void DeutonsTemplFits(){
 	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 	TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
 
-	TemplateFIT * FitTOF_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins",0,3,11);
-	TemplateFIT * FitNaF_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins",0,3,11);
-	TemplateFIT * FitAgl_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins",0,3,11);
-
-	TemplateFIT * FitTOF_Pbins	= new TemplateFIT(file1,"FitTOF_Pbins",0,3,11);
-	TemplateFIT * FitNaF_Pbins	= new TemplateFIT(file1,"FitNaF_Pbins",0,3,11);
-	TemplateFIT * FitAgl_Pbins	= new TemplateFIT(file1,"FitAgl_Pbins",0,3,11);
+	TemplateFIT * FitTOF_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins","FitTOF_Dbins",0,3);
+	TemplateFIT * FitNaF_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins","FitNaF_Dbins",0,3);
+	TemplateFIT * FitAgl_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins","FitAgl_Dbins",0,3);
+                                                                                              
+	TemplateFIT * FitTOFgeo_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins","FitTOFgeo_Dbins",0,3,11);
+	TemplateFIT * FitNaFgeo_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins","FitNaFgeo_Dbins",0,3,11);
+	TemplateFIT * FitAglgeo_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins","FitAglgeo_Dbins",0,3,11);
+                                                                                              
+	TemplateFIT * FitTOF_Pbins	= new TemplateFIT(file1,"FitTOF_Pbins","FitTOF_Pbins",0,3);
+	TemplateFIT * FitNaF_Pbins	= new TemplateFIT(file1,"FitNaF_Pbins","FitNaF_Pbins",0,3);
+	TemplateFIT * FitAgl_Pbins	= new TemplateFIT(file1,"FitAgl_Pbins","FitAgl_Pbins",0,3);
 
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
