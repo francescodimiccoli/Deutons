@@ -47,7 +47,7 @@ class TemplateFIT
 {
 
 private:
-	std::vector<TFit *> fits;
+	std::vector<std::vector<TFit *>> fits;
 
 public:
 	// Templates
@@ -56,76 +56,110 @@ public:
 	TH1 * TemplateHe;
 	
 	//Data
-	TH1 * Data_Prim	 ;
-	TH1 * Data_Geomag;
+	TH1 * DATA	 ;
 	
 	//Counts
 	TH1 * PCounts	;
         TH1 * DCounts	;	
-	TH1 * PCountsgeo;	
-        TH1 * DCountsgeo;	
 	
 	int nbins;
+	bool Geomag;
+
 	//creation constructors
-	TemplateFIT(std::string basename ,int Nbins ,float val_min , float val_max,int n){
+	TemplateFIT(std::string basename ,int Nbins ,float val_min , float val_max){
 
 		TemplateP   = 	new TH2F((basename + "_P"   ).c_str(),(basename + "_P"   ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
                 TemplateD   =	new TH2F((basename + "_D"   ).c_str(),(basename + "_D"   ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
                 TemplateHe  =	new TH2F((basename + "_He"  ).c_str(),(basename + "_He"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
 
-	Data_Prim   =	new TH2F((basename + "_Data_Prim"  ).c_str(),(basename + "_Data_Prim"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
-		Data_Geomag =	new TH3F((basename + "_Data_Geomag").c_str(),(basename + "_Data_Geomag").c_str(),100,val_min,val_max,Nbins,0,Nbins,n,0,n);		
-		
+		DATA        =	new TH2F((basename + "_Data"  ).c_str(),(basename + "_Data"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
 		
 		PCounts	   =	new TH1F((basename + "_PCounts"  	 ).c_str(),(basename + "_PCounts"   	).c_str(),Nbins,0,Nbins);
 		DCounts	   =	new TH1F((basename + "_DCounts"  	 ).c_str(),(basename + "_DCounts"   	).c_str(),Nbins,0,Nbins);
-        	PCountsgeo = 	new TH2F((basename + "_PCounts_geo"      ).c_str(),(basename + "_PCounts_geo"   ).c_str(),Nbins,0,Nbins,n,0,n);
-        	DCountsgeo = 	new TH2F((basename + "_DCounts_geo"      ).c_str(),(basename + "_DCounts_geo"   ).c_str(),Nbins,0,Nbins,n,0,n);
 	
 		nbins = Nbins;
-
 		
+		Geomag = false;	
 	}
 
-	//reading constructor
-	TemplateFIT(TFile * file , std::string basename , float val_min , float val_max,int n){
+	TemplateFIT(std::string basename ,int Nbins ,float val_min , float val_max, int n){
 
-		TemplateP   =	(TH1 *)file->Get((basename + "_P"     ).c_str());	
-                TemplateD   =	(TH1 *)file->Get((basename + "_D"     ).c_str());
-                TemplateHe  =	(TH1 *)file->Get((basename + "_He"    ).c_str());
+                TemplateP   =   new TH2F((basename + "_P"   ).c_str(),(basename + "_P"   ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
+                TemplateD   =   new TH2F((basename + "_D"   ).c_str(),(basename + "_D"   ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
+                TemplateHe  =   new TH2F((basename + "_He"  ).c_str(),(basename + "_He"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
+
+                DATA 	    =   new TH3F((basename + "_Data").c_str(),(basename + "_Data").c_str(),100,val_min,val_max,Nbins,0,Nbins,n,0,n);
+
+                PCounts     =    new TH2F((basename + "_PCounts"      ).c_str(),(basename + "_PCounts"   ).c_str(),Nbins,0,Nbins,n,0,n);
+                DCounts     =    new TH2F((basename + "_DCounts"      ).c_str(),(basename + "_DCounts"   ).c_str(),Nbins,0,Nbins,n,0,n);
+
+                nbins = Nbins;
+
+		Geomag = true;
+        }
+
+
+
+	//reading constructor
+	TemplateFIT(TFile * file , std::string basename_MC , std::string basename_data, float val_min , float val_max){
+
+		TemplateP   =	(TH1 *)file->Get((basename_MC   + "_P"     ).c_str());	
+                TemplateD   =	(TH1 *)file->Get((basename_MC   + "_D"     ).c_str());
+                TemplateHe  =	(TH1 *)file->Get((basename_MC   + "_He"    ).c_str());
 	                     
-                Data_Prim   =	(TH1 *)file->Get((basename + "_Data_Prim"     ).c_str());
-	        Data_Geomag =	(TH1 *)file->Get((basename + "_Data_Geomag"   ).c_str());
+                DATA        =	(TH1 *)file->Get((basename_data + "_Data"     ).c_str());
 		
 		nbins =  TemplateP -> GetNbinsY();
 			
-		PCounts	   =	new TH1F((basename + "_PCounts"  	 ).c_str(),(basename + "_PCounts"   	).c_str(),nbins,0,nbins);
-		DCounts	   =	new TH1F((basename + "_DCounts"  	 ).c_str(),(basename + "_DCounts"   	).c_str(),nbins,0,nbins);
-        	PCountsgeo = 	new TH2F((basename + "_PCounts_geo"      ).c_str(),(basename + "_PCounts_geo"   ).c_str(),nbins,0,nbins,n,0,n);
-        	DCountsgeo = 	new TH2F((basename + "_DCounts_geo"      ).c_str(),(basename + "_DCounts_geo"   ).c_str(),nbins,0,nbins,n,0,n);
+		PCounts	   =	new TH1F((basename_data + "_PCounts"  	 ).c_str(),(basename_data + "_PCounts"   	).c_str(),nbins,0,nbins);
+		DCounts	   =	new TH1F((basename_data + "_DCounts"  	 ).c_str(),(basename_data + "_DCounts"   	).c_str(),nbins,0,nbins);
 		
+		Geomag = false;
+		
+		fits.push_back(std::vector<TFit *>());
 	}
+
+	TemplateFIT(TFile * file , std::string basename_MC, std::string basename_data, float val_min , float val_max,int n){
+
+		TemplateP   =	(TH1 *)file->Get((basename_MC   + "_P"     ).c_str());	
+                TemplateD   =	(TH1 *)file->Get((basename_MC   + "_D"     ).c_str());
+                TemplateHe  =	(TH1 *)file->Get((basename_MC   + "_He"    ).c_str());
+	                     
+	        DATA        =	(TH1 *)file->Get((basename_data + "_Data"   ).c_str());
+		
+		nbins =  TemplateP -> GetNbinsY();
+			
+        	PCounts = 	new TH2F((basename_data + "_PCounts"      ).c_str(),(basename_data + "_PCounts"   ).c_str(),nbins,0,nbins,n,0,n);
+        	DCounts = 	new TH2F((basename_data + "_DCounts"      ).c_str(),(basename_data + "_DCounts"   ).c_str(),nbins,0,nbins,n,0,n);
+		
+		Geomag = true;	
+		
+		for(int n=0; n<nbins;n++) fits.push_back(std::vector<TFit *>());
+	}
+
+
+
+	//Methods
+
 	void Write();
 	
-	TH1F * Extract_Bin_histos(TH1 * Histo, int bin);
-
-	TH1F * Extract_Bin_histos_geo(TH1 * Histo, int bin, int lat);
+	TH1F * Extract_Bin(TH1 * Histo, int bin,int lat=0);
 	
-	void Do_TemplateFIT(TFit * Fit);
+	void Do_TemplateFIT(TFit * Fit, int lat=0);
 	
-	int GetFitOutcome(int bin){if(fits[bin]) return fits[bin]->Tfit_outcome; else {cout<<"Fit not yet performed: bin nr. "<<bin<<endl; return -1;}}
+	int GetFitOutcome(int bin,int lat=0){if(fits[bin][lat]) return fits[bin][lat]->Tfit_outcome; else {cout<<"Fit not yet performed: bin nr. "<<bin<<endl; return -1;}};
 
-	double GetFitWheights(int par, int bin);
+	double GetFitWheights(int par, int bin,int lat=0);
 
-	double GetFitErrors(int par,int bin);
+	double GetFitErrors(int par,int bin,int lat=0);
 
-	TH1F * GetResult_P (int bin){ TH1F *res =(TH1F*)fits[bin] -> Templ_P -> Clone() ; res -> Scale(GetFitWheights(0,bin)); return res;}	
-	TH1F * GetResult_D (int bin){ TH1F *res =(TH1F*)fits[bin] -> Templ_D -> Clone() ; res -> Scale(GetFitWheights(1,bin)); return res;}
-	TH1F * GetResult_He(int bin){ TH1F *res =(TH1F*)fits[bin] -> Templ_He-> Clone() ; res -> Scale(GetFitWheights(2,bin)); return res;}
+	TH1F * GetResult_P (int bin, int lat=0){ TH1F *res =(TH1F*)fits[bin][lat] -> Templ_P -> Clone() ; res -> Scale(GetFitWheights(0,bin,lat)); return res;};	
+	TH1F * GetResult_D (int bin, int lat=0){ TH1F *res =(TH1F*)fits[bin][lat] -> Templ_D -> Clone() ; res -> Scale(GetFitWheights(1,bin,lat)); return res;};
+	TH1F * GetResult_He(int bin, int lat=0){ TH1F *res =(TH1F*)fits[bin][lat] -> Templ_He-> Clone() ; res -> Scale(GetFitWheights(2,bin,lat)); return res;};
 
-	TH1F * GetResult_Data(int bin)	      { return fits[bin] -> Data; }
+	TH1F * GetResult_Data(int bin,int lat=0)	      { return fits[bin][lat] -> Data; };
 	
 	void TemplateFits();
 	
-	void TemplateFitPlot(TCanvas * c, std::string var_name,int bin);
+	void TemplateFitPlot(TCanvas * c, std::string var_name,int bin,int lat=0);
 };
