@@ -135,7 +135,7 @@ void TemplateFIT::TemplateFitPlot(TCanvas * c, std::string var_name,int bin,int 
 	TH1F *HeMC = GetResult_He  (bin,lat);
 	TH1F *Data = GetResult_Data(bin,lat);
 
-	if(fits[bin][lat]->Tfit_outcome==0) TH1F * Result = (TH1F*)fits[bin][lat] -> Tfit -> GetPlot();	
+	if(GetFitOutcome(bin,lat)==0) TH1F * Result = (TH1F*)fits[bin][lat] -> Tfit -> GetPlot();	
 
 	PMC -> SetFillColor(2);
 	DMC -> SetFillColor(4);
