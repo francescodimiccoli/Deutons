@@ -134,7 +134,7 @@ public:
 		
 		Geomag = true;	
 		
-		for(int n=0; n<nbins;n++) fits.push_back(std::vector<TFit *>());
+		for(int lat=0; lat<n;lat ++) fits.push_back(std::vector<TFit *>());
 	}
 
 
