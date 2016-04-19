@@ -1,6 +1,6 @@
-TemplateFIT * FitTOF_Dbins = new TemplateFIT("FitTOF_Pbins",nbinsToF,0,3);
-TemplateFIT * FitNaF_Dbins = new TemplateFIT("FitNaF_Pbins",nbinsNaF,0,3);
-TemplateFIT * FitAgl_Dbins = new TemplateFIT("FitAgl_Pbins",nbinsAgl,0,3);
+TemplateFIT * FitTOF_Dbins = new TemplateFIT("FitTOF_Dbins",nbinsToF,0,3);
+TemplateFIT * FitNaF_Dbins = new TemplateFIT("FitNaF_Dbins",nbinsNaF,0,3);
+TemplateFIT * FitAgl_Dbins = new TemplateFIT("FitAgl_Dbins",nbinsAgl,0,3);
 
 TemplateFIT * FitTOFgeo_Dbins = new TemplateFIT("FitTOFgeo_Dbins",nbinsToF,0,3,11);
 TemplateFIT * FitNaFgeo_Dbins = new TemplateFIT("FitNaFgeo_Dbins",nbinsNaF,0,3,11);
@@ -141,13 +141,17 @@ void DeutonsTemplFits(){
 
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
-	FitTOF_Dbins -> TemplateFits(); 
-	FitNaF_Dbins -> TemplateFits();
-	FitAgl_Dbins -> TemplateFits();
+	FitTOF_Dbins 	-> TemplateFits(); 
+	FitNaF_Dbins 	-> TemplateFits();
+	FitAgl_Dbins 	-> TemplateFits();
 
-	FitTOF_Pbins -> TemplateFits();
-	FitNaF_Pbins -> TemplateFits();
-	FitAgl_Pbins -> TemplateFits();
+	FitTOFgeo_Dbins -> TemplateFits();
+        FitNaFgeo_Dbins -> TemplateFits();
+	FitAglgeo_Dbins -> TemplateFits();
+
+	FitTOF_Pbins 	-> TemplateFits();
+	FitNaF_Pbins 	-> TemplateFits();
+	FitAgl_Pbins 	-> TemplateFits();
 
 	cout<<"*** Updating P1 file ****"<<endl;
 
@@ -165,73 +169,116 @@ void DeutonsTemplFits(){
 	file1 -> Write();
 	file1 -> Close(); 	
 	
-	TCanvas *c30_TOF[12][nbinsToF];
-	TCanvas *c30_NaF[12][nbinsNaF];
-	TCanvas *c30_Agl[12][nbinsAgl];
+	TCanvas *c30_TOF[2][nbinsToF];
+	TCanvas *c30_NaF[2][nbinsNaF];
+	TCanvas *c30_Agl[2][nbinsAgl];
 	
+	TCanvas *c30_TOFgeo[11];
+	TCanvas *c30_NaFgeo[11];
+        TCanvas *c30_Aglgeo[11];
+	
+	//Primaries
 	for(int bin=0; bin <nbinsToF; bin++){
 		c30_TOF[0][bin] = new TCanvas(("TOF bin:" + to_string(bin)).c_str());
-		FitTOF_Dbins -> TemplateFitPlot(c30_TOF[0][bin],"Mass [GeV/C^2]",bin);
+		c30_TOF[0][bin]->cd();
+		FitTOF_Dbins -> TemplateFitPlot(gPad,"Mass [GeV/C^2]",bin);
 	}
 	for(int bin=0; bin <nbinsNaF; bin++){
 		c30_NaF[0][bin] = new TCanvas(("NaF bin:" + to_string(bin)).c_str());
-		FitNaF_Dbins -> TemplateFitPlot(c30_NaF[0][bin],"Mass [GeV/C^2]",bin);
+		c30_NaF[0][bin]->cd();
+		FitNaF_Dbins -> TemplateFitPlot(gPad,"Mass [GeV/C^2]",bin);
 	}
 	for(int bin=0; bin <nbinsAgl; bin++){
 		c30_Agl[0][bin] = new TCanvas(("Agl bin:" + to_string(bin)).c_str());
-		FitAgl_Dbins -> TemplateFitPlot(c30_Agl[0][bin],"Mass [GeV/C^2]",bin);
+		c30_Agl[0][bin]->cd();
+		FitAgl_Dbins -> TemplateFitPlot(gPad,"Mass [GeV/C^2]",bin);
 	}
 	
 	for(int bin=0; bin <nbinsToF; bin++){
-		c30_TOF[11][bin] = new TCanvas(("TOF P bin:" + to_string(bin)).c_str());
-		FitTOF_Pbins -> TemplateFitPlot(c30_TOF[11][bin],"Mass [GeV/C^2]",bin);
+		c30_TOF[1][bin] = new TCanvas(("TOF P bin:" + to_string(bin)).c_str());
+		c30_TOF[1][bin]->cd();
+		FitTOF_Pbins -> TemplateFitPlot(gPad,"Mass [GeV/C^2]",bin);
 	}
 	for(int bin=0; bin <nbinsNaF; bin++){
-		c30_NaF[11][bin] = new TCanvas(("NaF P bin:" + to_string(bin)).c_str());
-		FitNaF_Pbins -> TemplateFitPlot(c30_NaF[11][bin],"Mass [GeV/C^2]",bin);
+		c30_NaF[1][bin] = new TCanvas(("NaF P bin:" + to_string(bin)).c_str());
+		c30_NaF[1][bin]->cd();
+		FitNaF_Pbins -> TemplateFitPlot(gPad,"Mass [GeV/C^2]",bin);
 	}
 	for(int bin=0; bin <nbinsAgl; bin++){
-		c30_Agl[11][bin] = new TCanvas(("Agl P bin:" + to_string(bin)).c_str());
-		FitAgl_Pbins -> TemplateFitPlot(c30_Agl[11][bin],"Mass [GeV/C^2]",bin);
+		c30_Agl[1][bin] = new TCanvas(("Agl P bin:" + to_string(bin)).c_str());
+		c30_Agl[1][bin]->cd();
+		FitAgl_Pbins -> TemplateFitPlot(gPad,"Mass [GeV/C^2]",bin);
 	}
+	//Geo. Zones
+	for(int lat=1;lat<11;lat++){
+		
+
+		c30_TOFgeo[lat] = new TCanvas(("TOF bins - Latitude: " + to_string(lat)).c_str());
+		c30_NaFgeo[lat] = new TCanvas(("NaF bins - Latitude: " + to_string(lat)).c_str());
+		c30_Aglgeo[lat] = new TCanvas(("Agl bins - Latitude: " + to_string(lat)).c_str());
 	
+		c30_TOFgeo[lat] -> Divide(6,3);
+        	c30_NaFgeo[lat] -> Divide(6,3);
+        	c30_Aglgeo[lat] -> Divide(6,3);	
+		
+	
+		for(int bin=0; bin <nbinsToF; bin++){
+			c30_TOFgeo[lat] -> cd (bin +1);
+			FitTOFgeo_Dbins -> TemplateFitPlot(gPad,"Mass [GeV/C^2]",bin,lat);
+		}
+		for(int bin=0; bin <nbinsNaF; bin++){
+			c30_NaFgeo[lat] -> cd (bin +1);
+			FitNaFgeo_Dbins -> TemplateFitPlot(gPad,"Mass [GeV/C^2]",bin,lat);
+		}
+		for(int bin=0; bin <nbinsAgl; bin++){
+			c30_Aglgeo[lat] -> cd (bin +1);
+			FitAglgeo_Dbins -> TemplateFitPlot(gPad,"Mass [GeV/C^2]",bin,lat);
+		}
+	}
 
 	cout<<"*** Updating Results file ***"<<endl;
         nomefile="./Final_plots/"+mese+".root";
         TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
- 
-        f_out->mkdir("Mass Template Fits/TOF/Primaries/Dbins");
-        f_out->cd("Mass Template Fits/TOF/Primaries/Dbins");
-        for(int bin=0; bin <nbinsToF; bin++)
+	//Primaries
+	f_out->mkdir("Mass Template Fits/TOF/TOF Primaries/Dbins");
+	f_out->cd("Mass Template Fits/TOF/TOF Primaries/Dbins");
+	for(int bin=0; bin <nbinsToF; bin++)
 		c30_TOF[0][bin]->Write();
-        f_out->mkdir("Mass Template Fits/NaF/Primaries/Dbins");
-        f_out->cd("Mass Template Fits/NaF/Primaries/Dbins");
+	f_out->mkdir("Mass Template Fits/NaF/NaF Primaries/Dbins");
+	f_out->cd("Mass Template Fits/NaF/NaF Primaries/Dbins");
 	for(int bin=0; bin <nbinsNaF; bin++)
 		c30_NaF[0][bin]->Write();
-	f_out->mkdir("Mass Template Fits/Agl/Primaries/Dbins");
-        f_out->cd("Mass Template Fits/Agl/Primaries/Dbins");
+	f_out->mkdir("Mass Template Fits/Agl/Agl Primaries/Dbins");
+	f_out->cd("Mass Template Fits/Agl/Agl Primaries/Dbins");
 	for(int bin=0; bin <nbinsAgl; bin++)
 		c30_Agl[0][bin]->Write();
 
-	f_out->mkdir("Mass Template Fits/TOF/Primaries/Pbins");
-        f_out->cd("Mass Template Fits/TOF/Primaries/Pbins");
-        for(int bin=0; bin <nbinsToF; bin++)
-		c30_TOF[11][bin]->Write();
-        f_out->mkdir("Mass Template Fits/NaF/Primaries/Pbins");
-        f_out->cd("Mass Template Fits/NaF/Primaries/Pbins");
+	f_out->mkdir("Mass Template Fits/TOF/TOF Primaries/Pbins");
+	f_out->cd("Mass Template Fits/TOF/TOF Primaries/Pbins");
+	for(int bin=0; bin <nbinsToF; bin++)
+		c30_TOF[1][bin]->Write();
+	f_out->mkdir("Mass Template Fits/NaF/NaF Primaries/Pbins");
+	f_out->cd("Mass Template Fits/NaF/NaF Primaries/Pbins");
 	for(int bin=0; bin <nbinsNaF; bin++)
-		c30_NaF[11][bin]->Write();
-	f_out->mkdir("Mass Template Fits/Agl/Primaries/Pbins");
-        f_out->cd("Mass Template Fits/Agl/Primaries/Pbins");
+		c30_NaF[1][bin]->Write();
+	f_out->mkdir("Mass Template Fits/Agl/Agl Primaries/Pbins");
+	f_out->cd("Mass Template Fits/Agl/Agl Primaries/Pbins");
 	for(int bin=0; bin <nbinsAgl; bin++)
-		c30_Agl[11][bin]->Write();
-
-
-
-
+		c30_Agl[1][bin]->Write();
+	//Geom. Zones
+	for(int lat=1;lat<11;lat++){
+		f_out->mkdir("Mass Template Fits/TOF/TOF Geom. Zones");
+		f_out->cd("Mass Template Fits/TOF/TOF Geom. Zones");
+		c30_TOFgeo[lat] -> Write(("TOF Geo. Zone: " + to_string(lat)).c_str());
+		f_out->mkdir("Mass Template Fits/NaF/NaF Geom. Zones ");
+		f_out->cd("Mass Template Fits/NaF/NaF Geom. Zones ");
+		c30_NaFgeo[lat] -> Write(("NaF Geo. Zone: " + to_string(lat)).c_str());
+		f_out->mkdir("Mass Template Fits/Agl/Agl Geom. Zones  ");
+		f_out->cd("Mass Template Fits/Agl/Agl Geom. Zones  ");
+		c30_Aglgeo[lat] -> Write(("Agl Geo. Zone: " + to_string(lat)).c_str());
+	}
 	f_out->Write();
-        f_out->Close();
-
+	f_out->Close();
 
 
 	return;

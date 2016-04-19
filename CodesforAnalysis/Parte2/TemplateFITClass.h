@@ -161,5 +161,5 @@ public:
 	
 	void TemplateFits();
 	
-	void TemplateFitPlot(TCanvas * c, std::string var_name,int bin,int lat=0);
+	void TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,int lat=0);
 };

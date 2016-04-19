@@ -129,7 +129,7 @@ void TemplateFIT::TemplateFits(){
 }
 
 
-void TemplateFIT::TemplateFitPlot(TCanvas * c, std::string var_name,int bin,int lat){
+void TemplateFIT::TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,int lat){
 	c -> cd();
 	gPad-> SetLogy();
 	gPad-> SetGridx();
@@ -157,6 +157,7 @@ void TemplateFIT::TemplateFitPlot(TCanvas * c, std::string var_name,int bin,int 
 	Stack->Add(DMC);
 	Stack->Add(HeMC);
 	Stack->Draw();
+	Stack-> SetTitle(("Template Fit bin " + to_string(bin)).c_str());	
 	Stack-> GetXaxis()->SetTitle(var_name.c_str());
 	Stack-> GetYaxis()->SetTitle("Counts");
 	Data->Draw("epsame");
