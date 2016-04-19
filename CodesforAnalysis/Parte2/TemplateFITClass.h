@@ -147,17 +147,17 @@ public:
 	
 	void Do_TemplateFIT(TFit * Fit, int lat=0);
 	
-	int GetFitOutcome(int bin,int lat=0){if(fits[bin][lat]) return fits[bin][lat]->Tfit_outcome; else {cout<<"Fit not yet performed: bin nr. "<<bin<<endl; return -1;}};
+	int GetFitOutcome(int bin,int lat=0){if(lat < fits.size() && bin < fits[lat].size()) return fits[bin][lat]->Tfit_outcome; else {cout<<"Fit not yet performed: bin nr. "<<bin<<endl; return -1;}};
 
 	double GetFitWheights(int par, int bin,int lat=0);
 
 	double GetFitErrors(int par,int bin,int lat=0);
 
-	TH1F * GetResult_P (int bin, int lat=0){ TH1F *res =(TH1F*)fits[bin][lat] -> Templ_P -> Clone() ; res -> Scale(GetFitWheights(0,bin,lat)); return res;};	
-	TH1F * GetResult_D (int bin, int lat=0){ TH1F *res =(TH1F*)fits[bin][lat] -> Templ_D -> Clone() ; res -> Scale(GetFitWheights(1,bin,lat)); return res;};
-	TH1F * GetResult_He(int bin, int lat=0){ TH1F *res =(TH1F*)fits[bin][lat] -> Templ_He-> Clone() ; res -> Scale(GetFitWheights(2,bin,lat)); return res;};
+	TH1F * GetResult_P (int bin, int lat=0) {TH1F *res = new TH1F(); if(GetFitOutcome(bin,lat)>=0) res =(TH1F*)fits[bin][lat] -> Templ_P -> Clone(); res -> Scale(GetFitWheights(0,bin,lat));return res;};
+	TH1F * GetResult_D (int bin, int lat=0) {TH1F *res = new TH1F(); if(GetFitOutcome(bin,lat)>=0) res =(TH1F*)fits[bin][lat] -> Templ_D -> Clone(); res -> Scale(GetFitWheights(1,bin,lat));return res;};
+	TH1F * GetResult_He(int bin, int lat=0) {TH1F *res = new TH1F(); if(GetFitOutcome(bin,lat)>=0) res =(TH1F*)fits[bin][lat] -> Templ_He-> Clone(); res -> Scale(GetFitWheights(2,bin,lat));return res;}; 
 
-	TH1F * GetResult_Data(int bin,int lat=0)	      { return fits[bin][lat] -> Data; };
+	TH1F * GetResult_Data(int bin,int lat=0){ TH1F *res = new TH1F(); if(GetFitOutcome(bin,lat)>=0)res =(TH1F*)fits[bin][lat] -> Data; return res; };
 	
 	void TemplateFits();
 	
