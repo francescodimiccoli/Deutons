@@ -54,8 +54,36 @@ double TemplateFIT::GetFitWheights(int par, int bin){
 	}	
 }
 
-void TemplateFIT::TemplateFits(){
+double TemplateFIT::GetFitErrors(int par,int bin){
+	if(GetFitOutcome(bin)==-1) return  0;
+	if(GetFitOutcome(bin)>0)   return  0;
+	if(GetFitOutcome(bin)==0){
+		double w1,e1=0;
+		double w2,e2=0;
+		double w3,e3=0;
+		fits[bin]-> Tfit ->GetResult(0,w1,e1);
+		fits[bin]-> Tfit ->GetResult(1,w2,e2);
+		fits[bin]-> Tfit ->GetResult(2,w3,e3);
 
+		float Cov01=fits[bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
+		float Cov02=fits[bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,2);
+		float Cov12=fits[bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(1,2);
+
+		float Sigma=pow((pow(w2*e2,2)+pow(w1*e1,2)+pow(w3*e3,2)
+					-2*Cov01*w1*w2-2*Cov02*w1*w3
+					-2*Cov12*w2*w3)/2,0.5);
+
+		double Err = pow((Sigma/w2,2) + pow(Sigma/w1,2),0.5); //Fit relative error
+		TH1F * ResultPlot;  
+		if(par == 0)	ResultPlot = GetResult_P (bin);	
+		if(par == 1)    ResultPlot = GetResult_D (bin);
+		if(par == 2)    ResultPlot = GetResult_He (bin);
+
+		return Err*ResultPlot->Integral(); //Fit absolute error
+	}
+}
+
+void TemplateFIT::TemplateFits(){
 
 	for(int bin=0; bin<nbins ; bin++){
 		TFit * Fit = new TFit;
@@ -71,6 +99,9 @@ void TemplateFIT::TemplateFits(){
 
 		PCounts -> SetBinContent(bin+1,ResultPlot_P->Integral());
 		DCounts -> SetBinContent(bin+1,ResultPlot_D->Integral());
+		
+		PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
+                DCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
 	}
 	return;
 }

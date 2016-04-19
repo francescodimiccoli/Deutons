@@ -113,9 +113,11 @@ public:
 	
 	void Do_TemplateFIT(TFit * Fit);
 	
-	double GetFitWheights(int par, int bin);
-	
 	int GetFitOutcome(int bin){if(fits[bin]) return fits[bin]->Tfit_outcome; else {cout<<"Fit not yet performed: bin nr. "<<bin<<endl; return -1;}}
+
+	double GetFitWheights(int par, int bin);
+
+	double GetFitErrors(int par,int bin);
 
 	TH1F * GetResult_P (int bin){ TH1F *res =(TH1F*)fits[bin] -> Templ_P -> Clone() ; res -> Scale(GetFitWheights(0,bin)); return res;}	
 	TH1F * GetResult_D (int bin){ TH1F *res =(TH1F*)fits[bin] -> Templ_D -> Clone() ; res -> Scale(GetFitWheights(1,bin)); return res;}
