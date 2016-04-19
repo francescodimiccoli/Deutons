@@ -11,14 +11,16 @@ void TemplateFIT::Write(){
 }
 
 TH1F * TemplateFIT::Extract_Bin(TH1 * Histo, int bin,int lat){
-	TH1F * Slice;
-	Slice = new TH1F("","",Histo->GetNbinsX(),0,Histo->GetXaxis()->GetBinLowEdge(101));
-                for(int i = 0; i< Histo->GetNbinsX();i++)
-                        Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1));
-                return Slice;
+	TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),0,Histo->GetXaxis()->GetBinLowEdge(101));
+	if(lat==0){
+		for(int i = 0; i< Histo->GetNbinsX();i++)
+			Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1));
+		return Slice;
+	}
 	if(lat!=0){	
-		Slice = (TH1F *)((TH3F*)Histo) -> ProjectionX ("",bin+1,bin+1,lat+1,lat+1) -> Clone();
-                return Slice;
+		for(int i = 0; i< Histo->GetNbinsX();i++)
+                        Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1,lat+1));
+		return Slice;
 	}
 
 }
@@ -30,9 +32,14 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat){
 	Tpl -> Add( Fit ->  Templ_P );
 	Tpl -> Add( Fit ->  Templ_D );
 	Tpl -> Add( Fit ->  Templ_He);
-
-	Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
-	Fit -> Tfit_outcome = 1;//fit -> Fit();
+	if(Fit -> Data -> Integral() > 500){
+		Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
+		Fit -> Tfit_outcome = 1;//fit -> Fit();
+	}
+	else{
+		Fit -> Tfit = 0;
+		Fit -> Tfit_outcome = 2;
+	}
 	fits[lat].push_back(Fit);
 
 	return;
@@ -43,13 +50,13 @@ double TemplateFIT::GetFitWheights(int par, int bin,int lat){
 	if(GetFitOutcome(bin,lat)>0)   return  1;
 	if(GetFitOutcome(bin,lat)==0){
 		double w1,e1=0;
-		fits[bin][lat]-> Tfit ->GetResult(par,w1,e1);
-		TH1F * Result = (TH1F*)fits[bin][lat] -> Tfit -> GetPlot();
+		fits[lat][bin]-> Tfit ->GetResult(par,w1,e1);
+		TH1F * Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();
 		float itot= Result->Integral();
 		float i1;
-		if(par == 0) i1 = fits[bin][lat]-> Templ_P ->Integral();
-		if(par == 1) i1 = fits[bin][lat]-> Templ_D ->Integral();
-		if(par == 2) i1 = fits[bin][lat]-> Templ_He ->Integral();
+		if(par == 0) i1 = fits[lat][bin]-> Templ_P ->Integral();
+		if(par == 1) i1 = fits[lat][bin]-> Templ_D ->Integral();
+		if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral();
 		return w1/(i1*itot); 
 	}	
 }
@@ -61,13 +68,13 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat){
 		double w1,e1=0;
 		double w2,e2=0;
 		double w3,e3=0;
-		fits[bin][lat]-> Tfit ->GetResult(0,w1,e1);
-		fits[bin][lat]-> Tfit ->GetResult(1,w2,e2);
-		fits[bin][lat]-> Tfit ->GetResult(2,w3,e3);
+		fits[lat][bin]-> Tfit ->GetResult(0,w1,e1);
+		fits[lat][bin]-> Tfit ->GetResult(1,w2,e2);
+		fits[lat][bin]-> Tfit ->GetResult(2,w3,e3);
 
-		float Cov01=fits[bin][lat]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
-		float Cov02=fits[bin][lat]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,2);
-		float Cov12=fits[bin][lat]-> Tfit->GetFitter()->GetCovarianceMatrixElement(1,2);
+		float Cov01=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
+		float Cov02=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,2);
+		float Cov12=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(1,2);
 
 		float Sigma=pow((pow(w2*e2,2)+pow(w1*e1,2)+pow(w3*e3,2)
 					-2*Cov01*w1*w2-2*Cov02*w1*w3
@@ -87,9 +94,8 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat){
 void TemplateFIT::TemplateFits(){
 
 	int loops = 1;
-	if(Geomag) loops = DATA -> GetNbinsY();
-
-	for(int lat = 1; lat < loops ; lat ++)
+	if(Geomag) loops = DATA -> GetNbinsZ();
+	for(int lat = 0; lat < loops ; lat ++)
 		for(int bin=0; bin<nbins ; bin++){
 			TFit * Fit = new TFit;
 			Fit->Templ_P =  (TH1F *)TemplateFIT::Extract_Bin  (TemplateP, bin);	
@@ -135,14 +141,14 @@ void TemplateFIT::TemplateFitPlot(TCanvas * c, std::string var_name,int bin,int 
 	TH1F *HeMC = GetResult_He  (bin,lat);
 	TH1F *Data = GetResult_Data(bin,lat);
 
-	if(GetFitOutcome(bin,lat)==0) TH1F * Result = (TH1F*)fits[bin][lat] -> Tfit -> GetPlot();	
+	if(GetFitOutcome(bin,lat)==0) TH1F * Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();	
 
 	PMC -> SetFillColor(2);
 	DMC -> SetFillColor(4);
 	HeMC-> SetFillColor(3);
 	Data->SetMarkerStyle(8);
 
-	if(fits[bin][lat]->Tfit_outcome!=0){
+	if(fits[lat][bin]->Tfit_outcome!=0){
 		PMC -> SetFillStyle(3001);
 		DMC -> SetFillStyle(3001);
 		HeMC-> SetFillStyle(3001);
