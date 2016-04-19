@@ -101,7 +101,7 @@ void TemplateFIT::TemplateFits(){
 		DCounts -> SetBinContent(bin+1,ResultPlot_D->Integral());
 		
 		PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
-                DCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
+                DCounts -> SetBinError(bin+1,GetFitErrors(1,bin));
 	}
 	return;
 }
