@@ -185,7 +185,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCQualeff_Fill(ntupla1,i);
 		//DVSMCQualeff2_Fill(ntupla1,i);	
 		DeutonsMC_Fill(ntupla1,i);
-		/*DeutonsMC_Dist_Fill(ntupla1,i);*/
+		DeutonsMC_Dist_Fill(ntupla1,i);
 		MCMC_Fill(ntupla1,i);
         }
 	}
@@ -269,7 +269,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		ProtonFlux_Fill(ntupla3,i,Zona);
 		//DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		DeutonsDATA_Fill(ntupla3,i,Zona);
-		//DeutonsDATA_Dist_Fill(ntupla3,i,Zona);
+		DeutonsDATA_Dist_Fill(ntupla3,i,Zona);
 		MCMCDATA_Fill(ntupla3,i);
 		}
         }
@@ -286,8 +286,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		SlidesforPlot_Write();	
 		DATAUnbiaseff_Write();
 		DeutonsMC_Write();
-		/*DeutonsMC_Dist_Write();
-		DVSMCpreSeleff_Write();
+		DeutonsMC_Dist_Write();
+		/*DVSMCpreSeleff_Write();
 		DVSMCQualeff2_Write();
 		DVSMCTrackeff_Write();*/
 		MCMC_Write();

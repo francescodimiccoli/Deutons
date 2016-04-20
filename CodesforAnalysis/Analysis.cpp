@@ -26,6 +26,7 @@
 #include "Parte2/Acceptance.cpp"
 #include "Parte2/ProtonFlux.cpp"
 #include "Parte2/DeutonsCountsExtraction.cpp"
+#include "Parte2/DeutonsCountsExtraction_Dist.cpp"
 #include "Parte2/MCMC.cpp"
 #include "FillIstogram.cpp"
 
@@ -237,10 +238,10 @@ int main(int argc, char * argv[])
 		//DVSMCTrackeff(file1);
 		DATAQualeff(file1);
 		if(frac=="tot") DeutonsTemplFits();
+		if(frac=="tot") DeutonsTemplFits_Dist();
 		/*DVSMCpreSeleff(file1);
 		  DVSMCQualeff2(file1);*/
-		/*DeutonsTemplFits_Dist(file1);
-		  DeutonFlux(file1);
+		/*  DeutonFlux(file1);
 		  DeutonFlux_Dist(file1);*/
 	}
 	cout<<"************************* RESULTS  **************************************************************"<<endl;
