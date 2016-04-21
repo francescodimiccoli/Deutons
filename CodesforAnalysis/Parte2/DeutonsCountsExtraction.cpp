@@ -161,7 +161,11 @@ void DeutonsTemplFits(){
 	FitTOF_Dbins -> DCounts -> Write ("D_FluxCounts_TOF");
 	FitNaF_Dbins -> DCounts -> Write ("D_FluxCounts_NaF");
         FitAgl_Dbins -> DCounts -> Write ("D_FluxCounts_Agl");
-                       
+        
+	FitTOFgeo_Dbins -> DCounts -> Write ("D_Flux_geoCounts_TOF");
+        FitNaFgeo_Dbins -> DCounts -> Write ("D_Flux_geoCounts_NaF");
+        FitAglgeo_Dbins -> DCounts -> Write ("D_Flux_geoCounts_Agl");
+               
         FitTOF_Pbins -> PCounts -> Write ("P_FluxCounts_TOF");
 	FitNaF_Pbins -> PCounts -> Write ("P_FluxCounts_NaF");
         FitAgl_Pbins -> PCounts -> Write ("P_FluxCounts_Agl");

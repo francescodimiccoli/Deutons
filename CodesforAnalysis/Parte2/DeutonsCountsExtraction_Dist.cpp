@@ -158,13 +158,17 @@ void DeutonsTemplFits_Dist(){
         nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
         file1 = TFile::Open(nomefile.c_str(),"UPDATE");
 
-	FitTOF_Dbins_Dist -> DCounts -> Write ("D_FluxDistCounts_TOF");
-	FitNaF_Dbins_Dist -> DCounts -> Write ("D_FluxDistCounts_NaF");
-        FitAgl_Dbins_Dist -> DCounts -> Write ("D_FluxDistCounts_Agl");
+	FitTOF_Dbins_Dist -> DCounts -> Write ("D_Flux_DistCounts_TOF");
+	FitNaF_Dbins_Dist -> DCounts -> Write ("D_Flux_DistCounts_NaF");
+        FitAgl_Dbins_Dist -> DCounts -> Write ("D_Flux_DistCounts_Agl");
                        
-        FitTOF_Pbins_Dist -> PCounts -> Write ("P_FluxDistCounts_TOF");
-	FitNaF_Pbins_Dist -> PCounts -> Write ("P_FluxDistCounts_NaF");
-        FitAgl_Pbins_Dist -> PCounts -> Write ("P_FluxDistCounts_Agl");
+        FitTOFgeo_Dbins_Dist -> DCounts -> Write ("D_Flux_geo_DistCounts_TOF");
+        FitNaFgeo_Dbins_Dist -> DCounts -> Write ("D_Flux_geo_DistCounts_NaF");
+        FitAglgeo_Dbins_Dist -> DCounts -> Write ("D_Flux_geo_DistCounts_Agl");
+	
+	FitTOF_Pbins_Dist -> PCounts -> Write ("P_Flux_DistCounts_TOF");
+	FitNaF_Pbins_Dist -> PCounts -> Write ("P_Flux_DistCounts_NaF");
+        FitAgl_Pbins_Dist -> PCounts -> Write ("P_Flux_DistCounts_Agl");
 
 	file1 -> Write();
 	file1 -> Close(); 	

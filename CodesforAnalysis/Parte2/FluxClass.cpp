@@ -75,8 +75,9 @@ class Flux
 
       void Set_Exposure_Time(TH2 * ExposureR ,TH2 * ExposureTOF,TH2 * ExposureNaF,TH2 * ExposureAgl );
       void Set_Exposure_Time(TH1 * Tempi );
+      TH1 * ExtractParticularMC_cs(TH1 * Histo, int lat_zones=1 ,int mc_type=0);
       void Set_DeltaE(int n,bool deutons=1);
-      void Eval_Flux(int n,bool deutons=1);
+      void Eval_Flux(int n,bool deutons=1,int mc_type=0);
 };
 
 
@@ -114,6 +115,24 @@ void Flux::Set_Exposure_Time(TH1 * Tempi) {
 
    return;
 }
+
+TH1 * Flux::ExtractParticularMC_cs(TH1 * Histo, int lat_zones, int mc_type){
+	if(lat_zones == 1){
+		TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),0,Histo->GetNbinsX());
+		for(int i = 0; i< Histo->GetNbinsX();i++)
+			Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,mc_type+1));
+		return Slice;
+	}
+	else{
+		TH2F * Slice = new TH2F("","",Histo->GetNbinsX(),0,Histo->GetNbinsX(),lat_zones,0,lat_zones);
+		for(int lat=0;lat<lat_zones;lat++){
+			for(int i = 0; i< Histo->GetNbinsX();i++)
+				Slice->SetBinContent(i+1,lat+1,Histo->GetBinContent(i+1,lat+1,mc_type+1));
+		}
+		return Slice;	
+	}
+}
+
 
 
 void Flux::Set_DeltaE(int n,bool deutons) {
@@ -157,30 +176,39 @@ void Flux::Set_DeltaE(int n,bool deutons) {
    }
 }
 
-void Flux::Eval_Flux(int n,bool deutons) {
-   Flux::Set_DeltaE(n,deutons);
+void Flux::Eval_Flux(int n,bool deutons,int mc_type) {
+	Flux::Set_DeltaE(n,deutons);
 
-   if(Counts_R  )  Flux_R	= (TH1 *) Counts_R   -> Clone();
-   if(Counts_TOF)	Flux_TOF= (TH1 *) Counts_TOF -> Clone();
-   if(Counts_NaF)	Flux_NaF= (TH1 *) Counts_NaF -> Clone();
-   if(Counts_Agl)	Flux_Agl= (TH1 *) Counts_Agl -> Clone();
+	if(Counts_R  ) 	Flux_R	= (TH1 *) Counts_R   -> Clone();
+	if(Counts_TOF)	Flux_TOF= (TH1 *) Counts_TOF -> Clone();
+	if(Counts_NaF)	Flux_NaF= (TH1 *) Counts_NaF -> Clone();
+	if(Counts_Agl)	Flux_Agl= (TH1 *) Counts_Agl -> Clone();
 
-   if(Counts_R  ) 	Flux_R	->Divide (Acceptance_R  	);
-   if(Counts_TOF)	Flux_TOF->Divide (Acceptance_TOF	);
-   if(Counts_NaF)	Flux_NaF->Divide (Acceptance_NaF	);
-   if(Counts_Agl)	Flux_Agl->Divide (Acceptance_Agl	);
+	if(deutons){	
+		if(Counts_R  ) 	Flux_R	->Divide (ExtractParticularMC_cs( Acceptance_R      ,n,mc_type));
+		if(Counts_TOF)	Flux_TOF->Divide (ExtractParticularMC_cs( Acceptance_TOF    ,n,mc_type));	
+		if(Counts_NaF)	Flux_NaF->Divide (ExtractParticularMC_cs( Acceptance_NaF    ,n,mc_type));
+		if(Counts_Agl)	Flux_Agl->Divide (ExtractParticularMC_cs( Acceptance_Agl    ,n,mc_type));
+	}
+	
+	else{
+		if(Counts_R  ) 	Flux_R	->Divide (Acceptance_R  	);
+		if(Counts_TOF)	Flux_TOF->Divide (Acceptance_TOF	);
+		if(Counts_NaF)	Flux_NaF->Divide (Acceptance_NaF	);
+		if(Counts_Agl)	Flux_Agl->Divide (Acceptance_Agl	);
+	}
 
-   if(Counts_R  )	Flux_R	->Divide (Exposure_R 		);
-   if(Counts_TOF)  Flux_TOF->Divide (Exposure_TOF          );
-   if(Counts_NaF)  Flux_NaF->Divide (Exposure_NaF          );
-   if(Counts_Agl)  Flux_Agl->Divide (Exposure_Agl          );
+	if(Counts_R  )	Flux_R	->Divide (Exposure_R 		);
+	if(Counts_TOF)  Flux_TOF->Divide (Exposure_TOF          );
+	if(Counts_NaF)  Flux_NaF->Divide (Exposure_NaF          );
+	if(Counts_Agl)  Flux_Agl->Divide (Exposure_Agl          );
 
-   if(Counts_R  )	Flux_R	->Divide (DeltaE_R 		);
-   if(Counts_TOF)  Flux_TOF->Divide (DeltaE_TOF            );
-   if(Counts_NaF)  Flux_NaF->Divide (DeltaE_NaF            );
-   if(Counts_Agl)  Flux_Agl->Divide (DeltaE_Agl            );
+	if(Counts_R  )	Flux_R	->Divide (DeltaE_R 		);
+	if(Counts_TOF)  Flux_TOF->Divide (DeltaE_TOF            );
+	if(Counts_NaF)  Flux_NaF->Divide (DeltaE_NaF            );
+	if(Counts_Agl)  Flux_Agl->Divide (DeltaE_Agl            );
 
-   return;
+	return;
 }
 
 

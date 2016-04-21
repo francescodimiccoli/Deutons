@@ -85,8 +85,9 @@ void ProtonFlux() {
 
    nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
    file1 = TFile::Open(nomefile.c_str(),"UPDATE");
-   file1->cd("Results");
-
+   file1->mkdir("Results/Fluxes");
+   file1->cd("Results/Fluxes");
+	
    ProtonsPrimaryFlux  ->Write("ProtonsPrimaryFlux" 	);
    ProtonsGeomagFlux   ->Write("ProtonsGeomagFlux"  	);
    P_pre_PrimaryFlux   ->Write("P_pre_PrimaryFlux"  	);
