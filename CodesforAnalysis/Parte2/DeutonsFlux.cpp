@@ -75,6 +75,25 @@ void DeutonFlux() {
 	TH1F * ProtonsPrimaryFlux_Dist_NaF 	= (TH1F *)P_Flux_Dist-> Flux_NaF ;
 	TH1F * ProtonsPrimaryFlux_Dist_Agl 	= (TH1F *)P_Flux_Dist-> Flux_Agl ;
 
+	//D/P ratio
+	//Fit on Mass	
+	TH1F * DP_ratioTOF = (TH1F *)D_Flux     -> Flux_TOF -> Clone();
+	TH1F * DP_ratioNaF = (TH1F *)D_Flux     -> Flux_NaF -> Clone();
+	TH1F * DP_ratioAgl = (TH1F *)D_Flux     -> Flux_Agl -> Clone();
+
+	DP_ratioTOF ->  Divide((TH1F *)P_Flux     -> Flux_TOF			);
+	DP_ratioNaF ->  Divide((TH1F *)P_Flux     -> Flux_NaF			);
+	DP_ratioAgl ->  Divide((TH1F *)P_Flux     -> Flux_Agl			);
+	
+	//Fit on Distance
+	TH1F * DP_ratioTOF_Dist = (TH1F *)D_Flux_Dist-> Flux_TOF -> Clone();
+        TH1F * DP_ratioNaF_Dist = (TH1F *)D_Flux_Dist-> Flux_NaF -> Clone();
+        TH1F * DP_ratioAgl_Dist = (TH1F *)D_Flux_Dist-> Flux_Agl -> Clone();
+
+        DP_ratioTOF_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_TOF                   );
+        DP_ratioNaF_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_NaF                   );
+        DP_ratioAgl_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_Agl                   );	
+
 
 	cout<<"*** Updating P1 file ****"<<endl;
 
@@ -105,8 +124,15 @@ void DeutonFlux() {
         ProtonsPrimaryFlux_Dist_TOF	->Write("ProtonsPrimaryFlux_Dist_TOF");
         ProtonsPrimaryFlux_Dist_NaF	->Write("ProtonsPrimaryFlux_Dist_NaF");
         ProtonsPrimaryFlux_Dist_Agl	->Write("ProtonsPrimaryFlux_Dist_Agl");
-	
-		
+
+	DP_ratioTOF 	 -> Write("DP_ratioTOF"		);
+	DP_ratioNaF 	 -> Write("DP_ratioNaF"		);
+	DP_ratioAgl 	 -> Write("DP_ratioAgl"		);	
+	                          
+	DP_ratioTOF_Dist -> Write("DP_ratioTOF_Dist"	);
+	DP_ratioNaF_Dist -> Write("DP_ratioNaF_Dist"	);
+	DP_ratioAgl_Dist -> Write("DP_ratioAgl_Dist"	);
+
 	file1->Write();
 	file1->Close();	
 
@@ -486,6 +512,142 @@ p=0;
         D_FluxDistAgl->Draw("Psame");
 
 
+	c35->Divide(2,1);
+	c35->cd(1);
+	gPad->SetLogx();
+	gPad->SetLogy();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	c35->cd(2);
+	gPad->SetLogx();
+	gPad->SetLogy();
+	gPad->SetGridx();
+	gPad->SetGridy();
+
+	TGraph* galpropratio1=new TGraph();
+	TGraph* galpropratio2=new TGraph();
+	x,y=0;
+	j=0;
+	{
+		string nomefile="./Galprop/Trotta2011/PDratio/500.dat";
+		cout<<nomefile<<endl;
+		ifstream fp(nomefile.c_str());
+		while (!fp.eof()){
+			fp>>x>>y;
+			if(x/1e3>0.05&&x/1e3<=100)
+				galpropratio1->SetPoint(j,x/1e3,y);
+			j++;
+		}
+	}
+
+	j=0;
+	{
+		string nomefile="./Galprop/Trotta2011/PDratio/1000.dat";
+		cout<<nomefile<<endl;
+		ifstream fp(nomefile.c_str());
+		while (!fp.eof()){
+			fp>>x>>y;
+			if(x/1e3>0.05&&x/1e3<=100)
+				galpropratio2->SetPoint(j,x/1e3,y);
+			j++;
+		}
+	}
+	galpropratio1->GetXaxis()->SetRangeUser(0.1,10);
+	galpropratio1->GetYaxis()->SetRangeUser(1e-3,1e-1);
+	galpropratio1->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+	galpropratio1->GetYaxis()->SetTitle("Flux ratio");
+	c35->cd(1);
+	galpropratio1->Draw("AC");
+	galpropratio2->Draw("sameC");
+	c35->cd(2);
+	galpropratio1->Draw("AC");
+        galpropratio2->Draw("sameC");
+
+	TGraphErrors * PD_ratioTOF=new TGraphErrors();
+	TGraphErrors * PD_ratioTOF_Dist=new TGraphErrors();
+	p=0;
+	for(int m=1;m<nbinsToF;m++){
+		PD_ratioTOF->SetPoint(p,Ekincent[m],DP_ratioTOF->GetBinContent(m+1));
+		PD_ratioTOF_Dist->SetPoint(p,Ekincent[m],DP_ratioTOF_Dist->GetBinContent(m+1));
+		PD_ratioTOF->SetPointError(p,0,0);
+		PD_ratioTOF_Dist->SetPointError(p,0,0);
+		p++;
+	}
+	PD_ratioTOF->SetMarkerStyle(8);
+	PD_ratioTOF->SetMarkerSize(1.5);
+	PD_ratioTOF->SetMarkerColor(4);
+	PD_ratioTOF->SetLineColor(4);
+	PD_ratioTOF->SetLineWidth(2);
+	
+	PD_ratioTOF_Dist->SetMarkerStyle(8);
+        PD_ratioTOF_Dist->SetMarkerSize(1.5);
+        PD_ratioTOF_Dist->SetMarkerColor(4);
+        PD_ratioTOF_Dist->SetLineColor(4);
+        PD_ratioTOF_Dist->SetLineWidth(2);
+
+	c35->cd(1);
+	PD_ratioTOF->Draw("Psame"); 
+
+	c35->cd(2);
+        PD_ratioTOF_Dist->Draw("Psame");
+
+
+        TGraphErrors * PD_ratioNaF=new TGraphErrors();
+        TGraphErrors * PD_ratioNaF_Dist=new TGraphErrors();
+        p=0;
+        for(int m=1;m<nbinsToF;m++){
+                PD_ratioNaF->SetPoint(p,EkincentNaF[m],DP_ratioNaF->GetBinContent(m+1));
+                PD_ratioNaF_Dist->SetPoint(p,EkincentNaF[m],DP_ratioNaF_Dist->GetBinContent(m+1));
+                PD_ratioNaF->SetPointError(p,0,0);
+                PD_ratioNaF_Dist->SetPointError(p,0,0);
+                p++;
+        }
+        PD_ratioNaF->SetMarkerStyle(4);
+        PD_ratioNaF->SetMarkerSize(1.5);
+        PD_ratioNaF->SetMarkerColor(4);
+        PD_ratioNaF->SetLineColor(4);
+        PD_ratioNaF->SetLineWidth(2);
+
+        PD_ratioNaF_Dist->SetMarkerStyle(4);
+        PD_ratioNaF_Dist->SetMarkerSize(1.5);
+        PD_ratioNaF_Dist->SetMarkerColor(4);
+        PD_ratioNaF_Dist->SetLineColor(4);
+        PD_ratioNaF_Dist->SetLineWidth(2);
+
+        c35->cd(1);
+        PD_ratioNaF->Draw("Psame");
+
+        c35->cd(2);
+        PD_ratioNaF_Dist->Draw("Psame");
+
+	       TGraphErrors * PD_ratioAgl=new TGraphErrors();
+        TGraphErrors * PD_ratioAgl_Dist=new TGraphErrors();
+        p=0;
+        for(int m=1;m<nbinsToF;m++){
+                PD_ratioAgl->SetPoint(p,EkincentAgl[m],DP_ratioAgl->GetBinContent(m+1));
+                PD_ratioAgl_Dist->SetPoint(p,EkincentAgl[m],DP_ratioAgl_Dist->GetBinContent(m+1));
+                PD_ratioAgl->SetPointError(p,0,0);
+                PD_ratioAgl_Dist->SetPointError(p,0,0);
+                p++;
+        }
+        PD_ratioAgl->SetMarkerStyle(3);
+        PD_ratioAgl->SetMarkerSize(1.5);
+        PD_ratioAgl->SetMarkerColor(4);
+        PD_ratioAgl->SetLineColor(4);
+        PD_ratioAgl->SetLineWidth(2);
+
+        PD_ratioAgl_Dist->SetMarkerStyle(3);
+        PD_ratioAgl_Dist->SetMarkerSize(1.5);
+        PD_ratioAgl_Dist->SetMarkerColor(4);
+        PD_ratioAgl_Dist->SetLineColor(4);
+        PD_ratioAgl_Dist->SetLineWidth(2);
+
+        c35->cd(1);
+        PD_ratioAgl->Draw("Psame");
+
+        c35->cd(2);
+        PD_ratioAgl_Dist->Draw("Psame");
+
 	cout<<"*** Updating Results file ***"<<endl;
 	nomefile="./Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
@@ -494,6 +656,7 @@ p=0;
         c33-> Write();
         c32->Write();
 	c34-> Write();
+	c35->Write();
 	f_out->Write();
         f_out->Close();
 
