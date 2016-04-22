@@ -1,14 +1,14 @@
-TemplateFIT * FitTOF_Dbins_Dist  = new TemplateFIT("FitTOF_Dbins_Dist ",nbinsToF,-1.2,1.2);
-TemplateFIT * FitNaF_Dbins_Dist  = new TemplateFIT("FitNaF_Dbins_Dist ",nbinsNaF,-1.2,1.2);
-TemplateFIT * FitAgl_Dbins_Dist  = new TemplateFIT("FitAgl_Dbins_Dist ",nbinsAgl,-1.2,1.2);
+TemplateFIT * FitTOF_Dbins_Dist  = new TemplateFIT("FitTOF_Dbins_Dist ",nbinsToF,-1.2,1.2,6);
+TemplateFIT * FitNaF_Dbins_Dist  = new TemplateFIT("FitNaF_Dbins_Dist ",nbinsNaF,-1.2,1.2,6);
+TemplateFIT * FitAgl_Dbins_Dist  = new TemplateFIT("FitAgl_Dbins_Dist ",nbinsAgl,-1.2,1.2,6);
 
-TemplateFIT * FitTOFgeo_Dbins_Dist  = new TemplateFIT("FitTOFgeo_Dbins_Dist ",nbinsToF,-1.2,1.2,11);
-TemplateFIT * FitNaFgeo_Dbins_Dist  = new TemplateFIT("FitNaFgeo_Dbins_Dist ",nbinsNaF,-1.2,1.2,11);
-TemplateFIT * FitAglgeo_Dbins_Dist  = new TemplateFIT("FitAglgeo_Dbins_Dist ",nbinsAgl,-1.2,1.2,11);
+TemplateFIT * FitTOFgeo_Dbins_Dist  = new TemplateFIT("FitTOFgeo_Dbins_Dist ",nbinsToF,-1.2,1.2,6,11);
+TemplateFIT * FitNaFgeo_Dbins_Dist  = new TemplateFIT("FitNaFgeo_Dbins_Dist ",nbinsNaF,-1.2,1.2,6,11);
+TemplateFIT * FitAglgeo_Dbins_Dist  = new TemplateFIT("FitAglgeo_Dbins_Dist ",nbinsAgl,-1.2,1.2,6,11);
 
-TemplateFIT * FitTOF_Pbins_Dist  = new TemplateFIT("FitTOF_Pbins_Dist ",nbinsToF,-1.2,1.2);
-TemplateFIT * FitNaF_Pbins_Dist  = new TemplateFIT("FitNaF_Pbins_Dist ",nbinsNaF,-1.2,1.2);
-TemplateFIT * FitAgl_Pbins_Dist  = new TemplateFIT("FitAgl_Pbins_Dist ",nbinsAgl,-1.2,1.2);
+TemplateFIT * FitTOF_Pbins_Dist  = new TemplateFIT("FitTOF_Pbins_Dist ",nbinsToF,-1.2,1.2,6);
+TemplateFIT * FitNaF_Pbins_Dist  = new TemplateFIT("FitNaF_Pbins_Dist ",nbinsNaF,-1.2,1.2,6);
+TemplateFIT * FitAgl_Pbins_Dist  = new TemplateFIT("FitAgl_Pbins_Dist ",nbinsAgl,-1.2,1.2,6);
 
 
 void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
@@ -20,12 +20,12 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
 		Distance_Discr = ((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
 		if(Var>BetaD[m]&&Var<=BetaD[m+1]){
 			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-			if(Massa_gen<2&&Massa_gen>1.5) FitTOF_Dbins_Dist -> TemplateD -> Fill(Distance_Discr,m);
+			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 			if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Dbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
 		}
 		if(Var>BetaP[m]&&Var<=BetaP[m+1]) {
 			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Pbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-			if(Massa_gen<2&&Massa_gen>1.5) FitTOF_Pbins_Dist -> TemplateD -> Fill(Distance_Discr,m);
+			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 			if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Pbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
 		}
 	}
@@ -34,12 +34,12 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
 			Distance_Discr = ((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
 			if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-				if(Massa_gen<2&&Massa_gen>1.5) FitNaF_Dbins_Dist -> TemplateD -> Fill(Distance_Discr,m);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Dbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
 			}
 			if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Pbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-				if(Massa_gen<2&&Massa_gen>1.5) FitNaF_Pbins_Dist -> TemplateD -> Fill(Distance_Discr,m);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Pbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
 			}
 		}
@@ -49,12 +49,12 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
 			Distance_Discr = ((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
 			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-				if(Massa_gen<2&&Massa_gen>1.5) FitAgl_Dbins_Dist -> TemplateD -> Fill(Distance_Discr,m);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Dbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
 			}
 			if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Pbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-				if(Massa_gen<2&&Massa_gen>1.5) FitAgl_Pbins_Dist -> TemplateD -> Fill(Distance_Discr,m);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Pbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
 			}
 		}

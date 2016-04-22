@@ -66,41 +66,34 @@ public:
 	bool Geomag;
 
 	//creation constructors
-	TemplateFIT(std::string basename ,int Nbins ,float val_min , float val_max){
+	//standard
+	TemplateFIT(std::string basename ,int Nbins ,float val_min , float val_max,int mc_types = 0, int n=0){
 
 		TemplateP   = 	new TH2F((basename + "_P"   ).c_str(),(basename + "_P"   ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
-                TemplateD   =	new TH2F((basename + "_D"   ).c_str(),(basename + "_D"   ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
-                TemplateHe  =	new TH2F((basename + "_He"  ).c_str(),(basename + "_He"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
-
-		DATA        =	new TH2F((basename + "_Data"  ).c_str(),(basename + "_Data"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
-		
+		TemplateHe  =   new TH2F((basename + "_He"  ).c_str(),(basename + "_He"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
+                
+		if(mc_types == 0)
+			TemplateD   =	new TH2F((basename + "_D"   ).c_str(),(basename + "_D"     ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
+                if(mc_types >  0 )
+			TemplateD   =   new TH3F((basename + "_D"   ).c_str(),(basename + "_D"     ).c_str(),100,val_min,val_max,Nbins,0,Nbins,mc_types,0,mc_types);
+		if(n == 0){
+			DATA        =	new TH2F((basename + "_Data").c_str(),(basename + "_Data"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
+			Geomag = false;
+			}
+		if(n > 0){
+			DATA        =   new TH3F((basename + "_Data").c_str(),(basename + "_Data"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins,n,0,n);
+			Geomag = true;
+			}
 		PCounts	   =	new TH1F((basename + "_PCounts"  	 ).c_str(),(basename + "_PCounts"   	).c_str(),Nbins,0,Nbins);
 		DCounts	   =	new TH1F((basename + "_DCounts"  	 ).c_str(),(basename + "_DCounts"   	).c_str(),Nbins,0,Nbins);
 	
 		nbins = Nbins;
-		
-		Geomag = false;	
 	}
 
-	TemplateFIT(std::string basename ,int Nbins ,float val_min , float val_max, int n){
-
-                TemplateP   =   new TH2F((basename + "_P"   ).c_str(),(basename + "_P"   ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
-                TemplateD   =   new TH2F((basename + "_D"   ).c_str(),(basename + "_D"   ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
-                TemplateHe  =   new TH2F((basename + "_He"  ).c_str(),(basename + "_He"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
-
-                DATA 	    =   new TH3F((basename + "_Data").c_str(),(basename + "_Data").c_str(),100,val_min,val_max,Nbins,0,Nbins,n,0,n);
-
-                PCounts     =    new TH2F((basename + "_PCounts"      ).c_str(),(basename + "_PCounts"   ).c_str(),Nbins,0,Nbins,n,0,n);
-                DCounts     =    new TH2F((basename + "_DCounts"      ).c_str(),(basename + "_DCounts"   ).c_str(),Nbins,0,Nbins,n,0,n);
-
-                nbins = Nbins;
-
-		Geomag = true;
-        }
 
 
-
-	//reading constructor
+	//reading constructors
+	//standard
 	TemplateFIT(TFile * file , std::string basename_MC , std::string basename_data, float val_min , float val_max){
 
 		TemplateP   =	(TH1 *)file->Get((basename_MC   + "_P"     ).c_str());	
@@ -118,7 +111,7 @@ public:
 		
 		fits.push_back(std::vector<TFit *>());
 	}
-
+	//geom. zones
 	TemplateFIT(TFile * file , std::string basename_MC, std::string basename_data, float val_min , float val_max,int n){
 
 		TemplateP   =	(TH1 *)file->Get((basename_MC   + "_P"     ).c_str());	
@@ -143,7 +136,7 @@ public:
 
 	void Write();
 	
-	TH1F * Extract_Bin(TH1 * Histo, int bin,int lat=0);
+	TH1F * Extract_Bin(TH1 * Histo, int bin,int third_dim=0);
 	
 	void Do_TemplateFIT(TFit * Fit, int lat=0);
 	
@@ -159,7 +152,7 @@ public:
 
 	TH1F * GetResult_Data(int bin,int lat=0){ TH1F *res = new TH1F(); if(GetFitOutcome(bin,lat)>=0)res =(TH1F*)fits[lat][bin] -> Data; return res; };
 	
-	void TemplateFits();
+	void TemplateFits(int mc_type=0);
 	
 	void TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,int lat=0);
 };

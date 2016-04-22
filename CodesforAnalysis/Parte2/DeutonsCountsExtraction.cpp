@@ -1,31 +1,33 @@
-TemplateFIT * FitTOF_Dbins = new TemplateFIT("FitTOF_Dbins",nbinsToF,0,3);
-TemplateFIT * FitNaF_Dbins = new TemplateFIT("FitNaF_Dbins",nbinsNaF,0,3);
-TemplateFIT * FitAgl_Dbins = new TemplateFIT("FitAgl_Dbins",nbinsAgl,0,3);
+TemplateFIT * FitTOF_Dbins = new TemplateFIT("FitTOF_Dbins",nbinsToF,0,3,6);
+TemplateFIT * FitNaF_Dbins = new TemplateFIT("FitNaF_Dbins",nbinsNaF,0,3,6);
+TemplateFIT * FitAgl_Dbins = new TemplateFIT("FitAgl_Dbins",nbinsAgl,0,3,6);
 
-TemplateFIT * FitTOFgeo_Dbins = new TemplateFIT("FitTOFgeo_Dbins",nbinsToF,0,3,11);
-TemplateFIT * FitNaFgeo_Dbins = new TemplateFIT("FitNaFgeo_Dbins",nbinsNaF,0,3,11);
-TemplateFIT * FitAglgeo_Dbins = new TemplateFIT("FitAglgeo_Dbins",nbinsAgl,0,3,11);
+TemplateFIT * FitTOFgeo_Dbins = new TemplateFIT("FitTOFgeo_Dbins",nbinsToF,0,3,6,11);
+TemplateFIT * FitNaFgeo_Dbins = new TemplateFIT("FitNaFgeo_Dbins",nbinsNaF,0,3,6,11);
+TemplateFIT * FitAglgeo_Dbins = new TemplateFIT("FitAglgeo_Dbins",nbinsAgl,0,3,6,11);
 
-TemplateFIT * FitTOF_Pbins = new TemplateFIT("FitTOF_Pbins",nbinsToF,0,3);
-TemplateFIT * FitNaF_Pbins = new TemplateFIT("FitNaF_Pbins",nbinsNaF,0,3);
-TemplateFIT * FitAgl_Pbins = new TemplateFIT("FitAgl_Pbins",nbinsAgl,0,3);
+TemplateFIT * FitTOF_Pbins = new TemplateFIT("FitTOF_Pbins",nbinsToF,0,3,6);
+TemplateFIT * FitNaF_Pbins = new TemplateFIT("FitNaF_Pbins",nbinsNaF,0,3,6);
+TemplateFIT * FitAgl_Pbins = new TemplateFIT("FitAgl_Pbins",nbinsAgl,0,3,6);
 
 
 void DeutonsMC_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float mass = 0;
+	//cuts
 	if(!(Likcut&&Distcut)) return;
+	//
 	for(int m=0;m<nbinsToF;m++){ //TOF
 		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
 		if(Var>BetaD[m]&&Var<=BetaD[m+1]){
 			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Dbins -> TemplateP -> Fill(mass,m);
-			if(Massa_gen<2&&Massa_gen>1.5) FitTOF_Dbins -> TemplateD -> Fill(mass,m);
+			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
 			if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Dbins -> TemplateHe-> Fill(mass,m);
 		}
 		if(Var>BetaP[m]&&Var<=BetaP[m+1]) {
 			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Pbins -> TemplateP -> Fill(mass,m);
-			if(Massa_gen<2&&Massa_gen>1.5) FitTOF_Pbins -> TemplateD -> Fill(mass,m);
+			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
 			if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Pbins -> TemplateHe-> Fill(mass,m);
 		}
 	}
@@ -34,12 +36,12 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaNaFD[m]&&Var2<=BetaNaFD[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Dbins -> TemplateP -> Fill(mass,m);
-				if(Massa_gen<2&&Massa_gen>1.5) FitNaF_Dbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Dbins -> TemplateHe-> Fill(mass,m);
 			}
 			if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Pbins -> TemplateP -> Fill(mass,m);
-				if(Massa_gen<2&&Massa_gen>1.5) FitNaF_Pbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Pbins -> TemplateHe-> Fill(mass,m);
 			}
 		}
@@ -49,12 +51,12 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
 			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Dbins -> TemplateP -> Fill(mass,m);
-				if(Massa_gen<2&&Massa_gen>1.5) FitAgl_Dbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Dbins -> TemplateHe-> Fill(mass,m);
 			}
 			if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Pbins -> TemplateP -> Fill(mass,m);
-				if(Massa_gen<2&&Massa_gen>1.5) FitAgl_Pbins -> TemplateD -> Fill(mass,m);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Pbins -> TemplateHe-> Fill(mass,m);
 			}
 		}
@@ -66,7 +68,9 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 	int k = ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float mass = 0;
+	//cuts
 	if(!(Likcut&&Distcut)) return;
+	//
 	for(int m=0;m<nbinsToF;m++){ //TOF
 		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
 		if(Var>BetaD[m]&&Var<=BetaD[m+1]){

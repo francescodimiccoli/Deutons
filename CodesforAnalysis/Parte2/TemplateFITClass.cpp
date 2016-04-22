@@ -10,19 +10,11 @@ void TemplateFIT::Write(){
 	return;
 }
 
-TH1F * TemplateFIT::Extract_Bin(TH1 * Histo, int bin,int lat){
+TH1F * TemplateFIT::Extract_Bin(TH1 * Histo, int bin,int third_dim){
 	TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),0,Histo->GetXaxis()->GetBinLowEdge(101));
-	if(lat==0){
-		for(int i = 0; i< Histo->GetNbinsX();i++)
-			Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1));
-		return Slice;
-	}
-	if(lat!=0){	
-		for(int i = 0; i< Histo->GetNbinsX();i++)
-                        Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1,lat+1));
-		return Slice;
-	}
-
+	for(int i = 0; i< Histo->GetNbinsX();i++)
+		Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1,third_dim+1));
+	return Slice;
 }
 
 
@@ -91,7 +83,7 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat){
 	}
 }
 
-void TemplateFIT::TemplateFits(){
+void TemplateFIT::TemplateFits(int mc_type){
 
 	int loops = 1;
 	if(Geomag) loops = DATA -> GetNbinsZ();
@@ -99,7 +91,7 @@ void TemplateFIT::TemplateFits(){
 		for(int bin=0; bin<nbins ; bin++){
 			TFit * Fit = new TFit;
 			Fit->Templ_P =  (TH1F *)TemplateFIT::Extract_Bin  (TemplateP, bin);	
-			Fit->Templ_D =  (TH1F *)TemplateFIT::Extract_Bin  (TemplateD, bin);	
+			Fit->Templ_D =  (TH1F *)TemplateFIT::Extract_Bin  (TemplateD, bin,mc_type);	
 			Fit->Templ_He=  (TH1F *)TemplateFIT::Extract_Bin  (TemplateHe,bin);
 			if(Geomag) Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin, lat);
 			else 	   Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin);
