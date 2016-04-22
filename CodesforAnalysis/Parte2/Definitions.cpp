@@ -122,18 +122,26 @@ TH2F * esposizionedgeo;
 TH2F * esposizionedgeoNaF;
 TH2F * esposizionedgeoAgl;
 
+int ReturnMCGenType(){
+	int mc_type;
+	if(Massa_gen < 1)  mc_type = 0;
+	if(Massa_gen > 3)  mc_type = 0;
+	if(Massa_gen > 1 && Massa_gen < 2){
+		int moffset=18570;
+		mc_type=(int)(10000*Massa_gen-moffset);
+	}
+	return mc_type;
+}
 
 
 void FillBinMGen(TH1* h, int bin) {
-	int moffset=18570;
-	int mass=(int)(10000*Massa_gen-moffset);
+	int mass = ReturnMCGenType();
 	h->Fill(bin, mass);
 	return;
 }
 
 void FillBinMGen(TH3* h, int bin, int S) {
-	int moffset=18570;
-	int mass=(int)(10000*Massa_gen-moffset);
+	int mass = ReturnMCGenType();
 	h->Fill(bin, mass, S);
 	return;
 }
