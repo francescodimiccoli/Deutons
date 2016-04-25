@@ -423,7 +423,7 @@ int main(int argc, char * argv[]){
 		int k = ntupla2->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
-		if(i%100000==0) cout<< '\r' << i;
+		if(i%100000==0) cout<< i<<endl;;
 		BetavsR_TOF_D->Fill(R,Beta);
 		if((((int)Cutmask)>>11)==512) BetavsR_NaF_D->Fill(R,BetaRICH);
 		if((((int)Cutmask)>>11)==0) BetavsR_Agl_D->Fill(R,BetaRICH);
@@ -450,10 +450,10 @@ int main(int argc, char * argv[]){
 			B2=B2+0.02;	
 		}
 		if(EdepL1>0.04&&EdepL1<0.15) {
-			RisoluzioniBeta_R_D[GetArrayBin(R,   bin, 24 )]->Fill(1/Beta);
-			RisoluzioniBetaTOF_R_D[GetArrayBin(R, BetabinsR_D, 18)]->Fill(1/Beta);
-			if(((int)Cutmask)>>11==512) RisoluzioniBetaNaF_R_D[GetArrayBin(R, BetabinsNaFR_D, 18)]->Fill(1/BetaRICH);
-			if(((int)Cutmask)>>11==0)   RisoluzioniBetaAgl_R_D[GetArrayBin(R, BetabinsNaFR_D, 18)]->Fill(1/BetaRICH);	
+			for(int l=0;l<24;l++) RisoluzioniBeta_R_D[l] -> Fill(1/Beta);
+			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) RisoluzioniBetaTOF_R_D[m]->Fill(1/Beta);
+                        if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>BetabinsNaFR_D[m]&&R<=BetabinsNaFR_D[m+1]) {RisoluzioniBetaNaF_R_D[m]->Fill(1/BetaRICH);}
+                        if((((int)Cutmask)>>11)==0) for(int m=0; m<18;m++) if(R>BetabinsAglR_D[m]&&R<=BetabinsAglR_D[m+1]) {RisoluzioniBetaAgl_R_D[m]->Fill(1/BetaRICH);}
 		}
 		for(int m=0; m<18;m++) if(Beta>Betabins[m]&&Beta<=Betabins[m+1]){
 			RisoluzioniR_Beta_D[m]->Fill(1/R);
