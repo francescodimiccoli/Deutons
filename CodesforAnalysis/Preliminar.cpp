@@ -64,18 +64,6 @@ float BetabinsNaFR_D[18]={0};
 float BetabinsR_P[18]={0};
 float BetabinsR_D[18]={0};
 
-
-
-int GetArrayBin(float var, float* array, int nbins) {
-	for (int ib=0; ib<nbins-1; ib++)  {
-		if(var>array[ib] && var<=array[ib+1])
-		return ib;
-	}
-	return -1;
-	
-}
-
-
 int main(int argc, char * argv[]){
 
 	TCanvas *a1=new TCanvas("Beta vs R - TOF");
@@ -419,11 +407,11 @@ int main(int argc, char * argv[]){
                 B1=B1+0.05/30.;
         }
 	cout<<"*************************** DATA READING **********************************"<<endl;
-	for(int i=0; i<ntupla2->GetEntries()/5;i++) {
+	for(int i=0; i<ntupla2->GetEntries();i++) {
 		int k = ntupla2->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
-		if(i%100000==0) cout<< i<<endl;;
+		if(i%100000==0) cout<<i<<endl;
 		BetavsR_TOF_D->Fill(R,Beta);
 		if((((int)Cutmask)>>11)==512) BetavsR_NaF_D->Fill(R,BetaRICH);
 		if((((int)Cutmask)>>11)==0) BetavsR_Agl_D->Fill(R,BetaRICH);
@@ -450,10 +438,12 @@ int main(int argc, char * argv[]){
 			B2=B2+0.02;	
 		}
 		if(EdepL1>0.04&&EdepL1<0.15) {
-			for(int l=0;l<24;l++) RisoluzioniBeta_R_D[l] -> Fill(1/Beta);
+			for(int l=0; l<24;l++) if(R>bin[l]&&R<=bin[l+1]){
+				RisoluzioniBeta_R_D[l]->Fill(1/Beta);
+			}
 			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) RisoluzioniBetaTOF_R_D[m]->Fill(1/Beta);
-                        if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>BetabinsNaFR_D[m]&&R<=BetabinsNaFR_D[m+1]) {RisoluzioniBetaNaF_R_D[m]->Fill(1/BetaRICH);}
-                        if((((int)Cutmask)>>11)==0) for(int m=0; m<18;m++) if(R>BetabinsAglR_D[m]&&R<=BetabinsAglR_D[m+1]) {RisoluzioniBetaAgl_R_D[m]->Fill(1/BetaRICH);}
+			if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>BetabinsNaFR_D[m]&&R<=BetabinsNaFR_D[m+1]) RisoluzioniBetaNaF_R_D[m]->Fill(1/BetaRICH);
+			if((((int)Cutmask)>>11)==0) for(int m=0; m<18;m++) if(R>BetabinsAglR_D[m]&&R<=BetabinsAglR_D[m+1]) RisoluzioniBetaAgl_R_D[m]->Fill(1/BetaRICH);	
 		}
 		for(int m=0; m<18;m++) if(Beta>Betabins[m]&&Beta<=Betabins[m+1]){
 			RisoluzioniR_Beta_D[m]->Fill(1/R);
@@ -594,7 +584,7 @@ int main(int argc, char * argv[]){
 		int k = ntupla1->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
-		if(i%100000==0) cout<< '\r' << i;
+		if(i%100000==0) cout<<i<<endl;
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
 		if((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0) Massa=pow(fabs(pow(fabs(R)*pow((1-pow(BetaRICH,2)),0.5)/BetaRICH,2)),0.5);
 		if(Massagen<1){
@@ -960,6 +950,7 @@ int main(int argc, char * argv[]){
         TF1 *m_betaNaF_D[24];
         TF1 *m_betaAgl_MC[24];
         TF1 *m_betaAgl_D[24];
+	string numero[30]={"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29"};
 	string gausMC="gausMC_";
 	string gausD="gausD_";
 	float mean_L1_MC[30];
@@ -1094,30 +1085,30 @@ int main(int argc, char * argv[]){
 		PiccoTrack[j]=RisoluzioniTrack[j]->GetBinCenter(RisoluzioniTrack[j]->GetMaximumBin());
 		PiccoTOFD[j]=RisoluzioniTOFD[j]->GetBinCenter(RisoluzioniTOFD[j]->GetMaximumBin());
 
-		nomefunz=gausMC+"L1"+to_string(j);
+		nomefunz=gausMC+"L1"+numero[j];
 		f1_MC_L1[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTrack[j]-2,PiccoTrack[j]+2);
-		nomefunz=gausD+"L1"+to_string(j);
+		nomefunz=gausD+"L1"+numero[j];
 		f1_D_L1[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTrack[j]-2,PiccoTrack[j]+2);
 
-		nomefunz=gausMC+"TOFU"+to_string(j);
+		nomefunz=gausMC+"TOFU"+numero[j];
 		f1_MC_TOFU[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTOFU[j]-0.1,PiccoTOFU[j]+0.1);
-		nomefunz=gausD+"TOFU"+to_string(j);
+		nomefunz=gausD+"TOFU"+numero[j];
 		f1_D_TOFU[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTOFU[j]-0.1,PiccoTOFU[j]+0.1);
-		nomefunz=gausMC+"TOFU_inv"+to_string(j);
+		nomefunz=gausMC+"TOFU_inv"+numero[j];
 		f1_D_TOFU_inv[j] = new TF1(nomefunz.c_str(),"gaus",0,20);
 
-		nomefunz=gausMC+"Track"+to_string(j);
+		nomefunz=gausMC+"Track"+numero[j];
 		f1_MC_Track[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTrack[j]-2,PiccoTrack[j]+2);
-		nomefunz=gausD+"Track"+to_string(j);
+		nomefunz=gausD+"Track"+numero[j];
 		f1_D_Track[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTrack[j]-2,PiccoTrack[j]+2);
-		nomefunz=gausMC+"Track_inv"+to_string(j);
+		nomefunz=gausMC+"Track_inv"+numero[j];
 		f1_D_Track_inv[j] = new TF1(nomefunz.c_str(),"gaus",0,20);
 
-		nomefunz=gausMC+"TOFD"+to_string(j);
+		nomefunz=gausMC+"TOFD"+numero[j];
 		f1_MC_TOFD[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTOFD[j]-0.1,PiccoTOFD[j]+0.1);
-		nomefunz=gausD+"TOFD"+to_string(j);
+		nomefunz=gausD+"TOFD"+numero[j];
 		f1_D_TOFD[j] = new TF1(nomefunz.c_str(),"gaus",PiccoTOFD[j]-0.1,PiccoTOFD[j]+0.1);
-		nomefunz=gausMC+"TOFD_inv"+to_string(j);
+		nomefunz=gausMC+"TOFD_inv"+numero[j];
 		f1_D_TOFD_inv[j] = new TF1(nomefunz.c_str(),"gaus",0,20);
 
 		f1_D_L1[j]->SetLineColor(4);
@@ -1126,9 +1117,9 @@ int main(int argc, char * argv[]){
 		f1_D_TOFD[j]->SetLineColor(4);
 
 		//L1 Tracker
-		nomefunz=gausMC+"L1"+to_string(j);
+		nomefunz=gausMC+"L1"+numero[j];
 		RisoluzioniL1[j]->Fit(nomefunz.c_str(),"","",PiccoL1[j]-2,PiccoL1[j]+3);
-		nomefunz=gausD+"L1"+to_string(j);
+		nomefunz=gausD+"L1"+numero[j];
 		RisoluzioniL1_D[j]->Fit(nomefunz.c_str(),"","",PiccoL1[j]-2,PiccoL1[j]+3);
 		mean_L1_MC[j]=f1_MC_L1[j]->GetParameter(1);
 		mean_L1_D[j]=f1_D_L1[j]->GetParameter(1);
@@ -1142,9 +1133,9 @@ int main(int argc, char * argv[]){
 		delete fitmean;
 
 		//UPPER TOF
-		nomefunz=gausMC+"TOFU"+to_string(j);
+		nomefunz=gausMC+"TOFU"+numero[j];
 		RisoluzioniTOFU[j]->Fit(nomefunz.c_str(),"","",PiccoTOFU[j]-0.05,PiccoTOFU[j]+0.1);
-		nomefunz=gausD+"TOFU"+to_string(j);
+		nomefunz=gausD+"TOFU"+numero[j];
 		RisoluzioniTOFU_D[j]->Fit(nomefunz.c_str(),"","",PiccoTOFU[j]-0.05,PiccoTOFU[j]+0.1);
 		mean_TOFU_MC[j]=f1_MC_TOFU[j]->GetParameter(1);
 		mean_TOFU_D[j]=f1_D_TOFU[j]->GetParameter(1);
@@ -1153,14 +1144,14 @@ int main(int argc, char * argv[]){
 		sigma_TOFU_MC_err[j]=f1_MC_TOFU[j]->GetParError(2);
 		sigma_TOFU_D_err[j]=f1_D_TOFU[j]->GetParError(2);
 
-		nomefunz=gausMC+"TOFU_inv"+to_string(j);
+		nomefunz=gausMC+"TOFU_inv"+numero[j];
 		DistribuzioniTOFU_D[j]->Fit(nomefunz.c_str(),"","",DistribuzioniTOFU_D[j]->GetBinCenter(DistribuzioniTOFU_D[j]->GetMaximumBin())-1,DistribuzioniTOFU_D[j]->GetBinCenter(DistribuzioniTOFU_D[j]->GetMaximumBin())+0.5);
 		mean_TOFU_D_inv[j]=f1_D_TOFU_inv[j]->GetParameter(1);
 
 		//Track
-		nomefunz=gausMC+"Track"+to_string(j);
+		nomefunz=gausMC+"Track"+numero[j];
 		RisoluzioniTrack[j]->Fit(nomefunz.c_str(),"","",PiccoTrack[j]-2,PiccoTrack[j]+2);
-		nomefunz=gausD+"Track"+to_string(j);
+		nomefunz=gausD+"Track"+numero[j];
 		RisoluzioniTrack_D[j]->Fit(nomefunz.c_str(),"","",PiccoTrack[j]-2,PiccoTrack[j]+2);
 		mean_Track_MC[j]=f1_MC_Track[j]->GetParameter(1);
 		mean_Track_D[j]=f1_D_Track[j]->GetParameter(1);
@@ -1169,15 +1160,15 @@ int main(int argc, char * argv[]){
 		sigma_Track_MC_err[j]=f1_MC_Track[j]->GetParError(2);
 		sigma_Track_D_err[j]=f1_D_Track[j]->GetParError(2);
 
-		nomefunz=gausMC+"Track_inv"+to_string(j);
+		nomefunz=gausMC+"Track_inv"+numero[j];
 		DistribuzioniTrack_D[j]->Fit(nomefunz.c_str(),"","",DistribuzioniTrack_D[j]->GetBinCenter(DistribuzioniTrack_D[j]->GetMaximumBin())-0.1,DistribuzioniTrack_D[j]->GetBinCenter(DistribuzioniTrack_D[j]->GetMaximumBin())+0.05);
 		mean_Track_D_inv[j]=f1_D_Track_inv[j]->GetParameter(1);
 
 
 		//LOWER TOF
-		nomefunz=gausMC+"TOFD"+to_string(j);
+		nomefunz=gausMC+"TOFD"+numero[j];
 		RisoluzioniTOFD[j]->Fit(nomefunz.c_str(),"","",PiccoTOFD[j]-0.05,PiccoTOFD[j]+0.05);
-		nomefunz=gausD+"TOFD"+to_string(j);
+		nomefunz=gausD+"TOFD"+numero[j];
 		RisoluzioniTOFD_D[j]->Fit(nomefunz.c_str(),"","",PiccoTOFD[j]-0.05,PiccoTOFD[j]+0.05);
 		mean_TOFD_MC[j]=f1_MC_TOFD[j]->GetParameter(1);
 		mean_TOFD_D[j]=f1_D_TOFD[j]->GetParameter(1);
@@ -1186,7 +1177,7 @@ int main(int argc, char * argv[]){
 		sigma_TOFD_MC_err[j]=f1_MC_TOFD[j]->GetParError(2);
 		sigma_TOFD_D_err[j]=f1_D_TOFD[j]->GetParError(2);
 
-		nomefunz=gausMC+"TOFD_inv"+to_string(j);
+		nomefunz=gausMC+"TOFD_inv"+numero[j];
 		DistribuzioniTOFD_D[j]->Fit(nomefunz.c_str(),"","",DistribuzioniTOFD_D[j]->GetBinCenter(DistribuzioniTOFD_D[j]->GetMaximumBin())-1,DistribuzioniTOFD_D[j]->GetBinCenter(DistribuzioniTOFD_D[j]->GetMaximumBin())+0.5);
 		mean_TOFD_D_inv[j]=f1_D_TOFD_inv[j]->GetParameter(1);
 
@@ -1597,7 +1588,7 @@ int main(int argc, char * argv[]){
 		int k = ntupla1->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
-		if(i%100000==0) cout<< '\r' << i;
+		if(i%100000==0) cout<<i<<endl;
 		for(int j=0; j<30;j++){
 			if(Beta>B1&&Beta<=B2&&Massagen>0.5&&Massagen<1){
 				DistribuzioniTOFU_corr[j]->Fill(EdepTOFU*CorrTOFU->Eval(Beta));
@@ -2398,8 +2389,139 @@ int main(int argc, char * argv[]){
         Corr_TOFU->Write("Corr_TOFU");
         Corr_Track->Write("Corr_Track");
         Corr_TOFD->Write("Corr_TOFD");
+
 	f_out->Write();
 	f_out->Close();
+	/////////////////////////////////////////////
+	//////////////// SCRITTURA SU FILE //////////
+	nomefile="/home/AMS/fdimicco/fdimicco/CALIBRAZIONI/Functions_"+mese+".h";
+	ofstream f(nomefile.c_str());
+	f<<"#include \"TFile.h\""<<endl;
+	f<<"#include \"TTree.h\""<<endl;
+	f<<"#include \"TH1.h\""<<endl;
+	f<<"#include \"TH2.h\""<<endl;
+	f<<"#include \"TH3.h\""<<endl;
+	f<<"#include \"TF2.h\""<<endl;
+	f<<"#include <TVector3.h>"<<endl;
+	f<<"#include <fstream>"<<endl;
+	f<<"#include <sstream>"<<endl;
+	f<<"#include <math.h>"<<endl;
+	f<<"#include <cstring>"<<endl;
+	f<<"#include <vector>"<<endl;
+	f<<"#include \"TMath.h\""<<endl;
+	f<<"#include <stdio.h>"<<endl;
+	f<<"#include <iostream>"<<endl;
+	f<<"#include <stdlib.h>"<<endl;
+	f<<"#include <stdio.h>"<<endl;
+	f<<"#include <stdarg.h>"<<endl;
+	f<<endl;
+	f<<"////////////// VALORI CENTRALI BINS //////////////////"<<endl;
+	f<<"double Beta_cent[30]={";
+	for (int j=0;j<30;j++) f<<betacent[j]<<",";
+	f<<"};"<<endl;
+	f<<"double PiccoBeta[30]={";
+        for (int j=0;j<30;j++) f<<PiccoBeta_Inv[j]<<",";
+        f<<"};"<<endl;
+	f<<"double betacent[30]={";
+	for (int j=0;j<30;j++) f<<mean_beta[j]<<",";
+	f<<"};"<<endl;
+	f<<"double valorecent[24]={";
+	for (int j=0;j<24;j++) f<<valorecent[j]<<",";
+	f<<"};"<<endl;
+	f<<"///////////////////////////////////////////////////////"<<endl;
+	f<<endl;
+
+	f<<"////////////////// CORREZIONE R Mis:Gen //////////////////////"<<endl;
+	f<<"double R_gen[34]={0.5633,       0.6490, 0.8449, 1.0408, 1.1755, 1.3347, 1.5306, 1.7510, 1.9469, 2.1551, 2.3510, 2.5347, 2.7551, 2.9878, 3.2204, 3.5143, 3.7347, 3.9429, 4.1755, 4.4204, 4.6653, 4.9469, 5.1918, 5.5224, 5.7918, 6.0122, 7.0000, 8.0000, 9.0000, 10.0000,        11.0000,        20.0000,        50.0000,        100.0000};"<<endl;
+
+	f<<"double R_mis[34]={0.7306,       1.0000, 1.3367, 1.6902, 1.9764, 2.1279, 2.2626, 2.3805, 2.4310, 2.5320, 2.7172, 2.8182, 3.0034, 3.1886, 3.3232, 3.5926, 3.8114, 4.0303, 4.2660, 4.4680, 4.6532, 4.9226, 5.1414, 5.4613, 5.7643, 6.0337, 7.0000, 8.0000, 9.0000, 10.0000,        11.0000,        20.0000,        50.0000,        100.0000};"<<endl;
+	f<<"//////////////////////////////////////////////////////////////"<<endl;
+
+	f<<"////////////////// CORREZIONE RICH //////////////////////"<<endl;
+	f<<"double R_rich[25]={3.18055,     3.57491,        4.01817,        4.51638,        5.07637,        5.70579,        6.41325,        7.20844,        8.10221,        9.10681,        10.236,         11.5051,        12.9317,        14.5351,        16.3373,        18.3629,        20.6398,        23.1989,        26.0753,        29.3084,        32.9424,        37.0269,        41.6179,        46.7781,        52.5781};"<<endl;
+
+	f<<"double Corr_rich[25]={1.00213,  1.00045,        1.00006,        0.99960,        0.99930,        0.99921,        0.99903,        0.99895,        0.99894,        0.99888,        0.99890,        0.99887,        0.99885,        0.99882,        0.99887,        0.99883,        0.99881,        0.99883,        0.99886,        0.99885,        0.99880,        0.99888,        0.99884,        0.99883,        0.99888};"<<endl;
+	f<<"//////////////////////////////////////////////////////////////"<<endl;
+
+	f<<"////////////// SIGMA INVERSE //////////////////"<<endl;
+
+	f<<"double sigmaEL1Uinv[30]={";
+        for (int j=0;j<30;j++) f<<sigma_L1_MC[j]<<",";
+        f<<"};"<<endl;
+	f<<"double sigmaEtofUinv[30]={";
+	for (int j=0;j<30;j++) f<<sigma_TOFU_MC[j]<<",";
+	f<<"};"<<endl;
+	f<<"double sigmaEtrackinv[30]={";
+	for (int j=0;j<30;j++) f<<sigma_Track_MC[j]<<",";
+	f<<"};"<<endl;
+	f<<"double sigmaETofDinv[30]={";
+	for (int j=0;j<30;j++) f<<sigma_TOFD_MC[j]<<",";
+	f<<"};"<<endl;
+	f<<"double sigmabetainv[30]={";
+	for (int j=0;j<30;j++) f<<sigma_beta[j]<<",";
+	f<<"};"<<endl;
+	f<<"double sigmaRinv[24]={";
+	for (int j=0;j<24;j++) f<<sigma_R[j]<<",";
+	f<<"};"<<endl;
+	f<<"///////////////////////////////////////////////////////"<<endl;
+	f<<endl;
+
+	f<<"////////////// CURVE TEORICHE //////////////////"<<endl;
+	f<<"double EL1[30]={";
+        for (int j=0;j<30;j++) f<<mean_L1_D_inv[j]<<",";
+        f<<"};"<<endl;
+	f<<"double ETOFU[30]={";
+	for (int j=0;j<30;j++) f<<mean_TOFU_D_inv[j]<<",";
+	f<<"};"<<endl;
+	f<<"double ETrack[30]={";
+	for (int j=0;j<30;j++) f<<mean_Track_D_inv[j]<<",";
+	f<<"};"<<endl;
+	f<<"double ETOFD[30]={";
+	for (int j=0;j<30;j++) f<<mean_TOFD_D_inv[j]<<",";
+	f<<"};"<<endl;
+	f<<"TF1 *protons = new TF1(\"f1\",\"pow((pow(x,2)/pow(0.938,2)/(1 + pow(x,2)/pow(0.938,2))),0.5)\",0.1,100);"<<endl;
+	f<<"TF1 *deutons = new TF1(\"f1\",\"pow((pow(x,2)/pow(1.875,2)/(1 + pow(x,2)/pow(1.875,2))),0.5)\",0.1,100);"<<endl;
+	f<<"///////////////////////////////////////////////////////"<<endl;
+	f<<endl;
+
+	f<<"////////////// CORREZIONE E.DEP. MC //////////////////"<<endl;
+	f<<"double CorrL1[30]={";
+        for (int j=0;j<30;j++) f<<CorrezioneL1[j]<<",";
+        f<<"};"<<endl;
+	f<<"double CorrTOFU[30]={";
+	for (int j=0;j<30;j++) f<<CorrezioneTOFU[j]<<",";
+	f<<"};"<<endl;
+	f<<"double CorrTrack[30]={";
+	for (int j=0;j<30;j++) f<<CorrezioneTrack[j]<<",";
+	f<<"};"<<endl;
+	f<<"double CorrTOFD[30]={";
+	for (int j=0;j<30;j++) f<<CorrezioneTOFD[j]<<",";
+	f<<"};"<<endl;
+	f<<"///////////////////////////////////////////////////////"<<endl;
+	f<<endl;
+
+	f<<"////////////// DEFINIZIONE SPLINES //////////////////"<<endl;
+	f<<"TSpline3 *Rig = new TSpline3(\"Cubic Spline\",valorecent,sigmaRinv,23);"<<endl;
+	f<<"TSpline3 *beta = new TSpline3(\"beta\",PiccoBeta,sigmabetainv,30);"<<endl;
+	f<<"TSpline3 *eL1 = new TSpline3(\"Cubic Spline\",Beta_cent,sigmaEL1Uinv,30);"<<endl;
+	f<<"TSpline3 *etofu = new TSpline3(\"Cubic Spline\",Beta_cent,sigmaEtofUinv,30);"<<endl;
+	f<<"TSpline3 *etrack = new TSpline3(\"Cubic Spline\",Beta_cent,sigmaEtrackinv,30);"<<endl;
+	f<<"TSpline3 *etofd = new TSpline3(\"Cubic Spline\",Beta_cent,sigmaETofDinv,30);"<<endl;
+	f<<"TSpline3 *EdepL1beta = new TSpline3(\"Cubic Spline\",Beta_cent,EL1,30);"<<endl;
+	f<<"TSpline3 *EdepTOFbeta = new TSpline3(\"Cubic Spline\",Beta_cent,ETOFU,30);"<<endl;
+	f<<"TSpline3 *EdepTrackbeta = new TSpline3(\"Cubic Spline\",Beta_cent,ETrack,30);"<<endl;
+	f<<"TSpline3 *EdepTOFDbeta = new TSpline3(\"Cubic Spline\",Beta_cent,ETOFD,30);"<<endl;
+	f<<"TSpline3 *Corr_L1 = new TSpline3(\"Cubic Spline\",Beta_cent,CorrL1,30);"<<endl;
+	f<<"TSpline3 *Corr_TOFU = new TSpline3(\"Cubic Spline\",Beta_cent,CorrTOFU,30);"<<endl;
+	f<<"TSpline3 *Corr_Track = new TSpline3(\"Cubic Spline\",Beta_cent,CorrTrack,30);"<<endl;
+	f<<"TSpline3 *Corr_TOFD = new TSpline3(\"Cubic Spline\",Beta_cent,CorrTOFD,30);"<<endl;
+	f<<"TSpline3 *Rgenmis = new TSpline3(\"\",R_mis,R_gen,34);"<<endl;
+	f<<"TSpline3 *CorrRICH = new TSpline3(\"\",R_rich,Corr_rich,25);"<<endl;
+	f<<"///////////////////////////////////////////////////////"<<endl;
+	f<<endl;
+
+	f<<"void Functions_auto(){}"<<endl;
+	f.close();
 	/////////////////////////////////////////////
 	return 1;
 }
