@@ -83,7 +83,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		ntupla0->SetBranchAddress("R_pre",&R_pre);
 		ntupla0->SetBranchAddress("Beta_pre",&Beta_pre);
 		ntupla0->SetBranchAddress("Cutmask",&CUTMASK);	
-		ntupla0->SetBranchAddress("Massagen",&Massa_gen);
+		ntupla0->SetBranchAddress("MC_type",&MC_type);
 		ntupla0->SetBranchAddress("EdepL1",&EdepL1);	
 		ntupla0->SetBranchAddress("EdepTOFU",&EdepTOFU);	
 		ntupla0->SetBranchAddress("EdepTOFD",&EdepTOFD);
@@ -101,7 +101,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		ntupla1->SetBranchAddress("EdepTOF",&EdepTOFU);
 		ntupla1->SetBranchAddress("EdepTrack",&EdepTrack);
 		ntupla1->SetBranchAddress("EdepTOFD",&EdepTOFD);
-		ntupla1->SetBranchAddress("Massagen",&Massa_gen);
+		ntupla1->SetBranchAddress("MC_type",&MC_type);
 		ntupla1->SetBranchAddress("LDiscriminant",&LDiscriminant);
 		ntupla1->SetBranchAddress("BDT_response",&BDT_response);
 		ntupla1->SetBranchAddress("Cutmask",&CUTMASK);
@@ -143,10 +143,11 @@ void FillIstogram(int INDX,string frac,string mese)
 	for(int i=0; i<ntupla0->GetEntries()/fraz;i++) {
 		int k = ntupla0->GetEvent(i);
 		Cutmask=CUTMASK;
+		Massa_gen = ReturnMass_Gen();
 		Var3=Momento_gen;
                 Var=R_pre;
                 Var2=R_pre;
-                /*Var=Beta_pre;
+		/*Var=Beta_pre;
                   Var2=BetaRICH;  
                   Var3=Beta_gen;*/
 		if(100*(i/(float)(ntupla0->GetEntries()/fraz))>progress) {
@@ -169,7 +170,8 @@ void FillIstogram(int INDX,string frac,string mese)
 	for(int i=0; i<ntupla1->GetEntries();i++) {
 		int k = ntupla1->GetEvent(i);
 		Cutmask=CUTMASK;
-        	if(100*(i/(float)(ntupla1->GetEntries()))>progress) {
+        	Massa_gen = ReturnMass_Gen();
+		if(100*(i/(float)(ntupla1->GetEntries()))>progress) {
 			cout<<'\r' << "Progress : "<<progress << " %"<< flush;
 			progress=(int)(100*(i/(float)(ntupla1->GetEntries()/fraz)))+1;
 		}
@@ -177,7 +179,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		Var3=Momento_gen;
  	        Var=R;
   		Var2=R;
-        	/*Var=Beta;
+		/*Var=Beta;
          	Var2=BetaRICH;
                 Var3=Beta_gen;*/
 		HecutMC_Fill(ntupla1,i);

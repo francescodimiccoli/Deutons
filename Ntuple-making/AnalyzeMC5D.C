@@ -52,6 +52,9 @@ TH2F * selected_DHLMC[10];
 TH1F * PrescaledMC = new TH1F("PrescaledMC","PrescaledMC",43,0,43);
 TH1F * UnbiasMC= new TH1F("UMC","UMC",43,0,43);
 TH1F * UPreselectedMC= new TH1F("PreselectedMC","PreselectedMC",43,0,43);
+int MC_type=0;
+
+int AssignMC_type(float Massa_gen);
 
 int main(int argc, char * argv[]){
 
@@ -167,15 +170,15 @@ int main(int argc, char * argv[]){
 	for(int i=0;i<18;i++) encinTOF[i]=1/pow(1-pow(Betabins[i],2),0.5)-1;
 	
 
-	TFile *file =TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/sommaMC_smear.root");
+	TFile *file =TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/sommaMCB1042.root");
 	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string ARGV(argv[1]);
 	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/"+calib+"/RisultatiMC_"+ARGV+".root";
 	TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
-	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Massa_gen:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD:IsCharge1");
-	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Massagen:Cutmask:Rmin:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:BDT_response:Dist5D:Dist5D_P");
-	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:Massagen:Momentogen:Betagen:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:BetanS");
-	TNtuple * trig = new TNtuple("trig","trig","Massagen:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias");
+	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:MC_type:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD:IsCharge1");
+	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:Rmin:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:BDT_response:Dist5D:Dist5D_P");
+	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:MC_type:Momentogen:Betagen:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:BetanS");
+	TNtuple * trig = new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias");
 	
 	BDTreader();
 	geo_stuff->SetBranchAddress("Momento_gen",&Momento_gen);
@@ -239,12 +242,13 @@ int main(int argc, char * argv[]){
 		if(Trig_Num<Trig) TotalTrig=TotalTrig+(double)Trig; 	
 		totaltrig=TotalTrig+Trig;
 		Trig=Trig_Num;
+		MC_type = AssignMC_type(Massa_gen);
 		R_corr=R;
 		Particle_ID=0;
 		Cutmask=CUTMASK;
 		Cutmask=CUTMASK|(1<<10);
 		Cutmask = Cutmask|(RICHmask_new<<11);
-		if(!(((Cutmask&187)==187))) continue;
+		if(!(((Cutmask&187)==187))) continue;	
 		entries++;
 		if(Unbias==1) continue;
 		if (Quality(geo_stuff,i)){
@@ -286,6 +290,7 @@ int main(int argc, char * argv[]){
 		if(Trig_Num<Trig)TotalTrig=TotalTrig+(double)Trig;
 		totaltrig2=TotalTrig+Trig;
 		Trig=Trig_Num;
+		MC_type = AssignMC_type(Massa_gen);
 		if(z%100000==0) cout<<z/(float)events*100<<" "<<totaltrig2<<endl;
 		
 		Cutmask=CUTMASK;
@@ -375,46 +380,6 @@ int main(int argc, char * argv[]){
 			cout<<norm[i]<<" ";
 		cout<<endl;
 
-		/*
-		TH1F * preselezionate0=new TH1F("preselezionate0","preselezionate0",43,0,43);
-		for(int j=0; j<43;j++) preselezionate0->SetBinContent(j+1,preselezionate[j][0]);
-
-		TH2F * preselezionateD=new TH2F("preselezionateD","preselezionateD",43,0,43,6,0,6);
-		for(int j=0; j<43;j++) for(int f=0;f<6;f++) preselezionateD->SetBinContent(j+1,f+1,preselezionate_D[j][f]);
-
-		TH1F * Preselectedbeta_P=new TH1F("preselectedbeta_P","preselectedbeta_P",18,0,18);
-		for(int j=0; j<18;j++) Preselectedbeta_P->SetBinContent(j+1,preselectedbeta_P[j]);
-
-		TH2F * Preselectedbeta_D=new TH2F("preselectedbeta_D","preselectedbeta_D",18,0,18,6,0,6);
-		for(int j=0; j<18;j++) for(int f=0;f<6;f++) Preselectedbeta_D->SetBinContent(j+1,f+1,preselectedbeta_D[j][f]);
-
-		TH1F * tempi0=new TH1F("tempi0","tempi0",43,0,43);
-		for(int j=0;j<43;j++) tempi0->SetBinContent(j+1,efficienzagen[j]);
-
-		TH2F * tempi0_D=new TH2F("tempi0_D","tempi0_D",43,0,43,6,0,6);
-		for(int j=0;j<43;j++) for(int f=0;f<6;f++) tempi0_D->SetBinContent(j+1,f+1,efficienzagen_D[j][f]);
-
-		TH1F * Efficienzagenbeta_P=new TH1F("efficienzagenbeta_P","efficienzagenbeta_P",18,0,18);
-		for(int j=0; j<18;j++) Efficienzagenbeta_P->SetBinContent(j+1,efficienzagenbeta_P[j]);
-
-		TH2F * Efficienzagenbeta_D=new TH2F("efficienzagenbeta_D","efficienzagenbeta_D",18,0,18,6,0,6);
-		for(int j=0; j<18;j++) for(int f=0;f<6;f++) Efficienzagenbeta_D->SetBinContent(j+1,f+1,efficienzagenbeta_D[j][f]);
-
-		preselezionate0->Write();
-		preselezionateD->Write();
-		Preselectedbeta_P->Write();
-		Preselectedbeta_D->Write();
-		tempi0->Write();
-		tempi0_D->Write();
-		tempi0_D->Write();
-		Efficienzagenbeta_P->Write();
-		Efficienzagenbeta_D->Write();
-		for(int S=0;S<10;S++)  selezioni_PHLMC[S]->Write();
-		for(int S=0;S<10;S++)  selected_PHLMC[S]->Write();
-		for(int S=0;S<10;S++)  selezioni_DHLMC[S]->Write();
-		for(int S=0;S<10;S++)  selected_DHLMC[S]->Write();
-		*/
-		
 		if(scelta==1) File->Write();
 		File->Close();
 		return 1;
@@ -424,28 +389,51 @@ int main(int argc, char * argv[]){
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
 	int k = albero->GetEvent(i);
-	ntupla->Fill(Massa_gen,Momento_gen,Ev_Num,Trig_Num,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,Unbias);
+	ntupla->Fill(MC_type,Momento_gen,Ev_Num,Trig_Num,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,Unbias);
 		
 }
 
 void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla,int P_ID)
 {
 	int k = albero->GetEvent(i);
-	ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTrack,EdepTOFD,EdepECAL,Massa_gen,Momento_gen,Beta_gen,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,BetanS);
+	ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTrack,EdepTOFD,EdepECAL,MC_type,Momento_gen,Beta_gen,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,BetanS);
 
 }
 
 void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 {
         int k = albero->GetEvent(i);
-        ntupla->Fill(Velocity,Massa_gen,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,layernonusati,Chisquare,Richtotused,RichPhEl,Cutmask,Momento_gen,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),IsCharge1);
+        ntupla->Fill(Velocity,MC_type,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,layernonusati,Chisquare,Richtotused,RichPhEl,Cutmask,Momento_gen,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),IsCharge1);
 }
 
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
-
 	int k = albero->GetEvent(i);
-	ntupla->Fill(R,Beta,(*trtrack_edep)[0],Massa_gen,Cutmask,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,BDT_response,Dist5D,Dist5D_P);
+	ntupla->Fill(R,Beta,(*trtrack_edep)[0],MC_type,Cutmask,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,BDT_response,Dist5D,Dist5D_P);
 }
 
-
+int AssignMC_type(float Massa_gen){
+	int MC_type=0;
+	//protons MC
+	int cursor=0;
+	if(Massa_gen<1)	{
+		if(Massa_gen<0.93805) MC_type = MC_type|(1<<(cursor+0));
+		if(Massa_gen<0.939  ) MC_type = MC_type|(1<<(cursor+1));
+		MC_type = MC_type|(1<<(cursor+2));			
+	}
+	//deutons MCs
+	cursor=8;
+	if(Massa_gen>1&&Massa_gen<2){
+		MC_type = MC_type|(1<<(cursor+0));
+		int moffset=18570;
+                int c_s_type=(int)(10000*Massa_gen-moffset + 2);
+		MC_type = MC_type|(1<<(cursor+c_s_type)); 			
+	}	
+	//Helium MC
+	cursor=16;	
+	if(Massa_gen>3)	{
+		MC_type = MC_type|(1<<(cursor+0));
+		MC_type = MC_type|(1<<(cursor+2));
+	}
+	return	MC_type;
+}

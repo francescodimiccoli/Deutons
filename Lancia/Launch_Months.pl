@@ -49,7 +49,8 @@ while($n<=$fine){
 		}
 		if($n!=$inizio) {
 			if($mode==0){
-				{system("perl $workdir/Sommarisultati.pl $mesi[$n]");
+				{
+					system("perl $workdir/Sommarisultati.pl $mesi[$n]");
 					system("$workdir/CodesforAnalysis/Preliminar.exe $mesi[$n]");
 				}
 			}

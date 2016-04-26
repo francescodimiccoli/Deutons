@@ -25,6 +25,7 @@ float YTRD=0;
 float Rcutoff=0;
 float LDiscriminant=0;
 float Massa_gen=0;
+float MC_type=0;
 float Massa=0;
 float BDT_response=0;
 float D_TOF,D_Track,D_TRD,Discr=0;
@@ -122,14 +123,26 @@ TH2F * esposizionedgeo;
 TH2F * esposizionedgeoNaF;
 TH2F * esposizionedgeoAgl;
 
+//retrieve MC particle species
+float ReturnMass_Gen() {
+	float Mass_gen=0;
+	if((((int)MC_type)&0xFF    )>0)      Mass_gen = 0.938;
+	if((((int)MC_type)&0xFF00  )>0)      Mass_gen = 1.875;
+	if((((int)MC_type)&0xFF0000)>0)      Mass_gen = 3.725;
+	return Mass_gen;
+}
+
+//retrieve MC cross section type
 int ReturnMCGenType(){
-	int mc_type;
-	if(Massa_gen < 1)  mc_type = 0;
-	if(Massa_gen > 3)  mc_type = 0;
-	if(Massa_gen > 1 && Massa_gen < 2){
-		int moffset=18570;
-		mc_type=(int)(10000*Massa_gen-moffset);
+	int mc_type=-1;
+	int cursor=0;
+	if(ReturnMass_Gen()<1&&ReturnMass_Gen()>0) cursor=0 ;
+	if(ReturnMass_Gen()<2&&ReturnMass_Gen()>1) cursor=8 ;
+	if(ReturnMass_Gen()<4&&ReturnMass_Gen()>3) cursor=16;
+	for(int i=2;i<8;i++) {
+		if((((int)MC_type)>>(cursor+i))&1==1) mc_type=i-2;
 	}
+	if(mc_type == -1) std::cout<<"ERROR: MC cross section type not found"<<std::endl;	 	
 	return mc_type;
 }
 

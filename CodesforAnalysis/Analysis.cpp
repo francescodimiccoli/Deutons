@@ -29,11 +29,10 @@
 #include "Parte2/DeutonsCountsExtraction_Dist.cpp"
 #include "Parte2/MCMC.cpp"
 #include "FillIstogram.cpp"
-
+#include "Parte2/DeutonsFlux.cpp"
 /*#include "Parte2/DVSMCpreSeleff.cpp"
 #include "Parte2/DVSMCQualeff2.cpp"
 #include "Parte2/DVSMCTrackeff.cpp"
-#include "Parte2/DeutonsDist.cpp"
 #include "Parte2/DeutonsFlux.cpp"
 #include "Parte2/DeutonsFlux_Dist.cpp"*/
 
@@ -107,6 +106,7 @@ int main(int argc, char * argv[])
 	for(int i=0;i<Rbins.size();i++) {
 		deltaencinprot[i]=(pow(((1+pow((Rbins[i+1]/0.938),2))),0.5)-1)-(pow(((1+pow((Rbins[i]/0.938),2))),0.5)-1);
 		deltaencindeut[i]=(pow(((1+pow((Rbins[i+1]/1.875),2))),0.5)-1)-(pow(((1+pow((Rbins[i]/1.875),2))),0.5)-1);
+		cout<<R_cent[i]<<endl;
 	}
 
 	cout<<"**************************** BETA BINS TOF***********************************"<<endl;
@@ -137,6 +137,7 @@ int main(int argc, char * argv[])
 		ostringstream ss;
 		ss<<Betabins[i];
 		TitoliTOF[i]= ss.str();
+		cout<<BetabinsR_P[i]<<" "<<BetabinsR_D[i]<<endl;
 	}
 	cout<<endl;
 
@@ -250,6 +251,7 @@ int main(int argc, char * argv[])
 		CorrLAT();
 		Acceptance();
 		ProtonFlux();
+		if(frac=="tot") DeutonFlux();
 	}
 	cout<<"************************** OUTPUT **************************************************************"<<endl;
 	return 1;
