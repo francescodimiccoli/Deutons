@@ -158,6 +158,7 @@ TH1 * ACCEPTANCE::Triggerbin(int n , TH1 * after , float trigrate, float bins[])
 			for(int i=0; i<(int)after ->GetNbinsX();i++ ){
 				gen_bin = eventiprova[m]*(pow(trigrate,-1))*(log(bins[i+1])-log(bins[i]))/(log(Rmax)-log(Rmin));
 				triggerbin -> SetBinContent(i+1,m+1,gen_bin);
+				triggerbin -> SetBinError(i+1,m+1,pow(gen_bin,0.5));
 			}
 		}
 
@@ -167,6 +168,7 @@ TH1 * ACCEPTANCE::Triggerbin(int n , TH1 * after , float trigrate, float bins[])
 			for(int i=0; i<(int)after ->GetNbinsX();i++ ){
 				gen_bin = eventiprova[m]*(pow(trigrate,-1))*(log(bins[i+1])-log(bins[i]))/(log(Rmax)-log(Rmin));
 				triggerbin -> SetBinContent(i+1,gen_bin);
+				triggerbin -> SetBinError(i+1,pow(gen_bin,0.5));
 			}
 		}
 	return triggerbin;
@@ -215,18 +217,29 @@ void ACCEPTANCE::Eval_MC_Acceptance(){
 
 TH1 * ACCEPTANCE::Geomag_Acceptance(int n, TH1* MCAcceptance, TH1* LATcorr){
 	TH1 * Geomag_Acceptance;
+	float error=0;
 	if(n>1){
 		Geomag_Acceptance = new TH3F ("","",MCAcceptance->GetNbinsX(),0,MCAcceptance->GetNbinsX(),LATcorr->GetNbinsX(),0,LATcorr->GetNbinsX(),n,0,n);		      
 		for(int m=0;m<n;m++)
 			for(int R=0;R<MCAcceptance->GetNbinsX();R++)
-				for(int lat=1;lat<LATcorr->GetNbinsX();lat++)
-					Geomag_Acceptance->SetBinContent(R+1,lat+1,m+1,MCAcceptance->GetBinContent(R+1,m+1)/LATcorr->GetBinContent(lat+1));							
+				for(int lat=1;lat<LATcorr->GetNbinsX();lat++){
+					Geomag_Acceptance->SetBinContent(R+1,lat+1,m+1,MCAcceptance->GetBinContent(R+1,m+1)/LATcorr->GetBinContent(lat+1));
+					error=pow(MCAcceptance->GetBinContent(R+1,m+1)*LATcorr->GetBinError(lat+1),2);
+				        error=pow(MCAcceptance->GetBinError(R+1,m+1)*LATcorr->GetBinContent(lat+1),2);
+					error=pow(error,0.5);
+					Geomag_Acceptance->SetBinError(R+1,lat+1,m+1,error);				
+					}			
 	}
 	else{
 		Geomag_Acceptance = new TH2F ("","",MCAcceptance->GetNbinsX(),0,MCAcceptance->GetNbinsX(),LATcorr->GetNbinsX(),0,LATcorr->GetNbinsX());
 		for(int R=0;R<MCAcceptance->GetNbinsX();R++)
-			for(int lat=1;lat<LATcorr->GetNbinsX();lat++)
-				Geomag_Acceptance->SetBinContent(R+1,lat+1,MCAcceptance->GetBinContent(R+1)/LATcorr->GetBinContent(lat+1));							
+			for(int lat=1;lat<LATcorr->GetNbinsX();lat++){
+				Geomag_Acceptance->SetBinContent(R+1,lat+1,MCAcceptance->GetBinContent(R+1)/LATcorr->GetBinContent(lat+1));
+                                error=pow(MCAcceptance->GetBinContent(R+1)*LATcorr->GetBinError(lat+1),2);
+				error=pow(MCAcceptance->GetBinError(R+1)*LATcorr->GetBinContent(lat+1),2);
+                                error=pow(error,0.5);
+				Geomag_Acceptance->SetBinError(R+1,lat+1,error);
+				}
 	}
 
 	return Geomag_Acceptance; 
@@ -246,17 +259,29 @@ void ACCEPTANCE::Eval_Geomag_Acceptance(int n){
 
 TH1 * ACCEPTANCE::Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW){
 	TH1 * Corrected_Acceptance = (TH1 *) MCAcceptance -> Clone();
+	float error=0;
 	if(n>1){
 		for(int m=0;m<n;m++)
 			for(int R=0;R<MCAcceptance->GetNbinsX();R++)
-				if(MCAcceptance->GetBinContent(R+1,m+1)>0&&LATcorrW->GetBinContent(R)>0)
-					Corrected_Acceptance -> SetBinContent(R+1,m+1,MCAcceptance->GetBinContent(R+1,m+1)/LATcorrW->GetBinContent(R));
+				if(MCAcceptance->GetBinContent(R+1,m+1)>0&&LATcorrW->GetBinContent(R)>0){
+					Corrected_Acceptance -> SetBinContent(R+1,m+1,MCAcceptance->GetBinContent(R+1,m+1)/LATcorrW->GetBinContent(R+1));
+					error=pow(MCAcceptance->GetBinContent(R+1,m+1)*LATcorrW->GetBinError(R+1),2);
+                                        error=pow(MCAcceptance->GetBinError(R+1,m+1)*LATcorrW->GetBinContent(R+1),2);
+                                        error=pow(error,0.5);
+                                        Corrected_Acceptance->SetBinError(R+1,m+1,error);
+					}
 	}	
 
 	else{
 		for(int R=0;R<MCAcceptance->GetNbinsX();R++){
-			if(MCAcceptance->GetBinContent(R+1)>0&&LATcorrW->GetBinContent(R)>0)
-				Corrected_Acceptance -> SetBinContent(R+1,MCAcceptance->GetBinContent(R+1)/LATcorrW->GetBinContent(R));}
+			if(MCAcceptance->GetBinContent(R+1)>0&&LATcorrW->GetBinContent(R)>0){
+				Corrected_Acceptance -> SetBinContent(R+1,MCAcceptance->GetBinContent(R+1)/LATcorrW->GetBinContent(R+1));}
+				error=pow(MCAcceptance->GetBinContent(R+1)*LATcorrW->GetBinError(R+1),2);
+                                error=pow(MCAcceptance->GetBinError(R+1)*LATcorrW->GetBinContent(R+1),2);
+                                error=pow(error,0.5);
+                                Corrected_Acceptance->SetBinError(R+1,error);
+				
+			}
 	}
 	return Corrected_Acceptance;
 }

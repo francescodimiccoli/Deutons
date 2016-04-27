@@ -144,7 +144,7 @@ void Acceptance(){
                 for(int i=0;i<nbinsToF;i++) {EffgenbetaDTOF[h]->SetPoint(p,Ekincent[i],AcceptanceD ->Gen_Acceptance_TOF  ->GetBinContent(i+1,h+1));p++;}
         EffgenbetaDTOF[h]->SetMarkerStyle(8);
         EffgenbetaDTOF[h]->SetMarkerColor(4);
-        EffgenbetaDTOF[h]->SetMarkerSize(2);
+        EffgenbetaDTOF[h]->SetMarkerSize(1.4);
         EffgenbetaDTOF[h]->SetLineColor(4);
         EffgenbetaDTOF[h]->SetLineWidth(1);
         EffgenbetaDTOF[h]->SetMarkerStyle(h+3);
@@ -168,7 +168,7 @@ void Acceptance(){
 
         EffgenbetaDNaF[h]->SetMarkerStyle(8);
         EffgenbetaDNaF[h]->SetMarkerColor(4);
-        EffgenbetaDNaF[h]->SetMarkerSize(2);
+        EffgenbetaDNaF[h]->SetMarkerSize(1.4);
         EffgenbetaDNaF[h]->SetLineColor(4);
         EffgenbetaDNaF[h]->SetLineWidth(1);
         EffgenbetaDNaF[h]->SetMarkerStyle(h+3);
@@ -192,7 +192,7 @@ void Acceptance(){
 
         EffgenbetaDAgl[h]->SetMarkerStyle(8);
         EffgenbetaDAgl[h]->SetMarkerColor(4);
-        EffgenbetaDAgl[h]->SetMarkerSize(2);
+        EffgenbetaDAgl[h]->SetMarkerSize(1.4);
         EffgenbetaDAgl[h]->SetLineColor(4);
         EffgenbetaDAgl[h]->SetLineWidth(1);
         EffgenbetaDAgl[h]->SetMarkerStyle(h+3);
@@ -237,7 +237,7 @@ void Acceptance(){
 	for(int i=0;i<nbinsToF;i++) {EffgenbetaPTOF->SetPoint(p,Ekincent[i],AcceptanceP ->Gen_Acceptance_TOF  ->GetBinContent(i+1));p++;}
 	EffgenbetaPTOF->SetMarkerStyle(8);
 	EffgenbetaPTOF->SetMarkerColor(2);
-	EffgenbetaPTOF->SetMarkerSize(2);
+	EffgenbetaPTOF->SetMarkerSize(1.4);
 	EffgenbetaPTOF->SetLineColor(2);
 	EffgenbetaPTOF->SetLineWidth(1);
 	EffgenbetaPTOF->SetTitle("");
@@ -254,7 +254,7 @@ void Acceptance(){
 	for(int i=0;i<nbinsNaF;i++) {EffgenbetaPNaF->SetPoint(p,EkincentNaF[i],AcceptanceP ->Gen_Acceptance_NaF  ->GetBinContent(i+1));p++;}
 	EffgenbetaPNaF->SetMarkerStyle(8);
 	EffgenbetaPNaF->SetMarkerColor(2);
-	EffgenbetaPNaF->SetMarkerSize(2);
+	EffgenbetaPNaF->SetMarkerSize(1.4);
 	EffgenbetaPNaF->SetLineColor(2);
 	EffgenbetaPNaF->SetLineWidth(1);
 	EffgenbetaPNaF->SetTitle("");
@@ -271,7 +271,7 @@ void Acceptance(){
 	for(int i=0;i<nbinsAgl;i++) {EffgenbetaPAgl->SetPoint(p,EkincentAgl[i],AcceptanceP ->Gen_Acceptance_Agl  ->GetBinContent(i+1));p++;}
 	EffgenbetaPAgl->SetMarkerStyle(8);
 	EffgenbetaPAgl->SetMarkerColor(2);
-	EffgenbetaPAgl->SetMarkerSize(2);
+	EffgenbetaPAgl->SetMarkerSize(1.4);
 	EffgenbetaPAgl->SetLineColor(2);
 	EffgenbetaPAgl->SetLineWidth(1);
 	EffgenbetaPAgl->SetTitle("");
@@ -293,17 +293,25 @@ void Acceptance(){
 	TGraphErrors * AccSelP[11];
 	TGraphErrors * AccpreP[11];
 	p=0;
-	for(int i=0;i<nbinsr;i++) {AccgeoP->SetPoint(p,encinprot[i],AcceptanceP ->Gen_Acceptance_R->GetBinContent(i+1));p++;}	
+	for(int i=0;i<nbinsr;i++) {AccgeoP->SetPoint(p,encinprot[i],AcceptanceP ->Gen_Acceptance_R->GetBinContent(i+1));
+				   AccgeoP->SetPointError(p,0,AcceptanceP ->Gen_Acceptance_R->GetBinError(i+1));
+				   p++;}	
 	p=0;
-        for(int i=0;i<nbinsr;i++) {AccPreMCP->SetPoint(p,encinprot[i],AcceptancePreP ->MCAcceptance_R->GetBinContent(i+1));p++;}
+        for(int i=0;i<nbinsr;i++) {AccPreMCP->SetPoint(p,encinprot[i],AcceptancePreP ->MCAcceptance_R->GetBinContent(i+1));
+				   AccPreMCP->SetPointError(p,0,AcceptancePreP ->MCAcceptance_R->GetBinError(i+1));
+				   p++;}
 	p=0;
-	for(int i=0;i<nbinsr;i++) {AccSelMCP->SetPoint(p,encinprot[i],AcceptanceP ->MCAcceptance_R->GetBinContent(i+1));p++;}
+	for(int i=0;i<nbinsr;i++) {AccSelMCP->SetPoint(p,encinprot[i],AcceptanceP ->MCAcceptance_R->GetBinContent(i+1));
+				   AccSelMCP->SetPointError(p,0,AcceptanceP ->MCAcceptance_R->GetBinError(i+1));
+				   p++;}
 	
 
 	for(int j=0;j<11;j++) {
 		AccSelP[j]=new TGraphErrors();
 		p=0;
-		for(int i=0;i<nbinsr;i++) {AccSelP[j]->SetPoint(p,encinprot[i],AcceptanceP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1) );p++;}
+		for(int i=0;i<nbinsr;i++) {AccSelP[j]->SetPoint(p,encinprot[i],AcceptanceP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1) );
+					  AccSelP[j]->SetPointError(p,0,AcceptanceP ->Geomag_Acceptance_R -> GetBinError(i+1,j+1));
+					  p++;}
 		AccSelP[j]->SetMarkerStyle(8);
         	AccSelP[j]->SetMarkerColor(j-1);
         	AccSelP[j]->SetLineColor(j-1);
@@ -312,7 +320,9 @@ void Acceptance(){
 	for(int j=0;j<11;j++) {
                 AccpreP[j]=new TGraphErrors();
                 p=0;
-		for(int i=0;i<nbinsr;i++) {AccpreP[j]->SetPoint(p,encinprot[i],AcceptancePreP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1));p++;}
+		for(int i=0;i<nbinsr;i++) {AccpreP[j]->SetPoint(p,encinprot[i],AcceptancePreP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1));
+					   AccpreP[j]->SetPointError(p,0,AcceptancePreP ->Geomag_Acceptance_R -> GetBinError(i+1,j+1));
+					   p++;}
                 AccpreP[j]->SetMarkerStyle(8);
                 AccpreP[j]->SetMarkerColor(j-1);
                 AccpreP[j]->SetLineColor(j-1);
@@ -361,21 +371,25 @@ void Acceptance(){
                 AccPreMCDbeta[h]= new TGraphErrors();
                 AccSelMCDbeta[h]= new TGraphErrors();
                 int p=0;
-                for(int m=0;m<nbinsToF;m++) {AccSelMCDbeta[h]->SetPoint(p,Ekincent[m],AcceptanceD ->MCAcceptance_TOF -> GetBinContent(m+1,h+1));p++;}
+                for(int m=0;m<nbinsToF;m++) {AccSelMCDbeta[h]->SetPoint(p,Ekincent[m],AcceptanceD ->MCAcceptance_TOF -> GetBinContent(m+1,h+1));
+					    AccSelMCDbeta[h]->SetPointError(p,0,AcceptanceD ->MCAcceptance_TOF -> GetBinError(m+1,h+1));
+					     p++;}
 		if(h==0) 
 		{
 			p=0;
-			for(int m=0;m<nbinsToF;m++) {AccSelMCPbeta->SetPoint(p,Ekincent[m],AcceptanceP ->MCAcceptance_TOF -> GetBinContent(m+1));p++;}
+			for(int m=0;m<nbinsToF;m++) {AccSelMCPbeta->SetPoint(p,Ekincent[m],AcceptanceP ->MCAcceptance_TOF -> GetBinContent(m+1));
+						     AccSelMCPbeta->SetPointError(p,0,AcceptanceP ->MCAcceptance_TOF -> GetBinError(m+1));
+						     p++;}
 			AccSelMCDbeta[0]->SetPoint(p,50,0.001);
 			AccSelMCPbeta->SetMarkerStyle(8);
                 	AccSelMCPbeta->SetMarkerColor(2);
-                	AccSelMCPbeta->SetMarkerSize(2);
+                	AccSelMCPbeta->SetMarkerSize(1.4);
                 	AccSelMCPbeta->SetLineColor(2);
                 	AccSelMCPbeta->SetLineWidth(1);
 		}
 		AccSelMCDbeta[h]->SetMarkerStyle(8);
                 AccSelMCDbeta[h]->SetMarkerColor(4);
-                AccSelMCDbeta[h]->SetMarkerSize(2);
+                AccSelMCDbeta[h]->SetMarkerSize(1.4);
                 AccSelMCDbeta[h]->SetLineColor(4);
 		AccSelMCDbeta[h]->SetLineStyle(2);
                 AccSelMCDbeta[h]->SetLineWidth(1);
@@ -391,10 +405,10 @@ void Acceptance(){
                 leg->AddEntry(AccSelMCDbeta[0],MCLegend[1].c_str(), "ep");
 		AccSelMCDbeta[0]->Draw("AP");
 		AccSelMCPbeta->SetLineStyle(2);
-		AccSelMCPbeta->Draw("CPsame");
+		AccSelMCPbeta->Draw("Psame");
         for(int h=1;h<6;h++){
                 leg->AddEntry(AccSelMCDbeta[h],MCLegend[h+1].c_str(), "ep");
-		AccSelMCDbeta[h]->Draw("CPsame");
+		AccSelMCDbeta[h]->Draw("Psame");
         }
         	leg->AddEntry(AccSelMCPbeta,"Protons B800","ep");		
 		leg->Draw("same");
@@ -409,11 +423,15 @@ void Acceptance(){
                 AccPreMCDbetaNaF[h]= new TGraphErrors();
                 AccSelMCDbetaNaF[h]= new TGraphErrors();
                 int p=0;
-                for(int m=0;m<nbinsNaF;m++) {AccSelMCDbetaNaF[h]->SetPoint(p,EkincentNaF[m],AcceptanceD ->MCAcceptance_NaF -> GetBinContent(m+1,h+1));p++;}
+                for(int m=0;m<nbinsNaF;m++) {AccSelMCDbetaNaF[h]->SetPoint(p,EkincentNaF[m],AcceptanceD ->MCAcceptance_NaF -> GetBinContent(m+1,h+1));
+					    AccSelMCDbetaNaF[h]->SetPointError(p,0,AcceptanceD ->MCAcceptance_NaF -> GetBinError(m+1,h+1));
+					     p++;}
 		if(h==0)
                 {
                         p=0;
-			for(int m=0;m<nbinsNaF;m++) {AccSelMCPbetaNaF->SetPoint(p,EkincentNaF[m],AcceptanceP ->MCAcceptance_NaF -> GetBinContent(m+1));p++;}
+			for(int m=0;m<nbinsNaF;m++) {AccSelMCPbetaNaF->SetPoint(p,EkincentNaF[m],AcceptanceP ->MCAcceptance_NaF -> GetBinContent(m+1));
+					 	     AccSelMCPbetaNaF->SetPointError(p,0,AcceptanceP ->MCAcceptance_NaF -> GetBinError(m+1));
+						     p++;}
                         AccSelMCPbetaNaF->SetMarkerStyle(8);
                         AccSelMCPbetaNaF->SetMarkerColor(2);
                         AccSelMCPbetaNaF->SetMarkerSize(2);
@@ -434,11 +452,11 @@ void Acceptance(){
                 AccSelMCDbetaNaF[h]->GetYaxis()->SetTitleSize(0.045);
                 AccSelMCDbetaNaF[h]->GetYaxis()->SetRangeUser(1e-2,1.3);
         }
-                AccSelMCDbetaNaF[0]->Draw("CPsame");
+                AccSelMCDbetaNaF[0]->Draw("Psame");
 		AccSelMCPbetaNaF->SetLineStyle(2);
-		AccSelMCPbetaNaF->Draw("CPsame");
+		AccSelMCPbetaNaF->Draw("Psame");
         for(int h=1;h<6;h++){
-                AccSelMCDbetaNaF[h]->Draw("CPsame");
+                AccSelMCDbetaNaF[h]->Draw("Psame");
         }
 	
 	TGraphErrors * AccgeoDbetaAgl[6];
@@ -450,11 +468,15 @@ void Acceptance(){
                 AccPreMCDbetaAgl[h]= new TGraphErrors();
                 AccSelMCDbetaAgl[h]= new TGraphErrors();
                 int p=0;
-                for(int m=0;m<nbinsAgl;m++)  {AccSelMCDbetaAgl[h]->SetPoint(p,EkincentAgl[m],AcceptanceD ->MCAcceptance_Agl -> GetBinContent(m+1,h+1));p++;}
+                for(int m=0;m<nbinsAgl;m++)  {AccSelMCDbetaAgl[h]->SetPoint(p,EkincentAgl[m],AcceptanceD ->MCAcceptance_Agl -> GetBinContent(m+1,h+1));
+					      AccSelMCDbetaAgl[h]->SetPointError(p,0,AcceptanceD ->MCAcceptance_Agl -> GetBinError(m+1,h+1));
+					      p++;}
 		if(h==0)
                 {
                         p=0;
-			for(int m=0;m<nbinsAgl;m++) {AccSelMCPbetaAgl->SetPoint(p,EkincentAgl[m],AcceptanceP ->MCAcceptance_Agl -> GetBinContent(m+1));p++;}
+			for(int m=0;m<nbinsAgl;m++) {AccSelMCPbetaAgl->SetPoint(p,EkincentAgl[m],AcceptanceP ->MCAcceptance_Agl -> GetBinContent(m+1));
+						     AccSelMCPbetaAgl->SetPointError(p,EkincentAgl[m],AcceptanceP ->MCAcceptance_Agl -> GetBinError(m+1));
+						     p++;}
                         AccSelMCPbetaAgl->SetMarkerStyle(8);
                         AccSelMCPbetaAgl->SetMarkerColor(2);
                         AccSelMCPbetaAgl->SetMarkerSize(2);
@@ -475,11 +497,11 @@ void Acceptance(){
                 AccSelMCDbetaAgl[h]->GetYaxis()->SetTitleSize(0.045);
                 AccSelMCDbetaAgl[h]->GetYaxis()->SetRangeUser(1e-2,1.3);
         }
-                AccSelMCDbetaAgl[0]->Draw("CPsame");
+                AccSelMCDbetaAgl[0]->Draw("Psame");
 		AccSelMCPbetaAgl->SetLineStyle(2);
-		AccSelMCPbetaAgl->Draw("CPsame");
+		AccSelMCPbetaAgl->Draw("Psame");
         for(int h=1;h<6;h++){
-                AccSelMCDbetaAgl[h]->Draw("CPsame");
+                AccSelMCDbetaAgl[h]->Draw("Psame");
         }
 
 	cout<<"*** Updating Results file ***"<<endl;

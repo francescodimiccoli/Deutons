@@ -120,7 +120,7 @@ void ProtonFlux() {
       P_Fluxgeo[j]->SetName(nome.c_str());
       for(int i=0; i<nbinsr; i++) {
          P_Fluxgeo[j]->SetPoint(i,encinprot[i],ProtonsGeomagFlux->GetBinContent(i+1,j+1)*pow(encinprot[i],potenza));
-         P_Fluxgeo[j]->SetPointError(i,0,0);
+         P_Fluxgeo[j]->SetPointError(i,0,ProtonsGeomagFlux->GetBinError(i+1,j+1)*pow(encinprot[i],potenza));
       }
       P_Fluxgeo[j]->SetMarkerStyle(8);
       P_Fluxgeo[j]->SetMarkerColor(j-1);
@@ -146,7 +146,7 @@ void ProtonFlux() {
    PFlux=new TGraphErrors();
    for(int i=0; i<nbinsr; i++) {
       PFlux->SetPoint(i,encinprot[i],ProtonsPrimaryFlux->GetBinContent(i+1)*pow(encinprot[i],potenza));
-      PFlux->SetPointError(i,0,0*pow(encinprot[i],potenza));
+      PFlux->SetPointError(i,0,ProtonsPrimaryFlux->GetBinError(i+1)*pow(encinprot[i],potenza));
    }
    PFlux->SetName("Protons Primary Flux");
    PFlux->SetMarkerStyle(8);
@@ -201,7 +201,7 @@ void ProtonFlux() {
    for(int i=1; i<nbinsr; i++) {
       PFlux_->SetPoint(p,R_cent[i],1);
       PFlux_pre->SetPoint(p,encinprot[i],1);
-      PFlux_->SetPointError(p,0,0/*(PFluxpre->GetBinContent(i+1,2)+PFluxsel->GetBinContent(i+1,2))/PFluxpre->GetBinContent(i+1,1)*/);
+      PFlux_->SetPointError(p,0,(P_sel_PrimaryFlux->GetBinError(i+1,2)+P_pre_PrimaryFlux->GetBinError(i+1,2))/P_pre_PrimaryFlux->GetBinContent(i+1,1));
       p++;
    }
    p=0;

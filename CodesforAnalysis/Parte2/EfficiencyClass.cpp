@@ -90,8 +90,8 @@ void Efficiency::Write()
 void Efficiency::UpdateErrorbars()
 {
 
-   if(afterR)	 afterR->Sumw2();
-   if(beforeR)	 beforeR->Sumw2(); 
+   if(afterR)	 afterR   ->Sumw2();
+   if(beforeR)	 beforeR  ->Sumw2(); 
    if(beforeTOF) beforeTOF->Sumw2(); 
    if(beforeNaF) beforeNaF->Sumw2();
    if(beforeAgl) beforeAgl->Sumw2();

@@ -119,15 +119,19 @@ void Flux::Set_Exposure_Time(TH1 * Tempi) {
 TH1 * Flux::ExtractParticularMC_cs(TH1 * Histo, int lat_zones, int mc_type){
 	if(lat_zones == 1){
 		TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),0,Histo->GetNbinsX());
-		for(int i = 0; i< Histo->GetNbinsX();i++)
+		for(int i = 0; i< Histo->GetNbinsX();i++){
 			Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,mc_type+1));
+			Slice->SetBinError(i+1,Histo->GetBinError(i+1,mc_type+1));
+			}
 		return Slice;
 	}
 	else{
 		TH2F * Slice = new TH2F("","",Histo->GetNbinsX(),0,Histo->GetNbinsX(),lat_zones,0,lat_zones);
 		for(int lat=0;lat<lat_zones;lat++){
-			for(int i = 0; i< Histo->GetNbinsX();i++)
+			for(int i = 0; i< Histo->GetNbinsX();i++){
 				Slice->SetBinContent(i+1,lat+1,Histo->GetBinContent(i+1,lat+1,mc_type+1));
+				Slice->SetBinError(i+1,lat+1,Histo->GetBinError(i+1,lat+1,mc_type+1));
+				}
 		}
 		return Slice;	
 	}
@@ -142,7 +146,12 @@ void Flux::Set_DeltaE(int n,bool deutons) {
       DeltaE_NaF = new TH2F ((name + "DeltaE_NaF" ).c_str(),(name + "DeltaE_NaF" ).c_str(),nbinsNaF,0,nbinsNaF,n,0,n);
       DeltaE_Agl = new TH2F ((name + "DeltaE_Agl" ).c_str(),(name + "DeltaE_Agl" ).c_str(),nbinsAgl,0,nbinsAgl,n,0,n);
 
-      if(deutons) {
+	DeltaE_R   ->Sumw2();
+	DeltaE_TOF ->Sumw2();
+	DeltaE_NaF ->Sumw2();
+	DeltaE_Agl ->Sumw2();	
+      
+    if(deutons) {
          for(int R=0; R<DeltaE_R->GetNbinsX(); R++)
             for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(R+1,lat+1,deltaencindeut[R]);
       }
@@ -163,6 +172,12 @@ void Flux::Set_DeltaE(int n,bool deutons) {
       DeltaE_TOF = new TH1F ((name + "DeltaE_TOF" ).c_str(),(name + "DeltaE_TOF" ).c_str(),nbinsToF,0,nbinsToF);
       DeltaE_NaF = new TH1F ((name + "DeltaE_NaF" ).c_str(),(name + "DeltaE_NaF" ).c_str(),nbinsNaF,0,nbinsNaF);
       DeltaE_Agl = new TH1F ((name + "DeltaE_Agl" ).c_str(),(name + "DeltaE_Agl" ).c_str(),nbinsAgl,0,nbinsAgl);
+      
+ 	DeltaE_R   ->Sumw2();     
+	 DeltaE_TOF ->Sumw2();
+	 DeltaE_NaF ->Sumw2();
+	 DeltaE_Agl ->Sumw2();
+
       if(deutons) {
          for(int R=0; R<DeltaE_R->GetNbinsX(); R++)  DeltaE_R->SetBinContent(R+1,deltaencindeut[R]);
       }
@@ -217,10 +232,11 @@ TH1 * ExposureTime(TH2 * esposizionegeo) {
 }
 
 void TimeGeo(TH2 * Exposure, TH1 * Tempi) {
-   for(int R=0; R<Exposure ->GetNbinsX() ; R++ )
-      for(int lat =1; lat< Tempi->GetNbinsX(); lat++)
-         Exposure  -> SetBinContent(R+1,lat+1,Tempi -> GetBinContent(lat));
-
-   return;
+	for(int R=0; R<Exposure ->GetNbinsX() ; R++ )
+		for(int lat =1; lat< Tempi->GetNbinsX(); lat++){
+			Exposure  -> SetBinContent(R+1,lat+1,Tempi -> GetBinContent(lat));
+			Exposure  -> SetBinError(R+1,lat+1,10);
+		}	
+	return;
 }
 
