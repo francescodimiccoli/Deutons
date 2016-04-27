@@ -137,6 +137,7 @@ void CorrLAT() {
    TGraphErrors *CorrLAT_totM1_Spl=new TGraphErrors();
    for(int i=0; i<nbinsr; i++) {
       CorrLAT_totM1_Spl->SetPoint(i,R_cent[i],CorrezioneLAT_pR->GetBinContent(i+1));
+      CorrLAT_totM1_Spl->SetPointError(i,0,CorrezioneLAT_pR->GetBinError(i+1));
    }
    CorrLAT_totM1_Spl->SetLineColor(2);
    CorrLAT_totM1_Spl->SetMarkerColor(2);
@@ -149,6 +150,7 @@ void CorrLAT() {
    TGraphErrors *CorrLAT_totM2_Spl=new TGraphErrors();
    for(int i=0; i<nbinsr; i++) {
       CorrLAT_totM2_Spl->SetPoint(i,R_cent[i],CorrezioneLATpre_pR->GetBinContent(i+1));
+      CorrLAT_totM2_Spl->SetPointError(i,0,CorrezioneLATpre_pR->GetBinError(i+1));	
    }
    CorrLAT_totM2_Spl->SetLineColor(4);
    CorrLAT_totM2_Spl->SetMarkerColor(4);
@@ -166,26 +168,31 @@ void CorrLAT() {
    for(int m=0; m<nbinsToF; m++) {
       if(CorrezioneLAT_pTOF->GetBinContent(m+1)>0)
          CorrLATp_TOF_Spl->SetPoint(point,Ekincent[m],CorrezioneLAT_pTOF->GetBinContent(m+1));
-      point++;
+      	 CorrLATp_TOF_Spl->SetPointError(point,0,CorrezioneLAT_pTOF->GetBinError(m+1));
+	 point++;
    }
    CorrLATp_TOF_Spl->SetLineColor(2);
    CorrLATp_TOF_Spl->SetMarkerColor(2);
    CorrLATp_TOF_Spl->SetLineWidth(2);
+   CorrLATp_TOF_Spl->SetLineStyle(2);
    CorrLATp_TOF_Spl->SetMarkerStyle(8);
    CorrLATp_TOF_Spl->SetFillStyle(3002);
    CorrLATp_TOF_Spl->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
    CorrLATp_TOF_Spl->GetYaxis()->SetTitle("Eff. Corr. Factor");
+   CorrLATp_TOF_Spl->GetYaxis()->SetRangeUser(1.14,1.27);
    CorrLATp_TOF_Spl->Draw("APC");
    TGraphErrors * CorrLATd_TOF_Spl=new TGraphErrors();
    point=0;
    for(int m=0; m<nbinsToF; m++) {
       if(CorrezioneLAT_dTOF->GetBinContent(m+1)>0)
          CorrLATd_TOF_Spl->SetPoint(point,Ekincent[m],CorrezioneLAT_dTOF->GetBinContent(m+1));
-      point++;
+         CorrLATd_TOF_Spl->SetPointError(point,0,CorrezioneLAT_dTOF->GetBinError(m+1)); 
+	point++;
    }
    CorrLATd_TOF_Spl->SetLineColor(4);
    CorrLATd_TOF_Spl->SetMarkerColor(4);
    CorrLATd_TOF_Spl->SetLineWidth(2);
+   CorrLATd_TOF_Spl->SetLineStyle(2);
    CorrLATd_TOF_Spl->SetMarkerStyle(8);
    CorrLATd_TOF_Spl->SetFillStyle(3002);
    CorrLATd_TOF_Spl->Draw("PCsame");
@@ -196,22 +203,27 @@ void CorrLAT() {
    TGraphErrors * CorrLATp_NaF_Spl=new TGraphErrors();
    for(int m=0; m<nbinsNaF; m++) {
       CorrLATp_NaF_Spl->SetPoint(m,EkincentNaF[m],CorrezioneLAT_pNaF->GetBinContent(m+1));
+      CorrLATp_NaF_Spl->SetPointError(m,0,CorrezioneLAT_pNaF->GetBinError(m+1));	
    }
    CorrLATp_NaF_Spl->SetLineColor(2);
    CorrLATp_NaF_Spl->SetMarkerColor(2);
    CorrLATp_NaF_Spl->SetLineWidth(2);
+   CorrLATp_NaF_Spl->SetLineStyle(2);
    CorrLATp_NaF_Spl->SetMarkerStyle(8);
    CorrLATp_NaF_Spl->SetFillStyle(3002);
    CorrLATp_NaF_Spl->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
    CorrLATp_NaF_Spl->GetYaxis()->SetTitle("Eff. Corr. Factor");
+   CorrLATp_NaF_Spl->GetYaxis()->SetRangeUser(1.08,1.22);
    CorrLATp_NaF_Spl->Draw("APC");
    TGraphErrors * CorrLATd_NaF_Spl=new TGraphErrors();
    for(int m=0; m<nbinsNaF; m++) {
       CorrLATd_NaF_Spl->SetPoint(m,EkincentNaF[m],CorrezioneLAT_dNaF->GetBinContent(m+1));
+      CorrLATd_NaF_Spl->SetPointError(m,0,CorrezioneLAT_dNaF->GetBinError(m+1));	
    }
    CorrLATd_NaF_Spl->SetLineColor(4);
    CorrLATd_NaF_Spl->SetMarkerColor(4);
    CorrLATd_NaF_Spl->SetLineWidth(2);
+   CorrLATd_NaF_Spl->SetLineStyle(2);
    CorrLATd_NaF_Spl->SetMarkerStyle(8);
    CorrLATd_NaF_Spl->SetFillStyle(3002);
    CorrLATd_NaF_Spl->Draw("PCsame");
@@ -222,25 +234,29 @@ void CorrLAT() {
    TGraphErrors * CorrLATp_Agl_Spl=new TGraphErrors();
    for(int m=0; m<nbinsAgl; m++) {
       CorrLATp_Agl_Spl->SetPoint(m,EkincentAgl[m],CorrezioneLAT_pAgl->GetBinContent(m+1));
+      CorrLATp_Agl_Spl->SetPointError(m,0,CorrezioneLAT_pAgl->GetBinError(m+1));
    }
    CorrLATp_Agl_Spl->SetLineColor(2);
    CorrLATp_Agl_Spl->SetMarkerColor(2);
    CorrLATp_Agl_Spl->SetLineWidth(2);
+   CorrLATp_Agl_Spl->SetLineStyle(2);
    CorrLATp_Agl_Spl->SetMarkerStyle(8);
    CorrLATp_Agl_Spl->SetFillStyle(3002);
    CorrLATp_Agl_Spl->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
    CorrLATp_Agl_Spl->GetYaxis()->SetTitle("Eff. Corr. Factor");
+   CorrLATp_Agl_Spl->GetYaxis()->SetRangeUser(1.04,1.25);
    CorrLATp_Agl_Spl->Draw("APC");
    TGraphErrors * CorrLATd_Agl_Spl=new TGraphErrors();
    for(int m=0; m<nbinsAgl; m++) {
       CorrLATd_Agl_Spl->SetPoint(m,EkincentAgl[m],CorrezioneLAT_dAgl->GetBinContent(m+1));
-   }
+      CorrLATd_Agl_Spl->SetPointError(m,0,CorrezioneLAT_dAgl->GetBinError(m+1));
+  }
    CorrLATd_Agl_Spl->SetLineColor(4);
    CorrLATd_Agl_Spl->SetMarkerColor(4);
    CorrLATd_Agl_Spl->SetLineWidth(2);
+   CorrLATd_Agl_Spl->SetLineStyle(2);
    CorrLATd_Agl_Spl->SetMarkerStyle(8);
-   CorrLATd_Agl_Spl->SetFillStyle(3002);
-   CorrLATd_Agl_Spl->Draw("PCsame");
+   CorrLATd_Agl_Spl->Draw("CPsame");
 
    cout<<"*** Updating Results file ***"<<endl;
    nomefile="./Final_plots/"+mese+".root";
@@ -260,16 +276,30 @@ void CorrLAT() {
 
 
 TH1 * Weighted_CorrLAT(TH2 * esposizionegeo, TH1 * LATcorr) {
-   TH2F * temp = (TH2F *)esposizionegeo -> Clone();
-   for(int m=0; m<11; m++) {
+   TH2F * temp    = (TH2F *)esposizionegeo -> Clone();
+   TH2F * temp_err= (TH2F *)esposizionegeo -> Clone(); 
+  for(int m=0; m<11; m++) {
       for(int i=0; i< temp -> GetNbinsX(); i++) {
-         temp->SetBinContent(i+1,m,esposizionegeo->GetBinContent(i+1,m)*LATcorr -> GetBinContent(m+1));
-      }
+         temp    ->SetBinContent(i+1,m,esposizionegeo->GetBinContent(i+1,m)*LATcorr -> GetBinContent(m+1));
+	 temp_err->SetBinContent(i+1,m,pow(esposizionegeo->GetBinContent(i+1,m)*LATcorr -> GetBinError(m+1),2));
+	}
    }
-   TH1F * temp2 =(TH1F *)temp -> ProjectionX("",0,10) -> Clone();
+   //summ all over latitudes	
+   TH1F * temp2     =(TH1F *)temp     -> ProjectionX("",0,10) -> Clone();
+   TH1F * temp2_err =(TH1F *)temp_err -> ProjectionX("",0,10) -> Clone();	   
+  
+   for(int i=0; i< temp2_err -> GetNbinsX(); i++) temp2_err->SetBinContent(i+1,pow(temp2_err->GetBinContent(i+1),0.5));
+   //	
+   
+   //Divide by total exposure time
    TH1F * Exptime =(TH1F *) ExposureTime(esposizionegeo);
+   temp2     -> Divide ( Exptime );
+   temp2_err -> Divide ( Exptime );
+   //
 
-   temp2 -> Divide ( Exptime );
+   //setting errors
+   for(int i=0; i< temp2 -> GetNbinsX(); i++)	temp2 -> SetBinError(i+1,temp2_err -> GetBinContent(i+1));
+
    return (TH1 *)temp2 -> Clone();
 }
 
