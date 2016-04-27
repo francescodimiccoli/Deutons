@@ -145,6 +145,19 @@ void DeutonsTemplFits(){
 
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
+	FitTOF_Dbins 	-> SetFitConstraints(0.5,1,0.0001,0.1); 
+	FitNaF_Dbins 	-> DisableFit();
+	FitAgl_Dbins 	-> DisableFit();
+
+	FitTOFgeo_Dbins -> DisableFit();
+	FitNaFgeo_Dbins -> DisableFit();
+	FitAglgeo_Dbins -> DisableFit();
+
+	FitTOF_Pbins 	-> DisableFit();
+	FitNaF_Pbins 	-> DisableFit();
+	FitAgl_Pbins 	-> DisableFit();
+
+
 	FitTOF_Dbins 	-> TemplateFits(); 
 	FitNaF_Dbins 	-> TemplateFits();
 	FitAgl_Dbins 	-> TemplateFits();

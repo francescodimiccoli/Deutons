@@ -12,8 +12,8 @@ void Cuts(){
 	if(mass>0.5&&massRICH>0.5) masscut=true;
 	//distance cut
 	Distcut=false;
-	if(fabs((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D))>0.2&&masscut) Distcut=true;
-	//if((Dist5D<4||Dist5D_P<4)&&masscut) Distcut=true;
+	//if(fabs((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D))>0.2&&masscut) Distcut=true;
+	if((Dist5D<4||Dist5D_P<4)) Distcut=true;
 	//Helium rej. cut
 	float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
 	Herejcut=false;

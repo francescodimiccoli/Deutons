@@ -10,6 +10,10 @@ void TemplateFIT::Write(){
 	return;
 }
 
+void TemplateFIT::DisableFit(){
+	TemplateFITenabled=false;
+}
+
 TH1F * TemplateFIT::Extract_Bin(TH1 * Histo, int bin,int third_dim){
 	TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),0,Histo->GetXaxis()->GetBinLowEdge(101));
 	for(int i = 0; i< Histo->GetNbinsX();i++)
@@ -17,6 +21,15 @@ TH1F * TemplateFIT::Extract_Bin(TH1 * Histo, int bin,int third_dim){
 	return Slice;
 }
 
+void TemplateFIT::SetFitConstraints(float LowP, float HighP, float LowD, float HighD,float LowHe, float HighHe){
+	lowP   = LowP	;
+	highP  = HighP	;
+	lowD   = LowD	;
+        highD  = HighD	;
+	lowHe  = LowHe	;
+        highHe = HighHe	;
+	return;
+}
 
 void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat){
 	TObjArray *Tpl;
@@ -26,7 +39,16 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat){
 	Tpl -> Add( Fit ->  Templ_He);
 	if(Fit -> Data -> Integral() > 500){
 		Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
-		Fit -> Tfit_outcome = 1;//fit -> Fit();
+		
+		if(TemplateFITenabled){
+			Fit -> Tfit -> Constrain(0, lowP ,highP );
+                	Fit -> Tfit -> Constrain(1, lowD ,highD );
+                	Fit -> Tfit -> Constrain(2, lowHe,highHe);
+			Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
+			}
+		else	{
+			Fit -> Tfit_outcome = 1;
+			}
 	}
 	else{
 		Fit -> Tfit = 0;
@@ -41,7 +63,7 @@ double TemplateFIT::GetFitWheights(int par, int bin,int lat){
 	if(GetFitOutcome(bin,lat)==-1) return  1;
 	if(GetFitOutcome(bin,lat)>0)   return  1;
 	if(GetFitOutcome(bin,lat)==0){
-		double w1,e1=0;
+		double w1,e1 = 0;
 		fits[lat][bin]-> Tfit ->GetResult(par,w1,e1);
 		TH1F * Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();
 		float itot= Result->Integral();
@@ -49,7 +71,7 @@ double TemplateFIT::GetFitWheights(int par, int bin,int lat){
 		if(par == 0) i1 = fits[lat][bin]-> Templ_P ->Integral();
 		if(par == 1) i1 = fits[lat][bin]-> Templ_D ->Integral();
 		if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral();
-		return w1/(i1*itot); 
+		return w1/i1*itot; 
 	}	
 }
 
@@ -72,7 +94,7 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat){
 					-2*Cov01*w1*w2-2*Cov02*w1*w3
 					-2*Cov12*w2*w3)/2,0.5);
 
-		double Err = pow((Sigma/w2,2) + pow(Sigma/w1,2),0.5); //Fit relative error
+		double Err = Sigma;//pow((Sigma/w2,2) + pow(Sigma/w1,2),0.5); //Fit relative error
 	
 		TH1F * ResultPlot;  
 		if(par == 0)	ResultPlot = GetResult_P (bin,lat);	
@@ -95,9 +117,9 @@ void TemplateFIT::TemplateFits(int mc_type){
 			Fit->Templ_He=  (TH1F *)TemplateFIT::Extract_Bin  (TemplateHe,bin);
 			if(Geomag) Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin, lat);
 			else 	   Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin);
-
+			
 			TemplateFIT::Do_TemplateFIT(Fit,lat);
-
+			
 			TH1F * ResultPlot_P  = GetResult_P (bin,lat);		
 			TH1F * ResultPlot_D  = GetResult_D (bin,lat);
 			TH1F * ResultPlot_He = GetResult_He(bin,lat);

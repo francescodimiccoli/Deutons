@@ -63,7 +63,14 @@ public:
         TH1 * DCounts	;	
 	
 	int nbins;
+	
 	bool Geomag;
+	
+	bool TemplateFITenabled = true;
+	
+	//Fit constraints
+	float lowP ,lowD ,lowHe    = 0.0;
+	float highP,highD,highHe   = 1.0;
 
 	//creation constructors
 	//standard
@@ -138,6 +145,8 @@ public:
 	
 	TH1F * Extract_Bin(TH1 * Histo, int bin,int third_dim=0);
 	
+	void SetFitConstraints(float LowP=0,float HighP=1, float LowD=0,float HighD=1, float LowHe=0,float HighHe=1);
+
 	void Do_TemplateFIT(TFit * Fit, int lat=0);
 	
 	int GetFitOutcome(int bin,int lat=0){if(lat < fits.size() && bin < fits[lat].size()) return fits[lat][bin]->Tfit_outcome; else {cout<<"Fit not yet performed: bin nr. "<<bin<<endl; return -1;}};
@@ -152,6 +161,8 @@ public:
 
 	TH1F * GetResult_Data(int bin,int lat=0){ TH1F *res = new TH1F(); if(GetFitOutcome(bin,lat)>=0)res =(TH1F*)fits[lat][bin] -> Data; return res; };
 	
+	void DisableFit();
+
 	void TemplateFits(int mc_type=0);
 	
 	void TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,int lat=0);

@@ -141,13 +141,25 @@ void DeutonsTemplFits_Dist(){
 
 	cout<<"******************** DEUTONS DISTANCE TEMPlATE FITS ************************"<<endl;
 
+	FitTOF_Dbins_Dist 	-> DisableFit();
+	FitNaF_Dbins_Dist 	-> DisableFit();
+	FitAgl_Dbins_Dist 	-> DisableFit();
+                                
+	FitTOFgeo_Dbins_Dist 	-> DisableFit();
+	FitNaFgeo_Dbins_Dist 	-> DisableFit();
+	FitAglgeo_Dbins_Dist 	-> DisableFit();
+                                
+	FitTOF_Pbins_Dist 	-> DisableFit();
+	FitNaF_Pbins_Dist 	-> DisableFit();	
+	FitAgl_Pbins_Dist 	-> DisableFit();
+
 	FitTOF_Dbins_Dist 	-> TemplateFits(); 
 	FitNaF_Dbins_Dist 	-> TemplateFits();
 	FitAgl_Dbins_Dist 	-> TemplateFits();
 
-	FitTOFgeo_Dbins_Dist -> TemplateFits();
-        FitNaFgeo_Dbins_Dist -> TemplateFits();
-	FitAglgeo_Dbins_Dist -> TemplateFits();
+	FitTOFgeo_Dbins_Dist 	-> TemplateFits();
+        FitNaFgeo_Dbins_Dist 	-> TemplateFits();
+	FitAglgeo_Dbins_Dist 	-> TemplateFits();
 
 	FitTOF_Pbins_Dist 	-> TemplateFits();
 	FitNaF_Pbins_Dist 	-> TemplateFits();
