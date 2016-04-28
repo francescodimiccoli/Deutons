@@ -109,9 +109,12 @@ float Var=0;
 float Var2=0;
 float Var3=0;
 int Norm[11]={0};
+
+//cuts
 bool Likcut=false;
 bool Distcut=false;
 bool Herejcut=false;
+bool Betastrongcut=false;
 
 TH1F * Esposizione[10];
 TH1F * Tempi;

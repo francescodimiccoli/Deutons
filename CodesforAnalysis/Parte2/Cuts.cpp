@@ -21,9 +21,10 @@ void Cuts(){
 	Herejcut=true;	
 
 	//Strong beta cut
-	if(	(((((int)Cutmask)>>11)==512)&&BetaRICH<0.97 )||
-		(((((int)Cutmask)>>11)== 0 )&&BetaRICH<0.985)|| 	
-		Beta < 0.8
+	Betastrongcut = false;
+	if(	(((((int)Cutmask)>>11)==512)&&BetaRICH<0.97 )
+	      ||(((((int)Cutmask)>>11)== 0 )&&BetaRICH<0.985)	
+	      ||((!((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0))&& Beta < 0.8)
 	  ) 	
 	Betastrongcut = true;
 }

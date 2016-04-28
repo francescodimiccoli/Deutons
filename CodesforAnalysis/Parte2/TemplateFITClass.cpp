@@ -15,7 +15,7 @@ void TemplateFIT::DisableFit(){
 }
 
 TH1F * TemplateFIT::Extract_Bin(TH1 * Histo, int bin,int third_dim){
-	TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),0,Histo->GetXaxis()->GetBinLowEdge(101));
+	TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),Histo->GetXaxis()->GetBinLowEdge(1),Histo->GetXaxis()->GetBinLowEdge(101));
 	for(int i = 0; i< Histo->GetNbinsX();i++)
 		Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1,third_dim+1));
 	return Slice;
@@ -44,6 +44,7 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat){
 			Fit -> Tfit -> Constrain(0, lowP ,highP );
                 	Fit -> Tfit -> Constrain(1, lowD ,highD );
                 	Fit -> Tfit -> Constrain(2, lowHe,highHe);
+			//Fit -> Tfit -> SetRangeX(0,70);
 			Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
 			}
 		else	{
@@ -60,24 +61,22 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat){
 }
 
 double TemplateFIT::GetFitWheights(int par, int bin,int lat){
-	if(GetFitOutcome(bin,lat)==-1) return  1;
-	if(GetFitOutcome(bin,lat)>0)   return  1;
+	if(GetFitOutcome(bin,lat)!=0)   return  1;
 	if(GetFitOutcome(bin,lat)==0){
 		double w1,e1 = 0;
 		fits[lat][bin]-> Tfit ->GetResult(par,w1,e1);
 		TH1F * Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();
 		float itot= Result->Integral();
 		float i1;
-		if(par == 0) i1 = fits[lat][bin]-> Templ_P ->Integral();
-		if(par == 1) i1 = fits[lat][bin]-> Templ_D ->Integral();
+		if(par == 0) i1 = fits[lat][bin]-> Templ_P  ->Integral();
+		if(par == 1) i1 = fits[lat][bin]-> Templ_D  ->Integral();
 		if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral();
-		return w1/i1*itot; 
+		return w1*itot/i1; 
 	}	
 }
 
 double TemplateFIT::GetFitErrors(int par,int bin,int lat){
-	if(GetFitOutcome(bin,lat)==-1) return  0;
-	if(GetFitOutcome(bin,lat)>0)   return  0;
+	if(GetFitOutcome(bin,lat)!=0) return  0;
 	if(GetFitOutcome(bin,lat)==0){
 		double w1,e1=0;
 		double w2,e2=0;
@@ -154,14 +153,18 @@ void TemplateFIT::TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,
 	TH1F *DMC  = GetResult_D   (bin,lat);
 	TH1F *HeMC = GetResult_He  (bin,lat);
 	TH1F *Data = GetResult_Data(bin,lat);
-
-	if(GetFitOutcome(bin,lat)==0) TH1F * Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();	
-
+	TH1F * Result = NULL;
+	
+	if(GetFitOutcome(bin,lat)==0) { Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();	
+				        Result ->SetLineColor(5);
+					Result ->SetLineWidth(2);
+				      }
 	PMC -> SetFillColor(2);
 	DMC -> SetFillColor(4);
 	HeMC-> SetFillColor(3);
 	Data->SetMarkerStyle(8);
 
+	
 	if(fits[lat][bin]->Tfit_outcome!=0){
 		PMC -> SetFillStyle(3001);
 		DMC -> SetFillStyle(3001);
@@ -175,5 +178,6 @@ void TemplateFIT::TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,
 	Stack-> GetXaxis()->SetTitle(var_name.c_str());
 	Stack-> GetYaxis()->SetTitle("Counts");
 	Data->Draw("epsame");
+	if(Result) Result->Draw("same");	
 
 }

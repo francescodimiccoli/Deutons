@@ -141,7 +141,7 @@ void DeutonsTemplFits_Dist(){
 
 	cout<<"******************** DEUTONS DISTANCE TEMPlATE FITS ************************"<<endl;
 
-	FitTOF_Dbins_Dist 	-> DisableFit();
+	FitTOF_Dbins_Dist 	-> SetFitConstraints(0.5,1,0.0001,0.1,0.00001,0.01); 
 	FitNaF_Dbins_Dist 	-> DisableFit();
 	FitAgl_Dbins_Dist 	-> DisableFit();
                                 

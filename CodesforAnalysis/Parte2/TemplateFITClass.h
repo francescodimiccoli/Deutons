@@ -156,7 +156,9 @@ public:
 	double GetFitErrors(int par,int bin,int lat=0);
 
 	TH1F * GetResult_P (int bin, int lat=0) {TH1F *res = new TH1F(); if(GetFitOutcome(bin,lat)>=0) res =(TH1F*)fits[lat][bin] -> Templ_P -> Clone(); res -> Scale(GetFitWheights(0,bin,lat));return res;};
+	
 	TH1F * GetResult_D (int bin, int lat=0) {TH1F *res = new TH1F(); if(GetFitOutcome(bin,lat)>=0) res =(TH1F*)fits[lat][bin] -> Templ_D -> Clone(); res -> Scale(GetFitWheights(1,bin,lat));return res;};
+	
 	TH1F * GetResult_He(int bin, int lat=0) {TH1F *res = new TH1F(); if(GetFitOutcome(bin,lat)>=0) res =(TH1F*)fits[lat][bin] -> Templ_He-> Clone(); res -> Scale(GetFitWheights(2,bin,lat));return res;}; 
 
 	TH1F * GetResult_Data(int bin,int lat=0){ TH1F *res = new TH1F(); if(GetFitOutcome(bin,lat)>=0)res =(TH1F*)fits[lat][bin] -> Data; return res; };
