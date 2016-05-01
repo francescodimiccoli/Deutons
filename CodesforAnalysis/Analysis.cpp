@@ -8,10 +8,12 @@
 #include "Parte2/ACCEPTANCEClass.cpp"
 #include "Parte2/FluxClass.cpp"
 #include "Parte2/TemplateFITClass.cpp"
+#include "Parte2/DatavsMCClass.h"
 #include "Parte2/MCpreeff.cpp"
 #include "Parte2/MCUnbiaseff.cpp"
 #include "Parte2/Hecut.cpp"
 #include "Parte2/SlidesforPlot.cpp"
+#include "Parte2/DistanceCut.cpp"
 #include "Parte2/MCQualeff.cpp"
 #include "Parte2/Cuts.cpp"
 #include "Parte2/MCTrackeff.cpp"
@@ -28,13 +30,11 @@
 #include "Parte2/DeutonsCountsExtraction.cpp"
 #include "Parte2/DeutonsCountsExtraction_Dist.cpp"
 #include "Parte2/MCMC.cpp"
+#include "Parte2/DVSMCQualeff.cpp"
 #include "FillIstogram.cpp"
 #include "Parte2/DeutonsFlux.cpp"
 /*#include "Parte2/DVSMCpreSeleff.cpp"
-#include "Parte2/DVSMCQualeff2.cpp"
-#include "Parte2/DVSMCTrackeff.cpp"
-#include "Parte2/DeutonsFlux.cpp"
-#include "Parte2/DeutonsFlux_Dist.cpp"*/
+#include "Parte2/DVSMCTrackeff.cpp"*/
 
 using namespace std;
 
@@ -240,9 +240,9 @@ int main(int argc, char * argv[])
 		DATAQualeff(file1);
 		if(frac=="tot") DeutonsTemplFits();
 		if(frac=="tot") DeutonsTemplFits_Dist();
+		DVSMCQualeff2(file1);
 		/*DVSMCpreSeleff(file1);
-		  DVSMCQualeff2(file1);*/
-		/*  DeutonFlux(file1);
+		  DeutonFlux(file1);
 		  DeutonFlux_Dist(file1);*/
 	}
 	cout<<"************************* RESULTS  **************************************************************"<<endl;

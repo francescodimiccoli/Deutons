@@ -126,6 +126,60 @@ void DVSMCQualeff2_Write(){
 }
 
 
+void DVSMCQualeff2(TFile * file1){
+
+	DatavsMC * Dist_DvsMC_P = new DatavsMC(file1,"Dist_DvsMC_P");
+	DatavsMC * Lik_DvsMC_P  = new DatavsMC(file1,"Lik_DvsMC_D" );
+
+	LATcorr * LATLikelihoodDATA_TOF = new LATcorr(file1,"LATLikDATA_TOF"   	 ,"Results");
+	LATcorr * LATDistanceDATA_TOF   = new LATcorr(file1,"LATDistDATA_TOF" 	 ,"Results");
+
+	LATcorr * LATLikelihoodDATA_NaF = new LATcorr(file1,"LATLikDATA_NaF"  	 ,"Results");
+	LATcorr * LATDistanceDATA_NaF   = new LATcorr(file1,"LATDistDATA_NaF" 	 ,"Results");
+
+	LATcorr * LATLikelihoodDATA_Agl = new LATcorr(file1,"LATLikDATA_Agl"  	 ,"Results");
+	LATcorr * LATDistanceDATA_Agl   = new LATcorr(file1,"LATDistDATA_Agl" 	 ,"Results");
+
+
+
+
+	cout<<"******* Data vs MC: QUALITY SEL ********"<<endl;
+
+	Dist_DvsMC_P -> Assign_LatCorr( LATDistanceDATA_TOF   ->  LATcorrR_fit , 
+	                                LATDistanceDATA_TOF   ->  LATcorrR_fit ,
+                                        LATDistanceDATA_NaF   ->  LATcorrR_fit ,
+                                        LATDistanceDATA_Agl   ->  LATcorrR_fit );
+
+	Lik_DvsMC_P  ->	Assign_LatCorr( LATLikelihoodDATA_TOF ->  LATcorrR_fit , 	
+					LATLikelihoodDATA_TOF ->  LATcorrR_fit ,
+					LATLikelihoodDATA_NaF ->  LATcorrR_fit ,
+					LATLikelihoodDATA_Agl ->  LATcorrR_fit );
+
+
+
+	Dist_DvsMC_P ->Eval_DandMC_Eff();  
+	Lik_DvsMC_P  ->Eval_DandMC_Eff();
+
+
+	cout<<"*** Updating P1 file ****"<<endl;
+	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+
+	file1->cd("Results");
+
+	Dist_DvsMC_P -> DataEff_corr -> effR -> Write("dist prova data");
+	Dist_DvsMC_P -> MCEff        -> effR -> Write("dist prova MC");
+
+	Lik_DvsMC_P -> DataEff_corr -> effR -> Write("lik prova data");
+	Lik_DvsMC_P -> MCEff        -> effR -> Write("lik prova MC");
+
+
+
+	file1->Write();
+	file1->Close();
+
+	return;
+}
 
 /*
 
