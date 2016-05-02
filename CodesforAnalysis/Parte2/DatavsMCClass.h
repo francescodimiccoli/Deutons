@@ -120,10 +120,10 @@ void DatavsMC::Eval_Corrected_DataEff(){
 	}
 
 	else {
-		DataEff_corr -> beforeR   = (TH2F*)((TH1F *)((TH2F*)DataEff -> beforeR  ) -> ProjectionX((Basename + "1_R" ).c_str(),0,latzones)) -> Clone();
-		DataEff_corr -> beforeTOF = (TH2F*)((TH1F *)((TH2F*)DataEff -> beforeTOF) -> ProjectionX((Basename + "1"   ).c_str(),0,latzones)) -> Clone();
-		DataEff_corr -> beforeNaF = (TH2F*)((TH1F *)((TH2F*)DataEff -> beforeNaF) -> ProjectionX((Basename + "1NaF").c_str(),0,latzones)) -> Clone();
-		DataEff_corr -> beforeAgl = (TH2F*)((TH1F *)((TH2F*)DataEff -> beforeAgl) -> ProjectionX((Basename + "1Agl").c_str(),0,latzones)) -> Clone();
+		DataEff_corr -> beforeR   = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeR  ) -> Project3D("xz")) -> Clone();
+		DataEff_corr -> beforeTOF = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeTOF) -> Project3D("xz")) -> Clone();
+		DataEff_corr -> beforeNaF = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeNaF) -> Project3D("xz")) -> Clone();
+		DataEff_corr -> beforeAgl = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeAgl) -> Project3D("xz")) -> Clone();
 	}
 	
 	if(!LATcorr_R   ) cout<<"ERROR: Lat. corr for R   histos not assigned"<<endl;
