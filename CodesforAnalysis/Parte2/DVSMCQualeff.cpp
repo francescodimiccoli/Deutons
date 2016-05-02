@@ -27,9 +27,9 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 	//ToF
 	Kbin=GetArrayBin(Var, BetaD, nbinsToF);	
 	Dist_DvsMC_P -> DataEff -> beforeTOF -> Fill(Kbin,zona);
-	if(Dist5D_P<6) Lik_DvsMC_P  -> DataEff -> beforeTOF -> Fill(Kbin,zona);
+	if(Distcut) Lik_DvsMC_P  -> DataEff -> beforeTOF -> Fill(Kbin,zona);
 
-	if(Dist5D_P<6){
+	if(Distcut){
 		Dist_DvsMC_P -> DataEff -> afterTOF -> Fill(Kbin,zona);
 		if(Likcut) Lik_DvsMC_P  -> DataEff -> afterTOF -> Fill(Kbin,zona);
 	}
@@ -37,9 +37,9 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 	if(((int)Cutmask)>>11==512) {	
 		Kbin=GetArrayBin(Var, BetaNaFD, nbinsNaF);
 		Dist_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);
-		if(Dist5D_P<6) Lik_DvsMC_P  -> DataEff -> beforeNaF -> Fill(Kbin,zona);
+		if(Distcut) Lik_DvsMC_P  -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 
-		if(Dist5D_P<6){
+		if(Distcut){
 			Dist_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
 			if(Likcut) Lik_DvsMC_P  -> DataEff -> afterNaF -> Fill(Kbin,zona);
 		}
@@ -48,9 +48,9 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 	if(((int)Cutmask)>>11==0) {
 		Kbin=GetArrayBin(Var, BetaAglD, nbinsAgl);
 		Dist_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);
-		if(Dist5D_P<6) Lik_DvsMC_P  -> DataEff -> beforeAgl -> Fill(Kbin,zona);
+		if(Distcut) Lik_DvsMC_P  -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 
-		if(Dist5D_P<6){
+		if(Distcut){
 			Dist_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona);
 			if(Likcut) Lik_DvsMC_P  -> DataEff -> afterAgl -> Fill(Kbin,zona);
 		}
@@ -64,16 +64,16 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
 	//cuts
 	if(Beta<=0||R<=0||R<1.2*Rcutoff||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
-        if(!Herejcut) return;
-        //
-        int Kbin;
+	if(!Herejcut) return;
+	//
+	int Kbin;
 
 	//R bins
 	Kbin = GetRBin(R);
 
 	if(Massa_gen<1) {
-	//R bins
-	        Kbin = GetRBin(R);	
+		//R bins
+		Kbin = GetRBin(R);	
 		Dist_DvsMC_P -> MCEff -> beforeR -> Fill(Kbin);
 		if(Dist5D_P<6) Lik_DvsMC_P  -> MCEff -> beforeR -> Fill(Kbin);
 
@@ -81,38 +81,41 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 			Dist_DvsMC_P -> MCEff -> afterR -> Fill(Kbin);
 			if(Likcut) Lik_DvsMC_P  -> MCEff -> afterR -> Fill(Kbin);
 		}
-	//Beta bins
-        
-	//ToF
+		//Beta bins
+
+		//ToF
 		Kbin=GetArrayBin(Var, BetaD, nbinsToF);	
 		Dist_DvsMC_P -> MCEff -> beforeTOF -> Fill(Kbin);
-		if(Dist5D_P<6) Lik_DvsMC_P  -> MCEff -> beforeTOF -> Fill(Kbin);
+		if(Distcut) Lik_DvsMC_P  -> MCEff -> beforeTOF -> Fill(Kbin);
 
-		if(Dist5D_P<6){
+		if(Distcut){
 			Dist_DvsMC_P -> MCEff -> afterTOF -> Fill(Kbin);
 			if(Likcut) Lik_DvsMC_P  -> MCEff -> afterTOF -> Fill(Kbin);
 		}
-	//NaF
-		Kbin=GetArrayBin(Var, BetaNaFD, nbinsNaF);	
-		Dist_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin);
-		if(Dist5D_P<6) Lik_DvsMC_P  -> MCEff -> beforeNaF -> Fill(Kbin);
+		//NaF
+		if(((int)Cutmask)>>11==512) {	
+			Kbin=GetArrayBin(Var, BetaNaFD, nbinsNaF);	
+			Dist_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin);
+			if(Distcut) Lik_DvsMC_P  -> MCEff -> beforeNaF -> Fill(Kbin);
 
-		if(Dist5D_P<6){
-			Dist_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin);
-			if(Likcut) Lik_DvsMC_P  -> MCEff -> afterNaF -> Fill(Kbin);
+			if(Distcut){
+				Dist_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin);
+				if(Likcut) Lik_DvsMC_P  -> MCEff -> afterNaF -> Fill(Kbin);
+			}
+
 		}
+		//Agl
+		if(((int)Cutmask)>>11==0) {	
+			Kbin=GetArrayBin(Var, BetaAglD, nbinsAgl);
+			Dist_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);
+			if(Distcut) Lik_DvsMC_P  -> MCEff -> beforeAgl -> Fill(Kbin);
 
-	//Agl
-		Kbin=GetArrayBin(Var, BetaAglD, nbinsAgl);
-                Dist_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);
-                if(Dist5D_P<6) Lik_DvsMC_P  -> MCEff -> beforeAgl -> Fill(Kbin);
+			if(Distcut){
+				Dist_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin);
+				if(Likcut) Lik_DvsMC_P  -> MCEff -> afterAgl -> Fill(Kbin);
+			}
 
-                if(Dist5D_P<6){
-                        Dist_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin);
-                        if(Likcut) Lik_DvsMC_P  -> MCEff -> afterAgl -> Fill(Kbin);
-                }
-		
-
+		}
 
 	}                        
 }
@@ -126,8 +129,11 @@ void DVSMCQualeff2_Write(){
 }
 
 
-void DVSMCQualeff2(TFile * file1){
+void DVSMCQualeff2(){
 
+	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+   	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
+	
 	DatavsMC * Dist_DvsMC_P = new DatavsMC(file1,"Dist_DvsMC_P");
 	DatavsMC * Lik_DvsMC_P  = new DatavsMC(file1,"Lik_DvsMC_D" );
 
@@ -160,23 +166,97 @@ void DVSMCQualeff2(TFile * file1){
 	Dist_DvsMC_P ->Eval_DandMC_Eff();  
 	Lik_DvsMC_P  ->Eval_DandMC_Eff();
 
+	Dist_DvsMC_P ->Eval_Corrections();
+	Lik_DvsMC_P  ->Eval_Corrections();
+
+	
+	TH1F* DistP_Correction_R   =(TH1F*) Dist_DvsMC_P -> GetCorrection_R()  ;
+	TH1F* DistP_Correction_TOF =(TH1F*) Dist_DvsMC_P -> GetCorrection_TOF();
+	TH1F* DistP_Correction_NaF =(TH1F*) Dist_DvsMC_P -> GetCorrection_NaF();
+	TH1F* DistP_Correction_Agl =(TH1F*) Dist_DvsMC_P -> GetCorrection_Agl();
+                                         
+	TH1F* LikP_Correction_R    =(TH1F*) Lik_DvsMC_P -> GetCorrection_R()  ;
+	TH1F* LikP_Correction_TOF  =(TH1F*) Lik_DvsMC_P -> GetCorrection_TOF();
+	TH1F* LikP_Correction_NaF  =(TH1F*) Lik_DvsMC_P -> GetCorrection_NaF();
+	TH1F* LikP_Correction_Agl  =(TH1F*) Lik_DvsMC_P -> GetCorrection_Agl();
+
 
 	cout<<"*** Updating P1 file ****"<<endl;
-	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+	nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
 
 	file1->cd("Results");
 
-	Dist_DvsMC_P -> DataEff_corr -> effR -> Write("dist prova data");
-	Dist_DvsMC_P -> MCEff        -> effR -> Write("dist prova MC");
-
-	Lik_DvsMC_P -> DataEff_corr -> effR -> Write("lik prova data");
-	Lik_DvsMC_P -> MCEff        -> effR -> Write("lik prova MC");
-
+	DistP_Correction_R    -> Write("Dist_DvsMC_P_CorrectionR"  );
+	DistP_Correction_TOF  -> Write("Dist_DvsMC_P_CorrectionTOF");
+	DistP_Correction_NaF  -> Write("Dist_DvsMC_P_CorrectionNaF");
+	DistP_Correction_Agl  -> Write("Dist_DvsMC_P_CorrectionAgl");
+                             
+	LikP_Correction_R    -> Write("Lik_DvsMC_P_CorrectionR"  );
+	LikP_Correction_TOF  -> Write("Lik_DvsMC_P_CorrectionTOF");
+	LikP_Correction_NaF  -> Write("Lik_DvsMC_P_CorrectionNaF");
+	LikP_Correction_Agl  -> Write("Lik_DvsMC_P_CorrectionAgl");
 
 
 	file1->Write();
 	file1->Close();
+
+	TCanvas *c20=new TCanvas("Data vs MC: Likelihood (R bins)");
+	TCanvas *c21=new TCanvas("Data vs MC: Distance (R bins)");
+	
+	TGraphErrors *LikDVSMC_P_Graph;
+	TGraphErrors *DistDVSMC_P_Graph;
+	
+	c20->cd();
+        gPad->SetLogx();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        LikDVSMC_P_Graph=new TGraphErrors();
+        LikDVSMC_P_Graph->SetName("LikDVSMC_P_Graph");
+	int j=0;
+	for(int i=1;i<nbinsr;i++) {
+		LikDVSMC_P_Graph->SetPoint(j,R_cent[i],LikP_Correction_R -> GetBinContent(i+1));
+		LikDVSMC_P_Graph->SetPointError(j,0,LikP_Correction_R -> GetBinError(i+1));
+		j++;
+	}
+	LikDVSMC_P_Graph->SetLineColor(2);
+        LikDVSMC_P_Graph->SetFillColor(2);
+        LikDVSMC_P_Graph->SetFillStyle(3001);
+        LikDVSMC_P_Graph->SetLineWidth(4);
+	LikDVSMC_P_Graph->Draw("AP4C");
+
+	c21->cd();
+        gPad->SetLogx();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        DistDVSMC_P_Graph=new TGraphErrors();
+        DistDVSMC_P_Graph->SetName("DistDVSMC_P_Graph");
+	j=0;
+	for(int i=1;i<nbinsr;i++) {
+		DistDVSMC_P_Graph->SetPoint(j,R_cent[i],DistP_Correction_R -> GetBinContent(i+1));
+		DistDVSMC_P_Graph->SetPointError(j,0,DistP_Correction_R -> GetBinError(i+1));
+		j++;
+	}
+	DistDVSMC_P_Graph->SetLineColor(2);
+        DistDVSMC_P_Graph->SetFillColor(2);
+        DistDVSMC_P_Graph->SetFillStyle(3001);
+        DistDVSMC_P_Graph->SetLineWidth(4);
+	DistDVSMC_P_Graph->Draw("AP4C");
+
+	cout<<"*** Updating Results file ***"<<endl;
+	nomefile="./Final_plots/"+mese+".root";
+	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+	f_out->mkdir("DATA-driven Results/Data vs MC/Protons");
+   	f_out->cd("DATA-driven Results/Data vs MC/Protons");
+	c20->Write();
+	c21->Write();
+	f_out->Write();
+	f_out->Close();
+
+
+	
+
+
 
 	return;
 }
@@ -192,119 +272,6 @@ TH2F * DistDVSMC_P_graph=new TH2F("DistDVSMC_P_graph","DistDVSMC_P_graph",nbinsr
 
 
 void DVSMCQualeff2(TFile * file1){
-	TH2F * EffDistMCvsDP_D_1 = (TH2F *)file1->Get("EffDistMCvsDP_D_1");
-	TH2F * EffDistMCvsDP_D_2 = (TH2F *)file1->Get("EffDistMCvsDP_D_2");
-	TH2F * EffLik2MCvsDP_D_1 = (TH2F *)file1->Get("EffLik2MCvsDP_D_1");
-	TH2F * EffLik2MCvsDP_D_2 = (TH2F *)file1->Get("EffLik2MCvsDP_D_2");
-	TH1F * EffDistMCvsDP1 = (TH1F *)file1->Get("EffDistMCvsDP1");
-	TH1F * EffDistMCvsDP2 = (TH1F *)file1->Get("EffDistMCvsDP2");
-	TH1F * EffLik2MCvsDP1 = (TH1F *)file1->Get("EffLik2MCvsDP1");
-	TH1F * EffLik2MCvsDP2 = (TH1F *)file1->Get("EffLik2MCvsDP2");
-
-	cout<<"************************************************************ MC QUALITY SEL. EFFICIENCIES ************************************************************"<<endl;		
-	float EffLik2MCvsDP[nbinsr][11]={{0}};
-	for(int l=0;l<11;l++)
-	for(int i=1;i<nbinsr;i++) if(EffLik2MCvsDP_D_2->GetBinContent(i+1,l+1)>100&&EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1)>100)
-		EffLik2MCvsDP[i][l]=EffLik2MCvsDP_D_2->GetBinContent(i+1,l+1)/(float)EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1)*CorrLAT_Lik->Eval(geomagC[l]);
-
-	float EffDistMCvsDP[nbinsr][11]={{0}};
-	for(int l=0;l<11;l++)
-	for(int i=1;i<nbinsr;i++) if(EffDistMCvsDP_D_2->GetBinContent(i+1,l+1)>100&&EffDistMCvsDP_D_1->GetBinContent(i+1,l+1)>100)
-		EffDistMCvsDP[i][l]=EffDistMCvsDP_D_1->GetBinContent(i+1,l+1)/(float)EffDistMCvsDP_D_2->GetBinContent(i+1,l+1)*CorrLAT_Dist->Eval(geomagC[l]);
-	
-	float EffLik2MCvsDP_MC[nbinsr]={0};
-        for(int i=1;i<nbinsr;i++) if(EffLik2MCvsDP2->GetBinContent(i+1)>100&&EffLik2MCvsDP1->GetBinContent(i+1)>100)
-                EffLik2MCvsDP_MC[i]=EffLik2MCvsDP2->GetBinContent(i+1)/(float)EffLik2MCvsDP1->GetBinContent(i+1);
-
-        float EffDistMCvsDP_MC[nbinsr]={0};
-        for(int i=1;i<nbinsr;i++) if(EffDistMCvsDP2->GetBinContent(i+1)>100&&EffDistMCvsDP1->GetBinContent(i+1)>100)
-                EffDistMCvsDP_MC[i]=EffDistMCvsDP1->GetBinContent(i+1)/(float)EffDistMCvsDP2->GetBinContent(i+1);
-
-	//WEIGHTED MEAN over LAT
-	float EffDistMCvsDP_mean[nbinsr]={0};
-	float EffLik2MCvsDP_mean[nbinsr]={0};
-	float EffDistMCvsDP_meanerr[nbinsr]={0};
-        float EffLik2MCvsDP_meanerr[nbinsr]={0};
-	TGraphErrors * EffDistMCvsDP_Mean=new TGraphErrors();
-	TGraphErrors * EffLik2MCvsDP_Mean=new TGraphErrors();
-	float denom=0;
-	int p=0;
-	for(int i=1;i<nbinsr;i++) {
-		for(int l=0;l<11;l++) {
-			if(EffLik2MCvsDP_D_2->GetBinContent(i+1,l+1)>100&&EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1)>100){
-				denom=pow(EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1),0.5)/EffLik2MCvsDP_D_1->GetBinContent(i+1,l+1)*EffLik2MCvsDP[i][l]/EffLik2MCvsDP_MC[i];
-				EffLik2MCvsDP_mean[i]+=(EffLik2MCvsDP[i][l]/EffLik2MCvsDP_MC[i])/pow(denom,2);
-				EffLik2MCvsDP_meanerr[i]+=1/pow(denom,2);
-			}
-		}
-		EffLik2MCvsDP_mean[i]=EffLik2MCvsDP_mean[i]/EffLik2MCvsDP_meanerr[i];
-		EffLik2MCvsDP_meanerr[i]=pow(1/EffLik2MCvsDP_meanerr[i],0.5);
-		if(EffLik2MCvsDP_mean[i]>0&&EffLik2MCvsDP_meanerr[i]>0){
-		EffLik2MCvsDP_Mean->SetPoint(p,R_cent[i],EffLik2MCvsDP_mean[i]);
-		EffLik2MCvsDP_Mean->SetPointError(p,0,EffLik2MCvsDP_meanerr[i]);
-		p++;
-		}
-	}
-	
-	denom=0;
-	p=0;
-        for(int i=1;i<nbinsr;i++) {
-                for(int l=0;l<11;l++) {
-                        if(EffDistMCvsDP_D_2->GetBinContent(i+1,l+1)>100&&EffDistMCvsDP_D_1->GetBinContent(i+1,l+1)>100){
-                                denom=pow(EffDistMCvsDP_D_1->GetBinContent(i+1,l+1),0.5)/EffDistMCvsDP_D_1->GetBinContent(i+1,l+1)*EffDistMCvsDP[i][l]/EffDistMCvsDP_MC[i];
-                                EffDistMCvsDP_mean[i]+=(EffDistMCvsDP[i][l]/EffDistMCvsDP_MC[i])/pow(denom,2);
-                                EffDistMCvsDP_meanerr[i]+=1/pow(denom,2);
-                        }
-                }
-                EffDistMCvsDP_mean[i]=EffDistMCvsDP_mean[i]/EffDistMCvsDP_meanerr[i];
-                EffDistMCvsDP_meanerr[i]=pow(1/EffDistMCvsDP_meanerr[i],0.5);
-                if(EffDistMCvsDP_mean[i]>0&&EffDistMCvsDP_meanerr[i]>0){
-		EffDistMCvsDP_Mean->SetPoint(p,R_cent[i],EffDistMCvsDP_mean[i]);
-                EffDistMCvsDP_Mean->SetPointError(p,0,EffDistMCvsDP_meanerr[i]);
-		p++;
-		}
-        }
-	//SMOOTHING & FIT
-	float ratioL_smooth[nbinsr]={0};
-	float ratioD_smooth[nbinsr]={0};
-
-	for(int j=1;j<nbinsr;j++){
-		ratioL_smooth[j]=EffLik2MCvsDP_mean[j];
-		ratioD_smooth[j]=EffDistMCvsDP_mean[j];
-	}
-	ratioL_smooth[0]=ratioL_smooth[1];
-	ratioD_smooth[0]=ratioD_smooth[1];
-	
-        TGraphErrors *EffMCvsDLikP_MC=new TGraphErrors();
-        int j=0;
-        for(int i=1;i<nbinsr;i++) if(EffLik2MCvsDP_MC[i]>0)
-                {EffMCvsDLikP_MC->SetPoint(j,R_cent[i],EffLik2MCvsDP_MC[i]/EffLik2MCvsDP_MC[i]);j++;}
-	
-        TGraphErrors *EffMCvsDDistP_MC= new TGraphErrors();
-        j=0;
-        for(int i=1;i<nbinsr;i++) if(EffDistMCvsDP_MC[i]>0)
-                {EffMCvsDDistP_MC->SetPoint(j,R_cent[i],EffDistMCvsDP_MC[i]/EffDistMCvsDP_MC[i]);j++;}
-
-	TF1 *polL=new TF1("polL","pol3");
-	TF1 *polD=new TF1("polD","pol3");
-	
-	EffLik2MCvsDP_Mean->Fit("polL","","",8,70);
-	EffDistMCvsDP_Mean->Fit("polD","","",8,70);
-
-	for(int j=3;j<nbinsr;j++){
-		if(R_cent[j]<8){
-		ratioL_smooth[j]=(ratioL_smooth[j]+ratioL_smooth[j-1]+ratioL_smooth[j+1])/3;
-		ratioD_smooth[j]=(ratioD_smooth[j]+ratioD_smooth[j-1]+ratioD_smooth[j+1])/3;
-		}
-		else{
-		ratioL_smooth[j]=polL->Eval(R_cent[j]);
-		ratioD_smooth[j]=polD->Eval(R_cent[j]);
-		}
-	}
-	///errore fit
-        float errorefitL=FitError(ratioL_smooth,EffLik2MCvsDP_mean,EffLik2MCvsDP_meanerr,nbinsr,3);
-        float errorefitD=FitError(ratioD_smooth,EffDistMCvsDP_mean,EffDistMCvsDP_meanerr,nbinsr,3);
-	///////////
 	
 
 	c20->cd();

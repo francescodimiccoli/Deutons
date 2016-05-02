@@ -1,6 +1,7 @@
 using namespace std;
 
 TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr);
+TH1 * DivideHisto(TH1 *Histo1, TH1 *Histo2);
 
 class DatavsMC
 {
@@ -92,16 +93,19 @@ public:
 	void Eval_Corrections();	
 
 	TH1 * GetCorrection_R(int mc_type = -1){ 
-		if(mc_type == -1) return Correction_R; else return (TH1F*)(((TH2*)Correction_R  )->ProjectionX("R DvsMC corr."  ,mc_type,mc_type))->Clone();};
+		if(mc_type == -1) return Correction_R; else return (TH1F*)(((TH2*)Correction_R  )->ProjectionX("R DvsMC corr."  ,mc_type,mc_type))->Clone();
+		};
 	
 	TH1 * GetCorrection_TOF(int mc_type = -1){ 
-		if(mc_type == -1) return Correction_R; else return (TH1F*)(((TH2*)Correction_TOF)->ProjectionX("TOF DvsMC corr.",mc_type,mc_type))->Clone();};
+		if(mc_type == -1) return Correction_TOF; else return (TH1F*)(((TH2*)Correction_TOF)->ProjectionX("TOF DvsMC corr.",mc_type,mc_type))->Clone();
+		};
 	
 	TH1 * GetCorrection_NaF(int mc_type = -1){ 
-		if(mc_type == -1) return Correction_R; else return (TH1F*)(((TH2*)Correction_NaF)->ProjectionX("NaF DvsMC corr.",mc_type,mc_type))->Clone();};
+		if(mc_type == -1) return Correction_NaF; else return (TH1F*)(((TH2*)Correction_NaF)->ProjectionX("NaF DvsMC corr.",mc_type,mc_type))->Clone();
+		};
 	
 	TH1 * GetCorrection_Agl(int mc_type = -1){ 
-		if(mc_type == -1) return Correction_R; else return (TH1F*)(((TH2*)Correction_Agl)->ProjectionX("Agl DvsMC corr.",mc_type,mc_type))->Clone();};
+		if(mc_type == -1) return Correction_Agl; else return (TH1F*)(((TH2*)Correction_Agl)->ProjectionX("Agl DvsMC corr.",mc_type,mc_type))->Clone();		      };
 };
 
 void DatavsMC::Write(){
@@ -151,40 +155,32 @@ void DatavsMC::Eval_DandMC_Eff(){
 
 
 void DatavsMC::Eval_Corrections(){
-	if(selections == 1) {
-		Correction_R  =	(TH1F *)(DataEff_corr ->  effR  ) ->Clone();
-                Correction_TOF=	(TH1F *)(DataEff_corr ->  effTOF) ->Clone();
-	        Correction_NaF= (TH1F *)(DataEff_corr ->  effNaF) ->Clone();
-                Correction_Agl= (TH1F *)(DataEff_corr ->  effAgl) ->Clone();
+		
+		Correction_R  = DivideHisto( DataEff_corr -> effR   , MCEff -> effR    );	
+                Correction_TOF=	DivideHisto( DataEff_corr -> effTOF , MCEff -> effTOF  );
+	        Correction_NaF= DivideHisto( DataEff_corr -> effNaF , MCEff -> effNaF  );
+                Correction_Agl= DivideHisto( DataEff_corr -> effAgl , MCEff -> effAgl  );
 
-		Correction_R  ->Divide(	MCEff ->	effR  	); 	
-                Correction_TOF->Divide(	MCEff ->	effTOF	); 
-                Correction_NaF->Divide(	MCEff ->	effNaF	); 
-                Correction_Agl->Divide(	MCEff ->	effAgl	); 
-
-	}
 	return;
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+TH1 * DivideHisto(TH1 *Histo1, TH1 *Histo2){
+	TH1 * result;
+	if(Histo2->GetNbinsY()==1){
+		result = (TH1F *)Histo1 -> Clone();		
+		result -> Divide(Histo2);
+	}
+	else{
+		result = (TH2F *)Histo2 -> Clone();
+		for(int S = 0; S<Histo2->GetNbinsY();S++)
+			for(int R=0;R<Histo1->GetNbinsX();R++){
+			result -> SetBinContent (R+1,S+1,Histo1->GetBinContent(R+1)/Histo2->GetBinContent(R+1,S+1));
+			}
+	}
+	return result;
+}
 
 
 TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
