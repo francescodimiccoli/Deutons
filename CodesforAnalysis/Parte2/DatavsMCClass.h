@@ -5,45 +5,64 @@ TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr);
 class DatavsMC
 {
 
-public:
-	Efficiency * MCEff;
-	Efficiency * DataEff;
-
+private:
 	//LAT corr.
 	TH1 * LATcorr_R  = NULL; 	
 	TH1 * LATcorr_TOF= NULL;
 	TH1 * LATcorr_NaF= NULL;
 	TH1 * LATcorr_Agl= NULL; 	
-	
-        Efficiency * DataEff_corr;
         
+	TH1 * Correction_R  = NULL;
+        TH1 * Correction_TOF= NULL;
+        TH1 * Correction_NaF= NULL;
+	TH1 * Correction_Agl= NULL;
+	
 	std::string Basename;
 
 	int latzones  = 0;
 	int selections= 0;
+	int mc_types  = 0;
+public:
+	Efficiency * MCEff;
+	Efficiency * DataEff;
 
-	//creation constructors
-	DatavsMC(std::string basename, int n){
-		
-		MCEff    = new Efficiency((basename + "_MC"  ).c_str());
-		DataEff  = new Efficiency((basename + "_Data").c_str(),n);
-		
-		latzones = n;
+	Efficiency * DataEff_corr;
 
-		Basename = basename;
-	} 
+	//creation constructor
 		
-	DatavsMC(std::string basename, int n, int S){
-		
-		MCEff    = new Efficiency((basename + "_MC"  ).c_str());
-		DataEff  = new Efficiency((basename + "_Data").c_str(),n);
-		
+	DatavsMC(std::string basename, int n=1, int S=1, int mcs=1){
+		if(S==1){	
+			if(mcs == 1){ 
+				MCEff    = new Efficiency((basename + "_MC"  ).c_str());
+				DataEff  = new Efficiency((basename + "_Data").c_str(),n);
+			}
+			else{
+				MCEff    = new Efficiency((basename + "_MC"  ).c_str(),mcs);  	
+				DataEff  = new Efficiency((basename + "_Data").c_str(),n);
+			}
+
+		}
+		else{	
+			if(mcs == 1){ 
+				MCEff    = new Efficiency((basename + "_MC"  ).c_str(),S);
+				DataEff  = new Efficiency((basename + "_Data").c_str(),n,S);
+			}
+			else{
+				MCEff    = new Efficiency((basename + "_MC"  ).c_str(),mcs,S);  	
+				DataEff  = new Efficiency((basename + "_Data").c_str(),n,S);
+			}
+
+		}
+
+
 		latzones   = n;
 		selections = S;
+		mc_types   = mcs;	
 	
 		Basename = basename;
 
-	} 
+	}
+ 
 	//reading constructors
 	DatavsMC(TFile *file, std::string basename){
 		MCEff   = new Efficiency(file,(basename + "_MC"  ).c_str());
@@ -70,8 +89,19 @@ public:
 	
 	void Eval_Corrected_DataEff();
 	void Eval_DandMC_Eff();
-	
+	void Eval_Corrections();	
 
+	TH1 * GetCorrection_R(int mc_type = -1){ 
+		if(mc_type == -1) return Correction_R; else return (TH1F*)(((TH2*)Correction_R  )->ProjectionX("R DvsMC corr."  ,mc_type,mc_type))->Clone();};
+	
+	TH1 * GetCorrection_TOF(int mc_type = -1){ 
+		if(mc_type == -1) return Correction_R; else return (TH1F*)(((TH2*)Correction_TOF)->ProjectionX("TOF DvsMC corr.",mc_type,mc_type))->Clone();};
+	
+	TH1 * GetCorrection_NaF(int mc_type = -1){ 
+		if(mc_type == -1) return Correction_R; else return (TH1F*)(((TH2*)Correction_NaF)->ProjectionX("NaF DvsMC corr.",mc_type,mc_type))->Clone();};
+	
+	TH1 * GetCorrection_Agl(int mc_type = -1){ 
+		if(mc_type == -1) return Correction_R; else return (TH1F*)(((TH2*)Correction_Agl)->ProjectionX("Agl DvsMC corr.",mc_type,mc_type))->Clone();};
 };
 
 void DatavsMC::Write(){
@@ -82,21 +112,30 @@ void DatavsMC::Write(){
 
 void DatavsMC::Eval_Corrected_DataEff(){
 
-	DataEff_corr -> beforeR   = (TH1*)((TH1 *)((TH2*)DataEff -> beforeR  ) -> ProjectionX((Basename + "1_R" ).c_str(),0,latzones)) -> Clone();
-	DataEff_corr -> beforeTOF = (TH1*)((TH1 *)((TH2*)DataEff -> beforeTOF) -> ProjectionX((Basename + "1"   ).c_str(),0,latzones)) -> Clone();
-	DataEff_corr -> beforeNaF = (TH1*)((TH1 *)((TH2*)DataEff -> beforeNaF) -> ProjectionX((Basename + "1NaF").c_str(),0,latzones)) -> Clone();
-	DataEff_corr -> beforeAgl = (TH1*)((TH1 *)((TH2*)DataEff -> beforeAgl) -> ProjectionX((Basename + "1Agl").c_str(),0,latzones)) -> Clone();
+	if(selections == 1) {
+		DataEff_corr -> beforeR   = (TH1F*)((TH1F *)((TH2F*)DataEff -> beforeR  ) -> ProjectionX((Basename + "1_R" ).c_str(),0,latzones)) -> Clone();
+		DataEff_corr -> beforeTOF = (TH1F*)((TH1F *)((TH2F*)DataEff -> beforeTOF) -> ProjectionX((Basename + "1"   ).c_str(),0,latzones)) -> Clone();
+		DataEff_corr -> beforeNaF = (TH1F*)((TH1F *)((TH2F*)DataEff -> beforeNaF) -> ProjectionX((Basename + "1NaF").c_str(),0,latzones)) -> Clone();
+		DataEff_corr -> beforeAgl = (TH1F*)((TH1F *)((TH2F*)DataEff -> beforeAgl) -> ProjectionX((Basename + "1Agl").c_str(),0,latzones)) -> Clone();
+	}
 
+	else {
+		DataEff_corr -> beforeR   = (TH2F*)((TH1F *)((TH2F*)DataEff -> beforeR  ) -> ProjectionX((Basename + "1_R" ).c_str(),0,latzones)) -> Clone();
+		DataEff_corr -> beforeTOF = (TH2F*)((TH1F *)((TH2F*)DataEff -> beforeTOF) -> ProjectionX((Basename + "1"   ).c_str(),0,latzones)) -> Clone();
+		DataEff_corr -> beforeNaF = (TH2F*)((TH1F *)((TH2F*)DataEff -> beforeNaF) -> ProjectionX((Basename + "1NaF").c_str(),0,latzones)) -> Clone();
+		DataEff_corr -> beforeAgl = (TH2F*)((TH1F *)((TH2F*)DataEff -> beforeAgl) -> ProjectionX((Basename + "1Agl").c_str(),0,latzones)) -> Clone();
+	}
+	
 	if(!LATcorr_R   ) cout<<"ERROR: Lat. corr for R   histos not assigned"<<endl;
 	if(!LATcorr_TOF ) cout<<"ERROR: Lat. corr for TOF histos not assigned"<<endl;
 	if(!LATcorr_NaF ) cout<<"ERROR: Lat. corr for NaF histos not assigned"<<endl;
 	if(!LATcorr_Agl ) cout<<"ERROR: Lat. corr for Agl histos not assigned"<<endl;
 	
-	DataEff_corr -> afterR   =  Correct_DataEff( (Basename + "2_R" ),	DataEff -> beforeR  ,	LATcorr_R   		);
-        /*DataEff_corr -> afterTOF =  Correct_DataEff( (Basename + "2"   ),	DataEff -> beforeTOF,	LATcorr_TOF 		);
-        DataEff_corr -> afterNaF =  Correct_DataEff( (Basename + "2NaF"),	DataEff -> beforeNaF,	LATcorr_NaF 		);
-        DataEff_corr -> afterAgl =  Correct_DataEff( (Basename + "2Agl"),	DataEff -> beforeAgl,	LATcorr_Agl 		);
-	*/
+	DataEff_corr -> afterR   =  Correct_DataEff( (Basename + "2_R" ),	DataEff -> afterR  ,	LATcorr_R   		);
+        DataEff_corr -> afterTOF =  Correct_DataEff( (Basename + "2"   ),	DataEff -> afterTOF,	LATcorr_TOF 		);
+        DataEff_corr -> afterNaF =  Correct_DataEff( (Basename + "2NaF"),	DataEff -> afterNaF,	LATcorr_NaF 		);
+        DataEff_corr -> afterAgl =  Correct_DataEff( (Basename + "2Agl"),	DataEff -> afterAgl,	LATcorr_Agl 		);
+	
 	return;
 }
 
@@ -111,7 +150,21 @@ void DatavsMC::Eval_DandMC_Eff(){
 }
 
 
+void DatavsMC::Eval_Corrections(){
+	if(selections == 1) {
+		Correction_R  =	(TH1F *)(DataEff_corr ->  effR  ) ->Clone();
+                Correction_TOF=	(TH1F *)(DataEff_corr ->  effTOF) ->Clone();
+	        Correction_NaF= (TH1F *)(DataEff_corr ->  effNaF) ->Clone();
+                Correction_Agl= (TH1F *)(DataEff_corr ->  effAgl) ->Clone();
 
+		Correction_R  ->Divide(	MCEff ->	effR  	); 	
+                Correction_TOF->Divide(	MCEff ->	effTOF	); 
+                Correction_NaF->Divide(	MCEff ->	effNaF	); 
+                Correction_Agl->Divide(	MCEff ->	effAgl	); 
+
+	}
+	return;
+}
 
 
 
@@ -140,13 +193,14 @@ TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
   
 	int selections = Histo ->GetNbinsZ();
 	int latzones   = Histo ->GetNbinsY();
+	
 	if(selections == 1){
 		//Histo_corr = new TH1F("","",Histo-> GetNbinsX(),0,Histo-> GetNbinsX());
 		for(int R = 0;R < Histo ->GetNbinsX();R++) 
 		     for(int lat =0; lat < latzones; lat++){	
 				temp -> SetBinContent(R+1,lat+1,Histo->GetBinContent(R+1,lat+1)*LATcorr->GetBinContent(lat+1));
 		}
-		Histo_corr = (TH1*)((TH1 *)((TH2*)temp ) -> ProjectionX(histoname.c_str(),0,latzones)) -> Clone();		
+		Histo_corr = (TH1F*)((TH1 *)((TH2*)temp ) -> ProjectionX(histoname.c_str(),0,latzones)) -> Clone();		
 	}
 	else {
 		for(int S = 0; S < selections; S++)	
@@ -154,8 +208,9 @@ TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
 				for(int lat =0; lat < latzones; lat++){	
 					temp -> SetBinContent(R+1,lat+1,S+1,Histo->GetBinContent(R+1,lat+1,S+1)*LATcorr->GetBinContent(lat+1,S+1));
 				}
-		Histo_corr = (TH1*)((TH3*)temp) -> Project3D("xz") -> Clone();	
+		Histo_corr = (TH2F*)((TH3*)temp) -> Project3D("xz") -> Clone();	
 	}
+	
 	return Histo_corr;
 }
 
