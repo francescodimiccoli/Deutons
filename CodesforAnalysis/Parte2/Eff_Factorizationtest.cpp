@@ -1,80 +1,190 @@
 using namespace std;
 
+Efficiency * EffFullSETselectionsMCP =  new Efficiency("EffFullSETselectionsMCP"); 
+
 Efficiency * Eff_do_preSelMCP = new Efficiency("Eff_do_preSelMCP",3); 
 Efficiency * Eff_do_preSelMCD = new Efficiency("Eff_do_preSelMCD",6,3);
 
 
-void MC_do_preSeleff_Fill(TNtuple *ntupla, int l){
+Efficiency * Eff_do_DistMCP  = new Efficiency("Eff_do_DistMCP");
+Efficiency * Eff_do_LikMCP   = new Efficiency("Eff_do_LikMCP");
+
+
+void FluxFactorizationtest_Pre_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
 	if(Unbias!=0||Beta_pre<=0||R_pre<=0) return;
-
+	int Kbin;
+	int Rbin;
+	// full set efficiency before
+	if(((int)Cutmask&notpassed[0])==notpassed[0]){
+		Rbin=GetRBin(Var);
+		if(Massa_gen<1&&Massa_gen>0.5){
+			EffFullSETselectionsMCP->beforeR->Fill(Rbin);	
+		}
+	}
+	
+	//Drop-one approach eff. calc.
 	for(int S=0;S<3;S++){
-		int Kbin;
-		int Rbin=GetRBin(Var);
+		Rbin=GetRBin(Var);
 		if(Massa_gen<1&&Massa_gen>0.5) {
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeR->Fill(Rbin,S);
 			if(((int)Cutmask&   passed[S])==   passed[S]) Eff_do_preSelMCP->afterR ->Fill(Rbin,S);
-
-			Kbin=GetArrayBin(Var, BetaP, nbinsToF);
-			if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeTOF->Fill(Kbin,S);
-			if(((int)Cutmask&passed[S])   ==passed[S])    Eff_do_preSelMCP->afterTOF ->Fill(Kbin,S);	
 		}				 
 
 		if(Massa_gen>1&&Massa_gen<2) {
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeR, Rbin, S);
 			if(((int)Cutmask&passed[S])   ==passed[S]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterR,  Rbin, S);
 
-			Kbin=GetArrayBin(Var, BetaD, nbinsToF);
-			if(((int)Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeTOF,Kbin, S);
-			if(((int)Cutmask&passed[S])   ==passed[S]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterTOF, Kbin, S);
-			
 		}
 	}
+	////////////////////////////////
 	return;
 }
 
 
-void MC_do_preSeleff_Write(){
+
+
+void FluxFactorizationtest_Qual_Fill(TNtuple *ntupla, int l){
+
+	int k = ntupla->GetEvent(l);
+	//cuts
+	if(Beta<=0||R<=0||R<1.2*Rcutoff) return;
+	//R bins
+	int Kbin;
+	Kbin = GetRBin(Var);
+	
+	//full set efficiency after
+	if(Dist5D_P<6&&Likcut)  EffFullSETselectionsMCP->afterR->Fill(Kbin);
+	
+
+	//Drop-one approach eff calc.
+	//eff evaluation cuts
+	if(Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
+	if(!Herejcut) return;	
+	
+	if(Massa_gen<1&&Massa_gen>0.5) {
+		Eff_do_DistMCP -> beforeR -> Fill(Kbin); 
+		if(Dist5D_P<6) Eff_do_LikMCP -> beforeR -> Fill(Kbin);
+
+		if(Dist5D_P<6){
+			Eff_do_DistMCP -> afterR -> Fill(Kbin);
+			if(Likcut) Eff_do_LikMCP -> afterR -> Fill(Kbin);
+		}
+
+	}
+	///////////////////////////	
+	return;
+
+}
+
+
+void FluxFactorizationtest_Write(){
         Eff_do_preSelMCP -> Write();
         Eff_do_preSelMCD ->Write();
+	
+	Eff_do_DistMCP   -> Write();
+	Eff_do_LikMCP    ->Write();
+	
+	EffFullSETselectionsMCP ->Write();
 	return; 
 }
 
 
-void MC_do_preSeleff(TFile * file1){
-	
+void FluxFactorizationtest(TFile * file1){
+
+	Efficiency * EffFullSETselectionsMCP  = new Efficiency(file1,"EffFullSETselectionsMCP");
+		
 	Efficiency * Eff_do_preSelMCP = new Efficiency(file1,"Eff_do_preSelMCP"); 
 	Efficiency * Eff_do_preSelMCD = new Efficiency(file1,"Eff_do_preSelMCD");
-
-
-	string tagli[3]={"Matching TOF","Chi^2 R","1 Tr. Track"};
+		
+	Efficiency * Eff_do_DistMCP  = new Efficiency(file1,"Eff_do_DistMCP"); 
+        Efficiency * Eff_do_LikMCP   = new Efficiency(file1,"Eff_do_LikMCP"); 
+	
+	string tagli[5]={"Matching TOF","Chi^2 R","1 Tr. Track","Distance","Likelihood"};
 	string nome;
 
 	cout<<"********* MC \"GOLDEN\" SEL. EFFICIENCIES *********"<<endl;
+	
+	EffFullSETselectionsMCP -> Eval_Efficiency();
+	
+	Eff_do_preSelMCP 	-> Eval_Efficiency();
+	Eff_do_preSelMCD 	-> Eval_Efficiency();
+	
+	Eff_do_DistMCP  	-> Eval_Efficiency();
+	Eff_do_LikMCP   	-> Eval_Efficiency();
 
-	Eff_do_preSelMCP -> Eval_Efficiency();
-	Eff_do_preSelMCD -> Eval_Efficiency();
+
+
+	TH1F * Eff_FullSETMCP_R_TH1F = (TH1F *) EffFullSETselectionsMCP -> effR -> Clone();
 
 	TH2F * Eff_do_preSelMCP_R_TH2F	= (TH2F *) Eff_do_preSelMCP -> effR -> Clone();
-	TH2F * Eff_do_preSelMCP_TH2F	= (TH2F *) Eff_do_preSelMCP -> effTOF-> Clone();
-	TH3F * Eff_do_preSelMCD_R_TH3F	= (TH3F *) Eff_do_preSelMCD -> effR -> Clone();
-	TH3F * Eff_do_preSelMCD_TH3F	= (TH3F *) Eff_do_preSelMCD -> effTOF-> Clone();
+	
+	TH1F * Eff_do_DistMCP_R_TH1F = (TH1F *) Eff_do_DistMCP -> effR -> Clone();
+	TH1F * Eff_do_LikMCP_R_TH1F = (TH1F *) Eff_do_LikMCP -> effR -> Clone();
+
+
+	// factorized eff. calc.
+	TH1F * FactorizedEffMCP_R = (TH1F *) Eff_do_DistMCP_R_TH1F -> Clone();
+	FactorizedEffMCP_R -> Multiply(Eff_do_LikMCP_R_TH1F);
+
+	for(int S=0;S<Eff_do_preSelMCP_R_TH2F->GetNbinsY();S++){
+		for(int R=0;R<Eff_do_preSelMCP_R_TH2F->GetNbinsX();R++)
+			FactorizedEffMCP_R -> SetBinContent(R+1,FactorizedEffMCP_R -> GetBinContent(R+1)*Eff_do_preSelMCP_R_TH2F-> GetBinContent(R+1,S+1) ); 
+	}
 
 	cout<<"*** Updating P1 file ****"<<endl;
         string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
         file1 =TFile::Open(nomefile.c_str(),"UPDATE");
 
         file1->cd("Results");
-	Eff_do_preSelMCP_R_TH2F	-> Write();
-	Eff_do_preSelMCP_TH2F	-> Write();
-	Eff_do_preSelMCD_R_TH3F	-> Write();
-	Eff_do_preSelMCD_TH3F	-> Write();
 	file1-> Write();
 	file1-> Close();
 
 		
+	TCanvas *c9 = new TCanvas("MC Protons Factorization Test");
+	c9->cd();
+	gPad->SetLogx();
+        gPad->SetGridx();
+        gPad->SetGridy();
 
-	TCanvas *c9[4];
+	TGraphErrors * FullsetEfficiency    = new TGraphErrors();
+	TGraphErrors * FactorizedEfficiency = new TGraphErrors();
+
+	for(int i=0; i<Eff_FullSETMCP_R_TH1F->GetNbinsX();i++) {
+			FullsetEfficiency    ->SetPoint(i,R_cent[i],Eff_FullSETMCP_R_TH1F->GetBinContent(i+1));
+			FactorizedEfficiency ->SetPoint(i,R_cent[i],FactorizedEffMCP_R->GetBinContent(i+1));		
+	}
+
+	FullsetEfficiency->SetMarkerColor(2);
+        FullsetEfficiency->SetMarkerStyle(8);
+        FullsetEfficiency->SetLineColor(2);
+        FullsetEfficiency->SetLineWidth(2);
+
+	FactorizedEfficiency->SetMarkerColor(2);
+        FactorizedEfficiency->SetMarkerStyle(4);
+        FactorizedEfficiency->SetLineColor(2);
+        FactorizedEfficiency->SetLineWidth(2);
+
+
+
+	FullsetEfficiency->Draw("APC");
+	FactorizedEfficiency->Draw("PCsame");
+	
+	cout<<"*** Updating Results file ***"<<endl;
+        nomefile="./Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        f_out->mkdir("MC Results/Eff. Factorization Test");
+        f_out->cd("MC Results/Eff. Factorization Test");
+        c9->Write();
+        f_out->Write();
+        f_out->Close();
+ 	
+
+
+
+
+
+	/*TCanvas *c9[4];
 	string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
 	
 	for(int S=0;S<3;S++){
@@ -166,7 +276,7 @@ void MC_do_preSeleff(TFile * file1){
 	f_out->Write();
         f_out->Close();
 
-
+	*/
 return;
 }
 
