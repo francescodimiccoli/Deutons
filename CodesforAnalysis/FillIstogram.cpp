@@ -158,10 +158,9 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCpreseff_Fill(ntupla0,i);
 		MCUnbiaseff_Fill(ntupla0,i);
 		MCTrackeff_Fill(ntupla0,i);
-		MC_do_preSeleff_Fill(ntupla0,i);
 		MigrationMatrix_Fill(ntupla0,i);
 		Correlazione_Preselezioni(ntupla0,i);
-
+		FluxFactorizationtest_Pre_Fill(ntupla0,i);
 		/*DVSMCpreSeleff_Fill(ntupla0,i);
 		DVSMCTrackeff_Fill(ntupla0,i);*/
 	}
@@ -184,6 +183,7 @@ void FillIstogram(int INDX,string frac,string mese)
                 Var3=Beta_gen;*/
 		HecutMC_Fill(ntupla1,i);
 		SlidesforPlot_Fill(ntupla1,i);
+		FluxFactorizationtest_Qual_Fill(ntupla0,i);
 		DistanceCut_Fill(ntupla1,i);
 		MCQualeff_Fill(ntupla1,i);
 		DVSMCQualeff2_Fill(ntupla1,i);	
@@ -284,6 +284,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		
 		DATAQualeff_Write();
 		DATApreSeleff_Write();
+		FluxFactorizationtest_Write();
 		Correlazione_Preselezioni_Write();
 		HecutMC_Write();
 		SlidesforPlot_Write();	
@@ -297,7 +298,6 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCMC_Write();
 		MCpreeff_Write();
 		//MCpreCheck_Write();
-		MC_do_preSeleff_Write();
 		MCQualeff_Write();
 		MCTrackeff_Write();	
 		MCUnbiaseff_Write();

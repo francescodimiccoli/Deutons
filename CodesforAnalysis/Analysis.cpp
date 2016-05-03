@@ -17,7 +17,7 @@
 #include "Parte2/MCQualeff.cpp"
 #include "Parte2/Cuts.cpp"
 #include "Parte2/MCTrackeff.cpp"
-#include "Parte2/MC_do_preSeleff.cpp"
+#include "Parte2/Eff_Factorizationtest.cpp"
 #include "Parte2/MigrationMatrix.cpp"
 #include "Parte2/MCFullSeteff.cpp"
 #include "Parte2/DATAUnbiaseff.cpp"
@@ -229,9 +229,9 @@ int main(int argc, char * argv[])
 		Hecut(file1);
 		SlidesforPlot(file1);
 		MCQualeff(file1);
+		FluxFactorizationtest(file1);
 		MCTrackeff(file1);
 		MCFullseteff(file1);
-		MC_do_preSeleff(file1);
 		Correlazione_Preselezioni(file1);
 		MigrationMatrix(file1);
 		DATAUnbiaseff(file1);
@@ -240,7 +240,6 @@ int main(int argc, char * argv[])
 		DATAQualeff(file1);
 		if(frac=="tot") DeutonsTemplFits();
 		if(frac=="tot") DeutonsTemplFits_Dist();
-		DVSMCQualeff2(file1);
 		/*DVSMCpreSeleff(file1);
 		  DeutonFlux(file1);
 		  DeutonFlux_Dist(file1);*/
@@ -249,6 +248,7 @@ int main(int argc, char * argv[])
 	
 	if(INDX==2){	
 		CorrLAT();
+		DVSMCQualeff2();
 		Acceptance();
 		ProtonFlux();
 		if(frac=="tot") DeutonFlux();
