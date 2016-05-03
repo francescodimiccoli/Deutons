@@ -132,8 +132,8 @@ void DVSMCQualeff2_Write(){
 void DVSMCQualeff2(){
 
 	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
-	
+	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
+
 	DatavsMC * Dist_DvsMC_P = new DatavsMC(file1,"Dist_DvsMC_P");
 	DatavsMC * Lik_DvsMC_P  = new DatavsMC(file1,"Lik_DvsMC_D" );
 
@@ -152,14 +152,14 @@ void DVSMCQualeff2(){
 	cout<<"******* Data vs MC: QUALITY SEL ********"<<endl;
 
 	Dist_DvsMC_P -> Assign_LatCorr( LATDistanceDATA_TOF   ->  LATcorrR_fit , 
-	                                LATDistanceDATA_TOF   ->  LATcorrR_fit ,
-                                        LATDistanceDATA_NaF   ->  LATcorrR_fit ,
-                                        LATDistanceDATA_Agl   ->  LATcorrR_fit );
+			LATDistanceDATA_TOF   ->  LATcorrR_fit ,
+			LATDistanceDATA_NaF   ->  LATcorrR_fit ,
+			LATDistanceDATA_Agl   ->  LATcorrR_fit );
 
 	Lik_DvsMC_P  ->	Assign_LatCorr( LATLikelihoodDATA_TOF ->  LATcorrR_fit , 	
-					LATLikelihoodDATA_TOF ->  LATcorrR_fit ,
-					LATLikelihoodDATA_NaF ->  LATcorrR_fit ,
-					LATLikelihoodDATA_Agl ->  LATcorrR_fit );
+			LATLikelihoodDATA_TOF ->  LATcorrR_fit ,
+			LATLikelihoodDATA_NaF ->  LATcorrR_fit ,
+			LATLikelihoodDATA_Agl ->  LATcorrR_fit );
 
 
 
@@ -169,12 +169,12 @@ void DVSMCQualeff2(){
 	Dist_DvsMC_P ->Eval_Corrections();
 	Lik_DvsMC_P  ->Eval_Corrections();
 
-	
+
 	TH1F* DistP_Correction_R   =(TH1F*) Dist_DvsMC_P -> GetCorrection_R()  ;
 	TH1F* DistP_Correction_TOF =(TH1F*) Dist_DvsMC_P -> GetCorrection_TOF();
 	TH1F* DistP_Correction_NaF =(TH1F*) Dist_DvsMC_P -> GetCorrection_NaF();
 	TH1F* DistP_Correction_Agl =(TH1F*) Dist_DvsMC_P -> GetCorrection_Agl();
-                                         
+
 	TH1F* LikP_Correction_R    =(TH1F*) Lik_DvsMC_P -> GetCorrection_R()  ;
 	TH1F* LikP_Correction_TOF  =(TH1F*) Lik_DvsMC_P -> GetCorrection_TOF();
 	TH1F* LikP_Correction_NaF  =(TH1F*) Lik_DvsMC_P -> GetCorrection_NaF();
@@ -191,7 +191,7 @@ void DVSMCQualeff2(){
 	DistP_Correction_TOF  -> Write("Dist_DvsMC_P_CorrectionTOF");
 	DistP_Correction_NaF  -> Write("Dist_DvsMC_P_CorrectionNaF");
 	DistP_Correction_Agl  -> Write("Dist_DvsMC_P_CorrectionAgl");
-                             
+
 	LikP_Correction_R    -> Write("Lik_DvsMC_P_CorrectionR"  );
 	LikP_Correction_TOF  -> Write("Lik_DvsMC_P_CorrectionTOF");
 	LikP_Correction_NaF  -> Write("Lik_DvsMC_P_CorrectionNaF");
@@ -201,166 +201,206 @@ void DVSMCQualeff2(){
 	file1->Write();
 	file1->Close();
 
+
+
+
+
+
 	TCanvas *c20=new TCanvas("Data vs MC: Likelihood (R bins)");
 	TCanvas *c21=new TCanvas("Data vs MC: Distance (R bins)");
-	
+
+	TCanvas *c20_bis=new TCanvas("Data vs MC: Likelihood (Beta bins)");
+	TCanvas *c21_bis=new TCanvas("Data vs MC: Distance (Beta bins)");
+
 	TGraphErrors *LikDVSMC_P_Graph;
 	TGraphErrors *DistDVSMC_P_Graph;
-	
+
 	c20->cd();
-        gPad->SetLogx();
-        gPad->SetGridx();
-        gPad->SetGridy();
-        LikDVSMC_P_Graph=new TGraphErrors();
-        LikDVSMC_P_Graph->SetName("LikDVSMC_P_Graph");
+	gPad->SetLogx();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	LikDVSMC_P_Graph=new TGraphErrors();
+	LikDVSMC_P_Graph->SetName("LikDVSMC_P_Graph");
 	int j=0;
 	for(int i=1;i<nbinsr;i++) {
-		LikDVSMC_P_Graph->SetPoint(j,R_cent[i],LikP_Correction_R -> GetBinContent(i+1));
-		LikDVSMC_P_Graph->SetPointError(j,0,LikP_Correction_R -> GetBinError(i+1));
-		j++;
+		if(LikP_Correction_R -> GetBinContent(i+1)>0){
+			LikDVSMC_P_Graph->SetPoint(j,R_cent[i],LikP_Correction_R -> GetBinContent(i+1));
+			LikDVSMC_P_Graph->SetPointError(j,0,LikP_Correction_R -> GetBinError(i+1));
+			j++;
+		}
 	}
 	LikDVSMC_P_Graph->SetLineColor(2);
-        LikDVSMC_P_Graph->SetFillColor(2);
-        LikDVSMC_P_Graph->SetFillStyle(3001);
-        LikDVSMC_P_Graph->SetLineWidth(4);
+	LikDVSMC_P_Graph->SetFillColor(2);
+	LikDVSMC_P_Graph->SetFillStyle(3001);
+	LikDVSMC_P_Graph->SetLineWidth(4);
 	LikDVSMC_P_Graph->Draw("AP4C");
 
 	c21->cd();
-        gPad->SetLogx();
-        gPad->SetGridx();
-        gPad->SetGridy();
-        DistDVSMC_P_Graph=new TGraphErrors();
-        DistDVSMC_P_Graph->SetName("DistDVSMC_P_Graph");
+	gPad->SetLogx();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	DistDVSMC_P_Graph=new TGraphErrors();
+	DistDVSMC_P_Graph->SetName("DistDVSMC_P_Graph");
 	j=0;
 	for(int i=1;i<nbinsr;i++) {
-		DistDVSMC_P_Graph->SetPoint(j,R_cent[i],DistP_Correction_R -> GetBinContent(i+1));
-		DistDVSMC_P_Graph->SetPointError(j,0,DistP_Correction_R -> GetBinError(i+1));
-		j++;
+		if(DistP_Correction_R -> GetBinContent(i+1)>0){
+			DistDVSMC_P_Graph->SetPoint(j,R_cent[i],DistP_Correction_R -> GetBinContent(i+1));
+			DistDVSMC_P_Graph->SetPointError(j,0,DistP_Correction_R -> GetBinError(i+1));
+			j++;
+		}
 	}
 	DistDVSMC_P_Graph->SetLineColor(2);
-        DistDVSMC_P_Graph->SetFillColor(2);
-        DistDVSMC_P_Graph->SetFillStyle(3001);
-        DistDVSMC_P_Graph->SetLineWidth(4);
+	DistDVSMC_P_Graph->SetFillColor(2);
+	DistDVSMC_P_Graph->SetFillStyle(3001);
+	DistDVSMC_P_Graph->SetLineWidth(4);
 	DistDVSMC_P_Graph->Draw("AP4C");
+
+	c20_bis->Divide(3,1);
+
+	c20_bis->cd(1);
+	gPad->SetLogx();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	TGraphErrors * LikDVSMC_P_GraphTOF=new TGraphErrors();
+	LikDVSMC_P_GraphTOF->SetName("LikDVSMC_P_GraphTOF");
+	j=0;
+	for(int i=1;i<nbinsToF;i++) {
+		if(LikP_Correction_TOF -> GetBinContent(i+1)>0){
+			LikDVSMC_P_GraphTOF->SetPoint(j,Ekincent[i],LikP_Correction_TOF -> GetBinContent(i+1));
+			LikDVSMC_P_GraphTOF->SetPointError(j,0,LikP_Correction_TOF -> GetBinError(i+1));
+			j++;
+		}
+	}
+	LikDVSMC_P_GraphTOF->SetLineColor(2);
+	LikDVSMC_P_GraphTOF->SetFillColor(2);
+	LikDVSMC_P_GraphTOF->SetFillStyle(3001);
+	LikDVSMC_P_GraphTOF->SetLineWidth(4);
+	LikDVSMC_P_GraphTOF->Draw("AP4C");
+
+	c20_bis->cd(2);
+	gPad->SetLogx();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	TGraphErrors * LikDVSMC_P_GraphNaF=new TGraphErrors();
+	LikDVSMC_P_GraphNaF->SetName("LikDVSMC_P_GraphNaF");
+	j=0;
+	for(int i=1;i<nbinsNaF;i++) {
+		if(LikP_Correction_NaF -> GetBinContent(i+1)>0){
+			LikDVSMC_P_GraphNaF->SetPoint(j,EkincentNaF[i],LikP_Correction_NaF -> GetBinContent(i+1));
+			LikDVSMC_P_GraphNaF->SetPointError(j,0,LikP_Correction_NaF -> GetBinError(i+1));
+			j++;
+		}
+	}
+	LikDVSMC_P_GraphNaF->SetLineColor(2);
+	LikDVSMC_P_GraphNaF->SetFillColor(2);
+	LikDVSMC_P_GraphNaF->SetFillStyle(3001);
+	LikDVSMC_P_GraphNaF->SetLineWidth(4);
+	LikDVSMC_P_GraphNaF->Draw("AP4C");
+
+	c20_bis->cd(3);
+	gPad->SetLogx();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	TGraphErrors * LikDVSMC_P_GraphAgl=new TGraphErrors();
+	LikDVSMC_P_GraphAgl->SetName("LikDVSMC_P_GraphAgl");
+	j=0;
+	for(int i=1;i<nbinsAgl;i++) {
+		if(LikP_Correction_Agl -> GetBinContent(i+1)>0){
+			LikDVSMC_P_GraphAgl->SetPoint(j,EkincentAgl[i],LikP_Correction_Agl -> GetBinContent(i+1));
+			LikDVSMC_P_GraphAgl->SetPointError(j,0,LikP_Correction_Agl -> GetBinError(i+1));
+			j++;
+		}
+	}
+	LikDVSMC_P_GraphAgl->SetLineColor(2);
+	LikDVSMC_P_GraphAgl->SetFillColor(2);
+	LikDVSMC_P_GraphAgl->SetFillStyle(3001);
+	LikDVSMC_P_GraphAgl->SetLineWidth(4);
+	LikDVSMC_P_GraphAgl->Draw("AP4C");
+
+	c21_bis->Divide(3,1);
+
+	c21_bis->cd(1);
+	gPad->SetLogx();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	TGraphErrors * DistDVSMC_P_GraphTOF=new TGraphErrors();
+	DistDVSMC_P_GraphTOF->SetName("DistDVSMC_P_GraphTOF");
+	j=0;
+	for(int i=1;i<nbinsToF;i++) {
+		if(DistP_Correction_TOF -> GetBinContent(i+1)>0){
+			DistDVSMC_P_GraphTOF->SetPoint(j,Ekincent[i],DistP_Correction_TOF -> GetBinContent(i+1));
+			DistDVSMC_P_GraphTOF->SetPointError(j,0,DistP_Correction_TOF -> GetBinError(i+1));
+			j++;
+		}
+	}
+	DistDVSMC_P_GraphTOF->SetLineColor(2);
+	DistDVSMC_P_GraphTOF->SetFillColor(2);
+	DistDVSMC_P_GraphTOF->SetFillStyle(3001);
+	DistDVSMC_P_GraphTOF->SetLineWidth(4);
+	DistDVSMC_P_GraphTOF->Draw("AP4C");
+
+	c21_bis->cd(2);
+	gPad->SetLogx();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	TGraphErrors * DistDVSMC_P_GraphNaF=new TGraphErrors();
+	DistDVSMC_P_GraphNaF->SetName("DistDVSMC_P_GraphNaF");
+	j=0;
+	for(int i=1;i<nbinsNaF;i++) {
+		if(DistP_Correction_NaF -> GetBinContent(i+1)>0){
+			DistDVSMC_P_GraphNaF->SetPoint(j,EkincentNaF[i],DistP_Correction_NaF -> GetBinContent(i+1));
+			DistDVSMC_P_GraphNaF->SetPointError(j,0,DistP_Correction_NaF -> GetBinError(i+1));
+			j++;
+		}
+	}
+	DistDVSMC_P_GraphNaF->SetLineColor(2);
+	DistDVSMC_P_GraphNaF->SetFillColor(2);
+	DistDVSMC_P_GraphNaF->SetFillStyle(3001);
+	DistDVSMC_P_GraphNaF->SetLineWidth(4);
+	DistDVSMC_P_GraphNaF->Draw("AP4C");
+
+	c21_bis->cd(3);
+	gPad->SetLogx();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	TGraphErrors * DistDVSMC_P_GraphAgl=new TGraphErrors();
+	DistDVSMC_P_GraphAgl->SetName("DistDVSMC_P_GraphAgl");
+	j=0;
+	for(int i=1;i<nbinsAgl;i++) {
+		if(DistP_Correction_Agl -> GetBinContent(i+1)>0){
+			DistDVSMC_P_GraphAgl->SetPoint(j,EkincentAgl[i],DistP_Correction_Agl -> GetBinContent(i+1));
+			DistDVSMC_P_GraphAgl->SetPointError(j,0,DistP_Correction_Agl -> GetBinError(i+1));
+			j++;
+		}
+	}
+	DistDVSMC_P_GraphAgl->SetLineColor(2);
+	DistDVSMC_P_GraphAgl->SetFillColor(2);
+	DistDVSMC_P_GraphAgl->SetFillStyle(3001);
+	DistDVSMC_P_GraphAgl->SetLineWidth(4);
+	DistDVSMC_P_GraphAgl->Draw("AP4C");
+
+
+
+
 
 	cout<<"*** Updating Results file ***"<<endl;
 	nomefile="./Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
 	f_out->mkdir("DATA-driven Results/Data vs MC/Protons");
-   	f_out->cd("DATA-driven Results/Data vs MC/Protons");
+	f_out->cd("DATA-driven Results/Data vs MC/Protons");
 	c20->Write();
 	c21->Write();
+	c20_bis->Write();
+	c21_bis->Write();
+
 	f_out->Write();
 	f_out->Close();
 
 
-	
+
 
 
 
 	return;
 }
 
-/*
-
-TCanvas *c20=new TCanvas("Data vs MC: Likelihood");
-TCanvas *c21=new TCanvas("Data vs MC: Distance");
-TGraphErrors *LikDVSMC_P_Graph;
-TGraphErrors *DistDVSMC_P_Graph;
-TH2F * LikDVSMC_P_graph=new TH2F("LikDVSMC_P_graph","LikDVSMC_P_graph",nbinsr,0,nbinsr,2,0,2);
-TH2F * DistDVSMC_P_graph=new TH2F("DistDVSMC_P_graph","DistDVSMC_P_graph",nbinsr,0,nbinsr,2,0,2);
-
-
-void DVSMCQualeff2(TFile * file1){
-	
-
-	c20->cd();
-	gPad->SetLogx();
-        gPad->SetGridx();
-        gPad->SetGridy();
-	LikDVSMC_P_Graph=new TGraphErrors();
-	LikDVSMC_P_Graph->SetName("LikDVSMC_P_Graph");
-	j=0;
-	
-	for(int i=1;i<nbinsr;i++) {
-		if(EffLik2MCvsDP_MC[i]>0){
-		LikDVSMC_P_Graph->SetPoint(j,R_cent[i],ratioL_smooth[i]);
-		LikDVSMC_P_graph->SetBinContent(i+1,1,ratioL_smooth[i]);
-		LikDVSMC_P_Graph->SetPointError(j,0,errorefitL);
-		LikDVSMC_P_graph->SetBinContent(i+1,2,errorefitL);
-	j++;
-	}
-	}
-	LikDVSMC_P_Graph->SetLineColor(4);
-	LikDVSMC_P_Graph->SetFillColor(4);
-	LikDVSMC_P_Graph->SetFillStyle(3001);
-        LikDVSMC_P_Graph->SetLineWidth(4);
-	EffLik2MCvsDP_Mean->SetMarkerColor(2);
-        EffLik2MCvsDP_Mean->SetMarkerStyle(4);
-        EffLik2MCvsDP_Mean->SetLineColor(2);
-        EffLik2MCvsDP_Mean->SetLineWidth(2);
-        EffMCvsDLikP_MC->SetMarkerColor(2);
-        EffMCvsDLikP_MC->SetMarkerStyle(8);
-        EffMCvsDLikP_MC->SetLineColor(2);
-        EffMCvsDLikP_MC->SetLineWidth(2);
-	EffLik2MCvsDP_Mean->SetTitle("Likelihood Efficiency DATA/MC");
-        EffLik2MCvsDP_Mean->GetXaxis()->SetTitle("R [GV]");
-        EffLik2MCvsDP_Mean->GetYaxis()->SetTitle("Efficiency");
-        EffLik2MCvsDP_Mean->GetXaxis()->SetTitleSize(0.045);
-        EffLik2MCvsDP_Mean->GetYaxis()->SetTitleSize(0.045);
-	EffLik2MCvsDP_Mean->GetYaxis()->SetRangeUser(0.7,1.4);
-	{
-                EffLik2MCvsDP_Mean->Draw("AP");
-		EffMCvsDLikP_MC->Draw("CPsame");
-                LikDVSMC_P_Graph->Draw("L4same");
-		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-                //leg->AddEntry(EffMCLikP,MCLegend[0].c_str(), "ep");
-
-        }
-
-	c21->cd();
-        gPad->SetLogx();
-        gPad->SetGridx();
-        gPad->SetGridy();
-	DistDVSMC_P_Graph=new TGraphErrors();
-        DistDVSMC_P_Graph->SetName("DistDVSMC_P_Graph");
-	j=0;
-        for(int i=1;i<nbinsr;i++) {
-                if(EffLik2MCvsDP_MC[i]>0){
-                DistDVSMC_P_Graph->SetPoint(j,R_cent[i],ratioD_smooth[i]);
-               	DistDVSMC_P_graph->SetBinContent(i+1,1,ratioD_smooth[i]);
-		DistDVSMC_P_Graph->SetPointError(j,0,errorefitD);
-        	DistDVSMC_P_graph->SetBinContent(i+1,2,errorefitD);
-	j++;
-        }
-        }
-        DistDVSMC_P_Graph->SetLineColor(4);
-        DistDVSMC_P_Graph->SetFillColor(4);
-        DistDVSMC_P_Graph->SetFillStyle(3001);
-        DistDVSMC_P_Graph->SetLineWidth(4);
-	EffDistMCvsDP_Mean->SetMarkerColor(2);
-        EffDistMCvsDP_Mean->SetMarkerStyle(4);
-        EffDistMCvsDP_Mean->SetLineColor(2);
-        EffDistMCvsDP_Mean->SetLineWidth(2);
-	EffMCvsDDistP_MC->SetMarkerColor(2);
-        EffMCvsDDistP_MC->SetMarkerStyle(8);
-        EffMCvsDDistP_MC->SetLineColor(2);
-        EffMCvsDDistP_MC->SetLineWidth(2);
-        EffDistMCvsDP_Mean->SetTitle("Distance Efficiency DATA/MC");
-        EffDistMCvsDP_Mean->GetXaxis()->SetTitle("R [GV]");
-        EffDistMCvsDP_Mean->GetYaxis()->SetTitle("Efficiency");
-        EffDistMCvsDP_Mean->GetXaxis()->SetTitleSize(0.045);
-        EffDistMCvsDP_Mean->GetYaxis()->SetTitleSize(0.045);
-	EffDistMCvsDP_Mean->GetYaxis()->SetRangeUser(0.7,1.4);
-        {
-                EffDistMCvsDP_Mean->Draw("AP");
-		EffMCvsDDistP_MC->Draw("CPsame");
-                DistDVSMC_P_Graph->Draw("L4same");
-		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-                //leg->AddEntry(EffMCDistP,MCLegend[0].c_str(), "ep");
-
-        }	
-
-
-}
-*/

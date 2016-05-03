@@ -88,7 +88,7 @@ void MCUnbiaseff(TFile * file1) {
    string MCLegend[7]= {"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
    TGraph * EffUnbMCP_R = new TGraph();
    EffUnbMCP_R->SetTitle(MCLegend[0].c_str());
-   for(int i=0; i<nbinsr; i++) EffUnbMCP_R->SetPoint(i,R_cent[i],EffUnbMCP_R_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsr; i++) EffUnbMCP_R->SetPoint(i,R_cent[i],1);
    TGraph * EffUnbMCD_R[6];
    EffUnbMCP_R->SetMarkerColor(2);
    EffUnbMCP_R->SetMarkerStyle(8);
@@ -124,7 +124,7 @@ void MCUnbiaseff(TFile * file1) {
    gPad->SetGridx();
    gPad->SetGridy();
    TGraph * EffUnbMCP = new TGraph();
-   for(int i=0; i<17; i++) EffUnbMCP->SetPoint(i,Ekincent[i],EffUnbMCP_TH1F->GetBinContent(i+1));
+   for(int i=0; i<17; i++) EffUnbMCP->SetPoint(i,Ekincent[i],1);
    TGraph * EffUnbMCD[6];
    EffUnbMCP->SetMarkerColor(2);
    EffUnbMCP->SetMarkerStyle(8);
