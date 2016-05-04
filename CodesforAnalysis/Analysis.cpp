@@ -31,6 +31,7 @@
 #include "Parte2/DeutonsCountsExtraction_Dist.cpp"
 #include "Parte2/MCMC.cpp"
 #include "Parte2/DVSMCQualeff.cpp"
+#include "Parte2/DVSMCQualeff_D.cpp"
 #include "Parte2/DeutonsFlux.cpp"
 #include "Parte2/DVSMCPreSeleff.cpp"
 //#include "Parte2/DVSMCTrackeff.cpp"*/
@@ -249,6 +250,7 @@ int main(int argc, char * argv[])
 		CorrLAT();
 		DVSMCPreSeleff();
 		DVSMCQualeff2();
+		DVSMCQualeffD();
 		Acceptance();
 		ProtonFlux();
 		if(frac=="tot") DeutonFlux();

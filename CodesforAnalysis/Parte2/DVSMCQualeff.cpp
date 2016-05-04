@@ -1,7 +1,7 @@
 using namespace std;
 
 DatavsMC * Dist_DvsMC_P = new DatavsMC("Dist_DvsMC_P",11);
-DatavsMC * Lik_DvsMC_P  = new DatavsMC("Lik_DvsMC_D" ,11);
+DatavsMC * Lik_DvsMC_P  = new DatavsMC("Lik_DvsMC_P" ,11);
 
 void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 
@@ -135,7 +135,7 @@ void DVSMCQualeff2(){
 	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
 
 	DatavsMC * Dist_DvsMC_P = new DatavsMC(file1,"Dist_DvsMC_P");
-	DatavsMC * Lik_DvsMC_P  = new DatavsMC(file1,"Lik_DvsMC_D" );
+	DatavsMC * Lik_DvsMC_P  = new DatavsMC(file1,"Lik_DvsMC_P" );
 
 	LATcorr * LATLikelihoodDATA_TOF = new LATcorr(file1,"LATLikDATA_TOF"   	 ,"Results");
 	LATcorr * LATDistanceDATA_TOF   = new LATcorr(file1,"LATDistDATA_TOF" 	 ,"Results");
