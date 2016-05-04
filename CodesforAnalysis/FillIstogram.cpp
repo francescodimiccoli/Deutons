@@ -143,6 +143,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	for(int i=0; i<ntupla0->GetEntries()/fraz;i++) {
 		int k = ntupla0->GetEvent(i);
 		Cutmask=CUTMASK;
+		Cuts_Pre();
 		Massa_gen = ReturnMass_Gen();
 		Var3=Momento_gen;
                 Var=R_pre;
@@ -161,8 +162,8 @@ void FillIstogram(int INDX,string frac,string mese)
 		MigrationMatrix_Fill(ntupla0,i);
 		Correlazione_Preselezioni(ntupla0,i);
 		FluxFactorizationtest_Pre_Fill(ntupla0,i);
-		/*DVSMCpreSeleff_Fill(ntupla0,i);
-		DVSMCTrackeff_Fill(ntupla0,i);*/
+		DVSMCPreSeleff_Fill(ntupla0,i);
+		//DVSMCTrackeff_Fill(ntupla0,i);*/
 	}
 	if(INDX==0||INDX==1){
 	progress=0;
@@ -218,6 +219,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	for(int i=0; i<ntupla2->GetEntries()/fraz;i++) {
                 int k = ntupla2->GetEvent(i);
 		Cutmask=CUTMASK;
+		Cuts_Pre();
 		Massa=pow(fabs(pow(fabs(R_pre)*pow((1-pow(Beta_pre,2)),0.5)/Beta_pre,2)),0.5);
 	        for(int z=0;z<12;z++){
                         double geo= geomag[z]  ;
@@ -240,7 +242,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));    
 		DATAUnbiaseff_Fill(ntupla2,i);
 		DATApreSeleff_Fill(ntupla2,i,Zona);
-		//DVSMCpreSeleff_D_Fill(ntupla2,i,Zona);
+		DVSMCPreSeleff_D_Fill(ntupla2,i,Zona);
 		//DVSMCTrackeff_D_Fill(ntupla0,i);		
 	}
         if(INDX==0||INDX==1){
@@ -292,7 +294,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		DATAUnbiaseff_Write();
 		DeutonsMC_Write();
 		DeutonsMC_Dist_Write();
-		//DVSMCpreSeleff_Write();
+		DVSMCPreSeleff_Write();
 		DVSMCQualeff2_Write();
 		//DVSMCTrackeff_Write();
 		MCMC_Write();

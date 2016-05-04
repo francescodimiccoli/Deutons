@@ -395,7 +395,7 @@ int main(int argc, char * argv[]){
 
 			Cutmask=CUTMASK;
                         Cutmask=CUTMASK|(1<<10);
-                        Cutmask = Cutmask|(RICHmask_new<<10);
+                        Cutmask = Cutmask|(RICHmask_new<<11);
 
                 	EdepTrack=0;
                 	EdepTOFU=((*Endep)[0]+(*Endep)[1])/2;

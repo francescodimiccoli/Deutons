@@ -91,22 +91,16 @@ public:
 	void Eval_Corrected_DataEff();
 	void Eval_DandMC_Eff();
 	void Eval_Corrections();	
-
-	TH1 * GetCorrection_R(int mc_type = -1){ 
-		if(mc_type == -1) return Correction_R; else return (TH1F*)(((TH2*)Correction_R  )->ProjectionX("R DvsMC corr."  ,mc_type,mc_type))->Clone();
-		};
 	
-	TH1 * GetCorrection_TOF(int mc_type = -1){ 
-		if(mc_type == -1) return Correction_TOF; else return (TH1F*)(((TH2*)Correction_TOF)->ProjectionX("TOF DvsMC corr.",mc_type,mc_type))->Clone();
-		};
+	TH1 * GetCorrection_R()  { return Correction_R  ;};
 	
-	TH1 * GetCorrection_NaF(int mc_type = -1){ 
-		if(mc_type == -1) return Correction_NaF; else return (TH1F*)(((TH2*)Correction_NaF)->ProjectionX("NaF DvsMC corr.",mc_type,mc_type))->Clone();
-		};
+	TH1 * GetCorrection_TOF(){ return Correction_TOF;};
 	
-	TH1 * GetCorrection_Agl(int mc_type = -1){ 
-		if(mc_type == -1) return Correction_Agl; else return (TH1F*)(((TH2*)Correction_Agl)->ProjectionX("Agl DvsMC corr.",mc_type,mc_type))->Clone();		      };
+	TH1 * GetCorrection_NaF(){ return Correction_NaF;};
+	
+	TH1 * GetCorrection_Agl(){ return Correction_Agl;}; 
 };
+
 
 void DatavsMC::Write(){
 	MCEff 	-> Write();

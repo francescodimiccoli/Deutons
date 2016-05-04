@@ -170,7 +170,7 @@ void FillBinMGen(TH3* h, int bin, int S) {
  *  @return int       : the bin number of var in array
  */
 int GetArrayBin(float var, float* arr, int nbins) {
-	for (int ib=0; ib<nbins-1; ib++)  {
+	for (int ib=0; ib<nbins; ib++)  {
 		if(var>arr[ib] && var<=arr[ib+1])
 		return ib;
 	}

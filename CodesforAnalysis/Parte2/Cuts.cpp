@@ -1,3 +1,27 @@
+void Cuts_Pre(){
+	/////////////////////Control sample cuts//////////////////////
+	
+	//Helium rej. cut
+	float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
+        Herejcut=false;
+        if(fabs(EdepTrackbeta->Eval(Beta_pre)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta_pre),2)*etrack->Eval(Beta_pre))<4||fabs(EdepTOFbeta->Eval(Beta_pre)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Beta_pre),2)*etofu->Eval(Beta_pre))<10)
+        Herejcut=true;
+
+	//Strong beta cut
+	Betastrongcut = false;
+        if(     (((((int)Cutmask)>>11)==512)&&BetaRICH<0.97 )
+              ||(((((int)Cutmask)>>11)== 0 )&&BetaRICH<0.985)
+              ||((!((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0))&& Beta_pre < 0.8)
+          )
+        Betastrongcut = true;
+
+	return;
+}
+
+
+
+
+
 void Cuts(){
 	/////////////////////Analysis cuts//////////////////////////
 	
@@ -27,6 +51,8 @@ void Cuts(){
 	      ||((!((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0))&& Beta < 0.8)
 	  ) 	
 	Betastrongcut = true;
+
+	return;
 }
 
 

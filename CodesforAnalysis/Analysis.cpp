@@ -31,10 +31,12 @@
 #include "Parte2/DeutonsCountsExtraction_Dist.cpp"
 #include "Parte2/MCMC.cpp"
 #include "Parte2/DVSMCQualeff.cpp"
-#include "FillIstogram.cpp"
 #include "Parte2/DeutonsFlux.cpp"
-/*#include "Parte2/DVSMCpreSeleff.cpp"
-#include "Parte2/DVSMCTrackeff.cpp"*/
+#include "Parte2/DVSMCPreSeleff.cpp"
+//#include "Parte2/DVSMCTrackeff.cpp"*/
+
+#include "FillIstogram.cpp"
+
 
 using namespace std;
 
@@ -240,14 +242,12 @@ int main(int argc, char * argv[])
 		DATAQualeff(file1);
 		if(frac=="tot") DeutonsTemplFits();
 		if(frac=="tot") DeutonsTemplFits_Dist();
-		/*DVSMCpreSeleff(file1);
-		  DeutonFlux(file1);
-		  DeutonFlux_Dist(file1);*/
 	}
 	cout<<"************************* RESULTS  **************************************************************"<<endl;
 	
 	if(INDX==2){	
 		CorrLAT();
+		DVSMCPreSeleff();
 		DVSMCQualeff2();
 		Acceptance();
 		ProtonFlux();
