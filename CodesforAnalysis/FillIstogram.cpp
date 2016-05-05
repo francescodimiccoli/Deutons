@@ -163,6 +163,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		Correlazione_Preselezioni(ntupla0,i);
 		FluxFactorizationtest_Pre_Fill(ntupla0,i);
 		DVSMCPreSeleff_Fill(ntupla0,i);
+		DVSMCPreSeleffD_Fill(ntupla0,i);
 		//DVSMCTrackeff_Fill(ntupla0,i);*/
 	}
 	if(INDX==0||INDX==1){
@@ -244,6 +245,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		DATAUnbiaseff_Fill(ntupla2,i);
 		DATApreSeleff_Fill(ntupla2,i,Zona);
 		DVSMCPreSeleff_D_Fill(ntupla2,i,Zona);
+		DVSMCPreSeleffD_D_Fill(ntupla2,i,Zona);
 		//DVSMCTrackeff_D_Fill(ntupla0,i);		
 	}
         if(INDX==0||INDX==1){
@@ -297,6 +299,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		DeutonsMC_Write();
 		DeutonsMC_Dist_Write();
 		DVSMCPreSeleff_Write();
+		DVSMCPreSeleffD_Write();
 		DVSMCQualeff2_Write();
 		DVSMCQualeffD_Write();
 		//DVSMCTrackeff_Write();

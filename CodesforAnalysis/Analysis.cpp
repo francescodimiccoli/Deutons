@@ -34,7 +34,9 @@
 #include "Parte2/DVSMCQualeff_D.cpp"
 #include "Parte2/DeutonsFlux.cpp"
 #include "Parte2/DVSMCPreSeleff.cpp"
+#include "Parte2/DVSMCPreSeleff_D.cpp"
 //#include "Parte2/DVSMCTrackeff.cpp"*/
+
 
 #include "FillIstogram.cpp"
 
@@ -249,6 +251,7 @@ int main(int argc, char * argv[])
 	if(INDX==2){	
 		CorrLAT();
 		DVSMCPreSeleff();
+		DVSMCPreSeleffD();
 		DVSMCQualeff2();
 		DVSMCQualeffD();
 		Acceptance();
