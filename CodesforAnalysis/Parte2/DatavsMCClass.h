@@ -170,8 +170,11 @@ TH1 * DivideHisto(TH1 *Histo1, TH1 *Histo2){
 		result = (TH2F *)Histo2 -> Clone();
 		for(int S = 0; S<Histo2->GetNbinsY();S++)
 			for(int R=0;R<Histo1->GetNbinsX();R++){
-			result -> SetBinContent (R+1,S+1,Histo1->GetBinContent(R+1)/Histo2->GetBinContent(R+1,S+1));
-			}
+			if(Histo2->GetBinContent(R+1,S+1)>0){
+				result -> SetBinContent (R+1,S+1,Histo1->GetBinContent(R+1)/Histo2->GetBinContent(R+1,S+1));
+				}
+			else result -> SetBinContent (R+1,S+1,0);	
+		}
 	}
 	return result;
 }
