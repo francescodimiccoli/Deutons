@@ -17,22 +17,22 @@ void DVSMCPreSeleffD_D_Fill(TNtuple *ntupla, int l,int zona){
 		//ToF
 		Kbin=GetArrayBin(Var, BetaD, nbinsToF);	
 		if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeTOF) -> Fill(Kbin,zona,S);
-                if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterTOF ) -> Fill(Kbin,zona,S);
+		if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterTOF ) -> Fill(Kbin,zona,S);
 		//NaF
 		if(((int)Cutmask)>>11==512) {	
 			Kbin=GetArrayBin(Var2, BetaNaFD, nbinsNaF);
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeNaF) -> Fill(Kbin,zona,S);
-                	if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterNaF ) -> Fill(Kbin,zona,S);
+			if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterNaF ) -> Fill(Kbin,zona,S);
 		}
 		//Agl
 		if(((int)Cutmask)>>11==0) {
 			Kbin=GetArrayBin(Var2, BetaAglD, nbinsAgl);
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeAgl) -> Fill(Kbin,zona,S);
-                	if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterAgl ) -> Fill(Kbin,zona,S);
+			if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterAgl ) -> Fill(Kbin,zona,S);
 		}
 	}
 	return;
-	
+
 }
 void DVSMCPreSeleffD_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
@@ -90,9 +90,9 @@ void DVSMCPreSeleffD(){
 	cout<<"******* Data vs MC:  PRESELECTIONS ********"<<endl;
 
 	PreSel_DvsMC_D -> Assign_LatCorr( LATpreSelDATA   ->  LATcorrR_fit , 
-					  LATpreSelDATA   ->  LATcorrR_fit ,
-					  LATpreSelDATA   ->  LATcorrR_fit ,
-					  LATpreSelDATA   ->  LATcorrR_fit );
+			LATpreSelDATA   ->  LATcorrR_fit ,
+			LATpreSelDATA   ->  LATcorrR_fit ,
+			LATpreSelDATA   ->  LATcorrR_fit );
 
 
 	PreSel_DvsMC_D ->Eval_DandMC_Eff();  
@@ -121,16 +121,18 @@ void DVSMCPreSeleffD(){
 	file1->Close();
 
 	string tagli[3]={"Matching TOF","Chi^2 R","1 Tr. Track"};
-        string nome;
+	string nome;
 
 	TCanvas *c21_D[3];
-	
-	
+
+
 	int j=0;
 	TGraphErrors * PreSelD_Correction_TOF_Graph[3][6];
-        TGraphErrors * PreSelD_Correction_NaF_Graph[3][6];
-        TGraphErrors * PreSelD_Correction_Agl_Graph[3][6];
-	
+	TGraphErrors * PreSelD_Correction_NaF_Graph[3][6];
+	TGraphErrors * PreSelD_Correction_Agl_Graph[3][6];
+
+	string MCLegend[6]= {"d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
+
 	for(int S=0;S<3;S++){
 
 		c21_D[S] = new TCanvas(("Deutons Data vs MC: "+tagli[S] +"(Beta Bins)").c_str());
@@ -196,11 +198,17 @@ void DVSMCPreSeleffD(){
 
 		}
 
-		PreSelD_Correction_NaF_Graph[S][0]->Draw("AP4C");
-		for(int mc_type=1;mc_type<6;mc_type++){
-			PreSelD_Correction_NaF_Graph[S][mc_type]->Draw("P4Csame");
+		{
+			TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+			leg->AddEntry(PreSelD_Correction_NaF_Graph[S][0],MCLegend[0].c_str(), "ep");
+			PreSelD_Correction_NaF_Graph[S][0]->Draw("AP4C");
+			for(int mc_type=1;mc_type<6;mc_type++) { PreSelD_Correction_NaF_Graph[S][mc_type]->Draw("P4Csame");
+				leg->AddEntry(PreSelD_Correction_NaF_Graph[S][mc_type],MCLegend[mc_type].c_str(), "ep");
+			}
 
+			leg->Draw("same");
 		}
+
 
 		c21_D[S]->cd(3);
 		gPad->SetLogx();
@@ -233,13 +241,13 @@ void DVSMCPreSeleffD(){
 		for(int mc_type=1;mc_type<6;mc_type++){
 			PreSelD_Correction_Agl_Graph[S][mc_type]->Draw("P4Csame");
 		}
-	
+
 	}
 
-	
 
 
-	
+
+
 	cout<<"*** Updating Results file ***"<<endl;
 	nomefile="./Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");

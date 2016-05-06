@@ -205,12 +205,10 @@ void DVSMCQualeffD(){
 		LikDVSMC_D_GraphTOF[mc_type]=new TGraphErrors();
 		j=0;
 		for(int i=1;i<nbinsToF;i++) {
-				cout<<LikD_Correction_TOF -> GetBinContent(i+1,mc_type+1)<<" ";
 				LikDVSMC_D_GraphTOF[mc_type]->SetPoint(j,Ekincent[i],LikD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
 				LikDVSMC_D_GraphTOF[mc_type]->SetPointError(j,0,LikD_Correction_TOF -> GetBinError(i+1,mc_type+1));
 				j++;
 		}
-		cout<<endl;
 		LikDVSMC_D_GraphTOF[mc_type]->SetLineColor(4);
 		LikDVSMC_D_GraphTOF[mc_type]->SetFillColor(4);
 		LikDVSMC_D_GraphTOF[mc_type]->SetFillStyle(3001);
@@ -290,12 +288,10 @@ void DVSMCQualeffD(){
                 DistDVSMC_D_GraphTOF[mc_type]=new TGraphErrors();
                 j=0;
                 for(int i=1;i<nbinsToF;i++) {
-                                cout<<DistD_Correction_TOF -> GetBinContent(i+1,mc_type+1)<<" ";
                                 DistDVSMC_D_GraphTOF[mc_type]->SetPoint(j,Ekincent[i],DistD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
                                 DistDVSMC_D_GraphTOF[mc_type]->SetPointError(j,0,DistD_Correction_TOF -> GetBinError(i+1,mc_type+1));
                                 j++;
                 }
-                cout<<endl;
                 DistDVSMC_D_GraphTOF[mc_type]->SetLineColor(4);
                 DistDVSMC_D_GraphTOF[mc_type]->SetFillColor(4);
                 DistDVSMC_D_GraphTOF[mc_type]->SetFillStyle(3001);
@@ -345,19 +341,16 @@ void DVSMCQualeffD(){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraphErrors * DistDVSMC_D_GraphAgl[6];
-        cout<<endl;
 	for(int mc_type=0;mc_type<6;mc_type++){
                 DistDVSMC_D_GraphAgl[mc_type]=new TGraphErrors();
                 j=0;
                 for(int i=1;i<nbinsToF;i++) {
                         if(DistD_Correction_Agl -> GetBinContent(i+1,mc_type+1)>0){
-                                cout<<DistD_Correction_Agl -> GetBinContent(i+1,mc_type+1)<<" ";
 				DistDVSMC_D_GraphAgl[mc_type]->SetPoint(j,EkincentAgl[i],DistD_Correction_Agl -> GetBinContent(i+1,mc_type+1));
                                 DistDVSMC_D_GraphAgl[mc_type]->SetPointError(j,0,DistD_Correction_Agl -> GetBinError(i+1,mc_type+1));
                                 j++;
                         }
                 }
-                cout<<endl;
 		DistDVSMC_D_GraphAgl[mc_type]->SetLineColor(4);
                 DistDVSMC_D_GraphAgl[mc_type]->SetFillColor(4);
                 DistDVSMC_D_GraphAgl[mc_type]->SetFillStyle(3001);
