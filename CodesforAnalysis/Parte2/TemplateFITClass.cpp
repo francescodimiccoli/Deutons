@@ -25,9 +25,9 @@ void TemplateFIT::SetFitConstraints(float LowP, float HighP, float LowD, float H
 	lowP   = LowP	;
 	highP  = HighP	;
 	lowD   = LowD	;
-        highD  = HighD	;
+	highD  = HighD	;
 	lowHe  = LowHe	;
-        highHe = HighHe	;
+	highHe = HighHe	;
 	return;
 }
 
@@ -37,25 +37,28 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat){
 	Tpl -> Add( Fit ->  Templ_P );
 	Tpl -> Add( Fit ->  Templ_D );
 	Tpl -> Add( Fit ->  Templ_He);
-	if(Fit -> Data -> Integral() > 500){
-		Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
-		
-		if(TemplateFITenabled){
-			Fit -> Tfit -> Constrain(0, lowP ,highP );
-                	Fit -> Tfit -> Constrain(1, lowD ,highD );
-                	Fit -> Tfit -> Constrain(2, lowHe,highHe);
-			//Fit -> Tfit -> SetRangeX(0,70);
-			Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
-			}
-		else	{
-			Fit -> Tfit_outcome = 1;
-			}
-	}
-	else{
+	if(!TemplateFITenabled){
 		Fit -> Tfit = 0;
-		Fit -> Tfit_outcome = 2;
+		Fit -> Tfit_outcome = 1;
+	}	
+	else{
+		if(Fit -> Data -> Integral() > 500){
+			Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
+
+			Fit -> Tfit -> Constrain(0, lowP ,highP );
+			Fit -> Tfit -> Constrain(1, lowD ,highD );
+			Fit -> Tfit -> Constrain(2, lowHe,highHe);
+			Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
+		}
+		else{
+			Fit -> Tfit = 0;
+			Fit -> Tfit_outcome = 2;
+		}
 	}
 	fits[lat].push_back(Fit);
+	fits[lat][fits[lat].size()-1]->wheightP =GetFitWheights(0,fits[lat].size()-1,lat);
+	fits[lat][fits[lat].size()-1]->wheightD =GetFitWheights(1,fits[lat].size()-1,lat);
+	fits[lat][fits[lat].size()-1]->wheightHe=GetFitWheights(2,fits[lat].size()-1,lat);
 
 	return;
 }
@@ -94,7 +97,7 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat){
 					-2*Cov12*w2*w3)/2,0.5);
 
 		double Err = Sigma;//pow((Sigma/w2,2) + pow(Sigma/w1,2),0.5); //Fit relative error
-	
+
 		TH1F * ResultPlot;  
 		if(par == 0)	ResultPlot = GetResult_P (bin,lat);	
 		if(par == 1)    ResultPlot = GetResult_D (bin,lat);
@@ -105,7 +108,6 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat){
 }
 
 void TemplateFIT::TemplateFits(int mc_type){
-
 	int loops = 1;
 	if(Geomag) loops = DATA -> GetNbinsZ();
 	for(int lat = 0; lat < loops ; lat ++)
@@ -116,9 +118,8 @@ void TemplateFIT::TemplateFits(int mc_type){
 			Fit->Templ_He=  (TH1F *)TemplateFIT::Extract_Bin  (TemplateHe,bin);
 			if(Geomag) Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin, lat);
 			else 	   Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin);
-			
+
 			TemplateFIT::Do_TemplateFIT(Fit,lat);
-			
 			TH1F * ResultPlot_P  = GetResult_P (bin,lat);		
 			TH1F * ResultPlot_D  = GetResult_D (bin,lat);
 			TH1F * ResultPlot_He = GetResult_He(bin,lat);
@@ -137,7 +138,6 @@ void TemplateFIT::TemplateFits(int mc_type){
 				DCounts -> SetBinError(bin+1,lat+1,GetFitErrors(1,bin,lat));
 			}
 		}
-
 	return;
 }
 
@@ -147,37 +147,43 @@ void TemplateFIT::TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,
 	gPad-> SetLogy();
 	gPad-> SetGridx();
 	gPad-> SetGridy();
-	THStack *Stack=new THStack("","");
+	THStack *Stack=new THStack((var_name + "_" + to_string(lat) + "_" + to_string(bin)).c_str(),(var_name + "_" + to_string(lat) + "_" + to_string(bin)).c_str());
 
 	TH1F *PMC  = GetResult_P   (bin,lat);
 	TH1F *DMC  = GetResult_D   (bin,lat);
 	TH1F *HeMC = GetResult_He  (bin,lat);
 	TH1F *Data = GetResult_Data(bin,lat);
 	TH1F * Result = NULL;
-	
 	if(GetFitOutcome(bin,lat)==0) { Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();	
-				        Result ->SetLineColor(5);
-					Result ->SetLineWidth(2);
-				      }
+		Result ->SetLineColor(5);
+		Result ->SetLineWidth(2);
+	}
 	PMC -> SetFillColor(2);
 	DMC -> SetFillColor(4);
 	HeMC-> SetFillColor(3);
 	Data->SetMarkerStyle(8);
-
-	
-	if(fits[lat][bin]->Tfit_outcome!=0){
+	if(GetFitOutcome(bin,lat)!=0){
 		PMC -> SetFillStyle(3001);
 		DMC -> SetFillStyle(3001);
 		HeMC-> SetFillStyle(3001);
 	}
-	Stack->Add(PMC);
-	Stack->Add(DMC);
-	Stack->Add(HeMC);
-	Stack->Draw();
-	Stack-> SetTitle(("Template Fit bin " + to_string(bin)).c_str());	
-	Stack-> GetXaxis()->SetTitle(var_name.c_str());
-	Stack-> GetYaxis()->SetTitle("Counts");
-	Data->Draw("epsame");
-	if(Result) Result->Draw("same");	
-
+	if(TemplateFITenabled){
+		if(GetFitOutcome(bin,lat)==0){
+			Stack->Add(PMC);
+			Stack->Add(DMC);
+			Stack->Add(HeMC);
+			Stack->Draw();
+			Stack-> SetTitle(("Template Fit bin " + to_string(bin)).c_str());     
+			Stack-> GetXaxis()->SetTitle(var_name.c_str());
+			Stack-> GetYaxis()->SetTitle("Counts");
+			Data->Draw("epsame");
+		}
+		if(GetFitOutcome(bin,lat)!=0){
+			PMC ->Draw();
+			DMC ->Draw("same");
+			HeMC->Draw("same");
+			Data->Draw("epsame");
+		}
+	}
+	return;
 }

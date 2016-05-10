@@ -229,15 +229,17 @@ int main(int argc, char * argv[])
 
 	cout<<"************************* ANALYSIS **********************************************************************"<<endl;
 	if(INDX==2){
-		MCpreeff(file1);
-		MCUnbiaseff(file1);
 		Hecut(file1);
-		SlidesforPlot(file1);
+                SlidesforPlot(file1);
+		DistanceCut(file1);
+		Correlazione_Preselezioni(file1);
+		
+		MCpreeff(file1);
+                MCUnbiaseff(file1);		
 		MCQualeff(file1);
 		FluxFactorizationtest(file1);
 		MCTrackeff(file1);
 		MCFullseteff(file1);
-		Correlazione_Preselezioni(file1);
 		MigrationMatrix(file1);
 		DATAUnbiaseff(file1);
 		DATApreSeleff(file1);
