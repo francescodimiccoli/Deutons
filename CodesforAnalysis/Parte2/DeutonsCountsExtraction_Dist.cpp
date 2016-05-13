@@ -142,8 +142,8 @@ void DeutonsTemplFits_Dist(){
 	cout<<"******************** DEUTONS DISTANCE TEMPlATE FITS ************************"<<endl;
 
 	FitTOF_Dbins_Dist 	-> SetFitConstraints(0.5,1,0.0001,0.1,0.00001,0.01); 
-	FitNaF_Dbins_Dist 	-> DisableFit();
-	FitAgl_Dbins_Dist 	-> DisableFit();
+	FitNaF_Dbins_Dist 	-> DisableFit();//SetFitConstraints(0.5,1,0.0001,0.1,0.00001,0.01);
+	FitAgl_Dbins_Dist 	-> SetFitConstraints(0.5,1,0.0001,0.1,0.00001,0.01);
                                 
 	FitTOFgeo_Dbins_Dist 	-> DisableFit();
 	FitNaFgeo_Dbins_Dist 	-> DisableFit();
@@ -164,6 +164,20 @@ void DeutonsTemplFits_Dist(){
 	FitTOF_Pbins_Dist 	-> TemplateFits();
 	FitNaF_Pbins_Dist 	-> TemplateFits();
 	FitAgl_Pbins_Dist 	-> TemplateFits();
+
+	cout<<"***** TemplateFits Outcome (Dist) ******"<<endl;
+        cout<<"** TOF **"<<endl;
+        for(int bin =0; bin <nbinsToF;bin++)
+                cout<<FitTOF_Dbins_Dist->GetFitOutcome(bin)<<" ";
+        cout<<endl;
+	cout<<"** NaF **"<<endl;
+        for(int bin =0; bin <nbinsNaF;bin++)
+                cout<<FitNaF_Dbins_Dist->GetFitOutcome(bin)<<" ";
+        cout<<endl;
+	cout<<"** Agl **"<<endl;
+        for(int bin =0; bin <nbinsAgl;bin++)
+                cout<<FitAgl_Dbins_Dist->GetFitOutcome(bin)<<" ";
+        cout<<endl;
 
 	cout<<"*** Updating P1 file ****"<<endl;
 

@@ -101,9 +101,6 @@ void SlidesforPlot_Fill(TNtuple *ntupla, int l){
                                 	if(Betastrongcut&&(((int)Cutmask)>>11)==512) MassNaF_PQ->Fill((R/BetaRICH)*pow(1-pow(BetaRICH,2),0.5));
                                 	if(Betastrongcut&&(((int)Cutmask)>>11)==0) MassAgl_PQ->Fill((R/BetaRICH)*pow(1-pow(BetaRICH,2),0.5));
 					}
-				if(Betastrongcut&&BetaRICH<0&&(R/Beta)*pow(1-pow(Beta,2),0.5)>2) LikvsDistTOF_P->Fill(-log(1-LDiscriminant),(Dist5D_P+Dist5D)/(Dist5D_P+Dist5D));
-				if(Betastrongcut&&(((int)Cutmask)>>11)==512&&(R/BetaRICH)*pow(1-pow(BetaRICH,2),0.5)>2) LikvsDistNaF_P->Fill(-log(1-LDiscriminant),(Dist5D_P+Dist5D)/(Dist5D_P+Dist5D)); 
-				if(Betastrongcut&&(((int)Cutmask)>>11)==0&&(R/BetaRICH)*pow(1-pow(BetaRICH,2),0.5)>2) LikvsDistAgl_P->Fill(-log(1-LDiscriminant),(Dist5D_P+Dist5D)/(Dist5D_P+Dist5D));
 				if(Betastrongcut&&BetaRICH<0&&(R/Beta)*pow(1-pow(Beta,2),0.5)>2)
 					sigmagen_bad->Fill(fabs(R-Momento_gen)/(pow(Momento_gen,2)*Rig->Eval(Momento_gen)),fabs(Beta-Betagen)/(pow(Beta,2)*beta->Eval(Beta)));
 				}
@@ -119,9 +116,6 @@ void SlidesforPlot_Fill(TNtuple *ntupla, int l){
                                         if(Betastrongcut&&(((int)Cutmask)>>11)==512) MassNaF_DQ->Fill((R/BetaRICH)*pow(1-pow(BetaRICH,2),0.5));
                                         if(Betastrongcut&&(((int)Cutmask)>>11)==0) MassAgl_DQ->Fill((R/BetaRICH)*pow(1-pow(BetaRICH,2),0.5));
                                         }
-				if(Betastrongcut&&BetaRICH<0&&(R/Beta)*pow(1-pow(Beta,2),0.5)>2) LikvsDistTOF_D->Fill(-log(1-LDiscriminant),(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D)); 
-                                if(Betastrongcut&&(((int)Cutmask)>>11)==512&&(R/BetaRICH)*pow(1-pow(BetaRICH,2),0.5)>2) LikvsDistNaF_D->Fill(-log(1-LDiscriminant),(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
-                                if(Betastrongcut&&(((int)Cutmask)>>11)==0&&(R/BetaRICH)*pow(1-pow(BetaRICH,2),0.5)>2) LikvsDistAgl_D->Fill(-log(1-LDiscriminant),(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
 				}
                 if(Massa_gen<4.5&&Massa_gen>2.5){
                                 if(BetaRICH<0) RvsBetaTOF_He->Fill(R,Beta);
@@ -237,12 +231,6 @@ MassAgl->Write();
 MassTOFQ->Write();
 MassNaFQ->Write();
 MassAglQ->Write();
-LikvsDistTOF_P->Write();
-LikvsDistNaF_P->Write();
-LikvsDistAgl_P->Write();
-LikvsDistTOF_D->Write();
-LikvsDistNaF_D->Write();
-LikvsDistAgl_D->Write();
 DistTOF_P->Write();
 DistNaF_P->Write();
 DistAgl_P->Write();
@@ -358,9 +346,6 @@ TCanvas *p18=new TCanvas("Distance discr. Agl MC");
 TCanvas *p19=new TCanvas("DistvsR  TOF MC");
 TCanvas *p20=new TCanvas("DistvsR  NaF MC");
 TCanvas *p21=new TCanvas("DistvsR  Agl MC");
-TCanvas *p22=new TCanvas("DistvsLik  TOF MC");
-TCanvas *p23=new TCanvas("DistvsLik  NaF MC");
-TCanvas *p24=new TCanvas("DistvsLik  Agl MC");
 
 
 
@@ -848,57 +833,6 @@ RvsDistAgl_D->Draw();
 RvsDistAgl_P->Draw("same");
 
 
-cout<<"******************* Lik vs Dist plots ******************"<<endl;
-
-p22->cd();
-gPad->SetGridx();
-gPad->SetGridy();
-gPad->SetLogy();
-LikvsDistTOF_P->SetMarkerColor(2);
-LikvsDistTOF_D->SetMarkerColor(4);
-LikvsDistTOF_D->SetTitle("Likelihood discr. vs Distance discr. TOF (MC)");
-LikvsDistTOF_D->GetXaxis()->SetTitle("-log(1-LDiscriminant(TOF))");
-LikvsDistTOF_D->GetYaxis()->SetTitle("Distance discr. TOF");
-LikvsDistTOF_P->SetMarkerStyle(6);
-LikvsDistTOF_D->SetMarkerStyle(6);
-LikvsDistTOF_D->GetYaxis()->SetRangeUser(5,100);
-LikvsDistTOF_D->Draw();
-LikvsDistTOF_P->Draw("same");
-
-p23->cd();
-gPad->SetGridx();
-gPad->SetGridy();
-gPad->SetLogy();
-LikvsDistNaF_P->SetMarkerColor(2);
-LikvsDistNaF_D->SetMarkerColor(4);
-LikvsDistNaF_D->SetTitle("Likelihood discr. vs Distance discr. NaF (MC)");
-LikvsDistNaF_D->GetXaxis()->SetTitle("-log(1-LDiscriminant(NaF))");
-LikvsDistNaF_D->GetYaxis()->SetTitle("Distance discr. NaF");
-LikvsDistNaF_D->GetZaxis()->SetRangeUser(0,100);
-LikvsDistNaF_P->GetZaxis()->SetRangeUser(0,100);
-LikvsDistNaF_D->GetYaxis()->SetRangeUser(5,100);
-LikvsDistNaF_P->SetMarkerStyle(6);
-LikvsDistNaF_D->SetMarkerStyle(6);
-LikvsDistNaF_D->Draw();
-LikvsDistNaF_P->Draw("same");
-
-p24->cd();
-gPad->SetGridx();
-gPad->SetGridy();
-gPad->SetLogy();
-LikvsDistAgl_P->SetMarkerColor(2);
-LikvsDistAgl_D->SetMarkerColor(4);
-LikvsDistAgl_D->SetTitle("Likelihood discr. vs Distance discr. Agl (MC)");
-LikvsDistAgl_D->GetXaxis()->SetTitle("-log(1-LDiscriminant(Agl))");
-LikvsDistAgl_D->GetYaxis()->SetTitle("Distance discr. Agl");
-LikvsDistAgl_D->GetZaxis()->SetRangeUser(0,100);
-LikvsDistAgl_P->GetZaxis()->SetRangeUser(0,100);
-LikvsDistAgl_D->GetYaxis()->SetRangeUser(5,100);
-LikvsDistAgl_P->SetMarkerStyle(6);
-LikvsDistAgl_D->SetMarkerStyle(6);
-LikvsDistAgl_D->Draw();
-LikvsDistAgl_P->Draw("same");
-
 
         cout<<"*** Updating Results file ***"<<endl;
         string nomefile="./Final_plots/"+mese+".root";
@@ -932,9 +866,6 @@ LikvsDistAgl_P->Draw("same");
          p19->Write();
          p20->Write();
          p21->Write();
-         p22->Write();
-         p23->Write();
-         p24->Write();
 	 f_out->Write();
 	 f_out->Close();
 }

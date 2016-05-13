@@ -13,7 +13,6 @@ void DeutonFlux() {
 	TH2F * esposizionepgeoNaF  = (TH2F*)file1->Get(      "esposizionepgeoNaF"    );
 	TH2F * esposizionepgeoAgl  = (TH2F*)file1->Get(      "esposizionepgeoAgl"    );
 
-
 	Flux * D_Flux         = new Flux(file1, "D_Flux"         ,"Results","Corr_AcceptanceD",1);
 	Flux * D_Flux_geo     = new Flux(file1, "D_Flux_geo"     ,"Results","Geomag_AcceptanceD",11);
 
@@ -24,6 +23,28 @@ void DeutonFlux() {
 	Flux * P_Flux_Dist    = new Flux(file1, "P_Flux_Dist"    ,"Results","Corr_AcceptanceP",1);
 
 	cout<<"*************** DEUTONS FLUXES CALCULATION *******************"<<endl;
+	
+	//Evaluation additional Fit Error
+	
+	TH1F * SystR  ;
+        TH1F * SystTOF;
+        TH1F * SystNaF;
+        TH1F * SystAgl;
+	
+	if(D_Flux -> Counts_R  ) SystR   = (TH1F*) D_Flux -> Counts_R   ->Clone();
+	if(D_Flux -> Counts_TOF) SystTOF = (TH1F*) D_Flux -> Counts_TOF ->Clone();	
+	if(D_Flux -> Counts_NaF) SystNaF = (TH1F*) D_Flux -> Counts_NaF ->Clone();
+	if(D_Flux -> Counts_Agl) SystAgl = (TH1F*) D_Flux -> Counts_Agl ->Clone();
+	
+	if(D_Flux -> Counts_R  )SystR   -> Add(	(TH1F*) D_Flux_Dist -> Counts_R  ->Clone()	,-1); 
+        if(D_Flux -> Counts_TOF)SystTOF -> Add(	(TH1F*) D_Flux_Dist -> Counts_TOF->Clone()	,-1);
+        if(D_Flux -> Counts_NaF)SystNaF -> Add(	(TH1F*) D_Flux      -> Counts_NaF->Clone()	,-1);
+        if(D_Flux -> Counts_Agl)SystAgl -> Add(	(TH1F*) D_Flux_Dist -> Counts_Agl->Clone()	,-1);
+
+	D_Flux      -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
+	D_Flux_Dist -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
+
+	//
 
 	D_Flux         -> Set_Exposure_Time (esposizionegeo_R,esposizionedgeoTOF,esposizionedgeoNaF,esposizionedgeoAgl);
 	D_Flux_geo     -> Set_Exposure_Time (Tempi);

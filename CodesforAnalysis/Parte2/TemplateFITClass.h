@@ -154,6 +154,8 @@ class TemplateFIT
 
 		double GetFitWheights(int par, int bin,int lat=0);
 
+		double GetFitFraction(int par, int bin,int lat=0);
+
 		double GetFitErrors(int par,int bin,int lat=0);
 
 		TH1F * GetResult_P (int bin, int lat=0) {TH1F * res = (TH1F*)fits[lat][bin]->Templ_P ->Clone(); res -> Scale(fits[lat][bin]->wheightP); return res;};

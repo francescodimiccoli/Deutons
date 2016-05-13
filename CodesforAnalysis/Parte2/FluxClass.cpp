@@ -77,6 +77,7 @@ class Flux
       void Set_Exposure_Time(TH1 * Tempi );
       TH1 * ExtractParticularMC_cs(TH1 * Histo, int lat_zones=1 ,int mc_type=0);
       void Set_DeltaE(int n,bool deutons=1);
+      void Add_SystFitError(int n, TH1* syst_errR,TH1* syst_errTOF,TH1* syst_errNaF,TH1* syst_errAgl);
       void Eval_Flux(int n,bool deutons=1,int mc_type=0);
 };
 
@@ -190,6 +191,13 @@ void Flux::Set_DeltaE(int n,bool deutons) {
 
    }
 }
+void Flux::Add_SystFitError(int n, TH1* syst_errR,TH1* syst_errTOF,TH1* syst_errNaF,TH1* syst_errAgl){
+		if(Counts_R  ) for(int R = 0; R < Counts_R  ->GetNbinsX();R++) Counts_R  -> SetBinError(R+1,Counts_R  -> GetBinError(R+1)+fabs(syst_errR->GetBinContent(R+1)) ) ;	
+		if(Counts_TOF) for(int R = 0; R < Counts_TOF  ->GetNbinsX();R++) Counts_TOF  -> SetBinError(R+1,Counts_TOF  -> GetBinError(R+1)+fabs(syst_errTOF->GetBinContent(R+1)) ) ;		
+		if(Counts_NaF) for(int R = 0; R < Counts_NaF  ->GetNbinsX();R++) Counts_NaF  -> SetBinError(R+1,Counts_NaF  -> GetBinError(R+1)+fabs(syst_errNaF->GetBinContent(R+1)) ) ;
+		if(Counts_Agl) for(int R = 0; R < Counts_Agl  ->GetNbinsX();R++) Counts_Agl  -> SetBinError(R+1,Counts_Agl  -> GetBinError(R+1)+fabs(syst_errAgl->GetBinContent(R+1)) ) ;
+}
+
 
 void Flux::Eval_Flux(int n,bool deutons,int mc_type) {
 	Flux::Set_DeltaE(n,deutons);

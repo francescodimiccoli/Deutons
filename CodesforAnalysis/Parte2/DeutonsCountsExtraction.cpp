@@ -145,9 +145,9 @@ void DeutonsTemplFits(){
 
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
-	FitTOF_Dbins 	-> SetFitConstraints(0.5,1,0.005,0.03,0.0,0.005); 
-	FitNaF_Dbins 	-> DisableFit();
-	FitAgl_Dbins 	-> DisableFit();
+	FitTOF_Dbins 	-> SetFitConstraints(0.8,1,0.00,0.1,0.0,0.005); 
+	FitNaF_Dbins 	-> SetFitConstraints(0.8,1,0.00,0.1,0.0,0.005);
+	FitAgl_Dbins 	-> SetFitConstraints(0.8,1,0.00,0.1,0.0,0.005);
 
 	FitTOFgeo_Dbins -> DisableFit();
 	FitNaFgeo_Dbins -> DisableFit();
@@ -169,6 +169,20 @@ void DeutonsTemplFits(){
 	FitTOF_Pbins 	-> TemplateFits();
 	FitNaF_Pbins 	-> TemplateFits();
 	FitAgl_Pbins 	-> TemplateFits();
+
+	cout<<"***** TemplateFits Outcome (Mass) ******"<<endl;
+	cout<<"** TOF **"<<endl; 
+	for(int bin =0; bin <nbinsToF;bin++)
+		cout<<FitTOF_Dbins->GetFitOutcome(bin)<<" ";
+	cout<<endl;
+	cout<<"** NaF **"<<endl;
+        for(int bin =0; bin <nbinsToF;bin++)
+                cout<<FitNaF_Dbins->GetFitOutcome(bin)<<" ";
+        cout<<endl;
+	cout<<"** Agl **"<<endl;
+        for(int bin =0; bin <nbinsToF;bin++)
+                cout<<FitAgl_Dbins->GetFitOutcome(bin)<<" ";
+        cout<<endl;
 
 	cout<<"*** Updating P1 file ****"<<endl;
 

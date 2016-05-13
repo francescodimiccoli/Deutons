@@ -31,6 +31,8 @@ void TemplateFIT::SetFitConstraints(float LowP, float HighP, float LowD, float H
 	return;
 }
 
+
+
 void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat){
 	TObjArray *Tpl;
 	Tpl = new TObjArray(3);
@@ -49,6 +51,15 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat){
 			Fit -> Tfit -> Constrain(1, lowD ,highD );
 			Fit -> Tfit -> Constrain(2, lowHe,highHe);
 			Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
+			for(int fit_attempt=0;fit_attempt<20;fit_attempt++){
+				if(Fit -> Tfit_outcome == 0) break;
+				else{
+					Fit -> Tfit -> Constrain(0, lowP+(float)fit_attempt/100 ,highP );
+					Fit -> Tfit -> Constrain(1, lowD-(float)fit_attempt/100 ,highD-fit_attempt/100 );
+					Fit -> Tfit -> Constrain(2, lowHe,highHe); 
+					Fit -> Tfit_outcome = Fit -> Tfit -> Fit();				
+				}
+			}	
 		}
 		else{
 			Fit -> Tfit = 0;
@@ -76,6 +87,21 @@ double TemplateFIT::GetFitWheights(int par, int bin,int lat){
 		if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral();
 		return w1*itot/i1; 
 	}	
+}
+
+double TemplateFIT::GetFitFraction(int par, int bin,int lat){
+        if(GetFitOutcome(bin,lat)!=0)   return  1;
+        if(GetFitOutcome(bin,lat)==0){
+                double w1,e1 = 0;
+                fits[lat][bin]-> Tfit ->GetResult(par,w1,e1);
+                TH1F * Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();
+                float itot= Result->Integral();
+                float i1;
+                if(par == 0) i1 = fits[lat][bin]-> Templ_P  ->Integral();
+                if(par == 1) i1 = fits[lat][bin]-> Templ_D  ->Integral();
+                if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral();
+                return w1;
+        }
 }
 
 double TemplateFIT::GetFitErrors(int par,int bin,int lat){
@@ -123,17 +149,18 @@ void TemplateFIT::TemplateFits(int mc_type){
 			TH1F * ResultPlot_P  = GetResult_P (bin,lat);		
 			TH1F * ResultPlot_D  = GetResult_D (bin,lat);
 			TH1F * ResultPlot_He = GetResult_He(bin,lat);
+			TH1F * Data          = GetResult_Data(bin,lat);
 
 			if(!Geomag){
-				PCounts -> SetBinContent(bin+1,ResultPlot_P->Integral());
-				DCounts -> SetBinContent(bin+1,ResultPlot_D->Integral());
+				PCounts -> SetBinContent(bin+1,Data->Integral()*GetFitFraction(0,bin));
+				DCounts -> SetBinContent(bin+1,Data->Integral()*GetFitFraction(1,bin));
 				PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
 				DCounts -> SetBinError(bin+1,GetFitErrors(1,bin));
 			}
 
 			if(Geomag){
-				PCounts -> SetBinContent(bin+1,lat+1,ResultPlot_P->Integral());
-				DCounts -> SetBinContent(bin+1,lat+1,ResultPlot_D->Integral());
+				PCounts -> SetBinContent(bin+1,lat+1,Data->Integral()*GetFitFraction(0,bin,lat));
+				DCounts -> SetBinContent(bin+1,lat+1,Data->Integral()*GetFitFraction(1,bin,lat));
 				PCounts -> SetBinError(bin+1,lat+1,GetFitErrors(0,bin,lat));
 				DCounts -> SetBinError(bin+1,lat+1,GetFitErrors(1,bin,lat));
 			}
@@ -177,6 +204,7 @@ void TemplateFIT::TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,
 			Stack-> GetXaxis()->SetTitle(var_name.c_str());
 			Stack-> GetYaxis()->SetTitle("Counts");
 			Data->Draw("epsame");
+			Result->Draw("same");
 		}
 		if(GetFitOutcome(bin,lat)!=0){
 			PMC ->Draw();
