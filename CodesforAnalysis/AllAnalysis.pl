@@ -29,7 +29,7 @@ print OUT "};\n";
 for($i=0;$i<$num_Rootuple;$i++) {
 	system("rm ./Final_plots/$Rootuple[$i].root");
 	print "Analyzing ".$Rootuple[$i]."...\n";
-	system("./Analysis $Rootuple[$i] 2 tot");
+	system("./Analysis $Rootuple[$i] 2 tot >out");
 	system("cp  ../Histos/$Rootuple[$i]/*tot*  ../Histos/TOT");
 }
 
