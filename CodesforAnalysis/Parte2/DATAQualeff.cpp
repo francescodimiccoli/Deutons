@@ -547,6 +547,13 @@ void DATAQualeff(TFile * file1) {
    f_out->cd("DATA-driven Results/Latitude effect/Quality");
    c15->Write();
    c16->Write();
+   f_out->cd("Export");
+   CorrLAT_Lik_Spl->Write("CorrLAT_LikTOF_Spl");
+   CorrLAT_LikNaF_Spl->Write("CorrLAT_LikNaF_Spl");
+   CorrLAT_LikAgl_Spl->Write("CorrLAT_LikAgl_Spl");
+   CorrLAT_Dist_Spl->Write("CorrLAT_DistTOF_Spl");
+   CorrLAT_DistNaF_Spl->Write("CorrLAT_DistNaF_Spl"); 	  
+   CorrLAT_DistAgl_Spl->Write("CorrLAT_DistAgl_Spl");   	
    f_out->Write();
    f_out->Close();
 

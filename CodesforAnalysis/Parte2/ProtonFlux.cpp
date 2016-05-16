@@ -234,6 +234,8 @@ void ProtonFlux() {
    c23->Write();
    c24->Write();
    c25->Write();
+   f_out->cd("Export");
+   PFlux->Write("Protons Primary Flux");
    f_out->Write();
    f_out->Close();
 

@@ -262,7 +262,7 @@ void Hecut(TFile * file1) {
 	nomefile="./Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 	f_out->mkdir("MC Results/He related cuts");
-	f_out->cd("MC Results/He control sample cut");
+	f_out->cd("MC Results/He related cuts");
 	c36	->Write();
 	c36_bis ->Write();
 	c37	->Write();

@@ -25,7 +25,7 @@
 #include <TGraph.h>
 #include "TGraphErrors.h"
 #include <cstring>
-#include "Mesi.cpp"
+#include "Mesi.h"
 
 using namespace std;
 
@@ -38,7 +38,6 @@ int main()
 	TFile * calib[40];
 	TFile * result[40];
 	string nomefile;
-	cout<<endl;
 	cout<<" *************** LETTURA FILES *************** "<<endl;
 	for(int i=0;i<num_mesi;i++){
 		nomefile="./CALIBRAZIONI/"+mesi[i]+".root";
@@ -55,13 +54,23 @@ int main()
 	TSpline3 *Corr_Track[40];
 	TSpline3 *Corr_TOFD[40];
 	TGraphErrors *CorrLATpre_Spl[3][40];
-	TGraphErrors *CorrLAT_Dist_Spl[40];
-	TGraphErrors *CorrLAT_Lik_Spl[40];	
+	TGraphErrors *CorrLAT_DistTOF_Spl[40];
+	TGraphErrors *CorrLAT_LikTOF_Spl[40];	
+	TGraphErrors *CorrLAT_DistNaF_Spl[40];
+        TGraphErrors *CorrLAT_LikNaF_Spl[40];
+	TGraphErrors *CorrLAT_DistAgl_Spl[40];
+        TGraphErrors *CorrLAT_LikAgl_Spl[40];
 	TGraphErrors *preDVSMC_P[3][40];
 	TGraphErrors *LikDVSMC_P[40];
         TGraphErrors *DistDVSMC_P[40];
 	TGraphErrors *P_Fluxes[40];
 	TGraphErrors *P_Fluxesratio[40];
+	TGraphErrors *D_FluxesTOF[40];
+        TGraphErrors *D_FluxesratioTOF[40];
+	TGraphErrors *D_FluxesNaF[40];
+        TGraphErrors *D_FluxesratioNaF[40];
+	TGraphErrors *D_FluxesAgl[40];
+        TGraphErrors *D_FluxesratioAgl[40];	
 	for(int i=0;i<num_mesi;i++){
 		Corr_L1[i] =  (TSpline3 *) calib[i]->Get("Fit Results/Splines/Corr_L1");
 		Corr_TOFU[i] =  (TSpline3 *) calib[i]->Get("Fit Results/Splines/Corr_TOFU");
@@ -71,15 +80,21 @@ int main()
 		CorrLATpre_Spl[0][i] =  (TGraphErrors *) result[i]->Get("Export/Matching TOF");
 		CorrLATpre_Spl[1][i] =  (TGraphErrors *) result[i]->Get("Export/Chi^2 R");
 		CorrLATpre_Spl[2][i] =  (TGraphErrors *) result[i]->Get("Export/1 Tr. Track");
-		CorrLAT_Lik_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_Lik_Spl");
-		CorrLAT_Dist_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_Lik_Spl");
-		preDVSMC_P[0][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC: Matching TOF_Graph");
+		CorrLAT_LikTOF_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikTOF_Spl");
+		CorrLAT_LikNaF_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikNaF_Spl");
+		CorrLAT_LikAgl_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikAgl_Spl");
+		CorrLAT_DistTOF_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikTOF_Spl");
+		CorrLAT_DistNaF_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikNaF_Spl");
+		CorrLAT_DistAgl_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikAgl_Spl");
+		/*preDVSMC_P[0][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC: Matching TOF_Graph");
                 preDVSMC_P[1][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC: Chi^2 R_Graph");
                 preDVSMC_P[2][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC: 1 Tr. Track_Graph");
 		LikDVSMC_P[i] =  (TGraphErrors *) result[i]->Get("Export/LikDVSMC_P_Graph");
-                DistDVSMC_P[i] =  (TGraphErrors *) result[i]->Get("Export/DistDVSMC_P_Graph");
-		P_Fluxes[i] =  (TGraphErrors *) result[i]->Get("Export/Protons Primary Flux");
-		cout<<P_Fluxes[i]<<endl;
+                DistDVSMC_P[i] =  (TGraphErrors *) result[i]->Get("Export/DistDVSMC_P_Graph");*/
+		P_Fluxes[i]    =  (TGraphErrors *) result[i]->Get("Export/Protons Primary Flux");
+		D_FluxesTOF[i] =  (TGraphErrors *) result[i]->Get("Export/Deutons Primary Flux: TOF");
+		D_FluxesNaF[i] =  (TGraphErrors *) result[i]->Get("Export/Deutons Primary Flux: NaF");
+		D_FluxesAgl[i] =  (TGraphErrors *) result[i]->Get("Export/Deutons Primary Flux: Agl");
 	}	
 	cout<<endl;
         cout<<" *************** DRAW  ************************ "<<endl;
@@ -92,13 +107,13 @@ int main()
 	TCanvas *c7=new TCanvas("1 Tr. Track");
 	TCanvas *c8=new TCanvas("Likelihood");
 	TCanvas *c9=new TCanvas("Distance");
-	TCanvas *c10=new TCanvas("DvsMC: Matching TOF");
+	/*TCanvas *c10=new TCanvas("DvsMC: Matching TOF");
         TCanvas *c11=new TCanvas("DvsMC: Chi^2");
         TCanvas *c12=new TCanvas("DvsMC: 1 Tr. Track");
 	TCanvas *c13=new TCanvas("DvsMC: Likelihood");
-        TCanvas *c14=new TCanvas("DvsMC: Distance");
+        TCanvas *c14=new TCanvas("DvsMC: Distance");*/
 	TCanvas *c15=new TCanvas("Protons Fluxes");
-
+	TCanvas *c16=new TCanvas("Deutons Fluxes");
 	c1->cd();
 	{gPad->SetGridx();
 		gPad->SetGridy();
@@ -119,7 +134,7 @@ int main()
 		}
 		leg->Draw("same");		
 	}
-	
+	cout<<"1"<<endl;	
 	c2->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
@@ -140,7 +155,7 @@ int main()
                 }
                 leg->Draw("same");       
         }
-	
+	cout<<"2"<<endl;
 	c3->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
@@ -161,7 +176,7 @@ int main()
                 }
                 leg->Draw("same");
         }
-	
+	cout<<"3"<<endl;
 	c4->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
@@ -182,7 +197,7 @@ int main()
                 }
                 leg->Draw("same");
         }
-	
+	cout<<"4"<<endl;
 	c5->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
@@ -207,7 +222,7 @@ int main()
                 }
                 leg->Draw("same");
         }
-	
+	cout<<"5"<<endl;
 	c6->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
@@ -231,7 +246,7 @@ int main()
                 }
                 leg->Draw("same");
         }
-
+	cout<<"6"<<endl;
 	c7->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
@@ -255,55 +270,152 @@ int main()
                 }
                 leg->Draw("same");
         }
-	
-	c8->cd();
+	cout<<"7"<<endl;
+	c8->Divide(1,3);
+	c8->cd(1);
         {gPad->SetGridx();
                 gPad->SetGridy();
                 gStyle->SetPalette(0);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
-                CorrLAT_Lik_Spl[0]->SetLineWidth(2);
-                CorrLAT_Lik_Spl[0]->SetLineColor(1);
-                CorrLAT_Lik_Spl[0]->SetMarkerStyle(8);
-		CorrLAT_Lik_Spl[0]->SetMarkerColor(1);
-		leg->AddEntry(CorrLAT_Lik_Spl[0],mesi[0].c_str(), "ep");
-                CorrLAT_Lik_Spl[0]->Draw("ACP");
-                CorrLAT_Lik_Spl[0]->GetXaxis()->SetTitle("Latitude");
-                CorrLAT_Lik_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
+                CorrLAT_LikTOF_Spl[0]->SetLineWidth(2);
+                CorrLAT_LikTOF_Spl[0]->SetLineColor(1);
+                CorrLAT_LikTOF_Spl[0]->SetMarkerStyle(8);
+		CorrLAT_LikTOF_Spl[0]->SetMarkerColor(1);
+		leg->AddEntry(CorrLAT_LikTOF_Spl[0],mesi[0].c_str(), "ep");
+                CorrLAT_LikTOF_Spl[0]->Draw("ACP");
+                CorrLAT_LikTOF_Spl[0]->GetXaxis()->SetTitle("Latitude");
+                CorrLAT_LikTOF_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
-                        CorrLAT_Lik_Spl[i]->SetLineWidth(2);
-                        CorrLAT_Lik_Spl[i]->SetLineColor(i+1);
-			CorrLAT_Lik_Spl[i]->SetMarkerStyle(8);
-                	CorrLAT_Lik_Spl[i]->SetMarkerColor(i+1);
-                        leg->AddEntry(CorrLAT_Lik_Spl[i],mesi[i].c_str(), "ep");
-                        CorrLAT_Lik_Spl[i]->Draw("CPsame");
+                        CorrLAT_LikTOF_Spl[i]->SetLineWidth(2);
+                        CorrLAT_LikTOF_Spl[i]->SetLineColor(i+1);
+			CorrLAT_LikTOF_Spl[i]->SetMarkerStyle(8);
+                	CorrLAT_LikTOF_Spl[i]->SetMarkerColor(i+1);
+                        leg->AddEntry(CorrLAT_LikTOF_Spl[i],mesi[i].c_str(), "ep");
+                        CorrLAT_LikTOF_Spl[i]->Draw("CPsame");
                 }
                 leg->Draw("same");
         }
-	c9->cd();
+	c8->cd(2);
         {gPad->SetGridx();
                 gPad->SetGridy();
                 gStyle->SetPalette(0);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
-                CorrLAT_Dist_Spl[0]->SetLineWidth(2);
-                CorrLAT_Dist_Spl[0]->SetLineColor(1);
-		CorrLAT_Dist_Spl[0]->SetMarkerStyle(8);
-		CorrLAT_Dist_Spl[0]->SetMarkerColor(1);
-                leg->AddEntry(CorrLAT_Dist_Spl[0],mesi[0].c_str(), "ep");
-                CorrLAT_Dist_Spl[0]->Draw("ACP");
-                CorrLAT_Dist_Spl[0]->GetXaxis()->SetTitle("Latitude");
-                CorrLAT_Dist_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
+                CorrLAT_LikNaF_Spl[0]->SetLineWidth(2);
+                CorrLAT_LikNaF_Spl[0]->SetLineColor(1);
+                CorrLAT_LikNaF_Spl[0]->SetMarkerStyle(8);
+                CorrLAT_LikNaF_Spl[0]->SetMarkerColor(1);
+                leg->AddEntry(CorrLAT_LikNaF_Spl[0],mesi[0].c_str(), "ep");
+                CorrLAT_LikNaF_Spl[0]->Draw("ACP");
+                CorrLAT_LikNaF_Spl[0]->GetXaxis()->SetTitle("Latitude");
+                CorrLAT_LikNaF_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
-                        CorrLAT_Dist_Spl[i]->SetLineWidth(2);
-                        CorrLAT_Dist_Spl[i]->SetLineColor(i+1);
-                        CorrLAT_Dist_Spl[i]->SetMarkerStyle(8);
-	                CorrLAT_Dist_Spl[i]->SetMarkerColor(i+1);
-			leg->AddEntry(CorrLAT_Dist_Spl[i],mesi[i].c_str(), "ep");
-                        CorrLAT_Dist_Spl[i]->Draw("CPsame");
+                        CorrLAT_LikNaF_Spl[i]->SetLineWidth(2);
+                        CorrLAT_LikNaF_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_LikNaF_Spl[i]->SetMarkerStyle(8);
+                        CorrLAT_LikNaF_Spl[i]->SetMarkerColor(i+1);
+                        leg->AddEntry(CorrLAT_LikNaF_Spl[i],mesi[i].c_str(), "ep");
+                        CorrLAT_LikNaF_Spl[i]->Draw("CPsame");
                 }
                 leg->Draw("same");
         }
-	
-	c10->cd();
+	c8->cd(3);
+        {gPad->SetGridx();
+                gPad->SetGridy();
+                gStyle->SetPalette(0);
+                TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
+                CorrLAT_LikAgl_Spl[0]->SetLineWidth(2);
+                CorrLAT_LikAgl_Spl[0]->SetLineColor(1);
+                CorrLAT_LikAgl_Spl[0]->SetMarkerStyle(8);
+                CorrLAT_LikAgl_Spl[0]->SetMarkerColor(1);
+                leg->AddEntry(CorrLAT_LikAgl_Spl[0],mesi[0].c_str(), "ep");
+                CorrLAT_LikAgl_Spl[0]->Draw("ACP");
+                CorrLAT_LikAgl_Spl[0]->GetXaxis()->SetTitle("Latitude");
+                CorrLAT_LikAgl_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
+                for(int i=1;i<num_mesi;i++) {
+                        CorrLAT_LikAgl_Spl[i]->SetLineWidth(2);
+                        CorrLAT_LikAgl_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_LikAgl_Spl[i]->SetMarkerStyle(8);
+                        CorrLAT_LikAgl_Spl[i]->SetMarkerColor(i+1);
+                        leg->AddEntry(CorrLAT_LikAgl_Spl[i],mesi[i].c_str(), "ep");
+                        CorrLAT_LikAgl_Spl[i]->Draw("CPsame");
+                }
+                leg->Draw("same");
+        }
+
+	cout<<"8"<<endl;
+	c9->Divide(1,3);
+	c9->cd(1);
+	{gPad->SetGridx();
+                gPad->SetGridy();
+                gStyle->SetPalette(0);
+                TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
+                CorrLAT_DistTOF_Spl[0]->SetLineWidth(2);
+                CorrLAT_DistTOF_Spl[0]->SetLineColor(1);
+		CorrLAT_DistTOF_Spl[0]->SetMarkerStyle(8);
+		CorrLAT_DistTOF_Spl[0]->SetMarkerColor(1);
+                leg->AddEntry(CorrLAT_DistTOF_Spl[0],mesi[0].c_str(), "ep");
+                CorrLAT_DistTOF_Spl[0]->Draw("ACP");
+                CorrLAT_DistTOF_Spl[0]->GetXaxis()->SetTitle("Latitude");
+                CorrLAT_DistTOF_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
+                for(int i=1;i<num_mesi;i++) {
+                        CorrLAT_DistTOF_Spl[i]->SetLineWidth(2);
+                        CorrLAT_DistTOF_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_DistTOF_Spl[i]->SetMarkerStyle(8);
+	                CorrLAT_DistTOF_Spl[i]->SetMarkerColor(i+1);
+			leg->AddEntry(CorrLAT_DistTOF_Spl[i],mesi[i].c_str(), "ep");
+                        CorrLAT_DistTOF_Spl[i]->Draw("CPsame");
+                }
+                leg->Draw("same");
+        }
+	c9->cd(2);
+        {gPad->SetGridx();
+                gPad->SetGridy();
+                gStyle->SetPalette(0);
+                TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
+                CorrLAT_DistNaF_Spl[0]->SetLineWidth(2);
+                CorrLAT_DistNaF_Spl[0]->SetLineColor(1);
+                CorrLAT_DistNaF_Spl[0]->SetMarkerStyle(8);
+                CorrLAT_DistNaF_Spl[0]->SetMarkerColor(1);
+                leg->AddEntry(CorrLAT_DistNaF_Spl[0],mesi[0].c_str(), "ep");
+                CorrLAT_DistNaF_Spl[0]->Draw("ACP");
+                CorrLAT_DistNaF_Spl[0]->GetXaxis()->SetTitle("Latitude");
+                CorrLAT_DistNaF_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
+                for(int i=1;i<num_mesi;i++) {
+                        CorrLAT_DistNaF_Spl[i]->SetLineWidth(2);
+                        CorrLAT_DistNaF_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_DistNaF_Spl[i]->SetMarkerStyle(8);
+                        CorrLAT_DistNaF_Spl[i]->SetMarkerColor(i+1);
+                        leg->AddEntry(CorrLAT_DistNaF_Spl[i],mesi[i].c_str(), "ep");
+                        CorrLAT_DistNaF_Spl[i]->Draw("CPsame");
+                }
+                leg->Draw("same");
+        }
+	c9->cd(3);
+        {gPad->SetGridx();
+                gPad->SetGridy();
+                gStyle->SetPalette(0);
+                TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
+                CorrLAT_DistAgl_Spl[0]->SetLineWidth(2);
+                CorrLAT_DistAgl_Spl[0]->SetLineColor(1);
+                CorrLAT_DistAgl_Spl[0]->SetMarkerStyle(8);
+                CorrLAT_DistAgl_Spl[0]->SetMarkerColor(1);
+                leg->AddEntry(CorrLAT_DistAgl_Spl[0],mesi[0].c_str(), "ep");
+                CorrLAT_DistAgl_Spl[0]->Draw("ACP");
+                CorrLAT_DistAgl_Spl[0]->GetXaxis()->SetTitle("Latitude");
+                CorrLAT_DistAgl_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
+                for(int i=1;i<num_mesi;i++) {
+                        CorrLAT_DistAgl_Spl[i]->SetLineWidth(2);
+                        CorrLAT_DistAgl_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_DistAgl_Spl[i]->SetMarkerStyle(8);
+                        CorrLAT_DistAgl_Spl[i]->SetMarkerColor(i+1);
+                        leg->AddEntry(CorrLAT_DistAgl_Spl[i],mesi[i].c_str(), "ep");
+                        CorrLAT_DistAgl_Spl[i]->Draw("CPsame");
+                }
+                leg->Draw("same");
+        }
+
+	cout<<"9"<<endl;
+	/*c10->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
                 gStyle->SetPalette(0);
@@ -443,16 +555,18 @@ int main()
                         DistDVSMC_P[i]->Draw("C4same");
                 }
                 leg->Draw("same");
-        }
+        }*/
+	cout<<"10"<<endl;
 	c15->cd();
 	double x,y,ey=0;
 	double x0,y0=0;
 	int u,v=0;
-        {gPad->SetGridx();
+        {       gPad->SetGridx();
                 gPad->SetGridy();
                 gStyle->SetPalette(0);
                 gPad->SetLogx();
-                TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
+                gPad->SetLogy();
+		TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 for(int i=0;i<num_mesi;i++) {
                 P_Fluxesratio[i]=new TGraphErrors();
 		for(int p=1;p<42;p++){
@@ -466,8 +580,8 @@ int main()
                 P_Fluxesratio[0]->SetMarkerStyle(8);
                 P_Fluxesratio[0]->SetMarkerColor(1);
                 P_Fluxesratio[0]->SetFillStyle(3002);
-                leg->AddEntry(DistDVSMC_P[0],mesi[0].c_str(), "ep");
-                P_Fluxesratio[0]->GetYaxis()->SetRangeUser(0.7,1.3);
+                leg->AddEntry(P_Fluxesratio[0],mesi[0].c_str(), "ep");
+                P_Fluxesratio[0]->GetYaxis()->SetRangeUser(0.4,2.3);
                 P_Fluxesratio[0]->Draw("AP");
                 P_Fluxesratio[0]->GetXaxis()->SetTitle("R [GV]");
                 P_Fluxesratio[0]->GetYaxis()->SetTitle("Flux Ratio (vs first month)");
@@ -482,6 +596,97 @@ int main()
                 }
                 leg->Draw("same");
         }
+
+	c16->cd();
+        x,y,ey=0;
+        x0,y0=0;
+        u,v=0;
+        {       gPad->SetGridx();
+                gPad->SetGridy();
+                gStyle->SetPalette(0);
+                gPad->SetLogx();
+                gPad->SetLogy();
+                TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
+                for(int i=0;i<num_mesi;i++) {
+                D_FluxesratioTOF[i]=new TGraphErrors();
+                for(int p=1;p<18;p++){
+                        u=D_FluxesTOF[i]->GetPoint(p,x,y);
+                        v=D_FluxesTOF[0]->GetPoint(p,x0,y0);
+                        D_FluxesratioTOF[i]->SetPoint(p,x,y/y0);
+                        }
+                }
+		D_FluxesratioTOF[0]->SetPoint(18,20,1e-3);
+                D_FluxesratioTOF[0]->SetLineWidth(2);
+                D_FluxesratioTOF[0]->SetMarkerStyle(8);
+		D_FluxesratioTOF[0]->SetLineColor(1);
+                D_FluxesratioTOF[0]->SetMarkerColor(1);
+                D_FluxesratioTOF[0]->SetFillStyle(3002);
+                leg->AddEntry(D_FluxesratioTOF[0],mesi[0].c_str(), "ep");
+                D_FluxesratioTOF[0]->GetYaxis()->SetRangeUser(0.4,2.3);
+                D_FluxesratioTOF[0]->Draw("AP");
+                D_FluxesratioTOF[0]->GetXaxis()->SetTitle("R [GV]");
+                D_FluxesratioTOF[0]->GetYaxis()->SetTitle("Flux Ratio (vs first month)");
+                for(int i=1;i<num_mesi;i++) {
+                        D_FluxesratioTOF[i]->SetLineWidth(2);
+                        D_FluxesratioTOF[i]->SetLineColor(i+1);
+                        D_FluxesratioTOF[i]->SetMarkerColor(i+1);
+                        D_FluxesratioTOF[i]->SetMarkerStyle(8);
+			D_FluxesratioTOF[i]->SetFillStyle(3002);
+                        leg->AddEntry(D_FluxesratioTOF[i],mesi[i].c_str(), "ep");
+                        D_FluxesratioTOF[i]->Draw("PLsame");
+                }
+                leg->Draw("same");
+        	for(int i=0;i<num_mesi;i++) {
+                D_FluxesratioNaF[i]=new TGraphErrors();
+                for(int p=1;p<18;p++){
+                        u=D_FluxesNaF[i]->GetPoint(p,x,y);
+                        v=D_FluxesNaF[0]->GetPoint(p,x0,y0);
+                        D_FluxesratioNaF[i]->SetPoint(p,x,y/y0);
+			}
+                }
+                D_FluxesratioNaF[0]->SetLineWidth(2);
+                D_FluxesratioNaF[0]->SetMarkerStyle(4);
+                D_FluxesratioNaF[0]->SetLineColor(1);
+                D_FluxesratioNaF[0]->SetMarkerColor(1);
+                D_FluxesratioNaF[0]->SetFillStyle(3002);
+		D_FluxesratioNaF[0]->Draw("Psame");
+		for(int i=1;i<num_mesi;i++) {
+                        D_FluxesratioNaF[i]->SetLineWidth(2);
+                        D_FluxesratioNaF[i]->SetLineColor(i+1);
+                        D_FluxesratioNaF[i]->SetMarkerColor(i+1);
+                        D_FluxesratioNaF[i]->SetMarkerStyle(4);
+                        D_FluxesratioNaF[i]->SetFillStyle(3002);
+                        D_FluxesratioNaF[i]->Draw("PLsame");
+                }
+		 for(int i=0;i<num_mesi;i++) {
+                D_FluxesratioAgl[i]=new TGraphErrors();
+                for(int p=1;p<18;p++){
+                        u=D_FluxesAgl[i]->GetPoint(p,x,y);
+                        v=D_FluxesAgl[0]->GetPoint(p,x0,y0);
+                        D_FluxesratioAgl[i]->SetPoint(p,x,y/y0);
+                        }
+                }
+                D_FluxesratioAgl[0]->SetLineWidth(2);
+                D_FluxesratioAgl[0]->SetMarkerStyle(3);
+                D_FluxesratioAgl[0]->SetLineColor(1);
+                D_FluxesratioAgl[0]->SetMarkerColor(1);
+                D_FluxesratioAgl[0]->SetFillStyle(3002);
+                D_FluxesratioAgl[0]->Draw("Psame");
+                for(int i=1;i<num_mesi;i++) {
+                        D_FluxesratioAgl[i]->SetLineWidth(2);
+                        D_FluxesratioAgl[i]->SetLineColor(i+1);
+                        D_FluxesratioAgl[i]->SetMarkerColor(i+1);
+                        D_FluxesratioAgl[i]->SetMarkerStyle(3);
+                        D_FluxesratioAgl[i]->SetFillStyle(3002);
+                        D_FluxesratioAgl[i]->Draw("PLsame");
+                }
+
+	
+	}
+
+	
+
+
 	cout<<"*************** OUTPUT **************************"<<endl;
 	nomefile="./TimeAnalysis.root";
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
@@ -501,15 +706,15 @@ int main()
 	c7->Write();
 	c8->Write();
 	c9->Write();
-	f_out->cd("Data vs MC");
+	/*f_out->cd("Data vs MC");
 	c10->Write();
 	c11->Write();
         c12->Write();
 	c13->Write();
-	c14->Write();
+	c14->Write();*/
 	f_out->cd("P Fluxes");
 	c15->Write();
-	
+	c16->Write();	
 	f_out->Write();
 	f_out->Close();
 	

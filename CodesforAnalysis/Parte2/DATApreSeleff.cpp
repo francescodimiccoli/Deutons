@@ -95,6 +95,8 @@ void DATApreSeleff(TFile * file1){
 
 
 	TGraphErrors *CorrLATpre[3];
+	TGraphErrors *CorrLATpre_Spl[3];
+
 	for(int S=0;S<3;S++){
 	c14[S]->cd(2);
 	gPad->SetGridy();
@@ -112,7 +114,6 @@ void DATApreSeleff(TFile * file1){
 	CorrLATpre[S]->Fit(nome.c_str());
 	CorrLATpre[S]->Draw("AP");	
 
-	TGraphErrors *CorrLATpre_Spl[3];
 	nome="CorrLATpre_spl"+tagli[S];
 	CorrLATpre_Spl[S]=new TGraphErrors(tagli[S].c_str());
 	CorrLATpre_Spl[S]->SetName(tagli[S].c_str());
@@ -136,8 +137,13 @@ void DATApreSeleff(TFile * file1){
         f_out->mkdir("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
         f_out->cd("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
         for(int S=0;S<3;S++) c14[S]->Write();
-        f_out->Write();
+        f_out->mkdir("Export");
+	f_out->cd("Export");
+	for(int S=0;S<3;S++) 
+		CorrLATpre_Spl[S]->Write(tagli[S].c_str());
+	f_out->Write();
         f_out->Close();
 
+	
 }
 

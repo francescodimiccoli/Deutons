@@ -38,7 +38,7 @@ void DeutonFlux() {
 	
 	if(D_Flux -> Counts_R  )SystR   -> Add(	(TH1F*) D_Flux_Dist -> Counts_R  ->Clone()	,-1); 
         if(D_Flux -> Counts_TOF)SystTOF -> Add(	(TH1F*) D_Flux_Dist -> Counts_TOF->Clone()	,-1);
-        if(D_Flux -> Counts_NaF)SystNaF -> Add(	(TH1F*) D_Flux      -> Counts_NaF->Clone()	,-1);
+        if(D_Flux -> Counts_NaF)SystNaF -> Add(	(TH1F*) D_Flux_Dist -> Counts_NaF->Clone()	,-1);
         if(D_Flux -> Counts_Agl)SystAgl -> Add(	(TH1F*) D_Flux_Dist -> Counts_Agl->Clone()	,-1);
 
 	D_Flux      -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
@@ -668,7 +668,7 @@ void DeutonFlux() {
 
 	c35->cd(2);
 	PD_ratioAgl_Dist->Draw("Psame");
-
+	
 	cout<<"*** Updating Results file ***"<<endl;
 	nomefile="./Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
@@ -678,6 +678,10 @@ void DeutonFlux() {
 	c32->Write();
 	c34-> Write();
 	c35->Write();
+	f_out->cd("Export");
+	D_FluxTOF->Write("Deutons Primary Flux: TOF");
+	D_FluxNaF->Write("Deutons Primary Flux: NaF");
+	D_FluxAgl->Write("Deutons Primary Flux: Agl");
 	f_out->Write();
 	f_out->Close();
 

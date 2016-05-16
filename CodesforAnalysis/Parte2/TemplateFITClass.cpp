@@ -54,9 +54,9 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat){
 			for(int fit_attempt=0;fit_attempt<20;fit_attempt++){
 				if(Fit -> Tfit_outcome == 0) break;
 				else{
-					Fit -> Tfit -> Constrain(0, lowP+(float)fit_attempt/100 ,highP );
-					Fit -> Tfit -> Constrain(1, lowD-(float)fit_attempt/100 ,highD-fit_attempt/100 );
-					Fit -> Tfit -> Constrain(2, lowHe,highHe); 
+					Fit -> Tfit -> Constrain(0, lowP+(float)fit_attempt/1000 ,highP );
+					Fit -> Tfit -> Constrain(1, lowD-(float)fit_attempt/10000 ,highD-fit_attempt/10000 );
+					Fit -> Tfit -> Constrain(2, lowHe-(float)fit_attempt/100000,highHe+(float)fit_attempt/100000); 
 					Fit -> Tfit_outcome = Fit -> Tfit -> Fit();				
 				}
 			}	
