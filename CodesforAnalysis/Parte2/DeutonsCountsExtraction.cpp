@@ -145,29 +145,35 @@ void DeutonsTemplFits(){
 
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
-	FitTOF_Dbins 	-> SetFitConstraints(0.8,1,0.00,0.1,0.0,0.005); 
-	FitNaF_Dbins 	-> SetFitConstraints(0.8,1,0.00,0.1,0.0,0.005);
-	FitAgl_Dbins 	-> SetFitConstraints(0.8,1,0.00,0.1,0.0,0.005);
+	/*FitTOF_Dbins 	-> SetFitConstraints(0.8,1,0.05,0.5,0.05,0.15); 
+	FitNaF_Dbins 	-> SetFitConstraints(0.8,1,0.05,0.5,0.0005,0.00015);
+	FitAgl_Dbins 	-> SetFitConstraints(0.8,1,0.05,0.5,0.00005,0.000025);*/
+
+	FitTOF_Dbins 	-> SetFitConstraints(0.8,1,0.005,0.1,0.001,0.015); 
+	FitNaF_Dbins 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0001,0.0015);
+	FitAgl_Dbins 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0001,0.0005);
 
 	FitTOFgeo_Dbins -> DisableFit();
 	FitNaFgeo_Dbins -> DisableFit();
 	FitAglgeo_Dbins -> DisableFit();
 
-	FitTOF_Pbins 	-> DisableFit();
-	FitNaF_Pbins 	-> DisableFit();
-	FitAgl_Pbins 	-> DisableFit();
+	FitTOF_Pbins 	-> SetFitConstraints(0.8,1,0.005,0.1,0.001,0.015); 
+	FitNaF_Pbins 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0005,0.0015);
+	FitAgl_Pbins 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0001,0.0005);
 
-
+	cout<<"** TOF **"<<endl;
 	FitTOF_Dbins 	-> TemplateFits(); 
-	FitNaF_Dbins 	-> TemplateFits();
-	FitAgl_Dbins 	-> TemplateFits();
-
 	FitTOFgeo_Dbins -> TemplateFits();
-        FitNaFgeo_Dbins -> TemplateFits();
-	FitAglgeo_Dbins -> TemplateFits();
+	FitTOF_Pbins    -> TemplateFits();
 
-	FitTOF_Pbins 	-> TemplateFits();
-	FitNaF_Pbins 	-> TemplateFits();
+	cout<<"** NaF **"<<endl;	
+	FitNaF_Dbins 	-> TemplateFits();
+	FitNaFgeo_Dbins -> TemplateFits();
+	FitNaF_Pbins    -> TemplateFits();
+	
+	cout<<"** Agl **"<<endl;
+	FitAgl_Dbins 	-> TemplateFits();
+	FitAglgeo_Dbins -> TemplateFits();
 	FitAgl_Pbins 	-> TemplateFits();
 
 	cout<<"***** TemplateFits Outcome (Mass) ******"<<endl;
@@ -175,13 +181,22 @@ void DeutonsTemplFits(){
 	for(int bin =0; bin <nbinsToF;bin++)
 		cout<<FitTOF_Dbins->GetFitOutcome(bin)<<" ";
 	cout<<endl;
+	for(int bin =0; bin <nbinsToF;bin++)
+                cout<<FitTOF_Pbins->GetFitOutcome(bin)<<" ";
+        cout<<endl;
 	cout<<"** NaF **"<<endl;
-        for(int bin =0; bin <nbinsToF;bin++)
+        for(int bin =0; bin <nbinsNaF;bin++)
                 cout<<FitNaF_Dbins->GetFitOutcome(bin)<<" ";
         cout<<endl;
+	for(int bin =0; bin <nbinsNaF;bin++)
+                cout<<FitNaF_Pbins->GetFitOutcome(bin)<<" ";
+        cout<<endl;
 	cout<<"** Agl **"<<endl;
-        for(int bin =0; bin <nbinsToF;bin++)
+        for(int bin =0; bin <nbinsAgl;bin++)
                 cout<<FitAgl_Dbins->GetFitOutcome(bin)<<" ";
+        cout<<endl;
+	for(int bin =0; bin <nbinsAgl;bin++) 
+		cout<<FitAgl_Pbins->GetFitOutcome(bin)<<" ";
         cout<<endl;
 
 	cout<<"*** Updating P1 file ****"<<endl;
