@@ -24,6 +24,8 @@ void CorrLAT() {
    LATcorr * LATLikelihoodDATA_Agl = new LATcorr(file1,"LATLikDATA_Agl"  	 ,"Results");
    LATcorr * LATDistanceDATA_Agl   = new LATcorr(file1,"LATDistDATA_Agl" 	 ,"Results");
 
+   LATcorr * LATrichDATA_NaF       = new LATcorr(file1,"LATrichDATA_NaF" 	 ,"Results");
+   LATcorr * LATrichDATA_Agl       = new LATcorr(file1,"LATrichDATA_Agl" 	 ,"Results");	
 
    cout<<"******* TOTAL LAT. CORRECTION *************"<<endl;
 
@@ -42,10 +44,11 @@ void CorrLAT() {
 
    TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATLikelihoodDATA_NaF ->  LATcorrR_fit) );
    TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATDistanceDATA_NaF   ->  LATcorrR_fit) );
+   TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATrichDATA_NaF       ->  LATcorrR_fit) );   
 
    TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LATLikelihoodDATA_Agl ->  LATcorrR_fit) );
    TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LATDistanceDATA_Agl   ->  LATcorrR_fit) );
-
+   TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATrichDATA_Agl       ->  LATcorrR_fit) );
 
    //Only pres.
    TH1F * CorrezioneLATpre_pR = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorr  	);

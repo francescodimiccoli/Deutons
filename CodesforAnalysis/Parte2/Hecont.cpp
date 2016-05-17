@@ -53,6 +53,7 @@ void HecutMC_Fill(TNtuple *ntupla,int l) {
 void HecutD_Fill(TNtuple *ntupla,int l) {
 	int k = ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
+	if(!R>1.2*Rcutoff) return;
 	float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
 	Hecut_D->Fill(fabs(EdepTOFbeta->Eval(Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta)),fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta)));
 
@@ -107,17 +108,20 @@ void Hecut(TFile * file1) {
 	HeliumContaminationNaF-> TemplateFits();
 	HeliumContaminationAgl-> TemplateFits();
 
-	float HeCountsTOF= HeliumContaminationTOF->GetResult_He(0)->Integral(0,HeliumContaminationTOF->GetResult_He(0)->FindBin(4));
-	float PCountsTOF = HeliumContaminationTOF->GetResult_P(0)->Integral(0,HeliumContaminationTOF->GetResult_P(0)->FindBin(4)); 
-	float HeCont_TOF = HeCountsTOF/PCountsTOF;
+	float HeCountsTOF= HeliumContaminationTOF->GetResult_He(0)->Integral(0,20);//HeliumContaminationTOF->GetResult_He(0)->FindBin(4));
+	float PCountsTOF = HeliumContaminationTOF->GetResult_P(0)->Integral(0,20);//HeliumContaminationTOF->GetResult_P(0)->FindBin(4)); 
+	float DCountsTOF = HeliumContaminationTOF->GetResult_D(0)->Integral(0,20);
+	float HeCont_TOF = HeCountsTOF/(PCountsTOF+DCountsTOF);
 
-	float HeCountsNaF= HeliumContaminationNaF->GetResult_He(0)->Integral(0,HeliumContaminationNaF->GetResult_He(0)->FindBin(4));
-        float PCountsNaF = HeliumContaminationNaF->GetResult_P(0)->Integral(0,HeliumContaminationNaF->GetResult_P(0)->FindBin(4));
-        float HeCont_NaF = HeCountsNaF/PCountsNaF;
+	float HeCountsNaF= HeliumContaminationNaF->GetResult_He(0)->Integral(0,20);//HeliumContaminationNaF->GetResult_He(0)->FindBin(4));
+        float PCountsNaF = HeliumContaminationNaF->GetResult_P(0)->Integral(0,20);//HeliumContaminationNaF->GetResult_P(0)->FindBin(4));
+        float DCountsNaF = HeliumContaminationNaF->GetResult_D(0)->Integral(0,20);
+	float HeCont_NaF = HeCountsNaF/(PCountsNaF+DCountsNaF);
 	
-	float HeCountsAgl= HeliumContaminationAgl->GetResult_He(0)->Integral(0,HeliumContaminationAgl->GetResult_He(0)->FindBin(4));
-        float PCountsAgl = HeliumContaminationAgl->GetResult_P(0)->Integral(0,HeliumContaminationAgl->GetResult_P(0)->FindBin(4));
-        float HeCont_Agl = HeCountsAgl/PCountsAgl;	
+	float HeCountsAgl= HeliumContaminationAgl->GetResult_He(0)->Integral(0,20);//HeliumContaminationAgl->GetResult_He(0)->FindBin(4));
+        float PCountsAgl = HeliumContaminationAgl->GetResult_P(0)->Integral(0,20);//HeliumContaminationAgl->GetResult_P(0)->FindBin(4));
+        float DCountsAgl = HeliumContaminationNaF->GetResult_D(0)->Integral(0,20);
+	float HeCont_Agl = HeCountsAgl/(PCountsAgl+DCountsAgl);	
 
 	cout<<"*** Updating P1 file ****"<<endl;
 	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";

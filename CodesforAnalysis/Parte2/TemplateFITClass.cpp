@@ -90,7 +90,7 @@ double TemplateFIT::GetFitWheights(int par, int bin,int lat){
 }
 
 double TemplateFIT::GetFitFraction(int par, int bin,int lat){
-        if(GetFitOutcome(bin,lat)!=0)   return  1;
+        if(GetFitOutcome(bin,lat)!=0)   return  0;
         if(GetFitOutcome(bin,lat)==0){
                 double w1,e1 = 0;
                 fits[lat][bin]-> Tfit ->GetResult(par,w1,e1);

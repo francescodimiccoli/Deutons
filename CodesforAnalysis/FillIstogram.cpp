@@ -190,6 +190,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		MCQualeff_Fill(ntupla1,i);
 		DVSMCQualeff2_Fill(ntupla1,i);	
 		DVSMCQualeffD_Fill(ntupla1,i);
+		DVSMCRICHeff_Fill(ntupla1,i);
 		DeutonsMC_Fill(ntupla1,i);
 		DeutonsMC_Dist_Fill(ntupla1,i);
 		MCMC_Fill(ntupla1,i);
@@ -274,9 +275,11 @@ void FillIstogram(int INDX,string frac,string mese)
 		HecutD_Fill(ntupla3,i);	
 		SlidesforPlot_D_Fill(ntupla1,i);
 		DATAQualeff_Fill(ntupla3,i,Zona);
+		DATARICHeff_Fill(ntupla3,i,Zona);
 		ProtonFlux_Fill(ntupla3,i,Zona);
 		DVSMCQualeff2_D_Fill(ntupla3,i,Zona);
 		DVSMCQualeffD_D_Fill(ntupla3,i,Zona);
+		DVSMCRICHeff_D_Fill(ntupla3,i,Zona);
 		DeutonsDATA_Fill(ntupla3,i,Zona);
 		DeutonsDATA_Dist_Fill(ntupla3,i,Zona);
 		MCMCDATA_Fill(ntupla3,i);
@@ -289,6 +292,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 		
 		DATAQualeff_Write();
+		DATARICHeff_Write();
 		DATApreSeleff_Write();
 		FluxFactorizationtest_Write();
 		Correlazione_Preselezioni_Write();
@@ -301,6 +305,7 @@ void FillIstogram(int INDX,string frac,string mese)
 		DVSMCPreSeleff_Write();
 		DVSMCPreSeleffD_Write();
 		DVSMCQualeff2_Write();
+		DVSMCRICHeff_Write();
 		DVSMCQualeffD_Write();
 		//DVSMCTrackeff_Write();
 		MCMC_Write();

@@ -24,6 +24,7 @@
 #include "Parte2/CorrelazionePreselezioni.cpp"
 #include "Parte2/DATApreSeleff.cpp"
 #include "Parte2/DATAQualeff.cpp"
+#include "Parte2/DATARICHeff.cpp"
 #include "Parte2/CorrLAT.cpp"
 #include "Parte2/Acceptance.cpp"
 #include "Parte2/ProtonFlux.cpp"
@@ -31,6 +32,7 @@
 #include "Parte2/DeutonsCountsExtraction_Dist.cpp"
 #include "Parte2/MCMC.cpp"
 #include "Parte2/DVSMCQualeff.cpp"
+#include "Parte2/DVSMCRICHeff.cpp"
 #include "Parte2/DVSMCQualeff_D.cpp"
 #include "Parte2/DeutonsFlux.cpp"
 #include "Parte2/DVSMCPreSeleff.cpp"
@@ -245,6 +247,7 @@ int main(int argc, char * argv[])
 		DATApreSeleff(file1);
 		//DVSMCTrackeff(file1);
 		DATAQualeff(file1);
+		DATARICHeff(file1);
 		if(frac=="tot") DeutonsTemplFits();
 		if(frac=="tot") DeutonsTemplFits_Dist();
 	}
@@ -254,6 +257,7 @@ int main(int argc, char * argv[])
 		CorrLAT();
 		DVSMCPreSeleff();
 		DVSMCPreSeleffD();
+		DVSMCRICHeff();
 		DVSMCQualeff2();
 		DVSMCQualeffD();
 		Acceptance();
