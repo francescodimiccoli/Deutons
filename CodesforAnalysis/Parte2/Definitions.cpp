@@ -76,13 +76,7 @@ float Ekincent      [nbinsbeta] = {0};
 
 float BetacentNaF   [nbinsNaF]  = {0};
 float EkincentNaF   [nbinsNaF]  = {0};
-float BetabinsAgl   [nbinsAgl]  = {0};
-float BetabinsAglR_P[nbinsAgl]  = {0};
-float BetabinsAglR_D[nbinsAgl]  = {0};
 
-
-float BetaAglP      [nbinsAgl]  = {0};
-float BetaAglD      [nbinsAgl]  = {0};
 float BetacentAgl   [nbinsAgl]  = {0};
 float EkincentAgl   [nbinsAgl]  = {0};
 
@@ -90,15 +84,24 @@ float Unbias=0;
 
 float bin[nbinsr+1];
 std::array <float, nbinsr+1> Rbins;
+
 std::array <float, nbinsToF> BetaP       = {0};
 std::array <float, nbinsToF> BetaD       = {0};
 std::array <float, nbinsToF> BetabinsR_P = {0};
 std::array <float, nbinsToF> BetabinsR_D = {0};
+
 std::array <float, nbinsNaF> BetaNaFP    = {0};
 std::array <float, nbinsNaF> BetaNaFD    = {0};
 std::array <float, nbinsNaF> BetabinsNaF       = {0};
 std::array <float, nbinsNaF> BetabinsNaFR_P    = {0};
 std::array <float, nbinsNaF> BetabinsNaFR_D    = {0};
+
+std::array <float, nbinsAgl> BetaAglP    = {0};
+std::array <float, nbinsAgl> BetaAglD    = {0};
+std::array <float, nbinsAgl> BetabinsAgl       = {0};
+std::array <float, nbinsAgl> BetabinsAglR_P    = {0};
+std::array <float, nbinsAgl> BetabinsAglR_D    = {0};
+
 
 
 

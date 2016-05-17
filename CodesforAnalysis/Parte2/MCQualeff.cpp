@@ -40,7 +40,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 		}
 
 		if(((int)Cutmask)>>11==0) {
-			Kbin=GetArrayBin(Var2, BetaAglP, nbinsAgl);
+			Kbin=GetArrayBin(Var2, BetaAglP);
 			EffLikMCP->beforeAgl->Fill(Kbin);
 			EffDistMCP->beforeAgl->Fill(Kbin);
 			if(Distcut) 		EffDistMCP->afterAgl->Fill(Kbin);
@@ -75,7 +75,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 		}
 
 		if(((int)Cutmask)>>11==0) {
-			Kbin=GetArrayBin(Var2, BetaAglD, nbinsAgl);
+			Kbin=GetArrayBin(Var2, BetaAglD);
 			FillBinMGen(EffLikMCD ->beforeAgl, Kbin);
 			FillBinMGen(EffDistMCD->beforeAgl, Kbin);
 			if(Distcut)             FillBinMGen(EffDistMCD ->afterAgl , Kbin);

@@ -185,9 +185,9 @@ int main(int argc, char * argv[])
 		E2=exp(log(2.57)+(binnum+0.5)*a);
 		B1=sqrt(1-1/(pow(E+1,2)));
 		B2=sqrt(1-1/(pow(E2+1,2)));
-		BetabinsAgl[binnum]=B1;
-		BetabinsAglR_P[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
-		BetabinsAglR_D[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
+		if (binnum<BetabinsAgl   .size())  BetabinsAgl   [binnum]=B1;
+		if (binnum<BetabinsAglR_P.size())  BetabinsAglR_P[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
+		if (binnum<BetabinsAglR_D.size())  BetabinsAglR_D[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
 		BetacentAgl[binnum]=B2;
 		EkincentAgl[binnum]=1/pow(1-pow(B2,2),0.5)-1;
 		binnum++;
@@ -218,10 +218,9 @@ int main(int argc, char * argv[])
 	BetaP=BetabinsR_P;
 	BetaNaFD=BetabinsNaFR_D;
 	BetaNaFP=BetabinsNaFR_P;
-	for(int i=0;i<20;i++){	
-		BetaAglD[i]=BetabinsAglR_D[i];
-		BetaAglP[i]=BetabinsAglR_P[i];
-	}
+	BetaAglD=BetabinsAglR_D;
+	BetaAglP=BetabinsAglR_P;
+	
 	////////////////////////////
 
 	cout<<"************************ ISTOGRAM FILLING **************************************************************"<<endl;
