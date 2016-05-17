@@ -26,7 +26,7 @@ void DVSMCQualeffD_D_Fill(TNtuple *ntupla, int l,int zona){
 	}
 	//NaF
 	if(((int)Cutmask)>>11==512) {	
-		Kbin=GetArrayBin(Var, BetaNaFD, nbinsNaF);
+		Kbin=GetArrayBin(Var, BetaNaFD);
 		Dist_DvsMC_D -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_D  -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 
@@ -74,7 +74,7 @@ void DVSMCQualeffD_Fill(TNtuple *ntupla, int l){
 		}
 		//NaF
 		if(((int)Cutmask)>>11==512) {	
-			Kbin=GetArrayBin(Var, BetaNaFD, nbinsNaF);	
+			Kbin=GetArrayBin(Var, BetaNaFD);	
 			Dist_DvsMC_D -> MCEff -> beforeNaF -> Fill(Kbin,ReturnMCGenType());
 			if(Distcut) Lik_DvsMC_D  -> MCEff -> beforeNaF -> Fill(Kbin,ReturnMCGenType());
 

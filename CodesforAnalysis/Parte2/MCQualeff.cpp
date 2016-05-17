@@ -32,7 +32,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 
 
 		if(((int)Cutmask)>>11 ==512) {
-			Kbin=GetArrayBin(Var2, BetaNaFP, nbinsNaF);
+			Kbin=GetArrayBin(Var2, BetaNaFP);
 			EffLikMCP  ->beforeNaF->Fill(Kbin);
 			EffDistMCP ->beforeNaF->Fill(Kbin);
 			if(Distcut)             EffDistMCP  ->afterNaF ->Fill(Kbin);
@@ -67,7 +67,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 		if(Distcut&&Likcut)	FillBinMGen(EffLikMCD->afterTOF , Kbin);
 
 		if(((int)Cutmask)>>11==512) {
-			Kbin=GetArrayBin(Var2, BetaNaFD, nbinsNaF);
+			Kbin=GetArrayBin(Var2, BetaNaFD);
 			FillBinMGen(EffLikMCD ->beforeNaF, Kbin);
 			FillBinMGen(EffDistMCD->beforeNaF, Kbin);
 			if(Distcut)             FillBinMGen(EffDistMCD ->afterNaF , Kbin);

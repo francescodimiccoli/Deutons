@@ -155,9 +155,9 @@ int main(int argc, char * argv[])
 		E2=exp(log(0.666)+(binnum+0.5)*a);
 		B1=sqrt(1-1/(pow(E+1,2)));
 		B2=sqrt(1-1/(pow(E2+1,2)));
-		BetabinsNaF[binnum]=B1;
-		BetabinsNaFR_P[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
-		BetabinsNaFR_D[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
+		if (binnum<BetabinsNaF   .size()) BetabinsNaF   [binnum]=B1;
+		if (binnum<BetabinsNaFR_P.size()) BetabinsNaFR_P[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
+		if (binnum<BetabinsNaFR_D.size()) BetabinsNaFR_D[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
 		BetacentNaF[binnum]=B2;
 		EkincentNaF[binnum]=1/pow(1-pow(B1,2),0.5)-1;
 		binnum++;
@@ -201,23 +201,22 @@ int main(int argc, char * argv[])
 	}
 	cout<<endl;
 
-	////////// BINNAGGIO IN BETA
-	/*for(int i=0;i<19;i++){
-	  BetaD[i]=Betabins[i];
-	  BetaP[i]=Betabins[i];
-	  BetaNaFD[i]=BetabinsNaF[i];
-	  BetaNaFP[i]=BetabinsNaF[i];
-	  BetaAglD[i]=BetabinsAgl[i];
-	  BetaAglP[i]=BetabinsAgl[i];
+	/*//////// BINNAGGIO IN BETA
+     BetaD   =Betabins   ;
+	  BetaP   =Betabins   ;
+	  BetaNaFD=BetabinsNaF;
+	  BetaNaFP=BetabinsNaF;
+	  for(int i=0;i<19;i++){
+	    BetaAglD[i]=BetabinsAgl[i];
+	    BetaAglP[i]=BetabinsAgl[i];
 	  }*/	
 	////////////////////////////
 	/////////// BINNAGGIO IN RIGIDITA'
 	BetaD=BetabinsR_D;
 	BetaP=BetabinsR_P;
-	
+	BetaNaFD=BetabinsNaFR_D;
+	BetaNaFP=BetabinsNaFR_P;
 	for(int i=0;i<20;i++){	
-		BetaNaFD[i]=BetabinsNaFR_D[i];
-		BetaNaFP[i]=BetabinsNaFR_P[i];
 		BetaAglD[i]=BetabinsAglR_D[i];
 		BetaAglP[i]=BetabinsAglR_P[i];
 	}
