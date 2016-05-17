@@ -52,13 +52,13 @@ float EdepTOFU=0;
 float EdepTOFD=0;
 float EdepTrack=0;
 float BetaRICH_new=0;
-double geomag[12]={0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
-float Rcut[11]={18,18,16,14,12,10,8,6,4,2,1};
+double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
+float Rcut[11]= {18,18,16,14,12,10,8,6,4,2,1};
 int INDX=0;
 int FRAC=0;
-double geomagC[11]={0,0.05,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95,1.15};
-int notpassed[3]={155,139,11};
-int passed[3]={187,155,139};
+double geomagC[11]= {0,0.05,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95,1.15};
+int notpassed[3]= {155,139,11};
+int passed[3]= {187,155,139};
 float B=0.4;
 float B1=0;
 float B2=0;
@@ -73,8 +73,7 @@ float E2=exp(log(0.1)+1.5*a);
 float Betabins      [nbinsbeta] = {0};
 float Betacent      [nbinsbeta] = {0};
 float Ekincent      [nbinsbeta] = {0};
-float BetabinsR_P   [nbinsbeta] = {0};
-float BetabinsR_D   [nbinsbeta] = {0};
+
 float BetabinsNaF   [nbinsNaF]  = {0};
 float BetacentNaF   [nbinsNaF]  = {0};
 float EkincentNaF   [nbinsNaF]  = {0};
@@ -83,8 +82,7 @@ float BetabinsNaFR_D[nbinsNaF]  = {0};
 float BetabinsAgl   [nbinsAgl]  = {0};
 float BetabinsAglR_P[nbinsAgl]  = {0};
 float BetabinsAglR_D[nbinsAgl]  = {0};
-float BetaP         [nbinsToF]  = {0};
-float BetaD         [nbinsToF]  = {0};
+
 float BetaNaFP      [nbinsNaF]  = {0};
 float BetaNaFD      [nbinsNaF]  = {0};
 float BetaAglP      [nbinsAgl]  = {0};
@@ -96,6 +94,14 @@ float Unbias=0;
 
 float bin[nbinsr+1];
 std::array <float, nbinsr+1> Rbins;
+std::array <float, nbinsToF> BetaP = {0};
+std::array <float, nbinsToF> BetaD = {0};
+std::array <float, nbinsToF> BetabinsR_P = {0};
+std::array <float, nbinsToF> BetabinsR_D = {0};
+
+
+
+
 
 double R_cent[nbinsr];
 float encinprot     [nbinsr];
@@ -108,7 +114,7 @@ float deltaencinAgl [nbinsAgl];
 float Var=0;
 float Var2=0;
 float Var3=0;
-int Norm[11]={0};
+int Norm[11]= {0};
 
 //cuts
 bool Likcut=false;
@@ -128,38 +134,38 @@ TH2F * esposizionedgeoAgl;
 
 //retrieve MC particle species
 float ReturnMass_Gen() {
-	float Mass_gen=0;
-	if((((int)MC_type)&0xFF    )>0)      Mass_gen = 0.938;
-	if((((int)MC_type)&0xFF00  )>0)      Mass_gen = 1.875;
-	if((((int)MC_type)&0xFF0000)>0)      Mass_gen = 3.725;
-	return Mass_gen;
+   float Mass_gen=0;
+   if((((int)MC_type)&0xFF    )>0)      Mass_gen = 0.938;
+   if((((int)MC_type)&0xFF00  )>0)      Mass_gen = 1.875;
+   if((((int)MC_type)&0xFF0000)>0)      Mass_gen = 3.725;
+   return Mass_gen;
 }
 
 //retrieve MC cross section type
-int ReturnMCGenType(){
-	int mc_type=-1;
-	int cursor=0;
-	if(ReturnMass_Gen()<1&&ReturnMass_Gen()>0) cursor=0 ;
-	if(ReturnMass_Gen()<2&&ReturnMass_Gen()>1) cursor=8 ;
-	if(ReturnMass_Gen()<4&&ReturnMass_Gen()>3) cursor=16;
-	for(int i=2;i<8;i++) {
-		if((((int)MC_type)>>(cursor+i))&1==1) mc_type=i-2;
-	}
-	if(mc_type == -1) std::cout<<"ERROR: MC cross section type not found"<<std::endl;	 	
-	return mc_type;
+int ReturnMCGenType() {
+   int mc_type=-1;
+   int cursor=0;
+   if(ReturnMass_Gen()<1&&ReturnMass_Gen()>0) cursor=0 ;
+   if(ReturnMass_Gen()<2&&ReturnMass_Gen()>1) cursor=8 ;
+   if(ReturnMass_Gen()<4&&ReturnMass_Gen()>3) cursor=16;
+   for(int i=2; i<8; i++) {
+      if((((int)MC_type)>>(cursor+i))&1==1) mc_type=i-2;
+   }
+   if(mc_type == -1) std::cout<<"ERROR: MC cross section type not found"<<std::endl;
+   return mc_type;
 }
 
 
 void FillBinMGen(TH1* h, int bin) {
-	int mass = ReturnMCGenType();
-	h->Fill(bin, mass);
-	return;
+   int mass = ReturnMCGenType();
+   h->Fill(bin, mass);
+   return;
 }
 
 void FillBinMGen(TH3* h, int bin, int S) {
-	int mass = ReturnMCGenType();
-	h->Fill(bin, mass, S);
-	return;
+   int mass = ReturnMCGenType();
+   h->Fill(bin, mass, S);
+   return;
 }
 
 
@@ -170,11 +176,11 @@ void FillBinMGen(TH3* h, int bin, int S) {
  *  @return int       : the bin number of var in array
  */
 int GetArrayBin(float var, float* arr, int nbins) {
-	for (int ib=0; ib<nbins; ib++)  {
-		if(var>arr[ib] && var<=arr[ib+1])
-		return ib;
-	}
-	return -1;
+   for (int ib=0; ib<nbins; ib++)  {
+      if(var>arr[ib] && var<=arr[ib+1])
+         return ib;
+   }
+   return -1;
 }
 
 
@@ -187,7 +193,7 @@ int GetArrayBin(float var, float* arr, int nbins) {
  */
 template <std::size_t N>
 int GetArrayBin(float var, std::array<float, N> arr) {
-	return GetArrayBin(var, arr.data(), N);
+   return GetArrayBin(var, arr.data(), N);
 }
 
 
@@ -197,8 +203,15 @@ int GetArrayBin(float var, std::array<float, N> arr) {
  *  @param float var : the variable whose rigidity bin to determine
  *  @return int      : the rigidity bin of var
  */
-int GetRBin(float var) { 
-	return GetArrayBin(var, Rbins);
+int GetRBin(float var) {
+   return GetArrayBin(var, Rbins);
 }
 
 
+
+/** @brief Gives the ratio of MC gen / MC data ; used as a weight to fill histos
+ *  @return float      : ratio of MC gen / MC data for the known (global) rigidity
+ */
+float GetMCGenWeight() {
+   return 1;
+}

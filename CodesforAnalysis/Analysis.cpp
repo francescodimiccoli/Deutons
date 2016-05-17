@@ -130,8 +130,8 @@ int main(int argc, char * argv[])
 		B1=sqrt(1-1/(pow(E+1,2)));
 		B2=sqrt(1-1/(pow(E2+1,2)));
 		Betabins[binnum]=B1;
-		BetabinsR_P[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
-		BetabinsR_D[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
+		if (binnum<BetabinsR_P.size()) BetabinsR_P[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
+		if (binnum<BetabinsR_D.size()) BetabinsR_D[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
 		Betacent[binnum]=B2;
 		Ekincent[binnum]=1/pow(1-pow(B2,2),0.5)-1;
 		binnum++;
@@ -214,9 +214,10 @@ int main(int argc, char * argv[])
 	  }*/	
 	////////////////////////////
 	/////////// BINNAGGIO IN RIGIDITA'
-	for(int i=0;i<20;i++){
-		BetaD[i]=BetabinsR_D[i];
-		BetaP[i]=BetabinsR_P[i];
+	BetaD=BetabinsR_D;
+	BetaP=BetabinsR_P;
+	
+	for(int i=0;i<20;i++){	
 		BetaNaFD[i]=BetabinsNaFR_D[i];
 		BetaNaFP[i]=BetabinsNaFR_P[i];
 		BetaAglD[i]=BetabinsAglR_D[i];
