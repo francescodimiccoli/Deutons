@@ -119,33 +119,22 @@ int main(int argc, char * argv[])
 	cout<<"**************************** BETA BINS TOF***********************************"<<endl;
 
 	float ekmin=0.1, ekmax=1;
-
 	ToFDB.Setbins(nbinsToF, ekmin, ekmax);
-
 	ToFPB.Setbins(nbinsToF, ekmin, ekmax);
-
 	string TitoliTOF[nbinsToF];
 
 	cout<<"**************************** BETA BINS NaF***********************************"<<endl;
 
 	ekmin=0.666, ekmax=4.025;
-
 	NaFDB.Setbins(nbinsNaF, ekmin, ekmax);
-
 	NaFPB.Setbins(nbinsNaF, ekmin, ekmax);
 
-	
 	string TitoliNaF[nbinsNaF];
 	cout<<endl;
 	cout<<"**************************** BETA BINS Agl***********************************"<<endl;
 
 	ekmin=2.57, ekmax=9.01;
-
-
-
-	
-	AglDB.Setbins(nbinsAgl, ekmin, ekmax);
-	
+	AglDB.Setbins(nbinsAgl, ekmin, ekmax);	
 	AglPB.Setbins(nbinsAgl, ekmin, ekmax);
 
 	string TitoliAgl[nbinsAgl];
