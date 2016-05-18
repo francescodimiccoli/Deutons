@@ -90,10 +90,7 @@ std::array <float, nbinsToF> BetaD       = {0};
 std::array <float, nbinsToF> BetabinsR_P = {0};
 std::array <float, nbinsToF> BetabinsR_D = {0};
 
-std::array <float, nbinsNaF> BetaNaFP    = {0};
 std::array <float, nbinsNaF> BetabinsNaF       = {0};
-std::array <float, nbinsNaF> BetabinsNaFR_P    = {0};
-std::array <float, nbinsNaF> BetabinsNaFR_D    = {0};
 
 std::array <float, nbinsAgl> BetaAglP    = {0};
 std::array <float, nbinsAgl> BetaAglD    = {0};
@@ -233,31 +230,15 @@ class Binning {
       Binning(float m):          mass(m) {}
       Binning(float m, float z): mass(m), Z(z) {}
       void Setbins(int, float, float);
-      std::vector<float> EkBins  () {
-         return   ekbin;
-      }
-      std::vector<float> MomBins () {
-         return  mombin;
-      }
-      std::vector<float> RigBins () {
-         return  rigbin;
-      }
-      std::vector<float> BetaBins() {
-         return betabin;
-      }
+      std::vector<float> EkBins  () { return   ekbin;  }
+      std::vector<float> MomBins () { return  mombin;  }
+      std::vector<float> RigBins () { return  rigbin;  }
+      std::vector<float> BetaBins() { return betabin;  }
 
-      std::vector<float> EkBinsCent  () {
-         return   ekbincent;    // bin centers in log
-      }
-      std::vector<float> MomBinsCent () {
-         return  mombincent;
-      }
-      std::vector<float> RigBinsCent () {
-         return  rigbincent;
-      }
-      std::vector<float> BetaBinsCent() {
-         return  betabincent;
-      }
+      std::vector<float> EkBinsCent  () { return   ekbincent;}    // bin centers in log
+      std::vector<float> MomBinsCent () { return  mombincent;}
+      std::vector<float> RigBinsCent () { return  rigbincent;}
+      std::vector<float> BetaBinsCent() { return  betabincent;}
 
    protected:
       float mass = 0; // in GeV/C

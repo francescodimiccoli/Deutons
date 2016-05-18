@@ -128,7 +128,7 @@ void ACCEPTANCE::Set_Binning(bool deutons){
 
 		for(int i=0;i<nbins_beta; i++) {
 			binsBetaTOF[i] = BetabinsR_D   [i]; 
-			binsBetaNaF[i] = BetabinsNaFR_D[i]; 
+			binsBetaNaF[i] = NaFDB.MomBins()[i]; 
 			binsBetaAgl[i] = BetabinsAglR_D[i]; 	
 		}
 
@@ -136,7 +136,7 @@ void ACCEPTANCE::Set_Binning(bool deutons){
 
 		for(int i=0;i<nbins_beta; i++) {
 			binsBetaTOF[i] = BetabinsR_P   [i]; 
-			binsBetaNaF[i] = BetabinsNaFR_P[i]; 
+			binsBetaNaF[i] = NaFPB.MomBins()[i]; 
 			binsBetaAgl[i] = BetabinsAglR_P[i]; 	
 		}
 

@@ -59,8 +59,8 @@ double mean_betaNaF[30]={0};
 double mean_betaAgl[30]={0};
 float BetabinsAglR_P[18]={0};
 float BetabinsAglR_D[18]={0};
-float BetabinsNaFR_P[18]={0};
-float BetabinsNaFR_D[18]={0};
+float NaFPB.MomBins()[18]={0};
+float NaFDB.MomBins()[18]={0};
 float BetabinsR_P[18]={0};
 float BetabinsR_D[18]={0};
 
@@ -229,8 +229,8 @@ int main(int argc, char * argv[]){
 		E=exp(log(0.666)+binnum*a);
 		E2=exp(log(0.666)+(binnum+0.5)*a);
 		B1=sqrt(1-1/(pow(E+1,2)));
-		BetabinsNaFR_P[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
-                BetabinsNaFR_D[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
+		NaFPB.MomBins()[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
+                NaFDB.MomBins()[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
 		B2=sqrt(1-1/(pow(E2+1,2)));
 		BetabinsNaF[binnum]=B1;
 		BetacentNaF[binnum]=B2;
@@ -442,7 +442,7 @@ int main(int argc, char * argv[]){
 				RisoluzioniBeta_R_D[l]->Fill(1/Beta);
 			}
 			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) RisoluzioniBetaTOF_R_D[m]->Fill(1/Beta);
-			if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>BetabinsNaFR_D[m]&&R<=BetabinsNaFR_D[m+1]) RisoluzioniBetaNaF_R_D[m]->Fill(1/BetaRICH);
+			if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>NaFDB.MomBins()[m]&&R<=NaFDB.MomBins()[m+1]) RisoluzioniBetaNaF_R_D[m]->Fill(1/BetaRICH);
 			if((((int)Cutmask)>>11)==0) for(int m=0; m<18;m++) if(R>BetabinsAglR_D[m]&&R<=BetabinsAglR_D[m+1]) RisoluzioniBetaAgl_R_D[m]->Fill(1/BetaRICH);	
 		}
 		for(int m=0; m<18;m++) if(Beta>Betabins[m]&&Beta<=Betabins[m+1]){
@@ -615,7 +615,7 @@ int main(int argc, char * argv[]){
 				RisoluzioniBeta_R[l]->Fill(1/Beta);
 			}
 			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) RisoluzioniBetaTOF_R[m]->Fill(1/Beta);
-                        if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>BetabinsNaFR_D[m]&&R<=BetabinsNaFR_D[m+1]) {RisoluzioniBetaNaF_R[m]->Fill(1/BetaRICH);}
+                        if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>NaFDB.MomBins()[m]&&R<=NaFDB.MomBins()[m+1]) {RisoluzioniBetaNaF_R[m]->Fill(1/BetaRICH);}
                         if((((int)Cutmask)>>11)==0) for(int m=0; m<18;m++) if(R>BetabinsAglR_D[m]&&R<=BetabinsAglR_D[m+1]) {RisoluzioniBetaAgl_R[m]->Fill(1/BetaRICH);}
 
 			for(int m=0; m<18;m++) if(Beta>Betabins[m]&&Beta<=Betabins[m+1]){

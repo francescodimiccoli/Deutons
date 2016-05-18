@@ -39,7 +39,7 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Dbins -> TemplateHe-> Fill(mass,m);
 			}
-			if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) {
+			if(Var2>NaFPB.MomBins()[m]&&Var2<=NaFPB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Pbins -> TemplateP -> Fill(mass,m);
 				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Pbins -> TemplateHe-> Fill(mass,m);
@@ -88,7 +88,7 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 				if(R>1.2*Rcutoff) FitNaF_Dbins -> DATA -> Fill(mass,m);
 				((TH3*)FitNaFgeo_Dbins -> DATA) -> Fill(mass,m,zona);
 			}
-			if(Var2>BetaNaFP[m]&&Var2<=BetaNaFP[m+1]) {
+			if(Var2>NaFPB.MomBins()[m]&&Var2<=NaFPB.MomBins()[m+1]) {
 				if(R>1.2*Rcutoff) FitNaF_Pbins -> DATA -> Fill(mass,m);
 			}
 		}
