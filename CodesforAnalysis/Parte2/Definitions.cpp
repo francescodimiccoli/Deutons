@@ -105,6 +105,7 @@ std::array <float, nbinsAgl> BetabinsAglR_D    = {0};
 
 
 
+
 double R_cent[nbinsr];
 float encinprot     [nbinsr];
 float encindeut     [nbinsr];
@@ -217,3 +218,100 @@ int GetRBin(float var) {
 float GetMCGenWeight() {
    return 1;
 }
+
+
+
+class Binning {
+   public:
+      Binning(float m):          mass(m) {}
+      Binning(float m, float z): mass(m), Z(z) {}
+      void Setbins(int, float, float);
+      std::vector<float> GetEkBins  (){ return   ekbin; }
+      std::vector<float> GetMomBins (){ return  mombin; }
+      std::vector<float> GetRigBins (){ return  rigbin; }
+      std::vector<float> GetBetaBins(){ return betabin; }
+                 
+      std::vector<float> GetEkBinsCent  (){ return   ekbincent;  } // bin centers in log
+      std::vector<float> GetMomBinsCent (){ return  mombincent; }
+      std::vector<float> GetRigBinsCent (){ return  rigbincent; }
+      std::vector<float> GetBetaBinsCent(){ return  betabincent; }
+
+   protected:
+      float mass = 0; // in GeV/C
+      int Z = 1;      // number of positive charges
+
+      std::vector<float>   ekbin ;
+      std::vector<float>  mombin ;
+      std::vector<float>  rigbin ;
+      std::vector<float> betabin ;
+      
+      std::vector<float>   ekbincent ;
+      std::vector<float>  mombincent ;
+      std::vector<float>  rigbincent ;
+      std::vector<float> betabincent ;
+
+      float BetaFromEk (float ek)  { return sqrt(ek*ek + 2 * ek * mass) / (ek + mass);}
+      float GammaFromEk(float ek)  { return 1 + ek/mass; }
+      float MomFromEk  (float ek)  { return mass * BetaFromEk(ek) * GammaFromEk(ek);}
+      float RigFromMom (float mom) { return mom/Z ;}
+      float RigFromEk (float ek)   { return RigFromMom(MomFromEk(ek)) ;}
+
+};
+
+
+
+void Binning::Setbins(int nbins, float ekmin, float ekmax) {
+
+   float ekbinbeg=ekmin;
+   float binstep=(log(ekmax)-log(ekmin)) / nbins;
+   int binnum=0;
+
+   while (ekbinbeg<ekmax) {
+      // Bin beginnings
+      float ekbinbeg     = exp( log(binstep)+ binnum * binstep);
+      float beta   = BetaFromEk(ekbinbeg);
+      float mom    = MomFromEk(ekbinbeg);
+      float rig    = RigFromMom(mom);
+
+      ekbin  .push_back ( ekbinbeg);
+      betabin.push_back( beta );
+      mombin .push_back ( mom  );
+      rigbin .push_back ( rig  );
+
+      // Bin centers
+
+      float ekcent = exp( log(binstep)+ (binnum+0.5) * binstep);
+      beta = BetaFromEk(ekcent);
+      mom  = MomFromEk (ekcent);
+      rig  = RigFromMom(mom);
+
+      ekbincent.  push_back ( ekcent);
+      betabincent.push_back ( beta );
+      mombincent .push_back ( mom  );
+      rigbincent .push_back ( rig  );
+
+      binnum++;
+   }
+
+   // Bin ends
+
+   float ek  = exp( log(binstep)+ binnum * binstep);
+   float mom = MomFromEk(ekbinbeg);
+
+   ekbin  .push_back ( ekbinbeg       );
+   betabin.push_back ( BetaFromEk(ek) );
+   mombin .push_back ( mom            );
+   rigbin .push_back ( RigFromMom(mom));
+
+}
+
+class PBinning: public Binning {
+      PBinning() : Binning (0.9382720813) {}  // proton mass 938 MeV
+}; 
+class DBinning: public Binning {
+      DBinning() : Binning (0.18756129  ) {}  // deuterium mass 1876 MeV
+}; 
+
+
+
+
