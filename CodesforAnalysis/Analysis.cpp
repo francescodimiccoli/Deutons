@@ -119,9 +119,9 @@ int main(int argc, char * argv[])
 	cout<<"**************************** BETA BINS TOF***********************************"<<endl;
 
 	float ekmin=0.1, ekmax=1;
-	DBinning ToFDB;
+
 	ToFDB.Setbins(nbinsToF, ekmin, ekmax);
-	PBinning ToFPB;
+
 	ToFPB.Setbins(nbinsToF, ekmin, ekmax);
 
 	string TitoliTOF[nbinsToF];
@@ -129,9 +129,9 @@ int main(int argc, char * argv[])
 	cout<<"**************************** BETA BINS NaF***********************************"<<endl;
 
 	ekmin=0.666, ekmax=4.025;
-	DBinning NaFDB;
+
 	NaFDB.Setbins(nbinsNaF, ekmin, ekmax);
-	PBinning NaFPB;
+
 	NaFPB.Setbins(nbinsNaF, ekmin, ekmax);
 
 	
@@ -140,9 +140,12 @@ int main(int argc, char * argv[])
 	cout<<"**************************** BETA BINS Agl***********************************"<<endl;
 
 	ekmin=2.57, ekmax=9.01;
-	DBinning AglDB;
+
+
+
+	
 	AglDB.Setbins(nbinsAgl, ekmin, ekmax);
-	PBinning AglPB;
+	
 	AglPB.Setbins(nbinsAgl, ekmin, ekmax);
 
 	string TitoliAgl[nbinsAgl];

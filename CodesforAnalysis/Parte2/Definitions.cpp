@@ -91,7 +91,6 @@ std::array <float, nbinsToF> BetabinsR_P = {0};
 std::array <float, nbinsToF> BetabinsR_D = {0};
 
 std::array <float, nbinsNaF> BetaNaFP    = {0};
-std::array <float, nbinsNaF> BetaNaFD    = {0};
 std::array <float, nbinsNaF> BetabinsNaF       = {0};
 std::array <float, nbinsNaF> BetabinsNaFR_P    = {0};
 std::array <float, nbinsNaF> BetabinsNaFR_D    = {0};
@@ -200,6 +199,14 @@ int GetArrayBin(float var, std::array<float, N> arr) {
 }
 
 
+/** @brief Returns the bin of vector where var belongs
+ *  @param array arr : the (std::)array in which to search
+ *  @param float var : the variable whose location to search
+ *  @return int      : the bin number of var in arr
+ */
+int GetArrayBin(float var, std::vector<float> arr) {
+   return GetArrayBin(var, arr.data(), arr.size());
+}
 
 
 /** @brief Returns the rigidity bin where var belongs
@@ -226,15 +233,31 @@ class Binning {
       Binning(float m):          mass(m) {}
       Binning(float m, float z): mass(m), Z(z) {}
       void Setbins(int, float, float);
-      std::vector<float> GetEkBins  (){ return   ekbin; }
-      std::vector<float> GetMomBins (){ return  mombin; }
-      std::vector<float> GetRigBins (){ return  rigbin; }
-      std::vector<float> GetBetaBins(){ return betabin; }
-                 
-      std::vector<float> GetEkBinsCent  (){ return   ekbincent;  } // bin centers in log
-      std::vector<float> GetMomBinsCent (){ return  mombincent; }
-      std::vector<float> GetRigBinsCent (){ return  rigbincent; }
-      std::vector<float> GetBetaBinsCent(){ return  betabincent; }
+      std::vector<float> EkBins  () {
+         return   ekbin;
+      }
+      std::vector<float> MomBins () {
+         return  mombin;
+      }
+      std::vector<float> RigBins () {
+         return  rigbin;
+      }
+      std::vector<float> BetaBins() {
+         return betabin;
+      }
+
+      std::vector<float> EkBinsCent  () {
+         return   ekbincent;    // bin centers in log
+      }
+      std::vector<float> MomBinsCent () {
+         return  mombincent;
+      }
+      std::vector<float> RigBinsCent () {
+         return  rigbincent;
+      }
+      std::vector<float> BetaBinsCent() {
+         return  betabincent;
+      }
 
    protected:
       float mass = 0; // in GeV/C
@@ -244,17 +267,27 @@ class Binning {
       std::vector<float>  mombin ;
       std::vector<float>  rigbin ;
       std::vector<float> betabin ;
-      
+
       std::vector<float>   ekbincent ;
       std::vector<float>  mombincent ;
       std::vector<float>  rigbincent ;
       std::vector<float> betabincent ;
 
-      float BetaFromEk (float ek)  { return sqrt(ek*ek + 2 * ek * mass) / (ek + mass);}
-      float GammaFromEk(float ek)  { return 1 + ek/mass; }
-      float MomFromEk  (float ek)  { return mass * BetaFromEk(ek) * GammaFromEk(ek);}
-      float RigFromMom (float mom) { return mom/Z ;}
-      float RigFromEk (float ek)   { return RigFromMom(MomFromEk(ek)) ;}
+      float BetaFromEk (float ek)  {
+         return sqrt(ek*ek + 2 * ek * mass) / (ek + mass);
+      }
+      float GammaFromEk(float ek)  {
+         return 1 + ek/mass;
+      }
+      float MomFromEk  (float ek)  {
+         return mass * BetaFromEk(ek) * GammaFromEk(ek);
+      }
+      float RigFromMom (float mom) {
+         return mom/Z ;
+      }
+      float RigFromEk (float ek)   {
+         return RigFromMom(MomFromEk(ek)) ;
+      }
 
 };
 
@@ -308,12 +341,17 @@ void Binning::Setbins(int nbins, float ekmin, float ekmax) {
 class PBinning: public Binning {
    public:
       PBinning() : Binning (0.9382720813) {}  // proton mass 938 MeV
-}; 
+};
 class DBinning: public Binning {
    public:
       DBinning() : Binning (0.18756129  ) {}  // deuterium mass 1876 MeV
-}; 
+};
 
 
-
+DBinning ToFDB;
+PBinning ToFPB;
+DBinning NaFDB;
+PBinning NaFPB;
+DBinning AglDB;
+PBinning AglPB;
 

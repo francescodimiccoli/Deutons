@@ -67,7 +67,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 		if(Distcut&&Likcut)	FillBinMGen(EffLikMCD->afterTOF , Kbin);
 
 		if(((int)Cutmask)>>11==512) {
-			Kbin=GetArrayBin(Var2, BetaNaFD);
+			Kbin=GetArrayBin(Var2, NaFDB.MomBins());
 			FillBinMGen(EffLikMCD ->beforeNaF, Kbin);
 			FillBinMGen(EffDistMCD->beforeNaF, Kbin);
 			if(Distcut)             FillBinMGen(EffDistMCD ->afterNaF , Kbin);
