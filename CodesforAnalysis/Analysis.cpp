@@ -117,109 +117,39 @@ int main(int argc, char * argv[])
 	}
 
 	cout<<"**************************** BETA BINS TOF***********************************"<<endl;
-	float B=0.4;
-	float B1=0;
-	float B2=0;
-	float E=0.1;
-	int binnum=0;
-	float a=(log(1)-log(0.1))/nbinsToF;
-	float E2=exp(log(0.1)+1.5*a);
-	while(B1<0.85){
-		E=exp(log(0.1)+binnum*a);
-		E2=exp(log(0.1)+(binnum+0.5)*a);
-		B1=sqrt(1-1/(pow(E+1,2)));
-		B2=sqrt(1-1/(pow(E2+1,2)));
-		Betabins[binnum]=B1;
-		if (binnum<BetabinsR_P.size()) BetabinsR_P[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
-		if (binnum<BetabinsR_D.size()) BetabinsR_D[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
-		Betacent[binnum]=B2;
-		Ekincent[binnum]=1/pow(1-pow(B2,2),0.5)-1;
-		binnum++;
-	}
+
+	float ekmin=0.1, ekmax=1;
+	DBinning ToFDB;
+	ToFDB.Setbins(nbinsToF, ekmin, ekmax);
+	PBinning ToFPB;
+	ToFPB.Setbins(nbinsToF, ekmin, ekmax);
 
 	string TitoliTOF[nbinsToF];
-	for(int i=0;i<nbinsToF ;i++) {
-		deltaencinTOF[i]=(1/pow(1-pow(Betabins[i+1],2),0.5)-1)-(1/pow(1-pow(Betabins[i],2),0.5)-1);
-		
-		ostringstream ss;
-		ss<<Betabins[i];
-		TitoliTOF[i]= ss.str();
-		cout<<BetabinsR_P[i]<<" "<<BetabinsR_D[i]<<endl;
-	}
-	cout<<endl;
 
 	cout<<"**************************** BETA BINS NaF***********************************"<<endl;
-	a=(log(4.025)-log(0.666))/nbinsNaF;
-	E2=exp(log(0.666)+1.5*a);
-	binnum=0;
-	while(B1<0.98){
-		E=exp(log(0.666)+binnum*a);
-		E2=exp(log(0.666)+(binnum+0.5)*a);
-		B1=sqrt(1-1/(pow(E+1,2)));
-		B2=sqrt(1-1/(pow(E2+1,2)));
-		if (binnum<BetabinsNaF   .size()) BetabinsNaF   [binnum]=B1;
-		if (binnum<BetabinsNaFR_P.size()) BetabinsNaFR_P[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
-		if (binnum<BetabinsNaFR_D.size()) BetabinsNaFR_D[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
-		BetacentNaF[binnum]=B2;
-		EkincentNaF[binnum]=1/pow(1-pow(B1,2),0.5)-1;
-		binnum++;
-	}
 
-	string TitoliNaF[nbinsNaF];
+	ekmin=0.666, ekmax=4.025;
+	DBinning NaFDB;
+	NaFDB.Setbins(nbinsNaF, ekmin, ekmax);
+	PBinning NaFPB;
+	NaFPB.Setbins(nbinsNaF, ekmin, ekmax);
+
 	
-	for(int i=0;i<nbinsNaF;i++) {	
-		deltaencinNaF[i]=(1/pow(1-pow(BetabinsNaF[i+1],2),0.5)-1)-(1/pow(1-pow(BetabinsNaF[i],2),0.5)-1);
-		
-		ostringstream ss;
-		ss<<BetabinsNaF[i];
-		TitoliNaF[i]= ss.str();
-	}
+	string TitoliNaF[nbinsNaF];
 	cout<<endl;
 	cout<<"**************************** BETA BINS Agl***********************************"<<endl;
-	
-	a=(log(9.01)-log(2.57))/nbinsAgl ;
-	E2=exp(log(2.57)+1.5*a);
-	binnum=0;
-	while(B1<0.995){
-		E=exp(log(2.57)+binnum*a);
-		E2=exp(log(2.57)+(binnum+0.5)*a);
-		B1=sqrt(1-1/(pow(E+1,2)));
-		B2=sqrt(1-1/(pow(E2+1,2)));
-		if (binnum<BetabinsAgl   .size())  BetabinsAgl   [binnum]=B1;
-		if (binnum<BetabinsAglR_P.size())  BetabinsAglR_P[binnum]=0.938*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
-		if (binnum<BetabinsAglR_D.size())  BetabinsAglR_D[binnum]=1.875*pow(pow(B1,2)/(1-pow(B1,2)),0.5);
-		BetacentAgl[binnum]=B2;
-		EkincentAgl[binnum]=1/pow(1-pow(B2,2),0.5)-1;
-		binnum++;
-	}
+
+	ekmin=2.57, ekmax=9.01;
+	DBinning AglDB;
+	AglDB.Setbins(nbinsAgl, ekmin, ekmax);
+	PBinning AglPB;
+	AglPB.Setbins(nbinsAgl, ekmin, ekmax);
 
 	string TitoliAgl[nbinsAgl];
-	for(int i=0;i<nbinsAgl; i++) {
-		deltaencinAgl[i]=(1/pow(1-pow(BetabinsAgl[i+1],2),0.5)-1)-(1/pow(1-pow(BetabinsAgl[i],2),0.5)-1);
-		
-		ostringstream ss;
-		ss<<BetabinsAgl[i];
-		TitoliAgl[i]= ss.str();
-	}
+
 	cout<<endl;
 
-	/*//////// BINNAGGIO IN BETA
-     BetaD   =Betabins   ;
-	  BetaP   =Betabins   ;
-	  BetaNaFD=BetabinsNaF;
-	  BetaNaFP=BetabinsNaF;
-	  for(int i=0;i<19;i++){
-	    BetaAglD[i]=BetabinsAgl[i];
-	    BetaAglP[i]=BetabinsAgl[i];
-	  }*/	
-	////////////////////////////
-	/////////// BINNAGGIO IN RIGIDITA'
-	BetaD=BetabinsR_D;
-	BetaP=BetabinsR_P;
-	BetaNaFD=BetabinsNaFR_D;
-	BetaNaFP=BetabinsNaFR_P;
-	BetaAglD=BetabinsAglR_D;
-	BetaAglP=BetabinsAglR_P;
+
 	
 	////////////////////////////
 

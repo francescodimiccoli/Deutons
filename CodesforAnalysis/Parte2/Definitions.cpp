@@ -306,9 +306,11 @@ void Binning::Setbins(int nbins, float ekmin, float ekmax) {
 }
 
 class PBinning: public Binning {
+   public:
       PBinning() : Binning (0.9382720813) {}  // proton mass 938 MeV
 }; 
 class DBinning: public Binning {
+   public:
       DBinning() : Binning (0.18756129  ) {}  // deuterium mass 1876 MeV
 }; 
 
