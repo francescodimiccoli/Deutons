@@ -17,7 +17,7 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
       // Beta bins
       EffpreselMCP->beforeTOF->Fill( GetArrayBin(Var3, BetaP), GetMCGenWeight() );
       EffpreselMCP->beforeNaF->Fill( GetArrayBin(Var3, BetaNaFP), GetMCGenWeight() );
-      EffpreselMCP->beforeAgl->Fill( GetArrayBin(Var3, BetaAglP , nbinsAgl), GetMCGenWeight() );
+      EffpreselMCP->beforeAgl->Fill( GetArrayBin(Var3, BetaAglP), GetMCGenWeight() );
 
       if(Unbias==0 && ((int)Cutmask&187)==187 && Beta_pre>0 && R_pre>0)
       {
