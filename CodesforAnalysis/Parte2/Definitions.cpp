@@ -70,24 +70,19 @@ bool qualcut=true;
 float a= (log (0.9)-log (0.1) ) /nbinsbeta;
 float E2=exp (log (0.1)+1.5*a);
 
-float Betabins      [nbinsbeta] = {0};
+
 float Betacent      [nbinsbeta] = {0};
 float Ekincent      [nbinsbeta] = {0};
 
 float BetacentNaF   [nbinsNaF]  = {0};
 float EkincentNaF   [nbinsNaF]  = {0};
-
 float BetacentAgl   [nbinsAgl]  = {0};
 float EkincentAgl   [nbinsAgl]  = {0};
 
 float Unbias=0;
 
-float bin[nbinsr+1];
+
 std::array <float, nbinsr+1> Rbins;
-
-
-
-
 
 
 double R_cent[nbinsr];
@@ -183,15 +178,15 @@ int GetArrayBin (float var, float* arr, int nbins)
  *  @param float var : the variable whose location to search
  *  @return int      : the bin number of var in arr
  */
-template <std::size_t N>
-int GetArrayBin (float var, std::array<float, N> arr)
+
+int GetRBin (float var)
 {
-   return GetArrayBin (var, arr.data(), N);
+   return GetArrayBin (var, Rbins.data(), Rbins.size());
 }
 
 
 /** @brief Returns the bin of vector where var belongs
- *  @param array arr : the (std::)array in which to search
+ *  @param std::vector arr : the vector in which to search
  *  @param float var : the variable whose location to search
  *  @return int      : the bin number of var in arr
  */
@@ -201,14 +196,6 @@ int GetArrayBin (float var, std::vector<float> arr)
 }
 
 
-/** @brief Returns the rigidity bin where var belongs
- *  @param float var : the variable whose rigidity bin to determine
- *  @return int      : the rigidity bin of var
- */
-int GetRBin (float var)
-{
-   return GetArrayBin (var, Rbins);
-}
 
 
 

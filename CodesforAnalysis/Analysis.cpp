@@ -103,8 +103,7 @@ int main(int argc, char * argv[])
 	for(int i=0;i<nbinsr+1;i++)
 	{
 		float temp=i+14;
-		bin[i]=0.1*pow(10,temp/(9.5*2));
-		Rbins[i]=bin[i];
+		Rbins[i]=0.1*pow(10,temp/(9.5*2));
 		if(i<nbinsr) {R_cent[i]=0.1*pow(10,(temp+0.5)/(9.5*2));
 			encindeut[i]=pow(((1+pow((R_cent[i]/1.875),2))),0.5)-1;
 			encinprot[i]=pow(((1+pow((R_cent[i]/0.938),2))),0.5)-1;
