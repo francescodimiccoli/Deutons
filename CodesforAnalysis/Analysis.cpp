@@ -102,16 +102,12 @@ int main(int argc, char * argv[])
    cout<<"****************************** R BINS ***************************************"<<endl;
 
 	RB.Setbins(nbinsr, 0.5, 100, 2);
-   for(int i=0; i<nbinsr+1; i++) {
-      float temp=i+14;
-      if(i<nbinsr) {
-         encindeut[i]=pow(1+pow( RB.RigBins()[i]/1.875, 2) ,0.5)-1;
-         encinprot[i]=pow(1+pow( RB.RigBins()[i]/0.938, 2) ,0.5)-1;
-      }
-   }
+  
    for(int i=0; i<RB.size()-1; i++) {
-      deltaencinprot[i]=(pow(((1+pow((RB.RigBins()[i]/0.938),2))),0.5)-1)-(pow(((1+pow(( RB.RigBins()[i-1]/0.938),2))),0.5)-1);
-      deltaencindeut[i]=(pow(((1+pow((RB.RigBins()[i]/1.875),2))),0.5)-1)-(pow(((1+pow((RB.RigBins()[i-1]/1.875),2))),0.5)-1);
+      encinprot[i]=pow(1+pow( RB.RigBins()[i]/0.938, 2) ,0.5)-1;
+      if (i>0) deltaencinprot[i]=encinprot[i]-encinprot[i-1];
+      encindeut[i]=pow(1+pow( RB.RigBins()[i]/1.875, 2) ,0.5)-1;
+      if (i>0) deltaencindeut[i]=encindeut[i]-encindeut[i-1];
       cout<<R_cent[i]<<endl;
    }
 
