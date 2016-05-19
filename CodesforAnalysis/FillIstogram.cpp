@@ -6,23 +6,15 @@ void FillIstogram(int INDX,string frac,string mese)
 
 	TH1F * Esposizione[11];
 	string tagli[10]={"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
-	string nome;
-	float DXWind[nbinsr];
 	for(int i=0;i<11;i++) {
-		nome="Esposizione"+to_string(i);
+		string nome="Esposizione"+to_string(i);
 		Esposizione[i]= new TH1F(nome.c_str(),nome.c_str(),nbinsr,0,nbinsr);
 	}
 
 
 	float fraz=1;
-	float Q=0;
-	float temp=0;
 	float Zona=0;
-	int UnbiasPre=9;
-	float tempi[11]={0};
-	float Esposizionegeo[nbinsr][11]={{0}};
 	double geomag[12]={0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
-	float DistTOF,DistTrack,DistTRD=0;
 	int progress=0;
 	
 	cout<<"*********************** CALIB. READING *********************"<<endl;

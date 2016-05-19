@@ -135,27 +135,14 @@ void DistanceCut(TFile * file1){
 	TH2F * Dist5D_PdistrD_TOF =  (TH2F *)file1->Get("Dist5D_PdistrD_TOF" 	);
 	TH2F * Dist5D_PdistrHe_TOF=  (TH2F *)file1->Get("Dist5D_PdistrHe_TOF"	);
 
-	TH2F * Dist5DdistrP_TOF   =  (TH2F *)file1->Get("Dist5DdistrP_TOF"   	);
-	TH2F * Dist5DdistrD_TOF   =  (TH2F *)file1->Get("Dist5DdistrD_TOF"   	);
-	TH2F * Dist5DdistrHe_TOF  =  (TH2F *)file1->Get("Dist5DdistrHe_TOF"  	);
-
-
 	TH2F * Dist5D_PdistrP_NaF =  (TH2F *)file1->Get("Dist5D_PdistrP_NaF" 	);
 	TH2F * Dist5D_PdistrD_NaF =  (TH2F *)file1->Get("Dist5D_PdistrD_NaF" 	);
 	TH2F * Dist5D_PdistrHe_NaF=  (TH2F *)file1->Get("Dist5D_PdistrHe_NaF"	);
-
-	TH2F * Dist5DdistrP_NaF   =  (TH2F *)file1->Get("Dist5DdistrP_NaF"   	);
-	TH2F * Dist5DdistrD_NaF   =  (TH2F *)file1->Get("Dist5DdistrD_NaF"   	);
-	TH2F * Dist5DdistrHe_NaF  =  (TH2F *)file1->Get("Dist5DdistrHe_NaF"  	);
-
 
 	TH2F * Dist5D_PdistrP_Agl =  (TH2F *)file1->Get("Dist5D_PdistrP_Agl" 	);
 	TH2F * Dist5D_PdistrD_Agl =  (TH2F *)file1->Get("Dist5D_PdistrD_Agl" 	);
 	TH2F * Dist5D_PdistrHe_Agl=  (TH2F *)file1->Get("Dist5D_PdistrHe_Agl"	);
 
-	TH2F * Dist5DdistrP_Agl   =  (TH2F *)file1->Get("Dist5DdistrP_Agl"   	);
-	TH2F * Dist5DdistrD_Agl   =  (TH2F *)file1->Get("Dist5DdistrD_Agl"   	);
-	TH2F * Dist5DdistrHe_Agl  =  (TH2F *)file1->Get("Dist5DdistrHe_Agl"  	);
 
 
 	TH1F * DistanceHe_TOF 	= (TH1F *)Dist5D_PdistrHe_TOF -> ProjectionX("DistanceHe_TOF",0,Dist5D_PdistrHe_TOF->GetNbinsY()) -> Clone();

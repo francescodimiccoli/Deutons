@@ -13,7 +13,6 @@ Efficiency * Eff_do_LikMCP   = new Efficiency("Eff_do_LikMCP");
 void FluxFactorizationtest_Pre_Fill(TNtuple *ntupla, int l){
 	 ntupla->GetEvent(l);
 	if(Unbias!=0||Beta_pre<=0||R_pre<=0) return;
-	int Kbin;
 	int Rbin;
 	// full set efficiency before
 	if(((int)Cutmask&notpassed[0])==notpassed[0]){
