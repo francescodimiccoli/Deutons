@@ -80,58 +80,55 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat)
 double TemplateFIT::GetFitWheights(int par, int bin,int lat)
 {
    if(GetFitOutcome(bin,lat)!=0)   return  1;
-   if(GetFitOutcome(bin,lat)==0) {
-      double w1,e1 = 0;
-      fits[lat][bin]-> Tfit ->GetResult(par,w1,e1);
-      TH1F * Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();
-      float itot= Result->Integral();
-      float i1;
-      if(par == 0) i1 = fits[lat][bin]-> Templ_P  ->Integral();
-      if(par == 1) i1 = fits[lat][bin]-> Templ_D  ->Integral();
-      if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral();
-      return w1*itot/i1;
-   }
+   double w1,e1 = 0;
+   fits[lat][bin]-> Tfit ->GetResult(par,w1,e1);
+   TH1F * Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();
+   float itot= Result->Integral();
+   float i1;
+   if(par == 0) i1 = fits[lat][bin]-> Templ_P  ->Integral();
+   if(par == 1) i1 = fits[lat][bin]-> Templ_D  ->Integral();
+   if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral();
+   return w1*itot/i1;
 }
 
 double TemplateFIT::GetFitFraction(int par, int bin,int lat)
 {
    if(GetFitOutcome(bin,lat)!=0)   return  0;
-   if(GetFitOutcome(bin,lat)==0) {
-      double w1,e1 = 0;
-      fits[lat][bin]-> Tfit ->GetResult(par,w1,e1);
-      fits[lat][bin] -> Tfit -> GetPlot();
-      return w1;
-   }
+   double w1,e1 = 0;
+   fits[lat][bin]-> Tfit ->GetResult(par,w1,e1);
+   fits[lat][bin] -> Tfit -> GetPlot();
+   return w1;
+
 }
 
 double TemplateFIT::GetFitErrors(int par,int bin,int lat)
 {
    if(GetFitOutcome(bin,lat)!=0) return  0;
-   if(GetFitOutcome(bin,lat)==0) {
-      double w1,e1=0;
-      double w2,e2=0;
-      double w3,e3=0;
-      fits[lat][bin]-> Tfit ->GetResult(0,w1,e1);
-      fits[lat][bin]-> Tfit ->GetResult(1,w2,e2);
-      fits[lat][bin]-> Tfit ->GetResult(2,w3,e3);
 
-      float Cov01=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
-      float Cov02=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,2);
-      float Cov12=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(1,2);
+   double w1,e1=0;
+   double w2,e2=0;
+   double w3,e3=0;
+   fits[lat][bin]-> Tfit ->GetResult(0,w1,e1);
+   fits[lat][bin]-> Tfit ->GetResult(1,w2,e2);
+   fits[lat][bin]-> Tfit ->GetResult(2,w3,e3);
 
-      float Sigma=pow((pow(w2*e2,2)+pow(w1*e1,2)+pow(w3*e3,2)
-                       -2*Cov01*w1*w2-2*Cov02*w1*w3
-                       -2*Cov12*w2*w3)/2,0.5);
+   float Cov01=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
+   float Cov02=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,2);
+   float Cov12=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(1,2);
 
-      double Err = Sigma;//pow((Sigma/w2,2) + pow(Sigma/w1,2),0.5); //Fit relative error
+   float Sigma=pow((pow(w2*e2,2)+pow(w1*e1,2)+pow(w3*e3,2)
+                    -2*Cov01*w1*w2-2*Cov02*w1*w3
+                    -2*Cov12*w2*w3)/2,0.5);
 
-      TH1F * ResultPlot;
-      if(par == 0)	ResultPlot = GetResult_P (bin,lat);
-      if(par == 1)    ResultPlot = GetResult_D (bin,lat);
-      if(par == 2)    ResultPlot = GetResult_He(bin,lat);
+   double Err = Sigma;//pow((Sigma/w2,2) + pow(Sigma/w1,2),0.5); //Fit relative error
 
-      return Err * ResultPlot->Integral(); //Fit absolute error
-   }
+   TH1F * ResultPlot;
+   if(par == 0)	ResultPlot = GetResult_P (bin,lat);
+   if(par == 1)   ResultPlot = GetResult_D (bin,lat);
+   if(par == 2)   ResultPlot = GetResult_He(bin,lat);
+
+   return Err * ResultPlot->Integral(); //Fit absolute error
+
 }
 
 void TemplateFIT::TemplateFits(int mc_type)

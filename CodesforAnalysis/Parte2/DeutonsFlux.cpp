@@ -547,7 +547,6 @@ void DeutonFlux() {
 
 	TGraph* galpropratio1=new TGraph();
 	TGraph* galpropratio2=new TGraph();
-	x,y=0;
 	j=0;
 	{
 		string nomefile="./Galprop/Trotta2011/PDratio/500.dat";

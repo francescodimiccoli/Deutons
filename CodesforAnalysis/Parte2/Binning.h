@@ -94,9 +94,8 @@ class Binning {
 
 
    protected:
-      int Z=1;
       float mass;
-
+      int Z=1;
       int type=0;       ///< binning in 0: not done, 1 energy, 2 rigidity
 
       std::vector<float>   ekbin ;
@@ -109,6 +108,9 @@ class Binning {
       std::vector<float>  mombincent ;
       std::vector<float>  rigbincent ;
       std::vector<float> betabincent ;
+
+   public:
+      
 
 };
 
@@ -191,7 +193,7 @@ std::vector<float> Binning::EkPerMassBins()
 int Binning::GetRBin (float var)
 {
    if (var<rigbin[0]) return -1;
-   for (int ib=0; ib<rigbin.size(); ib++)  {
+   for (uint ib=0; ib<rigbin.size(); ib++)  {
       if (var>rigbin[ib] && var<=rigbin[ib+1])
          return ib;
    }
