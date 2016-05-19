@@ -37,7 +37,7 @@ void DVSMCQualeffD_D_Fill(TNtuple *ntupla, int l,int zona){
 	}
 	//Agl
 	if(((int)Cutmask)>>11==0) {
-		Kbin=GetArrayBin(Var, BetaAglD);
+		Kbin=GetArrayBin(Var, AglDB.MomBins());
 		Dist_DvsMC_D -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_D  -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 
@@ -86,7 +86,7 @@ void DVSMCQualeffD_Fill(TNtuple *ntupla, int l){
 		}
 		//Agl
 		if(((int)Cutmask)>>11==0) {	
-			Kbin=GetArrayBin(Var, BetaAglD);
+			Kbin=GetArrayBin(Var, AglDB.MomBins());
 			Dist_DvsMC_D -> MCEff -> beforeAgl -> Fill(Kbin,ReturnMCGenType());
 			if(Distcut) Lik_DvsMC_D  -> MCEff -> beforeAgl -> Fill(Kbin,ReturnMCGenType());
 

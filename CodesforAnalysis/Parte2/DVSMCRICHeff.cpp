@@ -18,7 +18,7 @@ void DVSMCRICHeff_D_Fill(TNtuple *ntupla, int l,int zona){
 	RICH_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);	
 	if(((int)Cutmask)>>11==512) RICH_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
 	//Agl
-	Kbin=GetArrayBin(Var, BetaAglD);
+	Kbin=GetArrayBin(Var, AglDB.MomBins());
         RICH_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);	
 	if(((int)Cutmask)>>11==0) RICH_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona); 
 	return;
@@ -42,7 +42,7 @@ void DVSMCRICHeff_Fill(TNtuple *ntupla, int l){
 		if(((int)Cutmask)>>11==512) RICH_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin);
 
 		//Agl
-		Kbin=GetArrayBin(Var, BetaAglD);
+		Kbin=GetArrayBin(Var, AglDB.MomBins());
                 RICH_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);	
 		if(((int)Cutmask)>>11==0) RICH_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin); 	
 

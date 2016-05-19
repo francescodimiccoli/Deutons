@@ -49,12 +49,12 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 	for(int m=0;m<nbinsAgl;m++) { //Agl
 		if((((int)Cutmask)>>11)==0){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
-			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
+			if(Var2>AglDB.MomBins()[m]&&Var2<=AglDB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Dbins -> TemplateP -> Fill(mass,m);
 				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Dbins -> TemplateHe-> Fill(mass,m);
 			}
-			if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) {
+			if(Var2>AglPB.MomBins()[m]&&Var2<=AglPB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Pbins -> TemplateP -> Fill(mass,m);
 				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Pbins -> TemplateHe-> Fill(mass,m);
@@ -96,11 +96,11 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 	for(int m=0;m<nbinsAgl;m++){ //Agl
 		if((((int)Cutmask)>>11)==0){
 			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
-			if(Var2>BetaAglD[m]&&Var2<=BetaAglD[m+1]) {
+			if(Var2>AglDB.MomBins()[m]&&Var2<=AglDB.MomBins()[m+1]) {
 				if(R>1.2*Rcutoff) FitAgl_Dbins -> DATA -> Fill(mass,m);
 				((TH3*)FitAglgeo_Dbins -> DATA) -> Fill(mass,m,zona);
 			}
-			if(Var2>BetaAglP[m]&&Var2<=BetaAglP[m+1]) {
+			if(Var2>AglPB.MomBins()[m]&&Var2<=AglPB.MomBins()[m+1]) {
 				if(R>1.2*Rcutoff) FitAgl_Pbins -> DATA -> Fill(mass,m);
 			}
 		}

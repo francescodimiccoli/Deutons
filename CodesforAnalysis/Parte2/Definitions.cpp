@@ -86,9 +86,6 @@ float bin[nbinsr+1];
 std::array <float, nbinsr+1> Rbins;
 
 
-std::array <float, nbinsAgl> BetaAglP    = {0};
-std::array <float, nbinsAgl> BetaAglD    = {0};
-
 
 
 
