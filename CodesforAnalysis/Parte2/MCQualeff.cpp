@@ -14,7 +14,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 	int Kbin;
 	if(Massa_gen<1) {
 		//R bins
-		Kbin=GetRBin(R);
+		Kbin=RB.GetRBin(R);
 
 		EffLikMCP->beforeR->Fill(Kbin);
 		EffDistMCP->beforeR->Fill(Kbin);
@@ -23,7 +23,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 
 
 		//Beta bins
-		Kbin=GetArrayBin(Var, ToFPB.MomBins());
+		Kbin=ToFPB.GetRBin(Var);
 
 		EffLikMCP ->beforeTOF->Fill(Kbin);
 		EffDistMCP->beforeTOF->Fill(Kbin);
@@ -32,7 +32,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 
 
 		if(((int)Cutmask)>>11 ==512) {
-			Kbin=GetArrayBin(Var2, NaFPB.MomBins());
+			Kbin=NaFPB.GetRBin(Var2);
 			EffLikMCP  ->beforeNaF->Fill(Kbin);
 			EffDistMCP ->beforeNaF->Fill(Kbin);
 			if(Distcut)             EffDistMCP  ->afterNaF ->Fill(Kbin);
@@ -40,7 +40,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 		}
 
 		if(((int)Cutmask)>>11==0) {
-			Kbin=GetArrayBin(Var2, AglPB.MomBins());
+			Kbin=AglPB.GetRBin(Var2);
 			EffLikMCP->beforeAgl->Fill(Kbin);
 			EffDistMCP->beforeAgl->Fill(Kbin);
 			if(Distcut) 		EffDistMCP->afterAgl->Fill(Kbin);
@@ -51,7 +51,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 	}
 	if(Massa_gen<2&&Massa_gen>1) {
 		//R bins
-		Kbin=GetRBin(R);
+		Kbin=RB.GetRBin(R);
 
 		FillBinMGen(EffLikMCD ->beforeR, Kbin);
 		FillBinMGen(EffDistMCD->beforeR, Kbin);
@@ -60,14 +60,14 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 
 
 		//Beta bins
-		Kbin=GetArrayBin(Var, ToFDB.MomBins());
+		Kbin=ToFDB.GetRBin(Var);
 		FillBinMGen(EffLikMCD ->beforeTOF, Kbin);
 		FillBinMGen(EffDistMCD->beforeTOF, Kbin);
 		if(Distcut)             FillBinMGen(EffDistMCD ->afterTOF , Kbin);
 		if(Distcut&&Likcut)	FillBinMGen(EffLikMCD->afterTOF , Kbin);
 
 		if(((int)Cutmask)>>11==512) {
-			Kbin=GetArrayBin(Var2, NaFDB.MomBins());
+			Kbin=NaFDB.GetRBin(Var2);
 			FillBinMGen(EffLikMCD ->beforeNaF, Kbin);
 			FillBinMGen(EffDistMCD->beforeNaF, Kbin);
 			if(Distcut)             FillBinMGen(EffDistMCD ->afterNaF , Kbin);
@@ -75,7 +75,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 		}
 
 		if(((int)Cutmask)>>11==0) {
-			Kbin=GetArrayBin(Var2, AglDB.MomBins());
+			Kbin=AglDB.GetRBin(Var2);
 			FillBinMGen(EffLikMCD ->beforeAgl, Kbin);
 			FillBinMGen(EffDistMCD->beforeAgl, Kbin);
 			if(Distcut)             FillBinMGen(EffDistMCD ->afterAgl , Kbin);

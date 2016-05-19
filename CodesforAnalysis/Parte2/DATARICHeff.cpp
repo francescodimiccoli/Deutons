@@ -12,7 +12,7 @@ void DATARICHeff_Fill(TNtuple *ntupla, int l,int zona) {
 	if(!((R>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!Herejcut) return;
 
-	int Kbin=GetRBin(R);
+	int Kbin=RB.GetRBin(R);
 
 	LATrichDATA_NaF -> beforeR -> Fill(Kbin,zona);
 	LATrichDATA_Agl	-> beforeR -> Fill(Kbin,zona);

@@ -6,14 +6,14 @@ void DATAUnbiaseff_Fill(TNtuple *ntupla, int l) {
    int k = ntupla->GetEvent(l);
    if(((int)Cutmask&187)!=187||R_pre<=0||Beta_pre<=0||R_pre<1.2*Rcutoff) return;
    
-   int Kbin=GetRBin(fabs(R_pre));
+   int Kbin=RB.GetRBin(fabs(R_pre));
    if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2) {
       EffUnbiasDATA->beforeR->Fill(Kbin);
       if(Unbias==1) EffUnbiasDATA->afterR->Fill(Kbin);
    }
 
    if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2) {
-      Kbin=GetArrayBin(Var, ToFPB.MomBins());
+      Kbin=ToFPB.GetRBin(Var);
       EffUnbiasDATA->beforeTOF->Fill(Kbin);
       if(Unbias==1) EffUnbiasDATA->afterTOF->Fill(Kbin);
    }

@@ -7,7 +7,7 @@ void MigrationMatrix_Fill(TNtuple *ntupla, int l){
 	int k = ntupla->GetEvent(l);
 	if(!(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0))	return;
 	if(Massa_gen<1&&Massa_gen>0.5) 
-		MigrMatrix->Fill(GetRBin(fabs(R_pre)) , GetRBin(Momento_gen));
+		MigrMatrix->Fill(RB.GetRBin(fabs(R_pre)) , RB.GetRBin(Momento_gen));
 }
 
 void MigrationMatrix_Write(){

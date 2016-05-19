@@ -1,4 +1,7 @@
-
+/** @brief Classed used to convert between kinetic energy, momentum, rigidity and beta
+ * @author $Author: L. Basara$
+ * @date   $Date: 2016/05/19$
+ */
 
 class Particle {
    public:
@@ -44,26 +47,48 @@ void Particle::FillFromRig( float r)
 }
 
 
+
+
+
+
+
+
+
+
+
+/** @brief Class used for all the binning manipulation
+ * @author $Author: L. Basara$
+ * @date $Date: 2016/05/19$
+ */
+
 class Binning {
    public:
-      Binning () : mass(0) {}   ;                       
+      Binning () : mass(0) {}   ;
       Binning (float m) :           mass(m)       {}
       Binning (float m, float z) :  mass(m), Z(1) {}
-      void Setbins (int, float, float, int type=1); // type -- binning in 0: not done, 1 energy, 2 rigidity
+      void Setbins (int, float, float, int type=1); ///< type -- binning in 0: not done, 1 energy, 2 rigidity
       int size() {return ekbin.size(); };
 
-      
+
+
+      /** @brief Returns the rigidity bin containing the variable
+       *  @param float var : the variable whose location to search
+       *  @return int      : the bin number in rigidity of the variable
+       */
+      int GetRBin(float var);
+
+
       std::vector<float> EkBins  ()   {  return   ekbin;   }
       std::vector<float> MomBins ()   {  return  mombin;   }
       std::vector<float> RigBins ()   {  return  rigbin;   }
       std::vector<float> BetaBins()   {  return betabin;   }
 
-      std::vector<float> EkBinsCent()   { return   ekbincent;  }  // bin centers in log
+      std::vector<float> EkBinsCent()   { return   ekbincent;  }  ///< bin centers in log
       std::vector<float> MomBinsCent () { return  mombincent;  }
       std::vector<float> RigBinsCent () { return  rigbincent;  }
       std::vector<float> BetaBinsCent() { return  betabincent; }
 
-      std::vector<float> EkPerMassBins  ();  // returns Ek per mass
+      std::vector<float> EkPerMassBins  ();  ///< returns Ek per mass
 
       int Type() {return type;}
 
@@ -72,7 +97,7 @@ class Binning {
       int Z=1;
       float mass;
 
-      int type=0;       // binning in 0: not done, 1 energy, 2 rigidity
+      int type=0;       ///< binning in 0: not done, 1 energy, 2 rigidity
 
       std::vector<float>   ekbin ;
       std::vector<float>  mombin ;
@@ -147,11 +172,46 @@ void Binning::Setbins (int nbins, float min, float max, int typ)
 }
 
 
-std::vector<float> Binning::EkPerMassBins() {
+
+
+
+
+std::vector<float> Binning::EkPerMassBins()
+{
    if (ekmbin.size()==0 && mass !=0 )
       for (float e : ekbin)   ekmbin.push_back(e/mass);
    return ekmbin;
 }
+
+
+
+
+
+
+int Binning::GetRBin (float var)
+{
+   if (var<rigbin[0]) return -1;
+   for (int ib=0; ib<rigbin.size(); ib++)  {
+      if (var>rigbin[ib] && var<=rigbin[ib+1])
+         return ib;
+   }
+   return -1;
+}
+
+
+
+
+/** @brief Gives the ratio of MC gen / MC data ; used as a weight to fill histos
+ *  @return float      : ratio of MC gen / MC data for the known (global) rigidity
+ */
+float GetMCGenWeight()
+{
+   return 1;
+}
+
+
+
+
 
 
 
@@ -163,6 +223,7 @@ class DBinning: public Binning {
    public:
       DBinning() : Binning (0.18756129  ) {}  // deuterium mass 1876 MeV
 };
+
 
 
 

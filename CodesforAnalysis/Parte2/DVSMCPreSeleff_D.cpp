@@ -15,18 +15,18 @@ void DVSMCPreSeleffD_D_Fill(TNtuple *ntupla, int l,int zona){
 	for(int S=0;S<3;S++){
 		//Beta bins
 		//ToF
-		Kbin=GetArrayBin(Var, ToFDB.MomBins());	
+		Kbin=ToFDB.GetRBin(Var);	
 		if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeTOF) -> Fill(Kbin,zona,S);
 		if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterTOF ) -> Fill(Kbin,zona,S);
 		//NaF
 		if(((int)Cutmask)>>11==512) {	
-			Kbin=GetArrayBin(Var2, NaFDB.MomBins());
+			Kbin=NaFDB.GetRBin(Var2);
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeNaF) -> Fill(Kbin,zona,S);
 			if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterNaF ) -> Fill(Kbin,zona,S);
 		}
 		//Agl
 		if(((int)Cutmask)>>11==0) {
-			Kbin=GetArrayBin(Var2, AglDB.MomBins());
+			Kbin=AglDB.GetRBin(Var2);
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeAgl) -> Fill(Kbin,zona,S);
 			if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterAgl ) -> Fill(Kbin,zona,S);
 		}
@@ -46,19 +46,19 @@ void DVSMCPreSeleffD_Fill(TNtuple *ntupla, int l){
 		if(Massa_gen>1&&Massa_gen<2) {
 			//Beta bins
 			//ToF
-			Kbin=GetArrayBin(Var, ToFDB.MomBins());	
+			Kbin=ToFDB.GetRBin(Var);	
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> MCEff -> beforeTOF) -> Fill(Kbin,ReturnMCGenType(),S);
 			if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> MCEff -> afterTOF ) -> Fill(Kbin,ReturnMCGenType(),S);
 
 			//NaF
 			if(((int)Cutmask)>>11==512) {	
-				Kbin=GetArrayBin(Var2, NaFDB.MomBins());	
+				Kbin=NaFDB.GetRBin(Var2);	
 				if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> MCEff -> beforeNaF) -> Fill(Kbin,ReturnMCGenType(),S);
 				if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> MCEff -> afterNaF ) -> Fill(Kbin,ReturnMCGenType(),S);
 			}
 			//Agl
 			if(((int)Cutmask)>>11==0) {	
-				Kbin=GetArrayBin(Var2, AglDB.MomBins());
+				Kbin=AglDB.GetRBin(Var2);
 				if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> MCEff -> beforeAgl) -> Fill(Kbin,ReturnMCGenType(),S);
 				if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> MCEff -> afterAgl ) -> Fill(Kbin,ReturnMCGenType(),S);
 			}
