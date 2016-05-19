@@ -28,7 +28,7 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona) {
          LATDistanceDATA_TOF  ->afterR ->Fill(Kbin,zona);
          LATLikelihoodDATA_TOF->beforeR->Fill(Kbin,zona);
       }
-      if(Dist5D_P<6&Likcut) {
+      if(Dist5D_P<6 && Likcut) {
          LATLikelihoodDATA_TOF->afterR ->Fill(Kbin,zona);
       }
    }
@@ -39,7 +39,7 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona) {
          LATDistanceDATA_NaF  ->afterR ->Fill(Kbin,zona);
          LATLikelihoodDATA_NaF->beforeR->Fill(Kbin,zona);
       }
-      if(Dist5D_P<6&Likcut) {
+      if(Dist5D_P<6 && Likcut) {
          LATLikelihoodDATA_NaF->afterR ->Fill(Kbin,zona);
       }
    }
@@ -50,7 +50,7 @@ void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona) {
          LATDistanceDATA_Agl  ->afterR ->Fill(Kbin,zona);
          LATLikelihoodDATA_Agl->beforeR->Fill(Kbin,zona);
       }
-      if(Dist5D_P<6&Likcut) {
+      if(Dist5D_P<6 && Likcut) {
          LATLikelihoodDATA_Agl->afterR ->Fill(Kbin,zona);
       }
    }

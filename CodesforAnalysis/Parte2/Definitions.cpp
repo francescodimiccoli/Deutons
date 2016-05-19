@@ -134,7 +134,7 @@ int ReturnMCGenType()
    if (ReturnMass_Gen() <2&&ReturnMass_Gen() >1) cursor=8 ;
    if (ReturnMass_Gen() <4&&ReturnMass_Gen() >3) cursor=16;
    for (int i=2; i<8; i++) {
-      if ( ( ( (int) MC_type) >> (cursor+i) ) &1==1) mc_type=i-2;
+      if ( ( ( ( (int) MC_type) >> (cursor+i) ) & 1 ) ==1) mc_type=i-2;
    }
    if (mc_type == -1) std::cout<<"ERROR: MC cross section type not found"<<std::endl;
    return mc_type;
