@@ -15,7 +15,7 @@ void DVSMCPreSeleffD_D_Fill(TNtuple *ntupla, int l,int zona){
 	for(int S=0;S<3;S++){
 		//Beta bins
 		//ToF
-		Kbin=GetArrayBin(Var, BetaD);	
+		Kbin=GetArrayBin(Var, ToFDB.MomBins());	
 		if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeTOF) -> Fill(Kbin,zona,S);
 		if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterTOF ) -> Fill(Kbin,zona,S);
 		//NaF
@@ -46,7 +46,7 @@ void DVSMCPreSeleffD_Fill(TNtuple *ntupla, int l){
 		if(Massa_gen>1&&Massa_gen<2) {
 			//Beta bins
 			//ToF
-			Kbin=GetArrayBin(Var, BetaD);	
+			Kbin=GetArrayBin(Var, ToFDB.MomBins());	
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> MCEff -> beforeTOF) -> Fill(Kbin,ReturnMCGenType(),S);
 			if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> MCEff -> afterTOF ) -> Fill(Kbin,ReturnMCGenType(),S);
 

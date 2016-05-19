@@ -67,8 +67,8 @@ int binnum=1;
 float distcut=4;
 float ddiscrcut=0.15;
 bool qualcut=true;
-float a=(log(0.9)-log(0.1))/nbinsbeta;
-float E2=exp(log(0.1)+1.5*a);
+float a= (log (0.9)-log (0.1) ) /nbinsbeta;
+float E2=exp (log (0.1)+1.5*a);
 
 float Betabins      [nbinsbeta] = {0};
 float Betacent      [nbinsbeta] = {0};
@@ -85,18 +85,9 @@ float Unbias=0;
 float bin[nbinsr+1];
 std::array <float, nbinsr+1> Rbins;
 
-std::array <float, nbinsToF> BetaP       = {0};
-std::array <float, nbinsToF> BetaD       = {0};
-std::array <float, nbinsToF> BetabinsR_P = {0};
-std::array <float, nbinsToF> BetabinsR_D = {0};
-
-std::array <float, nbinsNaF> BetabinsNaF       = {0};
 
 std::array <float, nbinsAgl> BetaAglP    = {0};
 std::array <float, nbinsAgl> BetaAglD    = {0};
-std::array <float, nbinsAgl> BetabinsAgl       = {0};
-std::array <float, nbinsAgl> BetabinsAglR_P    = {0};
-std::array <float, nbinsAgl> BetabinsAglR_D    = {0};
 
 
 
@@ -132,38 +123,42 @@ TH2F * esposizionedgeoNaF;
 TH2F * esposizionedgeoAgl;
 
 //retrieve MC particle species
-float ReturnMass_Gen() {
+float ReturnMass_Gen()
+{
    float Mass_gen=0;
-   if((((int)MC_type)&0xFF    )>0)      Mass_gen = 0.938;
-   if((((int)MC_type)&0xFF00  )>0)      Mass_gen = 1.875;
-   if((((int)MC_type)&0xFF0000)>0)      Mass_gen = 3.725;
+   if ( ( ( (int) MC_type) &0xFF    ) >0)      Mass_gen = 0.938;
+   if ( ( ( (int) MC_type) &0xFF00  ) >0)      Mass_gen = 1.875;
+   if ( ( ( (int) MC_type) &0xFF0000) >0)      Mass_gen = 3.725;
    return Mass_gen;
 }
 
 //retrieve MC cross section type
-int ReturnMCGenType() {
+int ReturnMCGenType()
+{
    int mc_type=-1;
    int cursor=0;
-   if(ReturnMass_Gen()<1&&ReturnMass_Gen()>0) cursor=0 ;
-   if(ReturnMass_Gen()<2&&ReturnMass_Gen()>1) cursor=8 ;
-   if(ReturnMass_Gen()<4&&ReturnMass_Gen()>3) cursor=16;
-   for(int i=2; i<8; i++) {
-      if((((int)MC_type)>>(cursor+i))&1==1) mc_type=i-2;
+   if (ReturnMass_Gen() <1&&ReturnMass_Gen() >0) cursor=0 ;
+   if (ReturnMass_Gen() <2&&ReturnMass_Gen() >1) cursor=8 ;
+   if (ReturnMass_Gen() <4&&ReturnMass_Gen() >3) cursor=16;
+   for (int i=2; i<8; i++) {
+      if ( ( ( (int) MC_type) >> (cursor+i) ) &1==1) mc_type=i-2;
    }
-   if(mc_type == -1) std::cout<<"ERROR: MC cross section type not found"<<std::endl;
+   if (mc_type == -1) std::cout<<"ERROR: MC cross section type not found"<<std::endl;
    return mc_type;
 }
 
 
-void FillBinMGen(TH1* h, int bin) {
+void FillBinMGen (TH1* h, int bin)
+{
    int mass = ReturnMCGenType();
-   h->Fill(bin, mass);
+   h->Fill (bin, mass);
    return;
 }
 
-void FillBinMGen(TH3* h, int bin, int S) {
+void FillBinMGen (TH3* h, int bin, int S)
+{
    int mass = ReturnMCGenType();
-   h->Fill(bin, mass, S);
+   h->Fill (bin, mass, S);
    return;
 }
 
@@ -174,9 +169,10 @@ void FillBinMGen(TH3* h, int bin, int S) {
  *  @param float var  : the variable whose location to search
  *  @return int       : the bin number of var in array
  */
-int GetArrayBin(float var, float* arr, int nbins) {
+int GetArrayBin (float var, float* arr, int nbins)
+{
    for (int ib=0; ib<nbins; ib++)  {
-      if(var>arr[ib] && var<=arr[ib+1])
+      if (var>arr[ib] && var<=arr[ib+1])
          return ib;
    }
    return -1;
@@ -191,8 +187,9 @@ int GetArrayBin(float var, float* arr, int nbins) {
  *  @return int      : the bin number of var in arr
  */
 template <std::size_t N>
-int GetArrayBin(float var, std::array<float, N> arr) {
-   return GetArrayBin(var, arr.data(), N);
+int GetArrayBin (float var, std::array<float, N> arr)
+{
+   return GetArrayBin (var, arr.data(), N);
 }
 
 
@@ -201,8 +198,9 @@ int GetArrayBin(float var, std::array<float, N> arr) {
  *  @param float var : the variable whose location to search
  *  @return int      : the bin number of var in arr
  */
-int GetArrayBin(float var, std::vector<float> arr) {
-   return GetArrayBin(var, arr.data(), arr.size());
+int GetArrayBin (float var, std::vector<float> arr)
+{
+   return GetArrayBin (var, arr.data(), arr.size() );
 }
 
 
@@ -210,8 +208,9 @@ int GetArrayBin(float var, std::vector<float> arr) {
  *  @param float var : the variable whose rigidity bin to determine
  *  @return int      : the rigidity bin of var
  */
-int GetRBin(float var) {
-   return GetArrayBin(var, Rbins);
+int GetRBin (float var)
+{
+   return GetArrayBin (var, Rbins);
 }
 
 
@@ -219,7 +218,8 @@ int GetRBin(float var) {
 /** @brief Gives the ratio of MC gen / MC data ; used as a weight to fill histos
  *  @return float      : ratio of MC gen / MC data for the known (global) rigidity
  */
-float GetMCGenWeight() {
+float GetMCGenWeight()
+{
    return 1;
 }
 
@@ -227,18 +227,18 @@ float GetMCGenWeight() {
 
 class Binning {
    public:
-      Binning(float m):          mass(m) {}
-      Binning(float m, float z): mass(m), Z(z) {}
-      void Setbins(int, float, float);
-      std::vector<float> EkBins  () { return   ekbin;  }
-      std::vector<float> MomBins () { return  mombin;  }
-      std::vector<float> RigBins () { return  rigbin;  }
-      std::vector<float> BetaBins() { return betabin;  }
-
-      std::vector<float> EkBinsCent  () { return   ekbincent;}    // bin centers in log
-      std::vector<float> MomBinsCent () { return  mombincent;}
-      std::vector<float> RigBinsCent () { return  rigbincent;}
-      std::vector<float> BetaBinsCent() { return  betabincent;}
+      Binning (float m) :          mass (m) {}
+      Binning (float m, float z) : mass (m), Z (z) {}
+      void Setbins (int, float, float);
+      std::vector<float> EkBins  ()   {  return   ekbin;   }
+      std::vector<float> MomBins ()   {  return  mombin;   }
+      std::vector<float> RigBins ()   {  return  rigbin;   }
+      std::vector<float> BetaBins()   {  return betabin;   }
+      
+      std::vector<float> EkBinsCent()   { return   ekbincent;  }  // bin centers in log
+      std::vector<float> MomBinsCent () { return  mombincent;  }
+      std::vector<float> RigBinsCent () { return  rigbincent;  }
+      std::vector<float> BetaBinsCent() { return  betabincent; }
 
    protected:
       float mass = 0; // in GeV/C
@@ -254,50 +254,41 @@ class Binning {
       std::vector<float>  rigbincent ;
       std::vector<float> betabincent ;
 
-      float BetaFromEk (float ek)  {
-         return sqrt(ek*ek + 2 * ek * mass) / (ek + mass);
-      }
-      float GammaFromEk(float ek)  {
-         return 1 + ek/mass;
-      }
-      float MomFromEk  (float ek)  {
-         return mass * BetaFromEk(ek) * GammaFromEk(ek);
-      }
-      float RigFromMom (float mom) {
-         return mom/Z ;
-      }
-      float RigFromEk (float ek)   {
-         return RigFromMom(MomFromEk(ek)) ;
-      }
+      float BetaFromEk (float ek)  { return sqrt (ek*ek + 2 * ek * mass) / (ek + mass); }
+      float GammaFromEk (float ek) { return 1 + ek/mass;                                }
+      float MomFromEk  (float ek)  { return mass * BetaFromEk (ek) * GammaFromEk (ek);  }
+      float RigFromMom (float mom) { return mom/Z ;                                     }
+      float RigFromEk (float ek)   { return RigFromMom (MomFromEk (ek) ) ;              }
 
 };
 
 
 
-void Binning::Setbins(int nbins, float ekmin, float ekmax) {
+void Binning::Setbins (int nbins, float ekmin, float ekmax)
+{
 
    float ekbinbeg=ekmin;
-   float binstep=(log(ekmax)-log(ekmin)) / nbins;
+   float binstep= (log (ekmax)-log (ekmin) ) / nbins;
    int binnum=0;
 
    while (ekbinbeg<ekmax) {
       // Bin beginnings
-      float ekbinbeg     = exp( log(binstep)+ binnum * binstep);
-      float beta   = BetaFromEk(ekbinbeg);
-      float mom    = MomFromEk(ekbinbeg);
-      float rig    = RigFromMom(mom);
+      float ekbinbeg     = exp ( log (binstep)+ binnum * binstep);
+      float beta   = BetaFromEk (ekbinbeg);
+      float mom    = MomFromEk (ekbinbeg);
+      float rig    = RigFromMom (mom);
 
       ekbin  .push_back ( ekbinbeg);
-      betabin.push_back( beta );
+      betabin.push_back ( beta );
       mombin .push_back ( mom  );
       rigbin .push_back ( rig  );
 
       // Bin centers
 
-      float ekcent = exp( log(binstep)+ (binnum+0.5) * binstep);
-      beta = BetaFromEk(ekcent);
+      float ekcent = exp ( log (binstep)+ (binnum+0.5) * binstep);
+      beta = BetaFromEk (ekcent);
       mom  = MomFromEk (ekcent);
-      rig  = RigFromMom(mom);
+      rig  = RigFromMom (mom);
 
       ekbincent.  push_back ( ekcent);
       betabincent.push_back ( beta );
@@ -309,13 +300,13 @@ void Binning::Setbins(int nbins, float ekmin, float ekmax) {
 
    // Bin ends
 
-   float ek  = exp( log(binstep)+ binnum * binstep);
-   float mom = MomFromEk(ekbinbeg);
+   float ek  = exp ( log (binstep)+ binnum * binstep);
+   float mom = MomFromEk (ekbinbeg);
 
    ekbin  .push_back ( ekbinbeg       );
-   betabin.push_back ( BetaFromEk(ek) );
+   betabin.push_back ( BetaFromEk (ek) );
    mombin .push_back ( mom            );
-   rigbin .push_back ( RigFromMom(mom));
+   rigbin .push_back ( RigFromMom (mom) );
 
 }
 

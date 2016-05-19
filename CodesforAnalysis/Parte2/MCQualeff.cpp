@@ -23,7 +23,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 
 
 		//Beta bins
-		Kbin=GetArrayBin(Var, BetaP);
+		Kbin=GetArrayBin(Var, ToFPB.MomBins());
 
 		EffLikMCP ->beforeTOF->Fill(Kbin);
 		EffDistMCP->beforeTOF->Fill(Kbin);
@@ -60,7 +60,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 
 
 		//Beta bins
-		Kbin=GetArrayBin(Var, BetaD);
+		Kbin=GetArrayBin(Var, ToFDB.MomBins());
 		FillBinMGen(EffLikMCD ->beforeTOF, Kbin);
 		FillBinMGen(EffDistMCD->beforeTOF, Kbin);
 		if(Distcut)             FillBinMGen(EffDistMCD ->afterTOF , Kbin);

@@ -90,21 +90,13 @@ public:
 	}
 
 	void Set_MC_Par( float Trigrate, float rmin, float rmax); 
-
 	void Set_Binning(bool deutons=1);
-
 	TH1 * Triggerbin(int n , TH1 * after, float trigrate, float bins[]);
-
 	void Eval_Gen_Acceptance( int n);
-
 	void Eval_MC_Acceptance();
-
 	TH1 * Geomag_Acceptance(int n, TH1* MCAcceptance, TH1* LATcorr);
-
 	void Eval_Geomag_Acceptance(int n);
-
 	TH1 * Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW);
-
 	void Eval_Corrected_Acceptance(int n);	
 };
 
@@ -127,17 +119,17 @@ void ACCEPTANCE::Set_Binning(bool deutons){
 	if (deutons) {
 
 		for(int i=0;i<nbins_beta; i++) {
-			binsBetaTOF[i] = BetabinsR_D   [i]; 
+			binsBetaTOF[i] = ToFDB.MomBins()   [i]; 
 			binsBetaNaF[i] = NaFDB.MomBins()[i]; 
-			binsBetaAgl[i] = BetabinsAglR_D[i]; 	
+			binsBetaAgl[i] = AglDB.MomBins()[i]; 	
 		}
 
 	} else { // protons
 
 		for(int i=0;i<nbins_beta; i++) {
-			binsBetaTOF[i] = BetabinsR_P   [i]; 
+			binsBetaTOF[i] = ToFPB.MomBins()   [i]; 
 			binsBetaNaF[i] = NaFPB.MomBins()[i]; 
-			binsBetaAgl[i] = BetabinsAglR_P[i]; 	
+			binsBetaAgl[i] = AglPB.MomBins()[i]; 	
 		}
 
 	}
