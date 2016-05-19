@@ -165,12 +165,5 @@ class DBinning: public Binning {
 };
 
 
-DBinning ToFDB;
-PBinning ToFPB;
-DBinning NaFDB;
-PBinning NaFPB;
-DBinning AglDB;
-PBinning AglPB;
 
-Binning RB;
 

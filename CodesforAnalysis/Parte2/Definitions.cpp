@@ -1,5 +1,6 @@
 using namespace std;
 
+#include "Binning.h"
 
 //// Input-Output Variables
 
@@ -155,6 +156,18 @@ void FillBinMGen (TH3* h, int bin, int S)
 }
 
 
+
+DBinning ToFDB;
+PBinning ToFPB;
+DBinning NaFDB;
+PBinning NaFPB;
+DBinning AglDB;
+PBinning AglPB;
+
+Binning RB;
+
+
+
 /** @brief Returns the bin of arr (of length nbins) where var belongs
  *  @param float* arr : the (C-)array in which to search
  *  @param nbins      : the length of the array
@@ -167,23 +180,10 @@ int GetArrayBin (float var, float* arr, int nbins)
       if (var>arr[ib] && var<=arr[ib+1])
          return ib;
    }
-
    return -1;
 }
 
 
-
-
-/** @brief Returns the bin of arr where var belongs
- *  @param array arr : the (std::)array in which to search
- *  @param float var : the variable whose location to search
- *  @return int      : the bin number of var in arr
- */
-
-int GetRBin (float var)
-{
-   return GetArrayBin (var, Rbins.data(), Rbins.size());
-}
 
 
 /** @brief Returns the bin of vector where var belongs
@@ -196,6 +196,17 @@ int GetArrayBin (float var, std::vector<float> arr)
    return GetArrayBin (var, arr.data(), arr.size() );
 }
 
+
+/** @brief Returns the bin of arr where var belongs
+ *  @param array arr : the (std::)array in which to search
+ *  @param float var : the variable whose location to search
+ *  @return int      : the bin number of var in arr
+ */
+
+int GetRBin (float var)
+{
+   return GetArrayBin (var, RB.RigBins());
+}
 
 
 
