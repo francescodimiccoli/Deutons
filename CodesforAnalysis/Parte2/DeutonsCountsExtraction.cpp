@@ -149,7 +149,7 @@ void DeutonsTemplFits(){
 	FitNaF_Dbins 	-> SetFitConstraints(0.8,1,0.05,0.5,0.0005,0.00015);
 	FitAgl_Dbins 	-> SetFitConstraints(0.8,1,0.05,0.5,0.00005,0.000025);*/
 
-	FitTOF_Dbins 	-> SetFitConstraints(0.8,1,0.005,0.1,0.0001,0.025); 
+	FitTOF_Dbins 	-> SetFitConstraints(0.8,1,0.005,0.1,0.0001,0.0025); 
 	FitNaF_Dbins 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0001,0.0015);
 	FitAgl_Dbins 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0001,0.0005);
 
@@ -157,7 +157,7 @@ void DeutonsTemplFits(){
 	FitNaFgeo_Dbins -> DisableFit();
 	FitAglgeo_Dbins -> DisableFit();
 
-	FitTOF_Pbins 	-> SetFitConstraints(0.8,1,0.005,0.1,0.0001,0.025); 
+	FitTOF_Pbins 	-> SetFitConstraints(0.8,1,0.005,0.1,0.0001,0.0025); 
 	FitNaF_Pbins 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0005,0.0015);
 	FitAgl_Pbins 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0001,0.0005);
 

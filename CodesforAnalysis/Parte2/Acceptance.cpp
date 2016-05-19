@@ -49,6 +49,33 @@ void Acceptance(){
 	AcceptancePreD-> Eval_Geomag_Acceptance(6);	
 	AcceptancePreD-> Eval_Corrected_Acceptance(6);	
 
+	cout<<"****** DVSMC APPLICATION *********"<<endl;
+	
+	TH1F* DistP_Correction_R   =(TH1F*) file1 -> Get ("Results/Dist_DvsMC_P_CorrectionR"  		); 
+	TH1F* DistP_Correction_TOF =(TH1F*) file1 -> Get ("Results/Dist_DvsMC_P_CorrectionTOF"		);
+	TH1F* DistP_Correction_NaF =(TH1F*) file1 -> Get ("Results/Dist_DvsMC_P_CorrectionNaF"		);
+	TH1F* DistP_Correction_Agl =(TH1F*) file1 -> Get ("Results/Dist_DvsMC_P_CorrectionAgl"		);
+                                                                                      
+	TH1F* LikP_Correction_R    =(TH1F*) file1 -> Get ("Results/Lik_DvsMC_P_CorrectionR"   		);
+	TH1F* LikP_Correction_TOF  =(TH1F*) file1 -> Get ("Results/Lik_DvsMC_P_CorrectionTOF" 		);
+	TH1F* LikP_Correction_NaF  =(TH1F*) file1 -> Get ("Results/Lik_DvsMC_P_CorrectionNaF" 		);
+	TH1F* LikP_Correction_Agl  =(TH1F*) file1 -> Get ("Results/Lik_DvsMC_P_CorrectionAgl" 		);
+
+	TH1F* RICH_Correction_P_NaF =(TH1F*) file1 -> Get ("Results/RICH_DvsMC_P_CorrectionNaF"		);
+	TH1F* RICH_Correction_P_Agl =(TH1F*) file1 -> Get ("Results/RICH_DvsMC_P_CorrectionAgl"		);
+	
+	TH1F* RICH_Correction_D_NaF =(TH1F*) file1 -> Get ("Results/RICH_DvsMC_D_CorrectionNaF"         );
+        TH1F* RICH_Correction_D_Agl =(TH1F*) file1 -> Get ("Results/RICH_DvsMC_D_CorrectionAgl"         );
+
+	AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);
+	AcceptanceP -> Apply_DvsMCcorrection_R(LikP_Correction_R );
+	
+	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
+	AcceptanceP -> Apply_DvsMCcorrection_Agl(RICH_Correction_P_Agl);
+
+	AcceptanceD -> Apply_DvsMCcorrection_NaF(RICH_Correction_D_NaF);
+        AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl);
+
 	cout<<"*** Updating P1 file ****"<<endl;
     	nomefile="../Histos/"+mese +"/"+mese+"_"+frac+"_P1.root";
 	file1 =TFile::Open(nomefile.c_str(),"UPDATE");

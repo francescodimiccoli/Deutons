@@ -106,6 +106,13 @@ public:
 	TH1 * Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW);
 
 	void Eval_Corrected_Acceptance(int n);	
+
+	void Apply_DvsMCcorrection_R  (TH1 * R_Correction  ){ if (CorrectedAcceptance_R   )  CorrectedAcceptance_R    -> Multiply( R_Correction   ); return;}
+	void Apply_DvsMCcorrection_TOF(TH1 * TOF_Correction){ if (CorrectedAcceptance_TOF )  CorrectedAcceptance_TOF  -> Multiply( TOF_Correction ); return;}
+	void Apply_DvsMCcorrection_NaF(TH1 * NaF_Correction){ if (CorrectedAcceptance_NaF )  CorrectedAcceptance_NaF  -> Multiply( NaF_Correction ); return;}
+	void Apply_DvsMCcorrection_Agl(TH1 * Agl_Correction){ if (CorrectedAcceptance_Agl )  CorrectedAcceptance_Agl  -> Multiply( Agl_Correction ); return;}
+	
+
 };
 
 void ACCEPTANCE::Set_MC_Par( float Trigrate, float rmin, float rmax){
@@ -296,5 +303,6 @@ void ACCEPTANCE::Eval_Corrected_Acceptance(int n){
 	return;
 
 }
+
 
 #endif

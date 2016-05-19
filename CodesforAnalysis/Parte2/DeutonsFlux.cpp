@@ -1,5 +1,6 @@
 using namespace std;
 
+void CheckSyst(TH1F * Counts1,TH1F * Counts2, TH1F * Syst); 
 
 void DeutonFlux() {
 	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
@@ -41,6 +42,11 @@ void DeutonFlux() {
         if(D_Flux -> Counts_NaF)SystNaF -> Add(	(TH1F*) D_Flux_Dist -> Counts_NaF->Clone()	,-1);
         if(D_Flux -> Counts_Agl)SystAgl -> Add(	(TH1F*) D_Flux_Dist -> Counts_Agl->Clone()	,-1);
 
+	if(D_Flux -> Counts_R  ) CheckSyst( (TH1F*)D_Flux_Dist -> Counts_R  , (TH1F*)D_Flux -> Counts_R  ,SystR  );
+        if(D_Flux -> Counts_TOF) CheckSyst( (TH1F*)D_Flux_Dist -> Counts_TOF, (TH1F*)D_Flux -> Counts_TOF,SystTOF);
+        if(D_Flux -> Counts_NaF) CheckSyst( (TH1F*)D_Flux_Dist -> Counts_NaF, (TH1F*)D_Flux -> Counts_NaF,SystNaF);
+	if(D_Flux -> Counts_Agl) CheckSyst( (TH1F*)D_Flux_Dist -> Counts_Agl, (TH1F*)D_Flux -> Counts_Agl,SystAgl);
+	
 	D_Flux      -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
 	D_Flux_Dist -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
 
@@ -687,5 +693,14 @@ void DeutonFlux() {
 
 
 
+	return;
+}
+
+
+void CheckSyst(TH1F * Counts1,TH1F * Counts2, TH1F * Syst){
+	for(int i=0;i<Syst->GetNbinsX();i++){
+	if(Counts1 -> GetBinContent(i)==0 || Counts2 -> GetBinContent(i)==0 )
+		Syst -> SetBinContent (i,0);
+	}
 	return;
 }
