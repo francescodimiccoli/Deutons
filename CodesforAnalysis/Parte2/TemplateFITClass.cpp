@@ -100,10 +100,6 @@ double TemplateFIT::GetFitFraction(int par, int bin,int lat)
       double w1,e1 = 0;
       fits[lat][bin]-> Tfit ->GetResult(par,w1,e1);
       fits[lat][bin] -> Tfit -> GetPlot();
-      float i1;
-      if(par == 0) i1 = fits[lat][bin]-> Templ_P  ->Integral();
-      if(par == 1) i1 = fits[lat][bin]-> Templ_D  ->Integral();
-      if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral();
       return w1;
    }
 }

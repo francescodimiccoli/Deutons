@@ -362,13 +362,9 @@ void Acceptance(){
         gPad->SetLogy();
         gPad->SetGridx();
         gPad->SetGridy();
-        TGraphErrors * AccgeoDbeta[6];
-        TGraphErrors * AccPreMCDbeta[6];
         TGraphErrors * AccSelMCDbeta[6];
         TGraphErrors * AccSelMCPbeta=new TGraphErrors();
 	for(int h=0;h<6;h++){
-                AccgeoDbeta[h]= new TGraphErrors();
-                AccPreMCDbeta[h]= new TGraphErrors();
                 AccSelMCDbeta[h]= new TGraphErrors();
                 int p=0;
                 for(int m=0;m<nbinsToF;m++) {AccSelMCDbeta[h]->SetPoint(p,Ekincent[m],AcceptanceD ->MCAcceptance_TOF -> GetBinContent(m+1,h+1));
@@ -414,13 +410,10 @@ void Acceptance(){
 		leg->Draw("same");
 	}
 
-	TGraphErrors * AccgeoDbetaNaF[6];
-        TGraphErrors * AccPreMCDbetaNaF[6];
+
         TGraphErrors * AccSelMCDbetaNaF[6];
         TGraphErrors * AccSelMCPbetaNaF=new TGraphErrors();
 	for(int h=0;h<6;h++){
-                AccgeoDbetaNaF[h]= new TGraphErrors();
-                AccPreMCDbetaNaF[h]= new TGraphErrors();
                 AccSelMCDbetaNaF[h]= new TGraphErrors();
                 int p=0;
                 for(int m=0;m<nbinsNaF;m++) {AccSelMCDbetaNaF[h]->SetPoint(p,EkincentNaF[m],AcceptanceD ->MCAcceptance_NaF -> GetBinContent(m+1,h+1));
@@ -459,13 +452,10 @@ void Acceptance(){
                 AccSelMCDbetaNaF[h]->Draw("Psame");
         }
 	
-	TGraphErrors * AccgeoDbetaAgl[6];
-        TGraphErrors * AccPreMCDbetaAgl[6];
+
         TGraphErrors * AccSelMCDbetaAgl[6];
         TGraphErrors * AccSelMCPbetaAgl=new TGraphErrors();
 	for(int h=0;h<6;h++){
-                AccgeoDbetaAgl[h]= new TGraphErrors();
-                AccPreMCDbetaAgl[h]= new TGraphErrors();
                 AccSelMCDbetaAgl[h]= new TGraphErrors();
                 int p=0;
                 for(int m=0;m<nbinsAgl;m++)  {AccSelMCDbetaAgl[h]->SetPoint(p,EkincentAgl[m],AcceptanceD ->MCAcceptance_Agl -> GetBinContent(m+1,h+1));
