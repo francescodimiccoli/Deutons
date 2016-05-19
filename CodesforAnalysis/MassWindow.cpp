@@ -100,7 +100,7 @@ int main(){
 	float avanzamento=0;
 	float Discr=0;
 	for(int i=0; i<ntupla1->GetEntries()/fraz;i++) {
-		int k = ntupla1->GetEvent(i);
+		 ntupla1->GetEvent(i);
 		if(100*(i/(float)(ntupla1->GetEntries()/fraz))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Discr=(Dist5D-Dist5D_P)/(Dist5D+Dist5D_P);
 		if(Beta>0&&Beta<0.8&&R>0&&R<3.55&&EdepL1>0.04&&EdepL1<0.15){
@@ -119,7 +119,7 @@ int main(){
 	cout<<"************************************ LETTURA DATI ***************************************************"<<endl;
 	avanzamento=0;
         for(int i=0; i<ntupla2->GetEntries()/fraz;i++) {
-                int k = ntupla2->GetEvent(i);
+                 ntupla2->GetEvent(i);
                 if(100*(i/(float)(ntupla2->GetEntries()/fraz))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
                 Discr=(Dist5D-Dist5D_P)/(Dist5D+Dist5D_P);
 		if(Beta>0&&Beta<0.8&&R>0&&R<3.5&&EdepL1>0.04&&EdepL1<0.15/*RBeta->Eval(Beta)*/){

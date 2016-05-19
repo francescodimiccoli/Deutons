@@ -7,7 +7,7 @@ Efficiency * EffpreselMCD = new Efficiency("EffpreselMCD", 6);
 
 
 void MCpreseff_Fill(TNtuple *ntupla, int l) {
-   int k = ntupla->GetEvent(l);
+    ntupla->GetEvent(l);
 
    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins

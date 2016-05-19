@@ -50,7 +50,7 @@ TGraph * Plot_BadPrej(TH1F * HistoP,TH1F * HistoD,bool reverse=false);
 
 void DistanceCut_Fill(TNtuple *ntupla, int l) {
 
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float mass=0;
 	if(Betastrongcut){

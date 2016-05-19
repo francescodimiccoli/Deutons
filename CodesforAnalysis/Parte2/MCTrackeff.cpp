@@ -12,7 +12,7 @@ Efficiency * EffTOFMCD   = new Efficiency("EffTOFMCD",6);
 
 
 void MCTrackeff_Fill(TNtuple *ntupla, int l) {
-   int k = ntupla->GetEvent(l);
+    ntupla->GetEvent(l);
    int Kbin;
 
    if(Massa_gen<1&&Massa_gen>0.5) {

@@ -12,7 +12,7 @@ TemplateFIT * FitAgl_Pbins_Dist  = new TemplateFIT("FitAgl_Pbins_Dist ",nbinsAgl
 
 
 void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float Distance_Discr = 0;
 	if(!(Likcut&&Distcut)) return;
@@ -63,7 +63,7 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
 
 
 void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona){
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float Distance_Discr = 0;
 	if(!(Likcut&&Distcut)) return;

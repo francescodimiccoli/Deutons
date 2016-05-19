@@ -348,7 +348,7 @@ int main()
 	int avanzamento=0;
 	bool Hecut=false;
 	for(int i=0; i<ntupla1->GetEntries();i++) {
-		int k = ntupla1->GetEvent(i);
+		 ntupla1->GetEvent(i);
 		if(100*(i/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
 		IsCharge1=0;
@@ -537,7 +537,7 @@ int main()
 	avanzamento=0;
 	int qu=0;
 	for(int l=0; l<ntupla1->GetEntries();l++) {
-		int k = ntupla1->GetEvent(l);
+		 ntupla1->GetEvent(l);
 		IsCharge1=1;
 		if(EdepL1>0.04&&EdepL1<0.15) IsCharge1=1;
 		if(100*(l/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
@@ -629,7 +629,7 @@ int main()
 
 	avanzamento=0;
 	for(int l=0; l<ntupla2->GetEntries();l++) {
-		int k = ntupla2->GetEvent(l);
+		 ntupla2->GetEvent(l);
 		IsCharge1=0;
 		if(EdepL1>0.04&&EdepL1<0.15) IsCharge1=1;
 		if(100*(l/(float)(ntupla2->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}

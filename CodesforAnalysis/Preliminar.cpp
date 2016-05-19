@@ -408,7 +408,7 @@ int main(int argc, char * argv[]){
         }
 	cout<<"*************************** DATA READING **********************************"<<endl;
 	for(int i=0; i<ntupla2->GetEntries();i++) {
-		int k = ntupla2->GetEvent(i);
+		 ntupla2->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
 		if(i%100000==0) cout<<i<<endl;
@@ -581,7 +581,7 @@ int main(int argc, char * argv[]){
 	}
 	cout<<"*************************** MC READING **********************************"<<endl;
 	for(int i=0; i<ntupla1->GetEntries();i++) {
-		int k = ntupla1->GetEvent(i);
+		 ntupla1->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
 		if(i%100000==0) cout<<i<<endl;
@@ -1585,7 +1585,7 @@ int main(int argc, char * argv[]){
 	}
 
 	for(int i=0; i<ntupla1->GetEntries();i++) {
-		int k = ntupla1->GetEvent(i);
+		 ntupla1->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
 		if(i%100000==0) cout<<i<<endl;

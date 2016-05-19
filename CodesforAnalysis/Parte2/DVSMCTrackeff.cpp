@@ -4,7 +4,7 @@ TH2F * ECALvsR_D=new TH2F("ECALvsR_D","ECALvsR_D",1000,0,100,1000,0,100);
 TH2F * ECALvsR_MC=new TH2F("ECALvsR_MC","ECALvsR_MC",1000,0,100,1000,0,100);
 
 void DVSMCTrackeff_D_Fill(TNtuple *ntupla, int l){
-        int k = ntupla->GetEvent(l);
+         ntupla->GetEvent(l);
         if(Unbias!=0||Beta_pre<=0) return;
 		if(R_pre>1.2*Rcutoff){
 			if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&187)==187&&EdepECAL>1)
@@ -15,7 +15,7 @@ void DVSMCTrackeff_D_Fill(TNtuple *ntupla, int l){
 
 
 void DVSMCTrackeff_Fill(TNtuple *ntupla, int l){
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
         if(Unbias!=0||Beta_pre<=0) return;
                 if(Massa_gen<1&&Massa_gen>0.5){
                         if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&187)==187&&EdepECAL>1)

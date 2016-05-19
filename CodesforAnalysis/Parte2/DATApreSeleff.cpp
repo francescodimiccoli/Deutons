@@ -5,7 +5,7 @@ LATcorr *LATpreSelDATA = new LATcorr("LATpreSelDATA",3);
  
 
 void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	if(Unbias!=0||Beta_pre<=0||R_pre<=0||Beta_pre>protons->Eval(R_pre)+0.1||Beta_pre<protons->Eval(R_pre)-0.1) return;
 	if(!(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.1&&EdepL1>EdepL1beta->Eval(Beta)-0.1)) return;
 	if(R_pre <= Rcut[zona]) return;

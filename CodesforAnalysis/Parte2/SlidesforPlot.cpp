@@ -85,7 +85,7 @@ TH2F *sigmagen_bad =new TH2F("sigmagen_bad","sigmagen_bad",500,0,30,500,0,30);
 
 
 void SlidesforPlot_Fill(TNtuple *ntupla, int l){
-        int k = ntupla->GetEvent(l);
+         ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float Betagen=Betagen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));
            if(Herejcut) {   	 
@@ -168,7 +168,7 @@ void SlidesforPlot_Fill(TNtuple *ntupla, int l){
 
 
 void SlidesforPlot_D_Fill(TNtuple *ntupla, int l){
-        int k = ntupla->GetEvent(l);
+         ntupla->GetEvent(l);
         if(Beta<=0||R<=0) return;
 
            if(Herejcut&&Latitude>0.8) {

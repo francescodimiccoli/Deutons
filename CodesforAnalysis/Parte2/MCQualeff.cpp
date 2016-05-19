@@ -9,7 +9,7 @@ Efficiency * EffDistMCD = new Efficiency ("EffDistMCD",6);
 
 void MCQualeff_Fill(TNtuple *ntupla, int l) {
 
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	int Kbin;
 	if(Massa_gen<1) {

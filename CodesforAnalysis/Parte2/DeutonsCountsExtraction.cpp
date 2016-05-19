@@ -12,7 +12,7 @@ TemplateFIT * FitAgl_Pbins = new TemplateFIT("FitAgl_Pbins",nbinsAgl,0,3,6);
 
 
 void DeutonsMC_Fill(TNtuple *ntupla, int l){
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float mass = 0;
 	//cuts
@@ -65,7 +65,7 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 
 
 void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float mass = 0;
 	//cuts

@@ -9,7 +9,7 @@ Flux * P_Flux_pre = new Flux("P_Flux_pre" );
 Flux * P_Flux_sel = new Flux("P_Flux_sel" );
 
 void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona) {
-   int k = ntupla->GetEvent(l);
+    ntupla->GetEvent(l);
    if(Beta<=0||R<=0) return;
    int Kbin=RB.GetRBin(R);
 

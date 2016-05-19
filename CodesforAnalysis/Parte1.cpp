@@ -372,7 +372,7 @@ int main()
    for(int i=0; i<11; i++) for(int j=0; j<43; j++) Esposizione[i]->SetBinContent(j+1,esposizionegeo->GetBinContent(j+1,i)/(float)fraz);
 
    for(int i=0; i<1/*ntupla2->GetEntries()/fraz*/; i++) {
-      int k = ntupla4->GetEvent(i);
+       ntupla4->GetEvent(i);
       if(100*(i/(float)(ntupla2->GetEntries()/fraz))>avanzamento) {
          cout<<avanzamento<<endl;
          avanzamento++;
@@ -650,7 +650,7 @@ int main()
    /////////////////////////////////////////////////////// MONTECARLO////////////////////////////////////////////////////////////////////////////
    avanzamento=0;
    for(int i=0; i<1/*ntupla1->GetEntries()*/; i++) {
-      int k = ntupla3->GetEvent(i);
+       ntupla3->GetEvent(i);
       if(100*(i/(float)(ntupla1->GetEntries()))>avanzamento) {
          cout<<avanzamento<<endl;
          avanzamento++;

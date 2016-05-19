@@ -46,7 +46,7 @@ MCMCEntry * MCMC_Agl = new MCMCEntry("Agl", 50, 0.95, 1.1, 200, 0.0, 100.0, 300,
 
 void MCMC_Fill(TNtuple *ntupla, int l)
 {
-    int k = ntupla->GetEvent(l);
+     ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	if(Likcut&&Distcut){
 		MCMC_TOF->FillMC( Beta, R, Momento_gen);
@@ -56,7 +56,7 @@ void MCMC_Fill(TNtuple *ntupla, int l)
 }
 
 void MCMCDATA_Fill(TNtuple *ntupla, int l){
-    int k = ntupla->GetEvent(l);
+     ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	if( Likcut && Distcut && R>1.2*Rcutoff)
     {

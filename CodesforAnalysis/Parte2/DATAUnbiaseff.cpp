@@ -3,7 +3,7 @@ using namespace std;
 Efficiency * EffUnbiasDATA = new Efficiency("EffUnbiasDATA");
 
 void DATAUnbiaseff_Fill(TNtuple *ntupla, int l) {
-   int k = ntupla->GetEvent(l);
+    ntupla->GetEvent(l);
    if(((int)Cutmask&187)!=187||R_pre<=0||Beta_pre<=0||R_pre<1.2*Rcutoff) return;
    
    int Kbin=RB.GetRBin(fabs(R_pre));

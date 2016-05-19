@@ -5,7 +5,7 @@ DatavsMC * Lik_DvsMC_P  = new DatavsMC("Lik_DvsMC_P" ,11);
 
 void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	//cuts
 	if(Beta<=0||R<=0||R<1.2*Rcutoff||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
 	if(!((R>Rcut[zona]&&zona<10)||(zona==10)))  return;
@@ -61,7 +61,7 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 
 void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	//cuts
 	if(Beta<=0||R<=0||R<1.2*Rcutoff||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
 	if(!Herejcut) return;

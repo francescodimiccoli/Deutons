@@ -1,7 +1,7 @@
 TH2F * CorrelazionePreselezioni = new TH2F("CorrelazionePreselezioni","CorrelazionePreselezioni",11,0,11,11,0,11);
 
 void Correlazione_Preselezioni(TNtuple *ntupla, int l){
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	for(int S=0;S<10;S++){
 		if((((int)Cutmask>>S)&1)==1){
 			for(int F=0;F<10;F++) 

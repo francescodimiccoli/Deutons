@@ -141,7 +141,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	cout<<"*********************** MC READING *********************"<<endl;
 	if(INDX==0)
 	for(int i=0; i<ntupla0->GetEntries()/fraz;i++) {
-		int k = ntupla0->GetEvent(i);
+		 ntupla0->GetEvent(i);
 		Cutmask=CUTMASK;
 		Cuts_Pre();
 		Massa_gen = ReturnMass_Gen();
@@ -169,7 +169,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	if(INDX==0||INDX==1){
 	progress=0;
 	for(int i=0; i<ntupla1->GetEntries();i++) {
-		int k = ntupla1->GetEvent(i);
+		 ntupla1->GetEvent(i);
 		Cutmask=CUTMASK;
         	Massa_gen = ReturnMass_Gen();
 		if(100*(i/(float)(ntupla1->GetEntries()))>progress) {
@@ -220,7 +220,7 @@ void FillIstogram(int INDX,string frac,string mese)
 	progress=0;
 	if(INDX==0)
 	for(int i=0; i<ntupla2->GetEntries()/fraz;i++) {
-                int k = ntupla2->GetEvent(i);
+                 ntupla2->GetEvent(i);
 		Cutmask=CUTMASK;
 		Cuts_Pre();
 		Massa=pow(fabs(pow(fabs(R_pre)*pow((1-pow(Beta_pre,2)),0.5)/Beta_pre,2)),0.5);
@@ -252,7 +252,7 @@ void FillIstogram(int INDX,string frac,string mese)
         if(INDX==0||INDX==1){
         progress=0;
         for(int i=0; i<ntupla3->GetEntries();i++) {
-                int k = ntupla3->GetEvent(i);
+                 ntupla3->GetEvent(i);
                 Cutmask=CUTMASK;
                 for(int z=0;z<12;z++){
                         double geo= geomag[z]  ;

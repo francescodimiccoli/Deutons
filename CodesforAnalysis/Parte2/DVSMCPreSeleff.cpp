@@ -4,7 +4,7 @@ DatavsMC * PreSel_DvsMC_P = new DatavsMC("PreSel_DvsMC_P",11,3);
 
 void DVSMCPreSeleff_D_Fill(TNtuple *ntupla, int l,int zona){
 
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	//cuts
 	if(Beta_pre<=0||R_pre<=0||R_pre<1.2*Rcutoff||Beta_pre>protons->Eval(R_pre)+0.1||Beta_pre<protons->Eval(R_pre)-0.1) return;
 	if(!((R_pre>Rcut[zona]&&zona<10)||(zona==10)))  return;
@@ -40,7 +40,7 @@ void DVSMCPreSeleff_D_Fill(TNtuple *ntupla, int l,int zona){
 	
 }
 void DVSMCPreSeleff_Fill(TNtuple *ntupla, int l){
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	//cuts
 	if(Beta_pre<=0||R_pre<=0||Beta_pre>protons->Eval(R_pre)+0.1||Beta_pre<protons->Eval(R_pre)-0.1) return;
 	if(!Herejcut) return;

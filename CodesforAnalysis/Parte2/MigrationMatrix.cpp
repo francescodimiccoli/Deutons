@@ -4,7 +4,7 @@ using namespace std;
 TH2F * MigrMatrix = new TH2F("MigrMatrix","MigrMatrix",nbinsr,0,nbinsr,nbinsr,0,nbinsr);
 
 void MigrationMatrix_Fill(TNtuple *ntupla, int l){
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	if(!(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0))	return;
 	if(Massa_gen<1&&Massa_gen>0.5) 
 		MigrMatrix->Fill(RB.GetRBin(fabs(R_pre)) , RB.GetRBin(Momento_gen));

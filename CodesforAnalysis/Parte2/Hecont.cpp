@@ -11,7 +11,7 @@ TemplateFIT * HeliumContaminationNaF = new TemplateFIT("HeliumContaminationNaF",
 TemplateFIT * HeliumContaminationAgl = new TemplateFIT("HeliumContaminationAgl",1,0,60);
 
 void HecutMC_Fill(TNtuple *ntupla,int l) {
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
 	int Kbin=RB.GetRBin(Momento_gen);
@@ -51,7 +51,7 @@ void HecutMC_Fill(TNtuple *ntupla,int l) {
 }
 
 void HecutD_Fill(TNtuple *ntupla,int l) {
-	int k = ntupla->GetEvent(l);
+	 ntupla->GetEvent(l);
 	if(Beta<=0||R<=0) return;
 	if(!R>1.2*Rcutoff) return;
 	float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
