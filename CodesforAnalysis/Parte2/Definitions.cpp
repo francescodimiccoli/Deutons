@@ -257,9 +257,13 @@ void Particle::FillFromRig( float r)
 
 class Binning {
    public:
+      Binning () : mass(0) {}   ;                       
       Binning (float m) :           mass(m)       {}
       Binning (float m, float z) :  mass(m), Z(1) {}
       void Setbins (int, float, float, int type=1); // type -- binning in 0: not done, 1 energy, 2 rigidity
+      int size() {return ekbin.size(); };
+
+      
       std::vector<float> EkBins  ()   {  return   ekbin;   }
       std::vector<float> MomBins ()   {  return  mombin;   }
       std::vector<float> RigBins ()   {  return  rigbin;   }
@@ -269,6 +273,8 @@ class Binning {
       std::vector<float> MomBinsCent () { return  mombincent;  }
       std::vector<float> RigBinsCent () { return  rigbincent;  }
       std::vector<float> BetaBinsCent() { return  betabincent; }
+
+      std::vector<float> EkPerMassBins  ();  // returns Ek per mass
 
       int Type() {return type;}
 
@@ -283,6 +289,7 @@ class Binning {
       std::vector<float>  mombin ;
       std::vector<float>  rigbin ;
       std::vector<float> betabin ;
+      std::vector<float>  ekmbin ;
 
       std::vector<float>   ekbincent ;
       std::vector<float>  mombincent ;
@@ -351,7 +358,11 @@ void Binning::Setbins (int nbins, float min, float max, int typ)
 }
 
 
-
+std::vector<float> Binning::EkPerMassBins() {
+   if (ekmbin.size()==0 && mass !=0 )
+      for (float e : ekbin)   ekmbin.push_back(e/mass);
+   return ekmbin;
+}
 
 
 
@@ -371,4 +382,6 @@ DBinning NaFDB;
 PBinning NaFPB;
 DBinning AglDB;
 PBinning AglPB;
+
+Binning RB;
 
