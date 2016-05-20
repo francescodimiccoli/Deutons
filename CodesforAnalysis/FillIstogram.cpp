@@ -130,8 +130,7 @@ void FillIstogram(int INDX,string frac,string mese)
          Cuts_Pre();
          Massa_gen = ReturnMass_Gen();
          Momento_gen=Momento_gen;
-         Var=R_pre;
-         Var2=R_pre;
+         RUsed=R_pre;
 
          if(100*(i/(float)(ntupMCTrig->GetEntries()/fraz))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;
@@ -159,8 +158,7 @@ void FillIstogram(int INDX,string frac,string mese)
             progress=(int)(100*(i/(float)(ntupMCSepD->GetEntries()/fraz)))+1;
          }
          Cuts();
-         Var=R;
-         Var2=R;
+         RUsed=R;
 
          HecutMC_Fill(ntupMCSepD,i);
          SlidesforPlot_Fill(ntupMCSepD,i);
@@ -209,8 +207,7 @@ void FillIstogram(int INDX,string frac,string mese)
          }
          // Temporary Betarich check
          if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH<0) continue;
-         Var=R_pre;
-         Var2=R_pre;
+         RUsed=R_pre;
 
          if(100*(i/(float)(ntupDataTrig->GetEntries()/fraz))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;
@@ -237,8 +234,7 @@ void FillIstogram(int INDX,string frac,string mese)
          // Temporary Betarich check
          if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH<0) continue;
          Cuts();
-         Var=R;
-         Var2=R;
+         RUsed=R;
 
          if(100*(i/(float)(ntupDataSepD->GetEntries()))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;

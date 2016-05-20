@@ -94,8 +94,7 @@ float deltaencindeut[nbinsr];
 float deltaencinTOF [nbinsToF];
 float deltaencinNaF [nbinsNaF];
 float deltaencinAgl [nbinsAgl];
-float Var=0;
-float Var2=0;
+float RUsed=0;
 int Norm[11]= {0};
 
 //cuts

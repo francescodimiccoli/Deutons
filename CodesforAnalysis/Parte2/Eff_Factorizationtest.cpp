@@ -16,7 +16,7 @@ void FluxFactorizationtest_Pre_Fill(TNtuple *ntupla, int l){
 	int Rbin;
 	// full set efficiency before
 	if(((int)Cutmask&notpassed[0])==notpassed[0]){
-		Rbin=RB.GetRBin(Var);
+		Rbin=RB.GetRBin(RUsed);
 		if(Massa_gen<1&&Massa_gen>0.5){
 			EffFullSETselectionsMCP->beforeR->Fill(Rbin);	
 		}
@@ -24,7 +24,7 @@ void FluxFactorizationtest_Pre_Fill(TNtuple *ntupla, int l){
 	
 	//Drop-one approach eff. calc.
 	for(int S=0;S<3;S++){
-		Rbin=RB.GetRBin(Var);
+		Rbin=RB.GetRBin(RUsed);
 		if(Massa_gen<1&&Massa_gen>0.5) {
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeR->Fill(Rbin,S);
 			if(((int)Cutmask&   passed[S])==   passed[S]) Eff_do_preSelMCP->afterR ->Fill(Rbin,S);
@@ -50,7 +50,7 @@ void FluxFactorizationtest_Qual_Fill(TNtuple *ntupla, int l){
 	if(Beta<=0||R<=0||R<1.2*Rcutoff) return;
 	//R bins
 	int Kbin;
-	Kbin = RB.GetRBin(Var);
+	Kbin = RB.GetRBin(RUsed);
 	
 	//full set efficiency after
 	if(Dist5D_P<6&&Likcut)  EffFullSETselectionsMCP->afterR->Fill(Kbin);

@@ -25,7 +25,7 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 
 	//Beta bins
 	//ToF
-	Kbin=ToFDB.GetRBin(Var);	
+	Kbin=ToFDB.GetRBin(RUsed);	
 	Dist_DvsMC_P -> DataEff -> beforeTOF -> Fill(Kbin,zona);
 	if(Distcut) Lik_DvsMC_P  -> DataEff -> beforeTOF -> Fill(Kbin,zona);
 
@@ -35,7 +35,7 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 	}
 	//NaF
 	if(((int)Cutmask)>>11==512) {	
-		Kbin=NaFDB.GetRBin(Var);
+		Kbin=NaFDB.GetRBin(RUsed);
 		Dist_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_P  -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 
@@ -46,7 +46,7 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 	}
 	//Agl
 	if(((int)Cutmask)>>11==0) {
-		Kbin=AglDB.GetRBin(Var);
+		Kbin=AglDB.GetRBin(RUsed);
 		Dist_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_P  -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 
@@ -84,7 +84,7 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 		//Beta bins
 
 		//ToF
-		Kbin=ToFDB.GetRBin(Var);	
+		Kbin=ToFDB.GetRBin(RUsed);	
 		Dist_DvsMC_P -> MCEff -> beforeTOF -> Fill(Kbin);
 		if(Distcut) Lik_DvsMC_P  -> MCEff -> beforeTOF -> Fill(Kbin);
 
@@ -94,7 +94,7 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 		}
 		//NaF
 		if(((int)Cutmask)>>11==512) {	
-			Kbin=NaFDB.GetRBin(Var);	
+			Kbin=NaFDB.GetRBin(RUsed);	
 			Dist_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin);
 			if(Distcut) Lik_DvsMC_P  -> MCEff -> beforeNaF -> Fill(Kbin);
 
@@ -106,7 +106,7 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 		}
 		//Agl
 		if(((int)Cutmask)>>11==0) {	
-			Kbin=AglDB.GetRBin(Var);
+			Kbin=AglDB.GetRBin(RUsed);
 			Dist_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);
 			if(Distcut) Lik_DvsMC_P  -> MCEff -> beforeAgl -> Fill(Kbin);
 

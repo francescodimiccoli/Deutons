@@ -14,24 +14,24 @@ void DVSMCPreSeleff_D_Fill(TNtuple *ntupla, int l,int zona){
 	int Kbin;
 	for(int S=0;S<3;S++){
 		//R bins
-		Kbin = RB.GetRBin(Var);
+		Kbin = RB.GetRBin(RUsed);
 		if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeR) -> Fill(Kbin,zona,S);	
 		if(((int)Cutmask&passed[S])==passed[S])	      ((TH3*)PreSel_DvsMC_P -> DataEff -> afterR ) -> Fill(Kbin,zona,S);     
 
 		//Beta bins
 		//ToF
-		Kbin=ToFDB.GetRBin(Var);	
+		Kbin=ToFDB.GetRBin(RUsed);	
 		if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeTOF) -> Fill(Kbin,zona,S);
                 if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_P -> DataEff -> afterTOF ) -> Fill(Kbin,zona,S);
 		//NaF
 		if(((int)Cutmask)>>11==512) {	
-			Kbin=NaFDB.GetRBin(Var2);
+			Kbin=NaFDB.GetRBin(RUsed);
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeNaF) -> Fill(Kbin,zona,S);
                 	if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_P -> DataEff -> afterNaF ) -> Fill(Kbin,zona,S);
 		}
 		//Agl
 		if(((int)Cutmask)>>11==0) {
-			Kbin=AglDB.GetRBin(Var2);
+			Kbin=AglDB.GetRBin(RUsed);
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeAgl) -> Fill(Kbin,zona,S);
                 	if(((int)Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_P -> DataEff -> afterAgl ) -> Fill(Kbin,zona,S);
 		}
@@ -50,25 +50,25 @@ void DVSMCPreSeleff_Fill(TNtuple *ntupla, int l){
 	for(int S=0;S<3;S++){
 		if(Massa_gen<1) {
 			//R bins
-			Kbin = RB.GetRBin(Var);	
+			Kbin = RB.GetRBin(RUsed);	
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeR) -> Fill(Kbin,S);
 			if(((int)Cutmask&passed[S])==passed[S])       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterR ) -> Fill(Kbin,S);
 			//Beta bins
 
 			//ToF
-			Kbin=ToFDB.GetRBin(Var);	
+			Kbin=ToFDB.GetRBin(RUsed);	
 			if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeTOF) -> Fill(Kbin,S);
 			if(((int)Cutmask&passed[S])==passed[S])       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterTOF ) -> Fill(Kbin,S);
 
 			//NaF
 			if(((int)Cutmask)>>11==512) {	
-				Kbin=NaFDB.GetRBin(Var2);	
+				Kbin=NaFDB.GetRBin(RUsed);	
 				if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeNaF) -> Fill(Kbin,S);
 				if(((int)Cutmask&passed[S])==passed[S])       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterNaF ) -> Fill(Kbin,S);
 			}
 			//Agl
 			if(((int)Cutmask)>>11==0) {	
-				Kbin=AglDB.GetRBin(Var2);
+				Kbin=AglDB.GetRBin(RUsed);
 				if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeAgl) -> Fill(Kbin,S);
 				if(((int)Cutmask&passed[S])==passed[S])       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterAgl ) -> Fill(Kbin,S);
 			}

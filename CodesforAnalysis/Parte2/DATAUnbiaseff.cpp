@@ -13,7 +13,7 @@ void DATAUnbiaseff_Fill(TNtuple *ntupla, int l) {
    }
 
    if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2) {
-      Kbin=ToFPB.GetRBin(Var);
+      Kbin=ToFPB.GetRBin(RUsed);
       EffUnbiasDATA->beforeTOF->Fill(Kbin);
       if(Unbias==1) EffUnbiasDATA->afterTOF->Fill(Kbin);
    }

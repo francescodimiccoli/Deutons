@@ -18,12 +18,12 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
 	if(!(Likcut&&Distcut)) return;
 	for(int m=0;m<nbinsToF;m++){ //TOF
 		Distance_Discr = ((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
-		if(Var>ToFDB.MomBins()[m]&&Var<=ToFDB.MomBins()[m+1]){
+		if(RUsed>ToFDB.MomBins()[m]&&RUsed<=ToFDB.MomBins()[m+1]){
 			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
 			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 			if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Dbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
 		}
-		if(Var>ToFPB.MomBins()[m]&&Var<=ToFPB.MomBins()[m+1]) {
+		if(RUsed>ToFPB.MomBins()[m]&&RUsed<=ToFPB.MomBins()[m+1]) {
 			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Pbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
 			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 			if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Pbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
@@ -32,12 +32,12 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
 	for(int m=0;m<nbinsNaF;m++) { //NaF
 		if((((int)Cutmask)>>11)==512){
 			Distance_Discr = ((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
-			if(Var2>NaFDB.MomBins()[m]&&Var2<=NaFDB.MomBins()[m+1]) {
+			if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
 				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Dbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
 			}
-			if(Var2>NaFPB.MomBins()[m]&&Var2<=NaFPB.MomBins()[m+1]) {
+			if(RUsed>NaFPB.MomBins()[m]&&RUsed<=NaFPB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Pbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
 				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Pbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
@@ -47,12 +47,12 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
 	for(int m=0;m<nbinsAgl;m++) { //Agl
 		if((((int)Cutmask)>>11)==0){
 			Distance_Discr = ((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
-			if(Var2>AglDB.MomBins()[m]&&Var2<=AglDB.MomBins()[m+1]) {
+			if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
 				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Dbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
 			}
-			if(Var2>AglPB.MomBins()[m]&&Var2<=AglPB.MomBins()[m+1]) {
+			if(RUsed>AglPB.MomBins()[m]&&RUsed<=AglPB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Pbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
 				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
 				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Pbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
@@ -69,22 +69,22 @@ void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona){
 	if(!(Likcut&&Distcut)) return;
 	for(int m=0;m<nbinsToF;m++){ //TOF
 		Distance_Discr = ((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
-		if(Var>ToFDB.MomBins()[m]&&Var<=ToFDB.MomBins()[m+1]){
+		if(RUsed>ToFDB.MomBins()[m]&&RUsed<=ToFDB.MomBins()[m+1]){
 			if(R>1.2*Rcutoff) FitTOF_Dbins_Dist -> DATA -> Fill(Distance_Discr,m);
 			((TH3*)FitTOFgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,m,zona);
 		}
-		if(Var>ToFPB.MomBins()[m]&&Var<=ToFPB.MomBins()[m+1]) {
+		if(RUsed>ToFPB.MomBins()[m]&&RUsed<=ToFPB.MomBins()[m+1]) {
 			if(R>1.2*Rcutoff) FitTOF_Pbins_Dist -> DATA -> Fill(Distance_Discr,m);
 		}
 	}
 	for(int m=0;m<nbinsNaF;m++){//NaF
 		if((((int)Cutmask)>>11)==512){
 			Distance_Discr =  ((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
-			if(Var2>NaFDB.MomBins()[m]&&Var2<=NaFDB.MomBins()[m+1]) {
+			if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
 				if(R>1.2*Rcutoff) FitNaF_Dbins_Dist -> DATA -> Fill(Distance_Discr,m);
 				((TH3*)FitNaFgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,m,zona);
 			}
-			if(Var2>NaFPB.MomBins()[m]&&Var2<=NaFPB.MomBins()[m+1]) {
+			if(RUsed>NaFPB.MomBins()[m]&&RUsed<=NaFPB.MomBins()[m+1]) {
 				if(R>1.2*Rcutoff) FitNaF_Pbins_Dist -> DATA -> Fill(Distance_Discr,m);
 			}
 		}
@@ -92,11 +92,11 @@ void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona){
 	for(int m=0;m<nbinsAgl;m++){ //Agl
 		if((((int)Cutmask)>>11)==0){
 			Distance_Discr =  ((Dist5D_P-Dist5D)/(Dist5D_P+Dist5D));
-			if(Var2>AglDB.MomBins()[m]&&Var2<=AglDB.MomBins()[m+1]) {
+			if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
 				if(R>1.2*Rcutoff) FitAgl_Dbins_Dist -> DATA -> Fill(Distance_Discr,m);
 				((TH3*)FitAglgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,m,zona);
 			}
-			if(Var2>AglPB.MomBins()[m]&&Var2<=AglPB.MomBins()[m+1]) {
+			if(RUsed>AglPB.MomBins()[m]&&RUsed<=AglPB.MomBins()[m+1]) {
 				if(R>1.2*Rcutoff) FitAgl_Pbins_Dist -> DATA -> Fill(Distance_Discr,m);
 			}
 		}

@@ -14,11 +14,11 @@ void DVSMCRICHeff_D_Fill(TNtuple *ntupla, int l,int zona){
 	
 	//Beta bins
 	//NaF
-	Kbin=NaFDB.GetRBin(Var);
+	Kbin=NaFDB.GetRBin(RUsed);
 	RICH_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);	
 	if(((int)Cutmask)>>11==512) RICH_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
 	//Agl
-	Kbin=AglDB.GetRBin(Var);
+	Kbin=AglDB.GetRBin(RUsed);
         RICH_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);	
 	if(((int)Cutmask)>>11==0) RICH_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona); 
 	return;
@@ -36,13 +36,13 @@ void DVSMCRICHeff_Fill(TNtuple *ntupla, int l){
 
 	if(Massa_gen<1) {
 		//Beta bins
-		Kbin=NaFDB.GetRBin(Var);
+		Kbin=NaFDB.GetRBin(RUsed);
                 RICH_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin);
 		//NaF
 		if(((int)Cutmask)>>11==512) RICH_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin);
 
 		//Agl
-		Kbin=AglDB.GetRBin(Var);
+		Kbin=AglDB.GetRBin(RUsed);
                 RICH_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);	
 		if(((int)Cutmask)>>11==0) RICH_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin); 	
 
