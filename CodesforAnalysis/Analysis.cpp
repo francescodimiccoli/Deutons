@@ -101,8 +101,8 @@ int main(int argc, char * argv[])
    cout<<endl;
    cout<<"****************************** R BINS ***************************************"<<endl;
 
-	RB.Setbins(nbinsr, 0.5, 100, 2);
-  
+   RB.Setbins(nbinsr, 0.5, 100, 2);
+
    for(int i=0; i<RB.size()-1; i++) {
       encinprot[i]=pow(1+pow( RB.RigBins()[i]/0.938, 2) ,0.5)-1;
       if (i>0) deltaencinprot[i]=encinprot[i]-encinprot[i-1];
@@ -166,10 +166,8 @@ int main(int argc, char * argv[])
       DATARICHeff(file1);
       if(frac=="tot") DeutonsTemplFits();
       if(frac=="tot") DeutonsTemplFits_Dist();
-   }
-   cout<<"************************* RESULTS  **************************************************************"<<endl;
 
-   if(INDX==2) {
+      cout<<"************************* RESULTS  **************************************************************"<<endl;
       CorrLAT();
       DVSMCPreSeleff();
       DVSMCPreSeleffD();

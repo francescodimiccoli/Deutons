@@ -15,9 +15,9 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
       if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0) EffpreselMCP->afterR->Fill(RB.GetRBin(fabs(R_pre)));
          
       // Beta bins
-      EffpreselMCP->beforeTOF->Fill( ToFPB.GetRBin(Var3), GetMCGenWeight() );
-      EffpreselMCP->beforeNaF->Fill( NaFPB.GetRBin(Var3), GetMCGenWeight() );
-      EffpreselMCP->beforeAgl->Fill( AglPB.GetRBin(Var3), GetMCGenWeight() );
+      EffpreselMCP->beforeTOF->Fill( ToFPB.GetRBin(Momento_gen), GetMCGenWeight() );
+      EffpreselMCP->beforeNaF->Fill( NaFPB.GetRBin(Momento_gen), GetMCGenWeight() );
+      EffpreselMCP->beforeAgl->Fill( AglPB.GetRBin(Momento_gen), GetMCGenWeight() );
 
       if(Unbias==0 && ((int)Cutmask&187)==187 && Beta_pre>0 && R_pre>0)
       {
@@ -36,9 +36,9 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
 
       // Beta bins
 
-         FillBinMGen(EffpreselMCD->beforeTOF, ToFDB.GetRBin(Var3) );
-         FillBinMGen(EffpreselMCD->beforeNaF, NaFDB.GetRBin(Var3) );
-         FillBinMGen(EffpreselMCD->beforeAgl, AglDB.GetRBin(Var3) );
+         FillBinMGen(EffpreselMCD->beforeTOF, ToFDB.GetRBin(Momento_gen) );
+         FillBinMGen(EffpreselMCD->beforeNaF, NaFDB.GetRBin(Momento_gen) );
+         FillBinMGen(EffpreselMCD->beforeAgl, AglDB.GetRBin(Momento_gen) );
 
          if(((int)Cutmask&187)==187 && Beta_pre>0 && Unbias==0 && R_pre>0)
          {

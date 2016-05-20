@@ -36,7 +36,7 @@ void MCTrackeff_Fill (TNtuple *ntupla, int l)
       }
 
       //Beta bins
-      Kbin=ToFPB.GetRBin (Var3);
+      Kbin=ToFPB.GetRBin (Momento_gen);
       EffTriggMCP->beforeTOF->Fill (Kbin);
       if ( ( (int) Cutmask&1) ==1) {
          EffTriggMCP->afterTOF->Fill (Kbin);
@@ -48,7 +48,7 @@ void MCTrackeff_Fill (TNtuple *ntupla, int l)
       if (EdepTOFU < EdepTOFbeta->Eval (Beta_pre)+1
             && EdepTOFU > EdepTOFbeta->Eval (Beta_pre)-1
             && ( (int) Cutmask&3) == 3 && Beta_pre > 0) {
-         Kbin=ToFPB.GetRBin (Var3);
+         Kbin=ToFPB.GetRBin (Momento_gen);
          EffTrackMCP->beforeTOF->Fill (Kbin);
          if ( ( (int) Cutmask&11) == 11 && R_pre > 0)
             EffTrackMCP->afterTOF->Fill (Kbin);
@@ -69,13 +69,13 @@ void MCTrackeff_Fill (TNtuple *ntupla, int l)
       if (EdepTOFU < EdepTOFbeta->Eval (Beta_pre)+1
             && EdepTOFU > EdepTOFbeta->Eval (Beta_pre)-1
             && ( (int) Cutmask&3) == 3 && Beta_pre > 0) {
-         Kbin=RB.GetRBin (Var3);
+         Kbin=RB.GetRBin (Momento_gen);
          FillBinMGen (EffTrackMCD->beforeR, Kbin);
          if ( ( (int) Cutmask&11) ==11&&R_pre>0) FillBinMGen (EffTrackMCD->afterR , Kbin);
 
       }
       //Beta bins
-      Kbin=ToFDB.GetRBin (Var3);
+      Kbin=ToFDB.GetRBin (Momento_gen);
       FillBinMGen (EffTriggMCD->beforeTOF, Kbin);
       if ( ( (int) Cutmask&1) ==1)   {
          FillBinMGen (EffTriggMCD->afterTOF , Kbin);

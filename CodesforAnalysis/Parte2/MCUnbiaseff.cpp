@@ -17,7 +17,7 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l) {
       if(Unbias==0) EffUnbiasMCP->afterR->Fill(Kbin);
 
       //Beta bins
-      Kbin=ToFPB.GetRBin(Var3);
+      Kbin=ToFPB.GetRBin(Momento_gen);
       EffUnbiasMCP->beforeTOF->Fill(Kbin);
       if(Unbias==0) EffUnbiasMCP->afterTOF->Fill(Kbin);
       
@@ -30,7 +30,7 @@ void MCUnbiaseff_Fill(TNtuple *ntupla, int l) {
       if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
       
       //Beta bins
-      Kbin=ToFDB.GetRBin(Var3);
+      Kbin=ToFDB.GetRBin(Momento_gen);
       FillBinMGen(EffUnbiasMCD->beforeTOF, Kbin);
       if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin);
       

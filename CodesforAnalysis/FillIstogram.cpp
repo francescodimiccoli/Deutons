@@ -129,12 +129,10 @@ void FillIstogram(int INDX,string frac,string mese)
          Cutmask=CUTMASK;
          Cuts_Pre();
          Massa_gen = ReturnMass_Gen();
-         Var3=Momento_gen;
+         Momento_gen=Momento_gen;
          Var=R_pre;
          Var2=R_pre;
-         /*Var=Beta_pre;
-                     Var2=BetaRICH;
-                     Var3=Beta_gen;*/
+
          if(100*(i/(float)(ntupMCTrig->GetEntries()/fraz))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;
             progress=(int)(100*(i/(float)(ntupMCTrig->GetEntries()/fraz)))+1;
@@ -161,12 +159,9 @@ void FillIstogram(int INDX,string frac,string mese)
             progress=(int)(100*(i/(float)(ntupMCSepD->GetEntries()/fraz)))+1;
          }
          Cuts();
-         Var3=Momento_gen;
          Var=R;
          Var2=R;
-         /*Var=Beta;
-            	Var2=BetaRICH;
-                   Var3=Beta_gen;*/
+
          HecutMC_Fill(ntupMCSepD,i);
          SlidesforPlot_Fill(ntupMCSepD,i);
          FluxFactorizationtest_Qual_Fill(ntupMCTrig,i);
@@ -214,12 +209,9 @@ void FillIstogram(int INDX,string frac,string mese)
          }
          // Temporary Betarich check
          if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH<0) continue;
-         Var3=Momento_gen;
          Var=R_pre;
          Var2=R_pre;
-         /*Var=Beta_pre;
-           Var2=BetaRICH;
-           Var3=Beta_gen;*/
+
          if(100*(i/(float)(ntupDataTrig->GetEntries()/fraz))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;
             progress=(int)(100*(i/(float)(ntupDataTrig->GetEntries()/fraz)))+1;
@@ -245,12 +237,9 @@ void FillIstogram(int INDX,string frac,string mese)
          // Temporary Betarich check
          if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH<0) continue;
          Cuts();
-         Var3=Momento_gen;
          Var=R;
          Var2=R;
-         /*Var=Beta;
-           Var2=BetaRICH;
-           Var3=Beta_gen;*/
+
          if(100*(i/(float)(ntupDataSepD->GetEntries()))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;
             progress=(int)(100*(i/(float)(ntupDataSepD->GetEntries()/fraz)))+1;
@@ -267,10 +256,9 @@ void FillIstogram(int INDX,string frac,string mese)
          DeutonsDATA_Dist_Fill(ntupDataSepD,i,Zona);
          MCMCDATA_Fill(ntupDataSepD,i);
       }
-   }
 
-   cout<<endl<<"************************ SAVING DATA ************************"<<endl;
-   if(INDX==0||INDX==1) {
+      cout<<endl<<"************************ SAVING DATA ************************"<<endl;
+
       nomefile= outputpath + "Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
       TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 
