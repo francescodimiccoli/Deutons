@@ -192,10 +192,10 @@ void DVSMCQualeff2(){
 	DistP_Correction_NaF  -> Write("Dist_DvsMC_P_CorrectionNaF");
 	DistP_Correction_Agl  -> Write("Dist_DvsMC_P_CorrectionAgl");
 
-	LikP_Correction_R    -> Write("Lik_DvsMC_P_CorrectionR"  );
-	LikP_Correction_TOF  -> Write("Lik_DvsMC_P_CorrectionTOF");
-	LikP_Correction_NaF  -> Write("Lik_DvsMC_P_CorrectionNaF");
-	LikP_Correction_Agl  -> Write("Lik_DvsMC_P_CorrectionAgl");
+	LikP_Correction_R     -> Write("Lik_DvsMC_P_CorrectionR"    );
+	LikP_Correction_TOF   -> Write("Lik_DvsMC_P_CorrectionTOF"  );
+	LikP_Correction_NaF   -> Write("Lik_DvsMC_P_CorrectionNaF"  );
+	LikP_Correction_Agl   -> Write("Lik_DvsMC_P_CorrectionAgl"  );
 
 
 	file1->Write();

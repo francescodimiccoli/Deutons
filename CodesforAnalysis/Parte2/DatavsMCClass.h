@@ -181,13 +181,6 @@ void DatavsMC::Eval_Corrections(){
 					cout<<Correction_R -> GetBinContent(j+1,i+1,l+1)<<" "; cout<<endl;
 		}cout<<endl;
 		}
-	if(Correction_R)
-                for(int l=0;l<Correction_R ->GetNbinsZ();l++){
-                for(int i=0;i<Correction_R ->GetNbinsY();i++){
-                                for(int j=0;j<Correction_R ->GetNbinsX();j++)
-                                        cout<<Correction_R -> GetBinError(j+1,i+1,l+1)<<" "; cout<<endl;
-                }cout<<endl;
-                }
 
 		return;
 }
@@ -195,7 +188,6 @@ void DatavsMC::Eval_Corrections(){
 
 
 void DatavsMC::DivideHisto(TH1 *Histo1, TH1 *Histo2,TH1 * Correction){
-	
 	if(selections==1){
 		if(mc_types ==1) {
 			for(int R=0;R<Histo2->GetNbinsX();R++){ 
