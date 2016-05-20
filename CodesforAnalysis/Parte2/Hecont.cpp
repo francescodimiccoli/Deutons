@@ -58,7 +58,7 @@ void HecutD_Fill(TNtuple *ntupla,int l) {
 	Hecut_D->Fill(fabs(EdepTOFbeta->Eval(Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta)),fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta)));
 
 	if(Betastrongcut&&Likcut){
-		if(((int)Cutmask)>>11!=0&&((int)Cutmask)>>11!=512&&R<3)HeliumContaminationTOF -> DATA -> Fill(Dist5D_P,0);
+		if(((int)Cutmask)>>11!=0&&((int)Cutmask)>>11!=512&&R<3)   HeliumContaminationTOF -> DATA -> Fill(Dist5D_P,0);
 		if(((int)Cutmask)>>11==512&&R<6)			  HeliumContaminationNaF -> DATA -> Fill(Dist5D_P,0);
 		if(((int)Cutmask)>>11==0&&R<14)  			  HeliumContaminationAgl -> DATA -> Fill(Dist5D_P,0);	
 	}

@@ -64,8 +64,8 @@ void Acceptance(){
 	TH1F* RICH_Correction_P_NaF =(TH1F*) file1 -> Get ("Results/RICH_DvsMC_P_CorrectionNaF"		);
 	TH1F* RICH_Correction_P_Agl =(TH1F*) file1 -> Get ("Results/RICH_DvsMC_P_CorrectionAgl"		);
 	
-	TH1F* RICH_Correction_D_NaF =(TH1F*) file1 -> Get ("Results/RICH_DvsMC_D_CorrectionNaF"         );
-        TH1F* RICH_Correction_D_Agl =(TH1F*) file1 -> Get ("Results/RICH_DvsMC_D_CorrectionAgl"         );
+	TH2F* RICH_Correction_D_NaF =(TH2F*) file1 -> Get ("Results/RICH_DvsMC_D_CorrectionNaF"         );
+        TH2F* RICH_Correction_D_Agl =(TH2F*) file1 -> Get ("Results/RICH_DvsMC_D_CorrectionAgl"         );
 
 	AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);
 	AcceptanceP -> Apply_DvsMCcorrection_R(LikP_Correction_R );
@@ -73,8 +73,8 @@ void Acceptance(){
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(RICH_Correction_P_Agl);
 
-	AcceptanceD -> Apply_DvsMCcorrection_NaF(RICH_Correction_D_NaF);
-        AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl);
+	AcceptanceD -> Apply_DvsMCcorrection_NaF(RICH_Correction_D_NaF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl,6);
 
 	cout<<"*** Updating P1 file ****"<<endl;
     	nomefile="../Histos/"+mese +"/"+mese+"_"+frac+"_P1.root";

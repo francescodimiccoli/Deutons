@@ -139,7 +139,7 @@ void OtherExperimentsComparison(){
                 D_Graphs[n] ->Draw("Psame");
                  legD->AddEntry(D_Graphs[n],D_Graphs[n]->GetTitle(),"ep");
         }
-
+	legD->Draw("same");
 
 
 

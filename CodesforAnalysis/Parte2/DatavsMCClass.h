@@ -156,33 +156,13 @@ void DatavsMC::Eval_DandMC_Eff(){
 
 
 void DatavsMC::Eval_Corrections(){
-		
-		cout<< Correction_R  <<endl;
-                cout<< Correction_TOF<<endl;
-                cout<< Correction_NaF<<endl;
-                cout<< Correction_Agl<<endl;
 
-		DivideHisto( DataEff_corr -> effR   , MCEff -> effR  , Correction_R   );	
-                DivideHisto( DataEff_corr -> effTOF , MCEff -> effTOF, Correction_TOF );
-	        DivideHisto( DataEff_corr -> effNaF , MCEff -> effNaF, Correction_NaF );
-                DivideHisto( DataEff_corr -> effAgl , MCEff -> effAgl, Correction_Agl );
-		cout<<endl;
-		cout<< Correction_R  <<endl; 
-                cout<< Correction_TOF<<endl; 
-                cout<< Correction_NaF<<endl; 
-                cout<< Correction_Agl<<endl; 
+	DivideHisto( DataEff_corr -> effR   , MCEff -> effR  , Correction_R   );	
+	DivideHisto( DataEff_corr -> effTOF , MCEff -> effTOF, Correction_TOF );
+	DivideHisto( DataEff_corr -> effNaF , MCEff -> effNaF, Correction_NaF );
+	DivideHisto( DataEff_corr -> effAgl , MCEff -> effAgl, Correction_Agl );
 
-
-
-	if(Correction_R)
-		for(int l=0;l<Correction_R ->GetNbinsZ();l++){
-		for(int i=0;i<Correction_R ->GetNbinsY();i++){
-				for(int j=0;j<Correction_R ->GetNbinsX();j++)
-					cout<<Correction_R -> GetBinContent(j+1,i+1,l+1)<<" "; cout<<endl;
-		}cout<<endl;
-		}
-
-		return;
+	return;
 }
 
 
