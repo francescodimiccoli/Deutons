@@ -106,15 +106,14 @@ class Binning {
       std::vector<float> EkPerMassBins  ();  ///< returns Ek per mass
 
       void SetMatrix(std::vector<float>);  ///< Set the matrix transition from the vector
+      void ResetMatrix() { matrix.clear(); } ///< Reset the matrix transition
       std::vector<float> Rebin(histo ); ///< Rebin the histogram passed as parameter to rigbin's bins
 
       histo LoadCRDB(string filename); ///< Loads a file in the Cosmic-Ray Database data format
+      histo LoadData(string filename); ///< Loads a file whose first column is the bin beginning, the second the value
       histo HistoFromVec(std::vector<float> edges,  std::vector<float> content); ///< Make histo from 2 vectors
 
-
       void Print(); ///< Print the content of the bins
-
-
 
 
 
@@ -170,6 +169,27 @@ void Binning::Print()
 
 
 
+Binning::histo Binning::LoadData(string filename)
+{
+
+   // Init reading file
+   std::fstream Datafile(filename, std::ios_base::in);
+
+   histo histogram;
+   float edge, content;
+   while(!Datafile.eof()) {
+      Datafile >> edge >> content;
+      histogram.edges.  push_back(edge);
+      histogram.content.push_back(content);
+   }
+   histogram.edges.  pop_back();
+   histogram.content.pop_back();
+   histogram.edges.push_back(edge);// last bin
+
+   return histogram;
+}
+
+
 Binning::histo Binning::LoadCRDB(string filename)
 {
 
@@ -208,9 +228,11 @@ Binning::histo Binning::HistoFromVec(std::vector<float> edges,  std::vector<floa
 
 std::vector<float> Binning::Rebin(histo htorebin)
 {
+   ResetMatrix();
    std::vector<float> rebinned(rigbin.size()-1); // -1 because rebin is a content, rigbin the edges
    if (htorebin.edges.size()-htorebin.content.size() != 1 ) return rebinned;
-   if (matrix.size()==0) SetMatrix(htorebin.edges);
+   
+   SetMatrix(htorebin.edges);
 
    // What we really do is multiply a matrix by a vector
    for (int ibin=0; ibin<htorebin.content.size(); ibin++)
@@ -228,7 +250,7 @@ std::vector<float> Binning::Rebin(histo htorebin)
 void Binning::SetMatrix(std::vector<float> vinput)
 {
 
-   if (matrix.size()!=0) return;     // Already done
+   //if (matrix.size()!=0) return;     // Already done
 
    for (int ib=0; ib<vinput.size()-1; ib++) { // prefix / suffix b for incoming binning
       float bmin=vinput[ib], bmax=vinput[ib+1];
@@ -342,14 +364,6 @@ int Binning::GetRBin (float var)
 
 
 
-
-/** @brief Gives the ratio of MC gen / MC data ; used as a weight to fill histos
- *  @return float      : ratio of MC gen / MC data for the known (global) rigidity
- */
-float GetMCGenWeight()
-{
-   return 1;
-}
 
 
 
