@@ -3,6 +3,15 @@
  * @date   $Date: 2016/05/19$
  */
 
+
+#include <vector>
+#include <cmath>
+#include <fstream>
+#include <iostream>
+#include <limits>
+
+using namespace std;
+
 class Particle {
    public:
       Particle (float m) :          mass (m) {}
@@ -136,7 +145,6 @@ Binning::histo Binning::LoadCRDB(string filename)
 
    // Init reading file
    std::fstream DBfile(filename, std::ios_base::in);
-   string line;
    for (int i=0; i<2; i++) // First 2 lines are descriptors
       DBfile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
 
@@ -148,6 +156,8 @@ Binning::histo Binning::LoadCRDB(string filename)
       histogram.edges.push_back(Elo);
       histogram.content.push_back(y);
    }
+    histogram.edges.pop_back();
+    histogram.content.pop_back();
     histogram.edges.push_back(Eup);// last bin
 
    return histogram;
@@ -167,11 +177,11 @@ Binning::histo Binning::HistoFromVec(std::vector<float> edges,  std::vector<floa
 
 std::vector<float> Binning::Rebin(histo htorebin)
 {
-   std::vector<float> rebinned;
+   std::vector<float> rebinned(rigbin.size());
    if (htorebin.edges.size()-htorebin.content.size() != 1 ) return rebinned;
    if (matrix.size()==0) SetMatrix(htorebin.edges);
 
-   // What we really do is matrix multiplication
+   // What we really do is multiply a matrix by a vector
    for (int ibin=0; ibin<htorebin.content.size(); ibin++)
       for (int obin=0; obin<rigbin.size(); obin++)
          rebinned[obin] += matrix[ibin][obin] * htorebin.content[ibin];
@@ -191,7 +201,7 @@ void Binning::SetMatrix(std::vector<float> vinput)
 
    for (int ib=0; ib<vinput.size()-1; ib++) { // prefix / suffix b for incoming binning
       float bmin=vinput[ib], bmax=vinput[ib+1];
-      float brange=bmax-bmin;
+      float bwidth=bmax-bmin;
       vector<float> column;
 
       for (int it=0; it<rigbin.size()-1; it++) { // prefix / suffix b for This binning
@@ -199,9 +209,9 @@ void Binning::SetMatrix(std::vector<float> vinput)
          float weight=0;
          // Which fraction of the bbin is in tbin? 4 possibilities:
          if      (tmin > bmax || tmax < bmin ) weight=0;                      // either tbin is outside bbin
-         else if (tmin > bmin && tmax < bmax ) weight = (tmax-tmin) / brange; // or fully included into bbin
-         else if (tmin <=bmin && tmax < bmax ) weight = (tmax-bmin) / brange; // or partly included to the right
-         else if (tmin > bmin && tmax >=bmax ) weight = (bmax-tmin) / brange; // ...or to the left
+         else if (tmin > bmin && tmax < bmax ) weight = (tmax-tmin) / bwidth; // or fully included into bbin
+         else if (tmin <=bmin && tmax < bmax ) weight = (tmax-bmin) / bwidth; // or partly included to the right
+         else if (tmin > bmin && tmax >=bmax ) weight = (bmax-tmin) / bwidth; // ...or to the left
          column.push_back(weight);
       }
 
@@ -220,7 +230,7 @@ void Binning::Setbins (int nbins, float min, float max, int typ)
 {
    type=typ;
    float logmin=log(min), logmax=log(max);
-   float binbeg=logmin;
+   float binbeg=min;
    float binstep= (logmax-logmin)  / nbins;
    int ibin=0;
    std::vector<float> vbin; // bins
@@ -229,7 +239,6 @@ void Binning::Setbins (int nbins, float min, float max, int typ)
 
    // Filling the vectors
    while (binbeg<max) {
-      binbeg = exp ( logmin + ibin * binstep);
       float bincent= exp ( logmin + (ibin+0.5) * binstep);
       switch(type) {
       case 1: // Energy
@@ -253,8 +262,9 @@ void Binning::Setbins (int nbins, float min, float max, int typ)
       mombincent. push_back(Pcent.mom);
       rigbincent. push_back(Pcent.rig);
       betabincent.push_back(Pcent.beta);
-
+      
       ibin++;
+      binbeg = exp ( logmin + ibin * binstep);
    }
 
    switch(type) { // Don't forget the final edge
