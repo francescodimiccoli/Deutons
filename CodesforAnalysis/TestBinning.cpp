@@ -37,7 +37,7 @@ int main(int argc, char **argv)
    c1.SetLogx();
    PBinning pb;
    pb.Setbins(100, 0.5, 100);
-   std::vector<float> protflux=pb.Rebin(mrbin.LoadCRDB("AMSProtons.dat"));
+   std::vector<float> protflux=pb.Rebin(pb.LoadCRDB("AMSProtons.dat"));
 
 
    TGraph g[4];
