@@ -177,13 +177,13 @@ Binning::histo Binning::HistoFromVec(std::vector<float> edges,  std::vector<floa
 
 std::vector<float> Binning::Rebin(histo htorebin)
 {
-   std::vector<float> rebinned(rigbin.size());
+   std::vector<float> rebinned(rigbin.size()-1); // -1 because rebin is a content, rigbin the edges
    if (htorebin.edges.size()-htorebin.content.size() != 1 ) return rebinned;
    if (matrix.size()==0) SetMatrix(htorebin.edges);
 
    // What we really do is multiply a matrix by a vector
    for (int ibin=0; ibin<htorebin.content.size(); ibin++)
-      for (int obin=0; obin<rigbin.size(); obin++)
+      for (int obin=0; obin<rigbin.size()-1; obin++)
          rebinned[obin] += matrix[ibin][obin] * htorebin.content[ibin];
 
    return rebinned;
@@ -233,8 +233,8 @@ void Binning::Setbins (int nbins, float min, float max, int typ)
    float binbeg=min;
    float binstep= (logmax-logmin)  / nbins;
    int ibin=0;
-   std::vector<float> vbin; // bins
-   std::vector<float> vcen; // centers
+   std::vector<float> vbin(nbins+1); // bins
+   std::vector<float> vcen(nbins); // centers
    Particle Pedge(mass, Z), Pcent(mass, Z);
 
    // Filling the vectors
