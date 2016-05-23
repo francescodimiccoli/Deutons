@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 	float sum=0;
 	for (int i=0; i<mcweight.size(); i++) {
 		cout << mcweight[i]	<< " ";
-		sum += mcweight[i]*(mrbin.RigBins()[i+1]-mrbin.RigBins()[i])/mcweight.size();
+		sum += mcweight[i]*(mrbin.RigBin(i+1)-mrbin.RigBin(i))/mcweight.size();
 	}
 	cout << endl;
 	cout << "Sum vector : " << sum << " inverse " << 1/sum << endl;

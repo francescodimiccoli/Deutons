@@ -98,10 +98,20 @@ class Binning {
       std::vector<float> RigBins ()   {  return  rigbin;   }
       std::vector<float> BetaBins()   {  return betabin;   }
 
-      std::vector<float> EkBinsCent()   { return   ekbincent;  }  ///< bin centers in log
-      std::vector<float> MomBinsCent () { return  mombincent;  }
-      std::vector<float> RigBinsCent () { return  rigbincent;  }
+      std::vector<float> EkBinsCent()   { return    ekbincent; }  ///< bin centers in log
+      std::vector<float> MomBinsCent () { return   mombincent; }
+      std::vector<float> RigBinsCent () { return   rigbincent; }
       std::vector<float> BetaBinsCent() { return  betabincent; }
+
+      float EkBin  (int bin)   {  return   ekbin[bin];   }
+      float MomBin (int bin)   {  return  mombin[bin];   }
+      float RigBin (int bin)   {  return  rigbin[bin];   }
+      float BetaBin(int bin)   {  return betabin[bin];   }
+
+      float EkBinCent  (int bin) { return    ekbincent[bin]; }  ///< bin centers in log
+      float MomBinCent (int bin) { return   mombincent[bin]; }
+      float RigBinCent (int bin) { return   rigbincent[bin]; }
+      float BetaBinCent(int bin) { return  betabincent[bin]; }
 
       std::vector<float> EkPerMassBins  ();  ///< returns Ek per mass
 
