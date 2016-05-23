@@ -90,6 +90,9 @@ class Binning {
 
       std::vector<float> EkPerMassBins  ();  ///< returns Ek per mass
 
+      void SetMatrix(std::vector<float>);  ///< Set the matrix transition from the vector
+      std::vector<float> Rebin(std::vector <float>);
+
       int Type() {return type;}
 
 
@@ -109,10 +112,55 @@ class Binning {
       std::vector<float>  rigbincent ;
       std::vector<float> betabincent ;
 
-   public:
+      vector< vector<float> > matrix; ///< Transition matrix for fluxes recorded and our binning.
+
+	
       
 
 };
+
+
+
+std::vector<float> Binning::Rebin(std::vector <float> torebin) {
+   std::vector<float> rebinned;
+   if (matrix.size()==0) SetMatrix(torebin);
+
+   // What we really do is matrix multiplication
+   for (int ibin=0; ibin<torebin.size(); ibin++)
+      for (int obin=0; obin<rigbin.size(); obin++)
+         rebinned[obin] += matrix[ibin][obin] * torebin[ibin];
+
+   return rebinned;
+}
+
+
+void Binning::SetMatrix(std::vector<float> vinput){
+
+   if (matrix.size()!=0) return;     // Already done
+
+   for (int ib=0; ib<vinput.size()-1; ib++) { // prefix / suffix b for incoming binning
+      float bmin=vinput[ib], bmax=vinput[ib+1];
+      float brange=bmax-bmin;
+      vector<float> column;
+      
+      for (int it=0; it<rigbin.size()-1; it++) { // prefix / suffix b for This binning
+         float tmin=rigbin[it], tmax=rigbin[it+1];
+         float weight=0;
+         // Which fraction of the bbin is in tbin? 4 possibilities:
+         if      (tmin > bmax || tmax < bmin ) weight=0;                      // either tbin is outside bbin
+         else if (tmin > bmin && tmax < bmax ) weight = (tmax-tmin) / brange; // or fully included into bbin
+         else if (tmin <=bmin && tmax < bmax ) weight = (tmax-bmin) / brange; // or partly included to the right
+         else if (tmin > bmin && tmax >=bmax ) weight = (bmax-tmin) / brange; // ...or to the left
+         column.push_back(weight);
+      }
+      
+      matrix.push_back(column);
+   }
+   return;
+}  
+
+
+
 
 
 
