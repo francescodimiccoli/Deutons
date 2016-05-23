@@ -69,6 +69,10 @@ class Binning {
       void Setbins (int, float, float, int type=1); ///< type -- binning in 0: not done, 1 energy, 2 rigidity
       int size() {return ekbin.size(); };
 
+      struct histo {
+         std::vector<float> edges ;
+         std::vector<float> content ;
+      };
 
 
       /** @brief Returns the rigidity bin containing the variable
@@ -91,9 +95,14 @@ class Binning {
       std::vector<float> EkPerMassBins  ();  ///< returns Ek per mass
 
       void SetMatrix(std::vector<float>);  ///< Set the matrix transition from the vector
-      std::vector<float> Rebin(std::vector <float>);
+      std::vector<float> Rebin(histo ); ///< Rebin the histogram passed as parameter to rigbin's bins
+
+      histo LoadCRDB(string filename); ///< Loads a file in the Cosmic-Ray Database data format
+      histo HistoFromVec(std::vector<float> edges,  std::vector<float> content); ///< Make histo from 2 vectors
 
       int Type() {return type;}
+
+
 
 
    protected:
@@ -114,27 +123,69 @@ class Binning {
 
       vector< vector<float> > matrix; ///< Transition matrix for fluxes recorded and our binning.
 
-	
-      
+
 
 };
 
 
 
-std::vector<float> Binning::Rebin(std::vector <float> torebin) {
+
+
+Binning::histo Binning::LoadCRDB(string filename)
+{
+
+   // Init reading file
+   std::fstream DBfile(filename, std::ios_base::in);
+   string line;
+   for (int i=0; i<2; i++) // First 2 lines are descriptors
+      DBfile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+
+
+   histo histogram; 
+   float Emoy, Elo, Eup, y, ystat_lo, ystat_up, ysyst_lo, ysyst_up, yerrtot_lo, yerrtot_up; // As described in file
+   while(!DBfile.eof()) {
+      DBfile >> Emoy >> Elo >> Eup >> y >> ystat_lo >> ystat_up >> ysyst_lo >> ysyst_up >> yerrtot_lo >> yerrtot_up;
+      histogram.edges.push_back(Elo);
+      histogram.content.push_back(y);
+   }
+    histogram.edges.push_back(Eup);// last bin
+
+   return histogram;
+}
+
+
+Binning::histo Binning::HistoFromVec(std::vector<float> edges,  std::vector<float> content) {
+   histo h;
+   if (edges.size()-content.size() == 1) {
+      h.edges=edges;
+      h.content=content;
+   }
+   return h;
+}
+
+
+
+std::vector<float> Binning::Rebin(histo htorebin)
+{
    std::vector<float> rebinned;
-   if (matrix.size()==0) SetMatrix(torebin);
+   if (htorebin.edges.size()-htorebin.content.size() != 1 ) return rebinned;
+   if (matrix.size()==0) SetMatrix(htorebin.edges);
 
    // What we really do is matrix multiplication
-   for (int ibin=0; ibin<torebin.size(); ibin++)
+   for (int ibin=0; ibin<htorebin.content.size(); ibin++)
       for (int obin=0; obin<rigbin.size(); obin++)
-         rebinned[obin] += matrix[ibin][obin] * torebin[ibin];
+         rebinned[obin] += matrix[ibin][obin] * htorebin.content[ibin];
 
    return rebinned;
 }
 
 
-void Binning::SetMatrix(std::vector<float> vinput){
+
+
+
+
+void Binning::SetMatrix(std::vector<float> vinput)
+{
 
    if (matrix.size()!=0) return;     // Already done
 
@@ -142,7 +193,7 @@ void Binning::SetMatrix(std::vector<float> vinput){
       float bmin=vinput[ib], bmax=vinput[ib+1];
       float brange=bmax-bmin;
       vector<float> column;
-      
+
       for (int it=0; it<rigbin.size()-1; it++) { // prefix / suffix b for This binning
          float tmin=rigbin[it], tmax=rigbin[it+1];
          float weight=0;
@@ -153,11 +204,11 @@ void Binning::SetMatrix(std::vector<float> vinput){
          else if (tmin > bmin && tmax >=bmax ) weight = (bmax-tmin) / brange; // ...or to the left
          column.push_back(weight);
       }
-      
+
       matrix.push_back(column);
    }
    return;
-}  
+}
 
 
 
