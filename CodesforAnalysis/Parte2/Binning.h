@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <iomanip>
 
 using namespace std;
 
@@ -77,6 +78,7 @@ class Binning {
       Binning (float m, float z) :  mass(m), Z(1) {}
       void Setbins (int, float, float, int type=1); ///< type -- binning in 0: not done, 1 energy, 2 rigidity
       int size() {return ekbin.size(); };
+      int Type() {return type;}
 
       struct histo {
          std::vector<float> edges ;
@@ -109,7 +111,9 @@ class Binning {
       histo LoadCRDB(string filename); ///< Loads a file in the Cosmic-Ray Database data format
       histo HistoFromVec(std::vector<float> edges,  std::vector<float> content); ///< Make histo from 2 vectors
 
-      int Type() {return type;}
+
+      void Print(); ///< Print the content of the bins
+
 
 
 
@@ -140,6 +144,32 @@ class Binning {
 
 
 
+void Binning::Print()
+{
+
+   cout << right << setw(3) << setfill(' ') << "Bin";
+   cout << right << setw(11) << setfill(' ') << "Ekin";
+   cout << right << setw(11) << setfill(' ') << "Momentum";
+   cout << right << setw(11) << setfill(' ') << "Rigidity";
+   cout << right << setw(11) << setfill(' ') << "Beta";
+   cout << endl;
+
+   for (int i=0; i<ekbin.size(); i++) {
+      cout << right << setw(3) << setfill(' ')  << i;
+      cout << right << setw(11) << setfill(' ') << setprecision(4) <<   ekbin[i] ;
+      cout << right << setw(11) << setfill(' ') << setprecision(4) <<  mombin[i] ;
+      cout << right << setw(11) << setfill(' ') << setprecision(4) <<  rigbin[i] ;
+      cout << right << setw(11) << setfill(' ') << setprecision(5) << betabin[i] ;
+      cout << endl;
+   }
+
+   return;
+
+}
+
+
+
+
 Binning::histo Binning::LoadCRDB(string filename)
 {
 
@@ -149,22 +179,23 @@ Binning::histo Binning::LoadCRDB(string filename)
       DBfile.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
 
 
-   histo histogram; 
+   histo histogram;
    float Emoy, Elo, Eup, y, ystat_lo, ystat_up, ysyst_lo, ysyst_up, yerrtot_lo, yerrtot_up; // As described in file
    while(!DBfile.eof()) {
       DBfile >> Emoy >> Elo >> Eup >> y >> ystat_lo >> ystat_up >> ysyst_lo >> ysyst_up >> yerrtot_lo >> yerrtot_up;
       histogram.edges.push_back(Elo);
       histogram.content.push_back(y);
    }
-    histogram.edges.pop_back();
-    histogram.content.pop_back();
-    histogram.edges.push_back(Eup);// last bin
+   histogram.edges.pop_back();
+   histogram.content.pop_back();
+   histogram.edges.push_back(Eup);// last bin
 
    return histogram;
 }
 
 
-Binning::histo Binning::HistoFromVec(std::vector<float> edges,  std::vector<float> content) {
+Binning::histo Binning::HistoFromVec(std::vector<float> edges,  std::vector<float> content)
+{
    histo h;
    if (edges.size()-content.size() == 1) {
       h.edges=edges;
@@ -262,7 +293,7 @@ void Binning::Setbins (int nbins, float min, float max, int typ)
       mombincent. push_back(Pcent.mom);
       rigbincent. push_back(Pcent.rig);
       betabincent.push_back(Pcent.beta);
-      
+
       ibin++;
       binbeg = exp ( logmin + ibin * binstep);
    }
