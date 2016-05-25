@@ -55,21 +55,9 @@
 #include "Parte2/DVSMCPreSeleff_D.cpp"
 //#include "Parte2/DVSMCTrackeff.cpp"*/
 
-
-
 using namespace std;
 
-
-
 #include "FillIstogram.cpp"
-
-
-
-
-
-
-
-
 
 
 
@@ -144,7 +132,6 @@ int main(int argc, char * argv[])
    float ekmin=0.1, ekmax=1;
    ToFDB.Setbins(nbinsToF, ekmin, ekmax);
    ToFPB.Setbins(nbinsToF, ekmin, ekmax);
-   string TitoliTOF[nbinsToF];
 
    cout<<"**************************** BETA BINS NaF***********************************"<<endl;
 
@@ -152,15 +139,12 @@ int main(int argc, char * argv[])
    NaFDB.Setbins(nbinsNaF, ekmin, ekmax);
    NaFPB.Setbins(nbinsNaF, ekmin, ekmax);
 
-   string TitoliNaF[nbinsNaF];
    cout<<endl;
    cout<<"**************************** BETA BINS Agl***********************************"<<endl;
 
    ekmin=2.57, ekmax=9.01;
    AglDB.Setbins(nbinsAgl, ekmin, ekmax);
    AglPB.Setbins(nbinsAgl, ekmin, ekmax);
-
-   string TitoliAgl[nbinsAgl];
 
    cout<<endl;
 

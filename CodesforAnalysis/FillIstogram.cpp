@@ -1,18 +1,12 @@
 using namespace std;
 
 
-
-
 void FillIstogram(int INDX,string frac,string mese)
 {
-
-
-
 
    float fraz=1;
    float Zona=0;
 
-   int progress=0;
 
    cout<<"*********************** CALIB. READING *********************"<<endl;
 
@@ -130,13 +124,14 @@ void FillIstogram(int INDX,string frac,string mese)
    }
    cout<<"*********************** MC READING *********************"<<endl;
    if(INDX==0)
+      int progress=0;
       for(int i=0; i<ntupMCTrig->GetEntries()/fraz; i++) {
          ntupMCTrig->GetEvent(i);
          Cutmask=CUTMASK;
          Cuts_Pre();
          Massa_gen = ReturnMass_Gen();
-         Momento_gen=Momento_gen;
          RUsed=R_pre;
+
 
          if(100*(i/(float)(ntupMCTrig->GetEntries()/fraz))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;
@@ -154,11 +149,12 @@ void FillIstogram(int INDX,string frac,string mese)
          //DVSMCTrackeff_Fill(ntupMCTrig,i);*/
       }
    if(INDX==0||INDX==1) {
-      progress=0;
+      int progress=0;
       for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
          ntupMCSepD->GetEvent(i);
          Cutmask=CUTMASK;
          Massa_gen = ReturnMass_Gen();
+         
          if(100*(i/(float)(ntupMCSepD->GetEntries()))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;
             progress=(int)(100*(i/(float)(ntupMCSepD->GetEntries()/fraz)))+1;
@@ -180,28 +176,20 @@ void FillIstogram(int INDX,string frac,string mese)
       }
    }
    cout<<endl<<"*********************** DATA READING *********************"<<endl;
-   if(INDX!=2) {
-      Tempi = (TH1F *)fileData->Get("Tempi");
-      esposizionegeo = (TH2F *)fileData->Get("esposizionegeo");
-      esposizionepgeo = (TH2F*)fileData->Get("esposizionepgeo");
-      esposizionepgeoNaF = (TH2F*)fileData->Get("esposizionepgeoNaF");
-      esposizionepgeoAgl = (TH2F*)fileData->Get("esposizionepgeoAgl");
-      esposizionedgeo = (TH2F*)fileData->Get("esposizionedgeo");
-      esposizionedgeoNaF = (TH2F*)fileData->Get("esposizionedgeoNaF");
-      esposizionedgeoAgl = (TH2F*)fileData->Get("esposizionedgeoAgl");
-   } else {
-      Tempi = (TH1F *)file->Get("Tempi");
-      esposizionegeo = (TH2F *)file->Get("esposizionegeo");
-      esposizionepgeo = (TH2F*)file->Get("esposizionepgeo");
-      esposizionepgeoNaF = (TH2F*)file->Get("esposizionepgeoNaF");
-      esposizionepgeoAgl = (TH2F*)file->Get("esposizionepgeoAgl");
-      esposizionedgeo = (TH2F*)file->Get("esposizionedgeo");
-      esposizionedgeoNaF = (TH2F*)file->Get("esposizionedgeoNaF");
-      esposizionedgeoAgl = (TH2F*)file->Get("esposizionedgeoAgl");
-   }
-   progress=0;
+   TFile *usedfile=(INDX==2?file:fileData);
+   Tempi = (TH1F *)usedfile->Get("Tempi");
+   TH2F* esposizionegeo = (TH2F *)usedfile->Get("esposizionegeo");
+   TH2F* esposizionepgeo = (TH2F*)usedfile->Get("esposizionepgeo");
+   TH2F* esposizionepgeoNaF = (TH2F*)usedfile->Get("esposizionepgeoNaF");
+   TH2F* esposizionepgeoAgl = (TH2F*)usedfile->Get("esposizionepgeoAgl");
+   TH2F* esposizionedgeo = (TH2F*)usedfile->Get("esposizionedgeo");
+   TH2F* esposizionedgeoNaF = (TH2F*)usedfile->Get("esposizionedgeoNaF");
+   TH2F* esposizionedgeoAgl = (TH2F*)usedfile->Get("esposizionedgeoAgl");
+
+   
    double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
    if(INDX==0)
+      int progress=0;
       for(int i=0; i<ntupDataTrig->GetEntries()/fraz; i++) {
          ntupDataTrig->GetEvent(i);
          Cutmask=CUTMASK;
@@ -229,7 +217,7 @@ void FillIstogram(int INDX,string frac,string mese)
          //DVSMCTrackeff_D_Fill(ntupMCTrig,i);
       }
    if(INDX==0||INDX==1) {
-      progress=0;
+      int progress=0;
       for(int i=0; i<ntupDataSepD->GetEntries(); i++) {
          ntupDataSepD->GetEvent(i);
          Cutmask=CUTMASK;

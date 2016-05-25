@@ -102,6 +102,7 @@ float EkincentAgl   [nbinsAgl]  = {0};
 float Unbias=0;
 
 
+TH1F* Tempi;
 
 
 double R_cent[nbinsr];
@@ -122,14 +123,8 @@ bool Herejcut=false;
 bool Betastrongcut=false;
 
 TH1F * Esposizione[10];
-TH1F * Tempi;
-TH2F * esposizionegeo;
-TH2F * esposizionepgeo;
-TH2F * esposizionepgeoNaF;
-TH2F * esposizionepgeoAgl;
-TH2F * esposizionedgeo;
-TH2F * esposizionedgeoNaF;
-TH2F * esposizionedgeoAgl;
+
+
 
 //retrieve MC particle species
 float ReturnMass_Gen()
