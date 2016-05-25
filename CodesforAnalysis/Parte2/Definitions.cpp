@@ -19,15 +19,8 @@ extern const int nbinsAgl=18;
 
 
 
-
 TF1 *protons = new TF1("f1","pow((pow(x,2)/pow(0.938,2)/(1 + pow(x,2)/pow(0.938,2))),0.5)",0.1,100);
 TF1 *deutons = new TF1("f1","pow((pow(x,2)/pow(1.875,2)/(1 + pow(x,2)/pow(1.875,2))),0.5)",0.1,100);
-///////////////////////////////////////////////////////
-
-
-
-
-
 
 
 ////////////// DEFINIZIONE SPLINES //////////////////
@@ -100,26 +93,15 @@ int FRAC=0;
 double geomagC[11]= {0,0.05,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95,1.15};
 int notpassed[3]= {155,139,11};
 int passed[3]= {187,155,139};
-int binnum=1;
-float distcut=4;
-float ddiscrcut=0.15;
-bool qualcut=true;
-float a= (log (0.9)-log (0.1) ) /nbinsbeta;
-float E2=exp (log (0.1)+1.5*a);
 
 
-float Betacent      [nbinsbeta] = {0};
 float Ekincent      [nbinsbeta] = {0};
-
-float BetacentNaF   [nbinsNaF]  = {0};
 float EkincentNaF   [nbinsNaF]  = {0};
-float BetacentAgl   [nbinsAgl]  = {0};
 float EkincentAgl   [nbinsAgl]  = {0};
 
 float Unbias=0;
 
 
-std::array <float, nbinsr+1> Rbins;
 
 
 double R_cent[nbinsr];

@@ -111,25 +111,22 @@ void ACCEPTANCE::Set_MC_Par( float Trigrate, float rmin, float rmax){
 
 void ACCEPTANCE::Set_Binning(bool deutons){
 
-	int nbins_R    =   after_R   -> GetNbinsX() + 1;
 	int nbins_beta =   after_TOF -> GetNbinsX() + 1; //TOF,NaF,Agl: same number of bins
-
-	for(int i=0;i<nbins_R; i++)   binsR[i] = Rbins[i];
 
 	if (deutons) {
 
 		for(int i=0;i<nbins_beta; i++) {
-			binsBetaTOF[i] = ToFDB.MomBins()   [i]; 
-			binsBetaNaF[i] = NaFDB.MomBins()[i]; 
-			binsBetaAgl[i] = AglDB.MomBins()[i]; 	
+			binsBetaTOF[i] = ToFDB.MomBin(i); 
+			binsBetaNaF[i] = NaFDB.MomBin(i); 
+			binsBetaAgl[i] = AglDB.MomBin(i); 	
 		}
 
 	} else { // protons
 
 		for(int i=0;i<nbins_beta; i++) {
-			binsBetaTOF[i] = ToFPB.MomBins()   [i]; 
-			binsBetaNaF[i] = NaFPB.MomBins()[i]; 
-			binsBetaAgl[i] = AglPB.MomBins()[i]; 	
+			binsBetaTOF[i] = ToFPB.MomBin(i); 
+			binsBetaNaF[i] = NaFPB.MomBin(i); 
+			binsBetaAgl[i] = AglPB.MomBin(i); 	
 		}
 
 	}
@@ -169,7 +166,7 @@ TH1 * ACCEPTANCE::Triggerbin(int n , TH1 * after , float trigrate, float bins[])
 
 
 void ACCEPTANCE::Eval_Gen_Acceptance(int n){
-	before_R        = ACCEPTANCE::Triggerbin( n, after_R   ,trigrate , binsR);	
+	before_R    = ACCEPTANCE::Triggerbin( n, after_R   ,trigrate , RB.RigBins().data());	
 	before_TOF 	= ACCEPTANCE::Triggerbin( n, after_TOF ,trigrate , binsBetaTOF);
 	before_NaF 	= ACCEPTANCE::Triggerbin( n, after_NaF ,trigrate , binsBetaNaF);	
 	before_Agl 	= ACCEPTANCE::Triggerbin( n, after_Agl ,trigrate , binsBetaAgl);
