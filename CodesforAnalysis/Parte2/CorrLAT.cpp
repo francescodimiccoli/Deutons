@@ -170,7 +170,7 @@ void CorrLAT() {
    int point =0;
    for(int m=0; m<nbinsToF; m++) {
       if(CorrezioneLAT_pTOF->GetBinContent(m+1)>0)
-         CorrLATp_TOF_Spl->SetPoint(point,Ekincent[m],CorrezioneLAT_pTOF->GetBinContent(m+1));
+         CorrLATp_TOF_Spl->SetPoint(point,ToFPB.EkBinCent(m),CorrezioneLAT_pTOF->GetBinContent(m+1));
       	 CorrLATp_TOF_Spl->SetPointError(point,0,CorrezioneLAT_pTOF->GetBinError(m+1));
 	 point++;
    }
@@ -188,7 +188,7 @@ void CorrLAT() {
    point=0;
    for(int m=0; m<nbinsToF; m++) {
       if(CorrezioneLAT_dTOF->GetBinContent(m+1)>0)
-         CorrLATd_TOF_Spl->SetPoint(point,Ekincent[m],CorrezioneLAT_dTOF->GetBinContent(m+1));
+         CorrLATd_TOF_Spl->SetPoint(point,ToFPB.EkBinCent(m),CorrezioneLAT_dTOF->GetBinContent(m+1));
          CorrLATd_TOF_Spl->SetPointError(point,0,CorrezioneLAT_dTOF->GetBinError(m+1)); 
 	point++;
    }

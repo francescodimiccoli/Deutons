@@ -80,7 +80,7 @@ void DATAUnbiaseff(TFile * file1) {
    gPad->SetGridx();
    gPad->SetGridy();
    TGraph * EffUnbDATA = new TGraph();
-   for(int i=0; i<nbinsbeta; i++) EffUnbDATA->SetPoint(i,Ekincent[i],EffUnbDATA_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsbeta; i++) EffUnbDATA->SetPoint(i,ToFPB.EkBinCent(i),EffUnbDATA_TH1F->GetBinContent(i+1));
    EffUnbDATA->SetMarkerColor(2);
    EffUnbDATA->SetMarkerStyle(8);
    EffUnbDATA->SetLineColor(2);

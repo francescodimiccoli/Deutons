@@ -73,30 +73,13 @@ float Unbias;
 
 
 
-float RminTOF=0;
-float RminTrack=0;
-float RminTRD=0;
-float XTOF=0;
-float XTrack=0;
-float XTRD=0;
-float YTOF=0;
-float YTrack=0;
-float YTRD=0;
+
 
 float Massa_gen=0;
 float Massa=0;
-float D_TOF,D_Track,D_TRD,Discr=0;
 float Zona=0;
-
 float IsPrescaled=0;
-
-
 float X=0;
-float YTOFU=0;
-float YTOFD=0;
-
-
-
 float Beta_gen=0;
 
 float BetaRICH_new=0;
@@ -134,7 +117,6 @@ bool Distcut=false;
 bool Herejcut=false;
 bool Betastrongcut=false;
 
-TH1F * Esposizione[10];
 
 
 Tuplevar Tup;

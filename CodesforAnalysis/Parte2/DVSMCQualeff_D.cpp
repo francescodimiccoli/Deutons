@@ -205,7 +205,7 @@ void DVSMCQualeffD(){
 		LikDVSMC_D_GraphTOF[mc_type]=new TGraphErrors();
 		j=0;
 		for(int i=1;i<nbinsToF;i++) {
-				LikDVSMC_D_GraphTOF[mc_type]->SetPoint(j,Ekincent[i],LikD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
+				LikDVSMC_D_GraphTOF[mc_type]->SetPoint(j,ToFPB.EkBinCent(i),LikD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
 				LikDVSMC_D_GraphTOF[mc_type]->SetPointError(j,0,LikD_Correction_TOF -> GetBinError(i+1,mc_type+1));
 				j++;
 		}
@@ -288,7 +288,7 @@ void DVSMCQualeffD(){
                 DistDVSMC_D_GraphTOF[mc_type]=new TGraphErrors();
                 j=0;
                 for(int i=1;i<nbinsToF;i++) {
-                                DistDVSMC_D_GraphTOF[mc_type]->SetPoint(j,Ekincent[i],DistD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
+                                DistDVSMC_D_GraphTOF[mc_type]->SetPoint(j,ToFPB.EkBinCent(i),DistD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
                                 DistDVSMC_D_GraphTOF[mc_type]->SetPointError(j,0,DistD_Correction_TOF -> GetBinError(i+1,mc_type+1));
                                 j++;
                 }

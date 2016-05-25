@@ -151,7 +151,7 @@ void DVSMCPreSeleffD(){
 			j=0;
 			for(int i=1;i<nbinsToF;i++) {
 				if(PreSelD_Correction_TOF -> GetBinContent(i+1,mc_type+1,S+1)>0){
-					PreSelD_Correction_TOF_Graph[S][mc_type]->SetPoint(j,Ekincent[i],PreSelD_Correction_TOF -> GetBinContent(i+1,mc_type+1,S+1));
+					PreSelD_Correction_TOF_Graph[S][mc_type]->SetPoint(j,ToFPB.EkBinCent(i),PreSelD_Correction_TOF -> GetBinContent(i+1,mc_type+1,S+1));
 					PreSelD_Correction_TOF_Graph[S][mc_type]->SetPointError(j,0,PreSelD_Correction_TOF -> GetBinError(i+1,mc_type+1,S+1));
 					j++;
 				}

@@ -141,7 +141,7 @@ void Acceptance(){
         for(int h=0;h<6;h++){
                 EffgenbetaDTOF[h]=new TGraphErrors();
                 p=0;
-                for(int i=0;i<nbinsToF;i++) {EffgenbetaDTOF[h]->SetPoint(p,Ekincent[i],AcceptanceD ->Gen_Acceptance_TOF  ->GetBinContent(i+1,h+1));p++;}
+                for(int i=0;i<nbinsToF;i++) {EffgenbetaDTOF[h]->SetPoint(p,ToFPB.EkBinCent(i),AcceptanceD ->Gen_Acceptance_TOF  ->GetBinContent(i+1,h+1));p++;}
         EffgenbetaDTOF[h]->SetMarkerStyle(8);
         EffgenbetaDTOF[h]->SetMarkerColor(4);
         EffgenbetaDTOF[h]->SetMarkerSize(1.4);
@@ -234,7 +234,7 @@ void Acceptance(){
 	p=0;
 	EffgenbetaPTOF=new TGraphErrors();
 	p=0;
-	for(int i=0;i<nbinsToF;i++) {EffgenbetaPTOF->SetPoint(p,Ekincent[i],AcceptanceP ->Gen_Acceptance_TOF  ->GetBinContent(i+1));p++;}
+	for(int i=0;i<nbinsToF;i++) {EffgenbetaPTOF->SetPoint(p,ToFPB.EkBinCent(i),AcceptanceP ->Gen_Acceptance_TOF  ->GetBinContent(i+1));p++;}
 	EffgenbetaPTOF->SetMarkerStyle(8);
 	EffgenbetaPTOF->SetMarkerColor(2);
 	EffgenbetaPTOF->SetMarkerSize(1.4);
@@ -367,13 +367,13 @@ void Acceptance(){
 	for(int h=0;h<6;h++){
                 AccSelMCDbeta[h]= new TGraphErrors();
                 int p=0;
-                for(int m=0;m<nbinsToF;m++) {AccSelMCDbeta[h]->SetPoint(p,Ekincent[m],AcceptanceD ->MCAcceptance_TOF -> GetBinContent(m+1,h+1));
+                for(int m=0;m<nbinsToF;m++) {AccSelMCDbeta[h]->SetPoint(p,ToFPB.EkBinCent(m),AcceptanceD ->MCAcceptance_TOF -> GetBinContent(m+1,h+1));
 					    AccSelMCDbeta[h]->SetPointError(p,0,AcceptanceD ->MCAcceptance_TOF -> GetBinError(m+1,h+1));
 					     p++;}
 		if(h==0) 
 		{
 			p=0;
-			for(int m=0;m<nbinsToF;m++) {AccSelMCPbeta->SetPoint(p,Ekincent[m],AcceptanceP ->MCAcceptance_TOF -> GetBinContent(m+1));
+			for(int m=0;m<nbinsToF;m++) {AccSelMCPbeta->SetPoint(p,ToFPB.EkBinCent(m),AcceptanceP ->MCAcceptance_TOF -> GetBinContent(m+1));
 						     AccSelMCPbeta->SetPointError(p,0,AcceptanceP ->MCAcceptance_TOF -> GetBinError(m+1));
 						     p++;}
 			AccSelMCDbeta[0]->SetPoint(p,50,0.001);

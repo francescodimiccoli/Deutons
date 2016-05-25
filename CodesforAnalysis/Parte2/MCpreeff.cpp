@@ -147,7 +147,7 @@ void MCpreeff(TFile * file1) {
    gPad->SetGridx();
    gPad->SetGridy();
    TGraph * EffPreMCP = new TGraph();
-   for(int i=0; i<nbinsToF; i++) EffPreMCP->SetPoint(i,Ekincent[i],EffPreMCP_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsToF; i++) EffPreMCP->SetPoint(i,ToFPB.EkBinCent(i),EffPreMCP_TH1F->GetBinContent(i+1));
    TGraph * EffPreMCD[6];
    EffPreMCP->SetMarkerColor(2);
    EffPreMCP->SetMarkerStyle(8);
@@ -165,7 +165,7 @@ void MCpreeff(TFile * file1) {
 
       for(int h=0; h<6; h++) {
          EffPreMCD[h]= new TGraph();
-         for(int i=0; i<nbinsToF; i++) EffPreMCD[h]->SetPoint(i,Ekincent[i], EffPreMCD_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsToF; i++) EffPreMCD[h]->SetPoint(i,ToFPB.EkBinCent(i), EffPreMCD_TH2F->GetBinContent(i+1,h+1));
          EffPreMCD[h]->SetMarkerColor(4);
          EffPreMCD[h]->SetMarkerStyle(h+3);
          leg->AddEntry(EffPreMCD[h],MCLegend[h+1].c_str(), "ep");

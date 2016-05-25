@@ -173,8 +173,8 @@ void DeutonFlux() {
 	TGraphErrors * esposp_NaF=new TGraphErrors();
 	TGraphErrors * esposp_Agl=new TGraphErrors();
 	for(int m=0;m<nbinsbeta;m++){
-		esposd_TOF->SetPoint(m,Ekincent[m],D_Flux -> Exposure_TOF -> GetBinContent(m+1));
-		esposp_TOF->SetPoint(m,Ekincent[m],P_Flux -> Exposure_TOF -> GetBinContent(m+1));
+		esposd_TOF->SetPoint(m,ToFPB.EkBinCent(m),D_Flux -> Exposure_TOF -> GetBinContent(m+1));
+		esposp_TOF->SetPoint(m,ToFPB.EkBinCent(m),P_Flux -> Exposure_TOF -> GetBinContent(m+1));
 		esposd_NaF->SetPoint(m,EkincentNaF[m],D_Flux -> Exposure_NaF -> GetBinContent(m+1));
 		esposp_NaF->SetPoint(m,EkincentNaF[m],P_Flux -> Exposure_NaF -> GetBinContent(m+1));
 		esposd_Agl->SetPoint(m,EkincentAgl[m],D_Flux -> Exposure_Agl -> GetBinContent(m+1));
@@ -309,9 +309,9 @@ void DeutonFlux() {
 
 		p=0;
 		for(int m=1;m<nbinsToF;m++){
-			D_FluxgeoTOF[j]->SetPoint(p,Ekincent[m],DeutonsGeomagFlux_TOF->GetBinContent(m+1,j+1));
+			D_FluxgeoTOF[j]->SetPoint(p,ToFPB.EkBinCent(m),DeutonsGeomagFlux_TOF->GetBinContent(m+1,j+1));
 			D_FluxgeoTOF[j]->SetPointError(p,0,DeutonsGeomagFlux_TOF->GetBinError(m+1,j+1));
-			D_FluxgeoDistTOF[j]->SetPoint(p,Ekincent[m],DeutonsGeomagFlux_Dist_TOF->GetBinContent(m+1,j+1));
+			D_FluxgeoDistTOF[j]->SetPoint(p,ToFPB.EkBinCent(m),DeutonsGeomagFlux_Dist_TOF->GetBinContent(m+1,j+1));
 			D_FluxgeoDistTOF[j]->SetPointError(p,0,DeutonsGeomagFlux_Dist_TOF->GetBinError(m+1,j+1));
 			p++;
 		}
@@ -444,9 +444,9 @@ void DeutonFlux() {
 
 	p=0;
 	for(int m=1;m<nbinsToF;m++){
-		D_FluxTOF->SetPoint(p,Ekincent[m],DeutonsPrimaryFlux_TOF->GetBinContent(m+1));
+		D_FluxTOF->SetPoint(p,ToFPB.EkBinCent(m),DeutonsPrimaryFlux_TOF->GetBinContent(m+1));
 		D_FluxTOF->SetPointError(p,0,DeutonsPrimaryFlux_TOF->GetBinError(m+1));
-		D_FluxDistTOF->SetPoint(p,Ekincent[m],DeutonsPrimaryFlux_Dist_TOF->GetBinContent(m+1));
+		D_FluxDistTOF->SetPoint(p,ToFPB.EkBinCent(m),DeutonsPrimaryFlux_Dist_TOF->GetBinContent(m+1));
 		D_FluxDistTOF->SetPointError(p,0,DeutonsPrimaryFlux_Dist_TOF->GetBinError(m+1));
 		p++;
 	}
@@ -587,8 +587,8 @@ void DeutonFlux() {
 	TGraphErrors * PD_ratioTOF_Dist=new TGraphErrors();
 	p=0;
 	for(int m=1;m<nbinsToF;m++){
-		PD_ratioTOF->SetPoint(p,Ekincent[m],DP_ratioTOF->GetBinContent(m+1));
-		PD_ratioTOF_Dist->SetPoint(p,Ekincent[m],DP_ratioTOF_Dist->GetBinContent(m+1));
+		PD_ratioTOF->SetPoint(p,ToFPB.EkBinCent(m),DP_ratioTOF->GetBinContent(m+1));
+		PD_ratioTOF_Dist->SetPoint(p,ToFPB.EkBinCent(m),DP_ratioTOF_Dist->GetBinContent(m+1));
 		PD_ratioTOF->SetPointError(p,0,DP_ratioTOF->GetBinError(m+1));
 		PD_ratioTOF_Dist->SetPointError(p,0,DP_ratioTOF_Dist->GetBinError(m+1));
 		p++;

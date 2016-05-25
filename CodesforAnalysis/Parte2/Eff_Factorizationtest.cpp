@@ -235,7 +235,7 @@ void FluxFactorizationtest(TFile * file1){
 		gPad->SetGridx();
 		gPad->SetGridy();
 		TGraph * Eff_do_preSelMCP = new TGraph();
-		for(int i=0;i<nbinsbeta;i++) Eff_do_preSelMCP->SetPoint(i,Ekincent[i],Eff_do_preSelMCP_TH2F->GetBinContent(i+1,S+1));
+		for(int i=0;i<nbinsbeta;i++) Eff_do_preSelMCP->SetPoint(i,ToFPB.EkBinCent(i),Eff_do_preSelMCP_TH2F->GetBinContent(i+1,S+1));
 		TGraph * Eff_do_preSelMCD[6][3];
 		Eff_do_preSelMCP->SetMarkerColor(2);
 		Eff_do_preSelMCP->SetMarkerStyle(8);
@@ -253,7 +253,7 @@ void FluxFactorizationtest(TFile * file1){
 
 			for(int h=0;h<6;h++){
 				Eff_do_preSelMCD[h][S]= new TGraph();
-				for(int i=0;i<nbinsbeta;i++) Eff_do_preSelMCD[h][S]->SetPoint(i,Ekincent[i],Eff_do_preSelMCD_TH3F->GetBinContent(i+1,h+1,S+1));
+				for(int i=0;i<nbinsbeta;i++) Eff_do_preSelMCD[h][S]->SetPoint(i,ToFPB.EkBinCent(i),Eff_do_preSelMCD_TH3F->GetBinContent(i+1,h+1,S+1));
 				Eff_do_preSelMCD[h][S]->SetMarkerColor(4);
 				Eff_do_preSelMCD[h][S]->SetMarkerStyle(h+3);
 				leg->AddEntry(Eff_do_preSelMCD[h][S],MCLegend[h+1].c_str(), "ep");

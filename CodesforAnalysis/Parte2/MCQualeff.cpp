@@ -214,7 +214,7 @@ void MCQualeff(TFile * file1) {
    gPad->SetGridy();
    TGraph *EffMCLikP_Beta= new TGraph();
    TGraph *EffMCLikD_Beta[6];
-   for(int i=0; i<nbinsToF; i++)  EffMCLikP_Beta->SetPoint(i,Ekincent[i],EffMCLikP_Beta_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsToF; i++)  EffMCLikP_Beta->SetPoint(i,ToFPB.EkBinCent(i),EffMCLikP_Beta_TH1F->GetBinContent(i+1));
    EffMCLikP_Beta->SetMarkerColor(2);
    EffMCLikP_Beta->SetMarkerStyle(8);
    EffMCLikP_Beta->SetLineColor(2);
@@ -233,7 +233,7 @@ void MCQualeff(TFile * file1) {
       for(int h=0; h<6; h++) {
          EffMCLikD_Beta[h]= new TGraph();
          EffMCLikD_Beta[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsToF; i++) EffMCLikD_Beta[h]->SetPoint(i,Ekincent[i],EffMCLikD_Beta_TH2F->GetBinContent(i+1,h+1));
+         for(int i=1; i<nbinsToF; i++) EffMCLikD_Beta[h]->SetPoint(i,ToFPB.EkBinCent(i),EffMCLikD_Beta_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffMCLikD_Beta[h],MCLegend[h+1].c_str(), "ep");
          EffMCLikD_Beta[h]->SetMarkerColor(4);
          EffMCLikD_Beta[h]->SetMarkerStyle(h+3);
@@ -360,7 +360,7 @@ void MCQualeff(TFile * file1) {
    gPad->SetGridy();
    TGraph *EffMCDistP_Beta= new TGraph();
    TGraph *EffMCDistD_Beta[6];
-   for(int i=0; i<nbinsToF; i++) EffMCDistP_Beta->SetPoint(i,Ekincent[i],EffMCDistP_Beta_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsToF; i++) EffMCDistP_Beta->SetPoint(i,ToFPB.EkBinCent(i),EffMCDistP_Beta_TH1F->GetBinContent(i+1));
    EffMCDistP_Beta->SetMarkerColor(2);
    EffMCDistP_Beta->SetMarkerStyle(8);
    EffMCDistP_Beta->SetLineColor(2);
@@ -379,7 +379,7 @@ void MCQualeff(TFile * file1) {
       for(int h=0; h<6; h++) {
          EffMCDistD_Beta[h]= new TGraph();
          EffMCDistD_Beta[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsToF; i++) EffMCDistD_Beta[h]->SetPoint(i,Ekincent[i],EffMCDistD_Beta_TH2F->GetBinContent(i+1,h+1));
+         for(int i=1; i<nbinsToF; i++) EffMCDistD_Beta[h]->SetPoint(i,ToFPB.EkBinCent(i),EffMCDistD_Beta_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffMCDistD_Beta[h],MCLegend[h+1].c_str(), "ep");
          EffMCDistD_Beta[h]->SetMarkerColor(4);
          EffMCDistD_Beta[h]->SetMarkerStyle(h+3);
