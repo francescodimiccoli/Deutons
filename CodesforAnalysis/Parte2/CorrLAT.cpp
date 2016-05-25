@@ -205,7 +205,7 @@ void CorrLAT() {
    gPad->SetGridx();
    TGraphErrors * CorrLATp_NaF_Spl=new TGraphErrors();
    for(int m=0; m<nbinsNaF; m++) {
-      CorrLATp_NaF_Spl->SetPoint(m,EkincentNaF[m],CorrezioneLAT_pNaF->GetBinContent(m+1));
+      CorrLATp_NaF_Spl->SetPoint(m,NaFPB.EkBinCent(m),CorrezioneLAT_pNaF->GetBinContent(m+1));
       CorrLATp_NaF_Spl->SetPointError(m,0,CorrezioneLAT_pNaF->GetBinError(m+1));	
    }
    CorrLATp_NaF_Spl->SetLineColor(2);
@@ -220,7 +220,7 @@ void CorrLAT() {
    CorrLATp_NaF_Spl->Draw("APC");
    TGraphErrors * CorrLATd_NaF_Spl=new TGraphErrors();
    for(int m=0; m<nbinsNaF; m++) {
-      CorrLATd_NaF_Spl->SetPoint(m,EkincentNaF[m],CorrezioneLAT_dNaF->GetBinContent(m+1));
+      CorrLATd_NaF_Spl->SetPoint(m,NaFPB.EkBinCent(m),CorrezioneLAT_dNaF->GetBinContent(m+1));
       CorrLATd_NaF_Spl->SetPointError(m,0,CorrezioneLAT_dNaF->GetBinError(m+1));	
    }
    CorrLATd_NaF_Spl->SetLineColor(4);
@@ -236,7 +236,7 @@ void CorrLAT() {
    gPad->SetGridx();
    TGraphErrors * CorrLATp_Agl_Spl=new TGraphErrors();
    for(int m=0; m<nbinsAgl; m++) {
-      CorrLATp_Agl_Spl->SetPoint(m,EkincentAgl[m],CorrezioneLAT_pAgl->GetBinContent(m+1));
+      CorrLATp_Agl_Spl->SetPoint(m,AglPB.EkBinCent(m),CorrezioneLAT_pAgl->GetBinContent(m+1));
       CorrLATp_Agl_Spl->SetPointError(m,0,CorrezioneLAT_pAgl->GetBinError(m+1));
    }
    CorrLATp_Agl_Spl->SetLineColor(2);
@@ -251,7 +251,7 @@ void CorrLAT() {
    CorrLATp_Agl_Spl->Draw("APC");
    TGraphErrors * CorrLATd_Agl_Spl=new TGraphErrors();
    for(int m=0; m<nbinsAgl; m++) {
-      CorrLATd_Agl_Spl->SetPoint(m,EkincentAgl[m],CorrezioneLAT_dAgl->GetBinContent(m+1));
+      CorrLATd_Agl_Spl->SetPoint(m,AglPB.EkBinCent(m),CorrezioneLAT_dAgl->GetBinContent(m+1));
       CorrLATd_Agl_Spl->SetPointError(m,0,CorrezioneLAT_dAgl->GetBinError(m+1));
   }
    CorrLATd_Agl_Spl->SetLineColor(4);

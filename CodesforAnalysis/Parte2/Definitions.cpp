@@ -91,9 +91,6 @@ int notpassed[3]= {155,139,11};
 int passed[3]= {187,155,139};
 
 
-float Ekincent      [nbinsbeta] = {0};
-float EkincentNaF   [nbinsNaF]  = {0};
-float EkincentAgl   [nbinsAgl]  = {0};
 
 
 

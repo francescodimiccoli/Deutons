@@ -114,7 +114,7 @@ void DVSMCRICHeff(){
 	int j=0;
 	for(int i=1;i<nbinsNaF;i++) {
 		if(RICH_Correction_NaF -> GetBinContent(i+1)>0){
-			RICHDVSMC_P_GraphNaF->SetPoint(j,EkincentNaF[i],RICH_Correction_NaF -> GetBinContent(i+1));
+			RICHDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkBinCent(i),RICH_Correction_NaF -> GetBinContent(i+1));
 			RICHDVSMC_P_GraphNaF->SetPointError(j,0,RICH_Correction_NaF -> GetBinError(i+1));
 			j++;
 		}
@@ -134,7 +134,7 @@ void DVSMCRICHeff(){
         j=0;
         for(int i=1;i<nbinsAgl;i++) {
                 if(RICH_Correction_Agl -> GetBinContent(i+1)>0){
-                        RICHDVSMC_P_GraphAgl->SetPoint(j,EkincentAgl[i],RICH_Correction_Agl -> GetBinContent(i+1));
+                        RICHDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkBinCent(i),RICH_Correction_Agl -> GetBinContent(i+1));
                         RICHDVSMC_P_GraphAgl->SetPointError(j,0,RICH_Correction_Agl -> GetBinError(i+1));
                         j++;
                 }

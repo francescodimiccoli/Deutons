@@ -148,7 +148,7 @@ void MCFullseteff(TFile * file1){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraph * EffFullsetMCPNaF = new TGraph();
-        for(int i=0;i<nbinsNaF;i++) EffFullsetMCPNaF->SetPoint(i,EkincentNaF[i],EffFullsetMCPNaF_TH1F->GetBinContent(i+1));
+        for(int i=0;i<nbinsNaF;i++) EffFullsetMCPNaF->SetPoint(i,NaFPB.EkBinCent(i),EffFullsetMCPNaF_TH1F->GetBinContent(i+1));
         TGraph * EffFullsetMCDNaF[6];
         EffFullsetMCPNaF->SetMarkerColor(2);
         EffFullsetMCPNaF->SetMarkerStyle(8);
@@ -166,7 +166,7 @@ void MCFullseteff(TFile * file1){
 
                 for(int h=0;h<6;h++){
                         EffFullsetMCDNaF[h]= new TGraph();
-                        for(int i=0;i<nbinsNaF;i++) EffFullsetMCDNaF[h]->SetPoint(i,EkincentNaF[i], 
+                        for(int i=0;i<nbinsNaF;i++) EffFullsetMCDNaF[h]->SetPoint(i,NaFPB.EkBinCent(i), 
                             EffFullsetMCDNaF_TH2F->GetBinContent(i+1,h+1));
                         EffFullsetMCDNaF[h]->SetMarkerColor(4);
                         EffFullsetMCDNaF[h]->SetMarkerStyle(h+3);
@@ -184,7 +184,7 @@ void MCFullseteff(TFile * file1){
         gPad->SetGridx();
         gPad->SetGridy();
         TGraph * EffFullsetMCPAgl = new TGraph();
-        for(int i=0;i<nbinsAgl;i++) EffFullsetMCPAgl->SetPoint(i,EkincentAgl[i],EffFullsetMCPAgl_TH1F->GetBinContent(i+1));
+        for(int i=0;i<nbinsAgl;i++) EffFullsetMCPAgl->SetPoint(i,AglPB.EkBinCent(i),EffFullsetMCPAgl_TH1F->GetBinContent(i+1));
         TGraph * EffFullsetMCDAgl[6];
         EffFullsetMCPAgl->SetMarkerColor(2);
         EffFullsetMCPAgl->SetMarkerStyle(8);
@@ -202,7 +202,7 @@ void MCFullseteff(TFile * file1){
 
                 for(int h=0;h<6;h++){
                         EffFullsetMCDAgl[h]= new TGraph();
-                        for(int i=0;i<nbinsAgl;i++) EffFullsetMCDAgl[h]->SetPoint(i,EkincentAgl[i], EffFullsetMCDAgl_TH2F->GetBinContent(i+1,h+1));
+                        for(int i=0;i<nbinsAgl;i++) EffFullsetMCDAgl[h]->SetPoint(i,AglPB.EkBinCent(i), EffFullsetMCDAgl_TH2F->GetBinContent(i+1,h+1));
                         EffFullsetMCDAgl[h]->SetMarkerColor(4);
                         EffFullsetMCDAgl[h]->SetMarkerStyle(h+3);
                         leg->AddEntry(EffFullsetMCDAgl[h],MCLegend[h+1].c_str(), "ep");

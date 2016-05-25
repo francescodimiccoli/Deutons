@@ -164,7 +164,7 @@ void Acceptance(){
         for(int h=0;h<6;h++){
                 EffgenbetaDNaF[h]=new TGraphErrors();
                 p=0;
-                for(int i=0;i<nbinsNaF;i++) {EffgenbetaDNaF[h]->SetPoint(p,EkincentNaF[i],AcceptanceD ->Gen_Acceptance_NaF  ->GetBinContent(i+1,h+1));p++;}
+                for(int i=0;i<nbinsNaF;i++) {EffgenbetaDNaF[h]->SetPoint(p,NaFPB.EkBinCent(i),AcceptanceD ->Gen_Acceptance_NaF  ->GetBinContent(i+1,h+1));p++;}
 
         EffgenbetaDNaF[h]->SetMarkerStyle(8);
         EffgenbetaDNaF[h]->SetMarkerColor(4);
@@ -188,7 +188,7 @@ void Acceptance(){
         for(int h=0;h<6;h++){
                 EffgenbetaDAgl[h]=new TGraphErrors();
                 p=0;
-                for(int i=0;i<nbinsAgl;i++) {EffgenbetaDAgl[h]->SetPoint(p,EkincentAgl[i],AcceptanceD ->Gen_Acceptance_Agl ->GetBinContent(i+1,h+1));p++;}
+                for(int i=0;i<nbinsAgl;i++) {EffgenbetaDAgl[h]->SetPoint(p,AglPB.EkBinCent(i),AcceptanceD ->Gen_Acceptance_Agl ->GetBinContent(i+1,h+1));p++;}
 
         EffgenbetaDAgl[h]->SetMarkerStyle(8);
         EffgenbetaDAgl[h]->SetMarkerColor(4);
@@ -251,7 +251,7 @@ void Acceptance(){
 	p=0;
 	EffgenbetaPNaF=new TGraphErrors();
 	p=0;
-	for(int i=0;i<nbinsNaF;i++) {EffgenbetaPNaF->SetPoint(p,EkincentNaF[i],AcceptanceP ->Gen_Acceptance_NaF  ->GetBinContent(i+1));p++;}
+	for(int i=0;i<nbinsNaF;i++) {EffgenbetaPNaF->SetPoint(p,NaFPB.EkBinCent(i),AcceptanceP ->Gen_Acceptance_NaF  ->GetBinContent(i+1));p++;}
 	EffgenbetaPNaF->SetMarkerStyle(8);
 	EffgenbetaPNaF->SetMarkerColor(2);
 	EffgenbetaPNaF->SetMarkerSize(1.4);
@@ -268,7 +268,7 @@ void Acceptance(){
 	p=0;
 	EffgenbetaPAgl=new TGraphErrors();
 	p=0;
-	for(int i=0;i<nbinsAgl;i++) {EffgenbetaPAgl->SetPoint(p,EkincentAgl[i],AcceptanceP ->Gen_Acceptance_Agl  ->GetBinContent(i+1));p++;}
+	for(int i=0;i<nbinsAgl;i++) {EffgenbetaPAgl->SetPoint(p,AglPB.EkBinCent(i),AcceptanceP ->Gen_Acceptance_Agl  ->GetBinContent(i+1));p++;}
 	EffgenbetaPAgl->SetMarkerStyle(8);
 	EffgenbetaPAgl->SetMarkerColor(2);
 	EffgenbetaPAgl->SetMarkerSize(1.4);
@@ -416,13 +416,13 @@ void Acceptance(){
 	for(int h=0;h<6;h++){
                 AccSelMCDbetaNaF[h]= new TGraphErrors();
                 int p=0;
-                for(int m=0;m<nbinsNaF;m++) {AccSelMCDbetaNaF[h]->SetPoint(p,EkincentNaF[m],AcceptanceD ->MCAcceptance_NaF -> GetBinContent(m+1,h+1));
+                for(int m=0;m<nbinsNaF;m++) {AccSelMCDbetaNaF[h]->SetPoint(p,NaFPB.EkBinCent(m),AcceptanceD ->MCAcceptance_NaF -> GetBinContent(m+1,h+1));
 					    AccSelMCDbetaNaF[h]->SetPointError(p,0,AcceptanceD ->MCAcceptance_NaF -> GetBinError(m+1,h+1));
 					     p++;}
 		if(h==0)
                 {
                         p=0;
-			for(int m=0;m<nbinsNaF;m++) {AccSelMCPbetaNaF->SetPoint(p,EkincentNaF[m],AcceptanceP ->MCAcceptance_NaF -> GetBinContent(m+1));
+			for(int m=0;m<nbinsNaF;m++) {AccSelMCPbetaNaF->SetPoint(p,NaFPB.EkBinCent(m),AcceptanceP ->MCAcceptance_NaF -> GetBinContent(m+1));
 					 	     AccSelMCPbetaNaF->SetPointError(p,0,AcceptanceP ->MCAcceptance_NaF -> GetBinError(m+1));
 						     p++;}
                         AccSelMCPbetaNaF->SetMarkerStyle(8);
@@ -458,14 +458,14 @@ void Acceptance(){
 	for(int h=0;h<6;h++){
                 AccSelMCDbetaAgl[h]= new TGraphErrors();
                 int p=0;
-                for(int m=0;m<nbinsAgl;m++)  {AccSelMCDbetaAgl[h]->SetPoint(p,EkincentAgl[m],AcceptanceD ->MCAcceptance_Agl -> GetBinContent(m+1,h+1));
+                for(int m=0;m<nbinsAgl;m++)  {AccSelMCDbetaAgl[h]->SetPoint(p,AglPB.EkBinCent(m),AcceptanceD ->MCAcceptance_Agl -> GetBinContent(m+1,h+1));
 					      AccSelMCDbetaAgl[h]->SetPointError(p,0,AcceptanceD ->MCAcceptance_Agl -> GetBinError(m+1,h+1));
 					      p++;}
 		if(h==0)
                 {
                         p=0;
-			for(int m=0;m<nbinsAgl;m++) {AccSelMCPbetaAgl->SetPoint(p,EkincentAgl[m],AcceptanceP ->MCAcceptance_Agl -> GetBinContent(m+1));
-						     AccSelMCPbetaAgl->SetPointError(p,EkincentAgl[m],AcceptanceP ->MCAcceptance_Agl -> GetBinError(m+1));
+			for(int m=0;m<nbinsAgl;m++) {AccSelMCPbetaAgl->SetPoint(p,AglPB.EkBinCent(m),AcceptanceP ->MCAcceptance_Agl -> GetBinContent(m+1));
+						     AccSelMCPbetaAgl->SetPointError(p,AglPB.EkBinCent(m),AcceptanceP ->MCAcceptance_Agl -> GetBinError(m+1));
 						     p++;}
                         AccSelMCPbetaAgl->SetMarkerStyle(8);
                         AccSelMCPbetaAgl->SetMarkerColor(2);
