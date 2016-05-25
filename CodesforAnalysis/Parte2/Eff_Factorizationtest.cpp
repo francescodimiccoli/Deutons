@@ -12,10 +12,10 @@ Efficiency * Eff_do_LikMCP   = new Efficiency("Eff_do_LikMCP");
 
 void FluxFactorizationtest_Pre_Fill(TNtuple *ntupla, int l){
 	 ntupla->GetEvent(l);
-	if(Unbias!=0||Beta_pre<=0||R_pre<=0) return;
+	if(Tup.Unbias!=0||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
 	int Rbin;
 	// full set efficiency before
-	if(((int)Cutmask&notpassed[0])==notpassed[0]){
+	if(((int)Tup.Cutmask&notpassed[0])==notpassed[0]){
 		Rbin=RB.GetRBin(RUsed);
 		if(Massa_gen<1&&Massa_gen>0.5){
 			EffFullSETselectionsMCP->beforeR->Fill(Rbin);	
@@ -26,13 +26,13 @@ void FluxFactorizationtest_Pre_Fill(TNtuple *ntupla, int l){
 	for(int S=0;S<3;S++){
 		Rbin=RB.GetRBin(RUsed);
 		if(Massa_gen<1&&Massa_gen>0.5) {
-			if(((int)Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeR->Fill(Rbin,S);
-			if(((int)Cutmask&   passed[S])==   passed[S]) Eff_do_preSelMCP->afterR ->Fill(Rbin,S);
+			if(((int)Tup.Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeR->Fill(Rbin,S);
+			if(((int)Tup.Cutmask&   passed[S])==   passed[S]) Eff_do_preSelMCP->afterR ->Fill(Rbin,S);
 		}				 
 
 		if(Massa_gen>1&&Massa_gen<2) {
-			if(((int)Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeR, Rbin, S);
-			if(((int)Cutmask&passed[S])   ==passed[S]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterR,  Rbin, S);
+			if(((int)Tup.Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeR, Rbin, S);
+			if(((int)Tup.Cutmask&passed[S])   ==passed[S]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterR,  Rbin, S);
 
 		}
 	}
@@ -47,25 +47,25 @@ void FluxFactorizationtest_Qual_Fill(TNtuple *ntupla, int l){
 
 	 ntupla->GetEvent(l);
 	//cuts
-	if(Beta<=0||R<=0||R<1.2*Rcutoff) return;
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
 	//R bins
 	int Kbin;
 	Kbin = RB.GetRBin(RUsed);
 	
 	//full set efficiency after
-	if(Dist5D_P<6&&Likcut)  EffFullSETselectionsMCP->afterR->Fill(Kbin);
+	if(Tup.Dist5D_P<6&&Likcut)  EffFullSETselectionsMCP->afterR->Fill(Kbin);
 	
 
 	//Drop-one approach eff calc.
 	//eff evaluation cuts
-	if(Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
+	if(Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
 	if(!Herejcut) return;	
 	
 	if(Massa_gen<1&&Massa_gen>0.5) {
 		Eff_do_DistMCP -> beforeR -> Fill(Kbin); 
-		if(Dist5D_P<6) Eff_do_LikMCP -> beforeR -> Fill(Kbin);
+		if(Tup.Dist5D_P<6) Eff_do_LikMCP -> beforeR -> Fill(Kbin);
 
-		if(Dist5D_P<6){
+		if(Tup.Dist5D_P<6){
 			Eff_do_DistMCP -> afterR -> Fill(Kbin);
 			if(Likcut) Eff_do_LikMCP -> afterR -> Fill(Kbin);
 		}

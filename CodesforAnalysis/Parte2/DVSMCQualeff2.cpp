@@ -14,17 +14,17 @@ TH2F * EffLik2MCvsDP_D_2 = new TH2F("EffLik2MCvsDP_D_2","EffLik2MCvsDP_D_2",nbin
 void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 
 	 ntupla->GetEvent(l);
-	if(Beta<=0||R<=0||R<1.2*Rcutoff||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
-	if((R>Rcut[zona]&&zona<10)||(zona==10)) {
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
+	if((Tup.R>Rcut[zona]&&zona<10)||(zona==10)) {
 		if(Herejcut){
 			//if(Likcut){
-			for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_2->Fill(K,zona);}
-			        if(Dist5D_P<6) for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP_D_1->Fill(K,zona);}
+			for(int K=0;K<nbinsr;K++) if(Tup.R<bin[K+1]&&Tup.R>bin[K]) {EffDistMCvsDP_D_2->Fill(K,zona);}
+			        if(Tup.Dist5D_P<6) for(int K=0;K<nbinsr;K++) if(Tup.R<bin[K+1]&&Tup.R>bin[K]) {EffDistMCvsDP_D_1->Fill(K,zona);}
 			//}
-			if(Dist5D_P<6) {
-				for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP_D_1->Fill(K,zona);}
+			if(Tup.Dist5D_P<6) {
+				for(int K=0;K<nbinsr;K++) if(Tup.R<bin[K+1]&&Tup.R>bin[K]) {EffLik2MCvsDP_D_1->Fill(K,zona);}
 				if(Likcut)
-					for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP_D_2->Fill(K,zona);}
+					for(int K=0;K<nbinsr;K++) if(Tup.R<bin[K+1]&&Tup.R>bin[K]) {EffLik2MCvsDP_D_2->Fill(K,zona);}
 			}
 
 		}
@@ -34,17 +34,17 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
                                 
 	 ntupla->GetEvent(l);    
-	if(Beta<=0||R<=0||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
+	if(Tup.Beta<=0||Tup.R<=0||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
 	if(Massa_gen<1){
 	if(Herejcut){
 		//if(Likcut){
-			for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP2->Fill(K);}
-			if(Dist5D_P<6) for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffDistMCvsDP1->Fill(K);}
+			for(int K=0;K<nbinsr;K++) if(Tup.R<bin[K+1]&&Tup.R>bin[K]) {EffDistMCvsDP2->Fill(K);}
+			if(Tup.Dist5D_P<6) for(int K=0;K<nbinsr;K++) if(Tup.R<bin[K+1]&&Tup.R>bin[K]) {EffDistMCvsDP1->Fill(K);}
 		//}
-		if(Dist5D_P<6) {
-			for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP1->Fill(K);}
+		if(Tup.Dist5D_P<6) {
+			for(int K=0;K<nbinsr;K++) if(Tup.R<bin[K+1]&&Tup.R>bin[K]) {EffLik2MCvsDP1->Fill(K);}
 			if(Likcut)
-				for(int K=0;K<nbinsr;K++) if(R<bin[K+1]&&R>bin[K]) {EffLik2MCvsDP2->Fill(K);}
+				for(int K=0;K<nbinsr;K++) if(Tup.R<bin[K+1]&&Tup.R>bin[K]) {EffLik2MCvsDP2->Fill(K);}
 		}
 
 	}

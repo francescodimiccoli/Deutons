@@ -7,8 +7,8 @@ void DVSMCQualeffD_D_Fill(TNtuple *ntupla, int l,int zona){
 
 	 ntupla->GetEvent(l);
 	//cuts
-	if(Beta<=0||R<=0||R<1.2*Rcutoff||Beta>deutons->Eval(R)+0.1||Beta<deutons->Eval(R)-0.1) return;
-	if(!((R>Rcut[zona]&&zona<10)||(zona==10)))  return;
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||Tup.Beta>deutons->Eval(Tup.R)+0.1||Tup.Beta<deutons->Eval(Tup.R)-0.1) return;
+	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!Herejcut) return;
 	if(!Betastrongcut) return;
 	//
@@ -25,7 +25,7 @@ void DVSMCQualeffD_D_Fill(TNtuple *ntupla, int l,int zona){
 		if(Likcut) Lik_DvsMC_D  -> DataEff -> afterTOF -> Fill(Kbin,zona);
 	}
 	//NaF
-	if(((int)Cutmask)>>11==512) {	
+	if(((int)Tup.Cutmask)>>11==512) {	
 		Kbin=NaFDB.GetRBin(RUsed);
 		Dist_DvsMC_D -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_D  -> DataEff -> beforeNaF -> Fill(Kbin,zona);
@@ -36,7 +36,7 @@ void DVSMCQualeffD_D_Fill(TNtuple *ntupla, int l,int zona){
 		}
 	}
 	//Agl
-	if(((int)Cutmask)>>11==0) {
+	if(((int)Tup.Cutmask)>>11==0) {
 		Kbin=AglDB.GetRBin(RUsed);
 		Dist_DvsMC_D -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_D  -> DataEff -> beforeAgl -> Fill(Kbin,zona);
@@ -54,7 +54,7 @@ void DVSMCQualeffD_Fill(TNtuple *ntupla, int l){
 
 	 ntupla->GetEvent(l);
 	//cuts
-	if(Beta<=0||R<=0||R<1.2*Rcutoff||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
 	if(!Herejcut) return;
 	if(!Betastrongcut) return;
 	//
@@ -73,7 +73,7 @@ void DVSMCQualeffD_Fill(TNtuple *ntupla, int l){
 			if(Likcut) Lik_DvsMC_D  -> MCEff -> afterTOF -> Fill(Kbin,ReturnMCGenType());
 		}
 		//NaF
-		if(((int)Cutmask)>>11==512) {	
+		if(((int)Tup.Cutmask)>>11==512) {	
 			Kbin=NaFDB.GetRBin(RUsed);	
 			Dist_DvsMC_D -> MCEff -> beforeNaF -> Fill(Kbin,ReturnMCGenType());
 			if(Distcut) Lik_DvsMC_D  -> MCEff -> beforeNaF -> Fill(Kbin,ReturnMCGenType());
@@ -85,7 +85,7 @@ void DVSMCQualeffD_Fill(TNtuple *ntupla, int l){
 
 		}
 		//Agl
-		if(((int)Cutmask)>>11==0) {	
+		if(((int)Tup.Cutmask)>>11==0) {	
 			Kbin=AglDB.GetRBin(RUsed);
 			Dist_DvsMC_D -> MCEff -> beforeAgl -> Fill(Kbin,ReturnMCGenType());
 			if(Distcut) Lik_DvsMC_D  -> MCEff -> beforeAgl -> Fill(Kbin,ReturnMCGenType());

@@ -12,55 +12,55 @@ TemplateFIT * HeliumContaminationAgl = new TemplateFIT("HeliumContaminationAgl",
 
 void HecutMC_Fill(TNtuple *ntupla,int l) {
 	 ntupla->GetEvent(l);
-	if(Beta<=0||R<=0) return;
-	float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
-	int Kbin=RB.GetRBin(Momento_gen);
+	if(Tup.Beta<=0||Tup.R<=0) return;
+	float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
+	int Kbin=RB.GetRBin(Tup.Momento_gen);
 
 	if(Massa_gen<1) {
-		HecutMC_P->Fill( fabs(EdepTOFbeta  ->Eval(Beta)-EdepTOFud) / (pow(EdepTOFbeta  ->Eval(Beta),2)*etofu ->Eval(Beta)) ,
-				fabs(EdepTrackbeta->Eval(Beta)-EdepTrack) / (pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta)) );
+		HecutMC_P->Fill( fabs(EdepTOFbeta  ->Eval(Tup.Beta)-EdepTOFud) / (pow(EdepTOFbeta  ->Eval(Tup.Beta),2)*etofu ->Eval(Tup.Beta)) ,
+				fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack) / (pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)) );
 		HecutMCP->beforeR->Fill(Kbin);
 		if(Herejcut) HecutMCP->afterR->Fill(Kbin);
 
 		if(Betastrongcut&&Likcut){		
-			if(((int)Cutmask)>>11!=0&&((int)Cutmask)>>11!=512&&R<3)HeliumContaminationTOF -> TemplateP -> Fill(Dist5D_P,0);
-			if(((int)Cutmask)>>11==512&&R<6)		  HeliumContaminationNaF -> TemplateP -> Fill(Dist5D_P,0);	
-			if(((int)Cutmask)>>11==0&&R<14)  			  HeliumContaminationAgl -> TemplateP -> Fill(Dist5D_P,0);
+			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512&&Tup.R<3)HeliumContaminationTOF -> TemplateP -> Fill(Tup.Dist5D_P,0);
+			if(((int)Tup.Cutmask)>>11==512&&Tup.R<6)		  HeliumContaminationNaF -> TemplateP -> Fill(Tup.Dist5D_P,0);	
+			if(((int)Tup.Cutmask)>>11==0&&Tup.R<14)  			  HeliumContaminationAgl -> TemplateP -> Fill(Tup.Dist5D_P,0);
 		}	
 	}
 	if(Massa_gen>1&&Massa_gen<2){
 		if(Betastrongcut&&Likcut){
-			if(((int)Cutmask)>>11!=0&&((int)Cutmask)>>11!=512&&R<3)HeliumContaminationTOF -> TemplateD -> Fill(Dist5D_P,0);
-			if(((int)Cutmask)>>11==512&&R<6)		  HeliumContaminationNaF -> TemplateD -> Fill(Dist5D_P,0);
-			if(((int)Cutmask)>>11==0&&R<14) 		  HeliumContaminationAgl -> TemplateD -> Fill(Dist5D_P,0);
+			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512&&Tup.R<3)HeliumContaminationTOF -> TemplateD -> Fill(Tup.Dist5D_P,0);
+			if(((int)Tup.Cutmask)>>11==512&&Tup.R<6)		  HeliumContaminationNaF -> TemplateD -> Fill(Tup.Dist5D_P,0);
+			if(((int)Tup.Cutmask)>>11==0&&Tup.R<14) 		  HeliumContaminationAgl -> TemplateD -> Fill(Tup.Dist5D_P,0);
 		}
 		
 	}
 	if(Massa_gen>2) {
-		HecutMC_He->Fill(fabs(EdepTOFbeta  ->Eval(Beta)-EdepTOFud)/(pow(EdepTOFbeta  ->Eval(Beta),2)*etofu ->Eval(Beta)),
-				fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta)));
+		HecutMC_He->Fill(fabs(EdepTOFbeta  ->Eval(Tup.Beta)-EdepTOFud)/(pow(EdepTOFbeta  ->Eval(Tup.Beta),2)*etofu ->Eval(Tup.Beta)),
+				fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)));
 		HecutMCHe->beforeR->Fill(Kbin);
 		if(Herejcut) HecutMCHe->afterR->Fill(Kbin);
 
 		if(Betastrongcut&&Likcut){
-			if(((int)Cutmask)>>11!=0&&((int)Cutmask)>>11!=512&&R<3)HeliumContaminationTOF -> TemplateHe -> Fill(Dist5D_P,0);
-			if(((int)Cutmask)>>11==512&&R<6)		  HeliumContaminationNaF -> TemplateHe -> Fill(Dist5D_P,0);
-			if(((int)Cutmask)>>11==0&&R<14) 		  HeliumContaminationAgl -> TemplateHe -> Fill(Dist5D_P,0);
+			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512&&Tup.R<3)HeliumContaminationTOF -> TemplateHe -> Fill(Tup.Dist5D_P,0);
+			if(((int)Tup.Cutmask)>>11==512&&Tup.R<6)		  HeliumContaminationNaF -> TemplateHe -> Fill(Tup.Dist5D_P,0);
+			if(((int)Tup.Cutmask)>>11==0&&Tup.R<14) 		  HeliumContaminationAgl -> TemplateHe -> Fill(Tup.Dist5D_P,0);
 		}
 	}
 }
 
 void HecutD_Fill(TNtuple *ntupla,int l) {
 	 ntupla->GetEvent(l);
-	if(Beta<=0||R<=0) return;
-	if(!R>1.2*Rcutoff) return;
-	float EdepTOFud=(EdepTOFU+EdepTOFD)/2;
-	Hecut_D->Fill(fabs(EdepTOFbeta->Eval(Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta)),fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta)));
+	if(Tup.Beta<=0||Tup.R<=0) return;
+	if(!Tup.R>1.2*Tup.Rcutoff) return;
+	float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
+	Hecut_D->Fill(fabs(EdepTOFbeta->Eval(Tup.Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta),2)*etofu->Eval(Tup.Beta)),fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)));
 
 	if(Betastrongcut&&Likcut){
-		if(((int)Cutmask)>>11!=0&&((int)Cutmask)>>11!=512&&R<3)HeliumContaminationTOF -> DATA -> Fill(Dist5D_P,0);
-		if(((int)Cutmask)>>11==512&&R<6)			  HeliumContaminationNaF -> DATA -> Fill(Dist5D_P,0);
-		if(((int)Cutmask)>>11==0&&R<14)  			  HeliumContaminationAgl -> DATA -> Fill(Dist5D_P,0);	
+		if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512&&Tup.R<3)HeliumContaminationTOF -> DATA -> Fill(Tup.Dist5D_P,0);
+		if(((int)Tup.Cutmask)>>11==512&&Tup.R<6)			  HeliumContaminationNaF -> DATA -> Fill(Tup.Dist5D_P,0);
+		if(((int)Tup.Cutmask)>>11==0&&Tup.R<14)  			  HeliumContaminationAgl -> DATA -> Fill(Tup.Dist5D_P,0);	
 	}
 }
 

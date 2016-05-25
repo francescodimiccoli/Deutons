@@ -51,47 +51,47 @@ TGraph * Plot_BadPrej(TH1F * HistoP,TH1F * HistoD,bool reverse=false);
 void DistanceCut_Fill(TNtuple *ntupla, int l) {
 
 	 ntupla->GetEvent(l);
-	if(Beta<=0||R<=0) return;
+	if(Tup.Beta<=0||Tup.R<=0) return;
 	float mass=0;
 	if(Betastrongcut){
 		// Helium rej.
 		if(Massa_gen<1)	{
-			if(((int)Cutmask)>>11!=0&&((int)Cutmask)>>11!=512) Dist5D_PdistrP_TOF -> Fill(Dist5D,Dist5D_P);
-			if(((int)Cutmask)>>11==512)			   Dist5D_PdistrP_NaF -> Fill(Dist5D,Dist5D_P);
-			if(((int)Cutmask)>>11==0)  			   Dist5D_PdistrP_Agl -> Fill(Dist5D,Dist5D_P);			
+			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512) Dist5D_PdistrP_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(((int)Tup.Cutmask)>>11==512)			   Dist5D_PdistrP_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(((int)Tup.Cutmask)>>11==0)  			   Dist5D_PdistrP_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);			
 		}
 		if(Massa_gen>1&&Massa_gen<2){
-			if(((int)Cutmask)>>11!=0&&((int)Cutmask)>>11!=512) Dist5D_PdistrD_TOF -> Fill(Dist5D,Dist5D_P);
-			if(((int)Cutmask)>>11==512)			   Dist5D_PdistrD_NaF -> Fill(Dist5D,Dist5D_P);
-			if(((int)Cutmask)>>11==0)  			   Dist5D_PdistrD_Agl -> Fill(Dist5D,Dist5D_P);						
+			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512) Dist5D_PdistrD_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(((int)Tup.Cutmask)>>11==512)			   Dist5D_PdistrD_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(((int)Tup.Cutmask)>>11==0)  			   Dist5D_PdistrD_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);						
 		}
 		if(Massa_gen>3&&Massa_gen<4){
-			if(((int)Cutmask)>>11!=0&&((int)Cutmask)>>11!=512) Dist5D_PdistrHe_TOF -> Fill(Dist5D,Dist5D_P);
-			if(((int)Cutmask)>>11==512)			   Dist5D_PdistrHe_NaF -> Fill(Dist5D,Dist5D_P);
-			if(((int)Cutmask)>>11==0)  			   Dist5D_PdistrHe_Agl -> Fill(Dist5D,Dist5D_P);                      
+			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512) Dist5D_PdistrHe_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(((int)Tup.Cutmask)>>11==512)			   Dist5D_PdistrHe_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(((int)Tup.Cutmask)>>11==0)  			   Dist5D_PdistrHe_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);                      
 		}
 
 		//Qual. cuts optimization
-		if(((int)Cutmask)>>11!=0&&((int)Cutmask)>>11!=512) {
-			mass = (R/Beta)*pow(1-pow(Beta,2),0.5);
+		if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512) {
+			mass = (Tup.R/Tup.Beta)*pow(1-pow(Tup.Beta,2),0.5);
 			if(mass>1.87){
-				if(Massa_gen<1) 			   DistvsLikTOF_P -> Fill(-log(1-LDiscriminant),Dist5D);
-				if(Massa_gen>1&&Massa_gen<2)		   DistvsLikTOF_D -> Fill(-log(1-LDiscriminant),Dist5D);
+				if(Massa_gen<1) 			   DistvsLikTOF_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+				if(Massa_gen>1&&Massa_gen<2)		   DistvsLikTOF_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 			}
 		}	
-		if(((int)Cutmask)>>11==512){
-                        mass = (R/BetaRICH)*pow(1-pow(BetaRICH,2),0.5);
+		if(((int)Tup.Cutmask)>>11==512){
+                        mass = (Tup.R/Tup.BetaRICH)*pow(1-pow(Tup.BetaRICH,2),0.5);
                         if(mass>1.87){
-                                if(Massa_gen<1)                            DistvsLikNaF_P -> Fill(-log(1-LDiscriminant),Dist5D);
-                                if(Massa_gen>1&&Massa_gen<2)               DistvsLikNaF_D -> Fill(-log(1-LDiscriminant),Dist5D);
+                                if(Massa_gen<1)                            DistvsLikNaF_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+                                if(Massa_gen>1&&Massa_gen<2)               DistvsLikNaF_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
                         }
                 }       
 
-		if(((int)Cutmask)>>11==0){
-                        mass = (R/BetaRICH)*pow(1-pow(BetaRICH,2),0.5);
+		if(((int)Tup.Cutmask)>>11==0){
+                        mass = (Tup.R/Tup.BetaRICH)*pow(1-pow(Tup.BetaRICH,2),0.5);
                         if(mass>1.87){
-                                if(Massa_gen<1)                            DistvsLikAgl_P -> Fill(-log(1-LDiscriminant),Dist5D);
-                                if(Massa_gen>1&&Massa_gen<2)               DistvsLikAgl_D -> Fill(-log(1-LDiscriminant),Dist5D);
+                                if(Massa_gen<1)                            DistvsLikAgl_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+                                if(Massa_gen>1&&Massa_gen<2)               DistvsLikAgl_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
                         }
                 }
 		
@@ -371,7 +371,7 @@ void DistanceCut(TFile * file1){
         DistvsLikTOF_P->SetMarkerSize(0.3);
 	DistvsLikTOF_D->SetTitle("Distance vs Likelihood: TOF");
 	DistvsLikTOF_D->GetXaxis()->SetRangeUser(0,2.6);
-	DistvsLikTOF_D->GetXaxis()->SetTitle("-log(1-LDiscriminant)");
+	DistvsLikTOF_D->GetXaxis()->SetTitle("-log(1-Tup.LDiscriminant)");
 	DistvsLikTOF_D->GetYaxis()->SetTitle("Distance from D");
 	DistvsLikTOF_D->Draw();
 	DistvsLikTOF_P->Draw("same");
@@ -387,7 +387,7 @@ void DistanceCut(TFile * file1){
         DistvsLikNaF_D->SetMarkerSize(0.3);
         DistvsLikNaF_P->SetMarkerSize(0.3);
 	DistvsLikNaF_D->SetTitle("Distance vs Likelihood: NaF");
-	DistvsLikNaF_D->GetXaxis()->SetTitle("-log(1-LDiscriminant)");
+	DistvsLikNaF_D->GetXaxis()->SetTitle("-log(1-Tup.LDiscriminant)");
         DistvsLikNaF_D->GetYaxis()->SetTitle("Distance from D");
 	DistvsLikNaF_D->Draw();
         DistvsLikNaF_P->Draw("same");
@@ -404,7 +404,7 @@ void DistanceCut(TFile * file1){
         DistvsLikAgl_D->SetMarkerSize(0.3);
         DistvsLikAgl_P->SetMarkerSize(0.3);
 	DistvsLikAgl_D->SetTitle("Distance vs Likelihood: Agl");
-	DistvsLikAgl_D->GetXaxis()->SetTitle("-log(1-LDiscriminant)");
+	DistvsLikAgl_D->GetXaxis()->SetTitle("-log(1-Tup.LDiscriminant)");
         DistvsLikAgl_D->GetYaxis()->SetTitle("Distance from D");
 	DistvsLikAgl_D->Draw();
         DistvsLikAgl_P->Draw("same");

@@ -63,84 +63,84 @@ void FillIstogram(int INDX,string frac,string mese)
 
       float fCutmask=0;
 
-      ntupMCTrig->SetBranchAddress("Momento_gen",&Momento_gen);
-      ntupMCTrig->SetBranchAddress("Ev_Num",&Ev_Num);
-      ntupMCTrig->SetBranchAddress("Trig_Num",&Trig_Num);
-      ntupMCTrig->SetBranchAddress("R_pre",&R_pre);
-      ntupMCTrig->SetBranchAddress("Beta_pre",&Beta_pre);
-      ntupMCTrig->SetBranchAddress("Cutmask",&iCutmask);
-      ntupMCTrig->SetBranchAddress("MC_type",&MC_type);
-      ntupMCTrig->SetBranchAddress("EdepL1",&EdepL1);
-      ntupMCTrig->SetBranchAddress("EdepTOFU",&EdepTOFU);
-      ntupMCTrig->SetBranchAddress("EdepTOFD",&EdepTOFD);
-      ntupMCTrig->SetBranchAddress("EdepTrack",&EdepTrack);
-      ntupMCTrig->SetBranchAddress("EdepECAL",&EdepECAL);
-      ntupMCTrig->SetBranchAddress("BetaRICH",&BetaRICH);
-      ntupMCTrig->SetBranchAddress("Unbias",&Unbias);
+      ntupMCTrig->SetBranchAddress("Momento_gen",&Tup.Momento_gen);
+      ntupMCTrig->SetBranchAddress("Ev_Num",&Tup.Ev_Num);
+      ntupMCTrig->SetBranchAddress("Trig_Num",&Tup.Trig_Num);
+      ntupMCTrig->SetBranchAddress("R_pre",&Tup.R_pre);
+      ntupMCTrig->SetBranchAddress("Tup.Beta_pre",&Tup.Beta_pre);
+      ntupMCTrig->SetBranchAddress("Cutmask",&fCutmask);
+      ntupMCTrig->SetBranchAddress("MC_type",&Tup.MC_type);
+      ntupMCTrig->SetBranchAddress("EdepL1",&Tup.EdepL1);
+      ntupMCTrig->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
+      ntupMCTrig->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
+      ntupMCTrig->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
+      ntupMCTrig->SetBranchAddress("EdepECAL",&Tup.EdepECAL);
+      ntupMCTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
+      ntupMCTrig->SetBranchAddress("Unbias",&Tup.Unbias);
 
-      ntupMCSepD->SetBranchAddress("Momentogen",&Momento_gen);
-      ntupMCSepD->SetBranchAddress("R",&R);
-      ntupMCSepD->SetBranchAddress("Beta",&Beta);
-      ntupMCSepD->SetBranchAddress("BetaRICH_new",&BetaRICH);
-      ntupMCSepD->SetBranchAddress("EdepL1",&EdepL1);
-      ntupMCSepD->SetBranchAddress("Rmin",&Rmin);
-      ntupMCSepD->SetBranchAddress("EdepTOF",&EdepTOFU);
-      ntupMCSepD->SetBranchAddress("EdepTrack",&EdepTrack);
-      ntupMCSepD->SetBranchAddress("EdepTOFD",&EdepTOFD);
-      ntupMCSepD->SetBranchAddress("MC_type",&MC_type);
-      ntupMCSepD->SetBranchAddress("LDiscriminant",&LDiscriminant);
-      ntupMCSepD->SetBranchAddress("BDT_response",&BDT_response);
-      ntupMCSepD->SetBranchAddress("Cutmask",&iCutmask);
-      ntupMCSepD->SetBranchAddress("Dist5D",&Dist5D);
-      ntupMCSepD->SetBranchAddress("Dist5D_P",&Dist5D_P);
+      ntupMCSepD->SetBranchAddress("Momentogen",&Tup.Momento_gen);
+      ntupMCSepD->SetBranchAddress("R",&Tup.R);
+      ntupMCSepD->SetBranchAddress("Beta",&Tup.Beta);
+      ntupMCSepD->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
+      ntupMCSepD->SetBranchAddress("EdepL1",&Tup.EdepL1);
+      ntupMCSepD->SetBranchAddress("Rmin",&Tup.Rmin);
+      ntupMCSepD->SetBranchAddress("EdepTOF",&Tup.EdepTOFU);
+      ntupMCSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
+      ntupMCSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
+      ntupMCSepD->SetBranchAddress("MC_type",&Tup.MC_type);
+      ntupMCSepD->SetBranchAddress("LDiscriminant",&Tup.LDiscriminant);
+      ntupMCSepD->SetBranchAddress("BDT_response",&Tup.BDT_response);
+      ntupMCSepD->SetBranchAddress("Cutmask",&fCutmask);
+      ntupMCSepD->SetBranchAddress("Dist5D",&Tup.Dist5D);
+      ntupMCSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
 
-      ntupDataTrig->SetBranchAddress("Rcutoff",&Rcutoff);
-      ntupDataTrig->SetBranchAddress("R_pre",&R_pre);
-      ntupDataTrig->SetBranchAddress("Beta_pre",&Beta_pre);
-      ntupDataTrig->SetBranchAddress("Cutmask",&iCutmask);
-      ntupDataTrig->SetBranchAddress("Latitude",&Latitude);
-      ntupDataTrig->SetBranchAddress("EdepECAL",&EdepECAL);
-      ntupDataTrig->SetBranchAddress("EdepL1",&EdepL1);
-      ntupDataTrig->SetBranchAddress("EdepTOFU",&EdepTOFU);
-      ntupDataTrig->SetBranchAddress("EdepTOFD",&EdepTOFD);
-      ntupDataTrig->SetBranchAddress("EdepTrack",&EdepTrack);
-      ntupDataTrig->SetBranchAddress("BetaRICH",&BetaRICH);
-      ntupDataTrig->SetBranchAddress("Unbias",&Unbias);
+      ntupDataTrig->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
+      ntupDataTrig->SetBranchAddress("R_pre",&Tup.R_pre);
+      ntupDataTrig->SetBranchAddress("Tup.Beta_pre",&Tup.Beta_pre);
+      ntupDataTrig->SetBranchAddress("Cutmask",&fCutmask);
+      ntupDataTrig->SetBranchAddress("Latitude",&Tup.Latitude);
+      ntupDataTrig->SetBranchAddress("EdepECAL",&Tup.EdepECAL);
+      ntupDataTrig->SetBranchAddress("EdepL1",&Tup.EdepL1);
+      ntupDataTrig->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
+      ntupDataTrig->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
+      ntupDataTrig->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
+      ntupDataTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
+      ntupDataTrig->SetBranchAddress("Unbias",&Tup.Unbias);
 
 
-      ntupDataSepD->SetBranchAddress("R",&R);
-      ntupDataSepD->SetBranchAddress("Beta",&Beta);
-      ntupDataSepD->SetBranchAddress("BetaRICH_new",&BetaRICH);
-      ntupDataSepD->SetBranchAddress("EdepL1",&EdepL1);
-      ntupDataSepD->SetBranchAddress("Rcutoff",&Rcutoff);
-      ntupDataSepD->SetBranchAddress("Rmin",&Rmin);
-      ntupDataSepD->SetBranchAddress("EdepTOFU",&EdepTOFU);
-      ntupDataSepD->SetBranchAddress("EdepTrack",&EdepTrack);
-      ntupDataSepD->SetBranchAddress("EdepTOFD",&EdepTOFD);
-      ntupDataSepD->SetBranchAddress("Latitude",&Latitude);
-      ntupDataSepD->SetBranchAddress("LDiscriminant",&LDiscriminant);
-      ntupDataSepD->SetBranchAddress("BDT_response",&BDT_response);
+      ntupDataSepD->SetBranchAddress("R",&Tup.R);
+      ntupDataSepD->SetBranchAddress("Beta",&Tup.Beta);
+      ntupDataSepD->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
+      ntupDataSepD->SetBranchAddress("EdepL1",&Tup.EdepL1);
+      ntupDataSepD->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
+      ntupDataSepD->SetBranchAddress("Rmin",&Tup.Rmin);
+      ntupDataSepD->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
+      ntupDataSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
+      ntupDataSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
+      ntupDataSepD->SetBranchAddress("Latitude",&Tup.Latitude);
+      ntupDataSepD->SetBranchAddress("LDiscriminant",&Tup.LDiscriminant);
+      ntupDataSepD->SetBranchAddress("BDT_response",&Tup.BDT_response);
       ntupDataSepD->SetBranchAddress("Cutmask",&fCutmask);
-      ntupDataSepD->SetBranchAddress("Dist5D",&Dist5D);
-      ntupDataSepD->SetBranchAddress("Dist5D_P",&Dist5D_P);
+      ntupDataSepD->SetBranchAddress("Dist5D",&Tup.Dist5D);
+      ntupDataSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
 
-      Cutmask=int(fCutmask);
+      Tup.Cutmask=int(fCutmask);
    }
    cout<<"*********************** MC READING *********************"<<endl;
+   int progress=0;
    if(INDX==0)
-      int progress=0;
       for(int i=0; i<ntupMCTrig->GetEntries()/fraz; i++) {
          ntupMCTrig->GetEvent(i);
          Cuts_Pre();
          Massa_gen = ReturnMass_Gen();
-         RUsed=R_pre;
+         RUsed=Tup.R_pre;
 
 
          if(100*(i/(float)(ntupMCTrig->GetEntries()/fraz))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;
             progress=(int)(100*(i/(float)(ntupMCTrig->GetEntries()/fraz)))+1;
          }
-         Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));
+         Beta_gen=(pow(pow(Tup.Momento_gen/Massa_gen,2)/(1+pow(Tup.Momento_gen/Massa_gen,2)),0.5));
          MCpreseff_Fill(ntupMCTrig,i);
          MCUnbiaseff_Fill(ntupMCTrig,i);
          MCTrackeff_Fill(ntupMCTrig,i);
@@ -152,7 +152,7 @@ void FillIstogram(int INDX,string frac,string mese)
          //DVSMCTrackeff_Fill(ntupMCTrig,i);*/
       }
    if(INDX==0||INDX==1) {
-      int progress=0;
+      progress=0;
       for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
          ntupMCSepD->GetEvent(i);
          Massa_gen = ReturnMass_Gen();
@@ -162,7 +162,7 @@ void FillIstogram(int INDX,string frac,string mese)
             progress=(int)(100*(i/(float)(ntupMCSepD->GetEntries()/fraz)))+1;
          }
          Cuts();
-         RUsed=R;
+         RUsed=Tup.R;
 
          HecutMC_Fill(ntupMCSepD,i);
          SlidesforPlot_Fill(ntupMCSepD,i);
@@ -190,47 +190,47 @@ void FillIstogram(int INDX,string frac,string mese)
 
    
    double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
-   if(INDX==0)
+   if(INDX==0) {
       int progress=0;
       for(int i=0; i<ntupDataTrig->GetEntries()/fraz; i++) {
          ntupDataTrig->GetEvent(i);
-         Cutmask=iCutmask;
          Cuts_Pre();
-         Massa=pow(fabs(pow(fabs(R_pre)*pow((1-pow(Beta_pre,2)),0.5)/Beta_pre,2)),0.5);
+         Massa=pow(fabs(pow(fabs(Tup.R_pre)*pow((1-pow(Tup.Beta_pre,2)),0.5)/Tup.Beta_pre,2)),0.5);
          for(int z=0; z<12; z++) {
             double geo= geomag[z]  ;
             double geo2=geomag[z+1];
-            if(Latitude>geo && Latitude<geo2) Zona=z;
+            if(Tup.Latitude>geo && Tup.Latitude<geo2) Zona=z;
          }
          // Temporary Betarich check
-         if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH<0) continue;
-         RUsed=R_pre;
+         if(((Tup.Cutmask>>11)==0||(Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
+         RUsed=Tup.R_pre;
 
          if(100*(i/(float)(ntupDataTrig->GetEntries()/fraz))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;
             progress=(int)(100*(i/(float)(ntupDataTrig->GetEntries()/fraz)))+1;
          }
 
-         Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));
+         Beta_gen=(pow(pow(Tup.Momento_gen/Massa_gen,2)/(1+pow(Tup.Momento_gen/Massa_gen,2)),0.5));
          DATAUnbiaseff_Fill(ntupDataTrig,i);
          DATApreSeleff_Fill(ntupDataTrig,i,Zona);
          DVSMCPreSeleff_D_Fill(ntupDataTrig,i,Zona);
          DVSMCPreSeleffD_D_Fill(ntupDataTrig,i,Zona);
          //DVSMCTrackeff_D_Fill(ntupMCTrig,i);
       }
+   }
    if(INDX==0||INDX==1) {
-      int progress=0;
+      progress=0;
       for(int i=0; i<ntupDataSepD->GetEntries(); i++) {
          ntupDataSepD->GetEvent(i);
          for(int z=0; z<12; z++) {
             double geo= geomag[z]  ;
             double geo2=geomag[z+1];
-            if(Latitude>geo && Latitude<geo2) Zona=z;
+            if(Tup.Latitude>geo && Tup.Latitude<geo2) Zona=z;
          }
          // Temporary Betarich check
-         if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH<0) continue;
+         if(((Tup.Cutmask>>11)==0||(Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
          Cuts();
-         RUsed=R;
+         RUsed=Tup.R;
 
          if(100*(i/(float)(ntupDataSepD->GetEntries()))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;

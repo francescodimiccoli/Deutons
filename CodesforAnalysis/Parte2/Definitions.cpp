@@ -42,12 +42,37 @@ TSpline3 *Corr_Track;
 TSpline3 *Corr_TOFD; 
 
 
-
+///  Variables retrieved from Root ntuples
+struct Tuplevar {
+float BDT_response;
+float Beta;
+float Beta_pre;
+float BetaRICH;
+float Dist5D;
+float Dist5D_P;
+float EdepECAL;
+float EdepL1;
+float EdepTOFD;
+float EdepTOFU;
+float EdepTrack;
+float Ev_Num;
+int   Cutmask;
+float Latitude;
+float LDiscriminant;
+float MC_type;
+float Momento_gen;
+float R;
+float Rcutoff;
+float Rmin;
+float R_pre;
+float Trig_Num;
+float Unbias;
+};
 
 //// Global Variables
-float R=0;
-float Beta=0;
-float BetaRICH=0;
+
+
+
 float RminTOF=0;
 float RminTrack=0;
 float RminTRD=0;
@@ -57,35 +82,23 @@ float XTRD=0;
 float YTOF=0;
 float YTrack=0;
 float YTRD=0;
-float Rcutoff=0;
-float LDiscriminant=0;
+
 float Massa_gen=0;
-float MC_type=0;
 float Massa=0;
-float BDT_response=0;
 float D_TOF,D_Track,D_TRD,Discr=0;
 float Zona=0;
 
 float IsPrescaled=0;
-float Latitude=0;
-float EdepL1=0;
-float Rmin=0;
+
+
 float X=0;
 float YTOFU=0;
 float YTOFD=0;
-int Cutmask=0;
-float Dist5D=0;
-float Dist5D_P=0;
-float Momento_gen=0;
-float Ev_Num=0;
-float Trig_Num=0;
-float R_pre=0;
+
+
+
 float Beta_gen=0;
-float Beta_pre=0;
-float EdepECAL=0;
-float EdepTOFU=0;
-float EdepTOFD=0;
-float EdepTrack=0;
+
 float BetaRICH_new=0;
 float Rcut[11]= {18,18,16,14,12,10,8,6,4,2,1};
 int INDX=0;
@@ -99,7 +112,6 @@ float Ekincent      [nbinsbeta] = {0};
 float EkincentNaF   [nbinsNaF]  = {0};
 float EkincentAgl   [nbinsAgl]  = {0};
 
-float Unbias=0;
 
 
 TH1F* Tempi;
@@ -125,14 +137,15 @@ bool Betastrongcut=false;
 TH1F * Esposizione[10];
 
 
+Tuplevar Tup;
 
 //retrieve MC particle species
 float ReturnMass_Gen()
 {
    float Mass_gen=0;
-   if ( ( ( (int) MC_type) &0xFF    ) >0)      Mass_gen = 0.938;
-   if ( ( ( (int) MC_type) &0xFF00  ) >0)      Mass_gen = 1.875;
-   if ( ( ( (int) MC_type) &0xFF0000) >0)      Mass_gen = 3.725;
+   if ( ( ( (int) Tup.MC_type) &0xFF    ) >0)      Mass_gen = 0.938;
+   if ( ( ( (int) Tup.MC_type) &0xFF00  ) >0)      Mass_gen = 1.875;
+   if ( ( ( (int) Tup.MC_type) &0xFF0000) >0)      Mass_gen = 3.725;
    return Mass_gen;
 }
 
@@ -145,7 +158,7 @@ int ReturnMCGenType()
    if (ReturnMass_Gen() <2&&ReturnMass_Gen() >1) cursor=8 ;
    if (ReturnMass_Gen() <4&&ReturnMass_Gen() >3) cursor=16;
    for (int i=2; i<8; i++) {
-      if ( ( ( ( (int) MC_type) >> (cursor+i) ) & 1 ) ==1) mc_type=i-2;
+      if ( ( ( ( (int) Tup.MC_type) >> (cursor+i) ) & 1 ) ==1) mc_type=i-2;
    }
    if (mc_type == -1) std::cout<<"ERROR: MC cross section type not found"<<std::endl;
    return mc_type;
@@ -176,6 +189,5 @@ DBinning AglDB;
 PBinning AglPB;
 
 Binning RB;
-
 
 

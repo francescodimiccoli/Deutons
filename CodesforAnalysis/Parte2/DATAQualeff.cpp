@@ -16,41 +16,41 @@ LATcorr * LATDistanceDATA_Agl   = new LATcorr("LATDistDATA_Agl");
 void DATAQualeff_Fill(TNtuple *ntupla, int l,int zona) {
 
     ntupla->GetEvent(l);
-   if(Beta<=0 || R<=0 || R<=Rcut[zona]) return;
-   if(! (EdepL1 > 0 && EdepL1 < EdepL1beta->Eval(Beta)+0.1 && EdepL1 > EdepL1beta->Eval(Beta)-0.1 )) return;
+   if(Tup.Beta<=0 || Tup.R<=0 || Tup.R<=Rcut[zona]) return;
+   if(! (Tup.EdepL1 > 0 && Tup.EdepL1 < EdepL1beta->Eval(Tup.Beta)+0.1 && Tup.EdepL1 > EdepL1beta->Eval(Tup.Beta)-0.1 )) return;
 
-   int Kbin=RB.GetRBin(R);
+   int Kbin=RB.GetRBin(Tup.R);
 
    //TOF
-   if(!(((int)Cutmask>>11)==0||((int)Cutmask>>11)==512)) {
+   if(!(((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)) {
          LATDistanceDATA_TOF  ->beforeR->Fill(Kbin,zona);
-      if(Dist5D_P<6) {
+      if(Tup.Dist5D_P<6) {
          LATDistanceDATA_TOF  ->afterR ->Fill(Kbin,zona);
          LATLikelihoodDATA_TOF->beforeR->Fill(Kbin,zona);
       }
-      if(Dist5D_P<6 && Likcut) {
+      if(Tup.Dist5D_P<6 && Likcut) {
          LATLikelihoodDATA_TOF->afterR ->Fill(Kbin,zona);
       }
    }
    //NaF
-   if(((int)Cutmask>>11)==512) {
+   if(((int)Tup.Cutmask>>11)==512) {
          LATDistanceDATA_NaF  ->beforeR->Fill(Kbin,zona);
-      if(Dist5D_P<6) {
+      if(Tup.Dist5D_P<6) {
          LATDistanceDATA_NaF  ->afterR ->Fill(Kbin,zona);
          LATLikelihoodDATA_NaF->beforeR->Fill(Kbin,zona);
       }
-      if(Dist5D_P<6 && Likcut) {
+      if(Tup.Dist5D_P<6 && Likcut) {
          LATLikelihoodDATA_NaF->afterR ->Fill(Kbin,zona);
       }
    }
    //Agl
-   if(((int)Cutmask>>11)==0) {
+   if(((int)Tup.Cutmask>>11)==0) {
       LATDistanceDATA_Agl     ->beforeR->Fill(Kbin,zona);
-      if(Dist5D_P<6) {
+      if(Tup.Dist5D_P<6) {
          LATDistanceDATA_Agl  ->afterR ->Fill(Kbin,zona);
          LATLikelihoodDATA_Agl->beforeR->Fill(Kbin,zona);
       }
-      if(Dist5D_P<6 && Likcut) {
+      if(Tup.Dist5D_P<6 && Likcut) {
          LATLikelihoodDATA_Agl->afterR ->Fill(Kbin,zona);
       }
    }

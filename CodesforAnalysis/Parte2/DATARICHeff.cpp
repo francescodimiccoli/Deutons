@@ -8,20 +8,20 @@ void DATARICHeff_Fill(TNtuple *ntupla, int l,int zona) {
 
 	 ntupla->GetEvent(l);
 	//cuts
-	if(Beta<=0||R<=0||R<1.2*Rcutoff||Beta>protons->Eval(R)+0.1||Beta<protons->Eval(R)-0.1) return;
-	if(!((R>Rcut[zona]&&zona<10)||(zona==10)))  return;
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
+	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!Herejcut) return;
 
-	int Kbin=RB.GetRBin(R);
+	int Kbin=RB.GetRBin(Tup.R);
 
 	LATrichDATA_NaF -> beforeR -> Fill(Kbin,zona);
 	LATrichDATA_Agl	-> beforeR -> Fill(Kbin,zona);
 	
 	//NaF
-	if(((int)Cutmask>>11)==512) LATrichDATA_NaF -> afterR -> Fill(Kbin,zona); 
+	if(((int)Tup.Cutmask>>11)==512) LATrichDATA_NaF -> afterR -> Fill(Kbin,zona); 
    	
    	//Agl
-	if(((int)Cutmask>>11)==0)   LATrichDATA_Agl -> afterR -> Fill(Kbin,zona); 
+	if(((int)Tup.Cutmask>>11)==0)   LATrichDATA_Agl -> afterR -> Fill(Kbin,zona); 
 
    	return;
 }

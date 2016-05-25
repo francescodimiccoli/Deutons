@@ -13,13 +13,13 @@ TemplateFIT * FitAgl_Pbins = new TemplateFIT("FitAgl_Pbins",nbinsAgl,0,3,6);
 
 void DeutonsMC_Fill(TNtuple *ntupla, int l){
 	 ntupla->GetEvent(l);
-	if(Beta<=0||R<=0) return;
+	if(Tup.Beta<=0||Tup.R<=0) return;
 	float mass = 0;
 	//cuts
 	if(!(Likcut&&Distcut)) return;
 	//
 	for(int m=0;m<nbinsToF;m++){ //TOF
-		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
+		mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));
 		if(RUsed>ToFDB.MomBins()[m]&&RUsed<=ToFDB.MomBins()[m+1]){
 			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Dbins -> TemplateP -> Fill(mass,m);
 			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
@@ -32,8 +32,8 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 		}
 	}
 	for(int m=0;m<nbinsNaF;m++) { //NaF
-		if((((int)Cutmask)>>11)==512){
-			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
+		if((((int)Tup.Cutmask)>>11)==512){
+			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Dbins -> TemplateP -> Fill(mass,m);
 				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
@@ -47,8 +47,8 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 		}
 	}
 	for(int m=0;m<nbinsAgl;m++) { //Agl
-		if((((int)Cutmask)>>11)==0){
-			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
+		if((((int)Tup.Cutmask)>>11)==0){
+			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Dbins -> TemplateP -> Fill(mass,m);
 				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
@@ -66,42 +66,42 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 
 void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 	 ntupla->GetEvent(l);
-	if(Beta<=0||R<=0) return;
+	if(Tup.Beta<=0||Tup.R<=0) return;
 	float mass = 0;
 	//cuts
 	if(!(Likcut&&Distcut)) return;
 	//
 	for(int m=0;m<nbinsToF;m++){ //TOF
-		mass = ((R/Beta)*pow((1-pow(Beta,2)),0.5));
+		mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));
 		if(RUsed>ToFDB.MomBins()[m]&&RUsed<=ToFDB.MomBins()[m+1]){
-			if(R>1.2*Rcutoff) FitTOF_Dbins -> DATA -> Fill(mass,m);
+			if(Tup.R>1.2*Tup.Rcutoff) FitTOF_Dbins -> DATA -> Fill(mass,m);
 			((TH3*)FitTOFgeo_Dbins -> DATA) -> Fill(mass,m,zona);
 		}
 		if(RUsed>ToFPB.MomBins()[m]&&RUsed<=ToFPB.MomBins()[m+1]) {
-			if(R>1.2*Rcutoff) FitTOF_Pbins -> DATA -> Fill(mass,m);
+			if(Tup.R>1.2*Tup.Rcutoff) FitTOF_Pbins -> DATA -> Fill(mass,m);
 		}
 	}
 	for(int m=0;m<nbinsNaF;m++){//NaF
-		if((((int)Cutmask)>>11)==512){
-			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
+		if((((int)Tup.Cutmask)>>11)==512){
+			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
-				if(R>1.2*Rcutoff) FitNaF_Dbins -> DATA -> Fill(mass,m);
+				if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Dbins -> DATA -> Fill(mass,m);
 				((TH3*)FitNaFgeo_Dbins -> DATA) -> Fill(mass,m,zona);
 			}
 			if(RUsed>NaFPB.MomBins()[m]&&RUsed<=NaFPB.MomBins()[m+1]) {
-				if(R>1.2*Rcutoff) FitNaF_Pbins -> DATA -> Fill(mass,m);
+				if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Pbins -> DATA -> Fill(mass,m);
 			}
 		}
 	}
 	for(int m=0;m<nbinsAgl;m++){ //Agl
-		if((((int)Cutmask)>>11)==0){
-			mass = ((R/BetaRICH)*pow((1-pow(BetaRICH,2)),0.5));
+		if((((int)Tup.Cutmask)>>11)==0){
+			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
-				if(R>1.2*Rcutoff) FitAgl_Dbins -> DATA -> Fill(mass,m);
+				if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Dbins -> DATA -> Fill(mass,m);
 				((TH3*)FitAglgeo_Dbins -> DATA) -> Fill(mass,m,zona);
 			}
 			if(RUsed>AglPB.MomBins()[m]&&RUsed<=AglPB.MomBins()[m+1]) {
-				if(R>1.2*Rcutoff) FitAgl_Pbins -> DATA -> Fill(mass,m);
+				if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Pbins -> DATA -> Fill(mass,m);
 			}
 		}
 	}

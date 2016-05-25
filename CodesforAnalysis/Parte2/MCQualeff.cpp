@@ -10,16 +10,16 @@ Efficiency * EffDistMCD = new Efficiency ("EffDistMCD",6);
 void MCQualeff_Fill(TNtuple *ntupla, int l) {
 
 	 ntupla->GetEvent(l);
-	if(Beta<=0||R<=0) return;
+	if(Tup.Beta<=0||Tup.R<=0) return;
 	int Kbin;
 	if(Massa_gen<1) {
 		//R bins
-		Kbin=RB.GetRBin(R);
+		Kbin=RB.GetRBin(Tup.R);
 
 		EffLikMCP->beforeR->Fill(Kbin);
 		EffDistMCP->beforeR->Fill(Kbin);
-		if(Dist5D_P<6)          EffDistMCP->afterR->Fill(Kbin);
-		if(Dist5D_P<6&&Likcut)	EffLikMCP->afterR->Fill(Kbin);
+		if(Tup.Dist5D_P<6)          EffDistMCP->afterR->Fill(Kbin);
+		if(Tup.Dist5D_P<6&&Likcut)	EffLikMCP->afterR->Fill(Kbin);
 
 
 		//Beta bins
@@ -31,7 +31,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 		if(Distcut&&Likcut)	EffLikMCP->afterTOF ->Fill(Kbin);
 
 
-		if(((int)Cutmask)>>11 ==512) {
+		if(((int)Tup.Cutmask)>>11 ==512) {
 			Kbin=NaFPB.GetRBin(RUsed);
 			EffLikMCP  ->beforeNaF->Fill(Kbin);
 			EffDistMCP ->beforeNaF->Fill(Kbin);
@@ -39,7 +39,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 			if(Distcut&&Likcut)	EffLikMCP ->afterNaF ->Fill(Kbin);
 		}
 
-		if(((int)Cutmask)>>11==0) {
+		if(((int)Tup.Cutmask)>>11==0) {
 			Kbin=AglPB.GetRBin(RUsed);
 			EffLikMCP->beforeAgl->Fill(Kbin);
 			EffDistMCP->beforeAgl->Fill(Kbin);
@@ -51,12 +51,12 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 	}
 	if(Massa_gen<2&&Massa_gen>1) {
 		//R bins
-		Kbin=RB.GetRBin(R);
+		Kbin=RB.GetRBin(Tup.R);
 
 		FillBinMGen(EffLikMCD ->beforeR, Kbin);
 		FillBinMGen(EffDistMCD->beforeR, Kbin);
 		if(Distcut)             FillBinMGen(EffDistMCD ->afterR,  Kbin);
-		if(Dist5D<6&&Likcut)	FillBinMGen(EffLikMCD->afterR,  Kbin);
+		if(Tup.Dist5D<6&&Likcut)	FillBinMGen(EffLikMCD->afterR,  Kbin);
 
 
 		//Beta bins
@@ -66,7 +66,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 		if(Distcut)             FillBinMGen(EffDistMCD ->afterTOF , Kbin);
 		if(Distcut&&Likcut)	FillBinMGen(EffLikMCD->afterTOF , Kbin);
 
-		if(((int)Cutmask)>>11==512) {
+		if(((int)Tup.Cutmask)>>11==512) {
 			Kbin=NaFDB.GetRBin(RUsed);
 			FillBinMGen(EffLikMCD ->beforeNaF, Kbin);
 			FillBinMGen(EffDistMCD->beforeNaF, Kbin);
@@ -74,7 +74,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 			if(Distcut&&Likcut)	FillBinMGen(EffLikMCD->afterNaF , Kbin);
 		}
 
-		if(((int)Cutmask)>>11==0) {
+		if(((int)Tup.Cutmask)>>11==0) {
 			Kbin=AglDB.GetRBin(RUsed);
 			FillBinMGen(EffLikMCD ->beforeAgl, Kbin);
 			FillBinMGen(EffDistMCD->beforeAgl, Kbin);

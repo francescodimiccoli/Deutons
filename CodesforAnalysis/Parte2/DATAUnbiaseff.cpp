@@ -4,18 +4,18 @@ Efficiency * EffUnbiasDATA = new Efficiency("EffUnbiasDATA");
 
 void DATAUnbiaseff_Fill(TNtuple *ntupla, int l) {
     ntupla->GetEvent(l);
-   if(((int)Cutmask&187)!=187||R_pre<=0||Beta_pre<=0||R_pre<1.2*Rcutoff) return;
+   if(((int)Tup.Cutmask&187)!=187||Tup.R_pre<=0||Tup.Beta_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff) return;
    
-   int Kbin=RB.GetRBin(fabs(R_pre));
-   if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2) {
+   int Kbin=RB.GetRBin(fabs(Tup.R_pre));
+   if(Tup.EdepTrack<EdepTrackbeta->Eval(Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval(Tup.Beta_pre)-0.2) {
       EffUnbiasDATA->beforeR->Fill(Kbin);
-      if(Unbias==1) EffUnbiasDATA->afterR->Fill(Kbin);
+      if(Tup.Unbias==1) EffUnbiasDATA->afterR->Fill(Kbin);
    }
 
-   if(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2) {
+   if(Tup.EdepTrack<EdepTrackbeta->Eval(Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval(Tup.Beta_pre)-0.2) {
       Kbin=ToFPB.GetRBin(RUsed);
       EffUnbiasDATA->beforeTOF->Fill(Kbin);
-      if(Unbias==1) EffUnbiasDATA->afterTOF->Fill(Kbin);
+      if(Tup.Unbias==1) EffUnbiasDATA->afterTOF->Fill(Kbin);
    }
    
    return;
@@ -31,7 +31,7 @@ void DATAUnbiaseff_Write() {
 void DATAUnbiaseff(TFile * file1) {
    Efficiency * EffUnbiasDATA = new Efficiency(file1,"EffUnbiasDATA");
 
-   cout<<"********** DATA Unbias TRIGG. EFFICIENCY ******************************"<<endl;
+   cout<<"********** DATA Tup.Unbias TRIGG. EFFICIENCY ******************************"<<endl;
 
    EffUnbiasDATA -> Eval_Efficiency();
 

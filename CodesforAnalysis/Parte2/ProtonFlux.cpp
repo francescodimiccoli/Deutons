@@ -10,20 +10,20 @@ Flux * P_Flux_sel = new Flux("P_Flux_sel" );
 
 void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona) {
     ntupla->GetEvent(l);
-   if(Beta<=0||R<=0) return;
-   int Kbin=RB.GetRBin(R);
+   if(Tup.Beta<=0||Tup.R<=0) return;
+   int Kbin=RB.GetRBin(Tup.R);
 
-   if(Dist5D_P<6 && Likcut) {
+   if(Tup.Dist5D_P<6 && Likcut) {
       P_Flux_geo-> Counts_R -> Fill(Kbin,zona);
-      if(R>1.2*Rcutoff) {
+      if(Tup.R>1.2*Tup.Rcutoff) {
          P_Flux -> Counts_R-> Fill(Kbin);
          P_Flux_geo_prim -> Counts_R -> Fill(Kbin,zona);
       }
    }
 
-   if(Herejcut && R>1.2*Rcutoff) {
+   if(Herejcut && Tup.R>1.2*Tup.Rcutoff) {
       P_Flux_pre -> Counts_R -> Fill(Kbin);
-      if(Dist5D_P<6&&Likcut)  P_Flux_sel -> Counts_R -> Fill(Kbin);
+      if(Tup.Dist5D_P<6&&Likcut)  P_Flux_sel -> Counts_R -> Fill(Kbin);
    }
    
    return;

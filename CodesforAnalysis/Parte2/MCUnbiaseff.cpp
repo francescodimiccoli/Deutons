@@ -5,34 +5,34 @@ Efficiency * EffUnbiasMCD = new Efficiency("EffUnbiasMCD");
 
 void MCUnbiaseff_Fill(TNtuple *ntupla, int l) {
     ntupla->GetEvent(l);
-   if((Cutmask&187)!=187||Beta_pre<=0||R_pre<=0) return;
-   if(!(EdepTrack<EdepTrackbeta->Eval(Beta_pre)+0.2&&EdepTrack>EdepTrackbeta->Eval(Beta_pre)-0.2)) return;
+   if((Tup.Cutmask&187)!=187||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
+   if(!(Tup.EdepTrack<EdepTrackbeta->Eval(Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval(Tup.Beta_pre)-0.2)) return;
 
    int Kbin;
 
    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
-      Kbin=RB.GetRBin(fabs(Momento_gen));
+      Kbin=RB.GetRBin(fabs(Tup.Momento_gen));
       EffUnbiasMCP->beforeR->Fill(Kbin);
-      if(Unbias==0) EffUnbiasMCP->afterR->Fill(Kbin);
+      if(Tup.Unbias==0) EffUnbiasMCP->afterR->Fill(Kbin);
 
       //Beta bins
-      Kbin=ToFPB.GetRBin(Momento_gen);
+      Kbin=ToFPB.GetRBin(Tup.Momento_gen);
       EffUnbiasMCP->beforeTOF->Fill(Kbin);
-      if(Unbias==0) EffUnbiasMCP->afterTOF->Fill(Kbin);
+      if(Tup.Unbias==0) EffUnbiasMCP->afterTOF->Fill(Kbin);
       
    }
 
    if(Massa_gen>1&&Massa_gen<2) {
       //R bins
-      Kbin=RB.GetRBin(fabs(Momento_gen));
+      Kbin=RB.GetRBin(fabs(Tup.Momento_gen));
       FillBinMGen(EffUnbiasMCD->beforeR, Kbin);
-      if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
+      if(Tup.Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
       
       //Beta bins
-      Kbin=ToFDB.GetRBin(Momento_gen);
+      Kbin=ToFDB.GetRBin(Tup.Momento_gen);
       FillBinMGen(EffUnbiasMCD->beforeTOF, Kbin);
-      if(Unbias==0) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin);
+      if(Tup.Unbias==0) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin);
       
    }
 

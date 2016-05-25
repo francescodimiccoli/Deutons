@@ -6,13 +6,13 @@ LATcorr *LATpreSelDATA = new LATcorr("LATpreSelDATA",3);
 
 void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
 	 ntupla->GetEvent(l);
-	if(Unbias!=0||Beta_pre<=0||R_pre<=0||Beta_pre>protons->Eval(R_pre)+0.1||Beta_pre<protons->Eval(R_pre)-0.1) return;
-	if(!(EdepL1>0&&EdepL1<EdepL1beta->Eval(Beta)+0.1&&EdepL1>EdepL1beta->Eval(Beta)-0.1)) return;
-	if(R_pre <= Rcut[zona]) return;
+	if(Tup.Unbias!=0||Tup.Beta_pre<=0||Tup.R_pre<=0||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
+	if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta)-0.1)) return;
+	if(Tup.R_pre <= Rcut[zona]) return;
 	for(int S=0;S<3;S++){
-		int Kbin=RB.GetRBin(fabs(R_pre));
-		if(((int)Cutmask&notpassed[S])==notpassed[S]) ((TH3 *)LATpreSelDATA->beforeR)->Fill(Kbin,zona,S);
-		if(((int)Cutmask&   passed[S])==   passed[S]) ((TH3 *)LATpreSelDATA->afterR )->Fill(Kbin,zona,S);
+		int Kbin=RB.GetRBin(fabs(Tup.R_pre));
+		if(((int)Tup.Cutmask&notpassed[S])==notpassed[S]) ((TH3 *)LATpreSelDATA->beforeR)->Fill(Kbin,zona,S);
+		if(((int)Tup.Cutmask&   passed[S])==   passed[S]) ((TH3 *)LATpreSelDATA->afterR )->Fill(Kbin,zona,S);
 	}	
 	return;
 }

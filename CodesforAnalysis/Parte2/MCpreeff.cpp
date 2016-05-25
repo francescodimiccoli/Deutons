@@ -11,40 +11,40 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
 
    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
-      EffpreselMCP->beforeR->Fill(RB.GetRBin(fabs(Momento_gen)));
-      if(Unbias==0&&((int)Cutmask&187)==187&&Beta_pre>0&&R_pre>0) EffpreselMCP->afterR->Fill(RB.GetRBin(fabs(R_pre)));
+      EffpreselMCP->beforeR->Fill(RB.GetRBin(fabs(Tup.Momento_gen)));
+      if(Tup.Unbias==0&&((int)Tup.Cutmask&187)==187&&Tup.Beta_pre>0&&Tup.R_pre>0) EffpreselMCP->afterR->Fill(RB.GetRBin(fabs(Tup.R_pre)));
          
       // Beta bins
- ToFPB.wRFill(EffpreselMCP->beforeTOF, Momento_gen);
- NaFPB.wRFill(EffpreselMCP->beforeNaF, Momento_gen);
- AglPB.wRFill(EffpreselMCP->beforeAgl, Momento_gen);
+ ToFPB.wRFill(EffpreselMCP->beforeTOF, Tup.Momento_gen);
+ NaFPB.wRFill(EffpreselMCP->beforeNaF, Tup.Momento_gen);
+ AglPB.wRFill(EffpreselMCP->beforeAgl, Tup.Momento_gen);
 
-      if(Unbias==0 && ((int)Cutmask&187)==187 && Beta_pre>0 && R_pre>0)
+      if(Tup.Unbias==0 && ((int)Tup.Cutmask&187)==187 && Tup.Beta_pre>0 && Tup.R_pre>0)
       {
                                      ToFPB.wRFill(EffpreselMCP->afterTOF, RUsed);
-         if(((int)Cutmask)>>11==512) NaFPB.wRFill(EffpreselMCP->afterNaF, RUsed);
-         if(((int)Cutmask)>>11==0  ) AglPB.wRFill(EffpreselMCP->afterAgl, RUsed);
+         if(((int)Tup.Cutmask)>>11==512) NaFPB.wRFill(EffpreselMCP->afterNaF, RUsed);
+         if(((int)Tup.Cutmask)>>11==0  ) AglPB.wRFill(EffpreselMCP->afterAgl, RUsed);
       }
 
    }
 
    if(Massa_gen>1&&Massa_gen<2) {
       // R bins      
-      FillBinMGen(EffpreselMCD->beforeR, RB.GetRBin(fabs(Momento_gen)));
-      if(((int)Cutmask&187)==187&&Beta_pre>0&&Unbias==0&&R_pre>0)
-         FillBinMGen(EffpreselMCD->afterR, RB.GetRBin(fabs(R_pre)));
+      FillBinMGen(EffpreselMCD->beforeR, RB.GetRBin(fabs(Tup.Momento_gen)));
+      if(((int)Tup.Cutmask&187)==187&&Tup.Beta_pre>0&&Tup.Unbias==0&&Tup.R_pre>0)
+         FillBinMGen(EffpreselMCD->afterR, RB.GetRBin(fabs(Tup.R_pre)));
 
       // Beta bins
 
-         FillBinMGen(EffpreselMCD->beforeTOF, ToFDB.GetRBin(Momento_gen) );
-         FillBinMGen(EffpreselMCD->beforeNaF, NaFDB.GetRBin(Momento_gen) );
-         FillBinMGen(EffpreselMCD->beforeAgl, AglDB.GetRBin(Momento_gen) );
+         FillBinMGen(EffpreselMCD->beforeTOF, ToFDB.GetRBin(Tup.Momento_gen) );
+         FillBinMGen(EffpreselMCD->beforeNaF, NaFDB.GetRBin(Tup.Momento_gen) );
+         FillBinMGen(EffpreselMCD->beforeAgl, AglDB.GetRBin(Tup.Momento_gen) );
 
-         if(((int)Cutmask&187)==187 && Beta_pre>0 && Unbias==0 && R_pre>0)
+         if(((int)Tup.Cutmask&187)==187 && Tup.Beta_pre>0 && Tup.Unbias==0 && Tup.R_pre>0)
          {
                                            FillBinMGen(EffpreselMCD->afterTOF, ToFDB.GetRBin(RUsed));
-            if(((int)Cutmask)>>11 == 512 ) FillBinMGen(EffpreselMCD->afterNaF, NaFDB.GetRBin(RUsed));
-            if(((int)Cutmask)>>11 == 0   ) FillBinMGen(EffpreselMCD->afterAgl, AglDB.GetRBin(RUsed));
+            if(((int)Tup.Cutmask)>>11 == 512 ) FillBinMGen(EffpreselMCD->afterNaF, NaFDB.GetRBin(RUsed));
+            if(((int)Tup.Cutmask)>>11 == 0   ) FillBinMGen(EffpreselMCD->afterAgl, AglDB.GetRBin(RUsed));
          }
       
    }

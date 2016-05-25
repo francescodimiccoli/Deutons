@@ -5,10 +5,10 @@ TH2F * ECALvsR_MC=new TH2F("ECALvsR_MC","ECALvsR_MC",1000,0,100,1000,0,100);
 
 void DVSMCTrackeff_D_Fill(TNtuple *ntupla, int l){
          ntupla->GetEvent(l);
-        if(Unbias!=0||Beta_pre<=0) return;
-		if(R_pre>1.2*Rcutoff){
-			if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&187)==187&&EdepECAL>1)
-			ECALvsR_D->Fill(R_pre,EdepECAL);
+        if(Tup.Unbias!=0||Tup.Beta_pre<=0) return;
+		if(Tup.R_pre>1.2*Tup.Rcutoff){
+			if(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1&&((int)Tup.Cutmask&187)==187&&Tup.EdepECAL>1)
+			ECALvsR_D->Fill(Tup.R_pre,Tup.EdepECAL);
 		}
         return;
 }
@@ -16,10 +16,10 @@ void DVSMCTrackeff_D_Fill(TNtuple *ntupla, int l){
 
 void DVSMCTrackeff_Fill(TNtuple *ntupla, int l){
 	 ntupla->GetEvent(l);
-        if(Unbias!=0||Beta_pre<=0) return;
+        if(Tup.Unbias!=0||Tup.Beta_pre<=0) return;
                 if(Massa_gen<1&&Massa_gen>0.5){
-                        if(EdepTOFU<EdepTOFbeta->Eval(Beta_pre)+1&&EdepTOFU>EdepTOFbeta->Eval(Beta_pre)-1&&((int)Cutmask&187)==187&&EdepECAL>1)
-                        ECALvsR_MC->Fill(R_pre,EdepECAL);
+                        if(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1&&((int)Tup.Cutmask&187)==187&&Tup.EdepECAL>1)
+                        ECALvsR_MC->Fill(Tup.R_pre,Tup.EdepECAL);
                 }
         return;
 

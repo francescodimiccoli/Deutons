@@ -3,20 +3,20 @@ TH2F * CorrelazionePreselezioni = new TH2F("CorrelazionePreselezioni","Correlazi
 void Correlazione_Preselezioni(TNtuple *ntupla, int l){
 	 ntupla->GetEvent(l);
 	for(int S=0;S<10;S++){
-		if((((int)Cutmask>>S)&1)==1){
+		if((((int)Tup.Cutmask>>S)&1)==1){
 			for(int F=0;F<10;F++) 
-				if((((int)Cutmask>>F)&1)==1) 
+				if((((int)Tup.Cutmask>>F)&1)==1) 
 					CorrelazionePreselezioni->Fill(S,F);
-			if(Unbias==0)  
+			if(Tup.Unbias==0)  
 				CorrelazionePreselezioni->Fill(S,10);
 		}		
-		if((((int)Cutmask>>S)&1)==1) Norm[S]++;
+		if((((int)Tup.Cutmask>>S)&1)==1) Norm[S]++;
 	}
-	if(Unbias==0){
+	if(Tup.Unbias==0){
 		for(int F=0;F<10;F++) 
-			if((((int)Cutmask>>F)&1)==1) 
+			if((((int)Tup.Cutmask>>F)&1)==1) 
 				CorrelazionePreselezioni->Fill(10,F);
-		if(Unbias==0) {
+		if(Tup.Unbias==0) {
 			CorrelazionePreselezioni->Fill(10,10);
 			Norm[10]++;
 		}

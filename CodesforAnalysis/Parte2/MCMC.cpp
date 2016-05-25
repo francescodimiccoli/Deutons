@@ -47,22 +47,22 @@ MCMCEntry * MCMC_Agl = new MCMCEntry("Agl", 50, 0.95, 1.1, 200, 0.0, 100.0, 300,
 void MCMC_Fill(TNtuple *ntupla, int l)
 {
      ntupla->GetEvent(l);
-	if(Beta<=0||R<=0) return;
+	if(Tup.Beta<=0||Tup.R<=0) return;
 	if(Likcut&&Distcut){
-		MCMC_TOF->FillMC( Beta, R, Momento_gen);
-        if((((int)Cutmask)>>11)==512) MCMC_NaF->FillMC( BetaRICH, R, Momento_gen);
-        if((((int)Cutmask)>>11)==0  ) MCMC_Agl->FillMC( BetaRICH, R, Momento_gen);
+		MCMC_TOF->FillMC( Tup.Beta, Tup.R, Tup.Momento_gen);
+        if((((int)Tup.Cutmask)>>11)==512) MCMC_NaF->FillMC( Tup.BetaRICH, Tup.R, Tup.Momento_gen);
+        if((((int)Tup.Cutmask)>>11)==0  ) MCMC_Agl->FillMC( Tup.BetaRICH, Tup.R, Tup.Momento_gen);
 	}
 }
 
 void MCMCDATA_Fill(TNtuple *ntupla, int l){
      ntupla->GetEvent(l);
-	if(Beta<=0||R<=0) return;
-	if( Likcut && Distcut && R>1.2*Rcutoff)
+	if(Tup.Beta<=0||Tup.R<=0) return;
+	if( Likcut && Distcut && Tup.R>1.2*Tup.Rcutoff)
     {
-		MCMC_TOF->FillData( Beta, R );
-        if((((int)Cutmask)>>11)==512) MCMC_NaF->FillData( BetaRICH, R );
-        if((((int)Cutmask)>>11)==0  ) MCMC_Agl->FillData( BetaRICH, R );
+		MCMC_TOF->FillData( Tup.Beta, Tup.R );
+        if((((int)Tup.Cutmask)>>11)==512) MCMC_NaF->FillData( Tup.BetaRICH, Tup.R );
+        if((((int)Tup.Cutmask)>>11)==0  ) MCMC_Agl->FillData( Tup.BetaRICH, Tup.R );
     }
 }
 
