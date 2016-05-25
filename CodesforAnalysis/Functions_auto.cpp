@@ -11,30 +11,10 @@
 #include <string>
 #include <array>
 
-#include "TFile.h"
-#include "TTree.h"
-#include "TH1.h"
-#include "TH2.h"
-#include "TH3.h"
-#include "TF2.h"
-#include "TVector3.h"
-#include "TMath.h"
-#include "TCanvas.h"
-#include "TLegend.h"
-#include "TSpline.h"
-#include "TFractionFitter.h"
-#include "THStack.h"
-#include "TNtuple.h"
-#include "TObject.h"
-#include "TGraphAsymmErrors.h"
-#include "TGraphErrors.h"
 
 
-extern const int nbinsr=43;
-extern const int nbinsbeta=18;
-extern const int nbinsToF=18;
-extern const int nbinsNaF=18;
-extern const int nbinsAgl=18;
+
+
 
 ////////////// VALORI CENTRALI BINS //////////////////
 double Beta_cent[30]={0.41,0.43,0.45,0.47,0.49,0.51,0.53,0.55,0.57,0.59,0.61,0.63,0.65,0.67,0.69,0.71,0.73,0.75,0.77,0.79,0.81,0.83,0.85,0.87,0.89,0.91,0.93,0.95,0.97,0.99,};
@@ -76,6 +56,7 @@ double CorrTrack[30]={1.24315,1.20935,1.1797,1.15242,1.12857,1.11066,1.09591,1.0
 double CorrTOFD[30]={0.999484,1.04346,0.908516,0.913861,0.924209,0.926476,0.930559,0.938475,0.942968,0.951335,0.962027,0.967232,0.972022,0.976821,0.981199,0.984842,0.987938,0.992611,0.995943,0.999435,1.00331,1.00616,1.00969,1.01104,1.0145,1.02572,1.03999,1.03676,1.02362,1.00867,};
 ///////////////////////////////////////////////////////
 
+
 ////////////// DEFINIZIONE SPLINES //////////////////
 TSpline3 *Rig;
 TSpline3 *beta;
@@ -93,7 +74,3 @@ TSpline3 *Corr_L1;
 TSpline3 *Corr_TOFU ;
 TSpline3 *Corr_Track;
 TSpline3 *Corr_TOFD;
-
-///////////////////////////////////////////////////////
-
-void Functions_auto(){}

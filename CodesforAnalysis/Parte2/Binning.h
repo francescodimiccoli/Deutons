@@ -125,6 +125,9 @@ class Binning {
 
       void Print(); ///< Print the content of the bins
 
+      void  RFill(TH1* h, float Var); ///< Fill the histogram with var indicating the rigidity bin
+      void wRFill(TH1* h, float Var); ///< Fill the histogram with var weighted with the default MC values
+
 
 
    protected:
@@ -144,12 +147,23 @@ class Binning {
       std::vector<float> betabincent ;
 
       vector< vector<float> > matrix; ///< Transition matrix for fluxes recorded and our binning.
+      std::vector<float> mcweight;  ///< MC weights in our binning
 
 
 
 };
 
+void Binning::wRFill(TH1* h, float var) {
+   if (mcweight.size()==0)
+      mcweight=Rebin(LoadData("MCweight.data"));
+   int bin=GetRBin(var);
+   h->Fill(bin, mcweight[bin]);
+}
 
+
+void Binning::RFill(TH1* h, float var) {
+   h->Fill(GetRBin(var));
+}
 
 
 

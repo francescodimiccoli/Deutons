@@ -9,7 +9,7 @@ int main(int argc, char **argv)
    // General creation and info dumping
    DBinning mrbin;
    mrbin.Setbins(10, 0.2, 11, 2);
-   mrbin.Print();
+   //mrbin.Print();
    cout << endl;
 
    // Checking taht the inverse of the sum of bins is around 50
@@ -36,8 +36,11 @@ int main(int argc, char **argv)
    c1.Clear();
    c1.SetLogx();
    PBinning pb;
-   pb.Setbins(100, 0.5, 100);
+   pb.Setbins(100, 0.5, 20);
+   pb.Print();
+   cout << endl;
    std::vector<float> protflux=pb.Rebin(pb.LoadCRDB("AMSProtons.dat"));
+
 
 
    TGraph g[4];
@@ -57,7 +60,23 @@ int main(int argc, char **argv)
    g[3].Draw("pl");
 
    c1.SaveAs("TestCanvas.png");
-   
+
+
+   c1.Clear();
+   std::vector<float> weights =pb.Rebin(pb.LoadData("MCweight.data"));
+   for (int i=0; i<weights.size(); i++)
+      cout << weights[i]	<< " ";
+   std::vector<float> ratio;
+   std::vector<float> abs;
+   for (int i=0; i<weights.size(); i++) {
+		if (weights[i]*protflux[i]>0)    ratio.push_back(weights[i]*protflux[i]);
+		abs.push_back(pb.MomBin(i));
+      //cout << i << " " << weights[i]*protflux[i] << " " << weights[i] << " " << protflux[i] << endl;
+   }
+
+   TGraph gfolded=TGraph(ratio.size(), abs.data(), ratio.data());
+   gfolded.Draw("apl");
+   c1.SaveAs("GFolded.png");
 
    return 0;
 }
