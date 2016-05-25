@@ -146,7 +146,7 @@ class Binning {
       std::vector<float>  rigbincent ;
       std::vector<float> betabincent ;
 
-      vector< vector<float> > matrix; ///< Transition matrix for fluxes recorded and our binning.
+      vector< vector<float> > matrix; ///< Migration matrix for fluxes recorded and our binning.
       std::vector<float> mcweight;  ///< MC weights in our binning
 
 
@@ -177,7 +177,7 @@ void Binning::Print()
    cout << right << setw(11) << setfill(' ') << "Beta";
    cout << endl;
 
-   for (int i=0; i<ekbin.size(); i++) {
+   for (uint i=0; i<ekbin.size(); i++) {
       cout << right << setw(3) << setfill(' ')  << i;
       cout << right << setw(11) << setfill(' ') << setprecision(4) <<   ekbin[i] ;
       cout << right << setw(11) << setfill(' ') << setprecision(4) <<  mombin[i] ;
@@ -259,8 +259,8 @@ std::vector<float> Binning::Rebin(histo htorebin)
    SetMatrix(htorebin.edges);
 
    // What we really do is multiply a matrix by a vector
-   for (int ibin=0; ibin<htorebin.content.size(); ibin++)
-      for (int obin=0; obin<rigbin.size()-1; obin++)
+   for (uint ibin=0; ibin<htorebin.content.size(); ibin++)
+      for (uint obin=0; obin<rigbin.size()-1; obin++)
          rebinned[obin] += matrix[ibin][obin] * htorebin.content[ibin];
 
    return rebinned;
@@ -276,12 +276,12 @@ void Binning::SetMatrix(std::vector<float> vinput)
 
    //if (matrix.size()!=0) return;     // Already done
 
-   for (int ib=0; ib<vinput.size()-1; ib++) { // prefix / suffix b for incoming binning
+   for (uint ib=0; ib<vinput.size()-1; ib++) { // prefix / suffix b for incoming binning
       float bmin=vinput[ib], bmax=vinput[ib+1];
       float bwidth=bmax-bmin;
       vector<float> column;
 
-      for (int it=0; it<rigbin.size()-1; it++) { // prefix / suffix b for This binning
+      for (uint it=0; it<rigbin.size()-1; it++) { // prefix / suffix b for This binning
          float tmin=rigbin[it], tmax=rigbin[it+1];
          float weight=0;
          // Which fraction of the bbin is in tbin? 4 possibilities:

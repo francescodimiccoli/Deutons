@@ -11,7 +11,7 @@ void FillIstogram(int INDX,string frac,string mese)
 
    float fraz=1;
    float Zona=0;
-   double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
+
    int progress=0;
 
    cout<<"*********************** CALIB. READING *********************"<<endl;
@@ -20,23 +20,23 @@ void FillIstogram(int INDX,string frac,string mese)
    TFile *calib = TFile::Open(nomecal.c_str());
    if(calib) cout<<"MC calibration for month "<<mese<<" ... ok"<<endl;
    else cout<<"ERROR: MC calibration not found"<<endl;
-   TSpline3* Rig           = (TSpline3 *) calib->Get("Fit Results/Splines/Rig");
-   TSpline3* beta          = (TSpline3 *) calib->Get("Fit Results/Splines/beta");
-   TSpline3* eL1           = (TSpline3 *) calib->Get("Fit Results/Splines/eL1");
-   TSpline3* etofu         = (TSpline3 *) calib->Get("Fit Results/Splines/etofu");
-   TSpline3* etrack        = (TSpline3 *) calib->Get("Fit Results/Splines/etrack");
-   TSpline3* etofd         = (TSpline3 *) calib->Get("Fit Results/Splines/etofd");
-   TSpline3* EdepL1beta    = (TSpline3 *) calib->Get("Fit Results/Splines/EdepL1beta");
-   TSpline3* EdepTOFbeta   = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFbeta");
-   TSpline3* EdepTrackbeta = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTrackbeta");
-   TSpline3* EdepTOFDbeta  = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFDbeta");
-   TSpline3* Corr_L1       = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_L1");
-   TSpline3* Corr_TOFU     = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFU");
-   TSpline3* Corr_Track    = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_Track");
-   TSpline3* Corr_TOFD     = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFD");
+   Rig           = (TSpline3 *) calib->Get("Fit Results/Splines/Rig");
+   beta          = (TSpline3 *) calib->Get("Fit Results/Splines/beta");
+   eL1           = (TSpline3 *) calib->Get("Fit Results/Splines/eL1");
+   etofu         = (TSpline3 *) calib->Get("Fit Results/Splines/etofu");
+   etrack        = (TSpline3 *) calib->Get("Fit Results/Splines/etrack");
+   etofd         = (TSpline3 *) calib->Get("Fit Results/Splines/etofd");
+   EdepL1beta    = (TSpline3 *) calib->Get("Fit Results/Splines/EdepL1beta");
+   EdepTOFbeta   = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFbeta");
+   EdepTrackbeta = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTrackbeta");
+   EdepTOFDbeta  = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFDbeta");
+   Corr_L1       = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_L1");
+   Corr_TOFU     = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFU");
+   Corr_Track    = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_Track");
+   Corr_TOFD     = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFD");
 
-   TF1* betaNaF = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaNaF_spl");
-   TF1* betaAgl = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaAgl_spl");
+   betaNaF = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaNaF_spl");
+   betaAgl = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaAgl_spl");
    cout<<"******************************"<<endl;
 
    string nomefile=outputpath + "/Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
@@ -200,6 +200,7 @@ void FillIstogram(int INDX,string frac,string mese)
       esposizionedgeoAgl = (TH2F*)file->Get("esposizionedgeoAgl");
    }
    progress=0;
+   double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
    if(INDX==0)
       for(int i=0; i<ntupDataTrig->GetEntries()/fraz; i++) {
          ntupDataTrig->GetEvent(i);
