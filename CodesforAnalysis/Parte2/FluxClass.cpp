@@ -180,7 +180,7 @@ void Flux::Set_DeltaE(int n,bool deutons) {
 	 DeltaE_Agl ->Sumw2();
 
       if(deutons) {
-         for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)  DeltaE_R->SetBinContent(R+1,deltaencindeut[iR]);
+         for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)  DeltaE_R->SetBinContent(iR+1,deltaencindeut[iR]);
       }
       else { //only in R bins p/d have different DeltaE
          for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)  DeltaE_R->SetBinContent(iR+1,deltaencinprot[iR]);
