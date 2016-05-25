@@ -61,12 +61,14 @@ void FillIstogram(int INDX,string frac,string mese)
       ntupDataSepD=(TNtuple*)fileData->Get("grandezzesepd");
       ntupDataTrig=(TNtuple*)fileData->Get("trig");
 
+      float fCutmask=0;
+
       ntupMCTrig->SetBranchAddress("Momento_gen",&Momento_gen);
       ntupMCTrig->SetBranchAddress("Ev_Num",&Ev_Num);
       ntupMCTrig->SetBranchAddress("Trig_Num",&Trig_Num);
       ntupMCTrig->SetBranchAddress("R_pre",&R_pre);
       ntupMCTrig->SetBranchAddress("Beta_pre",&Beta_pre);
-      ntupMCTrig->SetBranchAddress("Cutmask",&CUTMASK);
+      ntupMCTrig->SetBranchAddress("Cutmask",&iCutmask);
       ntupMCTrig->SetBranchAddress("MC_type",&MC_type);
       ntupMCTrig->SetBranchAddress("EdepL1",&EdepL1);
       ntupMCTrig->SetBranchAddress("EdepTOFU",&EdepTOFU);
@@ -88,14 +90,14 @@ void FillIstogram(int INDX,string frac,string mese)
       ntupMCSepD->SetBranchAddress("MC_type",&MC_type);
       ntupMCSepD->SetBranchAddress("LDiscriminant",&LDiscriminant);
       ntupMCSepD->SetBranchAddress("BDT_response",&BDT_response);
-      ntupMCSepD->SetBranchAddress("Cutmask",&CUTMASK);
+      ntupMCSepD->SetBranchAddress("Cutmask",&iCutmask);
       ntupMCSepD->SetBranchAddress("Dist5D",&Dist5D);
       ntupMCSepD->SetBranchAddress("Dist5D_P",&Dist5D_P);
 
       ntupDataTrig->SetBranchAddress("Rcutoff",&Rcutoff);
       ntupDataTrig->SetBranchAddress("R_pre",&R_pre);
       ntupDataTrig->SetBranchAddress("Beta_pre",&Beta_pre);
-      ntupDataTrig->SetBranchAddress("Cutmask",&CUTMASK);
+      ntupDataTrig->SetBranchAddress("Cutmask",&iCutmask);
       ntupDataTrig->SetBranchAddress("Latitude",&Latitude);
       ntupDataTrig->SetBranchAddress("EdepECAL",&EdepECAL);
       ntupDataTrig->SetBranchAddress("EdepL1",&EdepL1);
@@ -118,16 +120,17 @@ void FillIstogram(int INDX,string frac,string mese)
       ntupDataSepD->SetBranchAddress("Latitude",&Latitude);
       ntupDataSepD->SetBranchAddress("LDiscriminant",&LDiscriminant);
       ntupDataSepD->SetBranchAddress("BDT_response",&BDT_response);
-      ntupDataSepD->SetBranchAddress("Cutmask",&CUTMASK);
+      ntupDataSepD->SetBranchAddress("Cutmask",&fCutmask);
       ntupDataSepD->SetBranchAddress("Dist5D",&Dist5D);
       ntupDataSepD->SetBranchAddress("Dist5D_P",&Dist5D_P);
+
+      Cutmask=int(fCutmask);
    }
    cout<<"*********************** MC READING *********************"<<endl;
    if(INDX==0)
       int progress=0;
       for(int i=0; i<ntupMCTrig->GetEntries()/fraz; i++) {
          ntupMCTrig->GetEvent(i);
-         Cutmask=CUTMASK;
          Cuts_Pre();
          Massa_gen = ReturnMass_Gen();
          RUsed=R_pre;
@@ -152,7 +155,6 @@ void FillIstogram(int INDX,string frac,string mese)
       int progress=0;
       for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
          ntupMCSepD->GetEvent(i);
-         Cutmask=CUTMASK;
          Massa_gen = ReturnMass_Gen();
          
          if(100*(i/(float)(ntupMCSepD->GetEntries()))>progress) {
@@ -192,7 +194,7 @@ void FillIstogram(int INDX,string frac,string mese)
       int progress=0;
       for(int i=0; i<ntupDataTrig->GetEntries()/fraz; i++) {
          ntupDataTrig->GetEvent(i);
-         Cutmask=CUTMASK;
+         Cutmask=iCutmask;
          Cuts_Pre();
          Massa=pow(fabs(pow(fabs(R_pre)*pow((1-pow(Beta_pre,2)),0.5)/Beta_pre,2)),0.5);
          for(int z=0; z<12; z++) {
@@ -220,7 +222,6 @@ void FillIstogram(int INDX,string frac,string mese)
       int progress=0;
       for(int i=0; i<ntupDataSepD->GetEntries(); i++) {
          ntupDataSepD->GetEvent(i);
-         Cutmask=CUTMASK;
          for(int z=0; z<12; z++) {
             double geo= geomag[z]  ;
             double geo2=geomag[z+1];

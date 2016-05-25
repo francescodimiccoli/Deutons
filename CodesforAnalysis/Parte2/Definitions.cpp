@@ -65,7 +65,7 @@ float Massa=0;
 float BDT_response=0;
 float D_TOF,D_Track,D_TRD,Discr=0;
 float Zona=0;
-float CUTMASK=0;
+
 float IsPrescaled=0;
 float Latitude=0;
 float EdepL1=0;
