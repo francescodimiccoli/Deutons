@@ -58,7 +58,7 @@ void DATAUnbiaseff(TFile * file1) {
    string MCLegend[2]= {"protons","deutons"};
    TGraph * EffUnbDATA_R = new TGraph();
    EffUnbDATA_R->SetTitle(MCLegend[0].c_str());
-   for(int i=0; i<nbinsr; i++) EffUnbDATA_R->SetPoint(i,R_cent[i],EffUnbDATA_R_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsr; i++) EffUnbDATA_R->SetPoint(i,RB.RigBinCent(i),EffUnbDATA_R_TH1F->GetBinContent(i+1));
    EffUnbDATA_R->SetMarkerColor(2);
    EffUnbDATA_R->SetMarkerStyle(8);
    EffUnbDATA_R->SetLineColor(2);

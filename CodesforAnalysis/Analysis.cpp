@@ -124,7 +124,7 @@ int main(int argc, char * argv[])
       if (i>0) deltaencinprot[i]=encinprot[i]-encinprot[i-1];
       encindeut[i]=pow(1+pow( RB.RigBins()[i]/1.875, 2) ,0.5)-1;
       if (i>0) deltaencindeut[i]=encindeut[i]-encindeut[i-1];
-      cout<<R_cent[i]<<endl;
+      cout<<RB.RigBinCent(i)<<endl;
    }
 
    cout<<"**************************** BETA BINS TOF***********************************"<<endl;

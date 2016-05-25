@@ -77,7 +77,7 @@ void MCFullseteff(TFile * file1){
 	string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
 	TGraph * EffFullsetMCP_R = new TGraph();
 	EffFullsetMCP_R->SetTitle(MCLegend[0].c_str());
-	for(int i=0;i<nbinsr;i++) EffFullsetMCP_R->SetPoint(i,R_cent[i],EffFullsetMCP_R_TH1F->GetBinContent(i+1));
+	for(int i=0;i<nbinsr;i++) EffFullsetMCP_R->SetPoint(i,RB.RigBinCent(i),EffFullsetMCP_R_TH1F->GetBinContent(i+1));
 	TGraph * EffFullsetMCD_R[6];
 	EffFullsetMCP_R->SetMarkerColor(2);
 	EffFullsetMCP_R->SetMarkerStyle(8);
@@ -96,7 +96,7 @@ void MCFullseteff(TFile * file1){
 		for(int h=0;h<6;h++){
 			EffFullsetMCD_R[h]= new TGraph();
 			EffFullsetMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-			for(int i=1;i<nbinsr;i++) EffFullsetMCD_R[h]->SetPoint(i,R_cent[i],EffFullsetMCD_R_TH2F->GetBinContent(i+1,h+1));
+			for(int i=1;i<nbinsr;i++) EffFullsetMCD_R[h]->SetPoint(i,RB.RigBinCent(i),EffFullsetMCD_R_TH2F->GetBinContent(i+1,h+1));
 			leg->AddEntry(EffFullsetMCD_R[h],MCLegend[h+1].c_str(), "ep");
 			EffFullsetMCD_R[h]->SetMarkerColor(4);
 			EffFullsetMCD_R[h]->SetMarkerStyle(h+3);

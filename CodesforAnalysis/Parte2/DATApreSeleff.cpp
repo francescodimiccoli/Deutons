@@ -71,7 +71,7 @@ void DATApreSeleff(TFile * file1){
 			int point=0;
 			for(int i=1;i<nbinsr;i++){
 				if(LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1)>0){
-					Eff_preSelLAT[S][l]->SetPoint(point,R_cent[i],LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1));
+					Eff_preSelLAT[S][l]->SetPoint(point,RB.RigBinCent(i),LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1));
 					Eff_preSelLAT[S][l]->SetPointError(point,0,LATpreSelDATA_R->GetBinError(i+1,l+1,S+1));
 					point++;
 				}

@@ -97,7 +97,7 @@ int passed[3]= {187,155,139};
 TH1F* Tempi;
 
 
-double R_cent[nbinsr];
+
 float encinprot     [nbinsr];
 float encindeut     [nbinsr];
 float deltaencinprot[nbinsr];

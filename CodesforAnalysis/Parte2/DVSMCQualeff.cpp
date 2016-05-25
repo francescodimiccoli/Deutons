@@ -224,7 +224,7 @@ void DVSMCQualeff2(){
 	int j=0;
 	for(int i=1;i<nbinsr;i++) {
 		if(LikP_Correction_R -> GetBinContent(i+1)>0){
-			LikDVSMC_P_Graph->SetPoint(j,R_cent[i],LikP_Correction_R -> GetBinContent(i+1));
+			LikDVSMC_P_Graph->SetPoint(j,RB.RigBinCent(i),LikP_Correction_R -> GetBinContent(i+1));
 			LikDVSMC_P_Graph->SetPointError(j,0,LikP_Correction_R -> GetBinError(i+1));
 			j++;
 		}
@@ -244,7 +244,7 @@ void DVSMCQualeff2(){
 	j=0;
 	for(int i=1;i<nbinsr;i++) {
 		if(DistP_Correction_R -> GetBinContent(i+1)>0){
-			DistDVSMC_P_Graph->SetPoint(j,R_cent[i],DistP_Correction_R -> GetBinContent(i+1));
+			DistDVSMC_P_Graph->SetPoint(j,RB.RigBinCent(i),DistP_Correction_R -> GetBinContent(i+1));
 			DistDVSMC_P_Graph->SetPointError(j,0,DistP_Correction_R -> GetBinError(i+1));
 			j++;
 		}

@@ -150,8 +150,8 @@ void FluxFactorizationtest(TFile * file1){
 	TGraphErrors * FactorizedEfficiency = new TGraphErrors();
 
 	for(int i=0; i<Eff_FullSETMCP_R_TH1F->GetNbinsX();i++) {
-			FullsetEfficiency    ->SetPoint(i,R_cent[i],Eff_FullSETMCP_R_TH1F->GetBinContent(i+1));
-			FactorizedEfficiency ->SetPoint(i,R_cent[i],FactorizedEffMCP_R->GetBinContent(i+1));		
+			FullsetEfficiency    ->SetPoint(i,RB.RigBinCent(i),Eff_FullSETMCP_R_TH1F->GetBinContent(i+1));
+			FactorizedEfficiency ->SetPoint(i,RB.RigBinCent(i),FactorizedEffMCP_R->GetBinContent(i+1));		
 	}
 
 	FullsetEfficiency->SetMarkerColor(2);
@@ -198,7 +198,7 @@ void FluxFactorizationtest(TFile * file1){
 		gPad->SetGridy();
 		TGraph * Eff_do_preSelMCP_R = new TGraph();
 		Eff_do_preSelMCP_R->SetTitle(MCLegend[0].c_str());
-		for(int i=0;i<nbinsr;i++) Eff_do_preSelMCP_R->SetPoint(i,R_cent[i],Eff_do_preSelMCP_R_TH2F->GetBinContent(i+1,S+1));
+		for(int i=0;i<nbinsr;i++) Eff_do_preSelMCP_R->SetPoint(i,RB.RigBinCent(i),Eff_do_preSelMCP_R_TH2F->GetBinContent(i+1,S+1));
 		TGraph * Eff_do_preSelMCD_R[6][3];
 		Eff_do_preSelMCP_R->SetMarkerColor(2);
 		Eff_do_preSelMCP_R->SetMarkerStyle(8);
@@ -218,7 +218,7 @@ void FluxFactorizationtest(TFile * file1){
 			for(int h=0;h<6;h++){
 				Eff_do_preSelMCD_R[h][S]= new TGraph();
 				Eff_do_preSelMCD_R[h][S]->SetTitle(MCLegend[h+1].c_str());
-				for(int i=1;i<nbinsr;i++) Eff_do_preSelMCD_R[h][S]->SetPoint(i,R_cent[i],Eff_do_preSelMCD_R_TH3F->GetBinContent(i+1,h+1,S+1));
+				for(int i=1;i<nbinsr;i++) Eff_do_preSelMCD_R[h][S]->SetPoint(i,RB.RigBinCent(i),Eff_do_preSelMCD_R_TH3F->GetBinContent(i+1,h+1,S+1));
 				leg->AddEntry(Eff_do_preSelMCD_R[h][S],MCLegend[h+1].c_str(), "ep");
 				Eff_do_preSelMCD_R[h][S]->SetMarkerColor(4);
 				Eff_do_preSelMCD_R[h][S]->SetMarkerStyle(h+3);

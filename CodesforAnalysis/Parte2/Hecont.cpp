@@ -166,12 +166,12 @@ void Hecut(TFile * file1) {
 	gPad->SetLogx();
 	TGraphErrors *effHecut=new TGraphErrors();
 	for(int K=0; K<nbinsr; K++) {
-		effHecut->SetPoint(K,R_cent[K], HecutMCP_TH1F->GetBinContent(K+1));
+		effHecut->SetPoint(K,RB.RigBinCent(K), HecutMCP_TH1F->GetBinContent(K+1));
 		effHecut->SetPointError(K,0,    HecutMCP_TH1F->GetBinError(K+1));
 	}
 	TGraphErrors *effHecutHe=new TGraphErrors();
 	for(int K=0; K<nbinsr; K++) {
-		effHecutHe->SetPoint(K,R_cent[K], HecutMCHe_TH1F->GetBinContent(K+1));
+		effHecutHe->SetPoint(K,RB.RigBinCent(K), HecutMCHe_TH1F->GetBinContent(K+1));
 		effHecutHe->SetPointError(K,0,    HecutMCHe_TH1F->GetBinError(K+1));
 	}
 	effHecut->SetMarkerColor(2);

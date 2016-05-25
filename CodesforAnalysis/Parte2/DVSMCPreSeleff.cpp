@@ -152,7 +152,7 @@ void DVSMCPreSeleff(){
 		int j=0;
 		for(int i=1;i<nbinsr;i++) {
 			if(PreSel_Correction_R -> GetBinContent(i+1,S+1)>0){
-				PreSel_Correction_R_Graph[S]->SetPoint(j,R_cent[i],PreSel_Correction_R -> GetBinContent(i+1,S+1));
+				PreSel_Correction_R_Graph[S]->SetPoint(j,RB.RigBinCent(i),PreSel_Correction_R -> GetBinContent(i+1,S+1));
 				PreSel_Correction_R_Graph[S]->SetPointError(j,0,PreSel_Correction_R -> GetBinError(i+1,S+1));
 				j++;
 			}

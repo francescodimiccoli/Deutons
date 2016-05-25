@@ -199,14 +199,14 @@ void ProtonFlux() {
    PFlux_pre->SetName("Protons Primary Flux (only pres.)");
    int p=0;
    for(int i=1; i<nbinsr; i++) {
-      PFlux_->SetPoint(p,R_cent[i],1);
+      PFlux_->SetPoint(p,RB.RigBinCent(i),1);
       PFlux_pre->SetPoint(p,encinprot[i],1);
       PFlux_->SetPointError(p,0,(P_sel_PrimaryFlux->GetBinError(i+1,2)+P_pre_PrimaryFlux->GetBinError(i+1,2))/P_pre_PrimaryFlux->GetBinContent(i+1,1));
       p++;
    }
    p=0;
    for(int i=1; i<nbinsr; i++) {
-      PFluxpre->SetPoint(p,R_cent[i],P_sel_PrimaryFlux->GetBinContent(i+1)/P_pre_PrimaryFlux->GetBinContent(i+1,1));
+      PFluxpre->SetPoint(p,RB.RigBinCent(i),P_sel_PrimaryFlux->GetBinContent(i+1)/P_pre_PrimaryFlux->GetBinContent(i+1,1));
       p++;
    }
    PFluxpre->SetMarkerStyle(8);
