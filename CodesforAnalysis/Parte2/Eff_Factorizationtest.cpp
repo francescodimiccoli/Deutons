@@ -23,16 +23,16 @@ void FluxFactorizationtest_Pre_Fill(TNtuple *ntupla, int l){
 	}
 	
 	//Drop-one approach eff. calc.
-	for(int S=0;S<3;S++){
+	for(int iS=0;iS<3;iS++){
 		Rbin=RB.GetRBin(RUsed);
 		if(Massa_gen<1&&Massa_gen>0.5) {
-			if(((int)Tup.Cutmask&notpassed[S])==notpassed[S]) Eff_do_preSelMCP->beforeR->Fill(Rbin,S);
-			if(((int)Tup.Cutmask&   passed[S])==   passed[S]) Eff_do_preSelMCP->afterR ->Fill(Rbin,S);
+			if(((int)Tup.Cutmask&notpassed[iS])==notpassed[iS]) Eff_do_preSelMCP->beforeR->Fill(Rbin,iS);
+			if(((int)Tup.Cutmask&   passed[iS])==   passed[iS]) Eff_do_preSelMCP->afterR ->Fill(Rbin,iS);
 		}				 
 
 		if(Massa_gen>1&&Massa_gen<2) {
-			if(((int)Tup.Cutmask&notpassed[S])==notpassed[S]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeR, Rbin, S);
-			if(((int)Tup.Cutmask&passed[S])   ==passed[S]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterR,  Rbin, S);
+			if(((int)Tup.Cutmask&notpassed[iS])==notpassed[iS]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeR, Rbin, iS);
+			if(((int)Tup.Cutmask&passed[iS])   ==passed[iS]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterR,  Rbin, iS);
 
 		}
 	}
@@ -126,9 +126,9 @@ void FluxFactorizationtest(TFile * file1){
 	TH1F * FactorizedEffMCP_R = (TH1F *) Eff_do_DistMCP_R_TH1F -> Clone();
 	FactorizedEffMCP_R -> Multiply(Eff_do_LikMCP_R_TH1F);
 
-	for(int S=0;S<Eff_do_preSelMCP_R_TH2F->GetNbinsY();S++){
-		for(int R=0;R<Eff_do_preSelMCP_R_TH2F->GetNbinsX();R++)
-			FactorizedEffMCP_R -> SetBinContent(R+1,FactorizedEffMCP_R -> GetBinContent(R+1)*Eff_do_preSelMCP_R_TH2F-> GetBinContent(R+1,S+1) ); 
+	for(int iS=0;iS<Eff_do_preSelMCP_R_TH2F->GetNbinsY();iS++){
+		for(int iR=0;iR<Eff_do_preSelMCP_R_TH2F->GetNbinsX();iR++)
+			FactorizedEffMCP_R -> SetBinContent(iR+1,FactorizedEffMCP_R -> GetBinContent(iR+1)*Eff_do_preSelMCP_R_TH2F-> GetBinContent(iR+1,iS+1) ); 
 	}
 
 	cout<<"*** Updating P1 file ****"<<endl;

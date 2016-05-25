@@ -153,19 +153,19 @@ void Flux::Set_DeltaE(int n,bool deutons) {
 	DeltaE_Agl ->Sumw2();	
       
     if(deutons) {
-         for(int R=0; R<DeltaE_R->GetNbinsX(); R++)
-            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(R+1,lat+1,deltaencindeut[R]);
+         for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)
+            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(iR+1,lat+1,deltaencindeut[iR]);
       }
       else { //only in R bins p/d have different DeltaE
-         for(int R=0; R<DeltaE_R->GetNbinsX(); R++)
-            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(R+1,lat+1,deltaencinprot[R]);
+         for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)
+            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(iR+1,lat+1,deltaencinprot[iR]);
       }
-      for(int R=0; R<DeltaE_TOF->GetNbinsX(); R++)
-         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_TOF->SetBinContent(R+1,lat+1,deltaencinTOF[R]);
-      for(int R=0; R<DeltaE_NaF->GetNbinsX(); R++)
-         for(int lat =0; lat<DeltaE_NaF->GetNbinsX(); lat++) DeltaE_NaF->SetBinContent(R+1,lat+1,deltaencinNaF[R]);
-      for(int R=0; R<DeltaE_Agl->GetNbinsX(); R++)
-         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_Agl->SetBinContent(R+1,lat+1,deltaencinAgl[R]);
+      for(int iR=0; iR<DeltaE_TOF->GetNbinsX(); iR++)
+         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_TOF->SetBinContent(iR+1,lat+1,deltaencinTOF[iR]);
+      for(int iR=0; iR<DeltaE_NaF->GetNbinsX(); iR++)
+         for(int lat =0; lat<DeltaE_NaF->GetNbinsX(); lat++) DeltaE_NaF->SetBinContent(iR+1,lat+1,deltaencinNaF[iR]);
+      for(int iR=0; iR<DeltaE_Agl->GetNbinsX(); iR++)
+         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_Agl->SetBinContent(iR+1,lat+1,deltaencinAgl[iR]);
 
    }
    else {
@@ -180,22 +180,22 @@ void Flux::Set_DeltaE(int n,bool deutons) {
 	 DeltaE_Agl ->Sumw2();
 
       if(deutons) {
-         for(int R=0; R<DeltaE_R->GetNbinsX(); R++)  DeltaE_R->SetBinContent(R+1,deltaencindeut[R]);
+         for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)  DeltaE_R->SetBinContent(R+1,deltaencindeut[iR]);
       }
       else { //only in R bins p/d have different DeltaE
-         for(int R=0; R<DeltaE_R->GetNbinsX(); R++)  DeltaE_R->SetBinContent(R+1,deltaencinprot[R]);
+         for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)  DeltaE_R->SetBinContent(iR+1,deltaencinprot[iR]);
       }
-      for(int R=0; R<DeltaE_TOF->GetNbinsX(); R++) DeltaE_TOF->SetBinContent(R+1,deltaencinTOF[R]);
-      for(int R=0; R<DeltaE_NaF->GetNbinsX(); R++) DeltaE_NaF->SetBinContent(R+1,deltaencinNaF[R]);
-      for(int R=0; R<DeltaE_Agl->GetNbinsX(); R++) DeltaE_Agl->SetBinContent(R+1,deltaencinAgl[R]);
+      for(int iR=0; iR<DeltaE_TOF->GetNbinsX(); iR++) DeltaE_TOF->SetBinContent(iR+1,deltaencinTOF[iR]);
+      for(int iR=0; iR<DeltaE_NaF->GetNbinsX(); iR++) DeltaE_NaF->SetBinContent(iR+1,deltaencinNaF[iR]);
+      for(int iR=0; iR<DeltaE_Agl->GetNbinsX(); iR++) DeltaE_Agl->SetBinContent(iR+1,deltaencinAgl[iR]);
 
    }
 }
 void Flux::Add_SystFitError(int n, TH1* syst_errR,TH1* syst_errTOF,TH1* syst_errNaF,TH1* syst_errAgl){
-		if(Counts_R  ) for(int R = 0; R < Counts_R  ->GetNbinsX();R++) Counts_R  -> SetBinError(R+1,Counts_R  -> GetBinError(R+1)+fabs(syst_errR->GetBinContent(R+1)) ) ;	
-		if(Counts_TOF) for(int R = 0; R < Counts_TOF  ->GetNbinsX();R++) Counts_TOF  -> SetBinError(R+1,Counts_TOF  -> GetBinError(R+1)+fabs(syst_errTOF->GetBinContent(R+1)) ) ;		
-		if(Counts_NaF) for(int R = 0; R < Counts_NaF  ->GetNbinsX();R++) Counts_NaF  -> SetBinError(R+1,Counts_NaF  -> GetBinError(R+1)+fabs(syst_errNaF->GetBinContent(R+1)) ) ;
-		if(Counts_Agl) for(int R = 0; R < Counts_Agl  ->GetNbinsX();R++) Counts_Agl  -> SetBinError(R+1,Counts_Agl  -> GetBinError(R+1)+fabs(syst_errAgl->GetBinContent(R+1)) ) ;
+		if(Counts_R  ) for(int iR = 0; iR < Counts_R  ->GetNbinsX();iR++) Counts_R  -> SetBinError(iR+1,Counts_R  -> GetBinError(iR+1)+fabs(syst_errR->GetBinContent(iR+1)) ) ;	
+		if(Counts_TOF) for(int iR = 0; iR < Counts_TOF  ->GetNbinsX();iR++) Counts_TOF  -> SetBinError(iR+1,Counts_TOF  -> GetBinError(iR+1)+fabs(syst_errTOF->GetBinContent(iR+1)) ) ;		
+		if(Counts_NaF) for(int iR = 0; iR < Counts_NaF  ->GetNbinsX();iR++) Counts_NaF  -> SetBinError(iR+1,Counts_NaF  -> GetBinError(iR+1)+fabs(syst_errNaF->GetBinContent(iR+1)) ) ;
+		if(Counts_Agl) for(int iR = 0; iR < Counts_Agl  ->GetNbinsX();iR++) Counts_Agl  -> SetBinError(iR+1,Counts_Agl  -> GetBinError(iR+1)+fabs(syst_errAgl->GetBinContent(iR+1)) ) ;
 }
 
 

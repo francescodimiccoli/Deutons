@@ -168,12 +168,12 @@ TH1 * DivideHisto(TH1 *Histo1, TH1 *Histo2){
 	}
 	else{
 		result = (TH2F *)Histo2 -> Clone();
-		for(int S = 0; S<Histo2->GetNbinsY();S++)
-			for(int R=0;R<Histo1->GetNbinsX();R++){
-			if(Histo2->GetBinContent(R+1,S+1)>0){
-				result -> SetBinContent (R+1,S+1,Histo1->GetBinContent(R+1)/Histo2->GetBinContent(R+1,S+1));
+		for(int iS = 0; iS<Histo2->GetNbinsY();iS++)
+			for(int iR=0;iR<Histo1->GetNbinsX();iR++){
+			if(Histo2->GetBinContent(iR+1,iS+1)>0){
+				result -> SetBinContent (iR+1,iS+1,Histo1->GetBinContent(iR+1)/Histo2->GetBinContent(iR+1,iS+1));
 				}
-			else result -> SetBinContent (R+1,S+1,0);	
+			else result -> SetBinContent (iR+1,iS+1,0);	
 		}
 	}
 	return result;
@@ -189,17 +189,17 @@ TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
 	
 	if(selections == 1){
 		//Histo_corr = new TH1F("","",Histo-> GetNbinsX(),0,Histo-> GetNbinsX());
-		for(int R = 0;R < Histo ->GetNbinsX();R++) 
+		for(int iR = 0;iR < Histo ->GetNbinsX();iR++) 
 		     for(int lat =0; lat < latzones; lat++){	
-				temp -> SetBinContent(R+1,lat+1,Histo->GetBinContent(R+1,lat+1)*LATcorr->GetBinContent(lat+1));
+				temp -> SetBinContent(iR+1,lat+1,Histo->GetBinContent(iR+1,lat+1)*LATcorr->GetBinContent(lat+1));
 		}
 		Histo_corr = (TH1F*)((TH1 *)((TH2*)temp ) -> ProjectionX(histoname.c_str(),0,latzones)) -> Clone();		
 	}
 	else {
-		for(int S = 0; S < selections; S++)	
-			for(int R = 0;R < Histo ->GetNbinsX();R++) 
+		for(int iS = 0; iS < selections; iS++)	
+			for(int iR = 0;iR < Histo ->GetNbinsX();iR++) 
 				for(int lat =0; lat < latzones; lat++){	
-					temp -> SetBinContent(R+1,lat+1,S+1,Histo->GetBinContent(R+1,lat+1,S+1)*LATcorr->GetBinContent(lat+1,S+1));
+					temp -> SetBinContent(iR+1,lat+1,iS+1,Histo->GetBinContent(iR+1,lat+1,iS+1)*LATcorr->GetBinContent(lat+1,iS+1));
 				}
 		Histo_corr = (TH2F*)((TH3*)temp) -> Project3D("xz") -> Clone();	
 	}
