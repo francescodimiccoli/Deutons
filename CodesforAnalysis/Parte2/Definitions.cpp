@@ -56,7 +56,7 @@ float EdepTOFD;
 float EdepTOFU;
 float EdepTrack;
 float Ev_Num;
-int   Cutmask;
+float Cutmask;
 float Latitude;
 float LDiscriminant;
 float MC_type;

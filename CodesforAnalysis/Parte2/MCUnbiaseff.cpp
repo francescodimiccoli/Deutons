@@ -5,7 +5,7 @@ Efficiency * EffUnbiasMCD = new Efficiency("EffUnbiasMCD");
 
 void MCUnbiaseff_Fill(TNtuple *ntupla, int l) {
     ntupla->GetEvent(l);
-   if((Tup.Cutmask&187)!=187||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
+   if(((int)Tup.Cutmask&187)!=187||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
    if(!(Tup.EdepTrack<EdepTrackbeta->Eval(Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval(Tup.Beta_pre)-0.2)) return;
 
    int Kbin;
