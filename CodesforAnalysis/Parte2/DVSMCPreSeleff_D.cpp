@@ -82,12 +82,12 @@ void DVSMCPreSeleffD(){
 	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
 
-	DatavsMC * PreSel_DvsMC_D = new DatavsMC(file1,"PreSel_DvsMC_D");
+	DatavsMC * PreSel_DvsMC_D = new DatavsMC(file1,"PreSel_DvsMC_D",6);
 
 	LATcorr * LATpreSelDATA = new LATcorr(file1,"LATpreSelDATA"      ,"Results");
 
 
-	cout<<"******* Data vs MC:  PRESELECTIONS ********"<<endl;
+	cout<<"******* Data vs MC:  PRESELECTIONS (D) ********"<<endl;
 
 	PreSel_DvsMC_D -> Assign_LatCorr( LATpreSelDATA   ->  LATcorrR_fit , 
 			LATpreSelDATA   ->  LATcorrR_fit ,

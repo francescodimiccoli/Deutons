@@ -141,17 +141,17 @@ void DeutonsTemplFits_Dist(){
 
 	cout<<"******************** DEUTONS DISTANCE TEMPlATE FITS ************************"<<endl;
 
-	FitTOF_Dbins_Dist 	-> SetFitConstraints(0.5,1,0.005,0.1,0.0001,0.025); 
-	FitNaF_Dbins_Dist 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0005,0.0015);
-	FitAgl_Dbins_Dist 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0001,0.0005);
+	FitTOF_Dbins_Dist 	-> DisableFit();//SetFitConstraints(0.5,1,0.0000,0.01,0.0001,0.0025); 
+	FitNaF_Dbins_Dist 	-> DisableFit();//SetFitConstraints(0.8,1,0.0000,0.01,0.0005,0.0015);
+	FitAgl_Dbins_Dist 	-> DisableFit();//SetFitConstraints(0.8,1,0.0000,0.01,0.0001,0.0005);
                                 
 	FitTOFgeo_Dbins_Dist 	-> DisableFit();
 	FitNaFgeo_Dbins_Dist 	-> DisableFit();
 	FitAglgeo_Dbins_Dist 	-> DisableFit();
                                 
-	FitTOF_Pbins_Dist 	-> SetFitConstraints(0.5,1,0.005,0.1,0.0001,0.025); 
-	FitNaF_Pbins_Dist 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0005,0.0015);	
-	FitAgl_Pbins_Dist 	-> SetFitConstraints(0.8,1,0.0001,0.1,0.0001,0.0005);
+	FitTOF_Pbins_Dist 	-> DisableFit();// SetFitConstraints(0.5,1,0.0000,0.01,0.0001,0.0025); 
+	FitNaF_Pbins_Dist 	-> DisableFit();// SetFitConstraints(0.8,1,0.0000,0.01,0.0005,0.0015);	
+	FitAgl_Pbins_Dist 	-> DisableFit();// SetFitConstraints(0.8,1,0.0000,0.01,0.0001,0.0005);
 
 	cout<<"** TOF **"<<endl;
         FitTOF_Dbins_Dist    -> TemplateFits();

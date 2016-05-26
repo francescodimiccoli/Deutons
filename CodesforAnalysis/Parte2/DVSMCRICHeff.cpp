@@ -1,6 +1,8 @@
 using namespace std;
 
 DatavsMC * RICH_DvsMC_P = new DatavsMC("RICH_DvsMC_P",11);
+DatavsMC * RICH_DvsMC_D = new DatavsMC("RICH_DvsMC_D",11,1,6);
+
 
 void DVSMCRICHeff_D_Fill(TNtuple *ntupla, int l,int zona){
 
@@ -16,13 +18,20 @@ void DVSMCRICHeff_D_Fill(TNtuple *ntupla, int l,int zona){
 	//NaF
 	Kbin=NaFDB.GetRBin(RUsed);
 	RICH_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);	
-	if(((int)Tup.Cutmask)>>11==512) RICH_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
+	RICH_DvsMC_D -> DataEff -> beforeNaF -> Fill(Kbin,zona);
+	if(((int)Tup.Cutmask)>>11==512) {
+        RICH_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
+        RICH_DvsMC_D -> DataEff -> afterNaF -> Fill(Kbin,zona);
+    }
 	//Agl
 	Kbin=AglDB.GetRBin(RUsed);
-        RICH_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);	
-	if(((int)Tup.Cutmask)>>11==0) RICH_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona); 
+    RICH_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);	
+	RICH_DvsMC_D -> DataEff -> beforeAgl -> Fill(Kbin,zona);
+	if(((int)Tup.Cutmask)>>11==0) { 
+        RICH_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona); 
+        RICH_DvsMC_D -> DataEff -> afterAgl -> Fill(Kbin,zona); 
+    }
 	return;
-
 }
 
 void DVSMCRICHeff_Fill(TNtuple *ntupla, int l){
@@ -36,22 +45,33 @@ void DVSMCRICHeff_Fill(TNtuple *ntupla, int l){
 
 	if(Massa_gen<1) {
 		//Beta bins
-		Kbin=NaFDB.GetRBin(RUsed);
-                RICH_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin);
 		//NaF
-		if(((int)Tup.Cutmask)>>11==512) RICH_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin);
+		Kbin=NaFDB.GetRBin(RUsed);
+		RICH_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin);
+		for(int mc_type=0;mc_type<6;mc_type++) RICH_DvsMC_D -> MCEff -> beforeNaF -> Fill(Kbin,mc_type);
 
+		if(((int)Cutmask)>>11==512){
+			RICH_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin);
+			for(int mc_type=0;mc_type<6;mc_type++) RICH_DvsMC_D -> MCEff -> afterNaF -> Fill(Kbin,mc_type);
+		}
 		//Agl
-		Kbin=AglDB.GetRBin(RUsed);
-                RICH_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);	
-		if(((int)Tup.Cutmask)>>11==0) RICH_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin); 	
+    	Kbin=AglDB.GetRBin(RUsed);
+		RICH_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);
+		for(int mc_type=0;mc_type<6;mc_type++) RICH_DvsMC_D -> MCEff -> beforeAgl -> Fill(Kbin,mc_type);	
 
-	}                        
-}
+		if(((int)Cutmask)>>11==0) {
+			RICH_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin); 	
+			for(int mc_type=0;mc_type<6;mc_type++) 	RICH_DvsMC_D -> MCEff -> afterAgl -> Fill(Kbin,mc_type);
+		}
+	}
+}                        
+
 
 void DVSMCRICHeff_Write(){
 
 	RICH_DvsMC_P -> Write();
+	RICH_DvsMC_D -> Write();
+
 	return;
 }
 
@@ -62,28 +82,39 @@ void DVSMCRICHeff(){
 	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
 
 	DatavsMC * RICH_DvsMC_P = new DatavsMC(file1,"RICH_DvsMC_P");
+	DatavsMC * RICH_DvsMC_D = new DatavsMC(file1,"RICH_DvsMC_D",6);
+
 
 	LATcorr * LATrichDATA_TOF       = new LATcorr(file1,"LATrichDATA_Agl" 	 ,"Results");
 	LATcorr * LATrichDATA_NaF       = new LATcorr(file1,"LATrichDATA_NaF" 	 ,"Results");
-   	LATcorr * LATrichDATA_Agl       = new LATcorr(file1,"LATrichDATA_Agl" 	 ,"Results");	
+	LATcorr * LATrichDATA_Agl       = new LATcorr(file1,"LATrichDATA_Agl" 	 ,"Results");	
 
 
-	cout<<"******* Data vs MC: QUALITY SEL ********"<<endl;
+	cout<<"******* Data vs MC: RICH ********"<<endl;
 
 	RICH_DvsMC_P -> Assign_LatCorr( LATrichDATA_TOF   ->  LATcorrR_fit , 
-					LATrichDATA_TOF   ->  LATcorrR_fit ,
-					LATrichDATA_NaF   ->  LATcorrR_fit ,
-					LATrichDATA_Agl   ->  LATcorrR_fit );
+			LATrichDATA_TOF   ->  LATcorrR_fit ,
+			LATrichDATA_NaF   ->  LATcorrR_fit ,
+			LATrichDATA_Agl   ->  LATcorrR_fit );
 
-
+	RICH_DvsMC_D -> Assign_LatCorr( LATrichDATA_TOF   ->  LATcorrR_fit , 
+			LATrichDATA_TOF   ->  LATcorrR_fit ,
+			LATrichDATA_NaF   ->  LATcorrR_fit ,
+			LATrichDATA_Agl   ->  LATcorrR_fit );
 
 	RICH_DvsMC_P ->Eval_DandMC_Eff();  
-	
+	RICH_DvsMC_D ->Eval_DandMC_Eff();
+
 	RICH_DvsMC_P ->Eval_Corrections();
+	RICH_DvsMC_D ->Eval_Corrections();
 
 
-	TH1F* RICH_Correction_NaF =(TH1F*) RICH_DvsMC_P -> GetCorrection_NaF();
-	TH1F* RICH_Correction_Agl =(TH1F*) RICH_DvsMC_P -> GetCorrection_Agl();
+	TH1F* RICH_Correction_P_NaF =(TH1F*) RICH_DvsMC_P -> GetCorrection_NaF();
+	TH1F* RICH_Correction_P_Agl =(TH1F*) RICH_DvsMC_P -> GetCorrection_Agl();
+
+	TH2F* RICH_Correction_D_NaF =(TH2F*) RICH_DvsMC_D -> GetCorrection_NaF();
+	TH2F* RICH_Correction_D_Agl =(TH2F*) RICH_DvsMC_D -> GetCorrection_Agl();
+
 
 
 	cout<<"*** Updating P1 file ****"<<endl;
@@ -92,9 +123,11 @@ void DVSMCRICHeff(){
 
 	file1->cd("Results");
 
-	RICH_Correction_NaF  -> Write("RICH_DvsMC_P_CorrectionNaF");
-	RICH_Correction_Agl  -> Write("RICH_DvsMC_P_CorrectionAgl");
+	RICH_Correction_P_NaF  -> Write("RICH_DvsMC_P_CorrectionNaF");
+	RICH_Correction_P_Agl  -> Write("RICH_DvsMC_P_CorrectionAgl");
 
+	RICH_Correction_D_NaF  -> Write("RICH_DvsMC_D_CorrectionNaF");
+	RICH_Correction_D_Agl  -> Write("RICH_DvsMC_D_CorrectionAgl");
 
 	file1->Write();
 	file1->Close();
@@ -113,9 +146,9 @@ void DVSMCRICHeff(){
 	RICHDVSMC_P_GraphNaF->SetName("RICHDVSMC_P_GraphNaF");
 	int j=0;
 	for(int i=1;i<nbinsNaF;i++) {
-		if(RICH_Correction_NaF -> GetBinContent(i+1)>0){
-			RICHDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkBinCent(i),RICH_Correction_NaF -> GetBinContent(i+1));
-			RICHDVSMC_P_GraphNaF->SetPointError(j,0,RICH_Correction_NaF -> GetBinError(i+1));
+		if(RICH_Correction_P_NaF -> GetBinContent(i+1)>0){
+			RICHDVSMC_P_GraphNaF->SetPoint(j,EkincentNaF[i],RICH_Correction_P_NaF -> GetBinContent(i+1));
+			RICHDVSMC_P_GraphNaF->SetPointError(j,0,RICH_Correction_P_NaF -> GetBinError(i+1));
 			j++;
 		}
 	}
@@ -133,9 +166,9 @@ void DVSMCRICHeff(){
         RICHDVSMC_P_GraphAgl->SetName("RICHDVSMC_P_GraphAgl");
         j=0;
         for(int i=1;i<nbinsAgl;i++) {
-                if(RICH_Correction_Agl -> GetBinContent(i+1)>0){
-                        RICHDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkBinCent(i),RICH_Correction_Agl -> GetBinContent(i+1));
-                        RICHDVSMC_P_GraphAgl->SetPointError(j,0,RICH_Correction_Agl -> GetBinError(i+1));
+                if(RICH_Correction_P_Agl -> GetBinContent(i+1)>0){
+                        RICHDVSMC_P_GraphAgl->SetPoint(j,EkincentAgl[i],RICH_Correction_P_Agl -> GetBinContent(i+1));
+                        RICHDVSMC_P_GraphAgl->SetPointError(j,0,RICH_Correction_P_Agl -> GetBinError(i+1));
                         j++;
                 }
         }

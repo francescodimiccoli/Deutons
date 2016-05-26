@@ -98,6 +98,15 @@ public:
 	void Eval_Geomag_Acceptance(int n);
 	TH1 * Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW);
 	void Eval_Corrected_Acceptance(int n);	
+
+	void ApplyDvsMCcorrection(int n, TH1* Correction, TH1* Corrected_Acc, TH1* Geom_Acc);
+
+	void Apply_DvsMCcorrection_R  (TH1 * R_Correction  ,int n=1){ if (CorrectedAcceptance_R   )  ApplyDvsMCcorrection(n,R_Correction  , CorrectedAcceptance_R   , Geomag_Acceptance_R   ); return;}
+        void Apply_DvsMCcorrection_TOF(TH1 * TOF_Correction,int n=1){ if (CorrectedAcceptance_TOF )  ApplyDvsMCcorrection(n,TOF_Correction, CorrectedAcceptance_TOF , Geomag_Acceptance_TOF ); return;}
+        void Apply_DvsMCcorrection_NaF(TH1 * NaF_Correction,int n=1){ if (CorrectedAcceptance_NaF )  ApplyDvsMCcorrection(n,NaF_Correction, CorrectedAcceptance_NaF , Geomag_Acceptance_NaF ); return;}
+        void Apply_DvsMCcorrection_Agl(TH1 * Agl_Correction,int n=1){ if (CorrectedAcceptance_Agl )  ApplyDvsMCcorrection(n,Agl_Correction, CorrectedAcceptance_Agl , Geomag_Acceptance_Agl ); return;}
+	
+
 };
 
 void ACCEPTANCE::Set_MC_Par( float Trigrate, float rmin, float rmax){
@@ -285,5 +294,38 @@ void ACCEPTANCE::Eval_Corrected_Acceptance(int n){
 	return;
 
 }
+
+void ACCEPTANCE::ApplyDvsMCcorrection(int n, TH1* Correction, TH1* Corrected_Acc, TH1* Geom_Acc){
+        float error=0;
+
+        if(n>1){
+                for(int m=0;m<n;m++)
+                        for(int R=0;R<Geom_Acc->GetNbinsX();R++)
+                                for(int lat=1;lat<Geom_Acc->GetNbinsY();lat++){
+                                        Geom_Acc->SetBinContent(R+1,lat+1,m+1,Geom_Acc->GetBinContent(R+1,lat+1,m+1)*Correction->GetBinContent(R+1,m+1));
+                                        error=pow(Geom_Acc->GetBinContent(R+1,lat+1,m+1)*Correction->GetBinError(R+1,m+1),2);
+                                        error+=pow(Geom_Acc->GetBinError(R+1,lat+1,m+1)*Correction->GetBinContent(R+1,m+1),2);
+                                        error=pow(error,0.5);
+                                        Geom_Acc->SetBinError(R+1,lat+1,m+1,error);
+                                }
+
+
+        }
+
+        else {
+                        Corrected_Acc    -> Multiply( Correction   );
+                        for(int R=0;R<Geom_Acc->GetNbinsX();R++)
+                                for(int lat=1;lat<Geom_Acc->GetNbinsY();lat++){
+                                        Geom_Acc->SetBinContent(R+1,lat+1,Geom_Acc->GetBinContent(R+1,lat+1)*Correction->GetBinContent(R+1));
+                                        error=pow(Geom_Acc->GetBinContent(R+1,lat+1)*Correction->GetBinError(R+1),2);
+                                        error+=pow(Geom_Acc->GetBinError(R+1,lat+1)*Correction->GetBinContent(R+1),2);
+                                        error=pow(error,0.5);
+                                        Geom_Acc->SetBinError(R+1,lat+1,error);
+                                }
+
+                }
+
+}
+
 
 #endif

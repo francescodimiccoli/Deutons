@@ -129,6 +129,8 @@ int main()
 		for(int i=1;i<num_mesi;i++) {
 			Corr_L1[i]->SetLineWidth(2);    
 			Corr_L1[i]->SetLineColor(i+1);
+			Corr_L1[i]->SetMarkerColor(i+1);
+			Corr_L1[i]->SetMarkerStyle(8);
 			leg->AddEntry(Corr_L1[i],mesi[i].c_str(), "ep");
 			Corr_L1[i]->Draw("same");
 		}
@@ -150,7 +152,9 @@ int main()
                 for(int i=1;i<num_mesi;i++) {
                         Corr_TOFU[i]->SetLineWidth(2);
                         Corr_TOFU[i]->SetLineColor(i+1);
-                        leg->AddEntry(Corr_L1[i],mesi[i].c_str(), "ep");
+                        Corr_TOFU[i]->SetMarkerColor(i+1);
+                        Corr_TOFU[i]->SetMarkerStyle(8);
+			leg->AddEntry(Corr_L1[i],mesi[i].c_str(), "ep");
                         Corr_TOFU[i]->Draw("same");
                 }
                 leg->Draw("same");       
@@ -171,7 +175,9 @@ int main()
                 for(int i=1;i<num_mesi;i++) {
                         Corr_Track[i]->SetLineWidth(2);
                         Corr_Track[i]->SetLineColor(i+1);
-                        leg->AddEntry(Corr_Track[i],mesi[i].c_str(), "ep");
+                        Corr_Track[i]->SetMarkerColor(i+1);
+                        Corr_Track[i]->SetMarkerStyle(8);
+			leg->AddEntry(Corr_Track[i],mesi[i].c_str(), "ep");
                         Corr_Track[i]->Draw("same");
                 }
                 leg->Draw("same");
@@ -192,7 +198,9 @@ int main()
                 for(int i=1;i<num_mesi;i++) {
                         Corr_TOFD[i]->SetLineWidth(2);
                         Corr_TOFD[i]->SetLineColor(i+1);
-                        leg->AddEntry(Corr_TOFD[i],mesi[i].c_str(), "ep");
+                        Corr_TOFD[i]->SetMarkerColor(i+1);
+                        Corr_TOFD[i]->SetMarkerStyle(8);
+			leg->AddEntry(Corr_TOFD[i],mesi[i].c_str(), "ep");
                         Corr_TOFD[i]->Draw("Lsame");
                 }
                 leg->Draw("same");
@@ -633,7 +641,7 @@ int main()
                         D_FluxesratioTOF[i]->SetMarkerStyle(8);
 			D_FluxesratioTOF[i]->SetFillStyle(3002);
                         leg->AddEntry(D_FluxesratioTOF[i],mesi[i].c_str(), "ep");
-                        D_FluxesratioTOF[i]->Draw("PLsame");
+                        D_FluxesratioTOF[i]->Draw("Psame");
                 }
                 leg->Draw("same");
         	for(int i=0;i<num_mesi;i++) {
@@ -656,7 +664,7 @@ int main()
                         D_FluxesratioNaF[i]->SetMarkerColor(i+1);
                         D_FluxesratioNaF[i]->SetMarkerStyle(4);
                         D_FluxesratioNaF[i]->SetFillStyle(3002);
-                        D_FluxesratioNaF[i]->Draw("PLsame");
+                        D_FluxesratioNaF[i]->Draw("Psame");
                 }
 		 for(int i=0;i<num_mesi;i++) {
                 D_FluxesratioAgl[i]=new TGraphErrors();
@@ -678,7 +686,7 @@ int main()
                         D_FluxesratioAgl[i]->SetMarkerColor(i+1);
                         D_FluxesratioAgl[i]->SetMarkerStyle(3);
                         D_FluxesratioAgl[i]->SetFillStyle(3002);
-                        D_FluxesratioAgl[i]->Draw("PLsame");
+                        D_FluxesratioAgl[i]->Draw("Psame");
                 }
 
 	
@@ -688,7 +696,7 @@ int main()
 
 
 	cout<<"*************** OUTPUT **************************"<<endl;
-	nomefile="./TimeAnalysis.root";
+	nomefile="./Final_plots/TimeAnalysis.root";
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 	f_out->mkdir("Calibrations");
 	f_out->mkdir("Lat. Dependence");
