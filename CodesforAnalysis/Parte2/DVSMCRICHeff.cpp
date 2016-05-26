@@ -50,7 +50,7 @@ void DVSMCRICHeff_Fill(TNtuple *ntupla, int l){
 		RICH_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin);
 		for(int mc_type=0;mc_type<6;mc_type++) RICH_DvsMC_D -> MCEff -> beforeNaF -> Fill(Kbin,mc_type);
 
-		if(((int)Cutmask)>>11==512){
+		if(((int)Tup.Cutmask)>>11==512){
 			RICH_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin);
 			for(int mc_type=0;mc_type<6;mc_type++) RICH_DvsMC_D -> MCEff -> afterNaF -> Fill(Kbin,mc_type);
 		}
@@ -59,7 +59,7 @@ void DVSMCRICHeff_Fill(TNtuple *ntupla, int l){
 		RICH_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);
 		for(int mc_type=0;mc_type<6;mc_type++) RICH_DvsMC_D -> MCEff -> beforeAgl -> Fill(Kbin,mc_type);	
 
-		if(((int)Cutmask)>>11==0) {
+		if(((int)Tup.Cutmask)>>11==0) {
 			RICH_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin); 	
 			for(int mc_type=0;mc_type<6;mc_type++) 	RICH_DvsMC_D -> MCEff -> afterAgl -> Fill(Kbin,mc_type);
 		}
@@ -147,7 +147,7 @@ void DVSMCRICHeff(){
 	int j=0;
 	for(int i=1;i<nbinsNaF;i++) {
 		if(RICH_Correction_P_NaF -> GetBinContent(i+1)>0){
-			RICHDVSMC_P_GraphNaF->SetPoint(j,EkincentNaF[i],RICH_Correction_P_NaF -> GetBinContent(i+1));
+			RICHDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkBinCent(i),RICH_Correction_P_NaF -> GetBinContent(i+1));
 			RICHDVSMC_P_GraphNaF->SetPointError(j,0,RICH_Correction_P_NaF -> GetBinError(i+1));
 			j++;
 		}
@@ -167,7 +167,7 @@ void DVSMCRICHeff(){
         j=0;
         for(int i=1;i<nbinsAgl;i++) {
                 if(RICH_Correction_P_Agl -> GetBinContent(i+1)>0){
-                        RICHDVSMC_P_GraphAgl->SetPoint(j,EkincentAgl[i],RICH_Correction_P_Agl -> GetBinContent(i+1));
+                        RICHDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkBinCent(i),RICH_Correction_P_Agl -> GetBinContent(i+1));
                         RICHDVSMC_P_GraphAgl->SetPointError(j,0,RICH_Correction_P_Agl -> GetBinError(i+1));
                         j++;
                 }

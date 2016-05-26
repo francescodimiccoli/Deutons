@@ -168,44 +168,43 @@ void DatavsMC::Eval_Corrections(){
 
 
 void DatavsMC::DivideHisto(TH1 *Histo1, TH1 *Histo2,TH1 * Correction){
-	if(selections==1){
-		if(mc_types ==1) {
-			for(int R=0;R<Histo2->GetNbinsX();R++){ 
-				Correction -> SetBinContent (R+1,Histo1 -> GetBinContent(R+1)/(float)Histo2 -> GetBinContent(R+1));
-				Correction -> SetBinError(R+1,Histo1 -> GetBinError(R+1));
-				}
-		}
-		else{
-			for(int mc_type=0;mc_type<mc_types;mc_type++){
-				for(int R=0;R<Histo2->GetNbinsX();R++){
-				  Correction -> SetBinContent (R+1,mc_type+1,Histo1 -> GetBinContent(R+1)/(float)Histo2 -> GetBinContent(R+1,mc_type+1));
-				  Correction -> SetBinError(R+1,mc_type+1,Histo1 -> GetBinError(R+1,mc_type+1)); 
-					}
-			}
-		}
-	
-	}
-	else{
-		result = (TH2F *)Histo2 -> Clone();
-		for(int iS = 0; iS<Histo2->GetNbinsY();iS++)
-			for(int iR=0;iR<Histo1->GetNbinsX();iR++){
-			if(Histo2->GetBinContent(iR+1,iS+1)>0){
-				result -> SetBinContent (iR+1,iS+1,Histo1->GetBinContent(iR+1)/Histo2->GetBinContent(iR+1,iS+1));
-				}
-			else result -> SetBinContent (iR+1,iS+1,0);	
-		}
-		else{
-			for(int S=0;S<selections;S++)
-                        for(int mc_type=0;mc_type<mc_types;mc_type++){
-                                for(int R=0;R<Histo1->GetNbinsX();R++){
-                                 Correction -> SetBinContent (R+1,mc_type+1,S+1,Histo1 -> GetBinContent(R+1,S+1)/(float)Histo2 -> GetBinContent(R+1,S+1,mc_type+1));
-				 Correction -> SetBinError(R+1,mc_type+1,Histo1 -> GetBinError(R+1,S+1));
-                        		}
-			}
+    if(selections==1){
+        if(mc_types ==1) {
+            for(int iR=0;iR<Histo2->GetNbinsX();iR++){ 
+                Correction -> SetBinContent (iR+1,Histo1 -> GetBinContent(iR+1)/(float)Histo2 -> GetBinContent(iR+1));
+                Correction -> SetBinError(iR+1,Histo1 -> GetBinError(iR+1));
+            }
+        }
+        else{
+            for(int mc_type=0;mc_type<mc_types;mc_type++){
+                for(int iR=0;iR<Histo2->GetNbinsX();iR++){
+                    Correction -> SetBinContent (iR+1,mc_type+1,Histo1 -> GetBinContent(iR+1)/(float)Histo2 -> GetBinContent(iR+1,mc_type+1));
+                    Correction -> SetBinError(iR+1,mc_type+1,Histo1 -> GetBinError(iR+1,mc_type+1)); 
                 }
+            }
+        }
 
-	}
-	return;
+    }
+    else{
+        if(mc_types == 1) {
+            for(int iS=0;iS<selections;iS++)
+                for(int iR=0;iR<Histo2->GetNbinsX();iR++){
+                    Correction -> SetBinContent (iR+1,iS+1,Histo1 -> GetBinContent(iR+1,iS+1)/(float)Histo2 -> GetBinContent(iR+1,iS+1));
+                    Correction -> SetBinError(iR+1,iS+1,Histo1 -> GetBinError(iR+1,iS+1));
+                }
+        }
+        else{
+            for(int iS=0;iS<selections;iS++)
+                for(int mc_type=0;mc_type<mc_types;mc_type++){
+                    for(int iR=0;iR<Histo1->GetNbinsX();iR++){
+                        Correction -> SetBinContent (iR+1,mc_type+1,iS+1,Histo1 -> GetBinContent(iR+1,iS+1)/(float)Histo2 -> GetBinContent(iR+1,iS+1,mc_type+1));
+                        Correction -> SetBinError(iR+1,mc_type+1,Histo1 -> GetBinError(iR+1,iS+1));
+                    }
+                }
+        }
+
+    }
+    return; 
 }
 
 
