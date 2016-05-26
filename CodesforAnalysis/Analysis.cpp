@@ -6,6 +6,7 @@
 #include "TF2.h"
 #include "TVector3.h"
 #include "TMath.h"
+#include "TKey.h"
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TSpline.h"
@@ -53,6 +54,7 @@
 #include "Parte2/Acceptance.cpp"
 #include "Parte2/ProtonFlux.cpp"
 #include "Parte2/DeutonsFlux.cpp"
+#include "Parte2/OtherExperimentsComparison.cpp"
 //#include "Parte2/DVSMCTrackeff.cpp"*/
 
 using namespace std;
@@ -157,41 +159,44 @@ int main(int argc, char * argv[])
    string	nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
    TFile *file1 =TFile::Open(nomefile.c_str());
 
-   cout<<"************************* ANALYSIS **********************************************************************"<<endl;
-   if(INDX==2) {
-      Hecut(file1);
-      SlidesforPlot(file1);
-      DistanceCut(file1);
-      Correlazione_Preselezioni(file1);
+	cout<<"************************* ANALYSIS **********************************************************************"<<endl;
+	if(INDX==2){
+        if(frac=="tot") Hecut(file1);
+        SlidesforPlot(file1);
+        DistanceCut(file1);
+        Correlazione_Preselezioni(file1);
 
-      MCpreeff(file1);
-      MCUnbiaseff(file1);
-      MCQualeff(file1);
-      FluxFactorizationtest(file1);
-      MCTrackeff(file1);
-      MCFullseteff(file1);
-      MigrationMatrix(file1);
-      DATAUnbiaseff(file1);
-      DATApreSeleff(file1);
-      //DVSMCTrackeff(file1);
-      DATAQualeff(file1);
-      DATARICHeff(file1);
-      if(frac=="tot") DeutonsTemplFits();
-      if(frac=="tot") DeutonsTemplFits_Dist();
-
-      cout<<"************************* RESULTS  **************************************************************"<<endl;
-      CorrLAT();
-      DVSMCPreSeleff();
-      DVSMCPreSeleffD();
-      DVSMCRICHeff();
-      DVSMCQualeff2();
-      DVSMCQualeffD();
-      Acceptance();
-      ProtonFlux();
-      if(frac=="tot") DeutonFlux();
-   }
-   cout<<"************************** OUTPUT **************************************************************"<<endl;
-   return 1;
+        MCpreeff(file1);
+        MCUnbiaseff(file1);		
+        MCQualeff(file1);
+        FluxFactorizationtest(file1);
+        MCTrackeff(file1);
+        MCFullseteff(file1);
+        MigrationMatrix(file1);
+        DATAUnbiaseff(file1);
+        DATApreSeleff(file1);
+        //DVSMCTrackeff(file1);
+        DATAQualeff(file1);
+        DATARICHeff(file1);
+        if(frac=="tot") DeutonsTemplFits();
+        if(frac=="tot") DeutonsTemplFits_Dist();
+	}
+	cout<<"************************* RESULTS  **************************************************************"<<endl;
+	
+	if(INDX==2){	
+		CorrLAT();
+		DVSMCPreSeleff();
+		DVSMCPreSeleffD();
+		DVSMCRICHeff();
+		DVSMCQualeff2();
+		DVSMCQualeffD();
+		Acceptance();
+		ProtonFlux();
+		if(frac=="tot") DeutonFlux();
+		if(frac=="tot") OtherExperimentsComparison();
+	}
+	cout<<"************************** OUTPUT **************************************************************"<<endl;
+	return 1;
 }
 
 
