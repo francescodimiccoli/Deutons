@@ -100,11 +100,6 @@ TH1F* Tempi;
 
 float encinprot     [nbinsr];
 float encindeut     [nbinsr];
-float deltaencinprot[nbinsr];
-float deltaencindeut[nbinsr];
-float deltaencinTOF [nbinsToF];
-float deltaencinNaF [nbinsNaF];
-float deltaencinAgl [nbinsAgl];
 float RUsed=0;
 int Norm[11]= {0};
 
