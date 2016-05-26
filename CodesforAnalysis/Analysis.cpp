@@ -37,6 +37,7 @@
 #include "Parte2/Acceptance.cpp"
 #include "Parte2/ProtonFlux.cpp"
 #include "Parte2/DeutonsFlux.cpp"
+#include "Parte2/OtherExperimentsComparison.cpp"
 //#include "Parte2/DVSMCTrackeff.cpp"*/
 
 
@@ -230,7 +231,7 @@ int main(int argc, char * argv[])
 
 	cout<<"************************* ANALYSIS **********************************************************************"<<endl;
 	if(INDX==2){
-		Hecut(file1);
+		if(frac=="tot") Hecut(file1);
                 SlidesforPlot(file1);
 		DistanceCut(file1);
 		Correlazione_Preselezioni(file1);
@@ -262,6 +263,7 @@ int main(int argc, char * argv[])
 		Acceptance();
 		ProtonFlux();
 		if(frac=="tot") DeutonFlux();
+		if(frac=="tot") OtherExperimentsComparison();
 	}
 	cout<<"************************** OUTPUT **************************************************************"<<endl;
 	return 1;
