@@ -2,9 +2,6 @@ using namespace std;
 
 
 
-
-
-
 class Flux {
    private:
       //Delta E;
@@ -90,19 +87,19 @@ TH1 * Flux::ExtractParticularMC_cs (TH1 * Histo, int lat_zones, int mc_type)
 
 void Flux::Set_DeltaE (int n,bool deutons)
 {
+   string hname=name + "DeltaE_" + suffixname;
+   
    if (n>1) {
-      string hname=name + "DeltaE_" + suffixname;
       DeltaE   = new TH2F (  hname.c_str(), hname.c_str(), bins.size(),  0, bins.size(),  n,0,n);
       DeltaE   ->Sumw2();
       for (int iR=0; iR<DeltaE->GetNbinsX(); iR++)
          for (int lat =0; lat<DeltaE->GetNbinsX(); lat++)
             DeltaE->SetBinContent (iR+1,lat+1, bins.EkBin (i) - bins.EkBin (i-1) );
    } else { // 1D
-      DeltaE   = new TH1F ( (name + "DeltaE_R"   ).c_str(), (name + "DeltaE_R"   ).c_str(),nbinsr,  0,nbinsr  );
+      DeltaE   = new TH1F ( hname.c_str(), hname.c_str() ,bins.size(),  0, bins.size()  );
       DeltaE   ->Sumw2();
       for (int iR=1; iR<DeltaE->GetNbinsX(); iR++)
          DeltaE->SetBinContent (iR+0,bins.EkBin (i) - bins.EkBin (i-1) );
-
    }
 }
 
@@ -151,7 +148,6 @@ Flux::Flux (std::string basename, std::string suffix, Binning B, int n)
    bins=Bin;
 }
 
-//reading constructor
 Flux::Flux (TFile * file, std::string basename, std::string suffix, std::string dirname, std::string acceptname, Binning B)
 {
    Counts	 = (TH1 *) file->Get ( (basename + "Counts_" + suffix       ).c_str() );
