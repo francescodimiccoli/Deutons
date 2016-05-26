@@ -85,7 +85,7 @@ void DeutonFlux()
    }
 
 
-//// Writing the files
+   //// Writing the files
 
    cout<<"*** Updating P1 file ****"<<endl;
 
@@ -93,34 +93,29 @@ void DeutonFlux()
    file1 = TFile::Open(nomefile.c_str(),"UPDATE");
    file1->cd("Results/Fluxes");
 
-   
+
 
 
    for (int ifx=0; ifx<3; ifx++) {
       //Fit on Mass
       vD_Flux[i] 	   ->Write(("DeutonsPrimaryFlux_"+suf[i+1]).data());
       vG_Flux[i]  	->Write(("DeutonsGeomagFlux_"+suf[i+1]).data());
-
       //Fit on Distance
-  vD_Dist[i]	->Write(("DeutonsPrimaryFlux_Dist_"+suf[i+1]).data());
-  vG_Dist[i] 	->Write(("DeutonsGeomagFlux_Dist_"+suf[i+1]).data());
-
+      vD_Dist[i]	->Write(("DeutonsPrimaryFlux_Dist_"+suf[i+1]).data());
+      vG_Dist[i] 	->Write(("DeutonsGeomagFlux_Dist_"+suf[i+1]).data());
       //for D/P ratio: P Flux
- vP_Flux[i] 	  	->Write(("ProtonsPrimaryFlux_"+suf[i+1]).data());
- vP_Dist[i]	->Write(("Protons_PrimaryFlux_Dist_"+suf[i+1]).data());
- 
+      vP_Flux[i] 	  	->Write(("ProtonsPrimaryFlux_"+suf[i+1]).data());
+      vP_Dist[i]	->Write(("Protons_PrimaryFlux_Dist_"+suf[i+1]).data());
 
       //D/P ratio
       //Fit on Mass
       TH1F * DP_ratio = vD_Flux[i] -> Clone();
       DP_ratio ->  Divide(vP_Flux[i]			);
       DP_ratio 	 -> Write(("DP_ratio_"+suf[i+1]		).data());
-
       //Fit on Distance
       TH1F * DP_ratio_Dist = vD_Flux[i] -> Clone();
       DP_ratio_Dist ->  Divide(vP_Dist[i] );
       DP_ratioTOF_Dist -> Write(("DP_ratio_Dist_"+suf[i+1]	).data());
-
    }
 
 
@@ -145,10 +140,7 @@ void DeutonFlux()
 
    c32-> Divide(2,1);
    c32->cd(1);
-   gPad->SetLogx();
-   gPad->SetLogy();
-   gPad->SetGridx();
-   gPad->SetGridy();
+
    c32->cd(2);
    gPad->SetLogx();
    gPad->SetLogy();
@@ -186,6 +178,10 @@ void DeutonFlux()
    galprop3P->GetYaxis()->SetRangeUser(1e-3,1e3);
 
    c32->cd(1);
+   gPad->SetLogx();
+   gPad->SetLogy();
+   gPad->SetGridx();
+   gPad->SetGridy();
    galprop3P->SetTitle("Deutons Flux: Geo. Zones");
    galprop3P->GetXaxis()->SetTitle("Kin.En./nucl. [GeV/nucl.]");
    galprop3P ->GetYaxis()->SetTitle("Flux [(m^2 sr GeV/nucl.)^-1]");
@@ -339,7 +335,7 @@ void DeutonFlux()
    galprop3P->Draw("AC");
    galprop3P2->Draw("sameC");
    c34->cd(2);
-      gPad->SetLogx();
+   gPad->SetLogx();
    gPad->SetLogy();
    gPad->SetGridx();
    gPad->SetGridy();
