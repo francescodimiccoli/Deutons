@@ -67,7 +67,7 @@ void FillIstogram(int INDX,string frac,string mese)
       ntupMCTrig->SetBranchAddress("Ev_Num",&Tup.Ev_Num);
       ntupMCTrig->SetBranchAddress("Trig_Num",&Tup.Trig_Num);
       ntupMCTrig->SetBranchAddress("R_pre",&Tup.R_pre);
-      ntupMCTrig->SetBranchAddress("Tup.Beta_pre",&Tup.Beta_pre);
+      ntupMCTrig->SetBranchAddress("Beta_pre",&Tup.Beta_pre);
       ntupMCTrig->SetBranchAddress("Cutmask",&fCutmask);
       ntupMCTrig->SetBranchAddress("MC_type",&Tup.MC_type);
       ntupMCTrig->SetBranchAddress("EdepL1",&Tup.EdepL1);
@@ -96,7 +96,7 @@ void FillIstogram(int INDX,string frac,string mese)
 
       ntupDataTrig->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
       ntupDataTrig->SetBranchAddress("R_pre",&Tup.R_pre);
-      ntupDataTrig->SetBranchAddress("Tup.Beta_pre",&Tup.Beta_pre);
+      ntupDataTrig->SetBranchAddress("Beta_pre",&Tup.Beta_pre);
       ntupDataTrig->SetBranchAddress("Cutmask",&fCutmask);
       ntupDataTrig->SetBranchAddress("Latitude",&Tup.Latitude);
       ntupDataTrig->SetBranchAddress("EdepECAL",&Tup.EdepECAL);
