@@ -13,10 +13,10 @@ private:
 	TH1 * LATcorr_NaF= NULL;
 	TH1 * LATcorr_Agl= NULL; 	
         
-	TH1 * Correction_R  = NULL;
-        TH1 * Correction_TOF= NULL;
-        TH1 * Correction_NaF= NULL;
-	TH1 * Correction_Agl= NULL;
+	TH1 * Correction_R  ;
+        TH1 * Correction_TOF;
+        TH1 * Correction_NaF;
+	TH1 * Correction_Agl;
 	
 	std::string Basename;
 
@@ -65,7 +65,7 @@ public:
 	}
  
 	//reading constructors
-	DatavsMC(TFile *file, std::string basename){
+	DatavsMC(TFile *file, std::string basename, int mcs=1){
 		MCEff   = new Efficiency(file,(basename + "_MC"  ).c_str());
 		DataEff = new Efficiency(file,(basename + "_Data").c_str());
 
@@ -73,7 +73,13 @@ public:
 
 		latzones   = DataEff -> beforeR -> GetNbinsY();
 		selections = DataEff -> beforeR -> GetNbinsZ();
-	
+		mc_types   = mcs;
+		
+		Correction_R    =  (TH1 *) MCEff -> beforeR   -> Clone();	
+		Correction_TOF  =  (TH1 *) MCEff -> beforeTOF -> Clone();
+		Correction_NaF  =  (TH1 *) MCEff -> beforeNaF -> Clone();
+		Correction_Agl  =  (TH1 *) MCEff -> beforeAgl -> Clone();
+		
 		Basename = basename;
 
 	}	
@@ -90,6 +96,7 @@ public:
 	
 	void Eval_Corrected_DataEff();
 	void Eval_DandMC_Eff();
+	void DivideHisto(TH1 *Histo1, TH1 *Histo2, TH1 * Correction);
 	void Eval_Corrections();	
 	
 	TH1 * GetCorrection_R()  { return Correction_R  ;};
@@ -118,10 +125,10 @@ void DatavsMC::Eval_Corrected_DataEff(){
 	}
 
 	else {
-		DataEff_corr -> beforeR   = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeR  ) -> Project3D("xz")) -> Clone();
-		DataEff_corr -> beforeTOF = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeTOF) -> Project3D("xz")) -> Clone();
-		DataEff_corr -> beforeNaF = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeNaF) -> Project3D("xz")) -> Clone();
-		DataEff_corr -> beforeAgl = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeAgl) -> Project3D("xz")) -> Clone();
+		DataEff_corr -> beforeR   = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeR  ) -> Project3D("zx")) -> Clone();
+		DataEff_corr -> beforeTOF = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeTOF) -> Project3D("zx")) -> Clone();
+		DataEff_corr -> beforeNaF = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeNaF) -> Project3D("zx")) -> Clone();
+		DataEff_corr -> beforeAgl = (TH2F*)((TH2F *)((TH3F*)DataEff -> beforeAgl) -> Project3D("zx")) -> Clone();
 	}
 	
 	if(!LATcorr_R   ) cout<<"ERROR: Lat. corr for R   histos not assigned"<<endl;
@@ -149,40 +156,61 @@ void DatavsMC::Eval_DandMC_Eff(){
 
 
 void DatavsMC::Eval_Corrections(){
-		
-		Correction_R  = DivideHisto( DataEff_corr -> effR   , MCEff -> effR    );	
-                Correction_TOF=	DivideHisto( DataEff_corr -> effTOF , MCEff -> effTOF  );
-	        Correction_NaF= DivideHisto( DataEff_corr -> effNaF , MCEff -> effNaF  );
-                Correction_Agl= DivideHisto( DataEff_corr -> effAgl , MCEff -> effAgl  );
+
+	DivideHisto( DataEff_corr -> effR   , MCEff -> effR  , Correction_R   );	
+	DivideHisto( DataEff_corr -> effTOF , MCEff -> effTOF, Correction_TOF );
+	DivideHisto( DataEff_corr -> effNaF , MCEff -> effNaF, Correction_NaF );
+	DivideHisto( DataEff_corr -> effAgl , MCEff -> effAgl, Correction_Agl );
 
 	return;
 }
 
 
 
-TH1 * DivideHisto(TH1 *Histo1, TH1 *Histo2){
-	TH1 * result;
-	if(Histo2->GetNbinsY()==1){
-		result = (TH1F *)Histo1 -> Clone();		
-		result -> Divide(Histo2);
-	}
-	else{
-		result = (TH2F *)Histo2 -> Clone();
-		for(int iS = 0; iS<Histo2->GetNbinsY();iS++)
-			for(int iR=0;iR<Histo1->GetNbinsX();iR++){
-			if(Histo2->GetBinContent(iR+1,iS+1)>0){
-				result -> SetBinContent (iR+1,iS+1,Histo1->GetBinContent(iR+1)/Histo2->GetBinContent(iR+1,iS+1));
-				}
-			else result -> SetBinContent (iR+1,iS+1,0);	
-		}
-	}
-	return result;
+void DatavsMC::DivideHisto(TH1 *Histo1, TH1 *Histo2,TH1 * Correction){
+    if(selections==1){
+        if(mc_types ==1) {
+            for(int iR=0;iR<Histo2->GetNbinsX();iR++){ 
+                Correction -> SetBinContent (iR+1,Histo1 -> GetBinContent(iR+1)/(float)Histo2 -> GetBinContent(iR+1));
+                Correction -> SetBinError(iR+1,Histo1 -> GetBinError(iR+1));
+            }
+        }
+        else{
+            for(int mc_type=0;mc_type<mc_types;mc_type++){
+                for(int iR=0;iR<Histo2->GetNbinsX();iR++){
+                    Correction -> SetBinContent (iR+1,mc_type+1,Histo1 -> GetBinContent(iR+1)/(float)Histo2 -> GetBinContent(iR+1,mc_type+1));
+                    Correction -> SetBinError(iR+1,mc_type+1,Histo1 -> GetBinError(iR+1,mc_type+1)); 
+                }
+            }
+        }
+
+    }
+    else{
+        if(mc_types == 1) {
+            for(int iS=0;iS<selections;iS++)
+                for(int iR=0;iR<Histo2->GetNbinsX();iR++){
+                    Correction -> SetBinContent (iR+1,iS+1,Histo1 -> GetBinContent(iR+1,iS+1)/(float)Histo2 -> GetBinContent(iR+1,iS+1));
+                    Correction -> SetBinError(iR+1,iS+1,Histo1 -> GetBinError(iR+1,iS+1));
+                }
+        }
+        else{
+            for(int iS=0;iS<selections;iS++)
+                for(int mc_type=0;mc_type<mc_types;mc_type++){
+                    for(int iR=0;iR<Histo1->GetNbinsX();iR++){
+                        Correction -> SetBinContent (iR+1,mc_type+1,iS+1,Histo1 -> GetBinContent(iR+1,iS+1)/(float)Histo2 -> GetBinContent(iR+1,iS+1,mc_type+1));
+                        Correction -> SetBinError(iR+1,mc_type+1,Histo1 -> GetBinError(iR+1,iS+1));
+                    }
+                }
+        }
+
+    }
+    return; 
 }
 
 
 TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
 	TH1 * Histo_corr;
-	TH1 * temp = (TH1 *)Histo -> Clone();
+	TH1 * temp; 
   
 	int selections = Histo ->GetNbinsZ();
 	int latzones   = Histo ->GetNbinsY();
@@ -201,7 +229,7 @@ TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
 				for(int lat =0; lat < latzones; lat++){	
 					temp -> SetBinContent(iR+1,lat+1,iS+1,Histo->GetBinContent(iR+1,lat+1,iS+1)*LATcorr->GetBinContent(lat+1,iS+1));
 				}
-		Histo_corr = (TH2F*)((TH3*)temp) -> Project3D("xz") -> Clone();	
+		Histo_corr = (TH2F*)((TH3*)temp) -> Project3D("zx") -> Clone();	
 	}
 	
 	return Histo_corr;

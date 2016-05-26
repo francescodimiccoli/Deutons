@@ -10,34 +10,34 @@ Flux * P_Flux_sel = new Flux("P_Flux_sel" );
 
 void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona) {
     ntupla->GetEvent(l);
-   if(Tup.Beta<=0||Tup.R<=0) return;
-   int Kbin=RB.GetRBin(Tup.R);
+    if(Tup.Beta<=0||Tup.R<=0) return;
+    int Kbin=RB.GetRBin(Tup.R);
 
-   if(Tup.Dist5D_P<6 && Likcut) {
-      P_Flux_geo-> Counts_R -> Fill(Kbin,zona);
-      if(Tup.R>1.2*Tup.Rcutoff) {
-         P_Flux -> Counts_R-> Fill(Kbin);
-         P_Flux_geo_prim -> Counts_R -> Fill(Kbin,zona);
-      }
-   }
+    if(Tup.Dist5D_P<6 && Likcut) {
+        P_Flux_geo-> Counts_R -> Fill(Kbin,zona);
+        if(Tup.R>1.2*Tup.Rcutoff) {
+            P_Flux -> Counts_R-> Fill(Kbin);
+            P_Flux_geo_prim -> Counts_R -> Fill(Kbin,zona);
+        }
+    }
 
-   if(Herejcut && Tup.R>1.2*Tup.Rcutoff) {
-      P_Flux_pre -> Counts_R -> Fill(Kbin);
-      if(Tup.Dist5D_P<6&&Likcut)  P_Flux_sel -> Counts_R -> Fill(Kbin);
-   }
-   
-   return;
+    if(Herejcut && Tup.R>1.2*Tup.Rcutoff) {
+        P_Flux_pre -> Counts_R -> Fill(Kbin);
+        if(Tup.Dist5D_P<6&&Likcut)  P_Flux_sel -> Counts_R -> Fill(Kbin);
+    }
+
+    return;
 }
 
 
 void ProtonFlux_Write() {
-   P_Flux      	->Write();
-   P_Flux_geo  	->Write();
-   P_Flux_geo_prim ->Write();
-   P_Flux_pre  	->Write();
-   P_Flux_sel  	->Write();
+	P_Flux      	->Write();
+	P_Flux_geo  	->Write();
+	P_Flux_geo_prim ->Write();
+	P_Flux_pre  	->Write();
+	P_Flux_sel  	->Write();
 
-   return;
+	return;
 }
 
 
@@ -242,9 +242,3 @@ void ProtonFlux() {
 
    return;
 }
-
-
-
-
-
-

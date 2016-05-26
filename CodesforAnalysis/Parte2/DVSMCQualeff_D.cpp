@@ -114,8 +114,8 @@ void DVSMCQualeffD(){
 	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
 
-	DatavsMC * Dist_DvsMC_D = new DatavsMC(file1,"Dist_DvsMC_D");
-	DatavsMC * Lik_DvsMC_D  = new DatavsMC(file1,"Lik_DvsMC_D" );
+	DatavsMC * Dist_DvsMC_D = new DatavsMC(file1,"Dist_DvsMC_D",6);
+	DatavsMC * Lik_DvsMC_D  = new DatavsMC(file1,"Lik_DvsMC_D" ,6);
 
 	LATcorr * LATLikelihoodDATA_TOF = new LATcorr(file1,"LATLikDATA_TOF"   	 ,"Results");
 	LATcorr * LATDistanceDATA_TOF   = new LATcorr(file1,"LATDistDATA_TOF" 	 ,"Results");
@@ -129,7 +129,7 @@ void DVSMCQualeffD(){
 
 
 
-	cout<<"******* Data vs MC: QUALITY SEL ********"<<endl;
+	cout<<"******* Data vs MC: QUALITY SEL (D)********"<<endl;
 
 	Dist_DvsMC_D -> Assign_LatCorr( LATDistanceDATA_TOF   ->  LATcorrR_fit , 
 					LATDistanceDATA_TOF   ->  LATcorrR_fit ,
