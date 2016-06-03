@@ -121,9 +121,7 @@ int main(int argc, char * argv[])
 
    for(int i=0; i<RB.size()-1; i++) {
       encinprot[i]=pow(1+pow( RB.RigBins()[i]/0.938, 2) ,0.5)-1;
-      if (i>0) deltaencinprot[i]=encinprot[i]-encinprot[i-1];
       encindeut[i]=pow(1+pow( RB.RigBins()[i]/1.875, 2) ,0.5)-1;
-      if (i>0) deltaencindeut[i]=encindeut[i]-encindeut[i-1];
       cout<<RB.RigBinCent(i)<<endl;
    }
 
@@ -193,5 +191,3 @@ int main(int argc, char * argv[])
    cout<<"************************** OUTPUT **************************************************************"<<endl;
    return 1;
 }
-
-

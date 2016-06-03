@@ -15,18 +15,20 @@ void DeutonFlux()
 
 
    std::string suf[4] = {"ToF", "NaF", "Agl", "R"};
-   Binning binP[4] = {TofPB, NaFPB, AglPB, RB};
-   Binning binD[4] = {TofDB, NaFDB, AglDB, RB};
-   string expodnames[4] = ["esposizionedgeo", "esposizionedgeoNaF", "esposizionedgeoAgl", "esposizionegeo" ];
-   string expopnames[4] = ["esposizionepgeo", "esposizionepgeoNaF", "esposizionepgeoAgl", "esposizionegeo" ];
+   Binning binP[4] = {ToFPB, NaFPB, AglPB, RB};
+   Binning binD[4] = {ToFDB, NaFDB, AglDB, RB};
+   string expodnames[4] = {"esposizionedgeo", "esposizionedgeoNaF", "esposizionedgeoAgl", "esposizionegeo" };
+   string expopnames[4] = {"esposizionepgeo", "esposizionepgeoNaF", "esposizionepgeoAgl", "esposizionegeo" };
    enum {protons, deutons};
 
-   std::vector <TH1F*> vD_Flux (4);
-   std::vector <TH1F*> vD_Dist (4);
-   std::vector <TH1F*> vP_Flux (4);
-   std::vector <TH1F*> vP_Dist (4);
-   std::vector <TH2F*> vG_Flux (4);
-   std::vector <TH2F*> vG_Dist (4);
+   std::vector <TH1F*> vD_Flux (3);
+   std::vector <TH1F*> vD_Dist (3);
+   std::vector <TH1F*> vP_Flux (3);
+   std::vector <TH1F*> vP_Dist (3);
+   std::vector <TH2F*> vG_Flux (3);
+   std::vector <TH2F*> vG_Dist (3);
+   std::vector <TH1F*> vD_Exp  (3);
+   std::vector <TH1F*> vP_Exp  (3);
 
 
 
@@ -40,8 +42,8 @@ void DeutonFlux()
          Syst -> Add ((TH1F*) D_Flux_Dist -> Counts ->Clone(), -1);
          // Checking systematics
          for(int i=0; i<Syst->GetNbinsX(); i++) {
-            if ( (TH1F*)D_Flux_Dist-> Counts -> GetBinContent(i)==0
-              || (TH1F*)D_Flux     -> Counts -> GetBinContent(i)==0 )
+            if ( ((TH1F*)D_Flux_Dist-> Counts )-> GetBinContent(i)==0
+              || ((TH1F*)D_Flux     -> Counts )-> GetBinContent(i)==0 )
                Syst -> SetBinContent (i,0);
          }
          D_Flux -> Add_SystFitError(1,Syst);
@@ -56,8 +58,8 @@ void DeutonFlux()
       Flux * P_Flux         = new Flux(file1, "P_Flux"        ,"Results", suf[ifx], "Corr_AcceptanceP",binD[ifx]);
       Flux * P_Flux_Dist    = new Flux(file1, "P_Flux_Dist"   ,"Results", suf[ifx], "Corr_AcceptanceP",binD[ifx]);
       expogeo  = (TH2F*)file1->Get(expopnames[ifx].data());
-      P_Flux         -> Set_Exposure_Time (esposizionegeo);
-      P_Flux_Dist    -> Set_Exposure_Time (esposizionegeo);
+      P_Flux         -> Set_Exposure_Time (expogeo);
+      P_Flux_Dist    -> Set_Exposure_Time (expogeo);
       P_Flux         -> Eval_Flux(1 , protons );
       P_Flux_Dist    -> Eval_Flux(1 , protons );
 
@@ -75,9 +77,14 @@ void DeutonFlux()
          vD_Dist.push_back( (TH1F*)  D_Flux_Dist    ->Fluxes);
          vP_Flux .push_back( (TH1F*)  P_Flux        ->Fluxes);
          vP_Dist.push_back( (TH1F*)  P_Flux_Dist    ->Fluxes);
-         vG_Flux .push_back( (TH2F*) P_Flux_geo     ->Fluxes);
-         vG_Dist.push_back( (TH2F*)  P_Flux_geo_Dist->Fluxes);
+         vG_Flux .push_back( (TH2F*) D_Flux_geo     ->Fluxes);
+         vG_Dist.push_back( (TH2F*)  D_Flux_geo_Dist->Fluxes);
+         vD_Exp.push_back( (TH1F*) D_Flux -> Exposure);
+         vP_Exp.push_back( (TH1F*) D_Flux -> Exposure);
+
+         
       }
+
    }
 
 
@@ -95,24 +102,24 @@ void DeutonFlux()
 
    for (int ifx=0; ifx<3; ifx++) {
       //Fit on Mass
-      vD_Flux[i] 	   ->Write(("DeutonsPrimaryFlux_"+suf[i]).data());
-      vG_Flux[i]  	->Write(("DeutonsGeomagFlux_"+suf[i]).data());
+      vD_Flux[ifx] 	   ->Write(("DeutonsPrimaryFlux_"+suf[ifx]).data());
+      vG_Flux[ifx]  	->Write(("DeutonsGeomagFlux_"+suf[ifx]).data());
       //Fit on Distance
-      vD_Dist[i]	->Write(("DeutonsPrimaryFlux_Dist_"+suf[i]).data());
-      vG_Dist[i] 	->Write(("DeutonsGeomagFlux_Dist_"+suf[i]).data());
+      vD_Dist[ifx]	->Write(("DeutonsPrimaryFlux_Dist_"+suf[ifx]).data());
+      vG_Dist[ifx] 	->Write(("DeutonsGeomagFlux_Dist_"+suf[ifx]).data());
       //for D/P ratio: P Flux
-      vP_Flux[i] 	  	->Write(("ProtonsPrimaryFlux_"+suf[i]).data());
-      vP_Dist[i]	->Write(("Protons_PrimaryFlux_Dist_"+suf[i]).data());
+      vP_Flux[ifx] 	  	->Write(("ProtonsPrimaryFlux_"+suf[ifx]).data());
+      vP_Dist[ifx]	->Write(("Protons_PrimaryFlux_Dist_"+suf[ifx]).data());
 
       //D/P ratio
       //Fit on Mass
-      DP_ratio[i] = vD_Flux[i] -> Clone();
-      DP_ratio[i] ->  Divide(vP_Flux[i]			);
-      DP_ratio[i] -> Write(("DP_ratio_"+suf[i+1]		).data());
+      DP_ratio[ifx] = (TH1F*)vD_Flux[ifx] -> Clone();
+      DP_ratio[ifx] ->  Divide(vP_Flux[ifx]			);
+      DP_ratio[ifx] -> Write(("DP_ratio_"+suf[ifx+1]		).data());
       //Fit on Distance
-      DP_ratio_Dist[i] = vD_Flux[i] -> Clone();
-      DP_ratio_Dist[i] ->  Divide(vP_Dist[i] );
-      DP_ratio_Dist[i] -> Write(("DP_ratio_Dist_"+suf[i+1]	).data());
+      DP_ratio_Dist[ifx] = (TH1F*)vD_Flux[ifx] -> Clone();
+      DP_ratio_Dist[ifx] ->  Divide(vP_Dist[ifx] );
+      DP_ratio_Dist[ifx] -> Write(("DP_ratio_Dist_"+suf[ifx+1]	).data());
    }
 
 
@@ -200,8 +207,8 @@ void DeutonFlux()
 
    /// Flux Geo
 
-   TGraphErrors * D_Fluxgeo[i][11];
-   TGraphErrors * D_FluxgeoDist[i][11];
+   TGraphErrors * D_Fluxgeo[3][11];
+   TGraphErrors * D_FluxgeoDist[3][11];
 
 
    for (int i=0; i<3; i++) {
@@ -212,7 +219,7 @@ void DeutonFlux()
          D_FluxgeoDist[i][j]=new TGraphErrors();
          D_FluxgeoDist[i][j]->SetName((nome + "Distance Fit").c_str());
 
-         for(int m=1; m<BinP[i+1].size(); m++) {
+         for(int m=1; m<binP[i+1].size(); m++) {
             D_Fluxgeo    [i][j]->SetPoint     (m-1, binP[i].EkBinCent(m), vG_Flux[i]->GetBinContent(m+1, j+1));
             D_FluxgeoDist[i][j]->SetPoint     (m-1, binP[i].EkBinCent(m), vG_Dist[i]->GetBinContent(m+1, j+1));
             D_Fluxgeo    [i][j]->SetPointError(m-1, 0,                    vG_Flux[i]->GetBinError  (m+1, j+1));
@@ -256,12 +263,12 @@ void DeutonFlux()
       ged[i]=new TGraphErrors();
       gep[i]=new TGraphErrors();
       for(int m=0; m<binD[i].EkBinsCent().size(); m++) {
-         ged[i]->SetPoint(m,binD[i].EkBinCent(m), vD_Flux[i]->Exposure-> GetBinContent(m+1));
-         gep[i]->SetPoint(m,binP[i].EkBinCent(m), vP_Flux[i]->Exposure ->GetBinContent(m+1));
+         ged[i]->SetPoint(m,binD[i].EkBinCent(m), vD_Exp[i]->GetBinContent(m+1));
+         gep[i]->SetPoint(m,binP[i].EkBinCent(m), vP_Exp[i]->GetBinContent(m+1));
       }
       c33->cd(i+1);
       gPad->SetLogy();
-      gPad->SetGri();
+      gPad->SetGridx();
       gPad->SetGridy();
 
       gep[i]->SetMarkerStyle(8);
@@ -406,11 +413,11 @@ void DeutonFlux()
 
       PD_ratio[i]     =new TGraphErrors();
       PD_ratio_Dist[i]=new TGraphErrors();
-      for(int m=0; m<BinP[i].EkBinsCent().size(); m++) {
-         PD_ratio[i]     ->SetPoint     (m, BinP[i].EkBinCent(m), DP_ratio[i]->     GetBinContent(m+2));
-         PD_ratio[i]_Dist->SetPoint     (m, BinP[i].EkBinCent(m), DP_ratio[i]_Dist->GetBinContent(m+2));
+      for(int m=0; m<binP[i].EkBinsCent().size(); m++) {
+         PD_ratio[i]     ->SetPoint     (m, binP[i].EkBinCent(m), DP_ratio[i]->     GetBinContent(m+2));
+         PD_ratio_Dist[i]->SetPoint     (m, binP[i].EkBinCent(m), DP_ratio_Dist[i]->GetBinContent(m+2));
          PD_ratio[i]     ->SetPointError(m, 0,                    DP_ratio[i]->GetBinError(m+2));
-         PD_ratio[i]_Dist->SetPointError(m, 0,                    DP_ratio[i]_Dist->GetBinError(m+2));
+         PD_ratio_Dist[i]->SetPointError(m, 0,                    DP_ratio_Dist[i]->GetBinError(m+2));
       }
       PD_ratio[i]->SetMarkerStyle(8);
       PD_ratio[i]->SetMarkerSize(1.5);
@@ -418,11 +425,11 @@ void DeutonFlux()
       PD_ratio[i]->SetLineColor(4);
       PD_ratio[i]->SetLineWidth(2);
 
-      PD_ratio[i]_Dist->SetMarkerStyle(8);
-      PD_ratio[i]_Dist->SetMarkerSize(1.5);
-      PD_ratio[i]_Dist->SetMarkerColor(4);
-      PD_ratio[i]_Dist->SetLineColor(4);
-      PD_ratio[i]_Dist->SetLineWidth(2);
+      PD_ratio_Dist[i]->SetMarkerStyle(8);
+      PD_ratio_Dist[i]->SetMarkerSize(1.5);
+      PD_ratio_Dist[i]->SetMarkerColor(4);
+      PD_ratio_Dist[i]->SetLineColor(4);
+      PD_ratio_Dist[i]->SetLineWidth(2);
 
       c35->cd(1);
       PD_ratio[i]->Draw("Psame");
@@ -454,8 +461,3 @@ void DeutonFlux()
 
    return;
 }
-
-
-
-
-

@@ -19,10 +19,10 @@ class Flux {
       std::string name;
 
       ///creation constructor
-      Flux (std::string basename, std::string suffix, Binning B)
-      Flux (std::string basename, std::string suffix, Binning B, int n)
+      Flux (std::string basename, std::string suffix, Binning B);
+      Flux (std::string basename, std::string suffix, Binning B, int n);
       ///reading constructor
-      Flux (TFile * file, std::string basename, std::string suffix, std::string dirname, std::string acceptname, Binning B)
+      Flux (TFile * file, std::string basename, std::string suffix, std::string dirname, std::string acceptname, Binning B);
       
       void Write();
       void Set_Exposure_Time (TH2 * Exposure );
@@ -54,8 +54,8 @@ void Flux::Set_Exposure_Time (TH1 * Tempi)
    Exposure  = new TH2F ( hname.c_str(), hname.c_str(), nbinsr,  0,nbinsr,   Tempi->GetNbinsX(),0,Tempi->GetNbinsX() );
       for (int R=0; R<Exposure ->GetNbinsX() ; R++ )
       for (int lat =1; lat< Tempi->GetNbinsX(); lat++) {
-         (TH2 *) Exposure  -> SetBinContent (R+1,lat+1,Tempi -> GetBinContent (lat) );
-         (TH2 *) Exposure  -> SetBinError (R+1,lat+1,10);
+         ((TH2 *) Exposure)  -> SetBinContent (R+1,lat+1,Tempi -> GetBinContent (lat) );
+         ((TH2 *) Exposure)  -> SetBinError (R+1,lat+1,10);
       }
    return;
 }
@@ -94,12 +94,12 @@ void Flux::Set_DeltaE (int n,bool deutons)
       DeltaE   ->Sumw2();
       for (int iR=0; iR<DeltaE->GetNbinsX(); iR++)
          for (int lat =0; lat<DeltaE->GetNbinsX(); lat++)
-            DeltaE->SetBinContent (iR+1,lat+1, bins.EkBin (i) - bins.EkBin (i-1) );
+            DeltaE->SetBinContent (iR+1,lat+1, bins.EkBin (iR) - bins.EkBin (iR-1) );
    } else { // 1D
       DeltaE   = new TH1F ( hname.c_str(), hname.c_str() ,bins.size(),  0, bins.size()  );
       DeltaE   ->Sumw2();
       for (int iR=1; iR<DeltaE->GetNbinsX(); iR++)
-         DeltaE->SetBinContent (iR+0,bins.EkBin (i) - bins.EkBin (i-1) );
+         DeltaE->SetBinContent (iR+0,bins.EkBin (iR) - bins.EkBin (iR-1) );
    }
 }
 
@@ -130,29 +130,29 @@ void Flux::Eval_Flux (int n,bool deutons,int mc_type)
 }
 
 
-Flux::Flux (std::string basename, std::string suffix, Binning B)
+Flux::Flux (std::string basename, std::string suffix, Binning inbin)
 {
    string hname=basename + "Counts_" + suffix;
-   Counts	 = new TH1F ( hname.c_str(), hname.c_str(),B.size(),0,B.size() );
+   Counts	 = new TH1F ( hname.c_str(), hname.c_str(),inbin.size(),0,inbin.size() );
    name = basename;
    suffixname = suffix;
-   bins=Bin;
+   bins=inbin;
 }
 
-Flux::Flux (std::string basename, std::string suffix, Binning B, int n)
+Flux::Flux (std::string basename, std::string suffix, Binning inbin, int n)
 {
    string hname=basename + "Counts_" + suffix;
-   Counts   = new TH2F ( hname.c_str(), hname.c_str(), B.size(),  0, B.size(),  n,0,n);
+   Counts   = new TH2F ( hname.c_str(), hname.c_str(), inbin.size(),  0, inbin.size(),  n,0,n);
    name = basename;
    suffixname = suffix;
-   bins=Bin;
+   bins=inbin;
 }
 
-Flux::Flux (TFile * file, std::string basename, std::string suffix, std::string dirname, std::string acceptname, Binning B)
+Flux::Flux (TFile * file, std::string basename, std::string suffix, std::string dirname, std::string acceptname, Binning inbin)
 {
    Counts	 = (TH1 *) file->Get ( (basename + "Counts_" + suffix       ).c_str() );
    Acceptance  = (TH1 *) file->Get ( ("/" + dirname +"/" +acceptname + "_" + suffix  ).c_str() );
    name = basename;
    suffixname = suffix;
-   bins=Bin;
+   bins=inbin;
 }
