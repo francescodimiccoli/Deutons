@@ -138,14 +138,19 @@ void ProtonFlux()
 
 
    string nome;
+
+   PBinning PRB; PRB.Setbins(nbinsr, 0.5, 100, 2); // RB did not have Ek
+   
+   
    for(int j=0; j<NGEOBINS; j++) {
       TGraphErrorsFormat(P_Fluxgeo[j]);
       nome="Protons Flux: Geo. Zone "+to_string(j);
       P_Fluxgeo[j]=new TGraphErrors();
       P_Fluxgeo[j]->SetName(nome.c_str());
-      for(int i=0; i<nbinsr; i++) {
-         P_Fluxgeo[j]->SetPoint(i,encinprot[i],ProtonsGeomagFlux->GetBinContent(i+1,j+1)*pow(encinprot[i],potenza));
-         P_Fluxgeo[j]->SetPointError(i,0,ProtonsGeomagFlux->GetBinError(i+1,j+1)*pow(encinprot[i],potenza));
+      for(int i=0; i<PRB.EkBinsCent().size(); i++) {
+         float ekin=PRB.EkBinCent(i);
+         P_Fluxgeo[j]->SetPoint(i,ekin,ProtonsGeomagFlux->GetBinContent(i+1,j+1)*pow(ekin,potenza));
+         P_Fluxgeo[j]->SetPointError(i,0,ProtonsGeomagFlux->GetBinError(i+1,j+1)*pow(ekin,potenza));
       }
       P_Fluxgeo[j]->SetMarkerColor(j-1);
       P_Fluxgeo[j]->SetLineColor(j-1);
@@ -166,9 +171,10 @@ void ProtonFlux()
 
 
    PFlux=new TGraphErrors();
-   for(int i=0; i<nbinsr; i++) {
-      PFlux->SetPoint(i,encinprot[i],ProtonsPrimaryFlux->GetBinContent(i+1)*pow(encinprot[i],potenza));
-      PFlux->SetPointError(i,0,ProtonsPrimaryFlux->GetBinError(i+1)*pow(encinprot[i],potenza));
+   for(int i=0; i<PRB.EkBinsCent().size(); i++) {
+      float ekin=PRB.EkBinCent(i);
+      PFlux->SetPoint(i,ekin,ProtonsPrimaryFlux->GetBinContent(i+1)*pow(ekin,potenza));
+      PFlux->SetPointError(i,0,ProtonsPrimaryFlux->GetBinError(i+1)*pow(ekin,potenza));
    }
    PFlux->SetName("Protons Primary Flux");
    TGraphErrorsFormat(PFlux);
@@ -222,13 +228,15 @@ void ProtonFlux()
    TGraphErrors * PFlux_=new TGraphErrors();
    PFlux_pre=new TGraphErrors();
    PFlux_pre->SetName("Protons Primary Flux (only pres.)");
+
+
    
-   for(int ip=0; ip+1<nbinsr; ip++) {
-      PFlux_->SetPoint(ip,RB.RigBinCent(ip+1),1);
-      PFlux_pre->SetPoint(ip,encinprot[ip+1],1);
+   for(int ip=0; ip<PRB.EkBinsCent().size()-1; ip++) {
+      PFlux_->   SetPoint(ip,PRB.RigBinCent(ip+1), 1);
+      PFlux_pre->SetPoint(ip,PRB.EkBinCent(ip+1) , 1);
       float err=(P_sel_PrimaryFlux->GetBinError(ip+2,2)+P_pre_PrimaryFlux->GetBinError(ip+2,2))/P_pre_PrimaryFlux->GetBinContent(ip+2,1);
       PFlux_->SetPointError(ip,0,err);
-      PFluxpre->SetPoint(ip,RB.RigBinCent(ip+1),
+      PFluxpre->SetPoint(ip,PRB.RigBinCent(ip+1),
          P_sel_PrimaryFlux->GetBinContent(ip+1+1)/P_pre_PrimaryFlux->GetBinContent(ip+1+1,1));
 
    }

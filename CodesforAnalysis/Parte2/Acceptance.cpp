@@ -141,10 +141,13 @@ void Acceptance(){
         gPad->SetGridy();
         TGraphErrors * EffgenbetaD[6];
 	int p =0;
+	DBinning DRB; DRB.Setbins(nbinsr, 0.5, 100, 2); // RB did not have Ek
+        PBinning PRB; PRB.Setbins(nbinsr, 0.5, 100, 2); // RB did not have Ek
 	for(int h=0;h<6;h++){
 		EffgenbetaD[h]=new TGraphErrors();
 		p=0;
-		for(int i=0;i<nbinsr;i++) {EffgenbetaD[h]->SetPoint(p,encindeut[i],AcceptanceD ->Gen_Acceptance_R  ->GetBinContent(i+1,h+1));p++;}			
+		for(int i=0;i<nbinsr;i++) {EffgenbetaD[h]->SetPoint(p,DRB.EkBinCent(i),AcceptanceD ->Gen_Acceptance_R  ->GetBinContent(i+1,h+1));p++;}
+					
 	
 	EffgenbetaD[h]->SetMarkerStyle(8);
         EffgenbetaD[h]->SetMarkerColor(4);
@@ -243,7 +246,7 @@ void Acceptance(){
 	p =0;
 	EffgenbetaP=new TGraphErrors();
 	p=0;
-	for(int i=0;i<nbinsr;i++) {EffgenbetaP->SetPoint(p,encinprot[i],AcceptanceP ->Gen_Acceptance_R  ->GetBinContent(i+1));p++;}
+	for(int i=0;i<nbinsr;i++) {EffgenbetaP->SetPoint(p,PRB.EkBinCent(i),AcceptanceP ->Gen_Acceptance_R  ->GetBinContent(i+1));p++;}
 
 	EffgenbetaP->SetMarkerStyle(8);
 	EffgenbetaP->SetMarkerColor(2);
@@ -320,15 +323,15 @@ void Acceptance(){
 	TGraphErrors * AccSelP[11];
 	TGraphErrors * AccpreP[11];
 	p=0;
-	for(int i=0;i<nbinsr;i++) {AccgeoP->SetPoint(p,encinprot[i],AcceptanceP ->Gen_Acceptance_R->GetBinContent(i+1));
+	for(int i=0;i<nbinsr;i++) {AccgeoP->SetPoint(p,PRB.EkBinCent(i),AcceptanceP ->Gen_Acceptance_R->GetBinContent(i+1));
 				   AccgeoP->SetPointError(p,0,AcceptanceP ->Gen_Acceptance_R->GetBinError(i+1));
 				   p++;}	
 	p=0;
-        for(int i=0;i<nbinsr;i++) {AccPreMCP->SetPoint(p,encinprot[i],AcceptancePreP ->MCAcceptance_R->GetBinContent(i+1));
+        for(int i=0;i<nbinsr;i++) {AccPreMCP->SetPoint(p,PRB.EkBinCent(i),AcceptancePreP ->MCAcceptance_R->GetBinContent(i+1));
 				   AccPreMCP->SetPointError(p,0,AcceptancePreP ->MCAcceptance_R->GetBinError(i+1));
 				   p++;}
 	p=0;
-	for(int i=0;i<nbinsr;i++) {AccSelMCP->SetPoint(p,encinprot[i],AcceptanceP ->MCAcceptance_R->GetBinContent(i+1));
+	for(int i=0;i<nbinsr;i++) {AccSelMCP->SetPoint(p,PRB.EkBinCent(i),AcceptanceP ->MCAcceptance_R->GetBinContent(i+1));
 				   AccSelMCP->SetPointError(p,0,AcceptanceP ->MCAcceptance_R->GetBinError(i+1));
 				   p++;}
 	
@@ -336,7 +339,7 @@ void Acceptance(){
 	for(int j=0;j<11;j++) {
 		AccSelP[j]=new TGraphErrors();
 		p=0;
-		for(int i=0;i<nbinsr;i++) {AccSelP[j]->SetPoint(p,encinprot[i],AcceptanceP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1) );
+		for(int i=0;i<nbinsr;i++) {AccSelP[j]->SetPoint(p,PRB.EkBinCent(i),AcceptanceP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1) );
 					  AccSelP[j]->SetPointError(p,0,AcceptanceP ->Geomag_Acceptance_R -> GetBinError(i+1,j+1));
 					  p++;}
 		AccSelP[j]->SetMarkerStyle(8);
@@ -347,7 +350,7 @@ void Acceptance(){
 	for(int j=0;j<11;j++) {
                 AccpreP[j]=new TGraphErrors();
                 p=0;
-		for(int i=0;i<nbinsr;i++) {AccpreP[j]->SetPoint(p,encinprot[i],AcceptancePreP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1));
+		for(int i=0;i<nbinsr;i++) {AccpreP[j]->SetPoint(p,PRB.EkBinCent(i),AcceptancePreP ->Geomag_Acceptance_R -> GetBinContent(i+1,j+1));
 					   AccpreP[j]->SetPointError(p,0,AcceptancePreP ->Geomag_Acceptance_R -> GetBinError(i+1,j+1));
 					   p++;}
                 AccpreP[j]->SetMarkerStyle(8);

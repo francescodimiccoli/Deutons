@@ -95,11 +95,6 @@ int passed[3]= {187,155,139};
 
 
 TH1F* Tempi;
-
-
-
-float encinprot     [nbinsr];
-float encindeut     [nbinsr];
 float RUsed=0;
 int Norm[11]= {0};
 
@@ -163,5 +158,3 @@ DBinning AglDB;
 PBinning AglPB;
 
 Binning RB;
-
-

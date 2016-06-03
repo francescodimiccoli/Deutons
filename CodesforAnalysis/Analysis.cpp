@@ -120,8 +120,6 @@ int main(int argc, char * argv[])
    RB.Setbins(nbinsr, 0.5, 100, 2);
 
    for(int i=0; i<RB.size()-1; i++) {
-      encinprot[i]=pow(1+pow( RB.RigBins()[i]/0.938, 2) ,0.5)-1;
-      encindeut[i]=pow(1+pow( RB.RigBins()[i]/1.875, 2) ,0.5)-1;
       cout<<RB.RigBinCent(i)<<endl;
    }
 
