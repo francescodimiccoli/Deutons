@@ -2,19 +2,12 @@
 #include "TNtuple.h"
 #include <TSpline.h>
 #include "Selections5D.h"
+#include "Commonglobals.cpp"
 
-using namespace std;
-void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla,int P_ID);
-void Grandezzesep (TTree *albero,int i,TNtuple *ntupla);
-void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla);
-void Grandezzequal (TTree *albero,int i,TNtuple *ntupla);
-void GrandezzequalRICH (TTree *albero,int i,TNtuple *ntupla);
+
 void Controllodist (TTree *albero,int i,TNtuple *ntupla);
 void Controllodistd (TTree *albero,int i,TNtuple *ntupla);
 void Selez (TTree *albero,int i,TNtuple *ntupla);
-void Trigg (TTree *albero,int i,TNtuple *ntupla);
-int Ev_Num;
-int scelta=0;
 int giov=0;
 int nprotoni=0;
 int entriestot=0;
@@ -500,7 +493,7 @@ int main(int argc, char * argv[])
 
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
-   int k = albero->GetEvent(i);
+   albero->GetEvent(i);
    ntupla->Fill(U_time,Latitude,Rcutoff,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,Unbias);
 
 }
@@ -508,19 +501,19 @@ void Trigg (TTree *albero,int i,TNtuple *ntupla)
 
 void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla,int P_ID)
 {
-   int k = albero->GetEvent(i);
+   albero->GetEvent(i);
    ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,EdepECAL,Rcutoff,Latitude,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,LDiscriminant);
 }
 
 void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 {
-   int k = albero->GetEvent(i);
+   albero->GetEvent(i);
    ntupla->Fill(Velocity,Rcutoff,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,layernonusati,Chisquare,Richtotused,RichPhEl,Cutmask,LDiscriminant,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),IsCharge1);
 }
 
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
-   int k = albero->GetEvent(i);
+   albero->GetEvent(i);
    ntupla->Fill(R,Beta,(*trtrack_edep)[0],Cutmask,Latitude,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Rcutoff,BetaRICH_new,LDiscriminant,BDT_response,Dist5D,Dist5D_P);
 }
 

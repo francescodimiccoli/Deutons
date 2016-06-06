@@ -271,7 +271,7 @@ void BDTreader()
 
 bool Quality(TTree *albero,int i)
 {
-	int k = albero->GetEvent(i);
+	albero->GetEvent(i);
 	bool selection = true;
 	if(Beta<0) selection=false;
 	//QUALITY
@@ -645,12 +645,7 @@ bool Protoni (TTree *albero,int i)
 	clusterTOFfuori=0;
 	clusterTrackfuori=0;
 	clusterTRDfuori=0;
-	int k = albero->GetEvent(i);
-	float n_sigmaTOF=3;
-	float n_sigmaTrack=3;
-	float n_sigmaTRD=3;
-	float n_sigmabeta=2;
-	float n_sigmaR=2;	
+	albero->GetEvent(i);
 	Nuovasel(R,0.938,protons); 
 
 	//=true: Disattiva selezione/////
@@ -665,12 +660,7 @@ bool Deutoni (TTree *albero,int i)
 	clusterTOFfuori=0;
 	clusterTrackfuori=0;
 	clusterTRDfuori=0;        
-	int k = albero->GetEvent(i);
-	float n_sigmaTOF=3;
-	float n_sigmaTrack=3;
-	float n_sigmaTRD=3;
-	float n_sigmabeta=2;
-	float n_sigmaR=2;
+	albero->GetEvent(i);
 	Nuovasel(R,1.875,deutons);		
 	//PDiscriminant=CalculateLklhd();
 	//=true: Disattiva selezione/////
@@ -682,7 +672,7 @@ bool Deutoni (TTree *albero,int i)
 
 int deutonsID (TTree *albero,int i) {
 	int P_ID=0;
-	int k = albero->GetEvent(i);
+	albero->GetEvent(i);
 	bool isprot=true;
 	if(!(DistTOF<3&&DistTrack<3&&DistTRD<3)) isprot=false;
 	if(PDiscriminant<4) isprot=false;
@@ -698,7 +688,7 @@ int deutonsID (TTree *albero,int i) {
 
 int protonsID (TTree *albero,int i) {
 	int P_ID=0;
-	int k = albero->GetEvent(i);
+	albero->GetEvent(i);
 	bool isprot=true;
 	if(!(DistTOF<3&&DistTrack<3&&DistTRD<3)) isprot=false;
 	///////////////  =true : ANNULLARE SELEZIONE //////////////////	

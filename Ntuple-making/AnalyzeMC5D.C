@@ -2,15 +2,10 @@
 #include "TNtuple.h"
 #include <TSpline.h>
 #include "Selections5D.h"
+#include "Commonglobals.cpp"
 
 using namespace std;
-void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla,int P_ID);
-void Grandezzesep (TTree *albero,int i,TNtuple *ntupla);
-void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla);
-void Grandezzequal (TTree *albero,int i,TNtuple *ntupla);
-void GrandezzequalRICH (TTree *albero,int i,TNtuple *ntupla);
 void Trigg (TTree *albero,int i,TNtuple *ntupla);
-int Ev_Num;
 int Trig_Num;
 double Trig;
 double TotalTrig=0;
@@ -21,7 +16,6 @@ double response[44][44];
 double norm[44];
 float BetanS=0;
 int Number=0;
-int scelta=0;
 int efficienzagenbeta_P[18]= {0};
 int efficienzagenbeta_D[18][6]= {{0}};
 int preselectedbeta_P[18]= {0};
@@ -140,8 +134,6 @@ int main(int argc, char * argv[])
    int binnum=1;
    float a=(log(0.9)-log(0.1))/18;
    float E2=exp(log(0.1)+1.5*a);
-   float Betabins[18]= {0};
-   float Betacent[18]= {0};
    while(B<0.825) {
       B=B+2*(pow(B,2)*beta->Eval(B));
       E=exp(log(0.1)+binnum*a);
@@ -149,13 +141,10 @@ int main(int argc, char * argv[])
       B1=sqrt(1-1/(pow(E+1,2)));
       B2=sqrt(1-1/(pow(E2+1,2)));
       cout<<B<<" "<<binnum<<" "<<B1<<" "<<B2<<endl;
-      Betabins[binnum-1]=B1;
-      Betacent[binnum-1]=B2;
       binnum++;
    }
 
-   float encinTOF[18];
-   for(int i=0; i<18; i++) encinTOF[i]=1/pow(1-pow(Betabins[i],2),0.5)-1;
+
 
 
    TFile *file =TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/sommaMCB800.root");
@@ -224,7 +213,7 @@ int main(int argc, char * argv[])
    //entries=entries/5;
    for(int i=(events/100)*INDX; i<(events/100)*(INDX+1); i++) {
       if(i%1300==0) cout<<i/(float)events*100<<"%"<<endl;
-      int k = geo_stuff->GetEvent(i);
+      geo_stuff->GetEvent(i);
       if(Massa_gen>1.8569&&Massa_gen<1.8571) Massa_gen=1.8570;
       if(Trig_Num<Trig) TotalTrig=TotalTrig+(double)Trig;
       totaltrig=TotalTrig+Trig;
@@ -271,7 +260,7 @@ int main(int argc, char * argv[])
    Trig=0;
    int z;
    for(z=(events/100)*INDX; z<(events/100)*(INDX+1); z++) {
-      int k = geo_stuff->GetEvent(z);
+      geo_stuff->GetEvent(z);
       if(Massa_gen>1.8569&&Massa_gen<1.8571) Massa_gen=1.8570;
       if(Trig_Num<Trig)TotalTrig=TotalTrig+(double)Trig;
       totaltrig2=TotalTrig+Trig;
@@ -376,27 +365,27 @@ int main(int argc, char * argv[])
 
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
-   int k = albero->GetEvent(i);
+   albero->GetEvent(i);
    ntupla->Fill(MC_type,Momento_gen,Ev_Num,Trig_Num,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,Unbias);
 
 }
 
 void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla,int P_ID)
 {
-   int k = albero->GetEvent(i);
+   albero->GetEvent(i);
    ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTrack,EdepTOFD,EdepECAL,MC_type,Momento_gen,Beta_gen,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,BetanS);
 
 }
 
 void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 {
-   int k = albero->GetEvent(i);
+   albero->GetEvent(i);
    ntupla->Fill(Velocity,MC_type,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,layernonusati,Chisquare,Richtotused,RichPhEl,Cutmask,Momento_gen,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),IsCharge1);
 }
 
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
-   int k = albero->GetEvent(i);
+   albero->GetEvent(i);
    ntupla->Fill(R,Beta,(*trtrack_edep)[0],MC_type,Cutmask,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,BDT_response,Dist5D,Dist5D_P);
 }
 
