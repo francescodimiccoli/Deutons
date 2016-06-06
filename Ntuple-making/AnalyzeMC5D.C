@@ -1,18 +1,5 @@
 #include "TROOT.h"
-#include "TFile.h"
-#include "TF1.h"
 #include "TNtuple.h"
-#include "TTree.h"
-#include "TH1.h"
-#include "TH2.h"
-#include <fstream>
-#include <sstream>
-#include <cstring>
-#include <stdio.h>
-#include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
 #include <TSpline.h>
 #include "Selections5D.h"
 

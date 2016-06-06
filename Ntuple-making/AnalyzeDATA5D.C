@@ -1,20 +1,5 @@
 #include "TROOT.h"
-#include "TFile.h"
-#include "TF1.h"
 #include "TNtuple.h"
-#include "TTree.h"
-#include "TH1.h"
-#include "TH2.h"
-#include <TVector3.h>
-#include <fstream>
-#include <sstream>
-#include <cstring>
-#include <vector>
-#include <stdio.h>
-#include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
 #include <TSpline.h>
 #include "Selections5D.h"
 
@@ -65,7 +50,6 @@ TH1F * selected_DHL[10];
 int main(int argc, char * argv[])
 {
 
-   gROOT->ProcessLine("#include <vector>");
    string nome;
    string tagli[10]= {"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
    /////////// CALIBR.
