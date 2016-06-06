@@ -12,16 +12,21 @@ void SetDeutonsExposureGraphStyle(TGraphErrors* graph);
 void SetProtonsExposureGraphStyle(TGraphErrors* graph);
 void FormatDeutonsExposureGraphTitle(TGraphErrors* graph);
 void FormatDFluxGeoWithDetZone(TGraphErrors* graph, int detector, int geozone) ;
+TCanvas* MakeLogGridCanvas(string title);
+TGraphErrors* FillGraphErrorFromBinningAndHisto(Binning bin, TH1* histo);
 
 
 const int NGEOBINS=11;
+const int NSUBDETECTORS=3;
 
-void TGraphErrorsFormat(TGraphErrors* graph) {
+
+void TGraphErrorsFormat(TGraphErrors* graph)
+{
    graph->SetMarkerStyle(8);
    graph->GetXaxis()->SetTitleSize(0.045);
-   graph->GetYaxis()->SetTitleSize(0.045);   
+   graph->GetYaxis()->SetTitleSize(0.045);
    return;
-} 
+}
 
 
 
@@ -32,7 +37,7 @@ Flux * P_Flux_geo_prim= new Flux("P_Flux_geo_prim", "", RB, NGEOBINS);
 //DvsMC check
 Flux * P_Flux_pre = new Flux("P_Flux_pre" , "", RB);
 Flux * P_Flux_sel = new Flux("P_Flux_sel" , "", RB);
-                                     
+
 void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona)
 {
    ntupla->GetEvent(l);
@@ -80,7 +85,8 @@ class PFluxComputing {
       TH2F* H2ExpoGeo;
 };
 
-PFluxComputing::PFluxComputing(string objname, bool geobin, string acceptname) {
+PFluxComputing::PFluxComputing(string objname, bool geobin, string acceptname)
+{
    string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
    TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
    ngeobins=1;
@@ -93,7 +99,8 @@ PFluxComputing::PFluxComputing(string objname, bool geobin, string acceptname) {
 }
 
 
-TH1* PFluxComputing::ComputeFluxAndGetHisto() {
+TH1* PFluxComputing::ComputeFluxAndGetHisto()
+{
    if (ngeobins)  PFlux->Set_Exposure_Time (H2ExpoGeo);
    else           PFlux->Set_Exposure_Time (Tempi); // whatever it may be
    enum {protons, deutons};
@@ -111,7 +118,7 @@ void ProtonFlux()
    PFluxComputing pfPre ("P_Flux_pre", 0, "Corr_AcceptancePreP");
    PFluxComputing pfGeo ("P_Flux_geo");
    PFluxComputing pfPrim("P_Flux_geo_prim");
-   
+
 
 
    cout<<"*************** PROTONS FLUXES CALCULATION *******************"<<endl;
@@ -139,22 +146,21 @@ void ProtonFlux()
    file1->Close();
 
 
-
    TGraphErrors * P_Fluxgeo[NGEOBINS];
    TGraphErrors * PFlux;
    TGraphErrors * PFlux_pre;
    float potenza=0;
 
 
-   string nome;
 
-   PBinning PRB; PRB.Setbins(nbinsr, 0.5, 100, 2); // RB did not have Ek
-   
-   
+   PBinning PRB;
+   PRB.Setbins(nbinsr, 0.5, 100, 2); // RB did not have Ek
+
+
    for(int j=0; j<NGEOBINS; j++) {
-      TGraphErrorsFormat(P_Fluxgeo[j]);
-      nome="Protons Flux: Geo. Zone "+to_string(j);
       P_Fluxgeo[j]=new TGraphErrors();
+      TGraphErrorsFormat(P_Fluxgeo[j]);
+      string nome="Protons Flux: Geo. Zone "+to_string(j);
       P_Fluxgeo[j]->SetName(nome.c_str());
       for(int i=0; i<PRB.EkBinsCent().size(); i++) {
          float ekin=PRB.EkBinCent(i);
@@ -168,12 +174,7 @@ void ProtonFlux()
    P_Fluxgeo[10]->SetTitle("Protons Flux: Geo. Zones;Kin. En./nucl. [GeV/nucl.];Flux [(m^2 sr GeV/nucl.)^-1]");
    P_Fluxgeo[10]->GetYaxis()->SetRangeUser(1e-2,1e4);
 
-   TCanvas * c23 = new TCanvas("Protons Flux: Geo. Zones");
-   c23->cd();
-   gPad->SetLogx();
-   gPad->SetLogy();
-   gPad->SetGridx();
-   gPad->SetGridy();
+   TCanvas * c23 = MakeLogGridCanvas("Protons Flux: Geo. Zones");
    P_Fluxgeo[10]->Draw("AP");
    for(int j=0; j<10; j++) P_Fluxgeo[j]->Draw("Psame");
 
@@ -191,16 +192,11 @@ void ProtonFlux()
    PFlux->SetTitle("Primary Protons Flux;Kin. En./nucl. [GeV/nucl.];Flux [(m^2 sr GeV/nucl.)^-1]");
    PFlux->GetYaxis()->SetRangeUser(1e-2,1e4);
 
-   TCanvas * c24 = new TCanvas("Primary Protons Flux");
-   c24->cd();
-   gPad->SetLogx();
-   gPad->SetLogy();
-   gPad->SetGridx();
-   gPad->SetGridy();
+   TCanvas * c24 = MakeLogGridCanvas("Primary Protons Flux");
    PFlux->Draw("AP");
    P_Fluxgeo[10]->Draw("Psame");
 
-   
+
    TGraph* galprop3P=GetPowerWeightedGalpropRatioFromFile("./Galprop/Trotta2011/Def/new_P200.txt",   potenza);
    TGraph* galprop3P2=GetPowerWeightedGalpropRatioFromFile("./Galprop/Trotta2011/Def/new_P1250.txt", potenza);
    galprop3P->Draw("sameC");
@@ -213,14 +209,14 @@ void ProtonFlux()
    PFlux_pre->SetName("Protons Primary Flux (only pres.)");
 
 
-   
+
    for(int ip=0; ip<PRB.EkBinsCent().size()-1; ip++) {
-      PFlux_->   SetPoint(ip,PRB.RigBinCent(ip+1), 1);
-      PFlux_pre->SetPoint(ip,PRB.EkBinCent(ip+1) , 1);
-      float err=(P_sel_PrimaryFlux->GetBinError(ip+2,2)+P_pre_PrimaryFlux->GetBinError(ip+2,2))/P_pre_PrimaryFlux->GetBinContent(ip+2,1);
+      PFlux_->   SetPoint(ip,PRB.RigBinCent(ip), 1);
+      PFlux_pre->SetPoint(ip,PRB.EkBinCent(ip) , 1);
+      float err=(P_sel_PrimaryFlux->GetBinError(ip+1,2)+P_pre_PrimaryFlux->GetBinError(ip+1,2))/P_pre_PrimaryFlux->GetBinContent(ip+1,1);
       PFlux_->SetPointError(ip,0,err);
       PFluxpre->SetPoint(ip,PRB.RigBinCent(ip+1),
-         P_sel_PrimaryFlux->GetBinContent(ip+1+1)/P_pre_PrimaryFlux->GetBinContent(ip+1+1,1));
+                         P_sel_PrimaryFlux->GetBinContent(ip+1)/P_pre_PrimaryFlux->GetBinContent(ip+1,1));
 
    }
 
@@ -237,7 +233,7 @@ void ProtonFlux()
 
 
 
-   TCanvas * c25 = new TCanvas("Protons Flux: Pre vs Qual");
+   TCanvas * c25 = new  TCanvas("Protons Flux: Pre vs Qual");
    c25->cd();
    gPad->SetLogx();
    gPad->SetGridx();
@@ -259,7 +255,6 @@ void ProtonFlux()
    PFlux->Write("Protons Primary Flux");
    f_out->Write();
    f_out->Close();
-
 
    return;
 }
@@ -285,14 +280,14 @@ void DeutonFlux()
    string expopnames[4] = {"esposizionepgeo", "esposizionepgeoNaF", "esposizionepgeoAgl", "esposizionegeo" };
    enum {protons, deutons};
 
-   std::vector <TH1F*> vD_Flux (3);
-   std::vector <TH1F*> vD_Dist (3);
-   std::vector <TH1F*> vP_Flux (3);
-   std::vector <TH1F*> vP_Dist (3);
-   std::vector <TH2F*> vG_Flux (3);
-   std::vector <TH2F*> vG_Dist (3);
-   std::vector <TH1F*> vD_Exp  (3);
-   std::vector <TH1F*> vP_Exp  (3);
+   std::vector <TH1F*> vD_Flux (NSUBDETECTORS);
+   std::vector <TH1F*> vD_Dist (NSUBDETECTORS);
+   std::vector <TH1F*> vP_Flux (NSUBDETECTORS);
+   std::vector <TH1F*> vP_Dist (NSUBDETECTORS);
+   std::vector <TH2F*> vG_Flux (NSUBDETECTORS);
+   std::vector <TH2F*> vG_Dist (NSUBDETECTORS);
+   std::vector <TH1F*> vD_Exp  (NSUBDETECTORS);
+   std::vector <TH1F*> vP_Exp  (NSUBDETECTORS);
 
 
 
@@ -333,10 +328,10 @@ void DeutonFlux()
       // Flux geo
       D_Flux_geo     -> Set_Exposure_Time (Tempi);
       D_Flux_geo_Dist-> Set_Exposure_Time (Tempi);
-      D_Flux_geo     -> Eval_Flux(11, deutons, 2 );
-      D_Flux_geo_Dist-> Eval_Flux(11, deutons, 2 );
+      D_Flux_geo     -> Eval_Flux(NGEOBINS, deutons, 2 );
+      D_Flux_geo_Dist-> Eval_Flux(NGEOBINS, deutons, 2 );
 
-      if (ifx<3) { // No detector for Rigidity
+      if (ifx<NSUBDETECTORS) { // No detector for Rigidity
          vD_Flux .push_back( (TH1F*)  D_Flux        ->Fluxes);
          vD_Dist.push_back( (TH1F*)  D_Flux_Dist    ->Fluxes);
          vP_Flux .push_back( (TH1F*)  P_Flux        ->Fluxes);
@@ -361,10 +356,10 @@ void DeutonFlux()
    file1->cd("Results/Fluxes");
 
 
-   TH1F * DP_ratio[3];
-   TH1F * DP_ratio_Dist[3];
+   TH1F * DP_ratio[NSUBDETECTORS];
+   TH1F * DP_ratio_Dist[NSUBDETECTORS];
 
-   for (int ifx=0; ifx<3; ifx++) {
+   for (int ifx=0; ifx<NSUBDETECTORS; ifx++) {
       //Fit on Mass
       vD_Flux[ifx] 	->Write(("DeutonsPrimaryFlux_"+suf[ifx]).data());
       vG_Flux[ifx]  	->Write(("DeutonsGeomagFlux_"+suf[ifx]).data());
@@ -411,29 +406,25 @@ void DeutonFlux()
    FormatPadAndPlotGalpropRatios(galprop3P, galprop3P2);
 
 
-  
+
 
 
    /// Flux Geo
 
-   TGraphErrors * D_Fluxgeo[3][11];
-   TGraphErrors * D_FluxgeoDist[3][11];
+   TGraphErrors * D_Fluxgeo[NSUBDETECTORS][NGEOBINS];
+   TGraphErrors * D_FluxgeoDist[NSUBDETECTORS][NGEOBINS];
 
 
-   for (int idet=0; idet<3; idet++) {
-      for(int izone=0; izone<11; izone++) {
+   for (int idet=0; idet<NSUBDETECTORS; idet++) {
+      for(int izone=0; izone<NGEOBINS; izone++) {
          string nome="Deutons Flux: Geo. Zone "+to_string(izone);
-         D_Fluxgeo[idet][izone]=new TGraphErrors();
+         TH1D* SliceOfFluxGeo=vG_Flux[idet]->ProjectionX("", izone+1, izone+1);
+         D_Fluxgeo[idet][izone]=FillGraphErrorFromBinningAndHisto(binP[idet], SliceOfFluxGeo);
          D_Fluxgeo[idet][izone]->SetName(nome.c_str());
-         D_FluxgeoDist[idet][izone]=new TGraphErrors();
-         D_FluxgeoDist[idet][izone]->SetName((nome + "Distance Fit").c_str());
 
-         for(int m=1; m<binP[idet+1].size(); m++) {
-            D_Fluxgeo    [idet][izone]->SetPoint     (m-1, binP[idet].EkBinCent(m), vG_Flux[idet]->GetBinContent(m+1, izone+1));
-            D_FluxgeoDist[idet][izone]->SetPoint     (m-1, binP[idet].EkBinCent(m), vG_Dist[idet]->GetBinContent(m+1, izone+1));
-            D_Fluxgeo    [idet][izone]->SetPointError(m-1, 0,                    vG_Flux[idet]->GetBinError  (m+1, izone+1));
-            D_FluxgeoDist[idet][izone]->SetPointError(m-1, 0,                    vG_Dist[idet]->GetBinError  (m+1, izone+1));
-         }
+         TH1D* SliceOfFluxGeoDist=vG_Dist[idet]->ProjectionX("", izone+1, izone+1);
+         D_FluxgeoDist[idet][izone]=FillGraphErrorFromBinningAndHisto(binP[idet], SliceOfFluxGeoDist);
+         D_FluxgeoDist[idet][izone]->SetName((nome + "Distance Fit").c_str());
 
          FormatDFluxGeoWithDetZone(D_Fluxgeo    [idet][izone], idet, izone);
          FormatDFluxGeoWithDetZone(D_FluxgeoDist[idet][izone], idet, izone);
@@ -441,11 +432,11 @@ void DeutonFlux()
       }
       c32->cd(1);
       D_Fluxgeo[idet][10]->Draw("Psame");
-      for(int j=0; j<11; j++) D_Fluxgeo[idet][j]->Draw("Psame");
+      for(int j=0; j<NGEOBINS; j++) D_Fluxgeo[idet][j]->Draw("Psame");
 
       c32->cd(2);
       D_FluxgeoDist[idet][10]->Draw("Psame");
-      for(int j=0; j<11; j++) D_FluxgeoDist[idet][j]->Draw("Psame");
+      for(int j=0; j<NGEOBINS; j++) D_FluxgeoDist[idet][j]->Draw("Psame");
 
    }
 
@@ -453,13 +444,13 @@ void DeutonFlux()
 
 
    TCanvas * c33 = new TCanvas("Exposure Time");
-   c33->Divide(1,3);
+   c33->Divide(1,NSUBDETECTORS);
 
-   string name[3]= {"ToF", "RICH NaF", "RICH Agl"};
-   TGraphErrors * ged[3];
-   TGraphErrors * gep[3];
+   string name[NSUBDETECTORS]= {"ToF", "RICH NaF", "RICH Agl"};
+   TGraphErrors * ged[NSUBDETECTORS];
+   TGraphErrors * gep[NSUBDETECTORS];
 
-   for (int i=0; i<3; i++) {
+   for (int i=0; i<NSUBDETECTORS; i++) {
       ged[i]=new TGraphErrors();
       gep[i]=new TGraphErrors();
       for(int m=0; m<binD[i].EkBinsCent().size(); m++) {
@@ -485,42 +476,33 @@ void DeutonFlux()
 
    TCanvas * c34 = new TCanvas("Deutons Flux: Primaries");
    c34-> Divide(2,1);
-   c34->cd(1);
-   FormatPadAndPlotGalpropRatios(galprop3P, galprop3P2);
-   c34->cd(2);
-   FormatPadAndPlotGalpropRatios(galprop3P, galprop3P2);
+
 
 
    // Loop on detectors
 
 
-   TGraphErrors * D_Flux    [3];
-   TGraphErrors * D_FluxDist[3];
+   TGraphErrors * D_Flux    [NSUBDETECTORS];
+   TGraphErrors * D_FluxDist[NSUBDETECTORS];
 
-   for (int idet=0; idet<3; idet++) {
+   for (int idet=0; idet<NSUBDETECTORS; idet++) {
 
       string nome="Deutons Flux: Primaries" ;
-      D_Flux[idet]=new TGraphErrors();
-      D_Flux[idet]->SetName(nome.c_str());
-      D_FluxDist[idet]=new TGraphErrors();
+      D_Flux[idet]=    FillGraphErrorFromBinningAndHisto(binD[idet], vD_Flux[idet]);
+      D_FluxDist[idet]=FillGraphErrorFromBinningAndHisto(binD[idet], vD_Dist[idet]);
+      D_Flux[idet]    ->SetName(nome.c_str());
       D_FluxDist[idet]->SetName((nome + "Distance Fit").c_str());
 
-      for(int m=0; m< binD[idet].EkBinsCent().size(); m++) {
-         D_Flux[idet]    ->SetPoint     (m, binD[idet].EkBinCent(m), vD_Flux[idet]->GetBinContent(m+2));
-         D_FluxDist[idet]->SetPoint     (m, binD[idet].EkBinCent(m), vD_Dist[idet]->GetBinContent(m+2));
-         D_Flux[idet]    ->SetPointError(m, 0,                    vD_Flux[idet]->GetBinError  (m+2));
-         D_FluxDist[idet]->SetPointError(m, 0,                    vD_Dist[idet]->GetBinError  (m+2));
-      }
 
       FormatDFluxGeoWithDetZone(D_Flux    [idet],      idet, 0);
       FormatDFluxGeoWithDetZone(D_FluxDist[idet],  idet, 0);
 
-
-
       c34->cd(1);
+      FormatPadAndPlotGalpropRatios(galprop3P, galprop3P2);
       D_Flux[idet]->Draw("Psame");
 
       c34->cd(2);
+      FormatPadAndPlotGalpropRatios(galprop3P, galprop3P2);
       D_FluxDist[idet]->Draw("Psame");
 
    }
@@ -544,30 +526,23 @@ void DeutonFlux()
 
    // PD_Ratio
 
-   TGraphErrors * PD_ratio     [3];
-   TGraphErrors * PD_ratio_Dist[3];
+   TGraphErrors * PD_ratio     [NSUBDETECTORS];
+   TGraphErrors * PD_ratio_Dist[NSUBDETECTORS];
 
-   for (int i=0; i<3; i++) {
+   for (int idet=0; idet<NSUBDETECTORS; idet++) {
 
-      PD_ratio[i]     =new TGraphErrors();
-      PD_ratio_Dist[i]=new TGraphErrors();
-      for(int m=0; m<binP[i].EkBinsCent().size(); m++) {
-         PD_ratio[i]     ->SetPoint     (m, binP[i].EkBinCent(m), DP_ratio[i]->     GetBinContent(m+2));
-         PD_ratio_Dist[i]->SetPoint     (m, binP[i].EkBinCent(m), DP_ratio_Dist[i]->GetBinContent(m+2));
-         PD_ratio[i]     ->SetPointError(m, 0,                    DP_ratio[i]->GetBinError(m+2));
-         PD_ratio_Dist[i]->SetPointError(m, 0,                    DP_ratio_Dist[i]->GetBinError(m+2));
-      }
-      FormatGraphPDRatios(PD_ratio[i]);
-      FormatGraphPDRatios(PD_ratio_Dist[i]);
-
+      PD_ratio[idet]     =FillGraphErrorFromBinningAndHisto(binP[idet], DP_ratio[idet]     );
+      PD_ratio_Dist[idet]=FillGraphErrorFromBinningAndHisto(binP[idet], DP_ratio_Dist[idet]);
+      FormatGraphPDRatios(PD_ratio[idet]);
+      FormatGraphPDRatios(PD_ratio_Dist[idet]);
 
       c35->cd(1);
       FormatPadAndPlotGalpropRatios(galpropRatio500, galpropRatio1000);
-      PD_ratio[i]->Draw("Psame");
+      PD_ratio[idet]->Draw("Psame");
 
       c35->cd(2);
       FormatPadAndPlotGalpropRatios(galpropRatio500, galpropRatio1000);
-      PD_ratio_Dist[i]->Draw("Psame");
+      PD_ratio_Dist[idet]->Draw("Psame");
 
    }
 
@@ -626,7 +601,8 @@ TGraph* GetPowerWeightedGalpropRatioFromFile(string filename, float power, float
    return graph;
 }
 
-void FormatGraphGalprop(TGraph* graph) {
+void FormatGraphGalprop(TGraph* graph)
+{
    FormatGraphGalpropXaxis(graph);
    graph->GetYaxis()->SetTitle("Flux [(m^2 sr GeV/nucl.)^-1]");
    graph->GetXaxis()->SetTitleSize(0.045);
@@ -636,14 +612,16 @@ void FormatGraphGalprop(TGraph* graph) {
    return;
 }
 
-void FormatGraphGalpropRatio(TGraph* graph) {
+void FormatGraphGalpropRatio(TGraph* graph)
+{
    FormatGraphGalpropXaxis(graph);
    graph->GetYaxis()->SetRangeUser(1e-3,1e-1);
    graph->GetYaxis()->SetTitle("Flux ratio");
    return;
 }
 
-void FormatGraphGalpropXaxis(TGraph* graph) {
+void FormatGraphGalpropXaxis(TGraph* graph)
+{
    graph->GetXaxis()->SetRangeUser(0.1,10);
    graph->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
    return;
@@ -694,18 +672,44 @@ void FormatDeutonsExposureGraphTitle(TGraphErrors* graph)
 }
 
 
-void FormatDFluxGeoWithDetZone(TGraphErrors* graph, int detector, int geozone) {
+void FormatDFluxGeoWithDetZone(TGraphErrors* graph, int detector, int geozone)
+{
 
-    int style[3]= {8, 4, 3}; ///< for SetMarkerStyle
+   int style[NSUBDETECTORS]= {8, 4, 3}; ///< for SetMarkerStyle
 
-    graph->SetMarkerStyle(style[detector]);
-    graph->SetMarkerSize(1.5);
-    graph->SetMarkerColor(geozone);
-    graph->SetLineColor(geozone);
-    graph->SetLineWidth(2);
+   graph->SetMarkerStyle(style[detector]);
+   graph->SetMarkerSize(1.5);
+   graph->SetMarkerColor(geozone);
+   graph->SetLineColor(geozone);
+   graph->SetLineWidth(2);
 
-         return;
+   return;
 
 }
+
+
+TCanvas* MakeLogGridCanvas(string title)
+{
+   TCanvas* canv=new TCanvas(title.data());
+   canv->cd();
+   gPad->SetLogx(); // This makes me sad :(
+   gPad->SetLogy();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   return canv;
+}
+
+
+
+TGraphErrors* FillGraphErrorFromBinningAndHisto(Binning bin, TH1* histo)
+{
+   TGraphErrors* graph=new TGraphErrors();
+   for(int ibin=0; ibin<bin.EkBinsCent().size(); ibin++) {
+      graph->SetPoint     (ibin, bin.EkBinCent(ibin),  histo->GetBinContent(ibin));
+      graph->SetPointError(ibin, 0,                 histo->GetBinError(ibin)  );
+   }
+   return graph;
+}
+
 
 
