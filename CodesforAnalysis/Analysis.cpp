@@ -51,8 +51,7 @@
 #include "Parte2/DVSMCPreSeleff.cpp"
 #include "Parte2/DVSMCPreSeleff_D.cpp"
 #include "Parte2/Acceptance.cpp"
-#include "Parte2/ProtonFlux.cpp"
-#include "Parte2/DeutonsFlux.cpp"
+#include "Parte2/FluxImplementation.cpp"
 //#include "Parte2/DVSMCTrackeff.cpp"*/
 
 using namespace std;
