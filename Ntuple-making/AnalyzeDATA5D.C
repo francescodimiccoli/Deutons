@@ -43,6 +43,7 @@ TH1F * selected_DHL[10];
 int main(int argc, char * argv[])
 {
 
+	if (argc<3) return 0;
    string nome;
    string tagli[10]= {"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
    /////////// CALIBR.
@@ -139,22 +140,15 @@ int main(int argc, char * argv[])
    cout<<"**************************** BETA BINS ***********************************"<<endl;
    float B=0.4;
    float B1=0;
-   float B2=0;
    float E=0.1;
    int binnum=1;
    float a=(log(1)-log(0.1))/18;
-   float E2=exp(log(0.1)+1.5*a);
    float Betabins[18]= {0};
-   float Betacent[18]= {0};
    while(B<0.825) {
       B=B+2*(pow(B,2)*beta->Eval(B));
       E=exp(log(0.1)+binnum*a);
-      E2=exp(log(0.1)+(binnum+0.5)*a);
       B1=sqrt(1-1/(pow(E+1,2)));
-      B2=sqrt(1-1/(pow(E2+1,2)));
-      cout<<B<<" "<<binnum<<" "<<B1<<" "<<B2<<endl;
       Betabins[binnum-1]=B1;
-      Betacent[binnum-1]=B2;
       binnum++;
    }
 
@@ -163,17 +157,12 @@ int main(int argc, char * argv[])
 
    cout<<"**************************** BETA BINS NaF***********************************"<<endl;
    float BetabinsNaF[18]= {0};
-   float BetacentNaF[18]= {0};
    a=(log(4.025)-log(0.666))/18;
-   E2=exp(log(0.666)+1.5*a);
    binnum=0;
    while(B1<0.98) {
       E=exp(log(0.666)+binnum*a);
-      E2=exp(log(0.666)+(binnum+0.5)*a);
       B1=sqrt(1-1/(pow(E+1,2)));
-      B2=sqrt(1-1/(pow(E2+1,2)));
       BetabinsNaF[binnum]=B1;
-      BetacentNaF[binnum]=B2;
       binnum++;
    }
    float encinNaF[18];
@@ -181,30 +170,25 @@ int main(int argc, char * argv[])
 
    cout<<"**************************** BETA BINS Agl***********************************"<<endl;
    float BetabinsAgl[18]= {0};
-   float BetacentAgl[18]= {0};
    a=(log(9.01)-log(2.57))/18;
-   E2=exp(log(2.57)+1.5*a);
    binnum=0;
    while(B1<0.995) {
       E=exp(log(2.57)+binnum*a);
-      E2=exp(log(2.57)+(binnum+0.5)*a);
       B1=sqrt(1-1/(pow(E+1,2)));
-      B2=sqrt(1-1/(pow(E2+1,2)));
       BetabinsAgl[binnum]=B1;
-      BetacentAgl[binnum]=B2;
       binnum++;
    }
    float encinAgl[18];
    for(int i=0; i<18; i++) encinAgl[i]=1/pow(1-pow(BetabinsAgl[i],2),0.5)-1;
 
    string ARGV(argv[1]);
-   bool check=true;
+   
    string indirizzo_in="/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati"+ARGV+".root";
    TFile *file =TFile::Open(indirizzo_in.c_str());
    TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
    std::cout<<geo_stuff<<endl;
-   if(!(geo_stuff>0)) check=false;
-   if(!(geo_stuff>0)) check=false;
+   bool check=geo_stuff?true:false;
+   
    if(check==false) std::cout<<"Skipping file!"<<endl;
    string indirizzo_out="Results.root";
    TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
@@ -268,7 +252,7 @@ int main(int argc, char * argv[])
    for(int i=0; i<events; i++) {
       if(!check) break;
       if(i%1300==0) cout<<i/(float)events*100<<"%"<<endl;
-      int k = geo_stuff->GetEvent(i);
+      geo_stuff->GetEvent(i);
       R_corr=R;
       if(i==0) { tbeg=U_time; cout <<"Tempo Iniziale: "<<tbeg<<endl;}
       if(i==events-1) {tend=U_time; cout <<"Tempo Finale: "<<tend<<endl;}
@@ -285,7 +269,7 @@ int main(int argc, char * argv[])
       if(Unbias==1) continue;
       if (Quality(geo_stuff,i)) {
          giov++;
-         if(scelta==1) aggiungiantupla(geo_stuff,i,pre,0);
+         if(scelta==1) aggiungiantupla(geo_stuff,i,pre);
          if(control==1) continue;
          Protoni(geo_stuff,i);
          if (Deutoni(geo_stuff,i)) if(scelta==1) Grandezzesepd(geo_stuff,i,grandezzesepd);
@@ -306,7 +290,7 @@ int main(int argc, char * argv[])
    int Tempo=0;
    for(z=0; z<events; z++) {
       if(!check) break;
-      int k = geo_stuff->GetEvent(z);
+      geo_stuff->GetEvent(z);
       contaeventi++;
       R=R_pre;
 
@@ -499,7 +483,7 @@ void Trigg (TTree *albero,int i,TNtuple *ntupla)
 }
 
 
-void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla,int P_ID)
+void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla)
 {
    albero->GetEvent(i);
    ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,EdepECAL,Rcutoff,Latitude,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,LDiscriminant);

@@ -16,10 +16,6 @@ double response[44][44];
 double norm[44];
 float BetanS=0;
 int Number=0;
-int efficienzagenbeta_P[18]= {0};
-int efficienzagenbeta_D[18][6]= {{0}};
-int preselectedbeta_P[18]= {0};
-int preselectedbeta_D[18][6]= {{0}};
 TH1F * selezioni_PHLMC[10];
 TH1F * selected_PHLMC[10];
 TH2F * selezioni_DHLMC[10];
@@ -33,7 +29,7 @@ int AssignMC_type(float Massa_gen);
 
 int main(int argc, char * argv[])
 {
-
+	if (argc<3) return 0;
    gROOT->ProcessLine("#include <vector>");
    ///////////////////////////// CALIBR.
    int control=0;
@@ -126,25 +122,6 @@ int main(int argc, char * argv[])
 
    }
 
-   cout<<"**************************** BETA BINS ***********************************"<<endl;
-   float B=0.4;
-   float B1=0;
-   float B2=0;
-   float E=0.1;
-   int binnum=1;
-   float a=(log(0.9)-log(0.1))/18;
-   float E2=exp(log(0.1)+1.5*a);
-   while(B<0.825) {
-      B=B+2*(pow(B,2)*beta->Eval(B));
-      E=exp(log(0.1)+binnum*a);
-      E2=exp(log(0.1)+(binnum+0.5)*a);
-      B1=sqrt(1-1/(pow(E+1,2)));
-      B2=sqrt(1-1/(pow(E2+1,2)));
-      cout<<B<<" "<<binnum<<" "<<B1<<" "<<B2<<endl;
-      binnum++;
-   }
-
-
 
 
    TFile *file =TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/sommaMCB800.root");
@@ -229,7 +206,7 @@ int main(int argc, char * argv[])
       if(Unbias==1) continue;
       if (Quality(geo_stuff,i)) {
          giov++;
-         if(scelta==1) aggiungiantupla(geo_stuff,i,pre,0);
+         if(scelta==1) aggiungiantupla(geo_stuff,i,pre);
          //cout<<Beta<<" "<<BetanS<<endl;
          if(control==1) continue;
          //////////////////// CORR EDEP /////////////////////
@@ -370,7 +347,7 @@ void Trigg (TTree *albero,int i,TNtuple *ntupla)
 
 }
 
-void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla,int P_ID)
+void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla)
 {
    albero->GetEvent(i);
    ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTrack,EdepTOFD,EdepECAL,MC_type,Momento_gen,Beta_gen,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,BetanS);
