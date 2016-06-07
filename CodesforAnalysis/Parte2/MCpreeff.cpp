@@ -15,15 +15,15 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
       if(Tup.Unbias==0&&((int)Tup.Cutmask&187)==187&&Tup.Beta_pre>0&&Tup.R_pre>0) EffpreselMCP->afterR->Fill(RB.GetRBin(fabs(Tup.R_pre)));
          
       // Beta bins
- ToFPB.wRFill(EffpreselMCP->beforeTOF, Tup.Momento_gen);
- NaFPB.wRFill(EffpreselMCP->beforeNaF, Tup.Momento_gen);
- AglPB.wRFill(EffpreselMCP->beforeAgl, Tup.Momento_gen);
+ ToFPB.RFill(EffpreselMCP->beforeTOF, Tup.Momento_gen);
+ NaFPB.RFill(EffpreselMCP->beforeNaF, Tup.Momento_gen);
+ AglPB.RFill(EffpreselMCP->beforeAgl, Tup.Momento_gen);
 
       if(Tup.Unbias==0 && ((int)Tup.Cutmask&187)==187 && Tup.Beta_pre>0 && Tup.R_pre>0)
       {
-                                     ToFPB.wRFill(EffpreselMCP->afterTOF, RUsed);
-         if(((int)Tup.Cutmask)>>11==512) NaFPB.wRFill(EffpreselMCP->afterNaF, RUsed);
-         if(((int)Tup.Cutmask)>>11==0  ) AglPB.wRFill(EffpreselMCP->afterAgl, RUsed);
+                                     ToFPB.RFill(EffpreselMCP->afterTOF, RUsed);
+         if(((int)Tup.Cutmask)>>11==512) NaFPB.RFill(EffpreselMCP->afterNaF, RUsed);
+         if(((int)Tup.Cutmask)>>11==0  ) AglPB.RFill(EffpreselMCP->afterAgl, RUsed);
       }
 
    }
