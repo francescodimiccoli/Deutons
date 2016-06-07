@@ -1,4 +1,3 @@
-#include "GCR_data.h"
 #include "Reweighting.cpp"
 
 int main() {
