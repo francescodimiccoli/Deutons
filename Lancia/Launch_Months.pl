@@ -51,7 +51,7 @@ while($n<=$fine){
 			if($mode==0){
 				{
 					system("perl $workdir/Sommarisultati.pl $mesi[$n]");
-					system("$workdir/CodesforAnalysis/Preliminar.exe $mesi[$n]");
+					system("$workdir/Calibrations/Preliminar.exe $mesi[$n]");
 				}
 			}
 			if($mode==2||$mode==1) {system("perl ./SommaParte1.pl $mesi[$n]");}	
