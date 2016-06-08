@@ -1,3 +1,6 @@
+#ifndef GCR_DATA_H
+#define GCR_DATA_H
+
 class GCR_data
 {
 
@@ -64,3 +67,5 @@ class GCR_data
 
   int print();
 };
+
+#endif
