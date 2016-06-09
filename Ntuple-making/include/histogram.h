@@ -2,6 +2,7 @@
 #define HISTOGRAM_H
 
 #include "GCR_data.h"
+#include "printmatrix.h"
 #include <string>
 #include <algorithm>
 
@@ -102,17 +103,7 @@ void Histogram::normalize() {
 }
 
 void Histogram::printContent() {
-   uint i;
-   for (i=0; i<content.size(); i++) {
-      std::cout << std::right << std::setw (4)  << std::setfill (' ') << i;
-      std::cout << std::right << std::setw (10) << std::setfill (' ') << std::setprecision (3) << edges[i] ;
-      std::cout << std::right << std::setw (10) << std::setfill (' ') << std::setprecision (3) << content[i] ;
-      std::cout << std::endl;
-   }
-   std::cout << std::right << std::setw (4)  << std::setfill (' ') << i;
-   std::cout << std::right << std::setw (10) << std::setfill (' ') << std::setprecision (3) << edges[i] ;
-   std::cout << std::endl;
-   return;
+   printMatrix( {edges, content} );
 }
 
 #endif

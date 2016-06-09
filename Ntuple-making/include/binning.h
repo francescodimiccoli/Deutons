@@ -2,10 +2,9 @@
 #define BINNING_H
 
 #include "particle.h"
+#include "printmatrix.h"
 
 #include <fstream>
-#include <iostream>
-#include <iomanip>
 #include <vector>
 #include "TH1F.h"
 
@@ -168,22 +167,10 @@ void Binning::pushBackCentralVelocities ()
 
 void Binning::Print()
 {
-   std::cout << std::right << std::setw (3)  << std::setfill (' ') << "Bin";
-   std::cout << std::right << std::setw (11) << std::setfill (' ') << "Ekin";
-   std::cout << std::right << std::setw (11) << std::setfill (' ') << "Momentum";
-   std::cout << std::right << std::setw (11) << std::setfill (' ') << "Rigidity";
-   std::cout << std::right << std::setw (11) << std::setfill (' ') << "Beta";
-   std::cout << std::endl; 
-
-   for (uint i=0; i<ekbin.size(); i++) {
-      std::cout << std::right << std::setw (3)  << std::setfill (' ') << i;
-      std::cout << std::right << std::setw (11) << std::setfill (' ') << std::setprecision (4) <<   ekbin[i] ;
-      std::cout << std::right << std::setw (11) << std::setfill (' ') << std::setprecision (4) <<  mombin[i] ;
-      std::cout << std::right << std::setw (11) << std::setfill (' ') << std::setprecision (4) <<  rigbin[i] ;
-      std::cout << std::right << std::setw (11) << std::setfill (' ') << std::setprecision (5) << betabin[i] ;
-      std::cout << std::endl;                 
-   }
-
+   printMatrix(
+      { ekbin, mombin, rigbin, betabin },
+      {"Ekin", "Momentum", "Rigidity", "Beta"}
+   );
    return;
 }
 
@@ -219,8 +206,12 @@ int Binning::GetRBin (float var)
    return -1;
 }
 
-void Binning::RFill (TH1* h, float var) {
+void Binning::RFill (TH1* h, float var)
+{
    h->Fill (GetRBin (var) );
 }
+
+
+
 
 #endif
