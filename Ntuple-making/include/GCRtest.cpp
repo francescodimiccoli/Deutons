@@ -13,6 +13,11 @@ int main() {
    bins.setBinsFromEk(15, 2, 16);
    Histogram histo;
    histo.fillWithGalpropFile("CRDB_ProtonsAMS_R.galprop");
+   histo.printContent();
+   std::cout << " ---------------------------------------" << std::endl;
+   histo.normalize();
+   histo.printContent();
+   std::cout << " ---------------------------------------" << std::endl;
    Spectrum spectrum(bins);
    spectrum.rebinHistoInRig(histo);
    std::vector<float> flux=spectrum.getRebinnedHisto();
@@ -20,4 +25,11 @@ int main() {
       std::cout << i << " " << bins.RigBinCent(i) << " " << flux[i] << std::endl;
 
    return 0;
+}
+
+
+void printEdgesContent(std::vector<float> bins, std::vector<float> content) {
+   
+
+   
 }

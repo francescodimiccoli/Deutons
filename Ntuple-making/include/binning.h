@@ -24,7 +24,7 @@ class Binning {
 
       void setBinsFromEk (int, float, float); ///< nbins, min, max
       void setBinsFromRigidity (int, float, float);
-      int size() {return ekbin.size(); };
+      int size() {return ekbincent.size(); };
 
 
       /** @brief Returns the rigidity bin containing the variable
