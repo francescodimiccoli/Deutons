@@ -12,6 +12,9 @@ class Spectrum
       bool rebinHistoInEtotPerMass (Histogram htorebin);
       std::vector<float> getRebinnedHisto() {return rebinnedVector;}
       Binning getBins() {return bins;}
+      void printContent();
+      void printContentInRig();
+      void printContentInEkin();
          
    private:
          bool rebinHisto(Histogram htorebin, std::vector<float> binGoodUnit );
@@ -84,19 +87,21 @@ void Spectrum::setMatrix (std::vector<float> vinput, std::vector<float> vref)
    return;
 }
 
+void Spectrum::printContent() {
+      printMatrix::print(
+      { bins.EkBins(), bins.MomBins(), bins.RigBins(), bins.BetaBins(), rebinnedVector },
+      {"Ekin", "Momentum", "Rigidity", "Beta", "BinContent"}
+   );
+}
 
 
-/*Class SpectrumWeithing
- Binning B
- LoadDataFromCSV(string filename)
- vector<float> generated_binsClass DataSpectrumWeighting: public SpectrumWeighting
- LoadDataFromGalprop(string filename)
- LoadDataFromCRDB(some options, maybe a date)Class MCSpectrumWeighting: public SpectrumWeighting
- vector <float> impingingbinsClass SpectrumWeightingMaker :
-  Binning B
-  MCSpectrumWeighting mcweight
-  MCSpectrumWeighting Data
-  float GetRatioForRigidity (R)*/
+void Spectrum::printContentInRig() {
+   printMatrix::print( {bins.RigBins(), rebinnedVector} );
+}
+
+void Spectrum::printContentInEkin() {
+   printMatrix::print( {bins.EkBins(), rebinnedVector} );
+}
 
 
 #endif /* SPECTRUM_H */ 
