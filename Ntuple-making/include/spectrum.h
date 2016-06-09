@@ -15,6 +15,8 @@ class Spectrum
       void printContent();
       void printContentInRig();
       void printContentInEkin();
+      void printMatrix();
+      void printTMatrix(); // Transposed
          
    private:
          bool rebinHisto(Histogram htorebin, std::vector<float> binGoodUnit );
@@ -95,6 +97,14 @@ void Spectrum::printContent() {
    );
 }
 
+void Spectrum::printMatrix() {
+      printMatrix::print( matrix);
+}
+
+void Spectrum::printTMatrix() {
+      printMatrix::printTransposed( matrix);
+}
+
 
 void Spectrum::printContentInRig() {
    printMatrix::print( {bins.RigBins(), rebinnedVector} );
@@ -106,7 +116,3 @@ void Spectrum::printContentInEkin() {
 
 
 #endif /* SPECTRUM_H */ 
-
-
-
-

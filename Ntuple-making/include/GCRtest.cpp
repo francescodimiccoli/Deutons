@@ -22,9 +22,11 @@ int main() {
    std::cout << " #####  AMS-02 proton file, normalized histogram  ##### " << std::endl;
    histo.normalize();
    histo.printContent();
-   std::cout << " #####  AMS-02 proton file, rebinned  ##### " << std::endl;
    Spectrum spectrum(bins);
    spectrum.rebinHistoInRig(histo);
+   std::cout << " #####  Migration matrix (transposed)  ##### " << std::endl;
+   spectrum.printTMatrix();
+   std::cout << " #####  AMS-02 proton file, rebinned  ##### " << std::endl;
    spectrum.printContentInRig();
 
    // Mock MC lognorm histo
