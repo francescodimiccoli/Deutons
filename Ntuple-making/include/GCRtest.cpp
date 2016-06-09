@@ -46,7 +46,14 @@ int main() {
    Histogram hRatio;
    bool fillok=hRatio.fillWithVectors(bins.RigBins(), MCOverP);
    if (fillok) {
+      std::cout << " #####  Normalized to unity ##### " << std::endl;
       hRatio.normalize();
+      hRatio.printContent();
+      std::cout << " #####  Normalized to the number of bins (average=1) ##### " << std::endl;
+      hRatio.normalizeToAllBins();
+      hRatio.printContent();
+      std::cout << " #####  Normalized to the number of non-empty bins ##### " << std::endl;
+      hRatio.normalizeToNonEmptyBins();
       hRatio.printContent();
    } else {
       std::cout << "Error fill" << std::endl;
@@ -55,6 +62,3 @@ int main() {
 
    return 0;
 }
-
-
-

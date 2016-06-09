@@ -21,6 +21,8 @@ class Histogram {
       void fillWithGalpropFile (std::string filename);
       void genMCLogNormFlux (int nbins=100, float rmin=0.5, float rmax=10);
       void normalize();
+      void normalizeToAllBins();
+      void normalizeToNonEmptyBins();
       void printContent();
 
    private:
@@ -101,6 +103,27 @@ void Histogram::normalize() {
    for (int i=0; i<content.size(); i++)  content[i] /= integral;
    return;
 }
+
+void Histogram::normalizeToAllBins() {
+   float integral=0;
+   for (int i=0; i<content.size(); i++)  integral += content[i];
+   integral/=content.size();
+   for (int i=0; i<content.size(); i++)  content[i] /= integral;
+   return;
+}
+
+void Histogram::normalizeToNonEmptyBins() {
+   float integral=0;
+   int nonempty=0;
+   for (int i=0; i<content.size(); i++)  {
+      integral += content[i];
+      if (content[i] != 0) nonempty++;
+   }
+   integral/=nonempty;
+   for (int i=0; i<content.size(); i++)  content[i] /= integral;
+   return;
+}
+
 
 void Histogram::printContent() {
    printMatrix::print( {edges, content} );
