@@ -76,6 +76,7 @@ void Spectrum::setMatrix (std::vector<float> vinput, std::vector<float> vref)
          float weight=0;
          // Which fraction of the bbin is in tbin? 4 possibilities:
          if      (tmin > bmax || tmax < bmin ) weight=0;                      // either tbin is outside bbin
+         else if (tmin < bmin && tmax > bmax ) weight = 1; // or includes fully bbin         
          else if (tmin > bmin && tmax < bmax ) weight = (tmax-tmin) / bwidth; // or fully included into bbin
          else if (tmin <=bmin && tmax < bmax ) weight = (tmax-bmin) / bwidth; // or partly included to the right
          else if (tmin > bmin && tmax >=bmax ) weight = (bmax-tmin) / bwidth; // ...or to the left
