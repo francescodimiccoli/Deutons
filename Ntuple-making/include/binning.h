@@ -167,7 +167,7 @@ void Binning::pushBackCentralVelocities ()
 
 void Binning::Print()
 {
-   printMatrix(
+   printMatrix::print(
       { ekbin, mombin, rigbin, betabin },
       {"Ekin", "Momentum", "Rigidity", "Beta"}
    );

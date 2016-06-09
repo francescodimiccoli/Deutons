@@ -103,7 +103,7 @@ void Histogram::normalize() {
 }
 
 void Histogram::printContent() {
-   printMatrix( {edges, content} );
+   printMatrix::print( {edges, content} );
 }
 
 #endif

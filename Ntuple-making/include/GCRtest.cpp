@@ -22,7 +22,7 @@ int main() {
    Spectrum spectrum(bins);
    spectrum.rebinHistoInRig(histo);
    std::vector<float> flux=spectrum.getRebinnedHisto();
-   printMatrix({bins.RigBins(), flux}, {"BinMin", "Content"});
+   printMatrix::print({bins.RigBins(), flux}, {"BinMin", "Content"});
 
    return 0;
 }
