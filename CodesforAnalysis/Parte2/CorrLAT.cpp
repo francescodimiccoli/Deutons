@@ -295,7 +295,7 @@ TH1 * Weighted_CorrLAT(TH2 * esposizionegeo, TH1 * LATcorr) {
    //	
    
    //Divide by total exposure time
-   TH1F * Exptime =(TH1F *) ExposureTime(esposizionegeo);
+   TH1F * Exptime =(TH1F *) esposizionegeo -> ProjectionX("",0,10) -> Clone();
    temp2     -> Divide ( Exptime );
    temp2_err -> Divide ( Exptime );
    //
@@ -305,4 +305,3 @@ TH1 * Weighted_CorrLAT(TH2 * esposizionegeo, TH1 * LATcorr) {
 
    return (TH1 *)temp2 -> Clone();
 }
-

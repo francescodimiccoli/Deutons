@@ -52,9 +52,13 @@
 #include "Parte2/DVSMCPreSeleff.cpp"
 #include "Parte2/DVSMCPreSeleff_D.cpp"
 #include "Parte2/Acceptance.cpp"
+
 #include "Parte2/ProtonFlux.cpp"
 #include "Parte2/DeutonsFlux.cpp"
 #include "Parte2/OtherExperimentsComparison.cpp"
+
+#include "Parte2/FluxImplementation.cpp"
+
 //#include "Parte2/DVSMCTrackeff.cpp"*/
 
 using namespace std;
@@ -122,10 +126,6 @@ int main(int argc, char * argv[])
    RB.Setbins(nbinsr, 0.5, 100, 2);
 
    for(int i=0; i<RB.size()-1; i++) {
-      encinprot[i]=pow(1+pow( RB.RigBins()[i]/0.938, 2) ,0.5)-1;
-      if (i>0) deltaencinprot[i]=encinprot[i]-encinprot[i-1];
-      encindeut[i]=pow(1+pow( RB.RigBins()[i]/1.875, 2) ,0.5)-1;
-      if (i>0) deltaencindeut[i]=encindeut[i]-encindeut[i-1];
       cout<<RB.RigBinCent(i)<<endl;
    }
 
@@ -198,5 +198,3 @@ int main(int argc, char * argv[])
 	cout<<"************************** OUTPUT **************************************************************"<<endl;
 	return 1;
 }
-
-

@@ -1,0 +1,78 @@
+# Data export from the Cosmic-Ray database (http://lpsc.in2p3.fr/crdb)
+# Please cite Maurin, Melot, Taillet, arXiv:1302.5525
+# Date: 2016/06/08
+# Format: GALPROP code (see at the bottom of the file)
+#
+  Ref.  experiment    units              value        Energy        value error                  Z.A sec   |     Z.A pri    [comments]
+X      Y              name   <E>   low    high number    -        +
+==================================================================================================================================== 
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  1.4210e+0  1.3851e+0  1.4579e+0  1.1172e+1  6.3979e-1  6.3979e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  1.4959e+0  1.4579e+0  1.5349e+0  1.1161e+1  6.3126e-1  6.3126e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  1.5747e+0  1.5349e+0  1.6158e+0  1.1574e+1  6.4059e-1  6.4059e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  1.6589e+0  1.6158e+0  1.7033e+0  1.1991e+1  6.6001e-1  6.6001e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  1.7495e+0  1.7033e+0  1.7971e+0  1.2005e+1  6.7953e-1  6.7953e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  1.8448e+0  1.7971e+0  1.8941e+0  1.1605e+1  6.2130e-1  6.2130e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  1.9460e+0  1.8941e+0  1.9996e+0  1.1412e+1  6.3793e-1  6.3793e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  2.0555e+0  1.9996e+0  2.1133e+0  1.1302e+1  6.1914e-1  6.1914e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  2.1718e+0  2.1133e+0  2.2322e+0  1.1201e+1  6.2410e-1  6.2410e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  2.2957e+0  2.2322e+0  2.3614e+0  1.0919e+1  6.0109e-1  6.0109e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  2.4296e+0  2.3614e+0  2.5003e+0  1.0370e+1  5.7627e-1  5.7627e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  2.5732e+0  2.5003e+0  2.6488e+0  9.7377e+0  5.3908e-1  5.3908e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  2.7263e+0  2.6488e+0  2.8066e+0  9.1448e+0  5.0953e-1  5.0953e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  2.8908e+0  2.8066e+0  2.9782e+0  8.5148e+0  4.7824e-1  4.7824e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  3.0690e+0  2.9782e+0  3.1634e+0  8.0634e+0  4.4542e-1  4.4542e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  3.2618e+0  3.1634e+0  3.3641e+0  7.5854e+0  4.5253e-1  4.5253e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-CALO(2006/07-2007/12)                  GeV 1/m2/sr/GeV flux  3.4689e+0  3.3641e+0  3.5778e+0  6.8613e+0  5.0148e-1  5.0148e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.0038e+0  9.7872e-1  1.0296e+0  7.9980e+0  4.1271e-1  4.1271e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.0538e+0  1.0296e+0  1.0786e+0  8.6941e+0  4.2841e-1  4.2841e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.1057e+0  1.0786e+0  1.1337e+0  9.1413e+0  4.0944e-1  4.0944e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.1618e+0  1.1337e+0  1.1906e+0  9.6364e+0  4.1211e-1  4.1211e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.2213e+0  1.1906e+0  1.2529e+0  1.0013e+1  4.2706e-1  4.2706e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.2843e+0  1.2529e+0  1.3166e+0  1.0650e+1  4.4218e-1  4.4218e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.3504e+0  1.3166e+0  1.3851e+0  1.1101e+1  4.4498e-1  4.4498e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.4210e+0  1.3851e+0  1.4579e+0  1.1383e+1  4.5990e-1  4.5990e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.4959e+0  1.4579e+0  1.5349e+0  1.1379e+1  4.3423e-1  4.3423e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.5747e+0  1.5349e+0  1.6158e+0  1.1478e+1  4.4780e-1  4.4780e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.6589e+0  1.6158e+0  1.7033e+0  1.1660e+1  4.1900e-1  4.1900e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.7495e+0  1.7033e+0  1.7971e+0  1.1800e+1  4.3139e-1  4.3139e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.8448e+0  1.7971e+0  1.8941e+0  1.1781e+1  4.4350e-1  4.4350e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  1.9460e+0  1.8941e+0  1.9996e+0  1.2024e+1  4.5537e-1  4.5537e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  2.0555e+0  1.9996e+0  2.1133e+0  1.1930e+1  4.6719e-1  4.6719e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  2.1718e+0  2.1133e+0  2.2322e+0  1.1731e+1  4.7866e-1  4.7866e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+  Ad16 PAMELA-TOF(2006/07-2007/12)                   GeV 1/m2/sr/GeV flux  2.2957e+0  2.2322e+0  2.3614e+0  1.1384e+1  5.1659e-1  5.1659e-1  a 0.0 0.0 0.0         | 1.2 0.0 0.0         2H                                  
+#
+#---------------------------------------------------------------------------------------------------------------------------------------------
+# =====================
+# Explanation of format
+# =====================
+# c++ software to read and use this data is available from the author.
+#
+# The columns are aligned but the reading routines allow for some flexibility - it is sufficient to use blanks to separate horizontal entries
+# The '#' sign indicates a comment and is ignored
+#
+#  Ref.  experiment    units              value        Energy        value         error                  Z.A sec   |     Z.A pri    [comments]
+#                    X      Y              name   <E>   low    high    number    -        +    
+#====================================================================================================================================
+# Ag02  AMS01     GeV  1/m2/sr/MeV       flux   0.265  0.22   0.31    154.e-2 13.4e-2  0.0   a    0.00  0.00   0.0 | 1.01  0.0   0.0 Table 4.8 linear sum errors
+# ACEW  CRIS      MeV  1/cm2/sr/MeV      ratio 188.0 114.   310.      4.22e-2 0.36e-2  0.0   a   13.26  0.00   0.0 |13.-1  0.0   0.0
+# |     |         |                      |      |      |     |        |      |         |     |   |                 |                 |
+# | Reference key (4 characters) from which data was taken,  as in table at end
+#       | Experiment name (or acronym to distinguish different results from same experiment)
+#                 | units  (energy per nucleon) (MeV,GeV)
+#                      | units of flux (cm2,m2/MeV,GeV)
+#                                        | type of measurement: flux (for spectra e.g. for elements) or ratio (e.g. for B/C)
+#                                               | mean energy as given by authors or computed from low,high
+#                                                      | low energy of range
+#                                                            | high energy of range
+#                                                                     | flux or ratio value
+#                                                                             | error bar -
+#                                                                                       |error bar + (if 0.0 assumed symmetrical)
+#                                                                                            | type of measurment: a=absolute, r=ratio 
+#                                                                                                | secondary Z.A if ratio: up to 3 values to be combined.
+#                                                                                                  A=-1 means all A for given Z e.g. 13.-1=Al elemental
+#                                                                                                                  | primary Z.A if ratio, or isotope Z.A if spectrum 
+#                                                                                                                    up to 3 values to be combined
+#                                                                                                                    A=-1 means all A for given Z e.g. 13.-1=Al elemental
+#                                                                                                                                   | free for comments on this entry
+#
+######################################################################################################################################################################
