@@ -40,6 +40,9 @@ TH1F * selected_PHL[10];
 TH1F * selezioni_DHL[10];
 TH1F * selected_DHL[10];
 
+
+float mcweight=1;
+
 int main(int argc, char * argv[])
 {
 
@@ -498,7 +501,7 @@ void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
    albero->GetEvent(i);
-   ntupla->Fill(R,Beta,(*trtrack_edep)[0],Cutmask,Latitude,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Rcutoff,BetaRICH_new,LDiscriminant,BDT_response,Dist5D,Dist5D_P);
+   ntupla->Fill(R,Beta,(*trtrack_edep)[0],Cutmask,Latitude,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Rcutoff,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
 }
 
 

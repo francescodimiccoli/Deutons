@@ -3,6 +3,7 @@
 #include <TSpline.h>
 #include "Selections5D.h"
 #include "Commonglobals.cpp"
+#include "include/reweight.h"
 
 using namespace std;
 void Trigg (TTree *albero,int i,TNtuple *ntupla);
@@ -26,6 +27,9 @@ TH1F * UPreselectedMC= new TH1F("PreselectedMC","PreselectedMC",43,0,43);
 int MC_type=0;
 
 int AssignMC_type(float Massa_gen);
+
+
+float mcweight=0;
 
 int main(int argc, char * argv[])
 {
@@ -130,8 +134,8 @@ int main(int argc, char * argv[])
    string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/"+calib+"/RisultatiMC_"+ARGV+".root";
    TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
    TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:MC_type:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD:IsCharge1");
-   TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:Rmin:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:BDT_response:Dist5D:Dist5D_P");
-   TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:MC_type:Momentogen:Betagen:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:BetanS");
+   TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:Rmin:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
+   TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:MC_type:Momentogen:mcweight:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:BetanS");
    TNtuple * trig = new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias");
 
    BDTreader();
@@ -188,6 +192,10 @@ int main(int argc, char * argv[])
    float entries=0;
    cout<<"Eventi: "<<events<<endl;
    //entries=entries/5;
+
+   // The spectrum inialization may as well be here
+   Reweight weight;
+   
    for(int i=(events/100)*INDX; i<(events/100)*(INDX+1); i++) {
       if(i%1300==0) cout<<i/(float)events*100<<"%"<<endl;
       geo_stuff->GetEvent(i);
@@ -206,6 +214,7 @@ int main(int argc, char * argv[])
       if(Unbias==1) continue;
       if (Quality(geo_stuff,i)) {
          giov++;
+         mcweight=weight.MCToDataForRig(fabs(Momento_gen));
          if(scelta==1) aggiungiantupla(geo_stuff,i,pre);
          //cout<<Beta<<" "<<BetanS<<endl;
          if(control==1) continue;
@@ -350,7 +359,7 @@ void Trigg (TTree *albero,int i,TNtuple *ntupla)
 void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla)
 {
    albero->GetEvent(i);
-   ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTrack,EdepTOFD,EdepECAL,MC_type,Momento_gen,Beta_gen,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,BetanS);
+   ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTrack,EdepTOFD,EdepECAL,MC_type,Momento_gen,mcweight,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,BetanS);
 
 }
 
@@ -363,7 +372,7 @@ void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
    albero->GetEvent(i);
-   ntupla->Fill(R,Beta,(*trtrack_edep)[0],MC_type,Cutmask,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,BDT_response,Dist5D,Dist5D_P);
+   ntupla->Fill(R,Beta,(*trtrack_edep)[0],MC_type,Cutmask,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
 }
 
 int AssignMC_type(float Massa_gen)
