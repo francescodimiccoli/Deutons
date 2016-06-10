@@ -20,6 +20,7 @@ class Histogram {
       bool fillWithVectors (std::vector<float> edge, std::vector<float> cont );
       void fillWithGalpropFile (std::string filename);
       void genMCLogNormFlux (int nbins=100, float rmin=0.5, float rmax=10);
+      void genMCLogNormFlux (Binning bins);
       void normalize();
       void normalizeToAllBins();
       void normalizeToNonEmptyBins();
@@ -92,10 +93,17 @@ std::vector<float> Histogram::fluxtoHisto (std::vector<float> inContent) {
 void Histogram::genMCLogNormFlux (int nbins, float rmin, float rmax) {
    Binning bins (1); // Mass not important, we only work in rigidity
    bins.setBinsFromRigidity (nbins, rmin, rmax);
+   genMCLogNormFlux(bins);
+   return;
+}
+
+void Histogram::genMCLogNormFlux (Binning bins) {
    edges=bins.RigBins();
    content.assign (bins.size(), 1);
    return;
 }
+
+
 
 void Histogram::normalize() {
    float integral=0;

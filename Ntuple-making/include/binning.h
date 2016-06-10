@@ -24,14 +24,15 @@ class Binning {
       void setBinsFromEk (int, float, float); ///< nbins, min, max
       void setBinsFromRigidity (int, float, float);
       int size() {return ekbincent.size(); };
-
-
+      
       /** @brief Returns the rigidity bin containing the variable
        *  @param float var : the variable whose location to search
        *  @return int      : the bin number in rigidity of the variable
        */
       int GetRBin (float var);
       Particle getParticle() {return particle; }
+      void  RFill (TH1* h, float Var); ///< Fill the histogram with var indicating the rigidity bin
+      void Print(); ///< Print the content of the bins
 
 
       std::vector<float> EkBins  ()   {  return   ekbin;   }
@@ -61,9 +62,6 @@ class Binning {
       float RigBinCent (int bin) { return   rigbincent[bin]; }
       float BetaBinCent (int bin) { return  betabincent[bin]; }
 
-      void  RFill (TH1* h, float Var); ///< Fill the histogram with var indicating the rigidity bin
-
-      void Print(); ///< Print the content of the bins
 
 
    private:
