@@ -180,10 +180,7 @@ int main(int argc, char * argv[])
         DATARICHeff(file1);
         if(frac=="tot") DeutonsTemplFits();
         if(frac=="tot") DeutonsTemplFits_Dist();
-	}
-	cout<<"************************* RESULTS  **************************************************************"<<endl;
-	
-	if(INDX==2){	
+
 		CorrLAT();
 		DVSMCPreSeleff();
 		DVSMCPreSeleffD();
