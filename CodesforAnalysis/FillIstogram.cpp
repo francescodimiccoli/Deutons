@@ -6,6 +6,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig);
 void LoopOnMCSepD(TNtuple* ntupMCSepD);
 void LoopOnDataTrig(TNtuple* ntupDataTrig);
 void LoopOnDataSepD(TNtuple* ntupDataSepD);
+void UpdateProgressBar(TNtuple* ntuple, int currentevent);
 
 
 void FillIstogram(int INDX,string frac,string mese)
@@ -66,7 +67,7 @@ void FillIstogram(int INDX,string frac,string mese)
    }
 
    cout<<"*********************** MC READING *********************"<<endl;
-   int progress=0;
+
    if(INDX==0) {
       LoopOnMCTrig(ntupMCTrig);
    }
@@ -225,12 +226,8 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       Cuts_Pre();
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
-
-
-      if(100*(i/(float)(ntupMCTrig->GetEntries()))>progress) {
-         cout<<'\r' << "Progress : "<<progress << " %"<< flush;
-         progress=(int)(100*(i/(float)(ntupMCTrig->GetEntries())))+1;
-      }
+      UpdateProgressBar(ntupMCTrig, i);
+      
       MCpreseff_Fill(ntupMCTrig,i);
       MCUnbiaseff_Fill(ntupMCTrig,i);
       MCTrackeff_Fill(ntupMCTrig,i);
@@ -251,11 +248,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
    for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
       ntupMCSepD->GetEvent(i);
       Massa_gen = ReturnMass_Gen();
-
-      if(100*(i/(float)(ntupMCSepD->GetEntries()))>progress) {
-         cout<<'\r' << "Progress : "<<progress << " %"<< flush;
-         progress=(int)(100*(i/(float)(ntupMCSepD->GetEntries())))+1;
-      }
+      UpdateProgressBar(ntupMCSepD, i);
       Cuts();
       RUsed=Tup.R;
 
@@ -273,9 +266,9 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
    }
 }
 
+
 void LoopOnDataTrig(TNtuple* ntupDataTrig)
 {
-   int progress=0;
    for(int i=0; i<ntupDataTrig->GetEntries(); i++) {
       ntupDataTrig->GetEvent(i);
       Cuts_Pre();
@@ -288,11 +281,7 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
       // Temporary Betarich check
       if((((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
       RUsed=Tup.R_pre;
-
-      if(100*(i/(float)(ntupDataTrig->GetEntries()))>progress) {
-         cout<<'\r' << "Progress : "<<progress << " %"<< flush;
-         progress=(int)(100*(i/(float)(ntupDataTrig->GetEntries())))+1;
-      }
+      UpdateProgressBar(ntupDataTrig, i);
 
       DATAUnbiaseff_Fill(ntupDataTrig,i);
       DATApreSeleff_Fill(ntupDataTrig,i,Zona);
@@ -305,7 +294,6 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 
 void LoopOnDataSepD(TNtuple* ntupDataSepD)
 {
-   int progress=0;
    for(int i=0; i<ntupDataSepD->GetEntries(); i++) {
       ntupDataSepD->GetEvent(i);
       double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
@@ -318,11 +306,9 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
       if((((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
       Cuts();
       RUsed=Tup.R;
+      UpdateProgressBar(ntupDataSepD, i);
 
-      if(100*(i/(float)(ntupDataSepD->GetEntries()))>progress) {
-         cout<<'\r' << "Progress : "<<progress << " %"<< flush;
-         progress=(int)(100*(i/(float)(ntupDataSepD->GetEntries())))+1;
-      }
+
       HecutD_Fill(ntupDataSepD,i);
       SlidesforPlot_D_Fill(ntupDataSepD,i);
       DATAQualeff_Fill(ntupDataSepD,i,Zona);
@@ -335,4 +321,12 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
       DeutonsDATA_Dist_Fill(ntupDataSepD,i,Zona);
       MCMCDATA_Fill(ntupDataSepD,i);
    }
+}
+
+void UpdateProgressBar(TNtuple* ntuple, int currentevent) {
+   long nentries=ntuple->GetEntries();
+   int newratio =(int)100*(currentevent/    (float)nentries);
+   int oldratio =(int)100*((currentevent-1)/(float)nentries);
+   if(newratio>oldratio) 
+         cout<<'\r' << "Progress : "<< newratio << " %"<< flush;
 }
