@@ -216,6 +216,7 @@ TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
 	int latzones   = Histo ->GetNbinsY();
 	
 	if(selections == 1){
+		temp = (TH2 *)Histo -> Clone();
 		//Histo_corr = new TH1F("","",Histo-> GetNbinsX(),0,Histo-> GetNbinsX());
 		for(int iR = 0;iR < Histo ->GetNbinsX();iR++) 
 		     for(int lat =0; lat < latzones; lat++){	
@@ -224,6 +225,7 @@ TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
 		Histo_corr = (TH1F*)((TH1 *)((TH2*)temp ) -> ProjectionX(histoname.c_str(),0,latzones)) -> Clone();		
 	}
 	else {
+		temp = (TH3 *)Histo -> Clone();
 		for(int iS = 0; iS < selections; iS++)	
 			for(int iR = 0;iR < Histo ->GetNbinsX();iR++) 
 				for(int lat =0; lat < latzones; lat++){	

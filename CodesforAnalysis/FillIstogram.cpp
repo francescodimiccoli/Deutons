@@ -88,8 +88,6 @@ void FillIstogram(int INDX,string frac,string mese)
 
 
 
-   float Zona=0;
-
    if(INDX==0) {
       LoopOnDataTrig(ntupDataTrig);
 
@@ -220,7 +218,6 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
 
 void LoopOnMCTrig(TNtuple*  ntupMCTrig)
 {
-   int progress=0;
    for(int i=0; i<ntupMCTrig->GetEntries(); i++) {
       ntupMCTrig->GetEvent(i);
       Cuts_Pre();
@@ -237,6 +234,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       DVSMCPreSeleff_Fill(ntupMCTrig,i);
       DVSMCPreSeleffD_Fill(ntupMCTrig,i);
    }
+   return;
 }
 
 
@@ -244,7 +242,6 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
 
 void LoopOnMCSepD(TNtuple* ntupMCSepD)
 {
-   int progress=0;
    for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
       ntupMCSepD->GetEvent(i);
       Massa_gen = ReturnMass_Gen();
@@ -264,6 +261,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       DeutonsMC_Dist_Fill(ntupMCSepD,i);
       MCMC_Fill(ntupMCSepD,i);
    }
+   return;
 }
 
 
@@ -288,6 +286,7 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
       DVSMCPreSeleff_D_Fill(ntupDataTrig,i,Zona);
       DVSMCPreSeleffD_D_Fill(ntupDataTrig,i,Zona);
    }
+   return;
 }
 
 
@@ -321,6 +320,7 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
       DeutonsDATA_Dist_Fill(ntupDataSepD,i,Zona);
       MCMCDATA_Fill(ntupDataSepD,i);
    }
+   return;
 }
 
 void UpdateProgressBar(TNtuple* ntuple, int currentevent) {

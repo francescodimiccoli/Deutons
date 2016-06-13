@@ -77,7 +77,7 @@ void OtherExperimentsComparison(){
 	TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(ThisWorkP,("This Work (" + mese + ")").c_str(), "ep");
 	
-	for(int n=0;n<P_Graphs.size();n++){	
+	for(uint n=0;n<P_Graphs.size();n++){	
 		P_Graphs[n] ->Draw("Psame");
 		 leg->AddEntry(P_Graphs[n],P_Graphs[n]->GetTitle(),"ep");
 	}
@@ -137,7 +137,7 @@ void OtherExperimentsComparison(){
 	ThisWorkDTOF->Draw("AP");
 	ThisWorkDNaF->Draw("Psame");
 	ThisWorkDAgl->Draw("Psame");
-	for(int n=0;n<D_Graphs.size();n++){
+	for(uint n=0;n<D_Graphs.size();n++){
                 D_Graphs[n] ->Draw("Psame");
                  legD->AddEntry(D_Graphs[n],D_Graphs[n]->GetTitle(),"ep");
         }

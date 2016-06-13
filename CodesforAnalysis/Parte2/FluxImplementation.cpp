@@ -162,7 +162,7 @@ void ProtonFlux()
       TGraphErrorsFormat(P_Fluxgeo[j]);
       string nome="Protons Flux: Geo. Zone "+to_string(j);
       P_Fluxgeo[j]->SetName(nome.c_str());
-      for(int i=0; i<PRB.EkBinsCent().size(); i++) {
+      for(uint i=0; i<PRB.EkBinsCent().size(); i++) {
          float ekin=PRB.EkBinCent(i);
          P_Fluxgeo[j]->SetPoint(i,ekin,ProtonsGeomagFlux->GetBinContent(i+1,j+1)*pow(ekin,potenza));
          P_Fluxgeo[j]->SetPointError(i,0,ProtonsGeomagFlux->GetBinError(i+1,j+1)*pow(ekin,potenza));
@@ -181,7 +181,7 @@ void ProtonFlux()
 
 
    PFlux=new TGraphErrors();
-   for(int i=0; i<PRB.EkBinsCent().size(); i++) {
+   for(uint i=0; i<PRB.EkBinsCent().size(); i++) {
       float ekin=PRB.EkBinCent(i);
       PFlux->SetPoint(i,ekin,ProtonsPrimaryFlux->GetBinContent(i+1)*pow(ekin,potenza));
       PFlux->SetPointError(i,0,ProtonsPrimaryFlux->GetBinError(i+1)*pow(ekin,potenza));
@@ -210,7 +210,7 @@ void ProtonFlux()
 
 
 
-   for(int ip=0; ip<PRB.EkBinsCent().size()-1; ip++) {
+   for(uint ip=0; ip<PRB.EkBinsCent().size()-1; ip++) {
       PFlux_->   SetPoint(ip,PRB.RigBinCent(ip), 1);
       PFlux_pre->SetPoint(ip,PRB.EkBinCent(ip) , 1);
       float err=(P_sel_PrimaryFlux->GetBinError(ip+1,2)+P_pre_PrimaryFlux->GetBinError(ip+1,2))/P_pre_PrimaryFlux->GetBinContent(ip+1,1);
@@ -453,7 +453,7 @@ void DeutonFlux()
    for (int i=0; i<NSUBDETECTORS; i++) {
       ged[i]=new TGraphErrors();
       gep[i]=new TGraphErrors();
-      for(int m=0; m<binD[i].EkBinsCent().size(); m++) {
+      for(uint m=0; m<binD[i].EkBinsCent().size(); m++) {
          ged[i]->SetPoint(m,binD[i].EkBinCent(m), vD_Exp[i]->GetBinContent(m+1));
          gep[i]->SetPoint(m,binP[i].EkBinCent(m), vP_Exp[i]->GetBinContent(m+1));
       }
@@ -704,7 +704,7 @@ TCanvas* MakeLogGridCanvas(string title)
 TGraphErrors* FillGraphErrorFromBinningAndHisto(Binning bin, TH1* histo)
 {
    TGraphErrors* graph=new TGraphErrors();
-   for(int ibin=0; ibin<bin.EkBinsCent().size(); ibin++) {
+   for(uint ibin=0; ibin<bin.EkBinsCent().size(); ibin++) {
       graph->SetPoint     (ibin, bin.EkBinCent(ibin),  histo->GetBinContent(ibin));
       graph->SetPointError(ibin, 0,                 histo->GetBinError(ibin)  );
    }
