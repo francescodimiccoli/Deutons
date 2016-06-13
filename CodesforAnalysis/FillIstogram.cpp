@@ -20,14 +20,11 @@ void FillIstogram(int INDX,string frac,string mese)
    else cout<<"ERROR: MC calibration not found"<<endl;
    Rig           = (TSpline3 *) calib->Get("Fit Results/Splines/Rig");
    beta          = (TSpline3 *) calib->Get("Fit Results/Splines/beta");
-   eL1           = (TSpline3 *) calib->Get("Fit Results/Splines/eL1");
    etofu         = (TSpline3 *) calib->Get("Fit Results/Splines/etofu");
    etrack        = (TSpline3 *) calib->Get("Fit Results/Splines/etrack");
-   etofd         = (TSpline3 *) calib->Get("Fit Results/Splines/etofd");
    EdepL1beta    = (TSpline3 *) calib->Get("Fit Results/Splines/EdepL1beta");
    EdepTOFbeta   = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFbeta");
    EdepTrackbeta = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTrackbeta");
-   EdepTOFDbeta  = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFDbeta");
    Corr_L1       = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_L1");
    Corr_TOFU     = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFU");
    Corr_Track    = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_Track");
