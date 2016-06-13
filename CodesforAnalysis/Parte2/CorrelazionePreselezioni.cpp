@@ -1,4 +1,6 @@
 TH2F * CorrelazionePreselezioni = new TH2F("CorrelazionePreselezioni","CorrelazionePreselezioni",11,0,11,11,0,11);
+int Norm[11]= {0};
+
 
 void Correlazione_Preselezioni(TNtuple *ntupla, int l){
 	 ntupla->GetEvent(l);

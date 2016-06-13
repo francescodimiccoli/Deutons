@@ -76,27 +76,17 @@ float Unbias;
 
 
 float Massa_gen=0;
-float Massa=0;
 float Zona=0;
-float IsPrescaled=0;
-float X=0;
-float Beta_gen=0;
 
-float BetaRICH_new=0;
 float Rcut[11]= {18,18,16,14,12,10,8,6,4,2,1};
-int INDX=0;
-int FRAC=0;
-double geomagC[11]= {0,0.05,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95,1.15};
+double geomagC[11]= {0,0.05,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95,1.15}; // Only for drawing, but in various files
 int notpassed[3]= {155,139,11};
 int passed[3]= {187,155,139};
 
 
 
-
-
 TH1F* Tempi;
 float RUsed=0;
-int Norm[11]= {0};
 
 //cuts
 bool Likcut=false;

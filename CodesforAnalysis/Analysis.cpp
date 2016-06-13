@@ -71,6 +71,7 @@ int main(int argc, char * argv[])
 {
    cout<<"Month _ Indx _ Frac _ output"<<endl;
    cout<<argc<<endl;
+   int INDX=0;
    if(argc == 1 ) {
       cout<<"No Month specified: running 2012_05"<<endl;
       mese = "2012_05";

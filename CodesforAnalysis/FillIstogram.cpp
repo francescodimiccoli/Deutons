@@ -1,15 +1,15 @@
 using namespace std;
 
 
-void SetRisultatiBranchAddresses();
+void SetRisultatiBranchAddresses (TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtuple* ntupDataSepD, TNtuple* ntupDataTrig);
+void LoopOnMCTrig(TNtuple*  ntupMCTrig);
+void LoopOnMCSepD(TNtuple* ntupMCSepD);
+void LoopOnDataTrig(TNtuple* ntupDataTrig);
+void LoopOnDataSepD(TNtuple* ntupDataSepD);
 
 
 void FillIstogram(int INDX,string frac,string mese)
 {
-
-   float fraz=1;
-   float Zona=0;
-
 
    cout<<"*********************** CALIB. READING *********************"<<endl;
 
@@ -54,61 +54,26 @@ void FillIstogram(int INDX,string frac,string mese)
    }
 
    if(INDX!=2) {
-      SetRisultatiBranchAddresses();
-
-
+      nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
+      fileMC =TFile::Open(nomefile.c_str());
+      nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
+      fileData =TFile::Open(nomefile.c_str());
+      ntupMCSepD=(TNtuple*)fileMC->Get("grandezzesepd");
+      ntupMCTrig=(TNtuple*)fileMC->Get("trig");
+      ntupDataSepD=(TNtuple*)fileData->Get("grandezzesepd");
+      ntupDataTrig=(TNtuple*)fileData->Get("trig");
+      SetRisultatiBranchAddresses(ntupMCSepD, ntupMCTrig, ntupDataSepD, ntupDataTrig);
    }
+
    cout<<"*********************** MC READING *********************"<<endl;
    int progress=0;
-   if(INDX==0)
-      for(int i=0; i<ntupMCTrig->GetEntries()/fraz; i++) {
-         ntupMCTrig->GetEvent(i);
-         Cuts_Pre();
-         Massa_gen = ReturnMass_Gen();
-         RUsed=Tup.R_pre;
-
-
-         if(100*(i/(float)(ntupMCTrig->GetEntries()/fraz))>progress) {
-            cout<<'\r' << "Progress : "<<progress << " %"<< flush;
-            progress=(int)(100*(i/(float)(ntupMCTrig->GetEntries()/fraz)))+1;
-         }
-         Beta_gen=(pow(pow(Tup.Momento_gen/Massa_gen,2)/(1+pow(Tup.Momento_gen/Massa_gen,2)),0.5));
-         MCpreseff_Fill(ntupMCTrig,i);
-         MCUnbiaseff_Fill(ntupMCTrig,i);
-         MCTrackeff_Fill(ntupMCTrig,i);
-         MigrationMatrix_Fill(ntupMCTrig,i);
-         Correlazione_Preselezioni(ntupMCTrig,i);
-         FluxFactorizationtest_Pre_Fill(ntupMCTrig,i);
-         DVSMCPreSeleff_Fill(ntupMCTrig,i);
-         DVSMCPreSeleffD_Fill(ntupMCTrig,i);
-         //DVSMCTrackeff_Fill(ntupMCTrig,i);*/
-      }
-   if(INDX==0||INDX==1) {
-      progress=0;
-      for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
-         ntupMCSepD->GetEvent(i);
-         Massa_gen = ReturnMass_Gen();
-
-         if(100*(i/(float)(ntupMCSepD->GetEntries()))>progress) {
-            cout<<'\r' << "Progress : "<<progress << " %"<< flush;
-            progress=(int)(100*(i/(float)(ntupMCSepD->GetEntries()/fraz)))+1;
-         }
-         Cuts();
-         RUsed=Tup.R;
-
-         HecutMC_Fill(ntupMCSepD,i);
-         SlidesforPlot_Fill(ntupMCSepD,i);
-         FluxFactorizationtest_Qual_Fill(ntupMCTrig,i);
-         DistanceCut_Fill(ntupMCSepD,i);
-         MCQualeff_Fill(ntupMCSepD,i);
-         DVSMCQualeff2_Fill(ntupMCSepD,i);
-         DVSMCQualeffD_Fill(ntupMCSepD,i);
-         DVSMCRICHeff_Fill(ntupMCSepD,i);
-         DeutonsMC_Fill(ntupMCSepD,i);
-         DeutonsMC_Dist_Fill(ntupMCSepD,i);
-         MCMC_Fill(ntupMCSepD,i);
-      }
+   if(INDX==0) {
+      LoopOnMCTrig(ntupMCTrig);
    }
+   if(INDX==0||INDX==1) {
+      LoopOnMCSepD(ntupMCSepD);
+   }
+
    cout<<endl<<"*********************** DATA READING *********************"<<endl;
    TFile *usedfile=(INDX==2?file:fileData);
    Tempi = (TH1F *)usedfile->Get("Tempi");
@@ -121,65 +86,16 @@ void FillIstogram(int INDX,string frac,string mese)
    TH2F* esposizionedgeoAgl = (TH2F*)usedfile->Get("esposizionedgeoAgl");
 
 
-   double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
+
+   float Zona=0;
+
    if(INDX==0) {
-      int progress=0;
-      for(int i=0; i<ntupDataTrig->GetEntries()/fraz; i++) {
-         ntupDataTrig->GetEvent(i);
-         Cuts_Pre();
-         Massa=pow(fabs(pow(fabs(Tup.R_pre)*pow((1-pow(Tup.Beta_pre,2)),0.5)/Tup.Beta_pre,2)),0.5);
-         for(int z=0; z<12; z++) {
-            double geo= geomag[z]  ;
-            double geo2=geomag[z+1];
-            if(Tup.Latitude>geo && Tup.Latitude<geo2) Zona=z;
-         }
-         // Temporary Betarich check
-         if((((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
-         RUsed=Tup.R_pre;
+      LoopOnDataTrig(ntupDataTrig);
 
-         if(100*(i/(float)(ntupDataTrig->GetEntries()/fraz))>progress) {
-            cout<<'\r' << "Progress : "<<progress << " %"<< flush;
-            progress=(int)(100*(i/(float)(ntupDataTrig->GetEntries()/fraz)))+1;
-         }
-
-         Beta_gen=(pow(pow(Tup.Momento_gen/Massa_gen,2)/(1+pow(Tup.Momento_gen/Massa_gen,2)),0.5));
-         DATAUnbiaseff_Fill(ntupDataTrig,i);
-         DATApreSeleff_Fill(ntupDataTrig,i,Zona);
-         DVSMCPreSeleff_D_Fill(ntupDataTrig,i,Zona);
-         DVSMCPreSeleffD_D_Fill(ntupDataTrig,i,Zona);
-         //DVSMCTrackeff_D_Fill(ntupMCTrig,i);
-      }
    }
    if(INDX==0||INDX==1) {
-      progress=0;
-      for(int i=0; i<ntupDataSepD->GetEntries(); i++) {
-         ntupDataSepD->GetEvent(i);
-         for(int z=0; z<12; z++) {
-            double geo= geomag[z]  ;
-            double geo2=geomag[z+1];
-            if(Tup.Latitude>geo && Tup.Latitude<geo2) Zona=z;
-         }
-         // Temporary Betarich check
-         if((((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
-         Cuts();
-         RUsed=Tup.R;
+      LoopOnDataSepD(ntupDataSepD);
 
-         if(100*(i/(float)(ntupDataSepD->GetEntries()))>progress) {
-            cout<<'\r' << "Progress : "<<progress << " %"<< flush;
-            progress=(int)(100*(i/(float)(ntupDataSepD->GetEntries()/fraz)))+1;
-         }
-         HecutD_Fill(ntupDataSepD,i);
-         SlidesforPlot_D_Fill(ntupMCSepD,i);
-         DATAQualeff_Fill(ntupDataSepD,i,Zona);
-         DATARICHeff_Fill(ntupDataSepD,i,Zona);
-         ProtonFlux_Fill(ntupDataSepD,i,Zona);
-         DVSMCQualeff2_D_Fill(ntupDataSepD,i,Zona);
-         DVSMCQualeffD_D_Fill(ntupDataSepD,i,Zona);
-         DVSMCRICHeff_D_Fill(ntupDataSepD,i,Zona);
-         DeutonsDATA_Fill(ntupDataSepD,i,Zona);
-         DeutonsDATA_Dist_Fill(ntupDataSepD,i,Zona);
-         MCMCDATA_Fill(ntupDataSepD,i);
-      }
 
       cout<<endl<<"************************ SAVING DATA ************************"<<endl;
 
@@ -232,17 +148,8 @@ void FillIstogram(int INDX,string frac,string mese)
 
 
 
-void SetRisultatiBranchAddresses()
+void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtuple* ntupDataSepD, TNtuple* ntupDataTrig)
 {
-   nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
-   fileMC =TFile::Open(nomefile.c_str());
-   ntupMCSepD=(TNtuple*)fileMC->Get("grandezzesepd");
-   ntupMCTrig=(TNtuple*)fileMC->Get("trig");
-
-   nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
-   fileData =TFile::Open(nomefile.c_str());
-   ntupDataSepD=(TNtuple*)fileData->Get("grandezzesepd");
-   ntupDataTrig=(TNtuple*)fileData->Get("trig");
 
    ntupMCTrig->SetBranchAddress("Momento_gen",&Tup.Momento_gen);
    ntupMCTrig->SetBranchAddress("Ev_Num",&Tup.Ev_Num);
@@ -306,4 +213,126 @@ void SetRisultatiBranchAddresses()
    ntupDataSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
 
 
+}
+
+
+
+void LoopOnMCTrig(TNtuple*  ntupMCTrig)
+{
+   int progress=0;
+   for(int i=0; i<ntupMCTrig->GetEntries(); i++) {
+      ntupMCTrig->GetEvent(i);
+      Cuts_Pre();
+      Massa_gen = ReturnMass_Gen();
+      RUsed=Tup.R_pre;
+
+
+      if(100*(i/(float)(ntupMCTrig->GetEntries()))>progress) {
+         cout<<'\r' << "Progress : "<<progress << " %"<< flush;
+         progress=(int)(100*(i/(float)(ntupMCTrig->GetEntries())))+1;
+      }
+      MCpreseff_Fill(ntupMCTrig,i);
+      MCUnbiaseff_Fill(ntupMCTrig,i);
+      MCTrackeff_Fill(ntupMCTrig,i);
+      MigrationMatrix_Fill(ntupMCTrig,i);
+      Correlazione_Preselezioni(ntupMCTrig,i);
+      FluxFactorizationtest_Pre_Fill(ntupMCTrig,i);
+      DVSMCPreSeleff_Fill(ntupMCTrig,i);
+      DVSMCPreSeleffD_Fill(ntupMCTrig,i);
+   }
+}
+
+
+
+
+void LoopOnMCSepD(TNtuple* ntupMCSepD)
+{
+   int progress=0;
+   for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
+      ntupMCSepD->GetEvent(i);
+      Massa_gen = ReturnMass_Gen();
+
+      if(100*(i/(float)(ntupMCSepD->GetEntries()))>progress) {
+         cout<<'\r' << "Progress : "<<progress << " %"<< flush;
+         progress=(int)(100*(i/(float)(ntupMCSepD->GetEntries())))+1;
+      }
+      Cuts();
+      RUsed=Tup.R;
+
+      HecutMC_Fill(ntupMCSepD,i);
+      SlidesforPlot_Fill(ntupMCSepD,i);
+      FluxFactorizationtest_Qual_Fill(ntupMCSepD,i);
+      DistanceCut_Fill(ntupMCSepD,i);
+      MCQualeff_Fill(ntupMCSepD,i);
+      DVSMCQualeff2_Fill(ntupMCSepD,i);
+      DVSMCQualeffD_Fill(ntupMCSepD,i);
+      DVSMCRICHeff_Fill(ntupMCSepD,i);
+      DeutonsMC_Fill(ntupMCSepD,i);
+      DeutonsMC_Dist_Fill(ntupMCSepD,i);
+      MCMC_Fill(ntupMCSepD,i);
+   }
+}
+
+void LoopOnDataTrig(TNtuple* ntupDataTrig)
+{
+   int progress=0;
+   for(int i=0; i<ntupDataTrig->GetEntries(); i++) {
+      ntupDataTrig->GetEvent(i);
+      Cuts_Pre();
+      double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
+      for(int z=0; z<12; z++) {
+         double geo= geomag[z]  ;
+         double geo2=geomag[z+1];
+         if(Tup.Latitude>geo && Tup.Latitude<geo2) Zona=z;
+      }
+      // Temporary Betarich check
+      if((((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
+      RUsed=Tup.R_pre;
+
+      if(100*(i/(float)(ntupDataTrig->GetEntries()))>progress) {
+         cout<<'\r' << "Progress : "<<progress << " %"<< flush;
+         progress=(int)(100*(i/(float)(ntupDataTrig->GetEntries())))+1;
+      }
+
+      DATAUnbiaseff_Fill(ntupDataTrig,i);
+      DATApreSeleff_Fill(ntupDataTrig,i,Zona);
+      DVSMCPreSeleff_D_Fill(ntupDataTrig,i,Zona);
+      DVSMCPreSeleffD_D_Fill(ntupDataTrig,i,Zona);
+   }
+}
+
+
+
+void LoopOnDataSepD(TNtuple* ntupDataSepD)
+{
+   int progress=0;
+   for(int i=0; i<ntupDataSepD->GetEntries(); i++) {
+      ntupDataSepD->GetEvent(i);
+      double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
+      for(int z=0; z<12; z++) {
+         double geo= geomag[z]  ;
+         double geo2=geomag[z+1];
+         if(Tup.Latitude>geo && Tup.Latitude<geo2) Zona=z;
+      }
+      // Temporary Betarich check
+      if((((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
+      Cuts();
+      RUsed=Tup.R;
+
+      if(100*(i/(float)(ntupDataSepD->GetEntries()))>progress) {
+         cout<<'\r' << "Progress : "<<progress << " %"<< flush;
+         progress=(int)(100*(i/(float)(ntupDataSepD->GetEntries())))+1;
+      }
+      HecutD_Fill(ntupDataSepD,i);
+      SlidesforPlot_D_Fill(ntupDataSepD,i);
+      DATAQualeff_Fill(ntupDataSepD,i,Zona);
+      DATARICHeff_Fill(ntupDataSepD,i,Zona);
+      ProtonFlux_Fill(ntupDataSepD,i,Zona);
+      DVSMCQualeff2_D_Fill(ntupDataSepD,i,Zona);
+      DVSMCQualeffD_D_Fill(ntupDataSepD,i,Zona);
+      DVSMCRICHeff_D_Fill(ntupDataSepD,i,Zona);
+      DeutonsDATA_Fill(ntupDataSepD,i,Zona);
+      DeutonsDATA_Dist_Fill(ntupDataSepD,i,Zona);
+      MCMCDATA_Fill(ntupDataSepD,i);
+   }
 }
