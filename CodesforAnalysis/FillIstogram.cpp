@@ -1,6 +1,9 @@
 using namespace std;
 
 
+void SetRisultatiBranchAddresses();
+
+
 void FillIstogram(int INDX,string frac,string mese)
 {
 
@@ -51,76 +54,8 @@ void FillIstogram(int INDX,string frac,string mese)
    }
 
    if(INDX!=2) {
-      nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
-      fileMC =TFile::Open(nomefile.c_str());
-      ntupMCSepD=(TNtuple*)fileMC->Get("grandezzesepd");
-      ntupMCTrig=(TNtuple*)fileMC->Get("trig");
+      SetRisultatiBranchAddresses();
 
-      nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
-      fileData =TFile::Open(nomefile.c_str());
-      ntupDataSepD=(TNtuple*)fileData->Get("grandezzesepd");
-      ntupDataTrig=(TNtuple*)fileData->Get("trig");
-
-      ntupMCTrig->SetBranchAddress("Momento_gen",&Tup.Momento_gen);
-      ntupMCTrig->SetBranchAddress("Ev_Num",&Tup.Ev_Num);
-      ntupMCTrig->SetBranchAddress("Trig_Num",&Tup.Trig_Num);
-      ntupMCTrig->SetBranchAddress("R_pre",&Tup.R_pre);
-      ntupMCTrig->SetBranchAddress("Beta_pre",&Tup.Beta_pre);
-      ntupMCTrig->SetBranchAddress("Cutmask",&Tup.Cutmask);
-      ntupMCTrig->SetBranchAddress("MC_type",&Tup.MC_type);
-      ntupMCTrig->SetBranchAddress("EdepL1",&Tup.EdepL1);
-      ntupMCTrig->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
-      ntupMCTrig->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
-      ntupMCTrig->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
-      ntupMCTrig->SetBranchAddress("EdepECAL",&Tup.EdepECAL);
-      ntupMCTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
-      ntupMCTrig->SetBranchAddress("Unbias",&Tup.Unbias);
-
-      ntupMCSepD->SetBranchAddress("Momentogen",&Tup.Momento_gen);
-      ntupMCSepD->SetBranchAddress("R",&Tup.R);
-      ntupMCSepD->SetBranchAddress("Beta",&Tup.Beta);
-      ntupMCSepD->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
-      ntupMCSepD->SetBranchAddress("EdepL1",&Tup.EdepL1);
-      ntupMCSepD->SetBranchAddress("Rmin",&Tup.Rmin);
-      ntupMCSepD->SetBranchAddress("EdepTOF",&Tup.EdepTOFU);
-      ntupMCSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
-      ntupMCSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
-      ntupMCSepD->SetBranchAddress("MC_type",&Tup.MC_type);
-      ntupMCSepD->SetBranchAddress("LDiscriminant",&Tup.LDiscriminant);
-      ntupMCSepD->SetBranchAddress("BDT_response",&Tup.BDT_response);
-      ntupMCSepD->SetBranchAddress("Cutmask",&Tup.Cutmask);
-      ntupMCSepD->SetBranchAddress("Dist5D",&Tup.Dist5D);
-      ntupMCSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
-
-      ntupDataTrig->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
-      ntupDataTrig->SetBranchAddress("R_pre",&Tup.R_pre);
-      ntupDataTrig->SetBranchAddress("Beta_pre",&Tup.Beta_pre);
-      ntupDataTrig->SetBranchAddress("Cutmask",&Tup.Cutmask);
-      ntupDataTrig->SetBranchAddress("Latitude",&Tup.Latitude);
-      ntupDataTrig->SetBranchAddress("EdepECAL",&Tup.EdepECAL);
-      ntupDataTrig->SetBranchAddress("EdepL1",&Tup.EdepL1);
-      ntupDataTrig->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
-      ntupDataTrig->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
-      ntupDataTrig->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
-      ntupDataTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
-      ntupDataTrig->SetBranchAddress("Unbias",&Tup.Unbias);
-
-
-      ntupDataSepD->SetBranchAddress("R",&Tup.R);
-      ntupDataSepD->SetBranchAddress("Beta",&Tup.Beta);
-      ntupDataSepD->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
-      ntupDataSepD->SetBranchAddress("EdepL1",&Tup.EdepL1);
-      ntupDataSepD->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
-      ntupDataSepD->SetBranchAddress("Rmin",&Tup.Rmin);
-      ntupDataSepD->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
-      ntupDataSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
-      ntupDataSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
-      ntupDataSepD->SetBranchAddress("Latitude",&Tup.Latitude);
-      ntupDataSepD->SetBranchAddress("LDiscriminant",&Tup.LDiscriminant);
-      ntupDataSepD->SetBranchAddress("BDT_response",&Tup.BDT_response);
-      ntupDataSepD->SetBranchAddress("Cutmask",&Tup.Cutmask);
-      ntupDataSepD->SetBranchAddress("Dist5D",&Tup.Dist5D);
-      ntupDataSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
 
    }
    cout<<"*********************** MC READING *********************"<<endl;
@@ -153,7 +88,7 @@ void FillIstogram(int INDX,string frac,string mese)
       for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
          ntupMCSepD->GetEvent(i);
          Massa_gen = ReturnMass_Gen();
-         
+
          if(100*(i/(float)(ntupMCSepD->GetEntries()))>progress) {
             cout<<'\r' << "Progress : "<<progress << " %"<< flush;
             progress=(int)(100*(i/(float)(ntupMCSepD->GetEntries()/fraz)))+1;
@@ -185,7 +120,7 @@ void FillIstogram(int INDX,string frac,string mese)
    TH2F* esposizionedgeoNaF = (TH2F*)usedfile->Get("esposizionedgeoNaF");
    TH2F* esposizionedgeoAgl = (TH2F*)usedfile->Get("esposizionedgeoAgl");
 
-   
+
    double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
    if(INDX==0) {
       int progress=0;
@@ -292,4 +227,83 @@ void FillIstogram(int INDX,string frac,string mese)
 
    if(histonotexist) INDX=2;
    return;
+}
+
+
+
+
+void SetRisultatiBranchAddresses()
+{
+   nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
+   fileMC =TFile::Open(nomefile.c_str());
+   ntupMCSepD=(TNtuple*)fileMC->Get("grandezzesepd");
+   ntupMCTrig=(TNtuple*)fileMC->Get("trig");
+
+   nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
+   fileData =TFile::Open(nomefile.c_str());
+   ntupDataSepD=(TNtuple*)fileData->Get("grandezzesepd");
+   ntupDataTrig=(TNtuple*)fileData->Get("trig");
+
+   ntupMCTrig->SetBranchAddress("Momento_gen",&Tup.Momento_gen);
+   ntupMCTrig->SetBranchAddress("Ev_Num",&Tup.Ev_Num);
+   ntupMCTrig->SetBranchAddress("Trig_Num",&Tup.Trig_Num);
+   ntupMCTrig->SetBranchAddress("R_pre",&Tup.R_pre);
+   ntupMCTrig->SetBranchAddress("Beta_pre",&Tup.Beta_pre);
+   ntupMCTrig->SetBranchAddress("Cutmask",&Tup.Cutmask);
+   ntupMCTrig->SetBranchAddress("MC_type",&Tup.MC_type);
+   ntupMCTrig->SetBranchAddress("EdepL1",&Tup.EdepL1);
+   ntupMCTrig->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
+   ntupMCTrig->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
+   ntupMCTrig->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
+   ntupMCTrig->SetBranchAddress("EdepECAL",&Tup.EdepECAL);
+   ntupMCTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
+   ntupMCTrig->SetBranchAddress("Unbias",&Tup.Unbias);
+
+   ntupMCSepD->SetBranchAddress("Momentogen",&Tup.Momento_gen);
+   ntupMCSepD->SetBranchAddress("R",&Tup.R);
+   ntupMCSepD->SetBranchAddress("Beta",&Tup.Beta);
+   ntupMCSepD->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
+   ntupMCSepD->SetBranchAddress("EdepL1",&Tup.EdepL1);
+   ntupMCSepD->SetBranchAddress("Rmin",&Tup.Rmin);
+   ntupMCSepD->SetBranchAddress("EdepTOF",&Tup.EdepTOFU);
+   ntupMCSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
+   ntupMCSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
+   ntupMCSepD->SetBranchAddress("MC_type",&Tup.MC_type);
+   ntupMCSepD->SetBranchAddress("LDiscriminant",&Tup.LDiscriminant);
+   ntupMCSepD->SetBranchAddress("BDT_response",&Tup.BDT_response);
+   ntupMCSepD->SetBranchAddress("Cutmask",&Tup.Cutmask);
+   ntupMCSepD->SetBranchAddress("Dist5D",&Tup.Dist5D);
+   ntupMCSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
+
+   ntupDataTrig->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
+   ntupDataTrig->SetBranchAddress("R_pre",&Tup.R_pre);
+   ntupDataTrig->SetBranchAddress("Beta_pre",&Tup.Beta_pre);
+   ntupDataTrig->SetBranchAddress("Cutmask",&Tup.Cutmask);
+   ntupDataTrig->SetBranchAddress("Latitude",&Tup.Latitude);
+   ntupDataTrig->SetBranchAddress("EdepECAL",&Tup.EdepECAL);
+   ntupDataTrig->SetBranchAddress("EdepL1",&Tup.EdepL1);
+   ntupDataTrig->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
+   ntupDataTrig->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
+   ntupDataTrig->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
+   ntupDataTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
+   ntupDataTrig->SetBranchAddress("Unbias",&Tup.Unbias);
+
+
+   ntupDataSepD->SetBranchAddress("R",&Tup.R);
+   ntupDataSepD->SetBranchAddress("Beta",&Tup.Beta);
+   ntupDataSepD->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
+   ntupDataSepD->SetBranchAddress("EdepL1",&Tup.EdepL1);
+   ntupDataSepD->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
+   ntupDataSepD->SetBranchAddress("Rmin",&Tup.Rmin);
+   ntupDataSepD->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
+   ntupDataSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
+   ntupDataSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
+   ntupDataSepD->SetBranchAddress("Latitude",&Tup.Latitude);
+   ntupDataSepD->SetBranchAddress("LDiscriminant",&Tup.LDiscriminant);
+   ntupDataSepD->SetBranchAddress("BDT_response",&Tup.BDT_response);
+   ntupDataSepD->SetBranchAddress("Cutmask",&Tup.Cutmask);
+   ntupDataSepD->SetBranchAddress("Dist5D",&Tup.Dist5D);
+   ntupDataSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
+
+
 }
