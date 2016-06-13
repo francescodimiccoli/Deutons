@@ -86,9 +86,9 @@ void Hecut(TFile * file1) {
 	Efficiency * HecutMCP = new Efficiency(file1,"HecutMCP");
 	Efficiency * HecutMCHe = new Efficiency(file1,"HecutMCHe");
 
-	TemplateFIT * HeliumContaminationTOF = new TemplateFIT(file1,"HeliumContaminationTOF","HeliumContaminationTOF",0,60);
-	TemplateFIT * HeliumContaminationNaF = new TemplateFIT(file1,"HeliumContaminationNaF","HeliumContaminationNaF",0,60);
-	TemplateFIT * HeliumContaminationAgl = new TemplateFIT(file1,"HeliumContaminationAgl","HeliumContaminationAgl",0,60);
+	TemplateFIT * HeliumContaminationTOF = new TemplateFIT(file1,"HeliumContaminationTOF","HeliumContaminationTOF");
+	TemplateFIT * HeliumContaminationNaF = new TemplateFIT(file1,"HeliumContaminationNaF","HeliumContaminationNaF");
+	TemplateFIT * HeliumContaminationAgl = new TemplateFIT(file1,"HeliumContaminationAgl","HeliumContaminationAgl");
 
 	cout<<"*************** He control sample cut Efficiency on P*******************"<<endl;
 

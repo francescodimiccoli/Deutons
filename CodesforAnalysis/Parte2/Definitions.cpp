@@ -12,7 +12,6 @@ string frac;
 
 
 extern const int nbinsr=43;
-extern const int nbinsbeta=18;
 extern const int nbinsToF=18;
 extern const int nbinsNaF=18;
 extern const int nbinsAgl=18;

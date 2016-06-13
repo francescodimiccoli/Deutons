@@ -72,7 +72,4 @@ void MCMC_Write(){
     MCMC_Agl->Write();
 }
 
-void MCMC(TFile * file){
-    std::cout << "That function should not be called.\n";
-}
 

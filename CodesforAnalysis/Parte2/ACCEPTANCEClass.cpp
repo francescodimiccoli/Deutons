@@ -13,7 +13,6 @@ private:
 	static const int nbinsToF=18;
 	static const int nbinsNaF=18;
 	static const int nbinsAgl=18;
-	static const int nbinsbeta=18;
 
 	float binsR[nbinsr+1];
 	float binsBetaTOF[19];

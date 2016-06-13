@@ -28,8 +28,8 @@ class Flux {
       void Set_Exposure_Time (TH2 * Exposure );
       void Set_Exposure_Time (TH1 * Tempi );
       TH1 * ExtractParticularMC_cs (TH1 * Histo, int lat_zones=1 ,int mc_type=0);
-      void Set_DeltaE (int n,bool deutons=1);
-      void Add_SystFitError (int n, TH1* syst_err);
+      void Set_DeltaE (int n);
+      void Add_SystFitError (TH1* syst_err);
       void Eval_Flux (int n,bool deutons=1,int mc_type=0);
 };
 
@@ -85,7 +85,7 @@ TH1 * Flux::ExtractParticularMC_cs (TH1 * Histo, int lat_zones, int mc_type)
 
 
 
-void Flux::Set_DeltaE (int n,bool deutons)
+void Flux::Set_DeltaE (int n)
 {
    string hname=name + "DeltaE_" + suffixname;
    
@@ -104,7 +104,7 @@ void Flux::Set_DeltaE (int n,bool deutons)
 }
 
 
-void Flux::Add_SystFitError (int n, TH1* syst_err)
+void Flux::Add_SystFitError (TH1* syst_err)
 {
    if (Counts)
       for (int iR = 0; iR < Counts    ->GetNbinsX(); iR++)
@@ -116,7 +116,7 @@ void Flux::Add_SystFitError (int n, TH1* syst_err)
 
 void Flux::Eval_Flux (int n,bool deutons,int mc_type)
 {
-   Set_DeltaE (n,deutons);
+   Set_DeltaE (deutons);
 
    if (Counts) {
       Fluxes = (TH1 *) Counts -> Clone();

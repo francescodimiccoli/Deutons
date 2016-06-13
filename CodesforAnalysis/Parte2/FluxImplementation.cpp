@@ -305,7 +305,7 @@ void DeutonFlux()
                   || ((TH1F*)D_Flux     -> Counts )-> GetBinContent(i)==0 )
                Syst -> SetBinContent (i,0);
          }
-         D_Flux -> Add_SystFitError(1,Syst);
+         D_Flux -> Add_SystFitError(Syst);
       }
       TH2F * expogeo  = (TH2F*)file1->Get(expodnames[ifx].data());
       D_Flux         -> Set_Exposure_Time (expogeo);

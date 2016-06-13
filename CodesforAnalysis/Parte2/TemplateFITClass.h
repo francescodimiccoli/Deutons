@@ -102,7 +102,7 @@ class TemplateFIT {
 
       //reading constructors
       //standard
-      TemplateFIT(TFile * file , std::string basename_MC , std::string basename_data, float val_min , float val_max)
+      TemplateFIT(TFile * file , std::string basename_MC , std::string basename_data)
       {
 
          TemplateP   =	(TH1 *)file->Get((basename_MC   + "_P"     ).c_str());
@@ -121,7 +121,7 @@ class TemplateFIT {
          fits.push_back(std::vector<TFit *>());
       }
       //geom. zones
-      TemplateFIT(TFile * file , std::string basename_MC, std::string basename_data, float val_min , float val_max,int n)
+      TemplateFIT(TFile * file , std::string basename_MC, std::string basename_data, int n)
       {
 
          TemplateP   =	(TH1 *)file->Get((basename_MC   + "_P"     ).c_str());

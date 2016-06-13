@@ -75,7 +75,7 @@ class Binning {
    public:
       Binning () : mass(0) {}   ;
       Binning (float m) :           mass(m)       {}
-      Binning (float m, float z) :  mass(m), Z(1) {}
+      Binning (float m, float z) :  mass(m), Z(z) {}
       void Setbins (int, float, float, int type=1); ///< type -- binning in 0: not done, 1 energy, 2 rigidity
       int size() {return ekbin.size(); };
       int Type() {return type;}

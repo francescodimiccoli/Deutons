@@ -131,17 +131,17 @@ void DeutonsTemplFits(){
 	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 	TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
 
-	TemplateFIT * FitTOF_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins","FitTOF_Dbins",0,3);
-	TemplateFIT * FitNaF_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins","FitNaF_Dbins",0,3);
-	TemplateFIT * FitAgl_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins","FitAgl_Dbins",0,3);
+	TemplateFIT * FitTOF_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins","FitTOF_Dbins");
+	TemplateFIT * FitNaF_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins","FitNaF_Dbins");
+	TemplateFIT * FitAgl_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins","FitAgl_Dbins");
                                                                                               
-	TemplateFIT * FitTOFgeo_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins","FitTOFgeo_Dbins",0,3,11);
-	TemplateFIT * FitNaFgeo_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins","FitNaFgeo_Dbins",0,3,11);
-	TemplateFIT * FitAglgeo_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins","FitAglgeo_Dbins",0,3,11);
+	TemplateFIT * FitTOFgeo_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins","FitTOFgeo_Dbins",11);
+	TemplateFIT * FitNaFgeo_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins","FitNaFgeo_Dbins",11);
+	TemplateFIT * FitAglgeo_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins","FitAglgeo_Dbins",11);
                                                                                               
-	TemplateFIT * FitTOF_Pbins	= new TemplateFIT(file1,"FitTOF_Pbins","FitTOF_Pbins",0,3);
-	TemplateFIT * FitNaF_Pbins	= new TemplateFIT(file1,"FitNaF_Pbins","FitNaF_Pbins",0,3);
-	TemplateFIT * FitAgl_Pbins	= new TemplateFIT(file1,"FitAgl_Pbins","FitAgl_Pbins",0,3);
+	TemplateFIT * FitTOF_Pbins	= new TemplateFIT(file1,"FitTOF_Pbins","FitTOF_Pbins");
+	TemplateFIT * FitNaF_Pbins	= new TemplateFIT(file1,"FitNaF_Pbins","FitNaF_Pbins");
+	TemplateFIT * FitAgl_Pbins	= new TemplateFIT(file1,"FitAgl_Pbins","FitAgl_Pbins");
 
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 

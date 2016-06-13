@@ -127,17 +127,17 @@ void DeutonsTemplFits_Dist(){
 	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
 	TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
 	
-	TemplateFIT * FitTOF_Dbins_Dist	= new TemplateFIT(file1,"FitTOF_Dbins_Dist ","FitTOF_Dbins_Dist ",0,3);
-	TemplateFIT * FitNaF_Dbins_Dist	= new TemplateFIT(file1,"FitNaF_Dbins_Dist ","FitNaF_Dbins_Dist ",0,3);
-	TemplateFIT * FitAgl_Dbins_Dist	= new TemplateFIT(file1,"FitAgl_Dbins_Dist ","FitAgl_Dbins_Dist ",0,3);
+	TemplateFIT * FitTOF_Dbins_Dist	= new TemplateFIT(file1,"FitTOF_Dbins_Dist ","FitTOF_Dbins_Dist ");
+	TemplateFIT * FitNaF_Dbins_Dist	= new TemplateFIT(file1,"FitNaF_Dbins_Dist ","FitNaF_Dbins_Dist ");
+	TemplateFIT * FitAgl_Dbins_Dist	= new TemplateFIT(file1,"FitAgl_Dbins_Dist ","FitAgl_Dbins_Dist ");
                                                                                               
-	TemplateFIT * FitTOFgeo_Dbins_Dist	= new TemplateFIT(file1,"FitTOF_Dbins_Dist ","FitTOFgeo_Dbins_Dist ",0,3,11);
-	TemplateFIT * FitNaFgeo_Dbins_Dist	= new TemplateFIT(file1,"FitNaF_Dbins_Dist ","FitNaFgeo_Dbins_Dist ",0,3,11);
-	TemplateFIT * FitAglgeo_Dbins_Dist	= new TemplateFIT(file1,"FitAgl_Dbins_Dist ","FitAglgeo_Dbins_Dist ",0,3,11);
+	TemplateFIT * FitTOFgeo_Dbins_Dist	= new TemplateFIT(file1,"FitTOF_Dbins_Dist ","FitTOFgeo_Dbins_Dist ",11);
+	TemplateFIT * FitNaFgeo_Dbins_Dist	= new TemplateFIT(file1,"FitNaF_Dbins_Dist ","FitNaFgeo_Dbins_Dist ",11);
+	TemplateFIT * FitAglgeo_Dbins_Dist	= new TemplateFIT(file1,"FitAgl_Dbins_Dist ","FitAglgeo_Dbins_Dist ",11);
                                                                                               
-	TemplateFIT * FitTOF_Pbins_Dist	= new TemplateFIT(file1,"FitTOF_Pbins_Dist ","FitTOF_Pbins_Dist ",0,3);
-	TemplateFIT * FitNaF_Pbins_Dist	= new TemplateFIT(file1,"FitNaF_Pbins_Dist ","FitNaF_Pbins_Dist ",0,3);
-	TemplateFIT * FitAgl_Pbins_Dist	= new TemplateFIT(file1,"FitAgl_Pbins_Dist ","FitAgl_Pbins_Dist ",0,3);
+	TemplateFIT * FitTOF_Pbins_Dist	= new TemplateFIT(file1,"FitTOF_Pbins_Dist ","FitTOF_Pbins_Dist ");
+	TemplateFIT * FitNaF_Pbins_Dist	= new TemplateFIT(file1,"FitNaF_Pbins_Dist ","FitNaF_Pbins_Dist ");
+	TemplateFIT * FitAgl_Pbins_Dist	= new TemplateFIT(file1,"FitAgl_Pbins_Dist ","FitAgl_Pbins_Dist ");
 
 	cout<<"******************** DEUTONS DISTANCE TEMPlATE FITS ************************"<<endl;
 
