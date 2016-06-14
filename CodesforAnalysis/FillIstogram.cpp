@@ -25,10 +25,8 @@ void FillIstogram(int INDX,string frac,string mese)
    EdepL1beta    = (TSpline3 *) calib->Get("Fit Results/Splines/EdepL1beta");
    EdepTOFbeta   = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFbeta");
    EdepTrackbeta = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTrackbeta");
-   Corr_L1       = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_L1");
-   Corr_TOFU     = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFU");
-   Corr_Track    = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_Track");
-   Corr_TOFD     = (TSpline3 *) calib->Get("Fit Results/Splines/Corr_TOFD");
+
+
 
    betaNaF = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaNaF_spl");
    betaAgl = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaAgl_spl");

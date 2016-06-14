@@ -33,10 +33,7 @@ TSpline3 *etrack;
 TSpline3 *EdepL1beta;
 TSpline3 *EdepTOFbeta;
 TSpline3 *EdepTrackbeta;
-TSpline3 *Corr_L1;
-TSpline3 *Corr_TOFU ;
-TSpline3 *Corr_Track;
-TSpline3 *Corr_TOFD; 
+
 
 
 ///  Variables retrieved from Root ntuples
