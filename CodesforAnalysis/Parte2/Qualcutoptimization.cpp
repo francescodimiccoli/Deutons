@@ -215,10 +215,7 @@ void DistanceCut(TFile * file1){
 	TGraph * BadPrej_NaF = Plot_BadPrej(Distance_badP_NaF,Distance_goodD_NaF);
 
         cout<<"**Agl**"<<endl;
-	/*masscut_effD=DistvsLikAgl_D->GetEntries()/(float)Dist5D_PdistrD_TOF ->GetEntries();
-        masscut_effP=DistvsLikAgl_P->GetEntries()/(float)Dist5D_PdistrP_TOF ->GetEntries();
-        Np=DistvsLikAgl_P->GetEntries();
-        Nd=1;//0.01*(masscut_effD/masscut_effP)*Np;*/
+
 	TGraph * BadPrej_Agl = Plot_BadPrej(Distance_badP_Agl,Distance_goodD_Agl);
 	
 
