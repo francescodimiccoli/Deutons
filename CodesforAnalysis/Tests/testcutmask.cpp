@@ -3,7 +3,7 @@
 
 int main(int argc, char * argv[])
 {
-   Cutmask cmask(20);
+   Cutmask cmask;
    cmask.print();
    
 

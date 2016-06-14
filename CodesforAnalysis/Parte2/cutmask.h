@@ -6,8 +6,13 @@ using namespace std;
 
 class Cutmask{
 	public:
+		Cutmask() {cmask=0;}
 		Cutmask(int cutmask)   : cmask(cutmask) {}
 		Cutmask(float cutmask) : cmask((int)(cutmask+0.5)) {}
+		void setMask (int cutmask)   {cmask=cutmask;}
+		void setMask (float cutmask) {cmask=(int)(cutmask+0.5);}
+		int getMask () {return cmask;}
+		
 		bool isRichMeasureFromNaF() {return (cmask>>11==512);}
 		void print();
 
@@ -19,8 +24,6 @@ class Cutmask{
 void Cutmask::print() {
 	cout << "Cutmask description:" << endl;
 	if (isRichMeasureFromNaF()) cout << "RICH measure taken from NaF" <<endl;
-	
-	
 }
 
 

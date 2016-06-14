@@ -70,7 +70,6 @@ float Unbias;
 
 
 float Massa_gen=0;
-float Zona=0;
 
 float Rcut[11]= {18,18,16,14,12,10,8,6,4,2,1};
 double geomagC[11]= {0,0.05,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95,1.15}; // Only for drawing, but in various files
@@ -142,3 +141,5 @@ DBinning AglDB;
 PBinning AglPB;
 
 Binning RB;
+
+Cutmask cmask;

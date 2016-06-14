@@ -7,6 +7,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD);
 void LoopOnDataTrig(TNtuple* ntupDataTrig);
 void LoopOnDataSepD(TNtuple* ntupDataSepD);
 void UpdateProgressBar(TNtuple* ntuple, int currentevent);
+float getGeoZone(float latitude);
 
 
 void FillIstogram(int INDX,string frac,string mese)
@@ -215,6 +216,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
 {
    for(int i=0; i<ntupMCTrig->GetEntries(); i++) {
       ntupMCTrig->GetEvent(i);
+      cmask.setMask(Tup.Cutmask);
       Cuts_Pre();
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
@@ -239,6 +241,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
 {
    for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
       ntupMCSepD->GetEvent(i);
+      cmask.setMask(Tup.Cutmask);
       Massa_gen = ReturnMass_Gen();
       UpdateProgressBar(ntupMCSepD, i);
       Cuts();
@@ -264,13 +267,10 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 {
    for(int i=0; i<ntupDataTrig->GetEntries(); i++) {
       ntupDataTrig->GetEvent(i);
+      cmask.setMask(Tup.Cutmask);
       Cuts_Pre();
       double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
-      for(int z=0; z<12; z++) {
-         double geo= geomag[z]  ;
-         double geo2=geomag[z+1];
-         if(Tup.Latitude>geo && Tup.Latitude<geo2) Zona=z;
-      }
+      float Zona=getGeoZone(Tup.Latitude);
       // Temporary Betarich check
       if((((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
       RUsed=Tup.R_pre;
@@ -290,12 +290,10 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
 {
    for(int i=0; i<ntupDataSepD->GetEntries(); i++) {
       ntupDataSepD->GetEvent(i);
-      double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
-      for(int z=0; z<12; z++) {
-         double geo= geomag[z]  ;
-         double geo2=geomag[z+1];
-         if(Tup.Latitude>geo && Tup.Latitude<geo2) Zona=z;
-      }
+      cmask.setMask(Tup.Cutmask);
+
+      float Zona=getGeoZone(Tup.Latitude);
+
       // Temporary Betarich check
       if((((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
       Cuts();
@@ -324,4 +322,14 @@ void UpdateProgressBar(TNtuple* ntuple, int currentevent) {
    int oldratio =(int)100*((currentevent-1)/(float)nentries);
    if(newratio>oldratio) 
          cout<<'\r' << "Progress : "<< newratio << " %"<< flush;
+}
+
+float getGeoZone(float latitude) {
+   float zone=-1;
+   double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
+      for(int z=0; z<12; z++) {
+         if(latitude>geomag[z] && latitude<geomag[z+1])
+            zone=z;
+      }
+      return zone;
 }

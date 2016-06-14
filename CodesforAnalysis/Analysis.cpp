@@ -18,6 +18,8 @@
 #include "TGraphErrors.h"
 
 
+#include "Parte2/cutmask.h"
+
 #include "Parte2/Definitions.cpp"
 #include "Parte2/FitError.cpp"
 #include "Parte2/EfficiencyClass.cpp"
@@ -52,6 +54,7 @@
 #include "Parte2/DVSMCPreSeleff.cpp"
 #include "Parte2/DVSMCPreSeleff_D.cpp"
 #include "Parte2/Acceptance.cpp"
+
 
 //#include "Parte2/ProtonFlux.cpp"
 //#include "Parte2/DeutonsFlux.cpp"
