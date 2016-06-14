@@ -23,7 +23,7 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
       {
                                      ToFPB.RFill(EffpreselMCP->afterTOF, RUsed);
          if(cmask.isRichMeasureFromNaF()) NaFPB.RFill(EffpreselMCP->afterNaF, RUsed);
-         if(((int)Tup.Cutmask)>>11==0  ) AglPB.RFill(EffpreselMCP->afterAgl, RUsed);
+         if(cmask.isRichMeasureFromAgl()  ) AglPB.RFill(EffpreselMCP->afterAgl, RUsed);
       }
 
    }

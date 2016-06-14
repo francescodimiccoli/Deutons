@@ -13,7 +13,8 @@ class Cutmask{
 		void setMask (float cutmask) {cmask=(int)(cutmask+0.5);}
 		int getMask () {return cmask;}
 		
-		bool isRichMeasureFromNaF() {return (cmask>>11==512);}
+		bool isRichMeasureFromNaF() {return cmask>>11 == 512;}
+		bool isRichMeasureFromAgl() {return cmask>>11 == 0;}
 		void print();
 
 	private:

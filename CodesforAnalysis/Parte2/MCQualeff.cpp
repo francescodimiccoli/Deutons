@@ -39,7 +39,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 			if(Distcut&&Likcut)	EffLikMCP ->afterNaF ->Fill(Kbin);
 		}
 
-		if(((int)Tup.Cutmask)>>11==0) {
+		if(cmask.isRichMeasureFromAgl()) {
 			Kbin=AglPB.GetRBin(RUsed);
 			EffLikMCP->beforeAgl->Fill(Kbin);
 			EffDistMCP->beforeAgl->Fill(Kbin);
@@ -74,7 +74,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 			if(Distcut&&Likcut)	FillBinMGen(EffLikMCD->afterNaF , Kbin);
 		}
 
-		if(((int)Tup.Cutmask)>>11==0) {
+		if(cmask.isRichMeasureFromAgl()) {
 			Kbin=AglDB.GetRBin(RUsed);
 			FillBinMGen(EffLikMCD ->beforeAgl, Kbin);
 			FillBinMGen(EffDistMCD->beforeAgl, Kbin);

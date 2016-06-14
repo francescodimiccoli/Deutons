@@ -27,7 +27,7 @@ void DVSMCRICHeff_D_Fill(TNtuple *ntupla, int l,int zona){
 	Kbin=AglDB.GetRBin(RUsed);
     RICH_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);	
 	RICH_DvsMC_D -> DataEff -> beforeAgl -> Fill(Kbin,zona);
-	if(((int)Tup.Cutmask)>>11==0) { 
+	if(cmask.isRichMeasureFromAgl()) { 
         RICH_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona); 
         RICH_DvsMC_D -> DataEff -> afterAgl -> Fill(Kbin,zona); 
     }
@@ -59,7 +59,7 @@ void DVSMCRICHeff_Fill(TNtuple *ntupla, int l){
 		RICH_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);
 		for(int mc_type=0;mc_type<6;mc_type++) RICH_DvsMC_D -> MCEff -> beforeAgl -> Fill(Kbin,mc_type);	
 
-		if(((int)Tup.Cutmask)>>11==0) {
+		if(cmask.isRichMeasureFromAgl()) {
 			RICH_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin); 	
 			for(int mc_type=0;mc_type<6;mc_type++) 	RICH_DvsMC_D -> MCEff -> afterAgl -> Fill(Kbin,mc_type);
 		}
