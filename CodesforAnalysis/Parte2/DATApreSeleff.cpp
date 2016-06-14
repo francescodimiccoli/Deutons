@@ -11,8 +11,8 @@ void DATApreSeleff_Fill(TNtuple *ntupla, int l,int zona){
 	if(Tup.R_pre <= Rcut[zona]) return;
 	for(int S=0;S<3;S++){
 		int Kbin=RB.GetRBin(fabs(Tup.R_pre));
-		if(((int)Tup.Cutmask&notpassed[S])==notpassed[S]) ((TH3 *)LATpreSelDATA->beforeR)->Fill(Kbin,zona,S);
-		if(((int)Tup.Cutmask&   passed[S])==   passed[S]) ((TH3 *)LATpreSelDATA->afterR )->Fill(Kbin,zona,S);
+		if(cmask.notPassed(S)) ((TH3 *)LATpreSelDATA->beforeR)->Fill(Kbin,zona,S);
+		if(cmask.passed(S))    ((TH3 *)LATpreSelDATA->afterR )->Fill(Kbin,zona,S);
 	}	
 	return;
 }

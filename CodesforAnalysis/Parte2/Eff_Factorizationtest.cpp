@@ -15,7 +15,7 @@ void FluxFactorizationtest_Pre_Fill(TNtuple *ntupla, int l){
 	if(Tup.Unbias!=0||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
 	int Rbin;
 	// full set efficiency before
-	if(((int)Tup.Cutmask&notpassed[0])==notpassed[0]){
+	if(cmask.notPassed(0)){
 		Rbin=RB.GetRBin(RUsed);
 		if(Massa_gen<1&&Massa_gen>0.5){
 			EffFullSETselectionsMCP->beforeR->Fill(Rbin);	
@@ -26,13 +26,13 @@ void FluxFactorizationtest_Pre_Fill(TNtuple *ntupla, int l){
 	for(int iS=0;iS<3;iS++){
 		Rbin=RB.GetRBin(RUsed);
 		if(Massa_gen<1&&Massa_gen>0.5) {
-			if(((int)Tup.Cutmask&notpassed[iS])==notpassed[iS]) Eff_do_preSelMCP->beforeR->Fill(Rbin,iS);
-			if(((int)Tup.Cutmask&   passed[iS])==   passed[iS]) Eff_do_preSelMCP->afterR ->Fill(Rbin,iS);
+			if(cmask.notPassed(iS)) Eff_do_preSelMCP->beforeR->Fill(Rbin,iS);
+			if(cmask.passed(iS)) Eff_do_preSelMCP->afterR ->Fill(Rbin,iS);
 		}				 
 
 		if(Massa_gen>1&&Massa_gen<2) {
-			if(((int)Tup.Cutmask&notpassed[iS])==notpassed[iS]) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeR, Rbin, iS);
-			if(((int)Tup.Cutmask&passed[iS])   ==passed[iS]   ) FillBinMGen((TH3*)Eff_do_preSelMCD->afterR,  Rbin, iS);
+			if(cmask.notPassed(iS)) FillBinMGen((TH3*)Eff_do_preSelMCD->beforeR, Rbin, iS);
+			if(cmask.passed(iS)) FillBinMGen((TH3*)Eff_do_preSelMCD->afterR,  Rbin, iS);
 
 		}
 	}
