@@ -3,6 +3,7 @@
 
 #include "GCR_data.h"
 #include "printmatrix.h"
+#include "binning.h"
 #include <string>
 #include <algorithm>
 

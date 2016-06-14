@@ -11,9 +11,10 @@ replaceinclude() {
    perl -i -p -e 's+//REMOVEINCLUDE ++' $1
 }
 
-#for file in AnalyzeDATA5D.C AnalyzeMC5D.C Selections5D.h
-for file in Selections5D.h
+for file in $(ls Parte2/*.h)
+#for file in Analysis.cpp
 do
+    echo "###" $file
     includes=`grep "^[ \t]*#include" $file | awk '{print $2;}' | sed 's/[\"\<\>]//g'`
     echo $includes
     for i in $includes
