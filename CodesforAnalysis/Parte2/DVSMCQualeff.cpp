@@ -34,7 +34,7 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 		if(Likcut) Lik_DvsMC_P  -> DataEff -> afterTOF -> Fill(Kbin,zona);
 	}
 	//NaF
-	if(((int)Tup.Cutmask)>>11==512) {	
+	if(cmask.isRichMeasureFromNaF()) {	
 		Kbin=NaFDB.GetRBin(RUsed);
 		Dist_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_P  -> DataEff -> beforeNaF -> Fill(Kbin,zona);
@@ -93,7 +93,7 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 			if(Likcut) Lik_DvsMC_P  -> MCEff -> afterTOF -> Fill(Kbin);
 		}
 		//NaF
-		if(((int)Tup.Cutmask)>>11==512) {	
+		if(cmask.isRichMeasureFromNaF()) {	
 			Kbin=NaFDB.GetRBin(RUsed);	
 			Dist_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin);
 			if(Distcut) Lik_DvsMC_P  -> MCEff -> beforeNaF -> Fill(Kbin);

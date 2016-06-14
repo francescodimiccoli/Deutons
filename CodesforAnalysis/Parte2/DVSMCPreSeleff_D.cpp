@@ -19,7 +19,7 @@ void DVSMCPreSeleffD_D_Fill(TNtuple *ntupla, int l,int zona){
 		if(((int)Tup.Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeTOF) -> Fill(Kbin,zona,S);
 		if(((int)Tup.Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterTOF ) -> Fill(Kbin,zona,S);
 		//NaF
-		if(((int)Tup.Cutmask)>>11==512) {	
+		if(cmask.isRichMeasureFromNaF()) {	
 			Kbin=NaFDB.GetRBin(RUsed);
 			if(((int)Tup.Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeNaF) -> Fill(Kbin,zona,S);
 			if(((int)Tup.Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterNaF ) -> Fill(Kbin,zona,S);
@@ -51,7 +51,7 @@ void DVSMCPreSeleffD_Fill(TNtuple *ntupla, int l){
 			if(((int)Tup.Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> MCEff -> afterTOF ) -> Fill(Kbin,ReturnMCGenType(),S);
 
 			//NaF
-			if(((int)Tup.Cutmask)>>11==512) {	
+			if(cmask.isRichMeasureFromNaF()) {	
 				Kbin=NaFDB.GetRBin(RUsed);	
 				if(((int)Tup.Cutmask&notpassed[S])==notpassed[S]) ((TH3*)PreSel_DvsMC_D -> MCEff -> beforeNaF) -> Fill(Kbin,ReturnMCGenType(),S);
 				if(((int)Tup.Cutmask&passed[S])==passed[S])       ((TH3*)PreSel_DvsMC_D -> MCEff -> afterNaF ) -> Fill(Kbin,ReturnMCGenType(),S);
