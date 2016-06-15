@@ -54,8 +54,3 @@ void Cuts()
 
    return;
 }
-
-bool cutmask512()
-{
-   return cmask.isFromNaF();
-}

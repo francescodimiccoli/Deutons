@@ -25,9 +25,12 @@ class Cutmask {
       bool hasSingleTrTrack()           { return cmask& (1<<7);}
       bool isMinimumBiasToF4Layers()    { return cmask& (1<<8);}
       bool isGoldenToF4Layers()         { return cmask& (1<<9);}
-      // Bin 10 is always set
+      // Bit 10 is always set
       bool isFromNaF() {return (cmask>>11) == 512;}
       bool isFromAgl() {return (cmask>>11) == 0;}
+      bool isOnlyFromToF() {return ( !isFromAgl() && !isFromNaF() );}
+
+      bool isPreselected() {return (cmask&187)==187;}
 
       bool notPassed (uint s);
       bool passed (uint s);
@@ -60,7 +63,8 @@ void Cutmask::print()
       printANSIYesNo (legend[ibit], (cmask& (1<<ibit)) );
    }
    printANSIYesNo ("RICH meas. from NaF", isFromNaF());
-   printANSIYesNo ("RICH meas. from Agl", isFromNaF());
+   printANSIYesNo ("RICH meas. from Agl", isFromAgl());
+   printANSIYesNo ("Preselected (code 187)", isPreselected());
    
 	return;
 }

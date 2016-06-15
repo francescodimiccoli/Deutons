@@ -56,42 +56,42 @@ void DistanceCut_Fill(TNtuple *ntupla, int l) {
 	if(Betastrongcut){
 		// Helium rej.
 		if(Massa_gen<1)	{
-			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512) Dist5D_PdistrP_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
-			if(cmask.isFromNaF())			   Dist5D_PdistrP_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
-			if(cmask.isFromAgl())  			   Dist5D_PdistrP_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);			
+			if(cmask.isOnlyFromToF()) Dist5D_PdistrP_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromNaF())	  Dist5D_PdistrP_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromAgl())  	  Dist5D_PdistrP_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);			
 		}
 		if(Massa_gen>1&&Massa_gen<2){
-			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512) Dist5D_PdistrD_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
-			if(cmask.isFromNaF())			   Dist5D_PdistrD_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
-			if(cmask.isFromAgl())  			   Dist5D_PdistrD_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);						
+			if(cmask.isOnlyFromToF()) Dist5D_PdistrD_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromNaF())	  Dist5D_PdistrD_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromAgl())  	  Dist5D_PdistrD_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);						
 		}
 		if(Massa_gen>3&&Massa_gen<4){
-			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512) Dist5D_PdistrHe_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
-			if(cmask.isFromNaF())			   Dist5D_PdistrHe_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
-			if(cmask.isFromAgl())  			   Dist5D_PdistrHe_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);                      
+			if(cmask.isOnlyFromToF()) Dist5D_PdistrHe_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromNaF())	  Dist5D_PdistrHe_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromAgl())  	  Dist5D_PdistrHe_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);                      
 		}
 
 		//Qual. cuts optimization
-		if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512) {
+		if(cmask.isOnlyFromToF()) {
 			mass = (Tup.R/Tup.Beta)*pow(1-pow(Tup.Beta,2),0.5);
 			if(mass>1.87){
-				if(Massa_gen<1) 			   DistvsLikTOF_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
-				if(Massa_gen>1&&Massa_gen<2)		   DistvsLikTOF_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+				if(Massa_gen<1) 		DistvsLikTOF_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+				if(Massa_gen>1&&Massa_gen<2)	DistvsLikTOF_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 			}
 		}	
 		if(cmask.isFromNaF()){
                         mass = (Tup.R/Tup.BetaRICH)*pow(1-pow(Tup.BetaRICH,2),0.5);
                         if(mass>1.87){
-                                if(Massa_gen<1)                            DistvsLikNaF_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
-                                if(Massa_gen>1&&Massa_gen<2)               DistvsLikNaF_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+                                if(Massa_gen<1)                 DistvsLikNaF_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+                                if(Massa_gen>1&&Massa_gen<2)    DistvsLikNaF_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
                         }
                 }       
 
 		if(cmask.isFromAgl()){
                         mass = (Tup.R/Tup.BetaRICH)*pow(1-pow(Tup.BetaRICH,2),0.5);
                         if(mass>1.87){
-                                if(Massa_gen<1)                            DistvsLikAgl_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
-                                if(Massa_gen>1&&Massa_gen<2)               DistvsLikAgl_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+                                if(Massa_gen<1)                 DistvsLikAgl_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+                                if(Massa_gen>1&&Massa_gen<2)    DistvsLikAgl_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
                         }
                 }
 		

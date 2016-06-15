@@ -5,18 +5,18 @@ int Norm[11]= {0};
 void Correlazione_Preselezioni(TNtuple *ntupla, int l){
 	 ntupla->GetEvent(l);
 	for(int S=0;S<10;S++){
-		if((((int)Tup.Cutmask>>S)&1)==1){
+		if(((cmask.getMask()>>S)&1)==1){
 			for(int F=0;F<10;F++) 
-				if((((int)Tup.Cutmask>>F)&1)==1) 
+				if(((cmask.getMask()>>F)&1)==1) 
 					CorrelazionePreselezioni->Fill(S,F);
 			if(Tup.Unbias==0)  
 				CorrelazionePreselezioni->Fill(S,10);
 		}		
-		if((((int)Tup.Cutmask>>S)&1)==1) Norm[S]++;
+		if(((cmask.getMask()>>S)&1)==1) Norm[S]++;
 	}
 	if(Tup.Unbias==0){
 		for(int F=0;F<10;F++) 
-			if((((int)Tup.Cutmask>>F)&1)==1) 
+			if(((cmask.getMask()>>F)&1)==1) 
 				CorrelazionePreselezioni->Fill(10,F);
 		if(Tup.Unbias==0) {
 			CorrelazionePreselezioni->Fill(10,10);
