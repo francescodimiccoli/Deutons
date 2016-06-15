@@ -78,7 +78,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 			Kbin=AglDB.GetRBin(RUsed);
 			FillBinMGen(EffLikMCD ->beforeAgl, Kbin);
 			FillBinMGen(EffDistMCD->beforeAgl, Kbin);
-			if(Distcut)             FillBinMGen(EffDistMCD ->afterAgl , Kbin);
+			if(Distcut)          FillBinMGen(EffDistMCD ->afterAgl , Kbin);
 			if(Distcut&&Likcut)	FillBinMGen(EffLikMCD->afterAgl , Kbin);
 		}
 	}
