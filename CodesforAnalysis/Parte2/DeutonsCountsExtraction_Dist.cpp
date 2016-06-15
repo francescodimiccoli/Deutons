@@ -30,7 +30,7 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
 		}
 	}
 	for(int m=0;m<nbinsNaF;m++) { //NaF
-		if((((int)Tup.Cutmask)>>11)==512){
+		if(cmask.isFromNaF()){
 			Distance_Discr = ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
 			if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
@@ -45,7 +45,7 @@ void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l){
 		}
 	}
 	for(int m=0;m<nbinsAgl;m++) { //Agl
-		if((((int)Tup.Cutmask)>>11)==0){
+		if(cmask.isFromAgl()){
 			Distance_Discr = ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
 			if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
@@ -78,7 +78,7 @@ void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona){
 		}
 	}
 	for(int m=0;m<nbinsNaF;m++){//NaF
-		if((((int)Tup.Cutmask)>>11)==512){
+		if(cmask.isFromNaF()){
 			Distance_Discr =  ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
 			if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
 				if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Dbins_Dist -> DATA -> Fill(Distance_Discr,m);
@@ -90,7 +90,7 @@ void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona){
 		}
 	}
 	for(int m=0;m<nbinsAgl;m++){ //Agl
-		if((((int)Tup.Cutmask)>>11)==0){
+		if(cmask.isFromAgl()){
 			Distance_Discr =  ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
 			if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
 				if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Dbins_Dist -> DATA -> Fill(Distance_Discr,m);

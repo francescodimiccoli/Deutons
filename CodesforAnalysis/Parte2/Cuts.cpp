@@ -10,9 +10,9 @@ void Cuts_Pre()
 
    //Strong beta cut
    Betastrongcut = false;
-   if(     (((((int)Tup.Cutmask)>>11)==512)&&Tup.BetaRICH<0.97 )
-           ||(((((int)Tup.Cutmask)>>11)== 0 )&&Tup.BetaRICH<0.985)
-           ||((!((((int)Tup.Cutmask)>>11)==512||(((int)Tup.Cutmask)>>11)==0))&& Tup.Beta_pre < 0.8)
+   if(     ((cmask.isFromNaF())&&Tup.BetaRICH<0.97 )
+           ||(cmask.isFromAgl()&&Tup.BetaRICH<0.985)
+           ||((!(cmask.isFromNaF()||cmask.isFromAgl()))&& Tup.Beta_pre < 0.8)
      )
       Betastrongcut = true;
 
@@ -29,7 +29,7 @@ void Cuts()
 
    //likelihood cut
    Likcut=false;
-   if((((((int)Tup.Cutmask)>>11)==512||(((int)Tup.Cutmask)>>11)==0)&&-log(1-Tup.LDiscriminant)>2.6)||((!((((int)Tup.Cutmask)>>11)==512||(((int)Tup.Cutmask)>>11)==0))&&-log(1-Tup.LDiscriminant)>0.55)) Likcut=true;
+   if(((cmask.isFromNaF()||cmask.isFromAgl())&&-log(1-Tup.LDiscriminant)>2.6)||((!(cmask.isFromNaF()||cmask.isFromAgl()))&&-log(1-Tup.LDiscriminant)>0.55)) Likcut=true;
 
    //Distance cut
    Distcut=false;
@@ -46,9 +46,9 @@ void Cuts()
 
    //Strong beta cut
    Betastrongcut = false;
-   if(	(((((int)Tup.Cutmask)>>11)==512)&&Tup.BetaRICH<0.97 )
-         ||(((((int)Tup.Cutmask)>>11)== 0 )&&Tup.BetaRICH<0.985)
-         ||((!((((int)Tup.Cutmask)>>11)==512||(((int)Tup.Cutmask)>>11)==0))&& Tup.Beta < 0.8)
+   if(	((cmask.isFromNaF())&&Tup.BetaRICH<0.97 )
+         ||(cmask.isFromAgl()&&Tup.BetaRICH<0.985)
+         ||((!(cmask.isFromNaF()||cmask.isFromAgl()))&& Tup.Beta < 0.8)
      )
       Betastrongcut = true;
 
@@ -57,5 +57,5 @@ void Cuts()
 
 bool cutmask512()
 {
-   return (((int)Tup.Cutmask)>>11)==512;
+   return cmask.isFromNaF();
 }

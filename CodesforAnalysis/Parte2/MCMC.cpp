@@ -50,8 +50,8 @@ void MCMC_Fill(TNtuple *ntupla, int l)
 	if(Tup.Beta<=0||Tup.R<=0) return;
 	if(Likcut&&Distcut){
 		MCMC_TOF->FillMC( Tup.Beta, Tup.R, Tup.Momento_gen);
-        if((((int)Tup.Cutmask)>>11)==512) MCMC_NaF->FillMC( Tup.BetaRICH, Tup.R, Tup.Momento_gen);
-        if((((int)Tup.Cutmask)>>11)==0  ) MCMC_Agl->FillMC( Tup.BetaRICH, Tup.R, Tup.Momento_gen);
+        if(cmask.isFromNaF()) MCMC_NaF->FillMC( Tup.BetaRICH, Tup.R, Tup.Momento_gen);
+        if(cmask.isFromAgl()  ) MCMC_Agl->FillMC( Tup.BetaRICH, Tup.R, Tup.Momento_gen);
 	}
 }
 
@@ -61,8 +61,8 @@ void MCMCDATA_Fill(TNtuple *ntupla, int l){
 	if( Likcut && Distcut && Tup.R>1.2*Tup.Rcutoff)
     {
 		MCMC_TOF->FillData( Tup.Beta, Tup.R );
-        if((((int)Tup.Cutmask)>>11)==512) MCMC_NaF->FillData( Tup.BetaRICH, Tup.R );
-        if((((int)Tup.Cutmask)>>11)==0  ) MCMC_Agl->FillData( Tup.BetaRICH, Tup.R );
+        if(cmask.isFromNaF()) MCMC_NaF->FillData( Tup.BetaRICH, Tup.R );
+        if(cmask.isFromAgl()  ) MCMC_Agl->FillData( Tup.BetaRICH, Tup.R );
     }
 }
 

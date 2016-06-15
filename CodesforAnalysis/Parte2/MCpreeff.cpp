@@ -43,8 +43,8 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
          if(((int)Tup.Cutmask&187)==187 && Tup.Beta_pre>0 && Tup.Unbias==0 && Tup.R_pre>0)
          {
                                            FillBinMGen(EffpreselMCD->afterTOF, ToFDB.GetRBin(RUsed));
-            if(((int)Tup.Cutmask)>>11 == 512 ) FillBinMGen(EffpreselMCD->afterNaF, NaFDB.GetRBin(RUsed));
-            if(((int)Tup.Cutmask)>>11 == 0   ) FillBinMGen(EffpreselMCD->afterAgl, AglDB.GetRBin(RUsed));
+            if(cmask.isFromNaF()) FillBinMGen(EffpreselMCD->afterNaF, NaFDB.GetRBin(RUsed));
+            if(cmask.isFromAgl()) FillBinMGen(EffpreselMCD->afterAgl, AglDB.GetRBin(RUsed));
          }
       
    }

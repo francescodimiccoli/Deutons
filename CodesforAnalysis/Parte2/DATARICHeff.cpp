@@ -17,11 +17,8 @@ void DATARICHeff_Fill(TNtuple *ntupla, int l,int zona) {
 	LATrichDATA_NaF -> beforeR -> Fill(Kbin,zona);
 	LATrichDATA_Agl	-> beforeR -> Fill(Kbin,zona);
 	
-	//NaF
-	if(((int)Tup.Cutmask>>11)==512) LATrichDATA_NaF -> afterR -> Fill(Kbin,zona); 
-   	
-   	//Agl
-	if(((int)Tup.Cutmask>>11)==0)   LATrichDATA_Agl -> afterR -> Fill(Kbin,zona); 
+	if (cmask.isFromNaF()) LATrichDATA_NaF -> afterR -> Fill(Kbin,zona); 
+	if (cmask.isFromAgl()) LATrichDATA_Agl -> afterR -> Fill(Kbin,zona); 
 
    	return;
 }

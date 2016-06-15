@@ -32,7 +32,7 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 		}
 	}
 	for(int m=0;m<nbinsNaF;m++) { //NaF
-		if((((int)Tup.Cutmask)>>11)==512){
+		if(cmask.isFromNaF()){
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Dbins -> TemplateP -> Fill(mass,m);
@@ -47,7 +47,7 @@ void DeutonsMC_Fill(TNtuple *ntupla, int l){
 		}
 	}
 	for(int m=0;m<nbinsAgl;m++) { //Agl
-		if((((int)Tup.Cutmask)>>11)==0){
+		if(cmask.isFromAgl()){
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
 				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Dbins -> TemplateP -> Fill(mass,m);
@@ -82,7 +82,7 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 		}
 	}
 	for(int m=0;m<nbinsNaF;m++){//NaF
-		if((((int)Tup.Cutmask)>>11)==512){
+		if(cmask.isFromNaF()){
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
 				if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Dbins -> DATA -> Fill(mass,m);
@@ -94,7 +94,7 @@ void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
 		}
 	}
 	for(int m=0;m<nbinsAgl;m++){ //Agl
-		if((((int)Tup.Cutmask)>>11)==0){
+		if(cmask.isFromAgl()){
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
 				if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Dbins -> DATA -> Fill(mass,m);

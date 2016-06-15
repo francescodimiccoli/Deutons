@@ -31,7 +31,7 @@ void MCQualeff_Fill(TNtuple *ntupla, int l) {
 		if(Distcut&&Likcut)	EffLikMCP->afterTOF ->Fill(Kbin);
 
 
-		if(((int)Tup.Cutmask)>>11 ==512) {
+		if(cmask.isFromNaF()) {
 			Kbin=NaFPB.GetRBin(RUsed);
 			EffLikMCP  ->beforeNaF->Fill(Kbin);
 			EffDistMCP ->beforeNaF->Fill(Kbin);
