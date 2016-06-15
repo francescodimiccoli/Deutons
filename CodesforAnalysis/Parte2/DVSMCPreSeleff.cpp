@@ -24,13 +24,13 @@ void DVSMCPreSeleff_D_Fill(TNtuple *ntupla, int l,int zona){
 		if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeTOF) -> Fill(Kbin,zona,S);
                 if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff -> afterTOF ) -> Fill(Kbin,zona,S);
 		//NaF
-		if(cmask.isRichMeasureFromNaF()) {	
+		if(cmask.isFromNaF()) {	
 			Kbin=NaFDB.GetRBin(RUsed);
 			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeNaF) -> Fill(Kbin,zona,S);
                 	if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff -> afterNaF ) -> Fill(Kbin,zona,S);
 		}
 		//Agl
-		if(cmask.isRichMeasureFromAgl()) {
+		if(cmask.isFromAgl()) {
 			Kbin=AglDB.GetRBin(RUsed);
 			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeAgl) -> Fill(Kbin,zona,S);
                 	if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff -> afterAgl ) -> Fill(Kbin,zona,S);
@@ -61,13 +61,13 @@ void DVSMCPreSeleff_Fill(TNtuple *ntupla, int l){
 			if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterTOF ) -> Fill(Kbin,S);
 
 			//NaF
-			if(cmask.isRichMeasureFromNaF()) {	
+			if(cmask.isFromNaF()) {	
 				Kbin=NaFDB.GetRBin(RUsed);	
 				if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeNaF) -> Fill(Kbin,S);
 				if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterNaF ) -> Fill(Kbin,S);
 			}
 			//Agl
-			if(cmask.isRichMeasureFromAgl()) {	
+			if(cmask.isFromAgl()) {	
 				Kbin=AglDB.GetRBin(RUsed);
 				if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeAgl) -> Fill(Kbin,S);
 				if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterAgl ) -> Fill(Kbin,S);

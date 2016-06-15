@@ -34,7 +34,7 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 		if(Likcut) Lik_DvsMC_P  -> DataEff -> afterTOF -> Fill(Kbin,zona);
 	}
 	//NaF
-	if(cmask.isRichMeasureFromNaF()) {	
+	if(cmask.isFromNaF()) {	
 		Kbin=NaFDB.GetRBin(RUsed);
 		Dist_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_P  -> DataEff -> beforeNaF -> Fill(Kbin,zona);
@@ -45,7 +45,7 @@ void DVSMCQualeff2_D_Fill(TNtuple *ntupla, int l,int zona){
 		}
 	}
 	//Agl
-	if(cmask.isRichMeasureFromAgl()) {
+	if(cmask.isFromAgl()) {
 		Kbin=AglDB.GetRBin(RUsed);
 		Dist_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_P  -> DataEff -> beforeAgl -> Fill(Kbin,zona);
@@ -93,7 +93,7 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 			if(Likcut) Lik_DvsMC_P  -> MCEff -> afterTOF -> Fill(Kbin);
 		}
 		//NaF
-		if(cmask.isRichMeasureFromNaF()) {	
+		if(cmask.isFromNaF()) {	
 			Kbin=NaFDB.GetRBin(RUsed);	
 			Dist_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin);
 			if(Distcut) Lik_DvsMC_P  -> MCEff -> beforeNaF -> Fill(Kbin);
@@ -105,7 +105,7 @@ void DVSMCQualeff2_Fill(TNtuple *ntupla, int l){
 
 		}
 		//Agl
-		if(cmask.isRichMeasureFromAgl()) {	
+		if(cmask.isFromAgl()) {	
 			Kbin=AglDB.GetRBin(RUsed);
 			Dist_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);
 			if(Distcut) Lik_DvsMC_P  -> MCEff -> beforeAgl -> Fill(Kbin);

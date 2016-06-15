@@ -13,8 +13,8 @@ class Cutmask{
 		void setMask (float cutmask) {cmask=(int)(cutmask+0.5);}
 		int getMask () {return cmask;}
 		
-		bool isRichMeasureFromNaF() {return cmask>>11 == 512;}
-		bool isRichMeasureFromAgl() {return cmask>>11 == 0;}
+		bool isFromNaF() {return (cmask>>11) == 512;}
+		bool isFromAgl() {return (cmask>>11) == 0;}
 		bool notPassed(uint s);
 		bool passed (uint s);
 		void print();
@@ -26,7 +26,7 @@ class Cutmask{
 
 void Cutmask::print() {
 	cout << "Cutmask description:" << endl;
-	if (isRichMeasureFromNaF()) cout << "RICH measure taken from NaF" <<endl;
+	if (isFromNaF()) cout << "RICH measure taken from NaF" <<endl;
 }
 
 bool Cutmask::notPassed(uint i) {

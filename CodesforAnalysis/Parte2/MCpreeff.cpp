@@ -22,8 +22,8 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
       if(Tup.Unbias==0 && ((int)Tup.Cutmask&187)==187 && Tup.Beta_pre>0 && Tup.R_pre>0)
       {
                                      ToFPB.RFill(EffpreselMCP->afterTOF, RUsed);
-         if(cmask.isRichMeasureFromNaF()) NaFPB.RFill(EffpreselMCP->afterNaF, RUsed);
-         if(cmask.isRichMeasureFromAgl()  ) AglPB.RFill(EffpreselMCP->afterAgl, RUsed);
+         if(cmask.isFromNaF()) NaFPB.RFill(EffpreselMCP->afterNaF, RUsed);
+         if(cmask.isFromAgl()  ) AglPB.RFill(EffpreselMCP->afterAgl, RUsed);
       }
 
    }

@@ -24,15 +24,15 @@ void HecutMC_Fill(TNtuple *ntupla,int l) {
 
 		if(Betastrongcut&&Likcut){		
 			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512&&Tup.R<3)HeliumContaminationTOF -> TemplateP -> Fill(Tup.Dist5D_P,0);
-			if(cmask.isRichMeasureFromNaF()&&Tup.R<6)		  HeliumContaminationNaF -> TemplateP -> Fill(Tup.Dist5D_P,0);	
-			if(cmask.isRichMeasureFromAgl()&&Tup.R<14)  			  HeliumContaminationAgl -> TemplateP -> Fill(Tup.Dist5D_P,0);
+			if(cmask.isFromNaF()&&Tup.R<6)		  HeliumContaminationNaF -> TemplateP -> Fill(Tup.Dist5D_P,0);	
+			if(cmask.isFromAgl()&&Tup.R<14)  			  HeliumContaminationAgl -> TemplateP -> Fill(Tup.Dist5D_P,0);
 		}	
 	}
 	if(Massa_gen>1&&Massa_gen<2){
 		if(Betastrongcut&&Likcut){
 			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512&&Tup.R<3)HeliumContaminationTOF -> TemplateD -> Fill(Tup.Dist5D_P,0);
-			if(cmask.isRichMeasureFromNaF()&&Tup.R<6)		  HeliumContaminationNaF -> TemplateD -> Fill(Tup.Dist5D_P,0);
-			if(cmask.isRichMeasureFromAgl()&&Tup.R<14) 		  HeliumContaminationAgl -> TemplateD -> Fill(Tup.Dist5D_P,0);
+			if(cmask.isFromNaF()&&Tup.R<6)		  HeliumContaminationNaF -> TemplateD -> Fill(Tup.Dist5D_P,0);
+			if(cmask.isFromAgl()&&Tup.R<14) 		  HeliumContaminationAgl -> TemplateD -> Fill(Tup.Dist5D_P,0);
 		}
 		
 	}
@@ -44,8 +44,8 @@ void HecutMC_Fill(TNtuple *ntupla,int l) {
 
 		if(Betastrongcut&&Likcut){
 			if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512&&Tup.R<3)HeliumContaminationTOF -> TemplateHe -> Fill(Tup.Dist5D_P,0);
-			if(cmask.isRichMeasureFromNaF()&&Tup.R<6)		  HeliumContaminationNaF -> TemplateHe -> Fill(Tup.Dist5D_P,0);
-			if(cmask.isRichMeasureFromAgl()&&Tup.R<14) 		  HeliumContaminationAgl -> TemplateHe -> Fill(Tup.Dist5D_P,0);
+			if(cmask.isFromNaF()&&Tup.R<6)		  HeliumContaminationNaF -> TemplateHe -> Fill(Tup.Dist5D_P,0);
+			if(cmask.isFromAgl()&&Tup.R<14) 		  HeliumContaminationAgl -> TemplateHe -> Fill(Tup.Dist5D_P,0);
 		}
 	}
 }
@@ -59,8 +59,8 @@ void HecutD_Fill(TNtuple *ntupla,int l) {
 
 	if(Betastrongcut&&Likcut){
 		if(((int)Tup.Cutmask)>>11!=0&&((int)Tup.Cutmask)>>11!=512&&Tup.R<3)HeliumContaminationTOF -> DATA -> Fill(Tup.Dist5D_P,0);
-		if(cmask.isRichMeasureFromNaF()&&Tup.R<6)			  HeliumContaminationNaF -> DATA -> Fill(Tup.Dist5D_P,0);
-		if(cmask.isRichMeasureFromAgl()&&Tup.R<14)  			  HeliumContaminationAgl -> DATA -> Fill(Tup.Dist5D_P,0);	
+		if(cmask.isFromNaF()&&Tup.R<6)			  HeliumContaminationNaF -> DATA -> Fill(Tup.Dist5D_P,0);
+		if(cmask.isFromAgl()&&Tup.R<14)  			  HeliumContaminationAgl -> DATA -> Fill(Tup.Dist5D_P,0);	
 	}
 }
 

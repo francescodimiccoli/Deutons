@@ -19,7 +19,7 @@ void DVSMCRICHeff_D_Fill(TNtuple *ntupla, int l,int zona){
 	Kbin=NaFDB.GetRBin(RUsed);
 	RICH_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);	
 	RICH_DvsMC_D -> DataEff -> beforeNaF -> Fill(Kbin,zona);
-	if(cmask.isRichMeasureFromNaF()) {
+	if(cmask.isFromNaF()) {
         RICH_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
         RICH_DvsMC_D -> DataEff -> afterNaF -> Fill(Kbin,zona);
     }
@@ -27,7 +27,7 @@ void DVSMCRICHeff_D_Fill(TNtuple *ntupla, int l,int zona){
 	Kbin=AglDB.GetRBin(RUsed);
     RICH_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);	
 	RICH_DvsMC_D -> DataEff -> beforeAgl -> Fill(Kbin,zona);
-	if(cmask.isRichMeasureFromAgl()) { 
+	if(cmask.isFromAgl()) { 
         RICH_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona); 
         RICH_DvsMC_D -> DataEff -> afterAgl -> Fill(Kbin,zona); 
     }
@@ -50,7 +50,7 @@ void DVSMCRICHeff_Fill(TNtuple *ntupla, int l){
 		RICH_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin);
 		for(int mc_type=0;mc_type<6;mc_type++) RICH_DvsMC_D -> MCEff -> beforeNaF -> Fill(Kbin,mc_type);
 
-		if(cmask.isRichMeasureFromNaF()){
+		if(cmask.isFromNaF()){
 			RICH_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin);
 			for(int mc_type=0;mc_type<6;mc_type++) RICH_DvsMC_D -> MCEff -> afterNaF -> Fill(Kbin,mc_type);
 		}
@@ -59,7 +59,7 @@ void DVSMCRICHeff_Fill(TNtuple *ntupla, int l){
 		RICH_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin);
 		for(int mc_type=0;mc_type<6;mc_type++) RICH_DvsMC_D -> MCEff -> beforeAgl -> Fill(Kbin,mc_type);	
 
-		if(cmask.isRichMeasureFromAgl()) {
+		if(cmask.isFromAgl()) {
 			RICH_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin); 	
 			for(int mc_type=0;mc_type<6;mc_type++) 	RICH_DvsMC_D -> MCEff -> afterAgl -> Fill(Kbin,mc_type);
 		}
