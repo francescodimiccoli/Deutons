@@ -109,22 +109,22 @@ void MCTrackeff_Write()
 
 
 
-void MCTrackeff (TFile * file1)
+void MCTrackeff (TFile * inputHistoFile)
 {
 
-   Efficiency * EffTriggMCP = new Efficiency (file1,"EffTriggMCP");
-   Efficiency * EffTriggMCD = new Efficiency (file1,"EffTriggMCD");
+   Efficiency * EffTriggMCP = new Efficiency (inputHistoFile,"EffTriggMCP");
+   Efficiency * EffTriggMCD = new Efficiency (inputHistoFile,"EffTriggMCD");
 
-   Efficiency * EffTrackMCP = new Efficiency (file1,"EffTrackMCP");
-   Efficiency * EffTrackMCD = new Efficiency (file1,"EffTrackMCD");
+   Efficiency * EffTrackMCP = new Efficiency (inputHistoFile,"EffTrackMCP");
+   Efficiency * EffTrackMCD = new Efficiency (inputHistoFile,"EffTrackMCD");
 
-   Efficiency * EffTOFMCP 	 = new Efficiency (file1,"EffTOFMCP");
-   Efficiency * EffTOFMCD   = new Efficiency (file1,"EffTOFMCD");
+   Efficiency * EffTOFMCP 	 = new Efficiency (inputHistoFile,"EffTOFMCP");
+   Efficiency * EffTOFMCD   = new Efficiency (inputHistoFile,"EffTOFMCD");
 
 
    string tagli[10]= {"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
    string nome;
-   Tempi = (TH1F *) file1->Get ("Tempi");
+   Tempi = (TH1F *) inputHistoFile->Get ("Tempi");
 
    cout<<"**** MC BASIC SEL. EFFICIENCIES ****"<<endl;
 
@@ -157,10 +157,9 @@ void MCTrackeff (TFile * file1)
 
 
    cout<<"*** Updating P1 file ****"<<endl;
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   file1 =TFile::Open (nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-   file1->cd ("Results");
+   inputHistoFile->cd ("Results");
 
    EffTriggerMCP_R_TH1F	-> Write();
    EffTriggerMCP_TH1F 	-> Write();
@@ -174,8 +173,8 @@ void MCTrackeff (TFile * file1)
    EffTOF_MCP_TH1F		-> Write();
    EffTOF_MCD_R_TH2F	-> Write();
    EffTOF_MCD_TH2F		-> Write();
-   file1->Write();
-   file1->Close();
+   inputHistoFile->Write();
+   inputHistoFile->Close();
 
 
    TCanvas *c_7 	=new TCanvas ("Trigger sel. efficiency");
@@ -401,8 +400,8 @@ void MCTrackeff (TFile * file1)
 
 
    cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile (nomefile.c_str(), "UPDATE");
+   string filename="./Final_plots/"+mese+".root";
+   TFile *f_out=new TFile (filename.c_str(), "UPDATE");
    f_out->mkdir ("MC Results/Preselections/Basic Selections");
    f_out->cd ("MC Results/Preselections/Basic Selections");
    c_7 -> Write();

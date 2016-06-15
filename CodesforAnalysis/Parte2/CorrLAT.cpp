@@ -2,30 +2,29 @@
 TH1 * Weighted_CorrLAT(TH2 * esposizionegeo, TH1 * LATcorr);
 
 void CorrLAT() {
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
+  inputHistoFile->ReOpen("READ");
 
-   TH2F * esposizionegeo_R    = (TH2F*)file1->Get( "esposizionegeo"       );
-   TH2F * esposizionepgeoTOF  = (TH2F*)file1->Get(	"esposizionepgeo"	);
-   TH2F * esposizionepgeoNaF  = (TH2F*)file1->Get(	"esposizionepgeoNaF"	);
-   TH2F * esposizionepgeoAgl  = (TH2F*)file1->Get(	"esposizionepgeoAgl"	);
-   TH2F * esposizionedgeoTOF  = (TH2F*)file1->Get(	"esposizionedgeo"	);
-   TH2F * esposizionedgeoNaF  = (TH2F*)file1->Get(	"esposizionedgeoNaF"	);
-   TH2F * esposizionedgeoAgl  = (TH2F*)file1->Get(	"esposizionedgeoAgl"	);
+   TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get( "esposizionegeo"       );
+   TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeo"	);
+   TH2F * esposizionepgeoNaF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoNaF"	);
+   TH2F * esposizionepgeoAgl  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoAgl"	);
+   TH2F * esposizionedgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionedgeo"	);
+   TH2F * esposizionedgeoNaF  = (TH2F*)inputHistoFile->Get(	"esposizionedgeoNaF"	);
+   TH2F * esposizionedgeoAgl  = (TH2F*)inputHistoFile->Get(	"esposizionedgeoAgl"	);
 
-   LATcorr * LATpreSelDATA      	= new LATcorr(file1,"LATpreSelDATA"  	 ,"Results");
+   LATcorr * LATpreSelDATA      	= new LATcorr(inputHistoFile,"LATpreSelDATA"  	 ,"Results");
 
-   LATcorr * LATLikelihoodDATA_TOF = new LATcorr(file1,"LATLikDATA_TOF"   	 ,"Results");
-   LATcorr * LATDistanceDATA_TOF   = new LATcorr(file1,"LATDistDATA_TOF" 	 ,"Results");
+   LATcorr * LATLikelihoodDATA_TOF = new LATcorr(inputHistoFile,"LATLikDATA_TOF"   	 ,"Results");
+   LATcorr * LATDistanceDATA_TOF   = new LATcorr(inputHistoFile,"LATDistDATA_TOF" 	 ,"Results");
 
-   LATcorr * LATLikelihoodDATA_NaF = new LATcorr(file1,"LATLikDATA_NaF"  	 ,"Results");
-   LATcorr * LATDistanceDATA_NaF   = new LATcorr(file1,"LATDistDATA_NaF" 	 ,"Results");
+   LATcorr * LATLikelihoodDATA_NaF = new LATcorr(inputHistoFile,"LATLikDATA_NaF"  	 ,"Results");
+   LATcorr * LATDistanceDATA_NaF   = new LATcorr(inputHistoFile,"LATDistDATA_NaF" 	 ,"Results");
 
-   LATcorr * LATLikelihoodDATA_Agl = new LATcorr(file1,"LATLikDATA_Agl"  	 ,"Results");
-   LATcorr * LATDistanceDATA_Agl   = new LATcorr(file1,"LATDistDATA_Agl" 	 ,"Results");
+   LATcorr * LATLikelihoodDATA_Agl = new LATcorr(inputHistoFile,"LATLikDATA_Agl"  	 ,"Results");
+   LATcorr * LATDistanceDATA_Agl   = new LATcorr(inputHistoFile,"LATDistDATA_Agl" 	 ,"Results");
 
-   LATcorr * LATrichDATA_NaF       = new LATcorr(file1,"LATrichDATA_NaF" 	 ,"Results");
-   LATcorr * LATrichDATA_Agl       = new LATcorr(file1,"LATrichDATA_Agl" 	 ,"Results");	
+   LATcorr * LATrichDATA_NaF       = new LATcorr(inputHistoFile,"LATrichDATA_NaF" 	 ,"Results");
+   LATcorr * LATrichDATA_Agl       = new LATcorr(inputHistoFile,"LATrichDATA_Agl" 	 ,"Results");	
 
    cout<<"******* TOTAL LAT. CORRECTION *************"<<endl;
 
@@ -67,9 +66,8 @@ void CorrLAT() {
    TH1F * CorrezioneLAT_dAgl = (TH1F *) Weighted_CorrLAT ( esposizionedgeoAgl , TOTLATCorrAgl	);
 
    cout<<"*** Updating P1 file ****"<<endl;
-   nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-   file1->cd("Results");
+   inputHistoFile->ReOpen("UPDATE");
+   inputHistoFile->cd("Results");
 
    PreLATCorr     -> Write(     "PreLATCorr_LATcorrR_fit" 	);
    PreLATCorr     -> Write(     "PreLATCorr_LATcorrTOF_fit");
@@ -94,8 +92,8 @@ void CorrLAT() {
    CorrezioneLAT_dNaF-> Write(  "CorrezioneLATd_NaF"	);
    CorrezioneLAT_dAgl-> Write(  "CorrezioneLATd_Agl"       );
 
-   file1->Write();
-   file1->Close();
+   inputHistoFile->Write();
+   inputHistoFile->Close();
 
 
 
@@ -262,7 +260,7 @@ void CorrLAT() {
    CorrLATd_Agl_Spl->Draw("CPsame");
 
    cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
+   string nomefile="./Final_plots/"+mese+".root";
    TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
    f_out->mkdir("DATA-driven Results/Latitude effect/Correction");
    f_out->cd("DATA-driven Results/Latitude effect/Correction");

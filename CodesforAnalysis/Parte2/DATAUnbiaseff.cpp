@@ -28,8 +28,8 @@ void DATAUnbiaseff_Write() {
 }
 
 
-void DATAUnbiaseff (TFile * file1) {
-   Efficiency * EffUnbiasDATA = new Efficiency (file1,"EffUnbiasDATA");
+void DATAUnbiaseff (TFile * inputHistoFile) {
+   Efficiency * EffUnbiasDATA = new Efficiency (inputHistoFile,"EffUnbiasDATA");
 
    cout<<"********** DATA Tup.Unbias TRIGG. EFFICIENCY ******************************"<<endl;
 
@@ -39,14 +39,13 @@ void DATAUnbiaseff (TFile * file1) {
    TH1F *EffUnbDATA_TH1F   = (TH1F *) EffUnbiasDATA -> effTOF ->Clone();
 
    cout<<"*** Updating P1 file ****"<<endl;
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   file1 =TFile::Open (nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-   file1->cd ("Results");
+   inputHistoFile->cd ("Results");
    EffUnbDATA_R_TH1F ->Write();
    EffUnbDATA_TH1F	  ->Write();
-   file1-> Write();
-   file1-> Close();
+   inputHistoFile-> Write();
+   inputHistoFile-> Close();
 
    TCanvas *c12=new TCanvas ("DATA: Unb. Trigger Efficiency");
 
@@ -98,8 +97,8 @@ void DATAUnbiaseff (TFile * file1) {
    }
 
    cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile (nomefile.c_str(), "UPDATE");
+   string filename="./Final_plots/"+mese+".root";
+   TFile *f_out=new TFile (filename.c_str(), "UPDATE");
    f_out->mkdir ("DATA-driven Results");
    f_out->cd ("DATA-driven Results");
    c12->Write();

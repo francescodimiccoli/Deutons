@@ -2,14 +2,13 @@ using namespace std;
 
 
 void OtherExperimentsComparison(){
-	string nomefile1="../Histos/"+mese +"/"+mese+"_"+frac+"_P1.root";
-        TFile * file1 = TFile::Open(nomefile1.c_str(),"READ");
+   inputHistoFile->ReOpen("READ");
 	
-	string nomefile2="../database_P.root";
-        TFile * file2 = TFile::Open(nomefile2.c_str(),"READ");
+	string filename2="../database_P.root";
+        TFile * file2 = TFile::Open(filename2.c_str(),"READ");
 	
-	string nomefile3="../database_D.root";
-        TFile * file3 = TFile::Open(nomefile3.c_str(),"READ");
+	string filename3="../database_D.root";
+        TFile * file3 = TFile::Open(filename3.c_str(),"READ");
 
 	cout<<"******************** OTHER EXPERIMENTS COMP. ********************"<<endl;
 
@@ -26,7 +25,7 @@ void OtherExperimentsComparison(){
 		if(obj->InheritsFrom("TGraphAsymmErrors")) P_Graphs.push_back((TGraphAsymmErrors *)obj); 
 	}
 	
-	TH1F * ThisWork_P = (TH1F*) file1 -> Get("Results/Fluxes/ProtonsPrimaryFlux");
+	TH1F * ThisWork_P = (TH1F*) inputHistoFile -> Get("Results/Fluxes/ProtonsPrimaryFlux");
 
 	cout<<"*** Deutons ***"<<endl;
 
@@ -42,9 +41,9 @@ void OtherExperimentsComparison(){
         }
 	
 
-	TH1F * ThisWork_DTOF = (TH1F*) file1 -> Get("Results/Fluxes/DeutonsPrimaryFlux_TOF");
-	TH1F * ThisWork_DNaF = (TH1F*) file1 -> Get("Results/Fluxes/DeutonsPrimaryFlux_NaF"); 	
-	TH1F * ThisWork_DAgl = (TH1F*) file1 -> Get("Results/Fluxes/DeutonsPrimaryFlux_Agl");
+	TH1F * ThisWork_DTOF = (TH1F*) inputHistoFile -> Get("Results/Fluxes/DeutonsPrimaryFlux_TOF");
+	TH1F * ThisWork_DNaF = (TH1F*) inputHistoFile -> Get("Results/Fluxes/DeutonsPrimaryFlux_NaF"); 	
+	TH1F * ThisWork_DAgl = (TH1F*) inputHistoFile -> Get("Results/Fluxes/DeutonsPrimaryFlux_Agl");
 
 	TCanvas * c1 = new TCanvas ("Proton Flux");
 	TCanvas * c2 = new TCanvas ("Deuton Flux");
@@ -149,8 +148,8 @@ void OtherExperimentsComparison(){
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-        string nomefile="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        string filename="./Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(filename.c_str(), "UPDATE");
         f_out->mkdir("Comparison with others");
         f_out->cd("Comparison with others");
         c1->Write();

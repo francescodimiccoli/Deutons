@@ -48,13 +48,13 @@ void MCUnbiaseff_Write() {
 
 
 
-void MCUnbiaseff(TFile * file1) {
+void MCUnbiaseff(TFile * inputHistoFile) {
 
-   Efficiency * EffUnbiasMCP = new Efficiency(file1,"EffUnbiasMCP" );
-   Efficiency * EffUnbiasMCD = new Efficiency(file1,"EffUnbiasMCD" );
+   Efficiency * EffUnbiasMCP = new Efficiency(inputHistoFile,"EffUnbiasMCP" );
+   Efficiency * EffUnbiasMCD = new Efficiency(inputHistoFile,"EffUnbiasMCD" );
 
    string nome;
-   Tempi = (TH1F *)file1->Get("Tempi");
+   Tempi = (TH1F *)inputHistoFile->Get("Tempi");
 
    cout<<"**** MC Unbias TRIGGER EFF. ****"<<endl;
 
@@ -68,16 +68,15 @@ void MCUnbiaseff(TFile * file1) {
 
 
    cout<<"*** Updating P1 file ****"<<endl;
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-   file1->cd("Results");
+   inputHistoFile->cd("Results");
    EffUnbMCP_R_TH1F  -> Write();
    EffUnbMCP_TH1F   -> Write();
    EffUnbMCD_R_TH2F  -> Write();
    EffUnbMCD_TH2F    -> Write();
-   file1->Write();
-   file1->Close();
+   inputHistoFile->Write();
+   inputHistoFile->Close();
 
    TCanvas *c11=new TCanvas("Unbias Trigger Efficiency");
    c11->Divide(2,1);
@@ -154,8 +153,8 @@ void MCUnbiaseff(TFile * file1) {
       }
    }
    cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+   string filename="./Final_plots/"+mese+".root";
+   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
    f_out->cd("MC Results/Preselections");
    c11->Write();
    f_out->Write();

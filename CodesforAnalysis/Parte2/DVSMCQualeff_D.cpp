@@ -111,20 +111,19 @@ void DVSMCQualeffD_Write(){
 
 void DVSMCQualeffD(){
 
-	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
+   inputHistoFile->ReOpen("READ");
 
-	DatavsMC * Dist_DvsMC_D = new DatavsMC(file1,"Dist_DvsMC_D",6);
-	DatavsMC * Lik_DvsMC_D  = new DatavsMC(file1,"Lik_DvsMC_D" ,6);
+	DatavsMC * Dist_DvsMC_D = new DatavsMC(inputHistoFile,"Dist_DvsMC_D",6);
+	DatavsMC * Lik_DvsMC_D  = new DatavsMC(inputHistoFile,"Lik_DvsMC_D" ,6);
 
-	LATcorr * LATLikelihoodDATA_TOF = new LATcorr(file1,"LATLikDATA_TOF"   	 ,"Results");
-	LATcorr * LATDistanceDATA_TOF   = new LATcorr(file1,"LATDistDATA_TOF" 	 ,"Results");
+	LATcorr * LATLikelihoodDATA_TOF = new LATcorr(inputHistoFile,"LATLikDATA_TOF"   	 ,"Results");
+	LATcorr * LATDistanceDATA_TOF   = new LATcorr(inputHistoFile,"LATDistDATA_TOF" 	 ,"Results");
 
-	LATcorr * LATLikelihoodDATA_NaF = new LATcorr(file1,"LATLikDATA_NaF"  	 ,"Results");
-	LATcorr * LATDistanceDATA_NaF   = new LATcorr(file1,"LATDistDATA_NaF" 	 ,"Results");
+	LATcorr * LATLikelihoodDATA_NaF = new LATcorr(inputHistoFile,"LATLikDATA_NaF"  	 ,"Results");
+	LATcorr * LATDistanceDATA_NaF   = new LATcorr(inputHistoFile,"LATDistDATA_NaF" 	 ,"Results");
 
-	LATcorr * LATLikelihoodDATA_Agl = new LATcorr(file1,"LATLikDATA_Agl"  	 ,"Results");
-	LATcorr * LATDistanceDATA_Agl   = new LATcorr(file1,"LATDistDATA_Agl" 	 ,"Results");
+	LATcorr * LATLikelihoodDATA_Agl = new LATcorr(inputHistoFile,"LATLikDATA_Agl"  	 ,"Results");
+	LATcorr * LATDistanceDATA_Agl   = new LATcorr(inputHistoFile,"LATDistDATA_Agl" 	 ,"Results");
 
 
 
@@ -162,10 +161,9 @@ void DVSMCQualeffD(){
 
 
 	cout<<"*** Updating P1 file ****"<<endl;
-	nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-	file1->cd("Results");
+	inputHistoFile->cd("Results");
 
 	DistD_Correction_R    -> Write("Dist_DvsMC_D_CorrectionR"  );
 	DistD_Correction_TOF  -> Write("Dist_DvsMC_D_CorrectionTOF");
@@ -178,8 +176,8 @@ void DVSMCQualeffD(){
 	LikD_Correction_Agl  -> Write("Lik_DvsMC_D_CorrectionAgl");
 
 
-	file1->Write();
-	file1->Close();
+	inputHistoFile->Write();
+	inputHistoFile->Close();
 
 
 
@@ -364,8 +362,8 @@ void DVSMCQualeffD(){
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-	nomefile="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+	string filename="./Final_plots/"+mese+".root";
+	TFile *f_out=new TFile(filename.c_str(), "UPDATE");
 	f_out->mkdir("DATA-driven Results/Data vs MC/Deutons");
 	f_out->cd("DATA-driven Results/Data vs MC/Deutons");
 	c20_bis->Write();

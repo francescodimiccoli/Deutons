@@ -32,9 +32,9 @@ void DATARICHeff_Write() {
 
 
 
-void DATARICHeff(TFile * file1) {
-   LATcorr * LATrichDATA_NaF = new LATcorr(file1,"LATrichDATA_NaF");
-   LATcorr * LATrichDATA_Agl = new LATcorr(file1,"LATrichDATA_Agl");
+void DATARICHeff(TFile * inputHistoFile) {
+   LATcorr * LATrichDATA_NaF = new LATcorr(inputHistoFile,"LATrichDATA_NaF");
+   LATcorr * LATrichDATA_Agl = new LATcorr(inputHistoFile,"LATrichDATA_Agl");
 
 
    cout<<"****************************** DATA RICH SEL. EFFICIENCIES **************************************"<<endl;
@@ -60,10 +60,9 @@ void DATARICHeff(TFile * file1) {
    TH1F *LATrichcorr_Agl_fit	= (TH1F *) LATrichDATA_Agl   -> LATcorrR_fit-> Clone();
 
    cout<<"*** Updating P1 file ****"<<endl;
-   string nomefile= "../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-   file1->cd("Results");
+   inputHistoFile->cd("Results");
 
    LATrichDATANaF -> Write();
    LATrichDATAAgl -> Write();
@@ -74,8 +73,8 @@ void DATARICHeff(TFile * file1) {
    LATrichcorr_NaF_fit-> Write();
    LATrichcorr_Agl_fit-> Write();
 
-   file1->Write();
-   file1->Close();
+   inputHistoFile->Write();
+   inputHistoFile->Close();
 
 
 
@@ -208,8 +207,8 @@ void DATARICHeff(TFile * file1) {
    CorrLAT_richAgl_Spl->Draw("Csame");
    
    cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+   string filename="./Final_plots/"+mese+".root";
+   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
    f_out->mkdir("DATA-driven Results/Latitude effect/RICH");
    f_out->cd("DATA-driven Results/Latitude effect/RICH");
    c15->Write();

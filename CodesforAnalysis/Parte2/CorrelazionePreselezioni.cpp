@@ -31,8 +31,8 @@ void Correlazione_Preselezioni_Write(){
 }
 
 
-void Correlazione_Preselezioni(TFile * file1){
-	TH2F * CorrelazionePreselezioni = (TH2F*) file1->Get("CorrelazionePreselezioni");
+void Correlazione_Preselezioni(TFile * inputHistoFile){
+	TH2F * CorrelazionePreselezioni = (TH2F*) inputHistoFile->Get("CorrelazionePreselezioni");
 	
 	cout<<"***************** CORR. PRESELEZIONI ********************"<<endl;	
 	for(int S=0;S<11;S++)
@@ -40,21 +40,20 @@ void Correlazione_Preselezioni(TFile * file1){
 			if(Norm[S]>0) CorrelazionePreselezioni->SetBinContent(S+1,F+1,CorrelazionePreselezioni->GetBinContent(S+1,F+1)/(float)Norm[S]);
 	
 	cout<<"*** Updating P1 file ****"<<endl;
-        string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-        file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-        
-	file1->cd("Results");
+	inputHistoFile->ReOpen("UPDATE");
+	inputHistoFile->cd("Results");
         CorrelazionePreselezioni->Write();
-	file1-> Write();
-        file1-> Close();
+	inputHistoFile-> Write();
+        inputHistoFile-> Close();
+	
 
 	TCanvas *c13=new TCanvas("Correlazione Selezioni");
 	c13->cd();
 	CorrelazionePreselezioni->Draw("col");
 
 	cout<<"*** Updating Results file ***"<<endl;
-        nomefile="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        string namehistoFile="./Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(namehistoFile.c_str(), "UPDATE");
         f_out->cd("MC Results");
         c13->Write();
         f_out->Write();

@@ -78,17 +78,17 @@ void HecutMC_Write() {
 
 
 
-void Hecut(TFile * file1) {
-	TH2F* HecutMC_P =(TH2F*)file1->Get("HecutMC_P");
-	TH2F* HecutMC_He=(TH2F*)file1->Get("HecutMC_He");
-	TH2F* Hecut_D   =(TH2F*)file1->Get("Hecut_D");
+void Hecut(TFile * inputHistoFile) {
+	TH2F* HecutMC_P =(TH2F*)inputHistoFile->Get("HecutMC_P");
+	TH2F* HecutMC_He=(TH2F*)inputHistoFile->Get("HecutMC_He");
+	TH2F* Hecut_D   =(TH2F*)inputHistoFile->Get("Hecut_D");
 
-	Efficiency * HecutMCP = new Efficiency(file1,"HecutMCP");
-	Efficiency * HecutMCHe = new Efficiency(file1,"HecutMCHe");
+	Efficiency * HecutMCP = new Efficiency(inputHistoFile,"HecutMCP");
+	Efficiency * HecutMCHe = new Efficiency(inputHistoFile,"HecutMCHe");
 
-	TemplateFIT * HeliumContaminationTOF = new TemplateFIT(file1,"HeliumContaminationTOF","HeliumContaminationTOF");
-	TemplateFIT * HeliumContaminationNaF = new TemplateFIT(file1,"HeliumContaminationNaF","HeliumContaminationNaF");
-	TemplateFIT * HeliumContaminationAgl = new TemplateFIT(file1,"HeliumContaminationAgl","HeliumContaminationAgl");
+	TemplateFIT * HeliumContaminationTOF = new TemplateFIT(inputHistoFile,"HeliumContaminationTOF","HeliumContaminationTOF");
+	TemplateFIT * HeliumContaminationNaF = new TemplateFIT(inputHistoFile,"HeliumContaminationNaF","HeliumContaminationNaF");
+	TemplateFIT * HeliumContaminationAgl = new TemplateFIT(inputHistoFile,"HeliumContaminationAgl","HeliumContaminationAgl");
 
 	cout<<"*************** He control sample cut Efficiency on P*******************"<<endl;
 
@@ -124,17 +124,16 @@ void Hecut(TFile * file1) {
 	float HeCont_Agl = HeCountsAgl/(PCountsAgl+DCountsAgl);	
 
 	cout<<"*** Updating P1 file ****"<<endl;
-	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-	file1->cd("Results");
+	inputHistoFile->cd("Results");
 	HecutMC_P 	->Write();
 	HecutMC_He	->Write();
 	Hecut_D   	->Write();
 	HecutMCP_TH1F 	->Write();
 	HecutMCHe_TH1F	->Write();
-	file1->Write();
-	file1->Close();
+	inputHistoFile->Write();
+	inputHistoFile->Close();
 
 	TCanvas * c36	=new TCanvas("Sigma E. dep. Track vs TOF");
 	TCanvas * c36_bis    =new TCanvas("Sigma E. dep. Track vs TOF (MC)");
@@ -263,8 +262,8 @@ void Hecut(TFile * file1) {
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-	nomefile="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
+	string filename="./Final_plots/"+mese+".root";
+	TFile *f_out=new TFile(filename.c_str(), "RECREATE");
 	f_out->mkdir("MC Results/He related cuts");
 	f_out->cd("MC Results/He related cuts");
 	c36	->Write();

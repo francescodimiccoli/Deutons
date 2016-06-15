@@ -128,20 +128,19 @@ void DeutonsMC_Write(){
 
 
 void DeutonsTemplFits(){
-	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-	TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
+   inputHistoFile->ReOpen("READ");
 
-	TemplateFIT * FitTOF_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins","FitTOF_Dbins");
-	TemplateFIT * FitNaF_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins","FitNaF_Dbins");
-	TemplateFIT * FitAgl_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins","FitAgl_Dbins");
+	TemplateFIT * FitTOF_Dbins	= new TemplateFIT(inputHistoFile,"FitTOF_Dbins","FitTOF_Dbins");
+	TemplateFIT * FitNaF_Dbins	= new TemplateFIT(inputHistoFile,"FitNaF_Dbins","FitNaF_Dbins");
+	TemplateFIT * FitAgl_Dbins	= new TemplateFIT(inputHistoFile,"FitAgl_Dbins","FitAgl_Dbins");
                                                                                               
-	TemplateFIT * FitTOFgeo_Dbins	= new TemplateFIT(file1,"FitTOF_Dbins","FitTOFgeo_Dbins",11);
-	TemplateFIT * FitNaFgeo_Dbins	= new TemplateFIT(file1,"FitNaF_Dbins","FitNaFgeo_Dbins",11);
-	TemplateFIT * FitAglgeo_Dbins	= new TemplateFIT(file1,"FitAgl_Dbins","FitAglgeo_Dbins",11);
+	TemplateFIT * FitTOFgeo_Dbins	= new TemplateFIT(inputHistoFile,"FitTOF_Dbins","FitTOFgeo_Dbins",11);
+	TemplateFIT * FitNaFgeo_Dbins	= new TemplateFIT(inputHistoFile,"FitNaF_Dbins","FitNaFgeo_Dbins",11);
+	TemplateFIT * FitAglgeo_Dbins	= new TemplateFIT(inputHistoFile,"FitAgl_Dbins","FitAglgeo_Dbins",11);
                                                                                               
-	TemplateFIT * FitTOF_Pbins	= new TemplateFIT(file1,"FitTOF_Pbins","FitTOF_Pbins");
-	TemplateFIT * FitNaF_Pbins	= new TemplateFIT(file1,"FitNaF_Pbins","FitNaF_Pbins");
-	TemplateFIT * FitAgl_Pbins	= new TemplateFIT(file1,"FitAgl_Pbins","FitAgl_Pbins");
+	TemplateFIT * FitTOF_Pbins	= new TemplateFIT(inputHistoFile,"FitTOF_Pbins","FitTOF_Pbins");
+	TemplateFIT * FitNaF_Pbins	= new TemplateFIT(inputHistoFile,"FitNaF_Pbins","FitNaF_Pbins");
+	TemplateFIT * FitAgl_Pbins	= new TemplateFIT(inputHistoFile,"FitAgl_Pbins","FitAgl_Pbins");
 
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
@@ -197,8 +196,7 @@ void DeutonsTemplFits(){
 
 	cout<<"*** Updating P1 file ****"<<endl;
 
-        nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-        file1 = TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
 	FitTOF_Dbins -> DCounts -> Write ("D_FluxCounts_TOF");
 	FitNaF_Dbins -> DCounts -> Write ("D_FluxCounts_NaF");
@@ -212,8 +210,8 @@ void DeutonsTemplFits(){
 	FitNaF_Pbins -> PCounts -> Write ("P_FluxCounts_NaF");
         FitAgl_Pbins -> PCounts -> Write ("P_FluxCounts_Agl");
 
-	file1 -> Write();
-	file1 -> Close(); 	
+	inputHistoFile -> Write();
+	inputHistoFile -> Close(); 	
 	
 	TCanvas *c30_TOF[2][nbinsToF];
 	TCanvas *c30_NaF[2][nbinsNaF];
@@ -283,8 +281,8 @@ void DeutonsTemplFits(){
 	}
 
 	cout<<"*** Updating Results file ***"<<endl;
-        nomefile="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        string filename="./Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(filename.c_str(), "UPDATE");
 	//Primaries
 	f_out->mkdir("Mass Template Fits/TOF/TOF Primaries/Dbins");
 	f_out->cd("Mass Template Fits/TOF/TOF Primaries/Dbins");

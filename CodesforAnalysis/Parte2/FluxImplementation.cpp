@@ -87,15 +87,14 @@ class PFluxComputing {
 
 PFluxComputing::PFluxComputing(string objname, bool geobin, string acceptname)
 {
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
+   inputHistoFile->ReOpen("READ");
    ngeobins=1;
    if (geobin) {
       ngeobins=NGEOBINS;
       acceptname="Geomag_AcceptanceP";
-      H2ExpoGeo=(TH2F*)file1->Get("esposizionegeo")->Clone();
+      H2ExpoGeo=(TH2F*)inputHistoFile->Get("esposizionegeo")->Clone();
    }
-   PFlux=new Flux(file1, objname, "","Results", acceptname, ngeobins);
+   PFlux=new Flux(inputHistoFile, objname, "","Results", acceptname, ngeobins);
 }
 
 
@@ -132,18 +131,17 @@ void ProtonFlux()
 
    cout<<"*** Updating P1 file ****"<<endl;
 
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   TFile* file1 = TFile::Open(nomefile.c_str(),"UPDATE");
-   file1->mkdir("Results/Fluxes");
-   file1->cd("Results/Fluxes");
+   inputHistoFile->ReOpen("UPDATE");
+   inputHistoFile->mkdir("Results/Fluxes");
+   inputHistoFile->cd("Results/Fluxes");
 
    ProtonsPrimaryFlux  ->Write("ProtonsPrimaryFlux" 	);
    ProtonsGeomagFlux   ->Write("ProtonsGeomagFlux"  	);
    P_pre_PrimaryFlux   ->Write("P_pre_PrimaryFlux"  	);
    P_sel_PrimaryFlux   ->Write("P_sel_PrimaryFlux"  	);
 
-   file1->Write();
-   file1->Close();
+   inputHistoFile->Write();
+   inputHistoFile->Close();
 
 
    TGraphErrors * P_Fluxgeo[NGEOBINS];
@@ -244,8 +242,8 @@ void ProtonFlux()
 
 
    cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+   string filename="./Final_plots/"+mese+".root";
+   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
    f_out->mkdir("P Fluxes");
    f_out->cd("P Fluxes");
    c23->Write();
@@ -262,8 +260,7 @@ void ProtonFlux()
 
 void DeutonFlux()
 {
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
+   inputHistoFile->ReOpen("READ");
 
 
 
@@ -294,8 +291,8 @@ void DeutonFlux()
    for (int ifx=0; ifx<4; ifx++) { // index flux
 
       //Deutons
-      Flux * D_Flux       = new Flux(file1, "D_Flux"       ,"Results", suf[ifx], "Corr_AcceptanceD",binD[ifx]);
-      Flux * D_Flux_Dist  = new Flux(file1, "D_Flux_Dist"  ,"Results", suf[ifx], "Corr_AcceptanceD",binD[ifx]);
+      Flux * D_Flux       = new Flux(inputHistoFile, "D_Flux"       ,"Results", suf[ifx], "Corr_AcceptanceD",binD[ifx]);
+      Flux * D_Flux_Dist  = new Flux(inputHistoFile, "D_Flux_Dist"  ,"Results", suf[ifx], "Corr_AcceptanceD",binD[ifx]);
       if(D_Flux -> Counts) {
          TH1F * Syst=(TH1F*) D_Flux -> Counts ->Clone();
          Syst -> Add ((TH1F*) D_Flux_Dist -> Counts ->Clone(), -1);
@@ -307,23 +304,23 @@ void DeutonFlux()
          }
          D_Flux -> Add_SystFitError(Syst);
       }
-      TH2F * expogeo  = (TH2F*)file1->Get(expodnames[ifx].data());
+      TH2F * expogeo  = (TH2F*)inputHistoFile->Get(expodnames[ifx].data());
       D_Flux         -> Set_Exposure_Time (expogeo);
       D_Flux         -> Eval_Flux(1 , deutons, 2 );
       D_Flux_Dist    -> Set_Exposure_Time (expogeo);
       D_Flux_Dist    -> Eval_Flux(1 , deutons, 2 );
 
       // Protons
-      Flux * P_Flux         = new Flux(file1, "P_Flux"        ,"Results", suf[ifx], "Corr_AcceptanceP",binD[ifx]);
-      Flux * P_Flux_Dist    = new Flux(file1, "P_Flux_Dist"   ,"Results", suf[ifx], "Corr_AcceptanceP",binD[ifx]);
-      expogeo  = (TH2F*)file1->Get(expopnames[ifx].data());
+      Flux * P_Flux         = new Flux(inputHistoFile, "P_Flux"        ,"Results", suf[ifx], "Corr_AcceptanceP",binD[ifx]);
+      Flux * P_Flux_Dist    = new Flux(inputHistoFile, "P_Flux_Dist"   ,"Results", suf[ifx], "Corr_AcceptanceP",binD[ifx]);
+      expogeo  = (TH2F*)inputHistoFile->Get(expopnames[ifx].data());
       P_Flux         -> Set_Exposure_Time (expogeo);
       P_Flux_Dist    -> Set_Exposure_Time (expogeo);
       P_Flux         -> Eval_Flux(1 , protons );
       P_Flux_Dist    -> Eval_Flux(1 , protons );
 
-      Flux * D_Flux_geo     = new Flux(file1, "D_Flux_geo"           ,"Results", suf[ifx],"Geomag_AcceptanceD",binD[ifx]);
-      Flux * D_Flux_geo_Dist     = new Flux(file1, "D_Flux_geo_Dist" ,"Results", suf[ifx],"Geomag_AcceptanceD",binD[ifx]);
+      Flux * D_Flux_geo     = new Flux(inputHistoFile, "D_Flux_geo"           ,"Results", suf[ifx],"Geomag_AcceptanceD",binD[ifx]);
+      Flux * D_Flux_geo_Dist     = new Flux(inputHistoFile, "D_Flux_geo_Dist" ,"Results", suf[ifx],"Geomag_AcceptanceD",binD[ifx]);
 
       // Flux geo
       D_Flux_geo     -> Set_Exposure_Time (Tempi);
@@ -351,9 +348,8 @@ void DeutonFlux()
 
    cout<<"*** Updating P1 file ****"<<endl;
 
-   nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   file1 = TFile::Open(nomefile.c_str(),"UPDATE");
-   file1->cd("Results/Fluxes");
+   inputHistoFile->ReOpen("UPDATE");
+   inputHistoFile->cd("Results/Fluxes");
 
 
    TH1F * DP_ratio[NSUBDETECTORS];
@@ -382,8 +378,8 @@ void DeutonFlux()
    }
 
 
-   file1->Write();
-   file1->Close();
+   inputHistoFile->Write();
+   inputHistoFile->Close();
 
 
 
@@ -550,8 +546,8 @@ void DeutonFlux()
    /// Updating results file
 
    cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+   string filename="./Final_plots/"+mese+".root";
+   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
    f_out->mkdir("D Fluxes");
    f_out->cd("D Fluxes");
    c33-> Write();

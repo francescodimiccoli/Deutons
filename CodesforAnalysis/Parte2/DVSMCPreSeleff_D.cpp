@@ -79,12 +79,11 @@ void DVSMCPreSeleffD_Write(){
 
 void DVSMCPreSeleffD(){
 
-	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
+   inputHistoFile->ReOpen("READ");
 
-	DatavsMC * PreSel_DvsMC_D = new DatavsMC(file1,"PreSel_DvsMC_D",6);
+	DatavsMC * PreSel_DvsMC_D = new DatavsMC(inputHistoFile,"PreSel_DvsMC_D",6);
 
-	LATcorr * LATpreSelDATA = new LATcorr(file1,"LATpreSelDATA"      ,"Results");
+	LATcorr * LATpreSelDATA = new LATcorr(inputHistoFile,"LATpreSelDATA"      ,"Results");
 
 
 	cout<<"******* Data vs MC:  PRESELECTIONS (D) ********"<<endl;
@@ -107,18 +106,17 @@ void DVSMCPreSeleffD(){
 
 
 	cout<<"*** Updating P1 file ****"<<endl;
-	nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-	file1->cd("Results");
+	inputHistoFile->cd("Results");
 
 	PreSelD_Correction_R    -> Write("PreSel_DvsMC_D_CorrectionR"  );
 	PreSelD_Correction_TOF  -> Write("PreSel_DvsMC_D_CorrectionTOF");
 	PreSelD_Correction_NaF  -> Write("PreSel_DvsMC_D_CorrectionNaF");
 	PreSelD_Correction_Agl  -> Write("PreSel_DvsMC_D_CorrectionAgl");
 
-	file1->Write();
-	file1->Close();
+	inputHistoFile->Write();
+	inputHistoFile->Close();
 
 	string tagli[3]={"Matching TOF","Chi^2 R","1 Tr. Track"};
 	string nome;
@@ -249,8 +247,8 @@ void DVSMCPreSeleffD(){
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-	nomefile="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+	string filename="./Final_plots/"+mese+".root";
+	TFile *f_out=new TFile(filename.c_str(), "UPDATE");
 	f_out->mkdir("DATA-driven Results/Data vs MC/Deutons");
 	f_out->cd("DATA-driven Results/Data vs MC/Deutons");
 

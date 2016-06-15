@@ -70,16 +70,16 @@ void DATAQualeff_Write()
 
 
 
-void DATAQualeff (TFile * file1)
+void DATAQualeff (TFile * inputHistoFile)
 {
-   LATcorr * LATLikelihoodDATA_TOF = new LATcorr (file1,"LATLikDATA_TOF" );
-   LATcorr * LATDistanceDATA_TOF   = new LATcorr (file1,"LATDistDATA_TOF");
+   LATcorr * LATLikelihoodDATA_TOF = new LATcorr (inputHistoFile,"LATLikDATA_TOF" );
+   LATcorr * LATDistanceDATA_TOF   = new LATcorr (inputHistoFile,"LATDistDATA_TOF");
 
-   LATcorr * LATLikelihoodDATA_NaF = new LATcorr (file1,"LATLikDATA_NaF" );
-   LATcorr * LATDistanceDATA_NaF   = new LATcorr (file1,"LATDistDATA_NaF");
+   LATcorr * LATLikelihoodDATA_NaF = new LATcorr (inputHistoFile,"LATLikDATA_NaF" );
+   LATcorr * LATDistanceDATA_NaF   = new LATcorr (inputHistoFile,"LATDistDATA_NaF");
 
-   LATcorr * LATLikelihoodDATA_Agl = new LATcorr (file1,"LATLikDATA_Agl" );
-   LATcorr * LATDistanceDATA_Agl   = new LATcorr (file1,"LATDistDATA_Agl");
+   LATcorr * LATLikelihoodDATA_Agl = new LATcorr (inputHistoFile,"LATLikDATA_Agl" );
+   LATcorr * LATDistanceDATA_Agl   = new LATcorr (inputHistoFile,"LATDistDATA_Agl");
 
 
    cout<<"****************************** DATA QUALITY SEL. EFFICIENCIES **************************************"<<endl;
@@ -141,10 +141,9 @@ void DATAQualeff (TFile * file1)
 
 
    cout<<"*** Updating P1 file ****"<<endl;
-   string nomefile= "../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   file1 =TFile::Open (nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-   file1->cd ("Results");
+   inputHistoFile->cd ("Results");
 
    LATDistDATATOF ->Write();
    LATLikDATATOF  ->Write();
@@ -167,8 +166,8 @@ void DATAQualeff (TFile * file1)
    LikLATcorr_Agl_fit   ->Write();
    DistLATcorr_Agl_fit  ->Write();
 
-   file1->Write();
-   file1->Close();
+   inputHistoFile->Write();
+   inputHistoFile->Close();
 
 
 
@@ -540,8 +539,8 @@ void DATAQualeff (TFile * file1)
    CorrLAT_DistAgl_Spl->Draw ("Csame");
 
    cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile (nomefile.c_str(), "UPDATE");
+   string filename="./Final_plots/"+mese+".root";
+   TFile *f_out=new TFile (filename.c_str(), "UPDATE");
    f_out->mkdir ("DATA-driven Results/Latitude effect/Quality");
    f_out->cd ("DATA-driven Results/Latitude effect/Quality");
    c15->Write();

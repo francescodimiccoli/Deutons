@@ -78,16 +78,15 @@ void DVSMCRICHeff_Write(){
 
 void DVSMCRICHeff(){
 
-	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-	TFile * file1 =TFile::Open(nomefile.c_str(),"READ");
+   inputHistoFile->ReOpen("READ");
 
-	DatavsMC * RICH_DvsMC_P = new DatavsMC(file1,"RICH_DvsMC_P");
-	DatavsMC * RICH_DvsMC_D = new DatavsMC(file1,"RICH_DvsMC_D",6);
+	DatavsMC * RICH_DvsMC_P = new DatavsMC(inputHistoFile,"RICH_DvsMC_P");
+	DatavsMC * RICH_DvsMC_D = new DatavsMC(inputHistoFile,"RICH_DvsMC_D",6);
 
 
-	LATcorr * LATrichDATA_TOF       = new LATcorr(file1,"LATrichDATA_Agl" 	 ,"Results");
-	LATcorr * LATrichDATA_NaF       = new LATcorr(file1,"LATrichDATA_NaF" 	 ,"Results");
-	LATcorr * LATrichDATA_Agl       = new LATcorr(file1,"LATrichDATA_Agl" 	 ,"Results");	
+	LATcorr * LATrichDATA_TOF       = new LATcorr(inputHistoFile,"LATrichDATA_Agl" 	 ,"Results");
+	LATcorr * LATrichDATA_NaF       = new LATcorr(inputHistoFile,"LATrichDATA_NaF" 	 ,"Results");
+	LATcorr * LATrichDATA_Agl       = new LATcorr(inputHistoFile,"LATrichDATA_Agl" 	 ,"Results");	
 
 
 	cout<<"******* Data vs MC: RICH ********"<<endl;
@@ -118,10 +117,9 @@ void DVSMCRICHeff(){
 
 
 	cout<<"*** Updating P1 file ****"<<endl;
-	nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-	file1->cd("Results");
+	inputHistoFile->cd("Results");
 
 	RICH_Correction_P_NaF  -> Write("RICH_DvsMC_P_CorrectionNaF");
 	RICH_Correction_P_Agl  -> Write("RICH_DvsMC_P_CorrectionAgl");
@@ -129,8 +127,8 @@ void DVSMCRICHeff(){
 	RICH_Correction_D_NaF  -> Write("RICH_DvsMC_D_CorrectionNaF");
 	RICH_Correction_D_Agl  -> Write("RICH_DvsMC_D_CorrectionAgl");
 
-	file1->Write();
-	file1->Close();
+	inputHistoFile->Write();
+	inputHistoFile->Close();
 
 
 	TCanvas *c20_bis=new TCanvas("Data vs MC: RICH");
@@ -180,8 +178,8 @@ void DVSMCRICHeff(){
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-	nomefile="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+	string filename="./Final_plots/"+mese+".root";
+	TFile *f_out=new TFile(filename.c_str(), "UPDATE");
 	f_out->mkdir("DATA-driven Results/Data vs MC/RICH");
 	f_out->cd("DATA-driven Results/Data vs MC/RICH");
 	c20_bis->Write();

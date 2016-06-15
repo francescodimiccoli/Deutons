@@ -89,15 +89,15 @@ void FluxFactorizationtest_Write(){
 }
 
 
-void FluxFactorizationtest(TFile * file1){
+void FluxFactorizationtest(TFile * inputHistoFile){
 
-	Efficiency * EffFullSETselectionsMCP  = new Efficiency(file1,"EffFullSETselectionsMCP");
+	Efficiency * EffFullSETselectionsMCP  = new Efficiency(inputHistoFile,"EffFullSETselectionsMCP");
 		
-	Efficiency * Eff_do_preSelMCP = new Efficiency(file1,"Eff_do_preSelMCP"); 
-	Efficiency * Eff_do_preSelMCD = new Efficiency(file1,"Eff_do_preSelMCD");
+	Efficiency * Eff_do_preSelMCP = new Efficiency(inputHistoFile,"Eff_do_preSelMCP"); 
+	Efficiency * Eff_do_preSelMCD = new Efficiency(inputHistoFile,"Eff_do_preSelMCD");
 		
-	Efficiency * Eff_do_DistMCP  = new Efficiency(file1,"Eff_do_DistMCP"); 
-        Efficiency * Eff_do_LikMCP   = new Efficiency(file1,"Eff_do_LikMCP"); 
+	Efficiency * Eff_do_DistMCP  = new Efficiency(inputHistoFile,"Eff_do_DistMCP"); 
+        Efficiency * Eff_do_LikMCP   = new Efficiency(inputHistoFile,"Eff_do_LikMCP"); 
 	
 	string tagli[5]={"Matching TOF","Chi^2 R","1 Tr. Track","Distance","Likelihood"};
 	string nome;
@@ -132,12 +132,11 @@ void FluxFactorizationtest(TFile * file1){
 	}
 
 	cout<<"*** Updating P1 file ****"<<endl;
-        string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-        file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-        file1->cd("Results");
-	file1-> Write();
-	file1-> Close();
+        inputHistoFile->cd("Results");
+	inputHistoFile-> Write();
+	inputHistoFile-> Close();
 
 		
 	TCanvas *c9 = new TCanvas("MC Protons Factorization Test");
@@ -170,8 +169,8 @@ void FluxFactorizationtest(TFile * file1){
 	FactorizedEfficiency->Draw("PCsame");
 	
 	cout<<"*** Updating Results file ***"<<endl;
-        nomefile="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+        string filename="./Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(filename.c_str(), "UPDATE");
         f_out->mkdir("MC Results/Eff. Factorization Test");
         f_out->cd("MC Results/Eff. Factorization Test");
         c9->Write();

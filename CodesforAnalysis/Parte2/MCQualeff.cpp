@@ -98,14 +98,14 @@ void MCQualeff_Write() {
 }
 
 
-void MCQualeff(TFile * file1) {
+void MCQualeff(TFile * inputHistoFile) {
 
    // eff. likelihood sel.
-   Efficiency * EffLikMCP  = new Efficiency (file1,"EffLikMCP");
-   Efficiency * EffLikMCD  = new Efficiency (file1,"EffLikMCD");
+   Efficiency * EffLikMCP  = new Efficiency (inputHistoFile,"EffLikMCP");
+   Efficiency * EffLikMCD  = new Efficiency (inputHistoFile,"EffLikMCD");
    // eff. distance sel.
-   Efficiency * EffDistMCP = new Efficiency (file1,"EffDistMCP");
-   Efficiency * EffDistMCD = new Efficiency (file1,"EffDistMCD");
+   Efficiency * EffDistMCP = new Efficiency (inputHistoFile,"EffDistMCP");
+   Efficiency * EffDistMCD = new Efficiency (inputHistoFile,"EffDistMCD");
 
 
    cout<<"******* MC QUALITY SEL. EFFICIENCIES ********"<<endl;
@@ -138,10 +138,9 @@ void MCQualeff(TFile * file1) {
 
 
    cout<<"*** Updating P1 file ****"<<endl;
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-   file1->cd("Results");
+   inputHistoFile->cd("Results");
 
    EffMCLikP_TH1F 	  ->Write();
    EffMCLikD_TH2F 	  ->Write();
@@ -160,8 +159,8 @@ void MCQualeff(TFile * file1) {
    EffMCDistD_BetaNaF_TH2F  ->Write();
    EffMCDistP_BetaAgl_TH1F  ->Write();
    EffMCDistD_BetaAgl_TH2F  ->Write();
-   file1->Write();
-   file1->Close();
+   inputHistoFile->Write();
+   inputHistoFile->Close();
 
 
 
@@ -465,8 +464,8 @@ void MCQualeff(TFile * file1) {
    }
 
    cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+   string filename="./Final_plots/"+mese+".root";
+   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
    f_out->mkdir("MC Results/Quality");
    f_out->cd("MC Results/Quality");
    c5	->Write();

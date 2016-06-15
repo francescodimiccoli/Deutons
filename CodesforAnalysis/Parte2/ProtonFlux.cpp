@@ -67,15 +67,14 @@ class PFluxComputing {
 };
 
 PFluxComputing::PFluxComputing(string objname, bool geobin, string acceptname) {
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
+   inputHistoFile->ReOpen("READ");
    ngeobins=1;
    if (geobin) {
       ngeobins=NGEOBINS;
       acceptname="Geomag_AcceptanceP";
-      H2ExpoGeo=(TH2F*)file1->Get("esposizionegeo")->Clone();
+      H2ExpoGeo=(TH2F*)inputHistoFile->Get("esposizionegeo")->Clone();
    }
-   PFlux=new Flux(file1, objname, "","Results", acceptname, ngeobins);
+   PFlux=new Flux(inputHistoFile, objname, "","Results", acceptname, ngeobins);
 }
 
 
@@ -111,18 +110,17 @@ void ProtonFlux()
 
    cout<<"*** Updating P1 file ****"<<endl;
 
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   TFile* file1 = TFile::Open(nomefile.c_str(),"UPDATE");
-   file1->mkdir("Results/Fluxes");
-   file1->cd("Results/Fluxes");
+   inputHistoFile->ReOpen("UPDATE");
+   inputHistoFile->mkdir("Results/Fluxes");
+   inputHistoFile->cd("Results/Fluxes");
 
    ProtonsPrimaryFlux  ->Write("ProtonsPrimaryFlux" 	);
    ProtonsGeomagFlux   ->Write("ProtonsGeomagFlux"  	);
    P_pre_PrimaryFlux   ->Write("P_pre_PrimaryFlux"  	);
    P_sel_PrimaryFlux   ->Write("P_sel_PrimaryFlux"  	);
 
-   file1->Write();
-   file1->Close();
+   inputHistoFile->Write();
+   inputHistoFile->Close();
 
 
 
@@ -197,8 +195,8 @@ void ProtonFlux()
    float x,y=0;
    int j=0;
    {
-      string nomefile="./Galprop/Trotta2011/Def/new_P200.txt";
-      ifstream fp(nomefile.c_str());
+      string string filename="./Galprop/Trotta2011/Def/new_P200.txt";
+      ifstream fp(filename.c_str());
       while (!fp.eof()) {
          fp>>x>>y;
          if(x/1e3>0.05&&x/1e3<=100)
@@ -209,8 +207,8 @@ void ProtonFlux()
 
    j=0;
    {
-      string nomefile="./Galprop/Trotta2011/Def/new_P1250.txt";
-      ifstream fp(nomefile.c_str());
+      string string filename="./Galprop/Trotta2011/Def/new_P1250.txt";
+      ifstream fp(filename.c_str());
       while (!fp.eof()) {
          fp>>x>>y;
          if(x/1e3>0.05&&x/1e3<=100)
@@ -265,8 +263,8 @@ void ProtonFlux()
 
 
    cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+   string filename="./Final_plots/"+mese+".root";
+   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
    f_out->mkdir("P Fluxes");
    f_out->cd("P Fluxes");
    c23->Write();

@@ -2,14 +2,12 @@ using namespace std;
 
 
 void Acceptance(){
-	string nomefile="../Histos/"+mese +"/"+mese+"_"+frac+"_P1.root";
-        TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
+
+	ACCEPTANCE * AcceptanceP = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCP","EffFullsetMCP","TOTLATCorr","CorrezioneLATp",1);
+	ACCEPTANCE * AcceptanceD = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCD","EffFullsetMCD","TOTLATCorr","CorrezioneLATd",6);
 	
-	ACCEPTANCE * AcceptanceP = new ACCEPTANCE (file1,"Results","EffpreselMCP","EffFullsetMCP","TOTLATCorr","CorrezioneLATp",1);
-	ACCEPTANCE * AcceptanceD = new ACCEPTANCE (file1,"Results","EffpreselMCD","EffFullsetMCD","TOTLATCorr","CorrezioneLATd",6);
-	
-	ACCEPTANCE * AcceptancePreP = new ACCEPTANCE (file1,"Results","EffpreselMCP","EffpreselMCP","PreLATCorr","CorrezioneLATPrep",1);
-	ACCEPTANCE * AcceptancePreD = new ACCEPTANCE (file1,"Results","EffpreselMCD","EffpreselMCD","PreLATCorr","CorrezioneLATPred",6);
+	ACCEPTANCE * AcceptancePreP = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCP","EffpreselMCP","PreLATCorr","CorrezioneLATPrep",1);
+	ACCEPTANCE * AcceptancePreD = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCD","EffpreselMCD","PreLATCorr","CorrezioneLATPred",6);
         
 	cout<<"****************** ACCEPTANCE CALCULATION ******************"<<endl;
 
@@ -51,15 +49,15 @@ void Acceptance(){
 
 	cout<<"****** DVSMC APPLICATION *********"<<endl;
 	
-	TH1F* DistP_Correction_R   =(TH1F*) file1 -> Get ("Results/Dist_DvsMC_P_CorrectionR"  		); 
-	TH1F* LikP_Correction_R    =(TH1F*) file1 -> Get ("Results/Lik_DvsMC_P_CorrectionR"   		);
+	TH1F* DistP_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionR"  		); 
+	TH1F* LikP_Correction_R    =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionR"   		);
 
 
-	TH1F* RICH_Correction_P_NaF =(TH1F*) file1 -> Get ("Results/RICH_DvsMC_P_CorrectionNaF"		);
-	TH1F* RICH_Correction_P_Agl =(TH1F*) file1 -> Get ("Results/RICH_DvsMC_P_CorrectionAgl"		);
+	TH1F* RICH_Correction_P_NaF =(TH1F*) inputHistoFile -> Get ("Results/RICH_DvsMC_P_CorrectionNaF"		);
+	TH1F* RICH_Correction_P_Agl =(TH1F*) inputHistoFile -> Get ("Results/RICH_DvsMC_P_CorrectionAgl"		);
 	
-	TH2F* RICH_Correction_D_NaF =(TH2F*) file1 -> Get ("Results/RICH_DvsMC_D_CorrectionNaF"         );
-        TH2F* RICH_Correction_D_Agl =(TH2F*) file1 -> Get ("Results/RICH_DvsMC_D_CorrectionAgl"         );
+	TH2F* RICH_Correction_D_NaF =(TH2F*) inputHistoFile -> Get ("Results/RICH_DvsMC_D_CorrectionNaF"         );
+        TH2F* RICH_Correction_D_Agl =(TH2F*) inputHistoFile -> Get ("Results/RICH_DvsMC_D_CorrectionAgl"         );
 
 	AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);
 	AcceptanceP -> Apply_DvsMCcorrection_R(LikP_Correction_R );
@@ -71,10 +69,8 @@ void Acceptance(){
         AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl,6);
 
 	cout<<"*** Updating P1 file ****"<<endl;
-    	nomefile="../Histos/"+mese +"/"+mese+"_"+frac+"_P1.root";
-	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
-	
-	file1->cd("Results");
+	inputHistoFile->ReOpen("UPDATE");
+	inputHistoFile->cd("Results");
 	//Protons
 	AcceptanceP ->Gen_Acceptance_R  ->Write("Gen_AcceptanceP_R"  ); 
 	AcceptanceP ->Gen_Acceptance_TOF->Write("Gen_AcceptanceP_TOF");
@@ -122,8 +118,8 @@ void Acceptance(){
 	AcceptanceD ->CorrectedAcceptance_NaF  ->Write("Corr_AcceptanceD_NaF");
 	AcceptanceD ->CorrectedAcceptance_Agl  ->Write("Corr_AcceptanceD_Agl");
 
-	file1->Write();
-	file1->Close();
+	inputHistoFile->Write();
+	inputHistoFile->Close();
 
 	TCanvas * c31_tris = new TCanvas("Gen. Efficiency");
 
@@ -519,7 +515,7 @@ void Acceptance(){
         }
 
 	cout<<"*** Updating Results file ***"<<endl;
-	nomefile="./Final_plots/"+mese+".root";
+	string nomefile="./Final_plots/"+mese+".root";
 	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
 	f_out->mkdir("Acceptance");
 	f_out->cd("Acceptance");

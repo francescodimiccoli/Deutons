@@ -3,12 +3,12 @@ using namespace std;
 
 
 
-void MCFullseteff(TFile * file1){
-	Efficiency * EffpreselMCP = new Efficiency(file1, "EffpreselMCP");
-	Efficiency * EffpreselMCD = new Efficiency(file1, "EffpreselMCD");
+void MCFullseteff(TFile * inputHistoFile){
+	Efficiency * EffpreselMCP = new Efficiency(inputHistoFile, "EffpreselMCP");
+	Efficiency * EffpreselMCD = new Efficiency(inputHistoFile, "EffpreselMCD");
 
-	Efficiency * EffLikMCP = new Efficiency (file1,"EffLikMCP");
-	Efficiency * EffLikMCD = new Efficiency (file1,"EffLikMCD");
+	Efficiency * EffLikMCP = new Efficiency (inputHistoFile,"EffLikMCP");
+	Efficiency * EffLikMCD = new Efficiency (inputHistoFile,"EffLikMCD");
 	
 	cout<<"**** MC FULL SET  EFFICIENCY  ****"<<endl;
 	
@@ -49,11 +49,10 @@ void MCFullseteff(TFile * file1){
 
 
 	cout<<"*** Updating P1 file ****"<<endl;
-	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-	file1 =TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
-	file1->mkdir("Results");
-	file1->cd("Results");
+	inputHistoFile->mkdir("Results");
+	inputHistoFile->cd("Results");
 	EffFullsetMCP_R_TH1F	->Write("EffFullsetMCP_EffR");
 	EffFullsetMCP_TH1F 	->Write("EffFullsetMCP_EffTOF");
 	EffFullsetMCPNaF_TH1F	->Write("EffFullsetMCP_EffNaF");
@@ -62,8 +61,8 @@ void MCFullseteff(TFile * file1){
 	EffFullsetMCD_TH2F	->Write("EffFullsetMCD_EffTOF");
 	EffFullsetMCDNaF_TH2F 	->Write("EffFullsetMCD_EffNaF");
 	EffFullsetMCDAgl_TH2F	->Write("EffFullsetMCD_EffAgl");
-	file1->Write();
-	file1->Close();
+	inputHistoFile->Write();
+	inputHistoFile->Close();
 
 
 	TCanvas *c41=new TCanvas("FULL-SET Efficiency (R bins)");
@@ -216,8 +215,8 @@ void MCFullseteff(TFile * file1){
 	
 
 	cout<<"*** Updating Results file ***"<<endl;
-	nomefile="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
+	string filename="./Final_plots/"+mese+".root";
+        TFile *f_out=new TFile(filename.c_str(), "UPDATE");
 	f_out->mkdir("MC Results");
 	f_out->mkdir("MC Results/Full-set selections");
 	f_out->cd("MC Results/Full-set selections");
