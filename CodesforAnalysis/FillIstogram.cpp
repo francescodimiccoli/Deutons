@@ -10,7 +10,7 @@ void UpdateProgressBar(TNtuple* ntuple, int currentevent);
 float getGeoZone(float latitude);
 
 
-void FillIstogram(int INDX,string frac,string mese)
+void FillIstogramAndDoAnalysis(int INDX,string frac,string mese)
 {
 
    cout<<"*********************** CALIB. READING *********************"<<endl;
@@ -33,8 +33,7 @@ void FillIstogram(int INDX,string frac,string mese)
    betaAgl = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaAgl_spl");
    cout<<"******************************"<<endl;
 
-   string nomefile=outputpath + "/Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   TFile * file =TFile::Open(nomefile.c_str());
+
 
    TFile *fileMC;
    TNtuple *ntupMCSepD;
@@ -42,16 +41,20 @@ void FillIstogram(int INDX,string frac,string mese)
    TFile *fileData;
    TNtuple *ntupDataSepD;
    TNtuple *ntupDataTrig;
-   bool histonotexist = false;
-   if(!file) {
+
+
+   string nameHistoFile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+   inputHistoFile=TFile::Open(nameHistoFile.c_str(),"READ");
+   if(!inputHistoFile) {
       cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl;
       INDX=0;
-      histonotexist = true;
       cout<<"Running in Mode 0 ..."<<endl;
    }
 
+
+
    if(INDX!=2) {
-      nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
+      string nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
       fileMC =TFile::Open(nomefile.c_str());
       nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
       fileData =TFile::Open(nomefile.c_str());
@@ -72,7 +75,7 @@ void FillIstogram(int INDX,string frac,string mese)
    }
 
    cout<<endl<<"*********************** DATA READING *********************"<<endl;
-   TFile *usedfile=(INDX==2?file:fileData);
+   TFile *usedfile=(INDX==2?inputHistoFile:fileData);
    Tempi = (TH1F *)usedfile->Get("Tempi");
    TH2F* esposizionegeo = (TH2F *)usedfile->Get("esposizionegeo");
    TH2F* esposizionepgeo = (TH2F*)usedfile->Get("esposizionepgeo");
@@ -91,11 +94,10 @@ void FillIstogram(int INDX,string frac,string mese)
    if(INDX==0||INDX==1) {
       LoopOnDataSepD(ntupDataSepD);
 
-
       cout<<endl<<"************************ SAVING DATA ************************"<<endl;
 
-      nomefile= outputpath + "Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-      TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
+      if (!inputHistoFile)
+         inputHistoFile =new TFile(nameHistoFile.c_str(), "RECREATE");
 
       DATAQualeff_Write();
       DATARICHeff_Write();
@@ -132,11 +134,47 @@ void FillIstogram(int INDX,string frac,string mese)
       esposizionedgeoNaF->Write();
       esposizionedgeoAgl->Write();
 
-      f_out->Write();
-      f_out->Close();
+      inputHistoFile->Write();
+      inputHistoFile->Close();
    }
 
-   if(histonotexist) INDX=2;
+
+   
+   cout<<"************************* ANALYSIS **********************************************************************"<<endl;
+   if(INDX!=1) {
+      if(frac=="tot") Hecut(inputHistoFile);
+      SlidesforPlot(inputHistoFile);
+      DistanceCut(inputHistoFile);
+      Correlazione_Preselezioni(inputHistoFile);
+
+      MCpreeff(inputHistoFile);
+      MCUnbiaseff(inputHistoFile);
+      MCQualeff(inputHistoFile);
+      FluxFactorizationtest(inputHistoFile);
+      MCTrackeff(inputHistoFile);
+      MCFullseteff(inputHistoFile);
+      MigrationMatrix(inputHistoFile);
+      DATAUnbiaseff(inputHistoFile);
+      DATApreSeleff(inputHistoFile);
+      DATAQualeff(inputHistoFile);
+      DATARICHeff(inputHistoFile);
+      if(frac=="tot") DeutonsTemplFits();
+      if(frac=="tot") DeutonsTemplFits_Dist();
+
+      CorrLAT();
+      DVSMCPreSeleff();
+      DVSMCPreSeleffD();
+      DVSMCRICHeff();
+      DVSMCQualeff2();
+      DVSMCQualeffD();
+      Acceptance();
+      ProtonFlux();
+      if(frac=="tot") DeutonFlux();
+      if(frac=="tot") OtherExperimentsComparison();
+   }
+
+
+   
    return;
 }
 

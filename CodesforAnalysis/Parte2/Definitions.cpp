@@ -8,6 +8,7 @@ string inputpath="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
 string outputpath;
 string mese;
 string frac;
+TFile* inputHistoFile;
 
 
 

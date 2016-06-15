@@ -74,47 +74,38 @@ int main(int argc, char * argv[])
 {
    cout<<"Month _ Indx _ Frac _ output"<<endl;
    cout<<argc<<endl;
-   int INDX=0;
-   if(argc == 1 ) {
+   int INDX=2;
+
+
+   if(argc > 1 ) {
+      mese=argv[1];
+   } else {
       cout<<"No Month specified: running 2012_05"<<endl;
       mese = "2012_05";
-      cout<<"No Mode specified: running Mode 2"<<endl;
-      INDX = 0;
-      cout<<"No fraction specified: running 35"<<endl;
-      frac = "35";
-      cout<<"No output path specified: writing locally"<<endl;
-      outputpath = "../";
    }
-   if(argc == 2 ) {
-      mese=argv[1];
+
+   if(argc > 2 ) {
+      INDX=atoi(argv[2]);
+   } else {
       cout<<"No Mode specified: running Mode 2"<<endl;
       INDX = 2;
-      cout<<"No fraction specified: running 35"<<endl;
-      frac = "35";
-      cout<<"No output path specified: writing locally"<<endl;
-      outputpath = "../";
    }
-   if(argc == 3 ) {
-      mese=argv[1];
-      INDX=atoi(argv[2]);
-      cout<<"No fraction specified: running 35"<<endl;
-      frac = "35";
-      cout<<"No output path specified: writing locally"<<endl;
-      outputpath = "../";
-   }
-   if(argc == 4) {
-      mese=argv[1];
-      INDX=atoi(argv[2]);
+
+   if(argc > 3 ) {
       frac= argv[3];
+   } else {
+      cout<<"No fraction specified: running 35"<<endl;
+      frac = "35";
+   }
+
+   if(argc > 4 ) {
+      outputpath=argv[4];
+   } else {
       cout<<"No output path specified: writing locally"<<endl;
       outputpath = "../";
    }
-   if(argc == 5) {
-      mese=argv[1];
-      INDX=atoi(argv[2]);
-      frac=argv[3];
-      outputpath=argv[4];
-   }
+
+
    cout<<"****************************** INPUT PAR. ***********************************"<<endl;
    cout<<endl;
    cout<<"Month: "<<mese<<endl;
@@ -158,44 +149,15 @@ int main(int argc, char * argv[])
 
    ////////////////////////////
 
+   
+
+   
+
    cout<<"************************ ISTOGRAM FILLING **************************************************************"<<endl;
-   FillIstogram(INDX,frac,mese);
-   string	nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   TFile *file1 =TFile::Open(nomefile.c_str());
 
-	cout<<"************************* ANALYSIS **********************************************************************"<<endl;
-	if(INDX==2){
-        if(frac=="tot") Hecut(file1);
-        SlidesforPlot(file1);
-        DistanceCut(file1);
-        Correlazione_Preselezioni(file1);
+   FillIstogramAndDoAnalysis(INDX,frac,mese);
+   
 
-        MCpreeff(file1);
-        MCUnbiaseff(file1);		
-        MCQualeff(file1);
-        FluxFactorizationtest(file1);
-        MCTrackeff(file1);
-        MCFullseteff(file1);
-        MigrationMatrix(file1);
-        DATAUnbiaseff(file1);
-        DATApreSeleff(file1);
-        //DVSMCTrackeff(file1);
-        DATAQualeff(file1);
-        DATARICHeff(file1);
-        if(frac=="tot") DeutonsTemplFits();
-        if(frac=="tot") DeutonsTemplFits_Dist();
-
-		CorrLAT();
-		DVSMCPreSeleff();
-		DVSMCPreSeleffD();
-		DVSMCRICHeff();
-		DVSMCQualeff2();
-		DVSMCQualeffD();
-		Acceptance();
-		ProtonFlux();
-		if(frac=="tot") DeutonFlux();
-		if(frac=="tot") OtherExperimentsComparison();
-	}
-	cout<<"************************** OUTPUT **************************************************************"<<endl;
-	return 1;
+   cout<<"************************** OUTPUT **************************************************************"<<endl;
+   return 1;
 }
