@@ -268,11 +268,10 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
    for(int i=0; i<ntupDataTrig->GetEntries(); i++) {
       ntupDataTrig->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
+      if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
       Cuts_Pre();
-      double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
       float Zona=getGeoZone(Tup.Latitude);
       // Temporary Betarich check
-      if((((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
       RUsed=Tup.R_pre;
       UpdateProgressBar(ntupDataTrig, i);
 
@@ -291,15 +290,13 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
    for(int i=0; i<ntupDataSepD->GetEntries(); i++) {
       ntupDataSepD->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
+      if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
 
       float Zona=getGeoZone(Tup.Latitude);
 
-      // Temporary Betarich check
-      if((((int)Tup.Cutmask>>11)==0||((int)Tup.Cutmask>>11)==512)&&Tup.BetaRICH<0) continue;
       Cuts();
       RUsed=Tup.R;
       UpdateProgressBar(ntupDataSepD, i);
-
 
       HecutD_Fill(ntupDataSepD,i);
       SlidesforPlot_D_Fill(ntupDataSepD,i);

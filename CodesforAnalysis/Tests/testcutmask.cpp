@@ -4,9 +4,10 @@
 int main(int argc, char * argv[])
 {
    Cutmask cmask;
-   cmask.print();
-   for (int i=0; i<200; i++)
+   //cmask.print();
+   for (int i : {1, 3, 11})
       {
+         cout << "####### " << i << endl;
          cmask.setMask(i);
          cmask.print();
       }

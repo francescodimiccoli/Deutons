@@ -30,7 +30,7 @@ class Cutmask {
       bool isFromAgl() {return (cmask>>11) == 0;}
       bool isOnlyFromToF() {return ( !isFromAgl() && !isFromNaF() );}
 
-      bool isPreselected() {return (cmask&187)==187;}
+      bool isPreselected(); ///< This 187 thing
 
       bool notPassed (uint s);
       bool passed (uint s);
@@ -41,6 +41,18 @@ class Cutmask {
       void printANSIYesNo (string legend, bool condition, int width=25);
 
 };
+
+
+bool Cutmask::isPreselected() {
+	return isMinimumBiasTracker()
+	    && isMinimumBiasToF3or4Layers()
+	    && isMinimumBiasTracker()
+	    && isGoldenTracker()
+	    && isGoldenToF3or4Layers()
+	    && hasSingleTrTrack();
+}
+
+	
 
 void Cutmask::print()
 {

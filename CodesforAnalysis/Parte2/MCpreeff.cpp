@@ -12,14 +12,14 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
       EffpreselMCP->beforeR->Fill(RB.GetRBin(fabs(Tup.Momento_gen)));
-      if(Tup.Unbias==0&&((int)Tup.Cutmask&187)==187&&Tup.Beta_pre>0&&Tup.R_pre>0) EffpreselMCP->afterR->Fill(RB.GetRBin(fabs(Tup.R_pre)));
+      if(Tup.Unbias==0&&cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0) EffpreselMCP->afterR->Fill(RB.GetRBin(fabs(Tup.R_pre)));
          
       // Beta bins
  ToFPB.RFill(EffpreselMCP->beforeTOF, Tup.Momento_gen);
  NaFPB.RFill(EffpreselMCP->beforeNaF, Tup.Momento_gen);
  AglPB.RFill(EffpreselMCP->beforeAgl, Tup.Momento_gen);
 
-      if(Tup.Unbias==0 && ((int)Tup.Cutmask&187)==187 && Tup.Beta_pre>0 && Tup.R_pre>0)
+      if(Tup.Unbias==0 && cmask.isPreselected() && Tup.Beta_pre>0 && Tup.R_pre>0)
       {
                                      ToFPB.RFill(EffpreselMCP->afterTOF, RUsed);
          if(cmask.isFromNaF()) NaFPB.RFill(EffpreselMCP->afterNaF, RUsed);
@@ -31,7 +31,7 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
    if(Massa_gen>1&&Massa_gen<2) {
       // R bins      
       FillBinMGen(EffpreselMCD->beforeR, RB.GetRBin(fabs(Tup.Momento_gen)));
-      if(((int)Tup.Cutmask&187)==187&&Tup.Beta_pre>0&&Tup.Unbias==0&&Tup.R_pre>0)
+      if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.Unbias==0&&Tup.R_pre>0)
          FillBinMGen(EffpreselMCD->afterR, RB.GetRBin(fabs(Tup.R_pre)));
 
       // Beta bins
@@ -40,7 +40,7 @@ void MCpreseff_Fill(TNtuple *ntupla, int l) {
          FillBinMGen(EffpreselMCD->beforeNaF, NaFDB.GetRBin(Tup.Momento_gen) );
          FillBinMGen(EffpreselMCD->beforeAgl, AglDB.GetRBin(Tup.Momento_gen) );
 
-         if(((int)Tup.Cutmask&187)==187 && Tup.Beta_pre>0 && Tup.Unbias==0 && Tup.R_pre>0)
+         if(cmask.isPreselected() && Tup.Beta_pre>0 && Tup.Unbias==0 && Tup.R_pre>0)
          {
                                            FillBinMGen(EffpreselMCD->afterTOF, ToFDB.GetRBin(RUsed));
             if(cmask.isFromNaF()) FillBinMGen(EffpreselMCD->afterNaF, NaFDB.GetRBin(RUsed));

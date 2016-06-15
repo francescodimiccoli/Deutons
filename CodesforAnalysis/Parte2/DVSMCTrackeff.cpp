@@ -7,7 +7,7 @@ void DVSMCTrackeff_D_Fill(TNtuple *ntupla, int l){
          ntupla->GetEvent(l);
         if(Tup.Unbias!=0||Tup.Beta_pre<=0) return;
 		if(Tup.R_pre>1.2*Tup.Rcutoff){
-			if(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1&&((int)Tup.Cutmask&187)==187&&Tup.EdepECAL>1)
+			if(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1&&(cmask.isPreselected()&&Tup.EdepECAL>1)
 			ECALvsR_D->Fill(Tup.R_pre,Tup.EdepECAL);
 		}
         return;
@@ -18,7 +18,7 @@ void DVSMCTrackeff_Fill(TNtuple *ntupla, int l){
 	 ntupla->GetEvent(l);
         if(Tup.Unbias!=0||Tup.Beta_pre<=0) return;
                 if(Massa_gen<1&&Massa_gen>0.5){
-                        if(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1&&((int)Tup.Cutmask&187)==187&&Tup.EdepECAL>1)
+                        if(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1&&(cmask.isPreselected()&&Tup.EdepECAL>1)
                         ECALvsR_MC->Fill(Tup.R_pre,Tup.EdepECAL);
                 }
         return;
