@@ -539,21 +539,19 @@ void DATAQualeff (TFile * inputHistoFile)
    CorrLAT_DistAgl_Spl->Draw ("Csame");
 
    cout<<"*** Updating Results file ***"<<endl;
-   string filename="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile (filename.c_str(), "UPDATE");
-   f_out->mkdir ("DATA-driven Results/Latitude effect/Quality");
-   f_out->cd ("DATA-driven Results/Latitude effect/Quality");
+   fileFinalPlots->mkdir ("DATA-driven Results/Latitude effect/Quality");
+   fileFinalPlots->cd ("DATA-driven Results/Latitude effect/Quality");
    c15->Write();
    c16->Write();
-   f_out->cd ("Export");
+   fileFinalPlots->cd ("Export");
    CorrLAT_Lik_Spl->Write ("CorrLAT_LikTOF_Spl");
    CorrLAT_LikNaF_Spl->Write ("CorrLAT_LikNaF_Spl");
    CorrLAT_LikAgl_Spl->Write ("CorrLAT_LikAgl_Spl");
    CorrLAT_Dist_Spl->Write ("CorrLAT_DistTOF_Spl");
    CorrLAT_DistNaF_Spl->Write ("CorrLAT_DistNaF_Spl");
    CorrLAT_DistAgl_Spl->Write ("CorrLAT_DistAgl_Spl");
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 
 }
 

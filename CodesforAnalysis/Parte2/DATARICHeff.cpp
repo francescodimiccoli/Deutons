@@ -207,16 +207,14 @@ void DATARICHeff(TFile * inputHistoFile) {
    CorrLAT_richAgl_Spl->Draw("Csame");
    
    cout<<"*** Updating Results file ***"<<endl;
-   string filename="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-   f_out->mkdir("DATA-driven Results/Latitude effect/RICH");
-   f_out->cd("DATA-driven Results/Latitude effect/RICH");
+   fileFinalPlots->mkdir("DATA-driven Results/Latitude effect/RICH");
+   fileFinalPlots->cd("DATA-driven Results/Latitude effect/RICH");
    c15->Write();
-   f_out->cd("Export");
+   fileFinalPlots->cd("Export");
    CorrLAT_richNaF_Spl->Write("CorrLAT_richNaF_Spl");
    CorrLAT_richAgl_Spl->Write("CorrLAT_richAgl_Spl");   	
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 
 }
 

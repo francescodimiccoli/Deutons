@@ -134,17 +134,15 @@ void DATApreSeleff(TFile * inputHistoFile)
    }
 
    cout<<"*** Updating Results file ***"<<endl;
-   string filename="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-   f_out->mkdir("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
-   f_out->cd("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
+   fileFinalPlots->mkdir("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
+   fileFinalPlots->cd("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
    for(int S=0; S<3; S++) c14[S]->Write();
-   f_out->mkdir("Export");
-   f_out->cd("Export");
+   fileFinalPlots->mkdir("Export");
+   fileFinalPlots->cd("Export");
    for(int S=0; S<3; S++)
       CorrLATpre_Spl[S]->Write(tagli[S].c_str());
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 
 
 }

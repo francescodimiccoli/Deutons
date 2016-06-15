@@ -31,11 +31,9 @@ void MigrationMatrix(TFile * file1){
 	MigrMatrix->Draw("col");
 
 	cout<<"*** Updating Results file ***"<<endl;
-        string nomefile="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
-        f_out->cd("MC Results");
+        fileFinalPlots->cd("MC Results");
 	c27 -> Write();
-        f_out->Write();
-        f_out->Close();
+        fileFinalPlots->Write();
+        fileFinalPlots->Close();
 	
 }

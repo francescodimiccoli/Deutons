@@ -215,13 +215,11 @@ void MCFullseteff(TFile * inputHistoFile){
 	
 
 	cout<<"*** Updating Results file ***"<<endl;
-	string filename="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-	f_out->mkdir("MC Results");
-	f_out->mkdir("MC Results/Full-set selections");
-	f_out->cd("MC Results/Full-set selections");
+	fileFinalPlots->mkdir("MC Results");
+	fileFinalPlots->mkdir("MC Results/Full-set selections");
+	fileFinalPlots->cd("MC Results/Full-set selections");
 	c41->Write();
 	c41_bis->Write();
-	f_out->Close();
+	fileFinalPlots->Close();
 
 }

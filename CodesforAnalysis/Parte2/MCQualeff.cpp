@@ -464,16 +464,14 @@ void MCQualeff(TFile * inputHistoFile) {
    }
 
    cout<<"*** Updating Results file ***"<<endl;
-   string filename="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-   f_out->mkdir("MC Results/Quality");
-   f_out->cd("MC Results/Quality");
+   fileFinalPlots->mkdir("MC Results/Quality");
+   fileFinalPlots->cd("MC Results/Quality");
    c5	->Write();
    c6      ->Write();
    c5_bis  ->Write();
    c6_bis  ->Write();
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 }
 
 

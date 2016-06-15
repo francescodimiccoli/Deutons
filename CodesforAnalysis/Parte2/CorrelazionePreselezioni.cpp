@@ -52,12 +52,10 @@ void Correlazione_Preselezioni(TFile * inputHistoFile){
 	CorrelazionePreselezioni->Draw("col");
 
 	cout<<"*** Updating Results file ***"<<endl;
-        string namehistoFile="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(namehistoFile.c_str(), "UPDATE");
-        f_out->cd("MC Results");
+        fileFinalPlots->cd("MC Results");
         c13->Write();
-        f_out->Write();
-        f_out->Close();
+        fileFinalPlots->Write();
+        fileFinalPlots->Close();
 
 
 }

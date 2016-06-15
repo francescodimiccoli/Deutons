@@ -260,14 +260,12 @@ void CorrLAT() {
    CorrLATd_Agl_Spl->Draw("CPsame");
 
    cout<<"*** Updating Results file ***"<<endl;
-   string nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
-   f_out->mkdir("DATA-driven Results/Latitude effect/Correction");
-   f_out->cd("DATA-driven Results/Latitude effect/Correction");
+   fileFinalPlots->mkdir("DATA-driven Results/Latitude effect/Correction");
+   fileFinalPlots->cd("DATA-driven Results/Latitude effect/Correction");
    c26->Write();
    c26_bis->Write();
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 
    return;
 

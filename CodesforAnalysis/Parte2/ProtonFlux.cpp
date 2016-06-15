@@ -263,17 +263,15 @@ void ProtonFlux()
 
 
    cout<<"*** Updating Results file ***"<<endl;
-   string filename="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-   f_out->mkdir("P Fluxes");
-   f_out->cd("P Fluxes");
+   fileFinalPlots->mkdir("P Fluxes");
+   fileFinalPlots->cd("P Fluxes");
    c23->Write();
    c24->Write();
    c25->Write();
-   f_out->cd("Export");
+   fileFinalPlots->cd("Export");
    PFlux->Write("Protons Primary Flux");
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 
 
    return;

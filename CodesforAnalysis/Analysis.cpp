@@ -75,34 +75,32 @@ int main(int argc, char * argv[])
    cout<<"Month _ Indx _ Frac _ output"<<endl;
    cout<<argc<<endl;
    int INDX=2;
-
+   string frac="35";
+   string outputpath = "../";
+   string mese="2012_05";
 
    if(argc > 1 ) {
       mese=argv[1];
    } else {
       cout<<"No Month specified: running 2012_05"<<endl;
-      mese = "2012_05";
    }
 
    if(argc > 2 ) {
       INDX=atoi(argv[2]);
    } else {
       cout<<"No Mode specified: running Mode 2"<<endl;
-      INDX = 2;
    }
 
    if(argc > 3 ) {
       frac= argv[3];
    } else {
       cout<<"No fraction specified: running 35"<<endl;
-      frac = "35";
    }
 
    if(argc > 4 ) {
       outputpath=argv[4];
    } else {
       cout<<"No output path specified: writing locally"<<endl;
-      outputpath = "../";
    }
 
 
@@ -145,17 +143,10 @@ int main(int argc, char * argv[])
 
    cout<<endl;
 
-
-
-   ////////////////////////////
-
    
-
-   
-
    cout<<"************************ ISTOGRAM FILLING **************************************************************"<<endl;
 
-   FillIstogramAndDoAnalysis(INDX,frac,mese);
+   FillIstogramAndDoAnalysis(INDX,frac,mese, outputpath);
    
 
    cout<<"************************** OUTPUT **************************************************************"<<endl;

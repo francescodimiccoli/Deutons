@@ -323,20 +323,18 @@ void DeutonFlux()
    /// Updating results file
 
    cout<<"*** Updating Results file ***"<<endl;
-   string filename="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-   f_out->mkdir("D Fluxes");
-   f_out->cd("D Fluxes");
+   fileFinalPlots->mkdir("D Fluxes");
+   fileFinalPlots->cd("D Fluxes");
    c33-> Write();
    c32->Write();
    c34-> Write();
    c35->Write();
-   f_out->cd("Export");
+   fileFinalPlots->cd("Export");
    D_Flux[0]->Write("Deutons Primary Flux: TOF");
    D_Flux[1]->Write("Deutons Primary Flux: NaF");
    D_Flux[2]->Write("Deutons Primary Flux: Agl");
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 
 
    return;

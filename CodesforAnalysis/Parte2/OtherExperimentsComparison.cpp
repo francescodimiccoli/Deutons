@@ -148,14 +148,12 @@ void OtherExperimentsComparison(){
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-        string filename="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-        f_out->mkdir("Comparison with others");
-        f_out->cd("Comparison with others");
+        fileFinalPlots->mkdir("Comparison with others");
+        fileFinalPlots->cd("Comparison with others");
         c1->Write();
         c2->Write();
-	f_out->Write();
-        f_out->Close();
+	fileFinalPlots->Write();
+        fileFinalPlots->Close();
 
 	return;
 

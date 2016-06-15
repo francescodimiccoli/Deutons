@@ -178,14 +178,12 @@ void DVSMCRICHeff(){
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-	string filename="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-	f_out->mkdir("DATA-driven Results/Data vs MC/RICH");
-	f_out->cd("DATA-driven Results/Data vs MC/RICH");
+	fileFinalPlots->mkdir("DATA-driven Results/Data vs MC/RICH");
+	fileFinalPlots->cd("DATA-driven Results/Data vs MC/RICH");
 	c20_bis->Write();
 
-	f_out->Write();
-	f_out->Close();
+	fileFinalPlots->Write();
+	fileFinalPlots->Close();
 
 
 

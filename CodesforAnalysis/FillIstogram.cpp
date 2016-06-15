@@ -10,11 +10,12 @@ void UpdateProgressBar(TNtuple* ntuple, int currentevent);
 float getGeoZone(float latitude);
 
 
-void FillIstogramAndDoAnalysis(int INDX,string frac,string mese)
+void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpath)
 {
 
    cout<<"*********************** CALIB. READING *********************"<<endl;
 
+   string inputpath="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
    string nomecal=inputpath + "/CodesforAnalysis/CALIBRAZIONI/"+mese+".root";
    TFile *calib = TFile::Open(nomecal.c_str());
    if(calib) cout<<"MC calibration for month "<<mese<<" ... ok"<<endl;
@@ -26,8 +27,6 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese)
    EdepL1beta    = (TSpline3 *) calib->Get("Fit Results/Splines/EdepL1beta");
    EdepTOFbeta   = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFbeta");
    EdepTrackbeta = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTrackbeta");
-
-
 
    betaNaF = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaNaF_spl");
    betaAgl = (TF1 *) calib->Get("Fit Results/Splines/SigmaInvBetaAgl_spl");
@@ -43,7 +42,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese)
    TNtuple *ntupDataTrig;
 
 
-   string nameHistoFile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+   string nameHistoFile=outputpath+"Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
    inputHistoFile=TFile::Open(nameHistoFile.c_str(),"READ");
    if(!inputHistoFile) {
       cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl;
@@ -51,6 +50,8 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese)
       cout<<"Running in Mode 0 ..."<<endl;
    }
 
+   string filename="./Final_plots/"+mese+".root";
+   fileFinalPlots=new TFile(filename.c_str(), "UPDATE");
 
 
    if(INDX!=2) {

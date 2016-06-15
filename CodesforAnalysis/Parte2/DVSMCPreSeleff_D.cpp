@@ -247,16 +247,14 @@ void DVSMCPreSeleffD(){
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-	string filename="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-	f_out->mkdir("DATA-driven Results/Data vs MC/Deutons");
-	f_out->cd("DATA-driven Results/Data vs MC/Deutons");
+	fileFinalPlots->mkdir("DATA-driven Results/Data vs MC/Deutons");
+	fileFinalPlots->cd("DATA-driven Results/Data vs MC/Deutons");
 
 	for(int S=0;S<3;S++){
 		c21_D[S]->Write();
 	}
-	f_out->Write();
-	f_out->Close();
+	fileFinalPlots->Write();
+	fileFinalPlots->Close();
 
 	return;
 }

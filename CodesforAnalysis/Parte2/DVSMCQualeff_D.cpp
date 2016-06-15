@@ -362,14 +362,12 @@ void DVSMCQualeffD(){
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-	string filename="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-	f_out->mkdir("DATA-driven Results/Data vs MC/Deutons");
-	f_out->cd("DATA-driven Results/Data vs MC/Deutons");
+	fileFinalPlots->mkdir("DATA-driven Results/Data vs MC/Deutons");
+	fileFinalPlots->cd("DATA-driven Results/Data vs MC/Deutons");
 	c20_bis->Write();
 	c21_bis->Write();
-	f_out->Write();
-	f_out->Close();
+	fileFinalPlots->Write();
+	fileFinalPlots->Close();
 
 
 

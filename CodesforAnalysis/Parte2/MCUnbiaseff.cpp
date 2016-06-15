@@ -153,11 +153,9 @@ void MCUnbiaseff(TFile * inputHistoFile) {
       }
    }
    cout<<"*** Updating Results file ***"<<endl;
-   string filename="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-   f_out->cd("MC Results/Preselections");
+   fileFinalPlots->cd("MC Results/Preselections");
    c11->Write();
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 }
 

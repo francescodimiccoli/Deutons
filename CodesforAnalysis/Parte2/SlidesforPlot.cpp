@@ -830,10 +830,8 @@ void SlidesforPlot (TFile * file1)
 
 
    cout<<"*** Updating Results file ***"<<endl;
-   string nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile (nomefile.c_str(), "UPDATE");
-   f_out->mkdir ("Common plots for slides");
-   f_out->cd ("Common plots for slides");
+   fileFinalPlots->mkdir ("Common plots for slides");
+   fileFinalPlots->cd ("Common plots for slides");
    p1->Write();
    p2->Write();
    p3 ->Write();
@@ -861,6 +859,6 @@ void SlidesforPlot (TFile * file1)
    p19->Write();
    p20->Write();
    p21->Write();
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 }

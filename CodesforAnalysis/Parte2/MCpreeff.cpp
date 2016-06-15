@@ -249,13 +249,11 @@ void MCpreeff(TFile * inputHistoFile) {
 
 
    cout<<"*** Updating Results file ***"<<endl;
-   string filename="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-   f_out->mkdir("MC Results/Preselections");
-   f_out->cd("MC Results/Preselections");
+   fileFinalPlots->mkdir("MC Results/Preselections");
+   fileFinalPlots->cd("MC Results/Preselections");
    c4->Write();
    c4_bis->Write();
-   f_out->Close();
+   fileFinalPlots->Close();
 
 }
 

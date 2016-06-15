@@ -97,13 +97,11 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
    }
 
    cout<<"*** Updating Results file ***"<<endl;
-   string filename="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile (filename.c_str(), "UPDATE");
-   f_out->mkdir ("DATA-driven Results");
-   f_out->cd ("DATA-driven Results");
+   fileFinalPlots->mkdir ("DATA-driven Results");
+   fileFinalPlots->cd ("DATA-driven Results");
    c12->Write();
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 
 
 }

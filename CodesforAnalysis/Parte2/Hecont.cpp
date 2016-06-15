@@ -262,17 +262,15 @@ void Hecut(TFile * inputHistoFile) {
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-	string filename="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(filename.c_str(), "RECREATE");
-	f_out->mkdir("MC Results/He related cuts");
-	f_out->cd("MC Results/He related cuts");
+	fileFinalPlots->mkdir("MC Results/He related cuts");
+	fileFinalPlots->cd("MC Results/He related cuts");
 	c36	->Write();
 	c36_bis ->Write();
 	c37	->Write();
 	c38	->Write();
 
-	f_out->Write();
-	f_out->Close();
+	fileFinalPlots->Write();
+	fileFinalPlots->Close();
 }
 
 

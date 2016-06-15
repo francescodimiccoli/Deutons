@@ -515,15 +515,13 @@ void Acceptance(){
         }
 
 	cout<<"*** Updating Results file ***"<<endl;
-	string nomefile="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
-	f_out->mkdir("Acceptance");
-	f_out->cd("Acceptance");
+	fileFinalPlots->mkdir("Acceptance");
+	fileFinalPlots->cd("Acceptance");
 	c31_tris -> Write();
 	c22 -> Write();
 	c31_bis  -> Write();
-	f_out->Write();
-	f_out->Close();
+	fileFinalPlots->Write();
+	fileFinalPlots->Close();
 
 	return;
 }

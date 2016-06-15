@@ -484,10 +484,8 @@ void DistanceCut(TFile * file1){
 
 
 	cout<<"*** Updating Results file ***"<<endl;
-	string nomefile="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
-	f_out->mkdir("MC Results/Distance Cut");
-	f_out->cd("MC Results/Distance Cut");
+	fileFinalPlots->mkdir("MC Results/Distance Cut");
+	fileFinalPlots->cd("MC Results/Distance Cut");
 	c1   ->Write();
 	c2   ->Write();
 	c3   ->Write();
@@ -496,8 +494,8 @@ void DistanceCut(TFile * file1){
 	c6   ->Write();
 	c7   ->Write();
 	c8   ->Write();
-	f_out->Write();
-	f_out->Close();
+	fileFinalPlots->Write();
+	fileFinalPlots->Close();
 
 	return;
 }

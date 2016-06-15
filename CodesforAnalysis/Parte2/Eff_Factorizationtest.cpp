@@ -169,13 +169,11 @@ void FluxFactorizationtest(TFile * inputHistoFile){
 	FactorizedEfficiency->Draw("PCsame");
 	
 	cout<<"*** Updating Results file ***"<<endl;
-        string filename="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(filename.c_str(), "UPDATE");
-        f_out->mkdir("MC Results/Eff. Factorization Test");
-        f_out->cd("MC Results/Eff. Factorization Test");
+        fileFinalPlots->mkdir("MC Results/Eff. Factorization Test");
+        fileFinalPlots->cd("MC Results/Eff. Factorization Test");
         c9->Write();
-        f_out->Write();
-        f_out->Close();
+        fileFinalPlots->Write();
+        fileFinalPlots->Close();
  	
 
 return;

@@ -400,16 +400,14 @@ void MCTrackeff (TFile * inputHistoFile)
 
 
    cout<<"*** Updating Results file ***"<<endl;
-   string filename="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile (filename.c_str(), "UPDATE");
-   f_out->mkdir ("MC Results/Preselections/Basic Selections");
-   f_out->cd ("MC Results/Preselections/Basic Selections");
+   fileFinalPlots->mkdir ("MC Results/Preselections/Basic Selections");
+   fileFinalPlots->cd ("MC Results/Preselections/Basic Selections");
    c_7 -> Write();
    c7  -> Write();
    c8  -> Write();
 
-   f_out->Write();
-   f_out->Close();
+   fileFinalPlots->Write();
+   fileFinalPlots->Close();
 }
 
 

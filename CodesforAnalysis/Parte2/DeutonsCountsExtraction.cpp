@@ -281,48 +281,46 @@ void DeutonsTemplFits(){
 	}
 
 	cout<<"*** Updating Results file ***"<<endl;
-        string filename="./Final_plots/"+mese+".root";
-        TFile *f_out=new TFile(filename.c_str(), "UPDATE");
 	//Primaries
-	f_out->mkdir("Mass Template Fits/TOF/TOF Primaries/Dbins");
-	f_out->cd("Mass Template Fits/TOF/TOF Primaries/Dbins");
+	fileFinalPlots->mkdir("Mass Template Fits/TOF/TOF Primaries/Dbins");
+	fileFinalPlots->cd("Mass Template Fits/TOF/TOF Primaries/Dbins");
 	for(int bin=0; bin <nbinsToF; bin++)
 		c30_TOF[0][bin]->Write();
-	f_out->mkdir("Mass Template Fits/NaF/NaF Primaries/Dbins");
-	f_out->cd("Mass Template Fits/NaF/NaF Primaries/Dbins");
+	fileFinalPlots->mkdir("Mass Template Fits/NaF/NaF Primaries/Dbins");
+	fileFinalPlots->cd("Mass Template Fits/NaF/NaF Primaries/Dbins");
 	for(int bin=0; bin <nbinsNaF; bin++)
 		c30_NaF[0][bin]->Write();
-	f_out->mkdir("Mass Template Fits/Agl/Agl Primaries/Dbins");
-	f_out->cd("Mass Template Fits/Agl/Agl Primaries/Dbins");
+	fileFinalPlots->mkdir("Mass Template Fits/Agl/Agl Primaries/Dbins");
+	fileFinalPlots->cd("Mass Template Fits/Agl/Agl Primaries/Dbins");
 	for(int bin=0; bin <nbinsAgl; bin++)
 		c30_Agl[0][bin]->Write();
 
-	f_out->mkdir("Mass Template Fits/TOF/TOF Primaries/Pbins");
-	f_out->cd("Mass Template Fits/TOF/TOF Primaries/Pbins");
+	fileFinalPlots->mkdir("Mass Template Fits/TOF/TOF Primaries/Pbins");
+	fileFinalPlots->cd("Mass Template Fits/TOF/TOF Primaries/Pbins");
 	for(int bin=0; bin <nbinsToF; bin++)
 		c30_TOF[1][bin]->Write();
-	f_out->mkdir("Mass Template Fits/NaF/NaF Primaries/Pbins");
-	f_out->cd("Mass Template Fits/NaF/NaF Primaries/Pbins");
+	fileFinalPlots->mkdir("Mass Template Fits/NaF/NaF Primaries/Pbins");
+	fileFinalPlots->cd("Mass Template Fits/NaF/NaF Primaries/Pbins");
 	for(int bin=0; bin <nbinsNaF; bin++)
 		c30_NaF[1][bin]->Write();
-	f_out->mkdir("Mass Template Fits/Agl/Agl Primaries/Pbins");
-	f_out->cd("Mass Template Fits/Agl/Agl Primaries/Pbins");
+	fileFinalPlots->mkdir("Mass Template Fits/Agl/Agl Primaries/Pbins");
+	fileFinalPlots->cd("Mass Template Fits/Agl/Agl Primaries/Pbins");
 	for(int bin=0; bin <nbinsAgl; bin++)
 		c30_Agl[1][bin]->Write();
 	//Geom. Zones
 	for(int lat=1;lat<11;lat++){
-		f_out->mkdir("Mass Template Fits/TOF/TOF Geom. Zones");
-		f_out->cd("Mass Template Fits/TOF/TOF Geom. Zones");
+		fileFinalPlots->mkdir("Mass Template Fits/TOF/TOF Geom. Zones");
+		fileFinalPlots->cd("Mass Template Fits/TOF/TOF Geom. Zones");
 		c30_TOFgeo[lat] -> Write(("TOF Geo. Zone: " + to_string(lat)).c_str());
-		f_out->mkdir("Mass Template Fits/NaF/NaF Geom. Zones ");
-		f_out->cd("Mass Template Fits/NaF/NaF Geom. Zones ");
+		fileFinalPlots->mkdir("Mass Template Fits/NaF/NaF Geom. Zones ");
+		fileFinalPlots->cd("Mass Template Fits/NaF/NaF Geom. Zones ");
 		c30_NaFgeo[lat] -> Write(("NaF Geo. Zone: " + to_string(lat)).c_str());
-		f_out->mkdir("Mass Template Fits/Agl/Agl Geom. Zones  ");
-		f_out->cd("Mass Template Fits/Agl/Agl Geom. Zones  ");
+		fileFinalPlots->mkdir("Mass Template Fits/Agl/Agl Geom. Zones  ");
+		fileFinalPlots->cd("Mass Template Fits/Agl/Agl Geom. Zones  ");
 		c30_Aglgeo[lat] -> Write(("Agl Geo. Zone: " + to_string(lat)).c_str());
 	}
-	f_out->Write();
-	f_out->Close();
+	fileFinalPlots->Write();
+	fileFinalPlots->Close();
 
 
 	return;
