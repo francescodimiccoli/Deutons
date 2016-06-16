@@ -47,7 +47,7 @@ void FluxFactorizationtest_Qual_Fill(TNtuple *ntupla, int l){
 
 	 ntupla->GetEvent(l);
 	//cuts
-	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
+	if(Tup.Beta<=0||Tup.R<=0) return;
 	//R bins
 	int Kbin;
 	Kbin = RB.GetRBin(RUsed);

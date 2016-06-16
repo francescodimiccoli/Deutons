@@ -31,8 +31,8 @@ void MCTrackeff_Fill (TNtuple *ntupla, int l)
             && cmask.isMinimumBiasTrigger() && cmask.isMinimumBiasToF3or4Layers()
             && Tup.Beta_pre>0) {
          EffTrackMCP->beforeR->Fill (Kbin);
-         if ( cmask.isMinimumBiasTrigger() && cmask.isMinimumBiasToF3or4Layers() && cmask.isMinimumBiasTracker()&&Tup.R_pre>0)
-            EffTrackMCP->afterR->Fill (RB.GetRBin (fabs (Tup.R_pre) ) );
+         if ( cmask.isMinimumBiasTrigger() && cmask.isMinimumBiasToF3or4Layers() && cmask.isMinimumBiasTracker())
+            EffTrackMCP->afterR->Fill (Kbin );
       }
 
       //Beta bins
@@ -50,7 +50,7 @@ void MCTrackeff_Fill (TNtuple *ntupla, int l)
       &&  cmask.isMinimumBiasTrigger() && cmask.isMinimumBiasToF3or4Layers() && Tup.Beta_pre > 0) {
       Kbin=ToFPB.GetRBin (Tup.Momento_gen);
          EffTrackMCP->beforeTOF->Fill (Kbin);
-         if ( cmask.isMinimumBiasTrigger() && cmask.isMinimumBiasToF3or4Layers() && cmask.isMinimumBiasTracker() && Tup.R_pre > 0)
+         if ( cmask.isMinimumBiasTrigger() && cmask.isMinimumBiasToF3or4Layers() && cmask.isMinimumBiasTracker())
             EffTrackMCP->afterTOF->Fill (Kbin);
       }
    }
@@ -84,8 +84,8 @@ void MCTrackeff_Fill (TNtuple *ntupla, int l)
       if ( cmask.isMinimumBiasTrigger() && cmask.isMinimumBiasToF3or4Layers() &&Tup.Beta_pre>0) FillBinMGen (EffTOFMCD  ->afterTOF , Kbin);
 
       if (Tup.EdepTOFU < EdepTOFbeta->Eval (Tup.Beta_pre)+1 && Tup.EdepTOFU > EdepTOFbeta->Eval (Tup.Beta_pre)-1 && ( (int) Tup.Cutmask&3 ) == 3 && Tup.Beta_pre > 0) {
-         FillBinMGen (EffTrackMCD->beforeR, Kbin);
-            if ( cmask.isMinimumBiasTrigger() && cmask.isMinimumBiasToF3or4Layers() && cmask.isMinimumBiasTracker()&&Tup.R_pre>0) FillBinMGen (EffTrackMCD->afterR , Kbin);
+         FillBinMGen (EffTrackMCD->beforeTOF, Kbin);
+            if ( cmask.isMinimumBiasTrigger() && cmask.isMinimumBiasToF3or4Layers() && cmask.isMinimumBiasTracker()&&Tup.R_pre!=0) FillBinMGen (EffTrackMCD->afterTOF , Kbin);
          }
 
    }

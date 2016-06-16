@@ -24,8 +24,8 @@ void Acceptance(){
 	AcceptanceP-> Eval_MC_Acceptance();
 	AcceptanceP-> Eval_Geomag_Acceptance(1);
 	AcceptanceP-> Eval_Corrected_Acceptance(1);
-	AcceptanceD-> Eval_Gen_Acceptance(6);
 
+	AcceptanceD-> Eval_Gen_Acceptance(6);
 	AcceptanceD-> Eval_MC_Acceptance();
 	AcceptanceD-> Eval_Geomag_Acceptance(6);
 	AcceptanceD-> Eval_Corrected_Acceptance(6);
@@ -59,9 +59,28 @@ void Acceptance(){
 	TH2F* RICH_Correction_D_NaF =(TH2F*) inputHistoFile -> Get ("Results/RICH_DvsMC_D_CorrectionNaF"         );
         TH2F* RICH_Correction_D_Agl =(TH2F*) inputHistoFile -> Get ("Results/RICH_DvsMC_D_CorrectionAgl"         );
 
+	TH1F* Tracker_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Tracker_DvsMC_CorrectionR"  		);
+        TH1F* Tracker_Correction_TOF =(TH1F*) inputHistoFile -> Get ("Results/Tracker_DvsMC_CorrectionTOF"		);
+        TH1F* Tracker_Correction_NaF =(TH1F*) inputHistoFile -> Get ("Results/Tracker_DvsMC_CorrectionNaF"		);
+        TH1F* Tracker_Correction_Agl =(TH1F*) inputHistoFile -> Get ("Results/Tracker_DvsMC_CorrectionAgl"		);
+
+	//tracker
+	AcceptanceP -> Apply_DvsMCcorrection_R  (Tracker_Correction_R   );
+ 	AcceptanceP -> Apply_DvsMCcorrection_TOF(Tracker_Correction_TOF );
+ 	AcceptanceP -> Apply_DvsMCcorrection_NaF(Tracker_Correction_NaF );
+ 	AcceptanceP -> Apply_DvsMCcorrection_Agl(Tracker_Correction_Agl );
+	
+	AcceptancePreP -> Apply_DvsMCcorrection_R  (Tracker_Correction_R   );
+        AcceptancePreP -> Apply_DvsMCcorrection_TOF(Tracker_Correction_TOF );
+        AcceptancePreP -> Apply_DvsMCcorrection_NaF(Tracker_Correction_NaF );
+	AcceptancePreP -> Apply_DvsMCcorrection_Agl(Tracker_Correction_Agl );
+
+
+	//qual
 	AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);
 	AcceptanceP -> Apply_DvsMCcorrection_R(LikP_Correction_R );
 	
+	//rich
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(RICH_Correction_P_Agl);
 
