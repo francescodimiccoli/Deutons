@@ -25,7 +25,6 @@
 #include "Parte2/EfficiencyClass.cpp"
 #include "Parte2/LATcorrClass.cpp"
 #include "Parte2/ACCEPTANCEClass.cpp"
-#include "Parte2/FluxClass.cpp"
 #include "Parte2/TemplateFITClass.cpp"
 #include "Parte2/DatavsMCClass.h"
 #include "Parte2/MCpreeff.cpp"
@@ -54,10 +53,6 @@
 #include "Parte2/DVSMCPreSeleff.cpp"
 #include "Parte2/DVSMCPreSeleff_D.cpp"
 #include "Parte2/Acceptance.cpp"
-
-
-//#include "Parte2/ProtonFlux.cpp"
-//#include "Parte2/DeutonsFlux.cpp"
 
 #include "Parte2/FluxImplementation.cpp"
 

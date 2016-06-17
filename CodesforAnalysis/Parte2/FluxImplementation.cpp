@@ -1,3 +1,4 @@
+#include "FluxClass.cpp"
 using namespace std;
 
 
