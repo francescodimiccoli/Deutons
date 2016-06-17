@@ -100,10 +100,10 @@ public:
 
 	void ApplyDvsMCcorrection(int n, TH1* Correction, TH1* Corrected_Acc, TH1* Geom_Acc);
 
-	void Apply_DvsMCcorrection_R  (TH1 * R_Correction  ,int n=1){ if (CorrectedAcceptance_R   )  ApplyDvsMCcorrection(n,R_Correction  , CorrectedAcceptance_R   , Geomag_Acceptance_R   ); return;}
-        void Apply_DvsMCcorrection_TOF(TH1 * TOF_Correction,int n=1){ if (CorrectedAcceptance_TOF )  ApplyDvsMCcorrection(n,TOF_Correction, CorrectedAcceptance_TOF , Geomag_Acceptance_TOF ); return;}
-        void Apply_DvsMCcorrection_NaF(TH1 * NaF_Correction,int n=1){ if (CorrectedAcceptance_NaF )  ApplyDvsMCcorrection(n,NaF_Correction, CorrectedAcceptance_NaF , Geomag_Acceptance_NaF ); return;}
-        void Apply_DvsMCcorrection_Agl(TH1 * Agl_Correction,int n=1){ if (CorrectedAcceptance_Agl )  ApplyDvsMCcorrection(n,Agl_Correction, CorrectedAcceptance_Agl , Geomag_Acceptance_Agl ); return;}
+	void Apply_DvsMCcorrection_R  (TH1 * R_Correction  ,int n=1){ if (LATcorrW_R   )  ApplyDvsMCcorrection(n,R_Correction  , CorrectedAcceptance_R   , Geomag_Acceptance_R   ); return;}
+        void Apply_DvsMCcorrection_TOF(TH1 * TOF_Correction,int n=1){ if (LATcorrW_TOF   )  ApplyDvsMCcorrection(n,TOF_Correction, CorrectedAcceptance_TOF , Geomag_Acceptance_TOF ); return;}
+        void Apply_DvsMCcorrection_NaF(TH1 * NaF_Correction,int n=1){ if (LATcorrW_NaF   )  ApplyDvsMCcorrection(n,NaF_Correction, CorrectedAcceptance_NaF , Geomag_Acceptance_NaF ); return;}
+        void Apply_DvsMCcorrection_Agl(TH1 * Agl_Correction,int n=1){ if (LATcorrW_Agl   )  ApplyDvsMCcorrection(n,Agl_Correction, CorrectedAcceptance_Agl , Geomag_Acceptance_Agl ); return;}
 	
 
 };

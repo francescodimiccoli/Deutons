@@ -31,6 +31,7 @@ using namespace std;
 
 int main()
 {
+	int colorbase = 30;
 	cout<<"Analyzed Months: "<<endl;
 	for(int i=0;i<num_mesi;i++){
 		cout<<mesi[i].c_str()<<endl;
@@ -63,6 +64,7 @@ int main()
 	TGraphErrors *preDVSMC_P[3][40];
 	TGraphErrors *LikDVSMC_P[40];
         TGraphErrors *DistDVSMC_P[40];
+	TH1F * TrackerEff[40];
 	TGraphErrors *P_Fluxes[40];
 	TGraphErrors *P_Fluxesratio[40];
 	TGraphErrors *D_FluxesTOF[40];
@@ -91,6 +93,7 @@ int main()
                 preDVSMC_P[2][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC: 1 Tr. Track_Graph");
 		LikDVSMC_P[i] =  (TGraphErrors *) result[i]->Get("Export/LikDVSMC_P_Graph");
                 DistDVSMC_P[i] =  (TGraphErrors *) result[i]->Get("Export/DistDVSMC_P_Graph");*/
+		TrackerEff[i]  =  (TH1F *) 	   result[i]->Get("Export/TrakerEfficiencyData");	
 		P_Fluxes[i]    =  (TGraphErrors *) result[i]->Get("Export/Protons Primary Flux");
 		D_FluxesTOF[i] =  (TGraphErrors *) result[i]->Get("Export/Deutons Primary Flux: TOF");
 		D_FluxesNaF[i] =  (TGraphErrors *) result[i]->Get("Export/Deutons Primary Flux: NaF");
@@ -112,12 +115,14 @@ int main()
         TCanvas *c12=new TCanvas("DvsMC: 1 Tr. Track");
 	TCanvas *c13=new TCanvas("DvsMC: Likelihood");
         TCanvas *c14=new TCanvas("DvsMC: Distance");*/
+	TCanvas *c  =new TCanvas("Tracker Efficiency");
 	TCanvas *c15=new TCanvas("Protons Fluxes");
 	TCanvas *c16=new TCanvas("Deutons Fluxes");
+	TCanvas *c17=new TCanvas("Time dependence");
 	c1->cd();
 	{gPad->SetGridx();
 		gPad->SetGridy();
-		gStyle->SetPalette(0);
+		gStyle->SetPalette(1);
 		TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
 		Corr_L1[0]->SetLineWidth(2); 
 		Corr_L1[0]->SetLineColor(1);
@@ -128,8 +133,8 @@ int main()
 		frame->GetYaxis()->SetTitle("Corr. Factor");
 		for(int i=1;i<num_mesi;i++) {
 			Corr_L1[i]->SetLineWidth(2);    
-			Corr_L1[i]->SetLineColor(i+1);
-			Corr_L1[i]->SetMarkerColor(i+1);
+			Corr_L1[i]->SetLineColor(colorbase+i);
+			Corr_L1[i]->SetMarkerColor(colorbase+i);
 			Corr_L1[i]->SetMarkerStyle(8);
 			leg->AddEntry(Corr_L1[i],mesi[i].c_str(), "ep");
 			Corr_L1[i]->Draw("same");
@@ -140,7 +145,7 @@ int main()
 	c2->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 Corr_TOFU[0]->SetLineWidth(2);
                 Corr_TOFU[0]->SetLineColor(1);
@@ -151,8 +156,8 @@ int main()
                 frame->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         Corr_TOFU[i]->SetLineWidth(2);
-                        Corr_TOFU[i]->SetLineColor(i+1);
-                        Corr_TOFU[i]->SetMarkerColor(i+1);
+                        Corr_TOFU[i]->SetLineColor(colorbase+i);
+                        Corr_TOFU[i]->SetMarkerColor(colorbase+i);
                         Corr_TOFU[i]->SetMarkerStyle(8);
 			leg->AddEntry(Corr_L1[i],mesi[i].c_str(), "ep");
                         Corr_TOFU[i]->Draw("same");
@@ -163,7 +168,7 @@ int main()
 	c3->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 Corr_Track[0]->SetLineWidth(2);
                 Corr_Track[0]->SetLineColor(1);
@@ -174,8 +179,8 @@ int main()
                 frame->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         Corr_Track[i]->SetLineWidth(2);
-                        Corr_Track[i]->SetLineColor(i+1);
-                        Corr_Track[i]->SetMarkerColor(i+1);
+                        Corr_Track[i]->SetLineColor(colorbase+i);
+                        Corr_Track[i]->SetMarkerColor(colorbase+i);
                         Corr_Track[i]->SetMarkerStyle(8);
 			leg->AddEntry(Corr_Track[i],mesi[i].c_str(), "ep");
                         Corr_Track[i]->Draw("same");
@@ -186,7 +191,7 @@ int main()
 	c4->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 Corr_TOFD[0]->SetLineWidth(2);
                 Corr_TOFD[0]->SetLineColor(1);
@@ -197,8 +202,8 @@ int main()
                 frame->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         Corr_TOFD[i]->SetLineWidth(2);
-                        Corr_TOFD[i]->SetLineColor(i+1);
-                        Corr_TOFD[i]->SetMarkerColor(i+1);
+                        Corr_TOFD[i]->SetLineColor(colorbase+i);
+                        Corr_TOFD[i]->SetMarkerColor(colorbase+i);
                         Corr_TOFD[i]->SetMarkerStyle(8);
 			leg->AddEntry(Corr_TOFD[i],mesi[i].c_str(), "ep");
                         Corr_TOFD[i]->Draw("Lsame");
@@ -209,7 +214,7 @@ int main()
 	c5->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                	cout<<CorrLATpre_Spl[0][0]<<endl;
 		CorrLATpre_Spl[0][0]->SetLineWidth(2);
@@ -222,9 +227,9 @@ int main()
                 CorrLATpre_Spl[0][0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         CorrLATpre_Spl[0][i]->SetLineWidth(2);
-                        CorrLATpre_Spl[0][i]->SetLineColor(i+1);
+                        CorrLATpre_Spl[0][i]->SetLineColor(colorbase+i);
 			CorrLATpre_Spl[0][i]->SetMarkerStyle(8);
-	                CorrLATpre_Spl[0][i]->SetMarkerColor(i+1);
+	                CorrLATpre_Spl[0][i]->SetMarkerColor(colorbase+i);
                         leg->AddEntry(CorrLATpre_Spl[0][i],mesi[i].c_str(), "ep");
                         CorrLATpre_Spl[0][i]->Draw("Csame");
                 }
@@ -234,7 +239,7 @@ int main()
 	c6->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 CorrLATpre_Spl[1][0]->SetLineWidth(2);
                 CorrLATpre_Spl[1][0]->SetLineColor(1);
@@ -246,9 +251,9 @@ int main()
                 CorrLATpre_Spl[1][0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         CorrLATpre_Spl[1][i]->SetLineWidth(2);
-                        CorrLATpre_Spl[1][i]->SetLineColor(i+1);
+                        CorrLATpre_Spl[1][i]->SetLineColor(colorbase+i);
 			CorrLATpre_Spl[1][i]->SetMarkerStyle(8);
-	                CorrLATpre_Spl[1][i]->SetMarkerColor(i+1);
+	                CorrLATpre_Spl[1][i]->SetMarkerColor(colorbase+i);
                         leg->AddEntry(CorrLATpre_Spl[1][i],mesi[i].c_str(), "ep");
                         CorrLATpre_Spl[1][i]->Draw("Csame");
                 }
@@ -258,7 +263,7 @@ int main()
 	c7->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 CorrLATpre_Spl[2][0]->SetLineWidth(2);
                 CorrLATpre_Spl[2][0]->SetLineColor(1);
@@ -270,9 +275,9 @@ int main()
                 CorrLATpre_Spl[2][0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         CorrLATpre_Spl[2][i]->SetLineWidth(2);
-                        CorrLATpre_Spl[2][i]->SetLineColor(i+1);
+                        CorrLATpre_Spl[2][i]->SetLineColor(colorbase+i);
 			CorrLATpre_Spl[2][i]->SetMarkerStyle(8);
-	                CorrLATpre_Spl[2][i]->SetMarkerColor(i+1);
+	                CorrLATpre_Spl[2][i]->SetMarkerColor(colorbase+i);
                         leg->AddEntry(CorrLATpre_Spl[2][i],mesi[i].c_str(), "ep");
                         CorrLATpre_Spl[2][i]->Draw("CPsame");
                 }
@@ -283,7 +288,7 @@ int main()
 	c8->cd(1);
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 CorrLAT_LikTOF_Spl[0]->SetLineWidth(2);
                 CorrLAT_LikTOF_Spl[0]->SetLineColor(1);
@@ -295,9 +300,9 @@ int main()
                 CorrLAT_LikTOF_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         CorrLAT_LikTOF_Spl[i]->SetLineWidth(2);
-                        CorrLAT_LikTOF_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_LikTOF_Spl[i]->SetLineColor(colorbase+i);
 			CorrLAT_LikTOF_Spl[i]->SetMarkerStyle(8);
-                	CorrLAT_LikTOF_Spl[i]->SetMarkerColor(i+1);
+                	CorrLAT_LikTOF_Spl[i]->SetMarkerColor(colorbase+i);
                         leg->AddEntry(CorrLAT_LikTOF_Spl[i],mesi[i].c_str(), "ep");
                         CorrLAT_LikTOF_Spl[i]->Draw("CPsame");
                 }
@@ -306,7 +311,7 @@ int main()
 	c8->cd(2);
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 CorrLAT_LikNaF_Spl[0]->SetLineWidth(2);
                 CorrLAT_LikNaF_Spl[0]->SetLineColor(1);
@@ -318,9 +323,9 @@ int main()
                 CorrLAT_LikNaF_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         CorrLAT_LikNaF_Spl[i]->SetLineWidth(2);
-                        CorrLAT_LikNaF_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_LikNaF_Spl[i]->SetLineColor(colorbase+i);
                         CorrLAT_LikNaF_Spl[i]->SetMarkerStyle(8);
-                        CorrLAT_LikNaF_Spl[i]->SetMarkerColor(i+1);
+                        CorrLAT_LikNaF_Spl[i]->SetMarkerColor(colorbase+i);
                         leg->AddEntry(CorrLAT_LikNaF_Spl[i],mesi[i].c_str(), "ep");
                         CorrLAT_LikNaF_Spl[i]->Draw("CPsame");
                 }
@@ -329,7 +334,7 @@ int main()
 	c8->cd(3);
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 CorrLAT_LikAgl_Spl[0]->SetLineWidth(2);
                 CorrLAT_LikAgl_Spl[0]->SetLineColor(1);
@@ -341,9 +346,9 @@ int main()
                 CorrLAT_LikAgl_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         CorrLAT_LikAgl_Spl[i]->SetLineWidth(2);
-                        CorrLAT_LikAgl_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_LikAgl_Spl[i]->SetLineColor(colorbase+i);
                         CorrLAT_LikAgl_Spl[i]->SetMarkerStyle(8);
-                        CorrLAT_LikAgl_Spl[i]->SetMarkerColor(i+1);
+                        CorrLAT_LikAgl_Spl[i]->SetMarkerColor(colorbase+i);
                         leg->AddEntry(CorrLAT_LikAgl_Spl[i],mesi[i].c_str(), "ep");
                         CorrLAT_LikAgl_Spl[i]->Draw("CPsame");
                 }
@@ -355,7 +360,7 @@ int main()
 	c9->cd(1);
 	{gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 CorrLAT_DistTOF_Spl[0]->SetLineWidth(2);
                 CorrLAT_DistTOF_Spl[0]->SetLineColor(1);
@@ -367,9 +372,9 @@ int main()
                 CorrLAT_DistTOF_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         CorrLAT_DistTOF_Spl[i]->SetLineWidth(2);
-                        CorrLAT_DistTOF_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_DistTOF_Spl[i]->SetLineColor(colorbase+i);
                         CorrLAT_DistTOF_Spl[i]->SetMarkerStyle(8);
-	                CorrLAT_DistTOF_Spl[i]->SetMarkerColor(i+1);
+	                CorrLAT_DistTOF_Spl[i]->SetMarkerColor(colorbase+i);
 			leg->AddEntry(CorrLAT_DistTOF_Spl[i],mesi[i].c_str(), "ep");
                         CorrLAT_DistTOF_Spl[i]->Draw("CPsame");
                 }
@@ -378,7 +383,7 @@ int main()
 	c9->cd(2);
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 CorrLAT_DistNaF_Spl[0]->SetLineWidth(2);
                 CorrLAT_DistNaF_Spl[0]->SetLineColor(1);
@@ -390,9 +395,9 @@ int main()
                 CorrLAT_DistNaF_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         CorrLAT_DistNaF_Spl[i]->SetLineWidth(2);
-                        CorrLAT_DistNaF_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_DistNaF_Spl[i]->SetLineColor(colorbase+i);
                         CorrLAT_DistNaF_Spl[i]->SetMarkerStyle(8);
-                        CorrLAT_DistNaF_Spl[i]->SetMarkerColor(i+1);
+                        CorrLAT_DistNaF_Spl[i]->SetMarkerColor(colorbase+i);
                         leg->AddEntry(CorrLAT_DistNaF_Spl[i],mesi[i].c_str(), "ep");
                         CorrLAT_DistNaF_Spl[i]->Draw("CPsame");
                 }
@@ -401,7 +406,7 @@ int main()
 	c9->cd(3);
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 CorrLAT_DistAgl_Spl[0]->SetLineWidth(2);
                 CorrLAT_DistAgl_Spl[0]->SetLineColor(1);
@@ -413,9 +418,9 @@ int main()
                 CorrLAT_DistAgl_Spl[0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         CorrLAT_DistAgl_Spl[i]->SetLineWidth(2);
-                        CorrLAT_DistAgl_Spl[i]->SetLineColor(i+1);
+                        CorrLAT_DistAgl_Spl[i]->SetLineColor(colorbase+i);
                         CorrLAT_DistAgl_Spl[i]->SetMarkerStyle(8);
-                        CorrLAT_DistAgl_Spl[i]->SetMarkerColor(i+1);
+                        CorrLAT_DistAgl_Spl[i]->SetMarkerColor(colorbase+i);
                         leg->AddEntry(CorrLAT_DistAgl_Spl[i],mesi[i].c_str(), "ep");
                         CorrLAT_DistAgl_Spl[i]->Draw("CPsame");
                 }
@@ -426,7 +431,7 @@ int main()
 	/*c10->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
 		gPad->SetLogx();
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 preDVSMC_P[0][0]->SetLineWidth(2);
@@ -441,9 +446,9 @@ int main()
                 preDVSMC_P[0][0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         preDVSMC_P[0][i]->SetLineWidth(2);
-                        preDVSMC_P[0][i]->SetLineColor(i+1);
+                        preDVSMC_P[0][i]->SetLineColor(colorbase+i);
                         preDVSMC_P[0][i]->SetMarkerStyle(8);
-                        preDVSMC_P[0][i]->SetMarkerColor(i+1);
+                        preDVSMC_P[0][i]->SetMarkerColor(colorbase+i);
 			preDVSMC_P[0][i]->SetFillStyle(3002);
                         leg->AddEntry(CorrLATpre_Spl[0][i],mesi[i].c_str(), "ep");
                         preDVSMC_P[0][i]->Draw("C4same");
@@ -454,7 +459,7 @@ int main()
 	c11->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
 		gPad->SetLogx();
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 preDVSMC_P[1][0]->SetLineWidth(2);
@@ -469,9 +474,9 @@ int main()
                 preDVSMC_P[1][0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         preDVSMC_P[1][i]->SetLineWidth(2);
-                        preDVSMC_P[1][i]->SetLineColor(i+1);
+                        preDVSMC_P[1][i]->SetLineColor(colorbase+i);
                         preDVSMC_P[1][i]->SetMarkerStyle(8);
-                        preDVSMC_P[1][i]->SetMarkerColor(i+1);
+                        preDVSMC_P[1][i]->SetMarkerColor(colorbase+i);
                         preDVSMC_P[1][i]->SetFillStyle(3002);
 			leg->AddEntry(CorrLATpre_Spl[1][i],mesi[i].c_str(), "ep");
                         preDVSMC_P[1][i]->Draw("C4same");
@@ -482,7 +487,7 @@ int main()
 	c12->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 gPad->SetLogx();
 		TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 preDVSMC_P[2][0]->SetLineWidth(2);
@@ -497,20 +502,19 @@ int main()
                 preDVSMC_P[2][0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         preDVSMC_P[2][i]->SetLineWidth(2);
-                        preDVSMC_P[2][i]->SetLineColor(i+1);
+                        preDVSMC_P[2][i]->SetLineColor(colorbase+i);
                         preDVSMC_P[2][i]->SetMarkerStyle(8);
-                        preDVSMC_P[2][i]->SetMarkerColor(i+1);
+                        preDVSMC_P[2][i]->SetMarkerColor(colorbase+i);
                         preDVSMC_P[2][i]->SetFillStyle(3002);
 			leg->AddEntry(CorrLATpre_Spl[2][i],mesi[i].c_str(), "ep");
                         preDVSMC_P[2][i]->Draw("C4same");
                 }
                 leg->Draw("same");
         }
-
 	c13->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 gPad->SetLogx();
 		TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 LikDVSMC_P[0]->SetLineWidth(2);
@@ -518,7 +522,6 @@ int main()
 		LikDVSMC_P[0]->SetMarkerStyle(8);
                 LikDVSMC_P[0]->SetMarkerColor(1);
                 LikDVSMC_P[0]->SetFillStyle(3002);
-
                 leg->AddEntry(LikDVSMC_P[0],mesi[0].c_str(), "ep");
                 LikDVSMC_P[0]->GetYaxis()->SetRangeUser(0.8,1.4);
 		LikDVSMC_P[0]->Draw("AC4");
@@ -526,20 +529,19 @@ int main()
                 LikDVSMC_P[0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         LikDVSMC_P[i]->SetLineWidth(2);
-                        LikDVSMC_P[i]->SetLineColor(i+1);
+                        LikDVSMC_P[i]->SetLineColor(colorbase+i);
                         LikDVSMC_P[i]->SetMarkerStyle(8);
-                	LikDVSMC_P[i]->SetMarkerColor(i+1);
+                	LikDVSMC_P[i]->SetMarkerColor(colorbase+i);
                 	LikDVSMC_P[i]->SetFillStyle(3002);
 			leg->AddEntry(LikDVSMC_P[i],mesi[i].c_str(), "ep");
                         LikDVSMC_P[i]->Draw("C4same");
                 }
                 leg->Draw("same");
         }
-
 	c14->cd();
         {gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 gPad->SetLogx();
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 DistDVSMC_P[0]->SetLineWidth(2);
@@ -547,7 +549,6 @@ int main()
                 DistDVSMC_P[0]->SetMarkerStyle(8);
                 DistDVSMC_P[0]->SetMarkerColor(1);
                 DistDVSMC_P[0]->SetFillStyle(3002);
-
                 leg->AddEntry(DistDVSMC_P[0],mesi[0].c_str(), "ep");
                 DistDVSMC_P[0]->GetYaxis()->SetRangeUser(0.7,1.3);
                 DistDVSMC_P[0]->Draw("AC4");
@@ -555,32 +556,53 @@ int main()
                 DistDVSMC_P[0]->GetYaxis()->SetTitle("Corr. Factor");
                 for(int i=1;i<num_mesi;i++) {
                         DistDVSMC_P[i]->SetLineWidth(2);
-                        DistDVSMC_P[i]->SetLineColor(i+1);
+                        DistDVSMC_P[i]->SetLineColor(colorbase+i);
                         DistDVSMC_P[i]->SetMarkerStyle(8);
-                        DistDVSMC_P[i]->SetMarkerColor(i+1);
+                        DistDVSMC_P[i]->SetMarkerColor(colorbase+i);
                         DistDVSMC_P[i]->SetFillStyle(3002);
                         leg->AddEntry(DistDVSMC_P[i],mesi[i].c_str(), "ep");
                         DistDVSMC_P[i]->Draw("C4same");
                 }
                 leg->Draw("same");
         }*/
+	c->cd();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	double effy,effey=0;
+	TH1F * Trackeff_time = new TH1F("","",num_mesi,0,num_mesi);
+        for(int i=0;i<num_mesi;i++) {
+                cout<<TrackerEff[i]<<endl;
+		effy = TrackerEff[i]-> GetBinContent(30);
+		Trackeff_time -> SetBinContent(i+1,effy);
+                effey = TrackerEff[i]-> GetBinError(30);
+                Trackeff_time -> SetBinError(i+1,effey);
+                Trackeff_time -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+        }
+	Trackeff_time -> SetMarkerStyle(8);
+	Trackeff_time -> LabelsOption("v");
+	Trackeff_time -> GetXaxis() -> SetLabelSize(0.085);
+	Trackeff_time -> SetMarkerColor(1);
+	Trackeff_time -> Draw();
+
+
 	cout<<"10"<<endl;
 	c15->cd();
+	gStyle->SetPalette(0);
 	double x,y,ey=0;
 	double x0,y0=0;
 	int u,v=0;
         {       gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
                 gPad->SetLogx();
-                gPad->SetLogy();
 		TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 for(int i=0;i<num_mesi;i++) {
                 P_Fluxesratio[i]=new TGraphErrors();
-		for(int p=1;p<42;p++){
+		for(int p=1;p<43;p++){
                         u=P_Fluxes[i]->GetPoint(p,x,y);
                         v=P_Fluxes[0]->GetPoint(p,x0,y0);
+			ey=P_Fluxes[i]->GetErrorY(p);
 			P_Fluxesratio[i]->SetPoint(p,x,y/y0);
+			P_Fluxesratio[i]->SetPointError(p,0,ey/y0);	
                 	}
 		}
 		P_Fluxesratio[0]->SetLineWidth(2);
@@ -589,15 +611,15 @@ int main()
                 P_Fluxesratio[0]->SetMarkerColor(1);
                 P_Fluxesratio[0]->SetFillStyle(3002);
                 leg->AddEntry(P_Fluxesratio[0],mesi[0].c_str(), "ep");
-                P_Fluxesratio[0]->GetYaxis()->SetRangeUser(0.4,2.3);
+                P_Fluxesratio[0]->GetYaxis()->SetRangeUser(0.2,1.3);
                 P_Fluxesratio[0]->Draw("AP");
                 P_Fluxesratio[0]->GetXaxis()->SetTitle("R [GV]");
                 P_Fluxesratio[0]->GetYaxis()->SetTitle("Flux Ratio (vs first month)");
                 for(int i=1;i<num_mesi;i++) {
                         P_Fluxesratio[i]->SetLineWidth(2);
-                        P_Fluxesratio[i]->SetLineColor(i+1);
+                        P_Fluxesratio[i]->SetLineColor(38+i);
                         P_Fluxesratio[i]->SetMarkerStyle(8);
-                        P_Fluxesratio[i]->SetMarkerColor(i+1);
+                        P_Fluxesratio[i]->SetMarkerColor(colorbase+i);
                         P_Fluxesratio[i]->SetFillStyle(3002);
                         leg->AddEntry(P_Fluxesratio[i],mesi[i].c_str(), "ep");
                         P_Fluxesratio[i]->Draw("Psame");
@@ -611,17 +633,18 @@ int main()
         u,v=0;
         {       gPad->SetGridx();
                 gPad->SetGridy();
-                gStyle->SetPalette(0);
+                gStyle->SetPalette(1);
                 gPad->SetLogx();
-                gPad->SetLogy();
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 for(int i=0;i<num_mesi;i++) {
                 D_FluxesratioTOF[i]=new TGraphErrors();
                 for(int p=1;p<18;p++){
                         u=D_FluxesTOF[i]->GetPoint(p,x,y);
                         v=D_FluxesTOF[0]->GetPoint(p,x0,y0);
-                        D_FluxesratioTOF[i]->SetPoint(p,x,y/y0);
-                        }
+                        ey=D_FluxesTOF[i]->GetErrorY(p);
+			D_FluxesratioTOF[i]->SetPoint(p,x,y/y0);
+                        D_FluxesratioTOF[i]->SetPointError(p,0,ey/y0);
+			}
                 }
 		D_FluxesratioTOF[0]->SetPoint(18,20,1e-3);
                 D_FluxesratioTOF[0]->SetLineWidth(2);
@@ -630,14 +653,14 @@ int main()
                 D_FluxesratioTOF[0]->SetMarkerColor(1);
                 D_FluxesratioTOF[0]->SetFillStyle(3002);
                 leg->AddEntry(D_FluxesratioTOF[0],mesi[0].c_str(), "ep");
-                D_FluxesratioTOF[0]->GetYaxis()->SetRangeUser(0.4,2.3);
+                D_FluxesratioTOF[0]->GetYaxis()->SetRangeUser(0.2,1.3);
                 D_FluxesratioTOF[0]->Draw("AP");
-                D_FluxesratioTOF[0]->GetXaxis()->SetTitle("R [GV]");
+                D_FluxesratioTOF[0]->GetXaxis()->SetTitle("Kin. En. / nucl.");
                 D_FluxesratioTOF[0]->GetYaxis()->SetTitle("Flux Ratio (vs first month)");
                 for(int i=1;i<num_mesi;i++) {
                         D_FluxesratioTOF[i]->SetLineWidth(2);
-                        D_FluxesratioTOF[i]->SetLineColor(i+1);
-                        D_FluxesratioTOF[i]->SetMarkerColor(i+1);
+                        D_FluxesratioTOF[i]->SetLineColor(colorbase+i);
+                        D_FluxesratioTOF[i]->SetMarkerColor(colorbase+i);
                         D_FluxesratioTOF[i]->SetMarkerStyle(8);
 			D_FluxesratioTOF[i]->SetFillStyle(3002);
                         leg->AddEntry(D_FluxesratioTOF[i],mesi[i].c_str(), "ep");
@@ -646,10 +669,16 @@ int main()
                 leg->Draw("same");
         	for(int i=0;i<num_mesi;i++) {
                 D_FluxesratioNaF[i]=new TGraphErrors();
-                for(int p=1;p<18;p++){
+                int point =0;
+		for(int p=1;p<18;p++){
                         u=D_FluxesNaF[i]->GetPoint(p,x,y);
                         v=D_FluxesNaF[0]->GetPoint(p,x0,y0);
-                        D_FluxesratioNaF[i]->SetPoint(p,x,y/y0);
+			ey=D_FluxesNaF[i]->GetErrorY(p);
+                        if(y0>0&&x0>0.8) {
+				  D_FluxesratioNaF[i]->SetPoint(point,x,y/y0);
+                        	  D_FluxesratioNaF[i]->SetPointError(point,0,ey/y0);
+				  point++;
+				}
 			}
                 }
                 D_FluxesratioNaF[0]->SetLineWidth(2);
@@ -657,22 +686,24 @@ int main()
                 D_FluxesratioNaF[0]->SetLineColor(1);
                 D_FluxesratioNaF[0]->SetMarkerColor(1);
                 D_FluxesratioNaF[0]->SetFillStyle(3002);
-		D_FluxesratioNaF[0]->Draw("Psame");
+		D_FluxesratioNaF[0]->Draw("4same");
 		for(int i=1;i<num_mesi;i++) {
                         D_FluxesratioNaF[i]->SetLineWidth(2);
-                        D_FluxesratioNaF[i]->SetLineColor(i+1);
-                        D_FluxesratioNaF[i]->SetMarkerColor(i+1);
+                        D_FluxesratioNaF[i]->SetLineColor(colorbase+i);
+                        D_FluxesratioNaF[i]->SetMarkerColor(colorbase+i);
                         D_FluxesratioNaF[i]->SetMarkerStyle(4);
                         D_FluxesratioNaF[i]->SetFillStyle(3002);
-                        D_FluxesratioNaF[i]->Draw("Psame");
+                       // D_FluxesratioNaF[i]->Draw("Psame");
                 }
 		 for(int i=0;i<num_mesi;i++) {
                 D_FluxesratioAgl[i]=new TGraphErrors();
                 for(int p=1;p<18;p++){
                         u=D_FluxesAgl[i]->GetPoint(p,x,y);
                         v=D_FluxesAgl[0]->GetPoint(p,x0,y0);
+                        ey=D_FluxesAgl[i]->GetErrorY(p);
                         D_FluxesratioAgl[i]->SetPoint(p,x,y/y0);
-                        }
+                        D_FluxesratioAgl[i]->SetPointError(p,0,ey/y0);
+			}
                 }
                 D_FluxesratioAgl[0]->SetLineWidth(2);
                 D_FluxesratioAgl[0]->SetMarkerStyle(3);
@@ -682,8 +713,8 @@ int main()
                 D_FluxesratioAgl[0]->Draw("Psame");
                 for(int i=1;i<num_mesi;i++) {
                         D_FluxesratioAgl[i]->SetLineWidth(2);
-                        D_FluxesratioAgl[i]->SetLineColor(i+1);
-                        D_FluxesratioAgl[i]->SetMarkerColor(i+1);
+                        D_FluxesratioAgl[i]->SetLineColor(colorbase+i);
+                        D_FluxesratioAgl[i]->SetMarkerColor(colorbase+i);
                         D_FluxesratioAgl[i]->SetMarkerStyle(3);
                         D_FluxesratioAgl[i]->SetFillStyle(3002);
                         D_FluxesratioAgl[i]->Draw("Psame");
@@ -691,8 +722,125 @@ int main()
 
 	
 	}
-
 	
+	c17->Divide(1,3);
+
+	TH1F * Time_depD1 = new TH1F("","",num_mesi,0,num_mesi);
+	TH1F * Time_depP1 = new TH1F("","",num_mesi,0,num_mesi);
+	TH1F * Time_depD2 = new TH1F("","",num_mesi,0,num_mesi);
+        TH1F * Time_depP2 = new TH1F("","",num_mesi,0,num_mesi);
+	TH1F * Time_depD3 = new TH1F("","",num_mesi,0,num_mesi);
+        TH1F * Time_depP3 = new TH1F("","",num_mesi,0,num_mesi);
+	
+	double x01,x02,x03;
+	double y01,y02,y03;
+	double x1,x2,x3;
+	double y1,y2,y3;
+	double ey1,ey2,ey3;
+
+	for(int i=0;i<num_mesi;i++) {
+		D_FluxesTOF[i]->GetPoint(4,x1,y1);
+		D_FluxesTOF[0]->GetPoint(4,x01,y01);
+		
+		D_FluxesTOF[i]->GetPoint(12,x2,y2);
+                D_FluxesTOF[0]->GetPoint(12,x02,y02);
+		
+		D_FluxesAgl[i]->GetPoint(9,x3,y3);
+                D_FluxesAgl[0]->GetPoint(9,x03,y03);
+
+		Time_depD1 -> SetBinContent(i+1,y1/y01);
+		Time_depD2 -> SetBinContent(i+1,y2/y02);		
+		Time_depD3 -> SetBinContent(i+1,y3/y03);		
+
+		ey1 = D_FluxesTOF[i]->GetErrorY(4);
+		ey2 = D_FluxesTOF[i]->GetErrorY(12);
+		ey3 = D_FluxesAgl[i]->GetErrorY(9);
+		
+		Time_depD1 -> SetBinError(i+1,ey1/y01);
+		Time_depD2 -> SetBinError(i+1,ey2/y02);
+		Time_depD3 -> SetBinError(i+1,ey3/y03);
+
+		Time_depD1 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+		Time_depD2 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+		Time_depD3 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+	}
+	for(int i=0;i<num_mesi;i++) {
+                P_Fluxes[i]->GetPoint(6,x1,y1);
+                P_Fluxes[0]->GetPoint(6,x01,y01);
+                
+		P_Fluxes[i]->GetPoint(11,x2,y2);
+                P_Fluxes[0]->GetPoint(11,x02,y02);
+       
+		P_Fluxes[i]->GetPoint(25,x3,y3);
+                P_Fluxes[0]->GetPoint(25,x03,y03);
+                  
+		Time_depP1 -> SetBinContent(i+1,y1/y01);
+		Time_depP2 -> SetBinContent(i+1,y2/y02);         
+		Time_depP3 -> SetBinContent(i+1,y3/y03);         
+
+	        ey1 = P_Fluxes[i]->GetErrorY(6);
+		ey2 = P_Fluxes[i]->GetErrorY(11);	
+		ey3 = P_Fluxes[i]->GetErrorY(25);	
+		
+		Time_depP1 -> SetBinError(i+1,ey1/y01);
+        	Time_depP2 -> SetBinError(i+1,ey2/y02);
+		Time_depP3 -> SetBinError(i+1,ey3/y03);
+		
+	}
+	Time_depD1 -> SetMarkerStyle(8);
+	Time_depP1 -> SetMarkerStyle(8);
+	Time_depD1 -> SetMarkerColor(4);
+        Time_depP1 -> SetMarkerColor(2);
+
+	Time_depD2 -> SetMarkerStyle(8);
+        Time_depP2 -> SetMarkerStyle(8);
+        Time_depD2 -> SetMarkerColor(4);
+        Time_depP2 -> SetMarkerColor(2);
+
+	Time_depD3 -> SetMarkerStyle(8);
+        Time_depP3 -> SetMarkerStyle(8);
+        Time_depD3 -> SetMarkerColor(4);
+        Time_depP3 -> SetMarkerColor(2);
+
+
+	gStyle -> SetTitleFontSize(0.3);
+	gStyle -> SetLegendFillColor(0);	
+	c17->cd(1);
+        gPad->SetGridx();
+        gPad->SetGridy();
+	Time_depD1 -> GetYaxis() -> SetRangeUser(0.65,1.2);
+	Time_depD1 -> LabelsOption("h");
+	Time_depD1 -> SetTitle("R = 1 GV");
+	Time_depD1 -> GetYaxis() -> SetLabelSize(0.085);
+	Time_depD1 -> GetXaxis() -> SetLabelSize(0.085);
+	Time_depD1 -> Draw();
+	Time_depP1 -> Draw("same");	
+	 TLegend* leg =new TLegend(0.7,0.1,0.9,0.3);
+         leg->AddEntry(Time_depD1,"Deuterons", "ep");
+	leg->AddEntry(Time_depP1,"Proons", "ep");
+	leg ->Draw("same");
+
+	c17->cd(2);
+        gPad->SetGridx();
+        gPad->SetGridy();
+        Time_depD2 -> GetYaxis() -> SetRangeUser(0.65,1.2);
+	Time_depD2 -> SetTitle("R = 2 GV");
+	Time_depD2 -> LabelsOption("h");
+	Time_depD2 -> GetYaxis() -> SetLabelSize(0.085);
+	Time_depD2 -> GetXaxis() -> SetLabelSize(0.085);
+	Time_depD2 -> Draw();
+        Time_depP2 -> Draw("same");
+
+	c17->cd(3);
+        gPad->SetGridx();
+        gPad->SetGridy();
+        Time_depD3 -> GetYaxis() -> SetRangeUser(0.65,1.2);
+	Time_depD3 -> SetTitle("R = 10 GV");
+	Time_depD3 -> LabelsOption("h");
+	Time_depD3 -> GetYaxis() -> SetLabelSize(0.085);
+	Time_depD3 -> GetXaxis() -> SetLabelSize(0.085);
+	Time_depD3 -> Draw();
+        Time_depP3 -> Draw("same");
 
 
 	cout<<"*************** OUTPUT **************************"<<endl;
@@ -700,8 +848,9 @@ int main()
 	TFile *f_out=new TFile(nomefile.c_str(), "RECREATE");
 	f_out->mkdir("Calibrations");
 	f_out->mkdir("Lat. Dependence");
+	f_out->mkdir("Tracker Eff.");
 	f_out->mkdir("Data vs MC");
-	f_out->mkdir("P Fluxes");
+	f_out->mkdir("Fluxes");
 
 	f_out->cd("Calibrations");
 	c1->Write();
@@ -720,14 +869,14 @@ int main()
         c12->Write();
 	c13->Write();
 	c14->Write();*/
-	f_out->cd("P Fluxes");
+	f_out->cd("Tracker Eff.");
+	c -> Write();
+	f_out->cd("Fluxes");
 	c15->Write();
 	c16->Write();	
+	c17->Write();
 	f_out->Write();
 	f_out->Close();
 	
 	return 0;
 }
-
-
-

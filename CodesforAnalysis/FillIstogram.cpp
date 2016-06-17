@@ -116,7 +116,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
       DVSMCQualeff2_Write();
       DVSMCRICHeff_Write();
       DVSMCQualeffD_Write();
-      //DVSMCTrackeff_Write();
+      DVSMCTrackeff_Write();
       MCMC_Write();
       MCpreeff_Write();
       //MCpreCheck_Write();
@@ -155,6 +155,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
       MCTrackeff(inputHistoFile);
       MCFullseteff(inputHistoFile);
       MigrationMatrix(inputHistoFile);
+      DVSMCTrackeff(inputHistoFile);
       DATAUnbiaseff(inputHistoFile);
       DATApreSeleff(inputHistoFile);
       DATAQualeff(inputHistoFile);
@@ -267,6 +268,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       MigrationMatrix_Fill(ntupMCTrig,i);
       Correlazione_Preselezioni(ntupMCTrig,i);
       FluxFactorizationtest_Pre_Fill(ntupMCTrig,i);
+      DVSMCTrackeff_Fill(ntupMCTrig,i);	
       DVSMCPreSeleff_Fill(ntupMCTrig,i);
       DVSMCPreSeleffD_Fill(ntupMCTrig,i);
    }
@@ -316,6 +318,7 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 
       DATAUnbiaseff_Fill(ntupDataTrig,i);
       DATApreSeleff_Fill(ntupDataTrig,i,Zona);
+      DVSMCTrackeff_D_Fill(ntupDataTrig,i);
       DVSMCPreSeleff_D_Fill(ntupDataTrig,i,Zona);
       DVSMCPreSeleffD_D_Fill(ntupDataTrig,i,Zona);
    }
