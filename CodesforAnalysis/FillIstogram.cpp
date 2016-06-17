@@ -50,7 +50,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
       cout<<"Running in Mode 0 ..."<<endl;
    }
 
-   string filename="./Final_plots/"+mese+".root";
+   string filename=outputpath+"Final_plots/"+mese+".root";
    fileFinalPlots=new TFile(filename.c_str(), "UPDATE");
 
 

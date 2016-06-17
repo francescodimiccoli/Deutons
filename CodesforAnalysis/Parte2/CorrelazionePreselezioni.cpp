@@ -40,7 +40,6 @@ void Correlazione_Preselezioni(TFile * inputHistoFile){
 			if(Norm[S]>0) CorrelazionePreselezioni->SetBinContent(S+1,F+1,CorrelazionePreselezioni->GetBinContent(S+1,F+1)/(float)Norm[S]);
 	
 	cout<<"*** Updating P1 file ****"<<endl;
-	cout << (inputHistoFile->IsOpen()?"Opened  ":"Closed  ") << (const char *)inputHistoFile->GetOption() << endl;
 	inputHistoFile->ReOpen("UPDATE");
 	if (! inputHistoFile->GetDirectory("Results")) {
 		inputHistoFile->mkdir("Results");
@@ -55,6 +54,7 @@ void Correlazione_Preselezioni(TFile * inputHistoFile){
 	CorrelazionePreselezioni->Draw("col");
 
 	cout<<"*** Updating Results file ***"<<endl;
+		cout << (fileFinalPlots->IsOpen()?"Opened  ":"Closed  ") << (const char *)fileFinalPlots->GetOption() << endl;
         fileFinalPlots->cd("MC Results");
         c13->Write();
         fileFinalPlots->Write();
