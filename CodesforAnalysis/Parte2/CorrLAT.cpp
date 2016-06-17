@@ -265,7 +265,6 @@ void CorrLAT() {
    c26->Write();
    c26_bis->Write();
    fileFinalPlots->Write();
-   fileFinalPlots->Close();
 
    return;
 

@@ -407,7 +407,6 @@ void MCTrackeff (TFile * inputHistoFile)
    c8  -> Write();
 
    fileFinalPlots->Write();
-   fileFinalPlots->Close();
 }
 
 

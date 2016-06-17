@@ -135,6 +135,5 @@ void DVSMCTrackeff(TFile * file){
 	fileFinalPlots->cd("Export");
 	TrakerEfficiencyData -> Write("TrakerEfficiencyData");
         fileFinalPlots->Write();
-        fileFinalPlots->Close();
 
 }

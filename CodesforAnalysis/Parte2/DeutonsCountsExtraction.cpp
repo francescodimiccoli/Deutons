@@ -320,7 +320,6 @@ void DeutonsTemplFits(){
 		c30_Aglgeo[lat] -> Write(("Agl Geo. Zone: " + to_string(lat)).c_str());
 	}
 	fileFinalPlots->Write();
-	fileFinalPlots->Close();
 
 
 	return;

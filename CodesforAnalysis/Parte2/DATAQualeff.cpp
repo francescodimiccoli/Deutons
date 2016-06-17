@@ -551,7 +551,6 @@ void DATAQualeff (TFile * inputHistoFile)
    CorrLAT_DistNaF_Spl->Write ("CorrLAT_DistNaF_Spl");
    CorrLAT_DistAgl_Spl->Write ("CorrLAT_DistAgl_Spl");
    fileFinalPlots->Write();
-   fileFinalPlots->Close();
 
 }
 

@@ -241,7 +241,6 @@ void DVSMCPreSeleff(){
 		c21[S]->Write();
 	}
 	fileFinalPlots->Write();
-	fileFinalPlots->Close();
 
 	return;
 }

@@ -262,7 +262,6 @@ void ProtonFlux()
    fileFinalPlots->cd("Export");
    PFlux->Write("Protons Primary Flux");
    fileFinalPlots->Write();
-   fileFinalPlots->Close();
 
    return;
 }
@@ -567,7 +566,6 @@ void DeutonFlux()
    D_Flux[1]->Write("Deutons Primary Flux: NaF");
    D_Flux[2]->Write("Deutons Primary Flux: Agl");
    fileFinalPlots->Write();
-   fileFinalPlots->Close();
 
 
    return;

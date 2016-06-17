@@ -861,5 +861,4 @@ void SlidesforPlot (TFile * file1)
    p20->Write();
    p21->Write();
    fileFinalPlots->Write();
-   fileFinalPlots->Close();
 }

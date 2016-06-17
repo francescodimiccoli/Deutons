@@ -183,7 +183,6 @@ void DVSMCRICHeff(){
 	c20_bis->Write();
 
 	fileFinalPlots->Write();
-	fileFinalPlots->Close();
 
 
 

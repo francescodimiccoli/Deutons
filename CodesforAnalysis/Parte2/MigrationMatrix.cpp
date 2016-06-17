@@ -34,6 +34,5 @@ void MigrationMatrix(TFile * file1){
         fileFinalPlots->cd("MC Results");
 	c27 -> Write();
         fileFinalPlots->Write();
-        fileFinalPlots->Close();
 	
 }

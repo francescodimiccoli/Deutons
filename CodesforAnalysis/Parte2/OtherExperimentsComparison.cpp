@@ -153,7 +153,6 @@ void OtherExperimentsComparison(){
         c1->Write();
         c2->Write();
 	fileFinalPlots->Write();
-        fileFinalPlots->Close();
 
 	return;
 

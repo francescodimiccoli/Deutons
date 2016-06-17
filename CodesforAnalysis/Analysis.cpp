@@ -16,6 +16,7 @@
 #include "TObject.h"
 #include "TGraphAsymmErrors.h"
 #include "TGraphErrors.h"
+#include "TObjArray.h"
 
 
 #include "Parte2/cutmask.h"

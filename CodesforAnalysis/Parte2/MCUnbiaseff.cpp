@@ -156,6 +156,5 @@ void MCUnbiaseff(TFile * inputHistoFile) {
    fileFinalPlots->cd("MC Results/Preselections");
    c11->Write();
    fileFinalPlots->Write();
-   fileFinalPlots->Close();
 }
 

@@ -214,7 +214,6 @@ void DATARICHeff(TFile * inputHistoFile) {
    CorrLAT_richNaF_Spl->Write("CorrLAT_richNaF_Spl");
    CorrLAT_richAgl_Spl->Write("CorrLAT_richAgl_Spl");   	
    fileFinalPlots->Write();
-   fileFinalPlots->Close();
 
 }
 

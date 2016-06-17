@@ -58,7 +58,6 @@ void Correlazione_Preselezioni(TFile * inputHistoFile){
         fileFinalPlots->cd("MC Results");
         c13->Write();
         fileFinalPlots->Write();
-        fileFinalPlots->Close();
 
 
 }

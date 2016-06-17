@@ -390,7 +390,6 @@ void DVSMCQualeff2(){
 	c21_bis->Write();
 
 	fileFinalPlots->Write();
-	fileFinalPlots->Close();
 
 
 

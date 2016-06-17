@@ -482,20 +482,16 @@ void DistanceCut(TFile * file1){
         BadPrejLik_Agl ->GetYaxis()->SetTitle("Bad P rejection");
         BadPrejLik_Agl ->Draw("APC");
 
-
-	cout<<"*** Updating Results file ***"<<endl;
-	fileFinalPlots->mkdir("MC Results/Distance Cut");
-	fileFinalPlots->cd("MC Results/Distance Cut");
-	c1   ->Write();
-	c2   ->Write();
-	c3   ->Write();
-	c4   ->Write();
-	c5   ->Write();
-	c6   ->Write();
-	c7   ->Write();
-	c8   ->Write();
-	fileFinalPlots->Write();
-	fileFinalPlots->Close();
+	TObjArray* objarr=new TObjArray(10);
+	objarr->Add(c1);
+	objarr->Add(c2);
+	objarr->Add(c3);
+	objarr->Add(c4);
+	objarr->Add(c5);
+	objarr->Add(c6);
+	objarr->Add(c7);
+	objarr->Add(c8);
+	writeObjArrayInFinalPlotFolder(objarr, "MC Results/Distance Cut");
 
 	return;
 }

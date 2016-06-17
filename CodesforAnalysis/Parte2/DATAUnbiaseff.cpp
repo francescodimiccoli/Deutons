@@ -101,7 +101,6 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
    fileFinalPlots->cd ("DATA-driven Results");
    c12->Write();
    fileFinalPlots->Write();
-   fileFinalPlots->Close();
 
 
 }

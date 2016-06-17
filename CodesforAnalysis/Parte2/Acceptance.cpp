@@ -540,7 +540,6 @@ void Acceptance(){
 	c22 -> Write();
 	c31_bis  -> Write();
 	fileFinalPlots->Write();
-	fileFinalPlots->Close();
 
 	return;
 }

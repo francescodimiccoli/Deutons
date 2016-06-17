@@ -270,7 +270,6 @@ void Hecut(TFile * inputHistoFile) {
 	c38	->Write();
 
 	fileFinalPlots->Write();
-	fileFinalPlots->Close();
 }
 
 

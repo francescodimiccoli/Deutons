@@ -471,7 +471,6 @@ void MCQualeff(TFile * inputHistoFile) {
    c5_bis  ->Write();
    c6_bis  ->Write();
    fileFinalPlots->Write();
-   fileFinalPlots->Close();
 }
 
 

@@ -127,6 +127,19 @@ void FillBinMGen (TH3* h, int bin, int S)
 }
 
 
+void writeObjArrayInFinalPlotFolder(TObjArray* fArr, string folder) {
+   cout<<"*** Updating Results file in "<< folder << endl;
+   fileFinalPlots->mkdir(folder.data());
+	fileFinalPlots->cd   (folder.data());
+   for (int i = 0; i <= fArr->GetLast(); i++)
+      fArr->At(i)->Write();
+   fileFinalPlots->Write();
+   fileFinalPlots->Flush();
+   fArr->Clear();
+return;
+   
+}
+
 
 DBinning ToFDB;
 PBinning ToFPB;

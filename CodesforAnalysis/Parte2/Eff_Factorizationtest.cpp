@@ -173,7 +173,6 @@ void FluxFactorizationtest(TFile * inputHistoFile){
         fileFinalPlots->cd("MC Results/Eff. Factorization Test");
         c9->Write();
         fileFinalPlots->Write();
-        fileFinalPlots->Close();
  	
 
 return;

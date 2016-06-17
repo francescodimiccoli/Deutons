@@ -218,6 +218,5 @@ void MCFullseteff(TFile * inputHistoFile){
 	fileFinalPlots->cd("MC Results/Full-set selections");
 	c41->Write();
 	c41_bis->Write();
-	fileFinalPlots->Close();
 
 }

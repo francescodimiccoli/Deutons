@@ -251,7 +251,6 @@ void MCpreeff(TFile * inputHistoFile) {
    fileFinalPlots->cd("MC Results/Preselections");
    c4->Write();
    c4_bis->Write();
-   fileFinalPlots->Close();
 
 }
 
