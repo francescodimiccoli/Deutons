@@ -1,5 +1,5 @@
 #define compiler
-Compiler = g++ -std=c++11
+Compiler = g++ -std=c++11 -g
 
 #exe
 exedue = Analysis
