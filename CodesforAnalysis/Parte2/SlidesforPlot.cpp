@@ -258,6 +258,7 @@ void SlidesforPlot_Write()
 
 void SlidesforPlot (TFile * file1)
 {
+   file1->ReOpen("UPDATE");
    TH2F * RvsBetaTOF_P= (TH2F*) file1->Get ("RvsBetaTOF_P");
    TH2F * RvsBetaNaF_P= (TH2F*) file1->Get ("RvsBetaNaF_P");
    TH2F * RvsBetaAgl_P= (TH2F*) file1->Get ("RvsBetaAgl_P");

@@ -136,7 +136,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
       esposizionedgeoAgl->Write();
 
       inputHistoFile->Write();
-      inputHistoFile->Close();
+      inputHistoFile->Flush();
    }
 
 
