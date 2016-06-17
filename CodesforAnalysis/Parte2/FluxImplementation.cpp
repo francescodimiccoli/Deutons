@@ -30,13 +30,24 @@ void TGraphErrorsFormat(TGraphErrors* graph)
 
 
 
-Flux * P_Flux         = new Flux("P_Flux"    	  , "", RB  );
-Flux * P_Flux_geo     = new Flux("P_Flux_geo"     , "", RB, NGEOBINS);
-Flux * P_Flux_geo_prim= new Flux("P_Flux_geo_prim", "", RB, NGEOBINS);
+Flux * P_Flux         ;
+Flux * P_Flux_geo     ;
+Flux * P_Flux_geo_prim;
+                      
+//DvsMC check         
+Flux * P_Flux_pre     ;
+Flux * P_Flux_sel     ;
 
-//DvsMC check
-Flux * P_Flux_pre = new Flux("P_Flux_pre" , "", RB);
-Flux * P_Flux_sel = new Flux("P_Flux_sel" , "", RB);
+void InitProtonFlux() {
+
+   P_Flux         = new Flux("P_Flux"    	  , "", RB  );
+   P_Flux_geo     = new Flux("P_Flux_geo"     , "", RB, NGEOBINS);
+   P_Flux_geo_prim= new Flux("P_Flux_geo_prim", "", RB, NGEOBINS);
+   P_Flux_pre = new Flux("P_Flux_pre" , "", RB);
+   P_Flux_sel = new Flux("P_Flux_sel" , "", RB);
+
+   return;
+}
 
 void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona)
 {

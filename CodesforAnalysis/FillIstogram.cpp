@@ -6,7 +6,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig);
 void LoopOnMCSepD(TNtuple* ntupMCSepD);
 void LoopOnDataTrig(TNtuple* ntupDataTrig);
 void LoopOnDataSepD(TNtuple* ntupDataSepD);
-void UpdateProgressBar(TNtuple* ntuple, int currentevent);
+void UpdateProgressBar(int currentevent, int totalentries);
 float getGeoZone(float latitude);
 
 
@@ -254,13 +254,14 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
 
 void LoopOnMCTrig(TNtuple*  ntupMCTrig)
 {
+   int nentries=ntupMCTrig->GetEntries();
    for(int i=0; i<ntupMCTrig->GetEntries(); i++) {
       ntupMCTrig->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
       Cuts_Pre();
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
-      UpdateProgressBar(ntupMCTrig, i);
+      UpdateProgressBar(i, nentries);
       
       MCpreseff_Fill(ntupMCTrig,i);
       MCUnbiaseff_Fill(ntupMCTrig,i);
@@ -280,11 +281,12 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
 
 void LoopOnMCSepD(TNtuple* ntupMCSepD)
 {
+   int nentries=ntupMCSepD->GetEntries();
    for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
       ntupMCSepD->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
       Massa_gen = ReturnMass_Gen();
-      UpdateProgressBar(ntupMCSepD, i);
+      UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
 
@@ -306,6 +308,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
 
 void LoopOnDataTrig(TNtuple* ntupDataTrig)
 {
+   int nentries=ntupDataTrig->GetEntries();
    for(int i=0; i<ntupDataTrig->GetEntries(); i++) {
       ntupDataTrig->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
@@ -314,7 +317,7 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
       float Zona=getGeoZone(Tup.Latitude);
       // Temporary Betarich check
       RUsed=Tup.R_pre;
-      UpdateProgressBar(ntupDataTrig, i);
+      UpdateProgressBar(i, nentries);
 
       DATAUnbiaseff_Fill(ntupDataTrig,i);
       DATApreSeleff_Fill(ntupDataTrig,i,Zona);
@@ -329,7 +332,9 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 
 void LoopOnDataSepD(TNtuple* ntupDataSepD)
 {
-   for(int i=0; i<ntupDataSepD->GetEntries(); i++) {
+   InitProtonFlux();
+   int nentries=ntupDataSepD->GetEntries();
+   for(int i=0; i<nentries; i++) {
       ntupDataSepD->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
       if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
@@ -338,7 +343,7 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
 
       Cuts();
       RUsed=Tup.R;
-      UpdateProgressBar(ntupDataSepD, i);
+      UpdateProgressBar(i, nentries);
 
       HecutD_Fill(ntupDataSepD,i);
       SlidesforPlot_D_Fill(ntupDataSepD,i);
@@ -355,12 +360,11 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
    return;
 }
 
-void UpdateProgressBar(TNtuple* ntuple, int currentevent) {
-   long nentries=ntuple->GetEntries();
-   int newratio =(int)100*(currentevent/    (float)nentries);
-   int oldratio =(int)100*((currentevent-1)/(float)nentries);
+void UpdateProgressBar(int currentevent, int totalentries) {
+   int newratio =(int)100*(currentevent/    (float)totalentries);
+   int oldratio =(int)100*((currentevent-1)/(float)totalentries);
    if(newratio>oldratio) 
-         cout<<'\r' << "Progress : "<< newratio << " %"<< flush;
+         cout<<'\r' << "Progress : "<< newratio+1 << " %"<< flush; //+1 pour finir a 100%
 }
 
 float getGeoZone(float latitude) {
