@@ -99,6 +99,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
 
       if (!inputHistoFile) if (!inputHistoFile->IsZombie())
          inputHistoFile =new TFile(filename.c_str(), "RECREATE");
+      inputHistoFile->cd();
 
       DATAQualeff_Write();
       DATARICHeff_Write();
@@ -175,6 +176,8 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
       if(frac=="tot") OtherExperimentsComparison();
    }
 
+   fileFinalPlots->Close();
+   inputHistoFile->Close();
 
    
    return;

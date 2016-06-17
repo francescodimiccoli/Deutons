@@ -54,7 +54,6 @@ void Correlazione_Preselezioni(TFile * inputHistoFile){
 	CorrelazionePreselezioni->Draw("col");
 
 	cout<<"*** Updating Results file ***"<<endl;
-		cout << (fileFinalPlots->IsOpen()?"Opened  ":"Closed  ") << (const char *)fileFinalPlots->GetOption() << endl;
         fileFinalPlots->cd("MC Results");
         c13->Write();
         fileFinalPlots->Write();
