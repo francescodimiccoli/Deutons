@@ -84,8 +84,6 @@ void MCpreeff(TFile * inputHistoFile) {
 
    cout<<"*** Updating P1 file ****"<<endl;
    inputHistoFile->ReOpen("UPDATE");
-
-   inputHistoFile->mkdir("Results");
    inputHistoFile->cd("Results");
    EffPreMCP_R_TH1F->Write();
    EffPreMCP_TH1F ->Write();

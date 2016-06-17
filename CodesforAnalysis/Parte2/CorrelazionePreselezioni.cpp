@@ -41,10 +41,12 @@ void Correlazione_Preselezioni(TFile * inputHistoFile){
 	
 	cout<<"*** Updating P1 file ****"<<endl;
 	inputHistoFile->ReOpen("UPDATE");
+	if (! inputHistoFile->GetDirectory("Results")) {
+		inputHistoFile->mkdir("Results");
+	}
 	inputHistoFile->cd("Results");
-        CorrelazionePreselezioni->Write();
+   CorrelazionePreselezioni->Write();
 	inputHistoFile-> Write();
-        inputHistoFile-> Close();
 	
 
 	TCanvas *c13=new TCanvas("Correlazione Selezioni");

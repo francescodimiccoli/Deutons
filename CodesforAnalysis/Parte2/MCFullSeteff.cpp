@@ -49,9 +49,7 @@ void MCFullseteff(TFile * inputHistoFile){
 
 
 	cout<<"*** Updating P1 file ****"<<endl;
-   inputHistoFile->ReOpen("UPDATE");
-
-	inputHistoFile->mkdir("Results");
+	inputHistoFile->ReOpen("UPDATE");
 	inputHistoFile->cd("Results");
 	EffFullsetMCP_R_TH1F	->Write("EffFullsetMCP_EffR");
 	EffFullsetMCP_TH1F 	->Write("EffFullsetMCP_EffTOF");
