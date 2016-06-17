@@ -51,7 +51,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
    }
 
    string filename=outputpath+"Final_plots/"+mese+".root";
-   fileFinalPlots=new TFile(filename.c_str(), "UPDATE");
+   fileFinalPlots=TFile::Open(nameHistoFile.c_str(), "UPDATE");
 
 
    if(INDX!=2) {
