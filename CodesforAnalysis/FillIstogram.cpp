@@ -44,7 +44,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
 
    string filename=outputpath+"Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
    inputHistoFile=TFile::Open(filename.c_str(),"READ");
-   if(!inputHistoFile) {
+   if(!inputHistoFile) if (!inputHistoFile->IsZombie()) {
       cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl;
       INDX=0;
       cout<<"Running in Mode 0 ..."<<endl;
@@ -97,7 +97,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
 
       cout<<endl<<"************************ SAVING DATA ************************"<<endl;
 
-      if (!inputHistoFile)
+      if (!inputHistoFile) if (!inputHistoFile->IsZombie())
          inputHistoFile =new TFile(filename.c_str(), "RECREATE");
 
       DATAQualeff_Write();
