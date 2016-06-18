@@ -1,10 +1,12 @@
 using namespace std;
 
-Efficiency * EffUnbiasMCP = new Efficiency("EffUnbiasMCP");
-Efficiency * EffUnbiasMCD = new Efficiency("EffUnbiasMCD");
+
 
 void MCUnbiaseff_Fill(TNtuple *ntupla, int l) {
     ntupla->GetEvent(l);
+
+   Efficiency * EffUnbiasMCP = new Efficiency("EffUnbiasMCP");
+   Efficiency * EffUnbiasMCD = new Efficiency("EffUnbiasMCD");
    if(!cmask.isPreselected()||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
    if(!(Tup.EdepTrack<EdepTrackbeta->Eval(Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval(Tup.Beta_pre)-0.2)) return;
 
