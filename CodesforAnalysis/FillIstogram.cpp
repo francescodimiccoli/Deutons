@@ -266,15 +266,15 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
       
-      MCpreseff_Fill(ntupMCTrig,i);
-      MCUnbiaseff_Fill(ntupMCTrig,i);
-      MCTrackeff_Fill(ntupMCTrig,i);
-      MigrationMatrix_Fill(ntupMCTrig,i);
-      Correlazione_Preselezioni(ntupMCTrig,i);
-      FluxFactorizationtest_Pre_Fill(ntupMCTrig,i);
-      DVSMCTrackeff_Fill(ntupMCTrig,i);	
-      DVSMCPreSeleff_Fill(ntupMCTrig,i);
-      DVSMCPreSeleffD_Fill(ntupMCTrig,i);
+      MCpreseff_Fill();
+      MCUnbiaseff_Fill();
+      MCTrackeff_Fill();
+      MigrationMatrix_Fill();
+      Correlazione_Preselezioni();
+      FluxFactorizationtest_Pre_Fill();
+      DVSMCTrackeff_Fill();	
+      DVSMCPreSeleff_Fill();
+      DVSMCPreSeleffD_Fill();
    }
    return;
 }

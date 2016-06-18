@@ -10,8 +10,7 @@ Efficiency * Eff_do_DistMCP  = new Efficiency("Eff_do_DistMCP");
 Efficiency * Eff_do_LikMCP   = new Efficiency("Eff_do_LikMCP");
 
 
-void FluxFactorizationtest_Pre_Fill(TNtuple *ntupla, int l){
-	 ntupla->GetEvent(l);
+void FluxFactorizationtest_Pre_Fill(){
 	if(Tup.Unbias!=0||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
 	int Rbin;
 	// full set efficiency before

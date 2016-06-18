@@ -2,8 +2,7 @@ TH2F * CorrelazionePreselezioni = new TH2F("CorrelazionePreselezioni","Correlazi
 int Norm[11]= {0};
 
 
-void Correlazione_Preselezioni(TNtuple *ntupla, int l){
-	 ntupla->GetEvent(l);
+void Correlazione_Preselezioni(){
 	for(int S=0;S<10;S++){
 		if(((cmask.getMask()>>S)&1)==1){
 			for(int F=0;F<10;F++) 

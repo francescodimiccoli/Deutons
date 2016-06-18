@@ -5,8 +5,7 @@ Efficiency * EffUnbiasMCP;
 Efficiency * EffUnbiasMCD;
 
 
-void MCUnbiaseff_Fill(TNtuple *ntupla, int l) {
-    ntupla->GetEvent(l);
+void MCUnbiaseff_Fill() {
 
    EffUnbiasMCP = new Efficiency("EffUnbiasMCP");
    EffUnbiasMCD = new Efficiency("EffUnbiasMCD");

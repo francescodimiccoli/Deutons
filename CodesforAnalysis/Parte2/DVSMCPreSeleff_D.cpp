@@ -34,8 +34,7 @@ void DVSMCPreSeleffD_D_Fill(TNtuple *ntupla, int l,int zona){
 	return;
 
 }
-void DVSMCPreSeleffD_Fill(TNtuple *ntupla, int l){
-	 ntupla->GetEvent(l);
+void DVSMCPreSeleffD_Fill(){
 	//cuts
 	if(Tup.Beta_pre<=0||Tup.R_pre<=0||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
 	if(!Herejcut) return;

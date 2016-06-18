@@ -24,8 +24,7 @@ void DVSMCTrackeff_D_Fill(TNtuple *ntupla, int l){
 }
 
 
-void DVSMCTrackeff_Fill(TNtuple *ntupla, int l){
-	 ntupla->GetEvent(l);
+void DVSMCTrackeff_Fill(){
         //cuts
 	if(Tup.Unbias!=0||Tup.Beta_pre<=0) return;
 	if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;

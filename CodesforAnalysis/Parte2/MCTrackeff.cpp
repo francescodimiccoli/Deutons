@@ -11,9 +11,8 @@ Efficiency * EffTOFMCP 	 = new Efficiency ("EffTOFMCP");
 Efficiency * EffTOFMCD   = new Efficiency ("EffTOFMCD",6);
 
 
-void MCTrackeff_Fill (TNtuple *ntupla, int l)
+void MCTrackeff_Fill ()
 {
-   ntupla->GetEvent (l);
    int Kbin;
 
    if (Massa_gen<1&&Massa_gen>0.5) {
