@@ -48,10 +48,7 @@ TGraph * Plot_Herej(TH1F * Histo);
 TGraph * Plot_BadPrej(TH1F * HistoP,TH1F * HistoD,bool reverse=false);
 
 
-void DistanceCut_Fill(TNtuple *ntupla, int l) {
-
-	 ntupla->GetEvent(l);
-	if(Tup.Beta<=0||Tup.R<=0) return;
+void DistanceCut_Fill() {
 	float mass=0;
 	if(Betastrongcut){
 		// Helium rej.

@@ -293,17 +293,21 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       Cuts();
       RUsed=Tup.R;
 
-      HecutMC_Fill(ntupMCSepD,i);
-      SlidesforPlot_Fill(ntupMCSepD,i);
-      FluxFactorizationtest_Qual_Fill(ntupMCSepD,i);
-      DistanceCut_Fill(ntupMCSepD,i);
-      MCQualeff_Fill(ntupMCSepD,i);
-      DVSMCQualeff2_Fill(ntupMCSepD,i);
-      DVSMCQualeffD_Fill(ntupMCSepD,i);
-      DVSMCRICHeff_Fill(ntupMCSepD,i);
-      DeutonsMC_Fill(ntupMCSepD,i);
-      DeutonsMC_Dist_Fill(ntupMCSepD,i);
-      MCMC_Fill(ntupMCSepD,i);
+      if(Tup.Beta>0 && Tup.R>0) {
+      HecutMC_Fill();
+      SlidesforPlot_Fill();
+      FluxFactorizationtest_Qual_Fill();
+      DistanceCut_Fill();
+      MCQualeff_Fill();
+      if(!(Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) && Herejcut) {
+      DVSMCQualeff2_Fill();
+      DVSMCQualeffD_Fill();
+      DVSMCRICHeff_Fill();
+      }
+      DeutonsMC_Fill();
+      DeutonsMC_Dist_Fill();
+      MCMC_Fill();
+      }
    }
    return;
 }

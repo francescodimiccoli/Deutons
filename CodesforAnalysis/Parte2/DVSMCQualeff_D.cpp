@@ -50,17 +50,16 @@ void DVSMCQualeffD_D_Fill(TNtuple *ntupla, int l,int zona){
 
 }
 
-void DVSMCQualeffD_Fill(TNtuple *ntupla, int l){
+void DVSMCQualeffD_Fill(){
 
-	 ntupla->GetEvent(l);
+
 	//cuts
-	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
-	if(!Herejcut) return;
 	if(!Betastrongcut) return;
-	//
+	if(!(Massa_gen>1&&Massa_gen<2)) return;
+	
 	int Kbin;
 
-	if(Massa_gen>1&&Massa_gen<2) {
+
 		//Beta bins
 
 		//ToF
@@ -97,7 +96,7 @@ void DVSMCQualeffD_Fill(TNtuple *ntupla, int l){
 
 		}
 
-	}                        
+                  
 }
 
 void DVSMCQualeffD_Write(){

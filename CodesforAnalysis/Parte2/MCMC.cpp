@@ -44,10 +44,9 @@ MCMCEntry * MCMC_TOF = new MCMCEntry("TOF", 50, 0.3,  1.2, 200, 0.0, 100.0, 300,
 MCMCEntry * MCMC_NaF = new MCMCEntry("NaF", 50, 0.75, 1.2, 200, 0.0, 100.0, 300, 0, 30);
 MCMCEntry * MCMC_Agl = new MCMCEntry("Agl", 50, 0.95, 1.1, 200, 0.0, 100.0, 300, 0, 30);
 
-void MCMC_Fill(TNtuple *ntupla, int l)
+void MCMC_Fill()
 {
-     ntupla->GetEvent(l);
-	if(Tup.Beta<=0||Tup.R<=0) return;
+
 	if(Likcut&&Distcut){
 		MCMC_TOF->FillMC( Tup.Beta, Tup.R, Tup.Momento_gen);
         if(cmask.isFromNaF()) MCMC_NaF->FillMC( Tup.BetaRICH, Tup.R, Tup.Momento_gen);

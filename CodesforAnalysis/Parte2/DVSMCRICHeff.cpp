@@ -34,12 +34,8 @@ void DVSMCRICHeff_D_Fill(TNtuple *ntupla, int l,int zona){
 	return;
 }
 
-void DVSMCRICHeff_Fill(TNtuple *ntupla, int l){
+void DVSMCRICHeff_Fill(){
 
-	 ntupla->GetEvent(l);
-	//cuts
-	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
-	if(!Herejcut) return;
 	//
 	int Kbin;
 

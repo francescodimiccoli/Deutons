@@ -7,10 +7,8 @@ Efficiency * EffLikMCD  = new Efficiency ("EffLikMCD",6);
 Efficiency * EffDistMCP = new Efficiency ("EffDistMCP");
 Efficiency * EffDistMCD = new Efficiency ("EffDistMCD",6);
 
-void MCQualeff_Fill(TNtuple *ntupla, int l) {
+void MCQualeff_Fill() {
 
-	 ntupla->GetEvent(l);
-	if(Tup.Beta<=0||Tup.R<=0) return;
 	int Kbin;
 	if(Massa_gen<1) {
 		//R bins

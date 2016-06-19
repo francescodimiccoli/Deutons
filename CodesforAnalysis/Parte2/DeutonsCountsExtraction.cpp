@@ -11,9 +11,8 @@ TemplateFIT * FitNaF_Pbins = new TemplateFIT("FitNaF_Pbins",nbinsNaF,0,3,6);
 TemplateFIT * FitAgl_Pbins = new TemplateFIT("FitAgl_Pbins",nbinsAgl,0,3,6);
 
 
-void DeutonsMC_Fill(TNtuple *ntupla, int l){
-	 ntupla->GetEvent(l);
-	if(Tup.Beta<=0||Tup.R<=0) return;
+void DeutonsMC_Fill(){
+
 	float mass = 0;
 	//cuts
 	if(!(Likcut&&Distcut)) return;

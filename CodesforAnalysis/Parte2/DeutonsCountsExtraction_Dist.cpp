@@ -11,10 +11,9 @@ TemplateFIT * FitNaF_Pbins_Dist  = new TemplateFIT("FitNaF_Pbins_Dist ",nbinsNaF
 TemplateFIT * FitAgl_Pbins_Dist  = new TemplateFIT("FitAgl_Pbins_Dist ",nbinsAgl,-1.2,1.2,6);
 
 
-void DeutonsMC_Dist_Fill(TNtuple *ntupla, int l)
+void DeutonsMC_Dist_Fill()
 {
-   ntupla->GetEvent(l);
-   if(Tup.Beta<=0||Tup.R<=0) return;
+
    float Distance_Discr = 0;
    if(!(Likcut&&Distcut)) return;
    for(int m=0; m<nbinsToF; m++) { //TOF

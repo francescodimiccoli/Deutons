@@ -84,10 +84,9 @@ TH2F *sigmagen_bad =new TH2F ("sigmagen_bad","sigmagen_bad",500,0,30,500,0,30);
 
 
 
-void SlidesforPlot_Fill (TNtuple *ntupla, int l)
+void SlidesforPlot_Fill ()
 {
-   ntupla->GetEvent (l);
-   if (Tup.Beta<=0||Tup.R<=0) return;
+
    float Betagen= pow (pow (Tup.Momento_gen/Massa_gen,2) / (1+pow (Tup.Momento_gen/Massa_gen,2) ),0.5);
    if (Herejcut) {
       if (Massa_gen<1&&Massa_gen>0.5) {
