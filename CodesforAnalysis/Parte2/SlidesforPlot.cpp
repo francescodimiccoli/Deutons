@@ -167,10 +167,9 @@ void SlidesforPlot_Fill ()
 }
 
 
-void SlidesforPlot_D_Fill (TNtuple *ntupla, int l)
+void SlidesforPlot_D_Fill ()
 {
-   ntupla->GetEvent (l);
-   if (Tup.Beta<=0||Tup.R<=0) return;
+
 
    if (Herejcut&&Tup.Latitude>0.8) {
       RvsBetaTOF->Fill (Tup.R,Tup.Beta);

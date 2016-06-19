@@ -49,9 +49,8 @@ void HecutMC_Fill() {
 	}
 }
 
-void HecutD_Fill(TNtuple *ntupla,int l) {
-	 ntupla->GetEvent(l);
-	if(Tup.Beta<=0||Tup.R<=0) return;
+void HecutD_Fill() {
+
 	if(!Tup.R>1.2*Tup.Rcutoff) return;
 	float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
 	Hecut_D->Fill(fabs(EdepTOFbeta->Eval(Tup.Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta),2)*etofu->Eval(Tup.Beta)),fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)));

@@ -3,11 +3,10 @@ using namespace std;
 DatavsMC * Dist_DvsMC_D = new DatavsMC("Dist_DvsMC_D",11,1,6);
 DatavsMC * Lik_DvsMC_D  = new DatavsMC("Lik_DvsMC_D" ,11,1,6);
 
-void DVSMCQualeffD_D_Fill(TNtuple *ntupla, int l,int zona){
+void DVSMCQualeffD_D_Fill(int zona){
 
-	 ntupla->GetEvent(l);
-	//cuts
-	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||Tup.Beta>deutons->Eval(Tup.R)+0.1||Tup.Beta<deutons->Eval(Tup.R)-0.1) return;
+	
+	if(Tup.R<1.2*Tup.Rcutoff||Tup.Beta>deutons->Eval(Tup.R)+0.1||Tup.Beta<deutons->Eval(Tup.R)-0.1) return;
 	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!Herejcut) return;
 	if(!Betastrongcut) return;

@@ -4,11 +4,10 @@ DatavsMC * RICH_DvsMC_P = new DatavsMC("RICH_DvsMC_P",11);
 DatavsMC * RICH_DvsMC_D = new DatavsMC("RICH_DvsMC_D",11,1,6);
 
 
-void DVSMCRICHeff_D_Fill(TNtuple *ntupla, int l,int zona){
+void DVSMCRICHeff_D_Fill(int zona){
 
-	 ntupla->GetEvent(l);
 	//cuts
-	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
+	if(Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
 	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!Herejcut) return;
 	//

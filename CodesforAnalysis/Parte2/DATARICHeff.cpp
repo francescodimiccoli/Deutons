@@ -4,11 +4,10 @@ LATcorr * LATrichDATA_NaF   = new LATcorr("LATrichDATA_NaF");
 LATcorr * LATrichDATA_Agl   = new LATcorr("LATrichDATA_Agl");
 
 
-void DATARICHeff_Fill(TNtuple *ntupla, int l,int zona) {
+void DATARICHeff_Fill(int zona) {
 
-	 ntupla->GetEvent(l);
 	//cuts
-	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
+	if(Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
 	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!Herejcut) return;
 

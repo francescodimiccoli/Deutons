@@ -358,16 +358,16 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
       UpdateProgressBar(i, nentries);
 
       HecutD_Fill();
-      SlidesforPlot_D_Fill(ntupDataSepD,i);
-      DATAQualeff_Fill(ntupDataSepD,i,Zona);
-      DATARICHeff_Fill(ntupDataSepD,i,Zona);
-      ProtonFlux_Fill(ntupDataSepD,i,Zona);
-      DVSMCQualeff2_D_Fill(ntupDataSepD,i,Zona);
-      DVSMCQualeffD_D_Fill(ntupDataSepD,i,Zona);
-      DVSMCRICHeff_D_Fill(ntupDataSepD,i,Zona);
-      DeutonsDATA_Fill(ntupDataSepD,i,Zona);
-      DeutonsDATA_Dist_Fill(ntupDataSepD,i,Zona);
-      MCMCDATA_Fill(ntupDataSepD,i);
+      SlidesforPlot_D_Fill();
+      DATAQualeff_Fill(Zona);
+      DATARICHeff_Fill(Zona);
+      ProtonFlux_Fill(Zona);
+      DVSMCQualeff2_D_Fill(Zona);
+      DVSMCQualeffD_D_Fill(Zona);
+      DVSMCRICHeff_D_Fill(Zona);
+      DeutonsDATA_Fill(Zona);
+      DeutonsDATA_Dist_Fill(Zona);
+      MCMCDATA_Fill();
    }
    return;
 }

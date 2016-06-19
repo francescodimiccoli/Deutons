@@ -62,10 +62,8 @@ void DeutonsMC_Dist_Fill()
 }
 
 
-void DeutonsDATA_Dist_Fill(TNtuple *ntupla, int l,int zona)
+void DeutonsDATA_Dist_Fill(int zona)
 {
-   ntupla->GetEvent(l);
-   if(Tup.Beta<=0||Tup.R<=0) return;
    float Distance_Discr = 0;
    if(!(Likcut&&Distcut)) return;
    for(int m=0; m<nbinsToF; m++) { //TOF

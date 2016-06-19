@@ -50,10 +50,9 @@ void InitProtonFlux() {
    return;
 }
 
-void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona)
+void ProtonFlux_Fill(int zona)
 {
-   ntupla->GetEvent(l);
-   if(Tup.Beta<=0||Tup.R<=0) return;
+
    int Kbin=RB.GetRBin(Tup.R);
 
    if(Tup.Dist5D_P<6 && Likcut) {

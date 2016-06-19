@@ -63,9 +63,8 @@ void DeutonsMC_Fill(){
 } 
 
 
-void DeutonsDATA_Fill(TNtuple *ntupla, int l,int zona){
-	 ntupla->GetEvent(l);
-	if(Tup.Beta<=0||Tup.R<=0) return;
+void DeutonsDATA_Fill(int zona){
+
 	float mass = 0;
 	//cuts
 	if(!(Likcut&&Distcut)) return;

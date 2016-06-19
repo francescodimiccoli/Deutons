@@ -54,9 +54,8 @@ void MCMC_Fill()
 	}
 }
 
-void MCMCDATA_Fill(TNtuple *ntupla, int l){
-     ntupla->GetEvent(l);
-	if(Tup.Beta<=0||Tup.R<=0) return;
+void MCMCDATA_Fill(){
+
 	if( Likcut && Distcut && Tup.R>1.2*Tup.Rcutoff)
     {
 		MCMC_TOF->FillData( Tup.Beta, Tup.R );
