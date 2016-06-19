@@ -6,10 +6,10 @@ TH2F * ECALvsR_MC=new TH2F("ECALvsR_MC","ECALvsR_MC",1000,0,100,1000,0,100);
 Efficiency * TrakerEfficiencyMCP = new Efficiency("TrakerEfficiencyMCP");
 Efficiency * TrakerEfficiencyD   = new Efficiency("TrakerEfficiencyC"  );
 
-void DVSMCTrackeff_D_Fill(TNtuple *ntupla, int l){
-         ntupla->GetEvent(l);		
+void DVSMCTrackeff_D_Fill(){
+	
 	//cuts
-	if(Tup.Unbias!=0||Tup.Beta_pre<=0) return;
+	if(Tup.Unbias!=0) return;
 	if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
 	if(!(Tup.R_pre>1.2*Tup.Rcutoff))  return;	
 

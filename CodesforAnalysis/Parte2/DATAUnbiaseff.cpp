@@ -2,9 +2,8 @@ using namespace std;
 
 Efficiency * EffUnbiasDATA = new Efficiency ("EffUnbiasDATA");
 
-void DATAUnbiaseff_Fill (TNtuple *ntupla, int l) {
-   ntupla->GetEvent (l);
-   if (!cmask.isPreselected() ||Tup.R_pre<=0||Tup.Beta_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff) return;
+void DATAUnbiaseff_Fill () {
+   if (!cmask.isPreselected() ||Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff) return;
 
    int Kbin=RB.GetRBin (fabs (Tup.R_pre) );
    if (Tup.EdepTrack<EdepTrackbeta->Eval (Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval (Tup.Beta_pre)-0.2) {

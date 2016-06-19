@@ -13,10 +13,9 @@ LATcorr * LATDistanceDATA_Agl   = new LATcorr ("LATDistDATA_Agl");
 
 
 
-void DATAQualeff_Fill (TNtuple *ntupla, int l,int zona)
+void DATAQualeff_Fill (int zona)
 {
 
-   ntupla->GetEvent (l);
 
    if (Tup.Beta<=0 || Tup.R<=0 || Tup.R<=Rcut[zona]) return;
    if (! (Tup.EdepL1 > 0 && Tup.EdepL1 < EdepL1beta->Eval (Tup.Beta)+0.1 && Tup.EdepL1 > EdepL1beta->Eval (Tup.Beta)-0.1 ) ) return;

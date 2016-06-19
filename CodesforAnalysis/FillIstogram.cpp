@@ -287,13 +287,14 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
    int nentries=ntupMCSepD->GetEntries();
    for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
       ntupMCSepD->GetEvent(i);
+      if(Tup.Beta<=0 || Tup.R<=0) continue;
+      
       cmask.setMask(Tup.Cutmask);
       Massa_gen = ReturnMass_Gen();
       UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
-
-      if(Tup.Beta>0 && Tup.R>0) {
+      
       HecutMC_Fill();
       SlidesforPlot_Fill();
       FluxFactorizationtest_Qual_Fill();
@@ -307,7 +308,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       DeutonsMC_Fill();
       DeutonsMC_Dist_Fill();
       MCMC_Fill();
-      }
+      
    }
    return;
 }
@@ -320,17 +321,18 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
       ntupDataTrig->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
       if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
+      if(Tup.Beta_pre<=0) continue;
       Cuts_Pre();
-      float Zona=getGeoZone(Tup.Latitude);
+
       // Temporary Betarich check
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
-
-      DATAUnbiaseff_Fill(ntupDataTrig,i);
-      DATApreSeleff_Fill(ntupDataTrig,i,Zona);
-      DVSMCTrackeff_D_Fill(ntupDataTrig,i);
-      DVSMCPreSeleff_D_Fill(ntupDataTrig,i,Zona);
-      DVSMCPreSeleffD_D_Fill(ntupDataTrig,i,Zona);
+      DATAUnbiaseff_Fill();
+      float Zona=getGeoZone(Tup.Latitude);
+      DATApreSeleff_Fill(Zona);
+      DVSMCTrackeff_D_Fill(); // < Check if needs the ones before
+      DVSMCPreSeleff_D_Fill(Zona);
+      DVSMCPreSeleffD_D_Fill(Zona);
    }
    return;
 }
@@ -345,14 +347,17 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
       ntupDataSepD->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
       if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
+      if(Tup.Beta<=0||Tup.R<=0) continue;
 
       float Zona=getGeoZone(Tup.Latitude);
+
+      
 
       Cuts();
       RUsed=Tup.R;
       UpdateProgressBar(i, nentries);
 
-      HecutD_Fill(ntupDataSepD,i);
+      HecutD_Fill();
       SlidesforPlot_D_Fill(ntupDataSepD,i);
       DATAQualeff_Fill(ntupDataSepD,i,Zona);
       DATARICHeff_Fill(ntupDataSepD,i,Zona);
