@@ -49,7 +49,6 @@ class Binning {
       std::vector<float> RigBinsCent () { return   rigbincent; }
       std::vector<float> BetaBinsCent() { return  betabincent; }
 
-      std::vector<float> EkPerMassBins  ();  ///< returns Ek per mass
       std::vector<float> EtotPerMassBins();  ///< returns Etot per mass
 
       float EkBin  (int bin)        {  return   ekbin[bin];        }
@@ -70,9 +69,6 @@ class Binning {
 
    private:
       Particle particle;
-      float mass;
-      int Z=1;
-      int A=1;
 
       std::vector<float> ekbin ;
       std::vector<float> etotbin ;
@@ -212,21 +208,11 @@ void Binning::Print()
 
 
 
-std::vector<float> Binning::EkPerMassBins()
-{
-   std::vector<float> ekpermass (0);
-   if (mass!=0)
-      for (float e : ekbin)   ekpermass.push_back (e/mass);
-   return ekpermass;
-}
-
-
-
 std::vector<float> Binning::EtotPerMassBins()
 {
    std::vector<float> etotpermass (0);
-   if (mass!=0)
-      for (float e : ekbin)   etotpermass.push_back (e/mass);
+   if (particle.getMass()!=0)
+      for (float e : ekbin)   etotpermass.push_back (e/particle.getMass());
    return etotpermass;
 }
 
