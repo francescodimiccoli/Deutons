@@ -54,10 +54,8 @@ void MCUnbiaseff_Write() {
 
 void MCUnbiaseff(TFile * inputHistoFile) {
 
-   std::string basename="EffUnbiasMCP";
-   EffUnbiasMCP = new Efficiency(inputHistoFile, basename);
-   basename="EffUnbiasMCD";
-   EffUnbiasMCD = new Efficiency(inputHistoFile, basename);
+   EffUnbiasMCP = new Efficiency(inputHistoFile, "EffUnbiasMCP");
+   EffUnbiasMCD = new Efficiency(inputHistoFile, "EffUnbiasMCD");
 
    cout<<"**** MC Unbias TRIGGER EFF. ****"<<endl;
 
