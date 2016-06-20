@@ -54,8 +54,10 @@ void MCUnbiaseff_Write() {
 
 void MCUnbiaseff(TFile * inputHistoFile) {
 
-   EffUnbiasMCP = new Efficiency(inputHistoFile,"EffUnbiasMCP" );
-   EffUnbiasMCD = new Efficiency(inputHistoFile,"EffUnbiasMCD" );
+   std::string basename="EffUnbiasMCP";
+   EffUnbiasMCP = new Efficiency(inputHistoFile, basename);
+   basename="EffUnbiasMCD";
+   EffUnbiasMCD = new Efficiency(inputHistoFile, basename);
 
    Tempi = (TH1F *)inputHistoFile->Get("Tempi");
 

@@ -140,7 +140,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       inputHistoFile->Flush();
    }
 
-
+	inputHistoFile->ReOpen("READ");
    
    cout<<"************************* ANALYSIS **********************************************************************"<<endl;
    if(INDX!=1) {
