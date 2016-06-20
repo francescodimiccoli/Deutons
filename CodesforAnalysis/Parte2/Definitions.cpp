@@ -20,6 +20,8 @@ TF1 *protons = new TF1("f1","pow((pow(x,2)/pow(0.938,2)/(1 + pow(x,2)/pow(0.938,
 TF1 *deutons = new TF1("f1","pow((pow(x,2)/pow(1.875,2)/(1 + pow(x,2)/pow(1.875,2))),0.5)",0.1,100);
 
 
+enum mode {BUILDALL, BUILDSEPD, READ};
+
 ////////////// DEFINIZIONE SPLINES //////////////////
 TSpline3 *Rig;
 TSpline3 *beta;

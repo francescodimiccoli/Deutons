@@ -10,7 +10,7 @@ void UpdateProgressBar(int currentevent, int totalentries);
 float getGeoZone(float latitude);
 
 
-void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpath)
+void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputpath)
 {
 
    cout<<"*********************** CALIB. READING *********************"<<endl;
@@ -46,7 +46,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
    inputHistoFile=TFile::Open(filename.c_str(),"READ");
    if(!inputHistoFile) if (!inputHistoFile->IsZombie()) {
       cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl;
-      INDX=0;
+      INDX=BUILDALL;
       cout<<"Running in Mode 0 ..."<<endl;
    }
 
@@ -54,7 +54,7 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
    fileFinalPlots=TFile::Open(filename.c_str(), "RECREATE");
 
 
-   if(INDX!=2) {
+   if(INDX!=READ) {
       string nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
       fileMC =TFile::Open(nomefile.c_str());
       nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
@@ -68,15 +68,15 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
 
    cout<<"*********************** MC READING *********************"<<endl;
 
-   if(INDX==0) {
+   if(INDX==BUILDALL) {
       LoopOnMCTrig(ntupMCTrig);
    }
-   if(INDX==0||INDX==1) {
+   if(INDX==BUILDALL||INDX==BUILDSEPD) {
       LoopOnMCSepD(ntupMCSepD);
    }
 
    cout<<endl<<"*********************** DATA READING *********************"<<endl;
-   TFile *usedfile=(INDX==2?inputHistoFile:fileData);
+   TFile *usedfile=(INDX==READ?inputHistoFile:fileData);
    Tempi = (TH1F *)usedfile->Get("Tempi");
    TH2F* esposizionegeo = (TH2F *)usedfile->Get("esposizionegeo");
    TH2F* esposizionepgeo = (TH2F*)usedfile->Get("esposizionepgeo");
@@ -88,11 +88,11 @@ void FillIstogramAndDoAnalysis(int INDX,string frac,string mese, string outputpa
 
 
 
-   if(INDX==0) {
+   if(INDX==BUILDALL) {
       LoopOnDataTrig(ntupDataTrig);
 
    }
-   if(INDX==0||INDX==1) {
+   if(INDX==BUILDALL||INDX==BUILDSEPD) {
       LoopOnDataSepD(ntupDataSepD);
 
       cout<<endl<<"************************ SAVING DATA ************************"<<endl;

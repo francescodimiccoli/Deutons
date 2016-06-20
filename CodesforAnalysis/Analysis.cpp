@@ -70,7 +70,7 @@ int main(int argc, char * argv[])
 {
    cout<<"Month _ Indx _ Frac _ output"<<endl;
    cout<<argc<<endl;
-   int INDX=2;
+   mode INDX=READ;
    string frac="35";
    string outputpath = "../";
    string mese="2012_05";
@@ -82,7 +82,7 @@ int main(int argc, char * argv[])
    }
 
    if(argc > 2 ) {
-      INDX=atoi(argv[2]);
+      INDX=static_cast<mode>(atoi(argv[2]));
    } else {
       cout<<"No Mode specified: running Mode 2"<<endl;
    }
