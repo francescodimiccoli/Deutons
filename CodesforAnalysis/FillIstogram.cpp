@@ -49,6 +49,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
          INDX=BUILDALL;
          cout<<"Running in Mode 0 ..."<<endl;
       }
+      
 
    filename=outputpath+"Final_plots/"+mese+".root";
    fileFinalPlots=TFile::Open(filename.c_str(), "RECREATE");
@@ -97,9 +98,9 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
       cout<<endl<<"************************ SAVING DATA ************************"<<endl;
 
-      if (!inputHistoFile) if (!inputHistoFile->IsZombie())
-            inputHistoFile =new TFile(filename.c_str(), "RECREATE");
-      inputHistoFile->cd();
+      delete inputHistoFile;
+      inputHistoFile =new TFile(filename.c_str(), "UPDATE");
+     
 
       DATAQualeff_Write();
       DATARICHeff_Write();
