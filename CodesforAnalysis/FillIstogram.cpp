@@ -43,8 +43,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
 
    string filename=outputpath+"Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   inputHistoFile=TFile::Open(filename.c_str(),"READ");
-   if(!inputHistoFile) if (!inputHistoFile->IsZombie()) {
+   inputHistoFile=new TFile(filename.c_str(),"READ");
+   if (inputHistoFile->IsZombie()) {
          cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl;
          INDX=BUILDALL;
          cout<<"Running in Mode 0 ..."<<endl;
@@ -58,7 +58,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       string nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
       fileMC =TFile::Open(nomefile.c_str());
       nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
-      fileData =TFile::Open(nomefile.c_str());
+      fileData =TFile::Open(nomefile.c_str(), "READ");
       ntupMCSepD=(TNtuple*)fileMC->Get("grandezzesepd");
       ntupMCTrig=(TNtuple*)fileMC->Get("trig");
       ntupDataSepD=(TNtuple*)fileData->Get("grandezzesepd");
