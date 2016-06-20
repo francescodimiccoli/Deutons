@@ -58,6 +58,7 @@ public:
   //   Reading constructors
 
     Efficiency(TFile * file, std::string basename){
+        if (!file->IsOpen()) file->Open("READ");
         beforeTOF = (TH1 *)file->Get((basename + "1"   ).c_str());
         afterTOF  = (TH1 *)file->Get((basename + "2"   ).c_str());
         beforeNaF = (TH1 *)file->Get((basename + "1NaF").c_str());
@@ -119,4 +120,3 @@ void Efficiency::Eval_Efficiency(){
         if(effNaF)	effNaF ->SetName((name	+ "_EffNaF").c_str());
         if(effAgl)	effAgl ->SetName((name	+ "_EffAgl").c_str());
 }
-

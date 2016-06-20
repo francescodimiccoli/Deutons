@@ -45,10 +45,10 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    string filename=outputpath+"Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
    inputHistoFile=TFile::Open(filename.c_str(),"READ");
    if(!inputHistoFile) if (!inputHistoFile->IsZombie()) {
-      cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl;
-      INDX=BUILDALL;
-      cout<<"Running in Mode 0 ..."<<endl;
-   }
+         cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl;
+         INDX=BUILDALL;
+         cout<<"Running in Mode 0 ..."<<endl;
+      }
 
    filename=outputpath+"Final_plots/"+mese+".root";
    fileFinalPlots=TFile::Open(filename.c_str(), "RECREATE");
@@ -98,7 +98,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       cout<<endl<<"************************ SAVING DATA ************************"<<endl;
 
       if (!inputHistoFile) if (!inputHistoFile->IsZombie())
-         inputHistoFile =new TFile(filename.c_str(), "RECREATE");
+            inputHistoFile =new TFile(filename.c_str(), "RECREATE");
       inputHistoFile->cd();
 
       DATAQualeff_Write();
@@ -140,8 +140,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       inputHistoFile->Flush();
    }
 
-	inputHistoFile->ReOpen("READ");
-   
+   inputHistoFile->ReOpen("READ");
+
    cout<<"************************* ANALYSIS **********************************************************************"<<endl;
    if(INDX!=1) {
       if(frac=="tot") Hecut(inputHistoFile);
@@ -179,7 +179,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    fileFinalPlots->Close();
    inputHistoFile->Close();
 
-   
+
    return;
 }
 
@@ -265,14 +265,14 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
-      
+
       MCpreseff_Fill();
       MCUnbiaseff_Fill();
       MCTrackeff_Fill();
       MigrationMatrix_Fill();
       Correlazione_Preselezioni();
       FluxFactorizationtest_Pre_Fill();
-      DVSMCTrackeff_Fill();	
+      DVSMCTrackeff_Fill();
       DVSMCPreSeleff_Fill();
       DVSMCPreSeleffD_Fill();
    }
@@ -288,27 +288,27 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
    for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
       ntupMCSepD->GetEvent(i);
       if(Tup.Beta<=0 || Tup.R<=0) continue;
-      
+
       cmask.setMask(Tup.Cutmask);
       Massa_gen = ReturnMass_Gen();
       UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
-      
+
       HecutMC_Fill();
       SlidesforPlot_Fill();
       FluxFactorizationtest_Qual_Fill();
       DistanceCut_Fill();
       MCQualeff_Fill();
       if(!(Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) && Herejcut) {
-      DVSMCQualeff2_Fill();
-      DVSMCQualeffD_Fill();
-      DVSMCRICHeff_Fill();
+         DVSMCQualeff2_Fill();
+         DVSMCQualeffD_Fill();
+         DVSMCRICHeff_Fill();
       }
       DeutonsMC_Fill();
       DeutonsMC_Dist_Fill();
       MCMC_Fill();
-      
+
    }
    return;
 }
@@ -351,7 +351,7 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
 
       float Zona=getGeoZone(Tup.Latitude);
 
-      
+
 
       Cuts();
       RUsed=Tup.R;
@@ -372,19 +372,21 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
    return;
 }
 
-void UpdateProgressBar(int currentevent, int totalentries) {
+void UpdateProgressBar(int currentevent, int totalentries)
+{
    int newratio =(int)100*(currentevent/    (float)totalentries);
    int oldratio =(int)100*((currentevent-1)/(float)totalentries);
-   if(newratio>oldratio) 
-         cout<<'\r' << "Progress : "<< newratio+1 << " %"<< flush; //+1 pour finir a 100%
+   if(newratio>oldratio)
+      cout<<'\r' << "Progress : "<< newratio+1 << " %"<< flush; //+1 pour finir a 100%
 }
 
-float getGeoZone(float latitude) {
+float getGeoZone(float latitude)
+{
    float zone=-1;
    double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
-      for(int z=0; z<12; z++) {
-         if(latitude>geomag[z] && latitude<geomag[z+1])
-            zone=z;
-      }
-      return zone;
+   for(int z=0; z<12; z++) {
+      if(latitude>geomag[z] && latitude<geomag[z+1])
+         zone=z;
+   }
+   return zone;
 }
