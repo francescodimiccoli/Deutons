@@ -16,7 +16,7 @@ void MCUnbiaseff_Fill() {
 
    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
-      Kbin=RB.GetRBin(fabs(Tup.Momento_gen));
+      Kbin=PRB.GetRBin(fabs(Tup.Momento_gen));
       EffUnbiasMCP->beforeR->Fill(Kbin);
       if(Tup.Unbias==0) EffUnbiasMCP->afterR->Fill(Kbin);
 
@@ -29,7 +29,7 @@ void MCUnbiaseff_Fill() {
 
    if(Massa_gen>1&&Massa_gen<2) {
       //R bins
-      Kbin=RB.GetRBin(fabs(Tup.Momento_gen));
+      Kbin=PRB.GetRBin(fabs(Tup.Momento_gen));
       FillBinMGen(EffUnbiasMCD->beforeR, Kbin);
       if(Tup.Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
       
@@ -91,7 +91,7 @@ void MCUnbiaseff(TFile * inputHistoFile) {
    string MCLegend[7]= {"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
    TGraph * EffUnbMCP_R = new TGraph();
    EffUnbMCP_R->SetTitle(MCLegend[0].c_str());
-   for(int i=0; i<nbinsr; i++) EffUnbMCP_R->SetPoint(i,RB.RigBinCent(i),1);
+   for(int i=0; i<nbinsr; i++) EffUnbMCP_R->SetPoint(i,PRB.RigBinCent(i),1);
    TGraph * EffUnbMCD_R[6];
    EffUnbMCP_R->SetMarkerColor(2);
    EffUnbMCP_R->SetMarkerStyle(8);
@@ -110,7 +110,7 @@ void MCUnbiaseff(TFile * inputHistoFile) {
       for(int h=0; h<6; h++) {
          EffUnbMCD_R[h]= new TGraph();
          EffUnbMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsr; i++) EffUnbMCD_R[h]->SetPoint(i,RB.RigBinCent(i),EffUnbMCD_R_TH2F->GetBinContent(i+1,h+1));
+         for(int i=1; i<nbinsr; i++) EffUnbMCD_R[h]->SetPoint(i,PRB.RigBinCent(i),EffUnbMCD_R_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffUnbMCD_R[h],MCLegend[h+1].c_str(), "ep");
          EffUnbMCD_R[h]->SetMarkerColor(4);
          EffUnbMCD_R[h]->SetMarkerStyle(h+3);
@@ -161,4 +161,3 @@ void MCUnbiaseff(TFile * inputHistoFile) {
    c11->Write();
    fileFinalPlots->Write();
 }
-

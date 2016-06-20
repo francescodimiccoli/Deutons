@@ -14,7 +14,7 @@ void DVSMCPreSeleff_D_Fill(int zona){
 	int Kbin;
 	for(int S=0;S<3;S++){
 		//R bins
-		Kbin = RB.GetRBin(RUsed);
+		Kbin = PRB.GetRBin(RUsed);
 		if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeR) -> Fill(Kbin,zona,S);	
 		if(cmask.passed(S))	      ((TH3*)PreSel_DvsMC_P -> DataEff -> afterR ) -> Fill(Kbin,zona,S);     
 
@@ -51,7 +51,7 @@ void DVSMCPreSeleff_Fill(){
 	for(int S=0;S<3;S++){
 		if(Massa_gen<1) {
 			//R bins
-			Kbin = RB.GetRBin(RUsed);	
+			Kbin = PRB.GetRBin(RUsed);	
 			if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeR) -> Fill(Kbin,S);
 			if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterR ) -> Fill(Kbin,S);
 			//Beta bins
@@ -157,7 +157,7 @@ void DVSMCPreSeleff(){
 		int j=0;
 		for(int i=1;i<nbinsr;i++) {
 			if(PreSel_Correction_R -> GetBinContent(i+1,S+1)>0){
-				PreSel_Correction_R_Graph[S]->SetPoint(j,RB.RigBinCent(i),PreSel_Correction_R -> GetBinContent(i+1,S+1));
+				PreSel_Correction_R_Graph[S]->SetPoint(j,PRB.RigBinCent(i),PreSel_Correction_R -> GetBinContent(i+1,S+1));
 				PreSel_Correction_R_Graph[S]->SetPointError(j,0,PreSel_Correction_R -> GetBinError(i+1,S+1));
 				j++;
 			}
@@ -299,4 +299,3 @@ void DVSMCPreSeleff(){
 
 	return;
 }
-

@@ -41,11 +41,11 @@ Flux * P_Flux_sel     ;
 
 void InitProtonFlux() {
 
-   P_Flux         = new Flux("P_Flux"    	  , "", RB  );
-   P_Flux_geo     = new Flux("P_Flux_geo"     , "", RB, NGEOBINS);
-   P_Flux_geo_prim= new Flux("P_Flux_geo_prim", "", RB, NGEOBINS);
-   P_Flux_pre = new Flux("P_Flux_pre" , "", RB);
-   P_Flux_sel = new Flux("P_Flux_sel" , "", RB);
+   P_Flux         = new Flux("P_Flux"    	  , "", PRB  );
+   P_Flux_geo     = new Flux("P_Flux_geo"     , "", PRB, NGEOBINS);
+   P_Flux_geo_prim= new Flux("P_Flux_geo_prim", "", PRB, NGEOBINS);
+   P_Flux_pre = new Flux("P_Flux_pre" , "", PRB);
+   P_Flux_sel = new Flux("P_Flux_sel" , "", PRB);
 
    return;
 }
@@ -53,7 +53,7 @@ void InitProtonFlux() {
 void ProtonFlux_Fill(int zona)
 {
 
-   int Kbin=RB.GetRBin(Tup.R);
+   int Kbin=PRB.GetRBin(Tup.R);
 
    if(Tup.Dist5D_P<6 && Likcut) {
       P_Flux_geo-> Counts -> Fill(Kbin,zona);
@@ -160,10 +160,6 @@ void ProtonFlux()
    TGraphErrors * PFlux_pre;
    float potenza=0;
 
-
-
-   PBinning PRB;
-   PRB.Setbins(nbinsr, 0.5, 100, 2); // RB did not have Ek
 
 
    for(int j=0; j<NGEOBINS; j++) {
@@ -279,8 +275,8 @@ void DeutonFlux()
 
 
    std::string suf[4] = {"ToF", "NaF", "Agl", "R"};
-   Binning binP[4] = {ToFPB, NaFPB, AglPB, RB};
-   Binning binD[4] = {ToFDB, NaFDB, AglDB, RB};
+   Binning binP[4] = {ToFPB, NaFPB, AglPB, PRB};
+   Binning binD[4] = {ToFDB, NaFDB, AglDB, PRB};
    string expodnames[4] = {"esposizionedgeo", "esposizionedgeoNaF", "esposizionedgeoAgl", "esposizionegeo" };
    string expopnames[4] = {"esposizionepgeo", "esposizionepgeoNaF", "esposizionepgeoAgl", "esposizionegeo" };
    enum {protons, deutons};
@@ -711,6 +707,3 @@ TGraphErrors* FillGraphErrorFromBinningAndHisto(Binning bin, TH1* histo)
    }
    return graph;
 }
-
-
-

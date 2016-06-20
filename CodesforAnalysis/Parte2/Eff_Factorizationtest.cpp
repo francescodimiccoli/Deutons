@@ -15,7 +15,7 @@ void FluxFactorizationtest_Pre_Fill(){
 	int Rbin;
 	// full set efficiency before
 	if(cmask.notPassed(0)){
-		Rbin=RB.GetRBin(RUsed);
+		Rbin=PRB.GetRBin(RUsed);
 		if(Massa_gen<1&&Massa_gen>0.5){
 			EffFullSETselectionsMCP->beforeR->Fill(Rbin);	
 		}
@@ -23,7 +23,7 @@ void FluxFactorizationtest_Pre_Fill(){
 	
 	//Drop-one approach eff. calc.
 	for(int iS=0;iS<3;iS++){
-		Rbin=RB.GetRBin(RUsed);
+		Rbin=PRB.GetRBin(RUsed);
 		if(Massa_gen<1&&Massa_gen>0.5) {
 			if(cmask.notPassed(iS)) Eff_do_preSelMCP->beforeR->Fill(Rbin,iS);
 			if(cmask.passed(iS)) Eff_do_preSelMCP->afterR ->Fill(Rbin,iS);
@@ -46,7 +46,7 @@ void FluxFactorizationtest_Qual_Fill(){
 
 	//R bins
 	int Kbin;
-	Kbin = RB.GetRBin(RUsed);
+	Kbin = PRB.GetRBin(RUsed);
 	
 	//full set efficiency after
 	if(Tup.Dist5D_P<6&&Likcut)  EffFullSETselectionsMCP->afterR->Fill(Kbin);
@@ -145,8 +145,8 @@ void FluxFactorizationtest(TFile * inputHistoFile){
 	TGraphErrors * FactorizedEfficiency = new TGraphErrors();
 
 	for(int i=0; i<Eff_FullSETMCP_R_TH1F->GetNbinsX();i++) {
-			FullsetEfficiency    ->SetPoint(i,RB.RigBinCent(i),Eff_FullSETMCP_R_TH1F->GetBinContent(i+1));
-			FactorizedEfficiency ->SetPoint(i,RB.RigBinCent(i),FactorizedEffMCP_R->GetBinContent(i+1));		
+			FullsetEfficiency    ->SetPoint(i,PRB.RigBinCent(i),Eff_FullSETMCP_R_TH1F->GetBinContent(i+1));
+			FactorizedEfficiency ->SetPoint(i,PRB.RigBinCent(i),FactorizedEffMCP_R->GetBinContent(i+1));		
 	}
 
 	FullsetEfficiency->SetMarkerColor(2);
@@ -173,4 +173,3 @@ void FluxFactorizationtest(TFile * inputHistoFile){
 
 return;
 }
-

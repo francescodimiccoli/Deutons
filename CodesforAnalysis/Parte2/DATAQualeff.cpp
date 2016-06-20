@@ -19,7 +19,7 @@ void DATAQualeff_Fill (int zona)
    if (Tup.R<=Rcut[zona]) return;
    if (! (Tup.EdepL1 > 0 && Tup.EdepL1 < EdepL1beta->Eval (Tup.Beta)+0.1 && Tup.EdepL1 > EdepL1beta->Eval (Tup.Beta)-0.1 ) ) return;
 
-   int Kbin=RB.GetRBin (Tup.R);
+   int Kbin=PRB.GetRBin (Tup.R);
 
 
    if (cmask.isFromNaF() ) { //NaF
@@ -184,7 +184,7 @@ void DATAQualeff (TFile * inputHistoFile)
       EffDATALikP[l]=new TGraphErrors();
       int j=0;
       for (int i=1; i<nbinsr; i++) {
-         EffDATALikP[l]->SetPoint (j,RB.RigBinCent (i),LATLikDATATOF->GetBinContent (i+1,l+1) );
+         EffDATALikP[l]->SetPoint (j,PRB.RigBinCent (i),LATLikDATATOF->GetBinContent (i+1,l+1) );
          EffDATALikP[l]->SetPointError (j,0,LATLikDATATOF->GetBinError (i+1,l+1) );
          j++;
       }
@@ -218,7 +218,7 @@ void DATAQualeff (TFile * inputHistoFile)
       EffDATALikNaFP[l]=new TGraphErrors();
       int j=0;
       for (int i=1; i<nbinsr; i++) {
-         EffDATALikNaFP[l]->SetPoint (j,RB.RigBinCent (i),LATLikDATANaF ->GetBinContent (i+1,l+1) );
+         EffDATALikNaFP[l]->SetPoint (j,PRB.RigBinCent (i),LATLikDATANaF ->GetBinContent (i+1,l+1) );
          EffDATALikNaFP[l]->SetPointError (j,0,LATLikDATANaF ->GetBinError (i+1,l+1) );
          j++;
       }
@@ -249,7 +249,7 @@ void DATAQualeff (TFile * inputHistoFile)
       EffDATALikAglP[l]=new TGraphErrors();
       int j=0;
       for (int i=1; i<nbinsr; i++) {
-         EffDATALikAglP[l]->SetPoint (j,RB.RigBinCent (i),LATLikDATAAgl ->GetBinContent (i+1,l+1) );
+         EffDATALikAglP[l]->SetPoint (j,PRB.RigBinCent (i),LATLikDATAAgl ->GetBinContent (i+1,l+1) );
          EffDATALikAglP[l]->SetPointError (j,0,LATLikDATAAgl ->GetBinError (i+1,l+1) );
          j++;
       }
@@ -367,7 +367,7 @@ void DATAQualeff (TFile * inputHistoFile)
       EffDATADistP[l]=new TGraphErrors();
       int j=0;
       for (int i=1; i<nbinsr; i++) {
-         EffDATADistP[l]->SetPoint (j,RB.RigBinCent (i),LATDistDATATOF ->GetBinContent (i+1,l+1) );
+         EffDATADistP[l]->SetPoint (j,PRB.RigBinCent (i),LATDistDATATOF ->GetBinContent (i+1,l+1) );
          EffDATADistP[l]->SetPointError (j,0, LATDistDATATOF ->GetBinError (i+1,l+1) );
          j++;
       }
@@ -398,7 +398,7 @@ void DATAQualeff (TFile * inputHistoFile)
       EffDATADistNaFP[l]=new TGraphErrors();
       int j=0;
       for (int i=1; i<nbinsr; i++) {
-         EffDATADistNaFP[l]->SetPoint (j,RB.RigBinCent (i),LATDistDATANaF ->GetBinContent (i+1,l+1) );
+         EffDATADistNaFP[l]->SetPoint (j,PRB.RigBinCent (i),LATDistDATANaF ->GetBinContent (i+1,l+1) );
          EffDATADistNaFP[l]->SetPointError (j,0, LATDistDATANaF ->GetBinError (i+1,l+1) );
          j++;
       }
@@ -429,7 +429,7 @@ void DATAQualeff (TFile * inputHistoFile)
       EffDATADistAglP[l]=new TGraphErrors();
       int j=0;
       for (int i=1; i<nbinsr; i++) {
-         EffDATADistAglP[l]->SetPoint (j,RB.RigBinCent (i),LATDistDATAAgl ->GetBinContent (i+1,l+1) );
+         EffDATADistAglP[l]->SetPoint (j,PRB.RigBinCent (i),LATDistDATAAgl ->GetBinContent (i+1,l+1) );
          EffDATADistAglP[l]->SetPointError (j,0, LATDistDATAAgl ->GetBinError (i+1,l+1) );
          j++;
       }
@@ -551,6 +551,3 @@ void DATAQualeff (TFile * inputHistoFile)
    fileFinalPlots->Write();
 
 }
-
-
-

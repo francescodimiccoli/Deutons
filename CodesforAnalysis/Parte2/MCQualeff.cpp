@@ -12,7 +12,7 @@ void MCQualeff_Fill() {
 	int Kbin;
 	if(Massa_gen<1) {
 		//R bins
-		Kbin=RB.GetRBin(Tup.R);
+		Kbin=PRB.GetRBin(Tup.R);
 
 		EffLikMCP->beforeR->Fill(Kbin);
 		EffDistMCP->beforeR->Fill(Kbin);
@@ -49,7 +49,7 @@ void MCQualeff_Fill() {
 	}
 	if(Massa_gen<2&&Massa_gen>1) {
 		//R bins
-		Kbin=RB.GetRBin(Tup.R);
+		Kbin=PRB.GetRBin(Tup.R);
 
 		FillBinMGen(EffLikMCD ->beforeR, Kbin);
 		FillBinMGen(EffDistMCD->beforeR, Kbin);
@@ -173,7 +173,7 @@ void MCQualeff(TFile * inputHistoFile) {
    gPad->SetGridy();
    TGraph *EffMCLikP= new TGraph();
    TGraph *EffMCLikD[6];
-   for(int i=1; i<nbinsr; i++) EffMCLikP->SetPoint(i,RB.RigBinCent(i),EffMCLikP_TH1F->GetBinContent(i+1));
+   for(int i=1; i<nbinsr; i++) EffMCLikP->SetPoint(i,PRB.RigBinCent(i),EffMCLikP_TH1F->GetBinContent(i+1));
    EffMCLikP->SetMarkerColor(2);
    EffMCLikP->SetMarkerStyle(8);
    EffMCLikP->SetLineColor(2);
@@ -192,7 +192,7 @@ void MCQualeff(TFile * inputHistoFile) {
       for(int h=0; h<6; h++) {
          EffMCLikD[h]= new TGraph();
          EffMCLikD[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsr; i++) EffMCLikD[h]->SetPoint(i,RB.RigBinCent(i), EffMCLikD_TH2F->GetBinContent(i+1,h+1));
+         for(int i=1; i<nbinsr; i++) EffMCLikD[h]->SetPoint(i,PRB.RigBinCent(i), EffMCLikD_TH2F->GetBinContent(i+1,h+1));
          //leg->AddEntry(EffMCLikD[h],MCLegend[h+1].c_str(), "ep");
          EffMCLikD[h]->SetMarkerColor(4);
          EffMCLikD[h]->SetMarkerStyle(h+3);
@@ -319,7 +319,7 @@ void MCQualeff(TFile * inputHistoFile) {
    gPad->SetGridy();
    TGraph *EffMCDistP= new TGraph();
    TGraph *EffMCDistD[6];
-   for(int i=1; i<nbinsr; i++) EffMCDistP->SetPoint(i,RB.RigBinCent(i),EffMCDistP_TH1F->GetBinContent(i+1));
+   for(int i=1; i<nbinsr; i++) EffMCDistP->SetPoint(i,PRB.RigBinCent(i),EffMCDistP_TH1F->GetBinContent(i+1));
    EffMCDistP->SetMarkerColor(2);
    EffMCDistP->SetMarkerStyle(8);
    EffMCDistP->SetLineColor(2);
@@ -338,7 +338,7 @@ void MCQualeff(TFile * inputHistoFile) {
       for(int h=0; h<6; h++) {
          EffMCDistD[h]= new TGraph();
          EffMCDistD[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsr; i++) EffMCDistD[h]->SetPoint(i,RB.RigBinCent(i),EffMCDistD_TH2F->GetBinContent(i+1,h+1));
+         for(int i=1; i<nbinsr; i++) EffMCDistD[h]->SetPoint(i,PRB.RigBinCent(i),EffMCDistD_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffMCDistD[h],MCLegend[h+1].c_str(), "ep");
          EffMCDistD[h]->SetMarkerColor(4);
          EffMCDistD[h]->SetMarkerStyle(h+3);
@@ -470,6 +470,3 @@ void MCQualeff(TFile * inputHistoFile) {
    c6_bis  ->Write();
    fileFinalPlots->Write();
 }
-
-
-

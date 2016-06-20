@@ -13,7 +13,7 @@ void DVSMCQualeff2_D_Fill(int zona){
 	int Kbin;
 	
 	//R bins
-	Kbin = RB.GetRBin(Tup.R);
+	Kbin = PRB.GetRBin(Tup.R);
 	Dist_DvsMC_P -> DataEff -> beforeR -> Fill(Kbin,zona);	
 	if(Tup.Dist5D_P<6) Lik_DvsMC_P  -> DataEff -> beforeR -> Fill(Kbin,zona);
 	
@@ -65,11 +65,11 @@ void DVSMCQualeff2_Fill(){
 	int Kbin;
 
 	//R bins
-	Kbin = RB.GetRBin(Tup.R);
+	Kbin = PRB.GetRBin(Tup.R);
 
 	if(Massa_gen<1) {
 		//R bins
-		Kbin = RB.GetRBin(Tup.R);	
+		Kbin = PRB.GetRBin(Tup.R);	
 		Dist_DvsMC_P -> MCEff -> beforeR -> Fill(Kbin);
 		if(Tup.Dist5D_P<6) Lik_DvsMC_P  -> MCEff -> beforeR -> Fill(Kbin);
 
@@ -218,7 +218,7 @@ void DVSMCQualeff2(){
 	int j=0;
 	for(int i=1;i<nbinsr;i++) {
 		if(LikP_Correction_R -> GetBinContent(i+1)>0){
-			LikDVSMC_P_Graph->SetPoint(j,RB.RigBinCent(i),LikP_Correction_R -> GetBinContent(i+1));
+			LikDVSMC_P_Graph->SetPoint(j,PRB.RigBinCent(i),LikP_Correction_R -> GetBinContent(i+1));
 			LikDVSMC_P_Graph->SetPointError(j,0,LikP_Correction_R -> GetBinError(i+1));
 			j++;
 		}
@@ -238,7 +238,7 @@ void DVSMCQualeff2(){
 	j=0;
 	for(int i=1;i<nbinsr;i++) {
 		if(DistP_Correction_R -> GetBinContent(i+1)>0){
-			DistDVSMC_P_Graph->SetPoint(j,RB.RigBinCent(i),DistP_Correction_R -> GetBinContent(i+1));
+			DistDVSMC_P_Graph->SetPoint(j,PRB.RigBinCent(i),DistP_Correction_R -> GetBinContent(i+1));
 			DistDVSMC_P_Graph->SetPointError(j,0,DistP_Correction_R -> GetBinError(i+1));
 			j++;
 		}
@@ -409,4 +409,3 @@ void DVSMCQualeff2(){
 
 	return;
 }
-

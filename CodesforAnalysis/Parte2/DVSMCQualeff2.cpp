@@ -124,7 +124,7 @@ void DVSMCQualeff2(TFile * file1){
 		EffLik2MCvsDP_mean[i]=EffLik2MCvsDP_mean[i]/EffLik2MCvsDP_meanerr[i];
 		EffLik2MCvsDP_meanerr[i]=pow(1/EffLik2MCvsDP_meanerr[i],0.5);
 		if(EffLik2MCvsDP_mean[i]>0&&EffLik2MCvsDP_meanerr[i]>0){
-		EffLik2MCvsDP_Mean->SetPoint(p,RB.RigBinCent(i),EffLik2MCvsDP_mean[i]);
+		EffLik2MCvsDP_Mean->SetPoint(p,PRB.RigBinCent(i),EffLik2MCvsDP_mean[i]);
 		EffLik2MCvsDP_Mean->SetPointError(p,0,EffLik2MCvsDP_meanerr[i]);
 		p++;
 		}
@@ -143,7 +143,7 @@ void DVSMCQualeff2(TFile * file1){
                 EffDistMCvsDP_mean[i]=EffDistMCvsDP_mean[i]/EffDistMCvsDP_meanerr[i];
                 EffDistMCvsDP_meanerr[i]=pow(1/EffDistMCvsDP_meanerr[i],0.5);
                 if(EffDistMCvsDP_mean[i]>0&&EffDistMCvsDP_meanerr[i]>0){
-		EffDistMCvsDP_Mean->SetPoint(p,RB.RigBinCent(i),EffDistMCvsDP_mean[i]);
+		EffDistMCvsDP_Mean->SetPoint(p,PRB.RigBinCent(i),EffDistMCvsDP_mean[i]);
                 EffDistMCvsDP_Mean->SetPointError(p,0,EffDistMCvsDP_meanerr[i]);
 		p++;
 		}
@@ -162,12 +162,12 @@ void DVSMCQualeff2(TFile * file1){
         TGraphErrors *EffMCvsDLikP_MC=new TGraphErrors();
         int j=0;
         for(int i=1;i<nbinsr;i++) if(EffLik2MCvsDP_MC[i]>0)
-                {EffMCvsDLikP_MC->SetPoint(j,RB.RigBinCent(i),EffLik2MCvsDP_MC[i]/EffLik2MCvsDP_MC[i]);j++;}
+                {EffMCvsDLikP_MC->SetPoint(j,PRB.RigBinCent(i),EffLik2MCvsDP_MC[i]/EffLik2MCvsDP_MC[i]);j++;}
 	
         TGraphErrors *EffMCvsDDistP_MC= new TGraphErrors();
         j=0;
         for(int i=1;i<nbinsr;i++) if(EffDistMCvsDP_MC[i]>0)
-                {EffMCvsDDistP_MC->SetPoint(j,RB.RigBinCent(i),EffDistMCvsDP_MC[i]/EffDistMCvsDP_MC[i]);j++;}
+                {EffMCvsDDistP_MC->SetPoint(j,PRB.RigBinCent(i),EffDistMCvsDP_MC[i]/EffDistMCvsDP_MC[i]);j++;}
 
 	TF1 *polL=new TF1("polL","pol3");
 	TF1 *polD=new TF1("polD","pol3");
@@ -176,13 +176,13 @@ void DVSMCQualeff2(TFile * file1){
 	EffDistMCvsDP_Mean->Fit("polD","","",8,70);
 
 	for(int j=3;j<nbinsr;j++){
-		if(RB.RigBinCent(j)<8){
+		if(PRB.RigBinCent(j)<8){
 		ratioL_smooth[j]=(ratioL_smooth[j]+ratioL_smooth[j-1]+ratioL_smooth[j+1])/3;
 		ratioD_smooth[j]=(ratioD_smooth[j]+ratioD_smooth[j-1]+ratioD_smooth[j+1])/3;
 		}
 		else{
-		ratioL_smooth[j]=polL->Eval(RB.RigBinCent(j));
-		ratioD_smooth[j]=polD->Eval(RB.RigBinCent(j));
+		ratioL_smooth[j]=polL->Eval(PRB.RigBinCent(j));
+		ratioD_smooth[j]=polD->Eval(PRB.RigBinCent(j));
 		}
 	}
 	///errore fit
@@ -201,7 +201,7 @@ void DVSMCQualeff2(TFile * file1){
 	
 	for(int i=1;i<nbinsr;i++) {
 		if(EffLik2MCvsDP_MC[i]>0){
-		LikDVSMC_P_Graph->SetPoint(j,RB.RigBinCent(i),ratioL_smooth[i]);
+		LikDVSMC_P_Graph->SetPoint(j,PRB.RigBinCent(i),ratioL_smooth[i]);
 		LikDVSMC_P_graph->SetBinContent(i+1,1,ratioL_smooth[i]);
 		LikDVSMC_P_Graph->SetPointError(j,0,errorefitL);
 		LikDVSMC_P_graph->SetBinContent(i+1,2,errorefitL);
@@ -244,7 +244,7 @@ void DVSMCQualeff2(TFile * file1){
 	j=0;
         for(int i=1;i<nbinsr;i++) {
                 if(EffLik2MCvsDP_MC[i]>0){
-                DistDVSMC_P_Graph->SetPoint(j,RB.RigBinCent(i),ratioD_smooth[i]);
+                DistDVSMC_P_Graph->SetPoint(j,PRB.RigBinCent(i),ratioD_smooth[i]);
                	DistDVSMC_P_graph->SetBinContent(i+1,1,ratioD_smooth[i]);
 		DistDVSMC_P_Graph->SetPointError(j,0,errorefitD);
         	DistDVSMC_P_graph->SetBinContent(i+1,2,errorefitD);
@@ -280,4 +280,3 @@ void DVSMCQualeff2(TFile * file1){
 
 
 }
-
