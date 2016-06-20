@@ -119,10 +119,6 @@ void MCTrackeff (TFile * inputHistoFile)
    Efficiency * EffTOFMCD   = new Efficiency (inputHistoFile,"EffTOFMCD");
 
 
-   string tagli[10]= {"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
-   string nome;
-   Tempi = (TH1F *) inputHistoFile->Get ("Tempi");
-
    cout<<"**** MC BASIC SEL. EFFICIENCIES ****"<<endl;
 
 

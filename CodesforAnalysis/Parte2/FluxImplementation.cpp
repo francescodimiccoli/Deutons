@@ -34,12 +34,13 @@ void TGraphErrorsFormat(TGraphErrors* graph)
 Flux * P_Flux         ;
 Flux * P_Flux_geo     ;
 Flux * P_Flux_geo_prim;
-                      
-//DvsMC check         
+
+//DvsMC check
 Flux * P_Flux_pre     ;
 Flux * P_Flux_sel     ;
 
-void InitProtonFlux() {
+void InitProtonFlux()
+{
 
    P_Flux         = new Flux("P_Flux"    	  , "", PRB  );
    P_Flux_geo     = new Flux("P_Flux_geo"     , "", PRB, NGEOBINS);
@@ -111,8 +112,12 @@ PFluxComputing::PFluxComputing(string objname, bool geobin, string acceptname)
 
 TH1* PFluxComputing::ComputeFluxAndGetHisto()
 {
-   if (ngeobins)  PFlux->Set_Exposure_Time (H2ExpoGeo);
-   else           PFlux->Set_Exposure_Time (Tempi); // whatever it may be
+   if (ngeobins)
+      PFlux->Set_Exposure_Time (H2ExpoGeo);
+   else  {
+      TH1F* Tempi = (TH1F *)inputHistoFile->Get("Tempi");
+      PFlux->Set_Exposure_Time (Tempi); // whatever it may be
+   }
    enum {protons, deutons};
    PFlux->Eval_Flux(ngeobins, protons);
    return PFlux->Fluxes;
@@ -327,6 +332,7 @@ void DeutonFlux()
       Flux * D_Flux_geo_Dist     = new Flux(inputHistoFile, "D_Flux_geo_Dist" ,"Results", suf[ifx],"Geomag_AcceptanceD",binD[ifx]);
 
       // Flux geo
+      TH1F* Tempi = (TH1F *)inputHistoFile->Get("Tempi");
       D_Flux_geo     -> Set_Exposure_Time (Tempi);
       D_Flux_geo_Dist-> Set_Exposure_Time (Tempi);
       D_Flux_geo     -> Eval_Flux(NGEOBINS, deutons, 2 );

@@ -59,8 +59,6 @@ void MCUnbiaseff(TFile * inputHistoFile) {
    basename="EffUnbiasMCD";
    EffUnbiasMCD = new Efficiency(inputHistoFile, basename);
 
-   Tempi = (TH1F *)inputHistoFile->Get("Tempi");
-
    cout<<"**** MC Unbias TRIGGER EFF. ****"<<endl;
 
    EffUnbiasMCP -> Eval_Efficiency();
