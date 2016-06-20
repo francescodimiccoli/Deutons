@@ -175,7 +175,6 @@ void DVSMCQualeffD(){
 
 
 	inputHistoFile->Write();
-	inputHistoFile->Close();
 
 
 

@@ -157,7 +157,6 @@ void ProtonFlux()
    P_sel_PrimaryFlux   ->Write("P_sel_PrimaryFlux"  	);
 
    inputHistoFile->Write();
-   inputHistoFile->Close();
 
 
    TGraphErrors * P_Fluxgeo[NGEOBINS];
@@ -389,7 +388,6 @@ void DeutonFlux()
 
 
    inputHistoFile->Write();
-   inputHistoFile->Close();
 
 
 

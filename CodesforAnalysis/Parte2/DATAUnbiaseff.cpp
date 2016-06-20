@@ -38,7 +38,6 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
    EffUnbDATA_R_TH1F ->Write();
    EffUnbDATA_TH1F	  ->Write();
    inputHistoFile-> Write();
-   inputHistoFile-> Close();
 
    TCanvas *c12=new TCanvas ("DATA: Unb. Trigger Efficiency");
 

@@ -149,7 +149,6 @@ void Acceptance(){
 	AcceptanceD ->CorrectedAcceptance_Agl  ->Write("Corr_AcceptanceD_Agl");
 
 	inputHistoFile->Write();
-	inputHistoFile->Close();
 
 	TCanvas * c31_tris = new TCanvas("Gen. Efficiency");
 

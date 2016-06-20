@@ -73,7 +73,6 @@ void DATARICHeff(TFile * inputHistoFile) {
    LATrichcorr_Agl_fit-> Write();
 
    inputHistoFile->Write();
-   inputHistoFile->Close();
 
 
 

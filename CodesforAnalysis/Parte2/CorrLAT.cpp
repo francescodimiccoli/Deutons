@@ -93,7 +93,6 @@ void CorrLAT() {
    CorrezioneLAT_dAgl-> Write(  "CorrezioneLATd_Agl"       );
 
    inputHistoFile->Write();
-   inputHistoFile->Close();
 
 
 

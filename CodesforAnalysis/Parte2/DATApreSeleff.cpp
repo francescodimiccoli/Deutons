@@ -56,7 +56,6 @@ void DATApreSeleff(TFile * inputHistoFile)
    preSelLATcorr    -> Write();
    preSelLATcorr_fit-> Write();
    inputHistoFile->Write();
-   inputHistoFile->Close();
 
 
    TGraphErrors * Eff_preSelLAT[3][11];

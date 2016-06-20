@@ -94,7 +94,6 @@ void MCpreeff(TFile * inputHistoFile) {
    EffPreMCDNaF_TH2F ->Write();
    EffPreMCDAgl_TH2F->Write();
    inputHistoFile->Write();
-   inputHistoFile->Close();
 
 
    TCanvas *c4=new TCanvas("Preselections Efficiency (R bins)");

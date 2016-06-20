@@ -95,7 +95,6 @@ void DVSMCTrackeff(TFile * file){
          Tracker_DvsMC_CorrectionAgl   -> Write();
 	
 	inputHistoFile->Write();
-        inputHistoFile->Close();
 	
 	TCanvas *c28= new TCanvas("R vs ECAL E.dep.");
 	c28->Divide(1,2);

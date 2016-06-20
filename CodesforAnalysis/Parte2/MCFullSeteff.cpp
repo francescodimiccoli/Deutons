@@ -60,7 +60,6 @@ void MCFullseteff(TFile * inputHistoFile){
 	EffFullsetMCDNaF_TH2F 	->Write("EffFullsetMCD_EffNaF");
 	EffFullsetMCDAgl_TH2F	->Write("EffFullsetMCD_EffAgl");
 	inputHistoFile->Write();
-	inputHistoFile->Close();
 
 
 	TCanvas *c41=new TCanvas("FULL-SET Efficiency (R bins)");

@@ -131,7 +131,6 @@ void Hecut(TFile * inputHistoFile) {
 	HecutMCP_TH1F 	->Write();
 	HecutMCHe_TH1F	->Write();
 	inputHistoFile->Write();
-	inputHistoFile->Close();
 
 	TCanvas * c36	=new TCanvas("Sigma E. dep. Track vs TOF");
 	TCanvas * c36_bis    =new TCanvas("Sigma E. dep. Track vs TOF (MC)");

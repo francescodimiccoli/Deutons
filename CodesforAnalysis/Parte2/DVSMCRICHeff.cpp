@@ -123,7 +123,6 @@ void DVSMCRICHeff(){
 	RICH_Correction_D_Agl  -> Write("RICH_DvsMC_D_CorrectionAgl");
 
 	inputHistoFile->Write();
-	inputHistoFile->Close();
 
 
 	TCanvas *c20_bis=new TCanvas("Data vs MC: RICH");

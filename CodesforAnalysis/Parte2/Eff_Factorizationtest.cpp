@@ -132,7 +132,6 @@ void FluxFactorizationtest(TFile * inputHistoFile){
 
         inputHistoFile->cd("Results");
 	inputHistoFile-> Write();
-	inputHistoFile-> Close();
 
 		
 	TCanvas *c9 = new TCanvas("MC Protons Factorization Test");
