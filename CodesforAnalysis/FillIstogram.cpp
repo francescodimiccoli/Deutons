@@ -100,7 +100,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
       delete inputHistoFile;
       inputHistoFile =new TFile(filename.c_str(), "UPDATE");
-     
+      inputHistoFile->cd();
 
       DATAQualeff_Write();
       DATARICHeff_Write();
