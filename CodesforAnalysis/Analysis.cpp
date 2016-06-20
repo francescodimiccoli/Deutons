@@ -86,7 +86,9 @@ int main(int argc, char * argv[])
    }
 
    if(argc > 2 ) {
-      INDX=static_cast<mode>(atoi(argv[2]));
+      int index=atoi(argv[2]);
+      if (index>=0 && index<=2)
+         INDX=static_cast<mode>(index);
    } else {
       cout<<"No Mode specified: running Mode 2"<<endl;
    }
@@ -120,8 +122,8 @@ int main(int argc, char * argv[])
    
    cout<<"****************************** BINS ***************************************"<<endl;
 
-   DRB.setBinsFromRigidity(nbinsr, 0.5, 100); // PRB did not have Ek
-   PRB.setBinsFromRigidity(nbinsr, 0.5, 100); // PRB did not have Ek
+   DRB.setBinsFromRigidity(nbinsr, 0.5, 100); // RB did not have Ek
+   PRB.setBinsFromRigidity(nbinsr, 0.5, 100); 
    
    float ekmin=0.1, ekmax=1;
    ToFDB.setBinsFromEkPerMass (nbinsToF, ekmin, ekmax);
