@@ -269,7 +269,6 @@ int main(int argc, char * argv[])
       Cutmask = Cutmask|(RICHmask_new<<11);
       if(!(((Cutmask&187)==187))) continue;
       entries++;
-      if(Unbias==1) continue;
       if (Quality(geo_stuff,i)) {
          giov++;
          if(scelta==1) aggiungiantupla(geo_stuff,i,pre);

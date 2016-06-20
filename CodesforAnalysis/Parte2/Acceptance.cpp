@@ -8,7 +8,10 @@ void Acceptance(){
 	
 	ACCEPTANCE * AcceptancePreP = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCP","EffpreselMCP","PreLATCorr","CorrezioneLATPrep",1);
 	ACCEPTANCE * AcceptancePreD = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCD","EffpreselMCD","PreLATCorr","CorrezioneLATPred",6);
-        
+       
+	TH1F * TrackerGlobalFactor = (TH1F *) inputHistoFile -> Get("Results/TrackerGlobalFactor");	
+	TH1F * TriggerGlobalFactor = (TH1F *) inputHistoFile -> Get("Results/TriggerGlobalFactor"); 
+
 	cout<<"****************** ACCEPTANCE CALCULATION ******************"<<endl;
 
 
@@ -49,9 +52,20 @@ void Acceptance(){
 
 	cout<<"****** DVSMC APPLICATION *********"<<endl;
 
-	TH1F* DistP_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionR"  		); 
-	TH1F* LikP_Correction_R    =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionR"   		);
+	TH2F* PreSel_Correction_R  =(TH2F*) inputHistoFile -> Get("Results/PreSel_DvsMC_P_CorrectionR"  );
+	TH2F* PreSel_Correction_TOF=(TH2F*) inputHistoFile -> Get("Results/PreSel_DvsMC_P_CorrectionTOF");
+	TH2F* PreSel_Correction_NaF=(TH2F*) inputHistoFile -> Get("Results/PreSel_DvsMC_P_CorrectionNaF");
+	TH2F* PreSel_Correction_Agl=(TH2F*) inputHistoFile -> Get("Results/PreSel_DvsMC_P_CorrectionAgl");
 
+	TH1F* DistP_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionR"  		); 
+	TH1F* DistP_Correction_TOF =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionTOF"		);
+	TH1F* DistP_Correction_NaF =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionNaF"		);
+	TH1F* DistP_Correction_Agl =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionAgl"		);
+                                                                                      
+	TH1F* LikP_Correction_R    =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionR"   		);
+	TH1F* LikP_Correction_TOF  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionTOF" 		);
+	TH1F* LikP_Correction_NaF  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionNaF" 		);
+	TH1F* LikP_Correction_Agl  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionAgl" 		);
 
 	TH1F* RICH_Correction_P_NaF =(TH1F*) inputHistoFile -> Get ("Results/RICH_DvsMC_P_CorrectionNaF"		);
 	TH1F* RICH_Correction_P_Agl =(TH1F*) inputHistoFile -> Get ("Results/RICH_DvsMC_P_CorrectionAgl"		);
@@ -59,25 +73,17 @@ void Acceptance(){
 	TH2F* RICH_Correction_D_NaF =(TH2F*) inputHistoFile -> Get ("Results/RICH_DvsMC_D_CorrectionNaF"         );
         TH2F* RICH_Correction_D_Agl =(TH2F*) inputHistoFile -> Get ("Results/RICH_DvsMC_D_CorrectionAgl"         );
 
-	TH1F* Tracker_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Tracker_DvsMC_CorrectionR"  		);
-        TH1F* Tracker_Correction_TOF =(TH1F*) inputHistoFile -> Get ("Results/Tracker_DvsMC_CorrectionTOF"		);
-        TH1F* Tracker_Correction_NaF =(TH1F*) inputHistoFile -> Get ("Results/Tracker_DvsMC_CorrectionNaF"		);
-        TH1F* Tracker_Correction_Agl =(TH1F*) inputHistoFile -> Get ("Results/Tracker_DvsMC_CorrectionAgl"		);
-
-	//tracker
-	AcceptanceP -> Apply_DvsMCcorrection_R  (Tracker_Correction_R   );
- 	AcceptanceP -> Apply_DvsMCcorrection_TOF(Tracker_Correction_TOF );
- 	AcceptanceP -> Apply_DvsMCcorrection_NaF(Tracker_Correction_NaF );
- 	AcceptanceP -> Apply_DvsMCcorrection_Agl(Tracker_Correction_Agl );
+	//global factors
+	AcceptanceP    -> ApplyGlobalFactor(TriggerGlobalFactor -> GetBinContent(1), TriggerGlobalFactor -> GetBinError(1));
+	AcceptanceD    -> ApplyGlobalFactor(TriggerGlobalFactor -> GetBinContent(1), TriggerGlobalFactor -> GetBinError(1));
+	AcceptancePreP -> ApplyGlobalFactor(TriggerGlobalFactor -> GetBinContent(1), TriggerGlobalFactor -> GetBinError(1));
+ 
+	AcceptanceP    -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
+	AcceptanceD    -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
+	AcceptancePreP -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
 	
-	AcceptancePreP -> Apply_DvsMCcorrection_R  (Tracker_Correction_R   );
-        AcceptancePreP -> Apply_DvsMCcorrection_TOF(Tracker_Correction_TOF );
-        AcceptancePreP -> Apply_DvsMCcorrection_NaF(Tracker_Correction_NaF );
-	AcceptancePreP -> Apply_DvsMCcorrection_Agl(Tracker_Correction_Agl );
-
 	//preselections
-		
-	/*AcceptanceP -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,1,3);
+	AcceptanceP -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,1,3);
 	AcceptanceP -> Apply_DvsMCcorrection_TOF(PreSel_Correction_TOF,1,3);
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,1,3);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);
@@ -85,7 +91,7 @@ void Acceptance(){
 	AcceptancePreP -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,1,3);
         AcceptancePreP -> Apply_DvsMCcorrection_TOF(PreSel_Correction_TOF,1,3);
         AcceptancePreP -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,1,3);
-	AcceptancePreP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);*/
+	AcceptancePreP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);
 
 	//qual
 	AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);

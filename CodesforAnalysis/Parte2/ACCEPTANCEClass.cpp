@@ -106,6 +106,7 @@ public:
         void Apply_DvsMCcorrection_Agl(TH1 * Agl_Correction,int n=1,int S=1){ if (LATcorrW_Agl )  ApplyDvsMCcorrection(n,S,Agl_Correction, CorrectedAcceptance_Agl , Geomag_Acceptance_Agl ); return;}
  		
 
+	void ApplyGlobalFactor(float factor, float error);
 };
 
 void ACCEPTANCE::Set_MC_Par( float Trigrate, float rmin, float rmax){
@@ -293,6 +294,29 @@ void ACCEPTANCE::Eval_Corrected_Acceptance(int n){
 	return;
 
 }
+
+
+void GlobalFactor(TH1* Acceptance,float factor, float error){
+		Acceptance -> Scale(factor);
+		for(int m=0;m<Acceptance->GetNbinsY();m++)
+                        for(int R=0;R<Acceptance->GetNbinsX();R++)
+				Acceptance -> SetBinError(R+1,m+1,pow(pow(Acceptance -> GetBinError(R+1,m+1),2)+pow(error,2),0.5) );
+		return;
+}
+
+
+void ACCEPTANCE::ApplyGlobalFactor(float factor, float error){
+	
+	if(LATcorrW_R   )  GlobalFactor( CorrectedAcceptance_R  ,factor,error);
+        if(LATcorrW_TOF )  GlobalFactor( CorrectedAcceptance_TOF,factor,error);
+        if(LATcorrW_NaF )  GlobalFactor( CorrectedAcceptance_NaF,factor,error);
+        if(LATcorrW_Agl )  GlobalFactor( CorrectedAcceptance_Agl,factor,error);
+
+	return;
+}
+
+
+
 
 void ACCEPTANCE::ApplyDvsMCcorrection(int n, int S, TH1* Correction, TH1* Corrected_Acc, TH1* Geom_Acc){
 	float error=0;
