@@ -177,7 +177,7 @@ void DVSMCPreSeleff(){
                 j=0;
                 for(int i=1;i<nbinsr;i++) {
                         if(EffMC_R  -> GetBinContent(i+1,S+1)>0){
-                                MCEff_Graph[S]->SetPoint(j,R_cent[i],EffMC_R   -> GetBinContent(i+1,S+1));
+                                MCEff_Graph[S]->SetPoint(j,PRB.RigBinCent(i),EffMC_R   -> GetBinContent(i+1,S+1));
                                 MCEff_Graph[S]->SetPointError(j,0,EffMC_R   -> GetBinError(i+1,S+1));
                                 j++;
                         }
@@ -192,7 +192,7 @@ void DVSMCPreSeleff(){
                 j=0;
                 for(int i=1;i<nbinsr;i++) {
                         if(EffData_R  -> GetBinContent(i+1,S+1)>0){
-                                DATAEff_Graph[S]->SetPoint(j,R_cent[i],EffData_R   -> GetBinContent(i+1,S+1));
+                                DATAEff_Graph[S]->SetPoint(j,PRB.RigBinCent(i),EffData_R   -> GetBinContent(i+1,S+1));
                                 DATAEff_Graph[S]->SetPointError(j,0,EffData_R   -> GetBinError(i+1,S+1));
                                 j++;
                         }

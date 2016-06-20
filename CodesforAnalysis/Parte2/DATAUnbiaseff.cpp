@@ -6,10 +6,10 @@ void DATAUnbiaseff_Fill () {
    if (!cmask.isPreselected() ||Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff) return;
    if (!(Tup.EdepTrack<EdepTrackbeta->Eval (Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval (Tup.Beta_pre)-0.2)) return;	
 
-   int Kbin=RB.GetRBin (fabs (Tup.R_pre) );
-   if(Unbias==0) EffUnbiasDATA->beforeR->Fill(Kbin);
-   if(Unbias==1) EffUnbiasDATA->beforeR->Fill(Kbin,100);
-   if(Unbias==0) EffUnbiasDATA->afterR->Fill(Kbin);
+   int Kbin=PRB.GetRBin (fabs (Tup.R_pre) );
+   if(Tup.Unbias==0) EffUnbiasDATA->beforeR->Fill(Kbin);
+   if(Tup.Unbias==1) EffUnbiasDATA->beforeR->Fill(Kbin,100);
+   if(Tup.Unbias==0) EffUnbiasDATA->afterR->Fill(Kbin);
 
    return;
 }

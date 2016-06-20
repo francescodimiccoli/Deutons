@@ -124,16 +124,16 @@ int main(int argc, char * argv[])
    PRB.setBinsFromRigidity(nbinsr, 0.5, 100); // PRB did not have Ek
    
    float ekmin=0.1, ekmax=1;
-   ToFDB.setBinsFromEk(nbinsToF, ekmin, ekmax);
-   ToFPB.setBinsFromEk(nbinsToF, ekmin, ekmax);
+   ToFDB.setBinsFromEkPerMass (nbinsToF, ekmin, ekmax);
+   ToFPB.setBinsFromEkPerMass(nbinsToF, ekmin, ekmax);
 
    ekmin=0.666, ekmax=4.025;
-   NaFDB.setBinsFromEk(nbinsNaF, ekmin, ekmax);
-   NaFPB.setBinsFromEk(nbinsNaF, ekmin, ekmax);
+   NaFDB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
+   NaFPB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
 
    ekmin=2.57, ekmax=9.01;
-   AglDB.setBinsFromEk(nbinsAgl, ekmin, ekmax);
-   AglPB.setBinsFromEk(nbinsAgl, ekmin, ekmax);
+   AglDB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
+   AglPB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
 
    cout<<endl;
    

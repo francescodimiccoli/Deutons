@@ -49,10 +49,10 @@ void Acceptance(){
 
 	cout<<"****** DVSMC APPLICATION *********"<<endl;
 	
-	TH2F* PreSel_Correction_R  =(TH2F*) file1 -> Get("Results/PreSel_DvsMC_P_CorrectionR"  );
-	TH2F* PreSel_Correction_TOF=(TH2F*) file1 -> Get("Results/PreSel_DvsMC_P_CorrectionTOF");
-	TH2F* PreSel_Correction_NaF=(TH2F*) file1 -> Get("Results/PreSel_DvsMC_P_CorrectionNaF");
-	TH2F* PreSel_Correction_Agl=(TH2F*) file1 -> Get("Results/PreSel_DvsMC_P_CorrectionAgl");
+	TH2F* PreSel_Correction_R  =(TH2F*) inputHistoFile -> Get("Results/PreSel_DvsMC_P_CorrectionR"  );
+	TH2F* PreSel_Correction_TOF=(TH2F*) inputHistoFile -> Get("Results/PreSel_DvsMC_P_CorrectionTOF");
+	TH2F* PreSel_Correction_NaF=(TH2F*) inputHistoFile -> Get("Results/PreSel_DvsMC_P_CorrectionNaF");
+	TH2F* PreSel_Correction_Agl=(TH2F*) inputHistoFile -> Get("Results/PreSel_DvsMC_P_CorrectionAgl");
 
 	TH1F* DistP_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionR"  		); 
 	TH1F* LikP_Correction_R    =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionR"   		);

@@ -24,6 +24,7 @@ class Binning {
 
       void setBinsFromEk (int, float, float); ///< nbins, min, max
       void setBinsFromRigidity (int, float, float);
+      void setBinsFromEkPerMass(int, float, float);
       int size() {return ekbincent.size(); };
       
       /** @brief Returns the rigidity bin containing the variable
@@ -128,6 +129,27 @@ void Binning::setBinsFromRigidity (int nbins, float min, float max)
 
    return;
 }
+
+
+void Binning::setBinsFromEkPerMass (int nbins, float min, float max)
+{
+   std::vector<float> vedg=computeLogBinEdges(nbins, min, max);
+   for (float binedge:vedg) {
+      particle.FillFromEkPerMass (binedge);
+      pushBackVelocities();
+   }
+   
+   std::vector<float> vcen=computeLogBinCenters(nbins, min, max);
+   for (float bincenter:vcen) {
+      particle.FillFromEkPerMass (bincenter);
+      pushBackCentralVelocities();
+   }
+
+   return;
+}
+
+
+
 
 
 std::vector<float> Binning::computeLogBinEdges(int nbins, float min, float max) {
