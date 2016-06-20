@@ -13,8 +13,8 @@ class printMatrix {
 
       static void print (std::vector<std::vector <float>> matrix)
       {
-         int ncolumns = matrix.size();
-         int nlines=0;
+         uint ncolumns = matrix.size();
+         uint nlines=0;
          for (auto column : matrix)
             if (column.size() > nlines)  nlines = column.size();
 
@@ -37,8 +37,8 @@ class printMatrix {
 
       static void printTransposed(std::vector<std::vector <float>> matrix)
       {
-         int ncolumns = matrix.size();
-         int nlines=0;
+         uint ncolumns = matrix.size();
+         uint nlines=0;
          for (auto column : matrix)
             if (column.size() > nlines)  nlines = column.size();
 

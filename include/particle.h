@@ -35,8 +35,8 @@ class Particle {
 
    private:
       float mass=0;
-      int A=1;
       int Z=1;
+      int A=1;
       float ekin=0;
       float etot=0;
       float mom =0;
