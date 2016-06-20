@@ -51,17 +51,19 @@ class Binning {
       std::vector<float> EkPerMassBins  ();  ///< returns Ek per mass
       std::vector<float> EtotPerMassBins();  ///< returns Etot per mass
 
-      float EkBin  (int bin)   {  return   ekbin[bin];   }
-      float EtotBin  (int bin) {  return   etotbin[bin]; }
-      float MomBin (int bin)   {  return  mombin[bin];   }
-      float RigBin (int bin)   {  return  rigbin[bin];   }
-      float BetaBin (int bin)  {  return betabin[bin];   }
+      float EkBin  (int bin)        {  return   ekbin[bin];        }
+      float EtotBin  (int bin)      {  return   etotbin[bin];      }
+      float MomBin (int bin)        {  return  mombin[bin];        }
+      float RigBin (int bin)        {  return  rigbin[bin];        }
+      float BetaBin (int bin)       {  return betabin[bin];        }
+      float EkPerMassBin (int bin)  {  return ekpermassbin[bin];   }
 
-      float EkBinCent  (int bin) { return    ekbincent[bin]; }  ///< bin centers in log
-      float EtotBinCent (int bin) { return  etotbincent[bin]; }
-      float MomBinCent (int bin) { return   mombincent[bin]; }
-      float RigBinCent (int bin) { return   rigbincent[bin]; }
-      float BetaBinCent (int bin) { return  betabincent[bin]; }
+      float EkBinCent   (int bin)       { return    ekbincent[bin];        }  ///< bin centers in log
+      float EtotBinCent (int bin)       { return  etotbincent[bin];        }
+      float MomBinCent  (int bin)       { return   mombincent[bin];        }
+      float RigBinCent  (int bin)       { return   rigbincent[bin];        }
+      float BetaBinCent (int bin)       { return  betabincent[bin];        }
+      float EkPerMassBinCent (int bin)  {  return ekpermassbincent[bin];   }
 
 
 
@@ -71,75 +73,86 @@ class Binning {
       int Z=1;
       int A=1;
 
-      std::vector<float>   ekbin ;
+      std::vector<float> ekbin ;
       std::vector<float> etotbin ;
-      std::vector<float>  mombin ;
-      std::vector<float>  rigbin ;
+      std::vector<float> mombin ;
+      std::vector<float> rigbin ;
       std::vector<float> betabin ;
+      std::vector<float> ekpermassbin ;
 
-      std::vector<float>   ekbincent ;
+      std::vector<float> ekbincent ;
       std::vector<float> etotbincent ;
-      std::vector<float>  mombincent ;
-      std::vector<float>  rigbincent ;
+      std::vector<float> mombincent ;
+      std::vector<float> rigbincent ;
       std::vector<float> betabincent ;
+      std::vector<float> ekpermassbincent ;
 
       void pushBackVelocities ();
       void pushBackCentralVelocities ();
+      std::vector<float> computeLogBinEdges(int nbins, float min, float max);
+      std::vector<float> computeLogBinCenters(int nbins, float min, float max);
 
 };
 
 
 void Binning::setBinsFromEk (int nbins, float min, float max)
 {
-   float logmin=log (min), logmax=log (max);
-   float binbeg=min;
-   float binstep= (logmax-logmin)  / nbins;
-   int ibin=0;
-   std::vector<float> vbin (nbins+1); // bins
-   std::vector<float> vcen (nbins); // centers
-   Particle Pedge (particle), Pcent (particle);
-
-   // Filling the vectors
-   while (binbeg<max) {
-      particle.FillFromEk (binbeg);
+   std::vector<float> vedg=computeLogBinEdges(nbins, min, max);
+   for (float binedge:vedg) {
+      particle.FillFromEk (binedge);
       pushBackVelocities();
-      float bincent= exp ( logmin + (ibin+0.5) * binstep);
-      particle.FillFromEk (bincent);
-      pushBackCentralVelocities ();
-      ibin++;
-      binbeg = exp ( logmin + ibin * binstep);
+   }
+   
+   std::vector<float> vcen=computeLogBinCenters(nbins, min, max);
+   for (float bincenter:vcen) {
+      particle.FillFromEk (bincenter);
+      pushBackCentralVelocities();
    }
 
-   particle.FillFromEk (max); // Don't forget the last edge
-   pushBackVelocities();
    return;
 }
 
 void Binning::setBinsFromRigidity (int nbins, float min, float max)
 {
-   float logmin=log (min), logmax=log (max);
-   float binbeg=min;
-   float binstep= (logmax-logmin)  / nbins;
-   int ibin=0;
-   std::vector<float> vbin (nbins+1); // bins
-   std::vector<float> vcen (nbins); // centers
-
-   // Filling the vectors
-   while (binbeg<max) {
-      particle.FillFromRig (binbeg);
+   std::vector<float> vedg=computeLogBinEdges(nbins, min, max);
+   for (float binedge:vedg) {
+      particle.FillFromRig (binedge);
       pushBackVelocities();
-      float bincent= exp ( logmin + (ibin+0.5) * binstep);
-      particle.FillFromRig (bincent);
-      pushBackCentralVelocities ();
-      ibin++;
-      binbeg = exp ( logmin + ibin * binstep);
+   }
+   
+   std::vector<float> vcen=computeLogBinCenters(nbins, min, max);
+   for (float bincenter:vcen) {
+      particle.FillFromRig (bincenter);
+      pushBackCentralVelocities();
    }
 
-   particle.FillFromRig (max); // Don't forget the last edge
-   pushBackVelocities();
    return;
 }
 
+
+std::vector<float> Binning::computeLogBinEdges(int nbins, float min, float max) {
+   std::vector<float> binEdges(nbins+1);
+   float logmin=log (min), logmax=log (max);
+   float binstep= (logmax-logmin)  / nbins;
+   for (int ibin=0; ibin<nbins; ibin++) {
+      float binbeg=min*exp (ibin * binstep);
+      binEdges.push_back(binbeg);
+   }
+    binEdges.push_back(max); // So it has the "right" value for sure
+   return binEdges;
+}
+
+std::vector<float> Binning::computeLogBinCenters(int nbins, float min, float max) {
+   std::vector<float> binCent(nbins);
+   float logmin=log (min), logmax=log (max);
+   float binstep= (logmax-logmin)  / nbins;
+   for (int ibin=0; ibin<nbins; ibin++) {
+      float bincent=min* exp ( (ibin+0.5) * binstep);
+      binCent.push_back(bincent);
+   }
+   return binCent;
+   
+}
 
 
 

@@ -1,5 +1,5 @@
 #define compiler
-Compiler = g++ -std=c++11 -g
+Compiler = g++ -std=c++11 -g 
 
 #exe
 exedue = Analysis
@@ -12,7 +12,5 @@ CCquint = TimeAnalysis.cpp
 #root libs
 rootlibs=`root-config --libs --cflags` 
 all:
-	$(Compiler) -o $(exedue) $(CCdue) $(rootlibs) -lTMVA 
-	$(Compiler) -o $(exequint) $(CCquint) $(rootlibs) -lTMVA
-
-
+	$(Compiler) -o $(exedue) $(CCdue) $(rootlibs) -I../include/
+	$(Compiler) -o $(exequint) $(CCquint) $(rootlibs) -I../include/
