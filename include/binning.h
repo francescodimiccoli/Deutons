@@ -158,9 +158,9 @@ std::vector<float> Binning::computeLogBinEdges(int nbins, float min, float max) 
    float binstep= (logmax-logmin)  / nbins;
    for (int ibin=0; ibin<nbins; ibin++) {
       float binbeg=min*exp (ibin * binstep);
-      binEdges.push_back(binbeg);
+      binEdges[ibin]=binbeg;
    }
-    binEdges.push_back(max); // So it has the "right" value for sure
+    binEdges[nbins]=max; // So it has the "right" value for sure
    return binEdges;
 }
 
@@ -170,7 +170,7 @@ std::vector<float> Binning::computeLogBinCenters(int nbins, float min, float max
    float binstep= (logmax-logmin)  / nbins;
    for (int ibin=0; ibin<nbins; ibin++) {
       float bincent=min* exp ( (ibin+0.5) * binstep);
-      binCent.push_back(bincent);
+      binCent[ibin]=bincent;
    }
    return binCent;
    
@@ -180,21 +180,23 @@ std::vector<float> Binning::computeLogBinCenters(int nbins, float min, float max
 
 void Binning::pushBackVelocities ()
 {
-   ekbin.  push_back (particle.getEkin() );
-   etotbin.push_back (particle.getEtot() );
-   mombin. push_back (particle.getMom()  );
-   rigbin. push_back (particle.getRig()  );
-   betabin.push_back (particle.getBeta() );
+   ekbin.  push_back      (particle.getEkin()        );
+   etotbin.push_back      (particle.getEtot()        );
+   mombin. push_back      (particle.getMom()         );
+   rigbin. push_back      (particle.getRig()         );
+   betabin.push_back      (particle.getBeta()        );
+   ekpermassbin.push_back (particle.getEkinPerMass() );
    return;
 }
 
 void Binning::pushBackCentralVelocities ()
 {
-   ekbincent.  push_back (particle.getEkin() );
-   etotbincent.push_back (particle.getEtot() );
-   mombincent. push_back (particle.getMom()  );
-   rigbincent. push_back (particle.getRig()  );
-   betabincent.push_back (particle.getBeta() );
+   ekbincent.  push_back      (particle.getEkin()        );
+   etotbincent.push_back      (particle.getEtot()        );
+   mombincent. push_back      (particle.getMom()         );
+   rigbincent. push_back      (particle.getRig()         );
+   betabincent.push_back      (particle.getBeta()        );
+   ekpermassbincent.push_back (particle.getEkinPerMass() );
    return;
 }
 
