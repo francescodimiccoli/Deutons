@@ -16,7 +16,7 @@ void DVSMCTrackeff_D_Fill(){
 	if(cmask.isPreselected()&&Tup.EdepECAL>1)
 		ECALvsR_D->Fill(Tup.R_pre,Tup.EdepECAL);
         //R bins
-	int Kbin=RB.GetRBin (Tup.R_pre) ;
+	int Kbin=PRB.GetRBin (Tup.R_pre) ;
 	if(((int) Tup.Cutmask&3 ) == 3   && Tup.Beta_pre>0)            TrakerEfficiencyD -> beforeR -> Fill(Kbin);
 	if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0) 	       TrakerEfficiencyD -> afterR  -> Fill(Kbin); 	
 
@@ -33,7 +33,7 @@ void DVSMCTrackeff_Fill(){
 	if(cmask.isPreselected()&&Tup.EdepECAL>1)
 		ECALvsR_MC->Fill(Tup.R_pre,Tup.EdepECAL);	
         //R bins
-        int Kbin=RB.GetRBin (Tup.R_pre) ;
+        int Kbin=PRB.GetRBin (Tup.R_pre) ;
 	if(((int) Tup.Cutmask&3)  == 3   && Tup.Beta_pre>0) 	      TrakerEfficiencyMCP -> beforeR -> Fill(Kbin);
         if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0)	      TrakerEfficiencyMCP -> afterR  -> Fill(Kbin);
         
@@ -53,8 +53,8 @@ void DVSMCTrackeff_Write(){
 
 void Set_GlobalDatavsMCCorr(TH1F * Correction, TH1F * DataEff, TH1F * MCEff){
 	for(int i =0; i< Correction -> GetNbinsX(); i++) {
-		Correction -> SetBinContent(i,DataEff -> GetBinContent(RB.GetRBin(20)+1)/(float)MCEff -> GetBinContent(RB.GetRBin(20)+1) );
-		Correction -> SetBinError(i,DataEff -> GetBinError(RB.GetRBin(20)+1));
+		Correction -> SetBinContent(i,DataEff -> GetBinContent(PRB.GetRBin(20)+1)/(float)MCEff -> GetBinContent(PRB.GetRBin(20)+1) );
+		Correction -> SetBinError(i,DataEff -> GetBinError(PRB.GetRBin(20)+1));
 	}
 	return;
 }

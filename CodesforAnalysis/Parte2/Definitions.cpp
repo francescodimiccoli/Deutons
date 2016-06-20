@@ -1,6 +1,6 @@
 using namespace std;
 
-#include "Binning.h"
+#include "binning.h"
 
 //// Input-Output Variables
 
@@ -142,14 +142,17 @@ return;
    
 }
 
+Particle proton(0.9382720813, 1, 1);  // proton mass 938 MeV
+Particle deuton(0.18756129  , 1, 2);  // deuterium mass 1876 MeV, Z=1, A=2
 
-DBinning ToFDB;
-PBinning ToFPB;
-DBinning NaFDB;
-PBinning NaFPB;
-DBinning AglDB;
-PBinning AglPB;
+Binning ToFDB(deuton);
+Binning ToFPB(proton);
+Binning NaFDB(deuton);
+Binning NaFPB(proton);
+Binning AglDB(deuton);
+Binning AglPB(proton);
 
-Binning RB;
+Binning DRB(deuton); 
+Binning PRB(proton); 
 
 Cutmask cmask;

@@ -48,8 +48,6 @@ void OtherExperimentsComparison(){
 	TCanvas * c1 = new TCanvas ("Proton Flux");
 	TCanvas * c2 = new TCanvas ("Deuton Flux");
 	
-	PBinning PRB; PRB.Setbins(nbinsr, 0.5, 100, 2); // RB did not have Ek
-	
 	c1 -> cd();
 	gPad->SetLogx();
 	gPad->SetLogy();

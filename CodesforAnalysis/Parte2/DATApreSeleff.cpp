@@ -11,7 +11,7 @@ void DATApreSeleff_Fill(int zona)
    if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta)-0.1)) return;
    if(Tup.R_pre <= Rcut[zona]) return;
    for(int S=0; S<3; S++) {
-      int Kbin=RB.GetRBin(fabs(Tup.R_pre));
+      int Kbin=PRB.GetRBin(fabs(Tup.R_pre));
       if(cmask.notPassed(S)) ((TH3 *)LATpreSelDATA->beforeR)->Fill(Kbin,zona,S);
       if(cmask.passed(S))    ((TH3 *)LATpreSelDATA->afterR )->Fill(Kbin,zona,S);
    }
@@ -73,7 +73,7 @@ void DATApreSeleff(TFile * inputHistoFile)
          int point=0;
          for(int i=1; i<nbinsr; i++) {
             if(LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1)>0) {
-               Eff_preSelLAT[S][l]->SetPoint(point,RB.RigBinCent(i),LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1));
+               Eff_preSelLAT[S][l]->SetPoint(point,PRB.RigBinCent(i),LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1));
                Eff_preSelLAT[S][l]->SetPointError(point,0,LATpreSelDATA_R->GetBinError(i+1,l+1,S+1));
                point++;
             }
@@ -145,4 +145,3 @@ void DATApreSeleff(TFile * inputHistoFile)
 
 
 }
-

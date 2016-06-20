@@ -174,7 +174,7 @@ TH1 * ACCEPTANCE::Triggerbin(int n , TH1 * after , float trigrate, float bins[])
 
 
 void ACCEPTANCE::Eval_Gen_Acceptance(int n){
-	before_R    = ACCEPTANCE::Triggerbin( n, after_R   ,trigrate , RB.RigBins().data());	
+	before_R    = ACCEPTANCE::Triggerbin( n, after_R   ,trigrate , PRB.RigBins().data());	
 	before_TOF 	= ACCEPTANCE::Triggerbin( n, after_TOF ,trigrate , binsBetaTOF);
 	before_NaF 	= ACCEPTANCE::Triggerbin( n, after_NaF ,trigrate , binsBetaNaF);	
 	before_Agl 	= ACCEPTANCE::Triggerbin( n, after_Agl ,trigrate , binsBetaAgl);

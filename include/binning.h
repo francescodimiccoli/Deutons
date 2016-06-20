@@ -16,7 +16,8 @@
 
 class Binning {
    public:
-      Binning (float m) :           particle (m)       {}
+      Binning () :                  particle (1) {}
+      Binning (float m) :           particle (m) {}
       Binning (float m, float z) :  particle (m, z) {}
       Binning (float m, float z, float a) :  particle (m, z, a) {}
       Binning (Particle p) : particle (p) {}

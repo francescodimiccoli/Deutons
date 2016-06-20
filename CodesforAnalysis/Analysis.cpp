@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "TH1.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -60,6 +62,8 @@
 #include "Parte2/OtherExperimentsComparison.cpp"
 #include "Parte2/DVSMCTrackeff.cpp"
 
+
+
 using namespace std;
 
 #include "FillIstogram.cpp"
@@ -110,35 +114,28 @@ int main(int argc, char * argv[])
    cout<<endl;
    cout<<"Output dir: "<<outputpath<<"Histos/"<<mese<<endl;
    cout<<endl;
-   cout<<"****************************** R BINS ***************************************"<<endl;
 
-   RB.Setbins(nbinsr, 0.5, 100, 2);
 
-   for(int i=0; i<RB.size()-1; i++) {
-      cout<<RB.RigBinCent(i)<<endl;
-   }
 
-   cout<<"**************************** BETA BINS TOF***********************************"<<endl;
+   
+   cout<<"****************************** BINS ***************************************"<<endl;
 
+   DRB.setBinsFromRigidity(nbinsr, 0.5, 100); // PRB did not have Ek
+   PRB.setBinsFromRigidity(nbinsr, 0.5, 100); // PRB did not have Ek
+   
    float ekmin=0.1, ekmax=1;
-   ToFDB.Setbins(nbinsToF, ekmin, ekmax);
-   ToFPB.Setbins(nbinsToF, ekmin, ekmax);
-
-   cout<<"**************************** BETA BINS NaF***********************************"<<endl;
+   ToFDB.setBinsFromEk(nbinsToF, ekmin, ekmax);
+   ToFPB.setBinsFromEk(nbinsToF, ekmin, ekmax);
 
    ekmin=0.666, ekmax=4.025;
-   NaFDB.Setbins(nbinsNaF, ekmin, ekmax);
-   NaFPB.Setbins(nbinsNaF, ekmin, ekmax);
-
-   cout<<endl;
-   cout<<"**************************** BETA BINS Agl***********************************"<<endl;
+   NaFDB.setBinsFromEk(nbinsNaF, ekmin, ekmax);
+   NaFPB.setBinsFromEk(nbinsNaF, ekmin, ekmax);
 
    ekmin=2.57, ekmax=9.01;
-   AglDB.Setbins(nbinsAgl, ekmin, ekmax);
-   AglPB.Setbins(nbinsAgl, ekmin, ekmax);
+   AglDB.setBinsFromEk(nbinsAgl, ekmin, ekmax);
+   AglPB.setBinsFromEk(nbinsAgl, ekmin, ekmax);
 
    cout<<endl;
-
    
    cout<<"************************ ISTOGRAM FILLING **************************************************************"<<endl;
 

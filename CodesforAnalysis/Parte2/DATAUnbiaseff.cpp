@@ -5,7 +5,7 @@ Efficiency * EffUnbiasDATA = new Efficiency ("EffUnbiasDATA");
 void DATAUnbiaseff_Fill () {
    if (!cmask.isPreselected() ||Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff) return;
 
-   int Kbin=RB.GetRBin (fabs (Tup.R_pre) );
+   int Kbin=PRB.GetRBin (fabs (Tup.R_pre) );
    if (Tup.EdepTrack<EdepTrackbeta->Eval (Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval (Tup.Beta_pre)-0.2) {
       EffUnbiasDATA->beforeR->Fill (Kbin);
       if (Tup.Unbias==1) EffUnbiasDATA->afterR->Fill (Kbin);
@@ -56,7 +56,7 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
    string MCLegend[2]= {"protons","deutons"};
    TGraph * EffUnbDATA_R = new TGraph();
    EffUnbDATA_R->SetTitle (MCLegend[0].c_str() );
-   for (int i=0; i<nbinsr; i++) EffUnbDATA_R->SetPoint (i,RB.RigBinCent (i),EffUnbDATA_R_TH1F->GetBinContent (i+1) );
+   for (int i=0; i<nbinsr; i++) EffUnbDATA_R->SetPoint (i,PRB.RigBinCent (i),EffUnbDATA_R_TH1F->GetBinContent (i+1) );
    EffUnbDATA_R->SetMarkerColor (2);
    EffUnbDATA_R->SetMarkerStyle (8);
    EffUnbDATA_R->SetLineColor (2);
@@ -103,5 +103,3 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
 
 
 }
-
-

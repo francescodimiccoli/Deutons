@@ -150,8 +150,6 @@ void Acceptance(){
         gPad->SetGridy();
         TGraphErrors * EffgenbetaD[6];
 	int p =0;
-	DBinning DRB; DRB.Setbins(nbinsr, 0.5, 100, 2); // RB did not have Ek
-        PBinning PRB; PRB.Setbins(nbinsr, 0.5, 100, 2); // RB did not have Ek
 	for(int h=0;h<6;h++){
 		EffgenbetaD[h]=new TGraphErrors();
 		p=0;

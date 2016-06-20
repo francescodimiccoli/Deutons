@@ -13,7 +13,7 @@ TemplateFIT * HeliumContaminationAgl = new TemplateFIT("HeliumContaminationAgl",
 void HecutMC_Fill() {
 
 	float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
-	int Kbin=RB.GetRBin(Tup.Momento_gen);
+	int Kbin=PRB.GetRBin(Tup.Momento_gen);
 
 	if(Massa_gen<1) {
 		HecutMC_P->Fill( fabs(EdepTOFbeta  ->Eval(Tup.Beta)-EdepTOFud) / (pow(EdepTOFbeta  ->Eval(Tup.Beta),2)*etofu ->Eval(Tup.Beta)) ,
@@ -163,12 +163,12 @@ void Hecut(TFile * inputHistoFile) {
 	gPad->SetLogx();
 	TGraphErrors *effHecut=new TGraphErrors();
 	for(int K=0; K<nbinsr; K++) {
-		effHecut->SetPoint(K,RB.RigBinCent(K), HecutMCP_TH1F->GetBinContent(K+1));
+		effHecut->SetPoint(K,PRB.RigBinCent(K), HecutMCP_TH1F->GetBinContent(K+1));
 		effHecut->SetPointError(K,0,    HecutMCP_TH1F->GetBinError(K+1));
 	}
 	TGraphErrors *effHecutHe=new TGraphErrors();
 	for(int K=0; K<nbinsr; K++) {
-		effHecutHe->SetPoint(K,RB.RigBinCent(K), HecutMCHe_TH1F->GetBinContent(K+1));
+		effHecutHe->SetPoint(K,PRB.RigBinCent(K), HecutMCHe_TH1F->GetBinContent(K+1));
 		effHecutHe->SetPointError(K,0,    HecutMCHe_TH1F->GetBinError(K+1));
 	}
 	effHecut->SetMarkerColor(2);
@@ -269,5 +269,3 @@ void Hecut(TFile * inputHistoFile) {
 
 	fileFinalPlots->Write();
 }
-
-
