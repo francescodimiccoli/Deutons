@@ -60,8 +60,13 @@ void Set_GlobalDatavsMCCorr(TH1F * Correction, TH1F * DataEff, TH1F * MCEff){
 }
 
 void DVSMCTrackeff(TFile * file){
+<<<<<<< HEAD
 	Efficiency * TrackerEfficiencyMCP = new Efficiency(file,"TrackerEfficiencyMCP");
 	Efficiency * TrackerEfficiencyD   = new Efficiency(file,"TrackerEfficiencyC"  );
+=======
+	Efficiency * TrakerEfficiencyMCP = new Efficiency(file,"TrakerEfficiencyMCP");
+	Efficiency * TrakerEfficiencyD   = new Efficiency(file,"TrakerEfficiencyC"  );
+>>>>>>> 89a8c6fd31968b302c0da055819f3dd5078aa626
 
 	TH2F * ECALvsR_D =(TH2F*) file->Get("ECALvsR_D");
         TH2F * ECALvsR_MC =(TH2F*) file->Get("ECALvsR_MC");
