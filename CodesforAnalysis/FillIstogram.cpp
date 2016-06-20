@@ -267,7 +267,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
-
+      
       MCpreseff_Fill();
       MCUnbiaseff_Fill();
       MCTrackeff_Fill();
@@ -278,6 +278,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       DVSMCPreSeleff_Fill();
       DVSMCPreSeleffD_Fill();
    }
+   cout << endl;
    return;
 }
 
@@ -290,7 +291,6 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
    for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
       ntupMCSepD->GetEvent(i);
       if(Tup.Beta<=0 || Tup.R<=0) continue;
-
       cmask.setMask(Tup.Cutmask);
       Massa_gen = ReturnMass_Gen();
       UpdateProgressBar(i, nentries);
@@ -312,6 +312,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       MCMC_Fill();
 
    }
+   cout << endl;
    return;
 }
 
@@ -336,6 +337,7 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
       DVSMCPreSeleff_D_Fill(Zona);
       DVSMCPreSeleffD_D_Fill(Zona);
    }
+   cout << endl;
    return;
 }
 
@@ -350,12 +352,9 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
       cmask.setMask(Tup.Cutmask);
       if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
       if(Tup.Beta<=0||Tup.R<=0) continue;
-
-      float Zona=getGeoZone(Tup.Latitude);
-
-
-
+      
       Cuts();
+      float Zona=getGeoZone(Tup.Latitude);
       RUsed=Tup.R;
       UpdateProgressBar(i, nentries);
 
@@ -371,6 +370,7 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
       DeutonsDATA_Dist_Fill(Zona);
       MCMCDATA_Fill();
    }
+   cout << endl;
    return;
 }
 
