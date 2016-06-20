@@ -7,8 +7,6 @@ Efficiency * EffUnbiasMCD;
 
 void MCUnbiaseff_Fill() {
 
-   EffUnbiasMCP = new Efficiency("EffUnbiasMCP");
-   EffUnbiasMCD = new Efficiency("EffUnbiasMCD");
    if(!cmask.isPreselected()||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
    if(!(Tup.EdepTrack<EdepTrackbeta->Eval(Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval(Tup.Beta_pre)-0.2)) return;
 

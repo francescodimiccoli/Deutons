@@ -258,6 +258,8 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
 void LoopOnMCTrig(TNtuple*  ntupMCTrig)
 {
    int nentries=ntupMCTrig->GetEntries();
+   EffUnbiasMCP = new Efficiency("EffUnbiasMCP");
+   EffUnbiasMCD = new Efficiency("EffUnbiasMCD");   
    for(int i=0; i<ntupMCTrig->GetEntries(); i++) {
       ntupMCTrig->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
