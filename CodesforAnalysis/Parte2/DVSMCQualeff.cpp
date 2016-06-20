@@ -385,6 +385,21 @@ void DVSMCQualeff2(){
 	c20_bis->Write();
 	c21_bis->Write();
 
+		
+	fileFinalPlots->mkdir("Export/DvsMC");
+	fileFinalPlots->cd("Export/DvsMC");
+        
+	DistDVSMC_P_Graph->Write();
+	DistDVSMC_P_GraphTOF->Write();
+	DistDVSMC_P_GraphNaF->Write();
+	DistDVSMC_P_GraphAgl->Write();
+
+	LikDVSMC_P_Graph->Write();
+	LikDVSMC_P_GraphTOF->Write();
+	LikDVSMC_P_GraphNaF->Write();
+	LikDVSMC_P_GraphAgl->Write();
+	
+
 	fileFinalPlots->Write();
 
 

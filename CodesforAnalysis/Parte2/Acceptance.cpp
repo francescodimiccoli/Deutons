@@ -49,6 +49,11 @@ void Acceptance(){
 
 	cout<<"****** DVSMC APPLICATION *********"<<endl;
 	
+	TH2F* PreSel_Correction_R  =(TH2F*) file1 -> Get("Results/PreSel_DvsMC_P_CorrectionR"  );
+	TH2F* PreSel_Correction_TOF=(TH2F*) file1 -> Get("Results/PreSel_DvsMC_P_CorrectionTOF");
+	TH2F* PreSel_Correction_NaF=(TH2F*) file1 -> Get("Results/PreSel_DvsMC_P_CorrectionNaF");
+	TH2F* PreSel_Correction_Agl=(TH2F*) file1 -> Get("Results/PreSel_DvsMC_P_CorrectionAgl");
+
 	TH1F* DistP_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionR"  		); 
 	TH1F* LikP_Correction_R    =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionR"   		);
 
@@ -75,6 +80,17 @@ void Acceptance(){
         AcceptancePreP -> Apply_DvsMCcorrection_NaF(Tracker_Correction_NaF );
 	AcceptancePreP -> Apply_DvsMCcorrection_Agl(Tracker_Correction_Agl );
 
+	//preselections
+		
+	/*AcceptanceP -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,1,3);
+	AcceptanceP -> Apply_DvsMCcorrection_TOF(PreSel_Correction_TOF,1,3);
+	AcceptanceP -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,1,3);
+	AcceptanceP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);
+
+	AcceptancePreP -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,1,3);
+        AcceptancePreP -> Apply_DvsMCcorrection_TOF(PreSel_Correction_TOF,1,3);
+        AcceptancePreP -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,1,3);
+	AcceptancePreP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);*/
 
 	//qual
 	AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);

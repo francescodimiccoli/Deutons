@@ -4,18 +4,13 @@ Efficiency * EffUnbiasDATA = new Efficiency ("EffUnbiasDATA");
 
 void DATAUnbiaseff_Fill () {
    if (!cmask.isPreselected() ||Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff) return;
+   if (!(Tup.EdepTrack<EdepTrackbeta->Eval (Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval (Tup.Beta_pre)-0.2)) retunr;	
+
 
    int Kbin=RB.GetRBin (fabs (Tup.R_pre) );
-   if (Tup.EdepTrack<EdepTrackbeta->Eval (Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval (Tup.Beta_pre)-0.2) {
-      EffUnbiasDATA->beforeR->Fill (Kbin);
-      if (Tup.Unbias==1) EffUnbiasDATA->afterR->Fill (Kbin);
-   }
-
-   if (Tup.EdepTrack<EdepTrackbeta->Eval (Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval (Tup.Beta_pre)-0.2) {
-      Kbin=ToFPB.GetRBin (RUsed);
-      EffUnbiasDATA->beforeTOF->Fill (Kbin);
-      if (Tup.Unbias==1) EffUnbiasDATA->afterTOF->Fill (Kbin);
-   }
+   if(Unbias==0) EffUnbiasDATA->beforeR->Fill(Kbin);
+   if(Unbias==1) EffUnbiasDATA->beforeR->Fill(Kbin,100);
+   if(Unbias==0) EffUnbiasDATA->afterR->Fill(Kbin);
 
    return;
 }
@@ -48,8 +43,7 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
 
    TCanvas *c12=new TCanvas ("DATA: Unb. Trigger Efficiency");
 
-   c12->Divide (2,1);
-   c12->cd (1);
+   c12->cd ();
    gPad->SetLogx();
    gPad->SetGridx();
    gPad->SetGridy();
@@ -62,6 +56,7 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
    EffUnbDATA_R->SetLineColor (2);
    EffUnbDATA_R->SetLineWidth (2);
    EffUnbDATA_R->SetTitle ("Physical Trigg. Efficiency  (R bins)");
+   EffUnbDATA_R->GetYaxis()->SetRangeUser(0,1);
    EffUnbDATA_R->GetXaxis()->SetTitle ("R [GV]");
    EffUnbDATA_R->GetYaxis()->SetTitle ("Efficiency");
    EffUnbDATA_R->GetXaxis()->SetTitleSize (0.045);
@@ -73,27 +68,6 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
 
    }
 
-   c12->cd (2);
-   gPad->SetLogx();
-   gPad->SetGridx();
-   gPad->SetGridy();
-   TGraph * EffUnbDATA = new TGraph();
-   for (int i=0; i<ToFPB.size(); i++) EffUnbDATA->SetPoint (i,ToFPB.EkBinCent (i),EffUnbDATA_TH1F->GetBinContent (i+1) );
-   EffUnbDATA->SetMarkerColor (2);
-   EffUnbDATA->SetMarkerStyle (8);
-   EffUnbDATA->SetLineColor (2);
-   EffUnbDATA->SetLineWidth (2);
-   EffUnbDATA->SetTitle ("Physical Trigg. Efficiency  (Beta bins)");
-   EffUnbDATA->GetXaxis()->SetTitle ("Kin. En. / nucl. [GeV/nucl.]");
-   EffUnbDATA->GetYaxis()->SetTitle ("Efficiency");
-   EffUnbDATA->GetXaxis()->SetTitleSize (0.045);
-   EffUnbDATA->GetYaxis()->SetTitleSize (0.045);
-   {
-      EffUnbDATA->Draw ("ACP");
-      TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
-      leg->AddEntry (EffUnbDATA,MCLegend[0].c_str(), "ep");
-
-   }
 
    cout<<"*** Updating Results file ***"<<endl;
    fileFinalPlots->mkdir ("DATA-driven Results");

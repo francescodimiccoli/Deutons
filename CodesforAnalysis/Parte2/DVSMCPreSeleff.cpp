@@ -5,10 +5,11 @@ DatavsMC * PreSel_DvsMC_P = new DatavsMC("PreSel_DvsMC_P",11,3);
 void DVSMCPreSeleff_D_Fill(int zona){
 
 	//cuts
-	if(Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
+	if(Tup.Unbias!=0||Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
 	if(!((Tup.R_pre>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!Herejcut) return;
-	if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
+	//if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
+	if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta_pre)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta_pre)-0.1)) return;
 	//
 	int Kbin;
 	for(int S=0;S<3;S++){
@@ -41,9 +42,10 @@ void DVSMCPreSeleff_D_Fill(int zona){
 void DVSMCPreSeleff_Fill(){
 
 	//cuts
-	if(Tup.Beta_pre<=0||Tup.R_pre<=0||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
+	if(Tup.Unbias!=0||Tup.Beta_pre<=0||Tup.R_pre<=0||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
 	if(!Herejcut) return;
-	if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
+	//if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
+	if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta_pre)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta_pre)-0.1)) return;
 	//
 	int Kbin;
 	for(int S=0;S<3;S++){
@@ -113,9 +115,11 @@ void DVSMCPreSeleff(){
 	TH2F* PreSel_Correction_NaF =(TH2F*) PreSel_DvsMC_P -> GetCorrection_NaF();
 	TH2F* PreSel_Correction_Agl =(TH2F*) PreSel_DvsMC_P -> GetCorrection_Agl();
 
+	TH2F* EffData_R   =(TH2F*) PreSel_DvsMC_P -> DataEff_corr -> effR -> Clone();
+	TH2F* EffMC_R     =(TH2F*) PreSel_DvsMC_P -> MCEff 	  -> effR -> Clone();
 
 	cout<<"*** Updating P1 file ****"<<endl;
-   inputHistoFile->ReOpen("UPDATE");
+        inputHistoFile->ReOpen("UPDATE");
 
 	inputHistoFile->cd("Results");
 
@@ -139,13 +143,17 @@ void DVSMCPreSeleff(){
         TGraphErrors * PreSel_Correction_NaF_Graph[3];
         TGraphErrors * PreSel_Correction_Agl_Graph[3];
 	
+	TGraphErrors * DATAEff_Graph[3];
+	TGraphErrors * MCEff_Graph[3];
 	for(int S=0;S<3;S++){
 		c20[S] = new TCanvas(("Data vs MC: "+tagli[S] +"(R Bins)").c_str());
-		c20[S]->cd();
+	
+		c20[S]->Divide(2,1);
+		c20[S]->cd(1);	
 		gPad->SetLogx();
 		gPad->SetGridx();
 		gPad->SetGridy();
-		PreSel_Correction_R_Graph[S] = new TGraphErrors();        
+		PreSel_Correction_R_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_R").c_str());
 		int j=0;
 		for(int i=1;i<nbinsr;i++) {
 			if(PreSel_Correction_R -> GetBinContent(i+1,S+1)>0){
@@ -160,6 +168,42 @@ void DVSMCPreSeleff(){
 		PreSel_Correction_R_Graph[S]->SetLineWidth(4);
 		PreSel_Correction_R_Graph[S]->Draw("AP4C");
                 
+			
+		c20[S]->cd(2);
+                gPad->SetLogx();
+                gPad->SetGridx();
+                gPad->SetGridy();
+                MCEff_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_R").c_str());
+                j=0;
+                for(int i=1;i<nbinsr;i++) {
+                        if(EffMC_R  -> GetBinContent(i+1,S+1)>0){
+                                MCEff_Graph[S]->SetPoint(j,R_cent[i],EffMC_R   -> GetBinContent(i+1,S+1));
+                                MCEff_Graph[S]->SetPointError(j,0,EffMC_R   -> GetBinError(i+1,S+1));
+                                j++;
+                        }
+                }
+                MCEff_Graph[S]->SetLineColor(2);
+                MCEff_Graph[S]->SetFillColor(2);
+                MCEff_Graph[S]->SetFillStyle(3001);
+                MCEff_Graph[S]->SetLineWidth(4);
+                MCEff_Graph[S]->Draw("AP4C");
+		
+		DATAEff_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_R").c_str());
+                j=0;
+                for(int i=1;i<nbinsr;i++) {
+                        if(EffData_R  -> GetBinContent(i+1,S+1)>0){
+                                DATAEff_Graph[S]->SetPoint(j,R_cent[i],EffData_R   -> GetBinContent(i+1,S+1));
+                                DATAEff_Graph[S]->SetPointError(j,0,EffData_R   -> GetBinError(i+1,S+1));
+                                j++;
+                        }
+                }
+                DATAEff_Graph[S]->SetLineColor(1);
+                DATAEff_Graph[S]->SetFillColor(1);
+                DATAEff_Graph[S]->SetFillStyle(3001);
+                DATAEff_Graph[S]->SetLineWidth(4);
+                DATAEff_Graph[S]->Draw("P4Csame");
+
+		
 		c21[S] = new TCanvas(("Data vs MC: "+tagli[S] +"(Beta Bins)").c_str());
 		c21[S] -> Divide(3,1);
                 
@@ -168,9 +212,9 @@ void DVSMCPreSeleff(){
                 gPad->SetGridx();
                 gPad->SetGridy();
 	
-		PreSel_Correction_TOF_Graph[S] = new TGraphErrors();
-               	PreSel_Correction_NaF_Graph[S] = new TGraphErrors();
-		PreSel_Correction_Agl_Graph[S] = new TGraphErrors();
+		PreSel_Correction_TOF_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_TOF").c_str());
+               	PreSel_Correction_NaF_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_NaF").c_str());
+		PreSel_Correction_Agl_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_Agl").c_str());
 
 		j=0;
                 for(int i=1;i<nbinsToF;i++) {
@@ -239,6 +283,18 @@ void DVSMCPreSeleff(){
 		c20[S]->Write();
 		c21[S]->Write();
 	}
+	fileFinalPlots->mkdir("Export/DvsMC");	
+	fileFinalPlots->cd("Export/DvsMC");
+
+	for(int S=0;S<3;S++){
+
+		PreSel_Correction_R_Graph[S]  ->Write(("DvsMC: "+tagli[S] +"_R").c_str());
+		PreSel_Correction_TOF_Graph[S]->Write(("DvsMC: "+tagli[S] +"_TOF").c_str());
+		PreSel_Correction_NaF_Graph[S]->Write(("DvsMC: "+tagli[S] +"_NaF").c_str());
+		PreSel_Correction_Agl_Graph[S]->Write(("DvsMC: "+tagli[S] +"_Agl").c_str());
+	}
+
+
 	fileFinalPlots->Write();
 
 	return;
