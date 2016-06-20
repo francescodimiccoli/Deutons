@@ -3,8 +3,8 @@ using namespace std;
 TH2F * ECALvsR_D=new TH2F("ECALvsR_D","ECALvsR_D",1000,0,100,1000,0,100);
 TH2F * ECALvsR_MC=new TH2F("ECALvsR_MC","ECALvsR_MC",1000,0,100,1000,0,100);
 
-Efficiency * TrakerEfficiencyMCP = new Efficiency("TrakerEfficiencyMCP");
-Efficiency * TrakerEfficiencyD   = new Efficiency("TrakerEfficiencyC"  );
+Efficiency * TrackerEfficiencyMCP = new Efficiency("TrackerEfficiencyMCP");
+Efficiency * TrackerEfficiencyD   = new Efficiency("TrackerEfficiencyC"  );
 
 void DVSMCTrackeff_D_Fill(){
 	
@@ -17,8 +17,8 @@ void DVSMCTrackeff_D_Fill(){
 		ECALvsR_D->Fill(Tup.R_pre,Tup.EdepECAL);
         //R bins
 	int Kbin=PRB.GetRBin (Tup.R_pre) ;
-	if(((int) Tup.Cutmask&3 ) == 3   && Tup.Beta_pre>0)            TrakerEfficiencyD -> beforeR -> Fill(Kbin);
-	if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0) 	       TrakerEfficiencyD -> afterR  -> Fill(Kbin); 	
+	if(((int) Tup.Cutmask&3 ) == 3   && Tup.Beta_pre>0)            TrackerEfficiencyD -> beforeR -> Fill(Kbin);
+	if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0) 	       TrackerEfficiencyD -> afterR  -> Fill(Kbin); 	
 
 	return;
 }
@@ -34,8 +34,8 @@ void DVSMCTrackeff_Fill(){
 		ECALvsR_MC->Fill(Tup.R_pre,Tup.EdepECAL);	
         //R bins
         int Kbin=PRB.GetRBin (Tup.R_pre) ;
-	if(((int) Tup.Cutmask&3)  == 3   && Tup.Beta_pre>0) 	      TrakerEfficiencyMCP -> beforeR -> Fill(Kbin);
-        if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0)	      TrakerEfficiencyMCP -> afterR  -> Fill(Kbin);
+	if(((int) Tup.Cutmask&3)  == 3   && Tup.Beta_pre>0) 	      TrackerEfficiencyMCP -> beforeR -> Fill(Kbin);
+        if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0)	      TrackerEfficiencyMCP -> afterR  -> Fill(Kbin);
         
 	return;
 
@@ -45,8 +45,8 @@ void DVSMCTrackeff_Fill(){
 void DVSMCTrackeff_Write(){
         ECALvsR_D->Write(); 
         ECALvsR_MC->Write();
-        TrakerEfficiencyMCP->Write();
-	TrakerEfficiencyD  ->Write();
+        TrackerEfficiencyMCP->Write();
+	TrackerEfficiencyD  ->Write();
 	return;
 }
 
@@ -62,35 +62,35 @@ void Set_GlobalDatavsMCCorr(TH1F * Correction, TH1F * DataEff, TH1F * MCEff){
 void DVSMCTrackeff(TFile * file){
 	file->ReOpen("READ");
 
-	Efficiency * TrakerEfficiencyMCP = new Efficiency(file,"TrakerEfficiencyMCP");
-	Efficiency * TrakerEfficiencyD   = new Efficiency(file,"TrakerEfficiencyC"  );
+	Efficiency * TrackerEfficiencyMCP = new Efficiency(file,"TrackerEfficiencyMCP");
+	Efficiency * TrackerEfficiencyD   = new Efficiency(file,"TrackerEfficiencyC"  );
 
 	TH2F * ECALvsR_D =(TH2F*) file->Get("ECALvsR_D");
         TH2F * ECALvsR_MC =(TH2F*) file->Get("ECALvsR_MC");
 
 	cout<<"*************** Tracker Eff: Data vs MC ***************"<<endl;	
- 	TrakerEfficiencyMCP  -> Eval_Efficiency();
-   	TrakerEfficiencyD    -> Eval_Efficiency();
+ 	TrackerEfficiencyMCP  -> Eval_Efficiency();
+   	TrackerEfficiencyD    -> Eval_Efficiency();
 
-	TH1F * TrakerEfficiencyMC    = (TH1F *)TrakerEfficiencyMCP  -> effR    ->    Clone();
-	TH1F * TrakerEfficiencyData  = (TH1F *)TrakerEfficiencyD    -> effR    ->    Clone();		
+	TH1F * TrackerEfficiencyMC    = (TH1F *)TrackerEfficiencyMCP  -> effR    ->    Clone();
+	TH1F * TrackerEfficiencyData  = (TH1F *)TrackerEfficiencyD    -> effR    ->    Clone();		
 
 	TH1F * Tracker_DvsMC_CorrectionR   = new TH1F("Tracker_DvsMC_CorrectionR  ","Tracker_DvsMC_CorrectionR  ",nbinsr  ,0,nbinsr  );
 	TH1F * Tracker_DvsMC_CorrectionTOF = new TH1F("Tracker_DvsMC_CorrectionTOF","Tracker_DvsMC_CorrectionTOF",nbinsToF,0,nbinsToF);
 	TH1F * Tracker_DvsMC_CorrectionNaF = new TH1F("Tracker_DvsMC_CorrectionNaF","Tracker_DvsMC_CorrectionNaF",nbinsNaF,0,nbinsNaF);	
 	TH1F * Tracker_DvsMC_CorrectionAgl = new TH1F("Tracker_DvsMC_CorrectionAgl","Tracker_DvsMC_CorrectionAgl",nbinsAgl,0,nbinsAgl);
 
-	Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionR  ,TrakerEfficiencyData,TrakerEfficiencyMC);
-        Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionTOF,TrakerEfficiencyData,TrakerEfficiencyMC);
-        Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionNaF,TrakerEfficiencyData,TrakerEfficiencyMC);
-	Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionAgl,TrakerEfficiencyData,TrakerEfficiencyMC);
+	Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionR  ,TrackerEfficiencyData,TrackerEfficiencyMC);
+        Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionTOF,TrackerEfficiencyData,TrackerEfficiencyMC);
+        Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionNaF,TrackerEfficiencyData,TrackerEfficiencyMC);
+	Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionAgl,TrackerEfficiencyData,TrackerEfficiencyMC);
 	
 	cout<<"*** Updating P1 file ****"<<endl;
    	inputHistoFile->ReOpen("UPDATE");
 
 	inputHistoFile->cd("Results");
  
-         TrakerEfficiencyData -> Write("TrakerEfficiencyData");
+         TrackerEfficiencyData -> Write("TrackerEfficiencyData");
          Tracker_DvsMC_CorrectionR     -> Write();
          Tracker_DvsMC_CorrectionTOF   -> Write();
          Tracker_DvsMC_CorrectionNaF   -> Write();
@@ -119,13 +119,13 @@ void DVSMCTrackeff(TFile * file){
 
 	TCanvas *c29= new TCanvas("Global Tracker Efficiency");
 	c29 -> cd();
-	TrakerEfficiencyMC    -> SetFillColor(2);
-	TrakerEfficiencyData  -> SetFillColor(1);
-	TrakerEfficiencyMC  ->SetBarWidth(0.5);
-        TrakerEfficiencyData->SetBarWidth(0.5);
+	TrackerEfficiencyMC    -> SetFillColor(2);
+	TrackerEfficiencyData  -> SetFillColor(1);
+	TrackerEfficiencyMC  ->SetBarWidth(0.5);
+        TrackerEfficiencyData->SetBarWidth(0.5);
 	
-	TrakerEfficiencyMC    -> Draw("B");
-        TrakerEfficiencyData  -> Draw("B,same");
+	TrackerEfficiencyMC    -> Draw("B");
+        TrackerEfficiencyData  -> Draw("B,same");
 
 	cout<<"*** Updating Results file ***"<<endl;
         fileFinalPlots->mkdir("DATA-driven Results/Data vs MC/Tracker Efficiency");
@@ -133,7 +133,7 @@ void DVSMCTrackeff(TFile * file){
         c28->Write();
         c29->Write();
 	fileFinalPlots->cd("Export");
-	TrakerEfficiencyData -> Write("TrakerEfficiencyData");
+	TrackerEfficiencyData -> Write("TrackerEfficiencyData");
         fileFinalPlots->Write();
 
 }
