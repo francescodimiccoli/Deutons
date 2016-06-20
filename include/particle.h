@@ -16,8 +16,9 @@ class Particle {
       Particle (float m, float z) : mass (m), Z(z) {}
       Particle (float m, float z, float a) : mass (m), Z(z), A (a)  {}
 
-      void FillFromEk (float);
-      void FillFromRig (float);
+      void FillFromEk        (float);
+      void FillFromEkPerMass (float);
+      void FillFromRig       (float);
 
       float getMass() {return mass;}
       int   getA   () {return A   ;}
@@ -28,6 +29,9 @@ class Particle {
       float getRig () {return rig ;  }
       float getBeta() {return beta;  }
       float getEtot() {return etot;  }
+      float getEkinPerNuc() {return ekin/A;}
+      float getEkinPerMass(){return ekin/mass;}
+      
 
    private:
       float mass=0;
@@ -70,6 +74,11 @@ void Particle::FillFromRig ( float r)
    beta=BetaFromEk (ekin);
 }
 
+void Particle::FillFromEkPerMass(float ekpermass)
+{
+   ekin=ekpermass * mass;
+   FillFromEk(ekin);
+}
 
 
 #endif 
