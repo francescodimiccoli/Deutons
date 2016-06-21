@@ -141,13 +141,12 @@ class FileSaver {
    private:
       string filename;
       TObjArray* fArr;
-      TFile* fileFinalPlots;
 };
 
 void FileSaver::writeObjsInFolder(string folder)
 {
    cout<<"*** Updating Results file in "<< folder << endl;
-   fileFinalPlots-> Open(filename.data(), "UPDATE");
+   TFile* fileFinalPlots=TFile::Open(filename.data(), "UPDATE");
    if (!fileFinalPlots->GetDirectory(folder.data()))
       fileFinalPlots->mkdir(folder.data());
    fileFinalPlots->cd   (folder.data());
