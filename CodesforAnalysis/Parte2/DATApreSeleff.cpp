@@ -134,18 +134,11 @@ void DATApreSeleff(TFile * inputHistoFile)
       CorrLATpre_Spl[S]->Draw("PCsame");
    }
 
-   cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->Open("UPDATE");
-   fileFinalPlots->mkdir("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
-   fileFinalPlots->cd("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
-   for(int S=0; S<3; S++) c14[S]->Write();
-   fileFinalPlots->mkdir("Export");
-   fileFinalPlots->cd("Export");
-   for(int S=0; S<3; S++)
-      CorrLATpre_Spl[S]->Write(tagli[S].c_str());
-   fileFinalPlots->Write();
-   fileFinalPlots->Close();
-
-
+   
+   for(int S=0; S<3; S++) finalPlots.Add(c14[S]);
+   finalPlots.writeObjsInFolder("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
+   for(int S=0; S<3; S++) CorrLATpre_Spl[S]->Write(tagli[S].c_str());
+   finalPlots.writeObjsInFolder("Export");
+   
 
 }

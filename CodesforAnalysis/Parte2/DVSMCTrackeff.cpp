@@ -119,13 +119,10 @@ void DVSMCTrackeff(TFile * file){
 	TrackerEfficiencyMC    -> Draw("B");
         TrackerEfficiencyData  -> Draw("B,same");
 
-	cout<<"*** Updating Results file ***"<<endl;
-        fileFinalPlots->mkdir("DATA-driven Results/Data vs MC/Tracker Efficiency");
-        fileFinalPlots->cd("DATA-driven Results/Data vs MC/Tracker Efficiency");
-        c28->Write();
-        c29->Write();
-	fileFinalPlots->cd("Export");
-	TrackerEfficiencyData -> Write("TrackerEfficiencyData");
-        fileFinalPlots->Write();
-
+	finalPlots.Add(c28);
+        finalPlots.Add(c29);
+	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/Tracker Efficiency");
+	finalPlots.Add(TrackerEfficiencyData);
+	finalPlots.writeObjsInFolder("Export");
+	
 }

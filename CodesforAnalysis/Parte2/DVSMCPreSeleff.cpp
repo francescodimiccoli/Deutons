@@ -8,6 +8,7 @@ void DVSMCPreSeleff_D_Fill(int zona){
 	if(Tup.Unbias!=0||Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
 	if(!((Tup.R_pre>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!Herejcut) return;
+	//if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
 	if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta_pre)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta_pre)-0.1)) return;
 	//
 	int Kbin;
@@ -43,6 +44,7 @@ void DVSMCPreSeleff_Fill(){
 	//cuts
 	if(Tup.Unbias!=0||Tup.Beta_pre<=0||Tup.R_pre<=0||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
 	if(!Herejcut) return;
+	//if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
 	if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta_pre)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta_pre)-0.1)) return;
 	//
 	int Kbin;
@@ -268,31 +270,22 @@ void DVSMCPreSeleff(){
 	
 	}
 	
-	
-
-
-
-	cout<<"*** Updating Results file ***"<<endl;
-	fileFinalPlots->mkdir("DATA-driven Results/Data vs MC/Protons");
-	fileFinalPlots->cd("DATA-driven Results/Data vs MC/Protons");
 		
 	for(int S=0;S<3;S++){
-		c20[S]->Write();
-		c21[S]->Write();
+		finalPlots.Add(c20[S]);
+		finalPlots.Add(c21[S]);
 	}
-	fileFinalPlots->mkdir("Export/DvsMC");	
-	fileFinalPlots->cd("Export/DvsMC");
-
+	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/Protons");
+	
+	
 	for(int S=0;S<3;S++){
-
-		PreSel_Correction_R_Graph[S]  ->Write(("DvsMC: "+tagli[S] +"_R").c_str());
-		PreSel_Correction_TOF_Graph[S]->Write(("DvsMC: "+tagli[S] +"_TOF").c_str());
-		PreSel_Correction_NaF_Graph[S]->Write(("DvsMC: "+tagli[S] +"_NaF").c_str());
-		PreSel_Correction_Agl_Graph[S]->Write(("DvsMC: "+tagli[S] +"_Agl").c_str());
+		finalPlots.Add(PreSel_Correction_R_Graph[S]  );
+		finalPlots.Add(PreSel_Correction_TOF_Graph[S]);
+		finalPlots.Add(PreSel_Correction_NaF_Graph[S]);
+		finalPlots.Add(PreSel_Correction_Agl_Graph[S]);
 	}
+	finalPlots.writeObjsInFolder("Export/DvsMC");	
 
-
-	fileFinalPlots->Write();
 
 	return;
 }

@@ -171,18 +171,9 @@ void DVSMCRICHeff(){
         RICHDVSMC_P_GraphAgl->Draw("AP4C");
 
 
-	cout<<"*** Updating Results file ***"<<endl;
-	fileFinalPlots->mkdir("DATA-driven Results/Data vs MC/RICH");
-	fileFinalPlots->cd("DATA-driven Results/Data vs MC/RICH");
-	c20_bis->Write();
-
-	fileFinalPlots->Write();
-
-
-
-
-
+	finalPlots.Add(c20_bis);
+	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/RICH");
+	
 
 	return;
 }
-

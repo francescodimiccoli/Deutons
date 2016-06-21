@@ -76,12 +76,7 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
 
    }
 
-
-   cout<<"*** Updating Results file ***"<<endl;
-   //fileFinalPlots->mkdir ("DATA-driven Results");
-   fileFinalPlots->cd ("DATA-driven Results");
-   c12->Write();
-   fileFinalPlots->Write();
-
+   finalPlots.Add(c12);
+   finalPlots.writeObjsInFolder("DATA-driven Results");
 
 }

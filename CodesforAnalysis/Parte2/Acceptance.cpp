@@ -547,13 +547,11 @@ void Acceptance(){
                 AccSelMCDbetaAgl[h]->Draw("Psame");
         }
 
-	cout<<"*** Updating Results file ***"<<endl;
-	fileFinalPlots->mkdir("Acceptance");
-	fileFinalPlots->cd("Acceptance");
-	c31_tris -> Write();
-	c22 -> Write();
-	c31_bis  -> Write();
-	fileFinalPlots->Write();
+	
+	finalPlots.Add(c31_tris );
+	finalPlots.Add(c22 );
+	finalPlots.Add(c31_bis  );
+	finalPlots.writeObjsInFolder("Acceptance");
 
 	return;
 }

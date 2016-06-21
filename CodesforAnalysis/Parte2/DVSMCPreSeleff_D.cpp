@@ -239,19 +239,10 @@ void DVSMCPreSeleffD(){
 
 	}
 
-
-
-
-
-	cout<<"*** Updating Results file ***"<<endl;
-	fileFinalPlots->mkdir("DATA-driven Results/Data vs MC/Deutons");
-	fileFinalPlots->cd("DATA-driven Results/Data vs MC/Deutons");
-
 	for(int S=0;S<3;S++){
-		c21_D[S]->Write();
+		finalPlots.Add(c21_D[S]);
 	}
-	fileFinalPlots->Write();
+	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/Deutons");
 
 	return;
 }
-

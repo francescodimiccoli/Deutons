@@ -373,38 +373,22 @@ void DVSMCQualeff2(){
 	DistDVSMC_P_GraphAgl->Draw("AP4C");
 
 
+	finalPlots.Add(c20);
+	finalPlots.Add(c21);
+	finalPlots.Add(c20_bis);
+	finalPlots.Add(c21_bis);
+	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/Protons");
 
-
-
-	cout<<"*** Updating Results file ***"<<endl;
-	fileFinalPlots->mkdir("DATA-driven Results/Data vs MC/Protons");
-	fileFinalPlots->cd("DATA-driven Results/Data vs MC/Protons");
-	c20->Write();
-	c21->Write();
-	c20_bis->Write();
-	c21_bis->Write();
-
-		
-	fileFinalPlots->mkdir("Export/DvsMC");
-	fileFinalPlots->cd("Export/DvsMC");
         
-	DistDVSMC_P_Graph->Write();
-	DistDVSMC_P_GraphTOF->Write();
-	DistDVSMC_P_GraphNaF->Write();
-	DistDVSMC_P_GraphAgl->Write();
-
-	LikDVSMC_P_Graph->Write();
-	LikDVSMC_P_GraphTOF->Write();
-	LikDVSMC_P_GraphNaF->Write();
-	LikDVSMC_P_GraphAgl->Write();
-	
-
-	fileFinalPlots->Write();
-
-
-
-
-
+	finalPlots.Add(DistDVSMC_P_Graph   );
+	finalPlots.Add(DistDVSMC_P_GraphTOF);
+	finalPlots.Add(DistDVSMC_P_GraphNaF);
+	finalPlots.Add(DistDVSMC_P_GraphAgl);
+	finalPlots.Add(LikDVSMC_P_Graph    );
+	finalPlots.Add(LikDVSMC_P_GraphTOF );
+	finalPlots.Add(LikDVSMC_P_GraphNaF );
+	finalPlots.Add(LikDVSMC_P_GraphAgl );
+	finalPlots.writeObjsInFolder("Export/DvsMC");
 
 	return;
 }

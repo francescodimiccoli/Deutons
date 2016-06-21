@@ -356,20 +356,10 @@ void DVSMCQualeffD(){
         DistDVSMC_D_GraphAgl[0]->Draw("AP4C");
         for(int mc_type=1;mc_type<6;mc_type++) DistDVSMC_D_GraphAgl[mc_type]->Draw("P4Csame");
 
-
-
-	cout<<"*** Updating Results file ***"<<endl;
-	fileFinalPlots->mkdir("DATA-driven Results/Data vs MC/Deutons");
-	fileFinalPlots->cd("DATA-driven Results/Data vs MC/Deutons");
-	c20_bis->Write();
-	c21_bis->Write();
-	fileFinalPlots->Write();
-
-
-
-
-
+	
+	finalPlots.Add(c20_bis);
+	finalPlots.Add(c21_bis);
+	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/Deutons");
 
 	return;
 }
-

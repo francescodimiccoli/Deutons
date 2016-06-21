@@ -254,9 +254,9 @@ void DeutonsTemplFits_Dist()
    for(int lat=1; lat<11; lat++) {
 
 
-      c30_TOFgeo[lat] = new TCanvas(("TOF bins - Latitude: " + to_string(lat) + "(Dist.)").c_str());
-      c30_NaFgeo[lat] = new TCanvas(("NaF bins - Latitude: " + to_string(lat) + "(Dist.)").c_str());
-      c30_Aglgeo[lat] = new TCanvas(("Agl bins - Latitude: " + to_string(lat) + "(Dist.)").c_str());
+      c30_TOFgeo[lat] = new TCanvas(("TOF Geo. Zone: " + to_string(lat) + "(Dist.)").c_str());
+      c30_NaFgeo[lat] = new TCanvas(("NaF Geo. Zone: " + to_string(lat) + "(Dist.)").c_str());
+      c30_Aglgeo[lat] = new TCanvas(("Agl Geo. Zone: " + to_string(lat) + "(Dist.)").c_str());
 
       c30_TOFgeo[lat] -> Divide(6,3);
       c30_NaFgeo[lat] -> Divide(6,3);
@@ -277,49 +277,52 @@ void DeutonsTemplFits_Dist()
       }
    }
 
-   cout<<"*** Updating Results file ***"<<endl;
-   //Primaries
-   fileFinalPlots->mkdir("Distance Template Fits/TOF/TOF Primaries/Dbins");
-   fileFinalPlots->cd("Distance Template Fits/TOF/TOF Primaries/Dbins");
-   for(int bin=0; bin <nbinsToF; bin++)
-      c30_TOF[0][bin]->Write();
-   fileFinalPlots->mkdir("Distance Template Fits/NaF/NaF Primaries/Dbins");
-   fileFinalPlots->cd("Distance Template Fits/NaF/NaF Primaries/Dbins");
-   for(int bin=0; bin <nbinsNaF; bin++)
-      c30_NaF[0][bin]->Write();
-   fileFinalPlots->mkdir("Distance Template Fits/Agl/Agl Primaries/Dbins");
-   fileFinalPlots->cd("Distance Template Fits/Agl/Agl Primaries/Dbins");
-   for(int bin=0; bin <nbinsAgl; bin++)
-      c30_Agl[0][bin]->Write();
 
-   fileFinalPlots->mkdir("Distance Template Fits/TOF/TOF Primaries/Pbins");
-   fileFinalPlots->cd("Distance Template Fits/TOF/TOF Primaries/Pbins");
+   //Primaries
+
+
    for(int bin=0; bin <nbinsToF; bin++)
-      c30_TOF[1][bin]->Write();
-   fileFinalPlots->mkdir("Distance Template Fits/NaF/NaF Primaries/Pbins");
-   fileFinalPlots->cd("Distance Template Fits/NaF/NaF Primaries/Pbins");
+      finalPlots.Add(c30_TOF[0][bin]);
+   finalPlots.writeObjsInFolder("Distance Template Fits/TOF/TOF Primaries/Dbins");
+
+
    for(int bin=0; bin <nbinsNaF; bin++)
-      c30_NaF[1][bin]->Write();
-   fileFinalPlots->mkdir("Distance Template Fits/Agl/Agl Primaries/Pbins");
-   fileFinalPlots->cd("Distance Template Fits/Agl/Agl Primaries/Pbins");
+      finalPlots.Add(c30_NaF[0][bin]);
+   finalPlots.writeObjsInFolder("Distance Template Fits/NaF/NaF Primaries/Dbins");
+
+
    for(int bin=0; bin <nbinsAgl; bin++)
-      c30_Agl[1][bin]->Write();
+      finalPlots.Add(c30_Agl[0][bin]);
+   finalPlots.writeObjsInFolder("Distance Template Fits/Agl/Agl Primaries/Dbins");
+
+
+   for(int bin=0; bin <nbinsToF; bin++)
+      finalPlots.Add(c30_TOF[1][bin]);
+   finalPlots.writeObjsInFolder("Distance Template Fits/TOF/TOF Primaries/Pbins");
+
+   for(int bin=0; bin <nbinsNaF; bin++)
+      finalPlots.Add(c30_NaF[1][bin]);
+   finalPlots.writeObjsInFolder("Distance Template Fits/NaF/NaF Primaries/Pbins");
+
+   for(int bin=0; bin <nbinsAgl; bin++)
+      finalPlots.Add(c30_Agl[1][bin]);
+   finalPlots.writeObjsInFolder("Distance Template Fits/Agl/Agl Primaries/Pbins");
+
+
    //Geom. Zones
-   for(int lat=1; lat<11; lat++) {
-      fileFinalPlots->mkdir("Distance Template Fits/TOF/TOF Geom. Zones");
-      fileFinalPlots->cd("Distance Template Fits/TOF/TOF Geom. Zones");
-      c30_TOFgeo[lat] -> Write(("TOF Geo. Zone: " + to_string(lat)).c_str());
-      fileFinalPlots->mkdir("Distance Template Fits/NaF/NaF Geom. Zones ");
-      fileFinalPlots->cd("Distance Template Fits/NaF/NaF Geom. Zones ");
-      c30_NaFgeo[lat] -> Write(("NaF Geo. Zone: " + to_string(lat)).c_str());
-      fileFinalPlots->mkdir("Distance Template Fits/Agl/Agl Geom. Zones  ");
-      fileFinalPlots->cd("Distance Template Fits/Agl/Agl Geom. Zones  ");
-      c30_Aglgeo[lat] -> Write(("Agl Geo. Zone: " + to_string(lat)).c_str());
-   }
-   fileFinalPlots->Write();
+   for(int lat=1; lat<11; lat++)
+      finalPlots.Add(c30_TOFgeo[lat] );
+   finalPlots.writeObjsInFolder("Distance Template Fits/TOF/TOF Geom. Zones");
+
+   for(int lat=1; lat<11; lat++)
+      finalPlots.Add(c30_NaFgeo[lat] );
+   finalPlots.writeObjsInFolder("Distance Template Fits/NaF/NaF Geom. Zones ");
+
+   for(int lat=1; lat<11; lat++)
+      finalPlots.Add(c30_Aglgeo[lat] );
+   finalPlots.writeObjsInFolder("Distance Template Fits/Agl/Agl Geom. Zones  ");
 
 
    return;
-
 
 }

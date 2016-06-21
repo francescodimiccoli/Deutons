@@ -252,8 +252,6 @@ void ProtonFlux()
 
 
 
-   fileFinalPlots->mkdir("P Fluxes");
-   fileFinalPlots->cd("P Fluxes");
    finalPlots.Add(c23);
    finalPlots.Add(c24);
    finalPlots.Add(c25);
@@ -548,7 +546,6 @@ void DeutonFlux()
       PD_ratio_Dist[idet]->Draw("Psame");
 
    }
-
 
    /// Updating results file
 

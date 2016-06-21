@@ -258,12 +258,10 @@ void CorrLAT() {
    CorrLATd_Agl_Spl->SetMarkerStyle(8);
    CorrLATd_Agl_Spl->Draw("CPsame");
 
-   cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->mkdir("DATA-driven Results/Latitude effect/Correction");
-   fileFinalPlots->cd("DATA-driven Results/Latitude effect/Correction");
-   c26->Write();
-   c26_bis->Write();
-   fileFinalPlots->Write();
+   
+   finalPlots.Add(c26);
+   finalPlots.Add(c26_bis);
+   finalPlots.writeObjsInFolder("DATA-driven Results/Latitude effect/Correction");
 
    return;
 
