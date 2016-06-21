@@ -460,12 +460,11 @@ void MCQualeff(TFile * inputHistoFile) {
       }
    }
 
-   cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->mkdir("MC Results/Quality");
-   fileFinalPlots->cd("MC Results/Quality");
-   c5	->Write();
-   c6      ->Write();
-   c5_bis  ->Write();
-   c6_bis  ->Write();
-   fileFinalPlots->Write();
+   finalPlots.Add(c5);
+   finalPlots.Add(c6);
+   finalPlots.Add(c5_bis);
+   finalPlots.Add(c6_bis);
+   
+   finalPlots.writeObjsInFolder("MC Results/Quality");
+
 }

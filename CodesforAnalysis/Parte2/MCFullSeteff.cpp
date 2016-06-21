@@ -210,12 +210,9 @@ void MCFullseteff(TFile * inputHistoFile){
                 }
         }
 	
-
-	cout<<"*** Updating Results file ***"<<endl;
-	fileFinalPlots->mkdir("MC Results");
-	fileFinalPlots->mkdir("MC Results/Full-set selections");
-	fileFinalPlots->cd("MC Results/Full-set selections");
-	c41->Write();
-	c41_bis->Write();
+   finalPlots.Add(c41);
+   finalPlots.Add(c41_bis);
+   
+   finalPlots.writeObjsInFolder("MC Results/Full-set selections");
 
 }

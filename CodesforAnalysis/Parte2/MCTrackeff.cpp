@@ -390,13 +390,9 @@ void MCTrackeff (TFile * inputHistoFile)
       }
    }
 
+   finalPlots.Add(c_7);
+   finalPlots.Add(c7);
+   finalPlots.Add(c8);
+   finalPlots.writeObjsInFolder("MC Results/Preselections/Basic Selections");
 
-   cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->mkdir ("MC Results/Preselections/Basic Selections");
-   fileFinalPlots->cd ("MC Results/Preselections/Basic Selections");
-   c_7 -> Write();
-   c7  -> Write();
-   c8  -> Write();
-
-   fileFinalPlots->Write();
 }

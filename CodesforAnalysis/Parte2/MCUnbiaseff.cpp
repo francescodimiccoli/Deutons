@@ -150,8 +150,8 @@ void MCUnbiaseff(TFile * inputHistoFile) {
          leg->Draw();
       }
    }
-   cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->cd("MC Results/Preselections");
-   c11->Write();
-   fileFinalPlots->Write();
+
+   finalPlots.Add(c11);
+   finalPlots.writeObjsInFolder("MC Results/Preselections");
+   
 }

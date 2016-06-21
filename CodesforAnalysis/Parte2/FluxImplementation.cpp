@@ -252,15 +252,14 @@ void ProtonFlux()
 
 
 
-   cout<<"*** Updating Results file ***"<<endl;
    fileFinalPlots->mkdir("P Fluxes");
    fileFinalPlots->cd("P Fluxes");
-   c23->Write();
-   c24->Write();
-   c25->Write();
-   fileFinalPlots->cd("Export");
-   PFlux->Write("Protons Primary Flux");
-   fileFinalPlots->Write();
+   finalPlots.Add(c23);
+   finalPlots.Add(c24);
+   finalPlots.Add(c25);
+   finalPlots.writeObjsInFolder("P Fluxes");
+   finalPlots.Add(PFlux);
+   finalPlots.writeObjsInFolder("Export");
 
    return;
 }
@@ -553,18 +552,15 @@ void DeutonFlux()
 
    /// Updating results file
 
-   cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->mkdir("D Fluxes");
-   fileFinalPlots->cd("D Fluxes");
-   c33-> Write();
-   c32->Write();
-   c34-> Write();
-   c35->Write();
-   fileFinalPlots->cd("Export");
-   D_Flux[0]->Write("Deutons Primary Flux: TOF");
-   D_Flux[1]->Write("Deutons Primary Flux: NaF");
-   D_Flux[2]->Write("Deutons Primary Flux: Agl");
-   fileFinalPlots->Write();
+   finalPlots.Add(c33);
+   finalPlots.Add(c32);
+   finalPlots.Add(c34);
+   finalPlots.Add(c35);
+   finalPlots.writeObjsInFolder("D Fluxes");
+
+   for (int io=0; io<3; io++)
+      finalPlots.Add(D_Flux[io]);
+   finalPlots.writeObjsInFolder("Export");
 
 
    return;

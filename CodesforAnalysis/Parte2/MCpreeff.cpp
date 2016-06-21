@@ -244,11 +244,11 @@ void MCpreeff(TFile * inputHistoFile) {
       }
    }
 
+   finalPlots.Add(c4);
+   finalPlots.Add(c4_bis);
+   
+   finalPlots.writeObjsInFolder("MC Results/Preselections");
 
-   cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->mkdir("MC Results/Preselections");
-   fileFinalPlots->cd("MC Results/Preselections");
-   c4->Write();
-   c4_bis->Write();
+
 
 }
