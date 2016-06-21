@@ -152,9 +152,10 @@ void DVSMCPreSeleff(){
 		gPad->SetLogx();
 		gPad->SetGridx();
 		gPad->SetGridy();
-		PreSel_Correction_R_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_R").c_str());
+		PreSel_Correction_R_Graph[S] = new TGraphErrors(nbinsr);
+		PreSel_Correction_R_Graph[S]->SetName(("Data vs MC: "+tagli[S] +"_R").c_str());
 		int j=0;
-		for(int i=1;i<nbinsr;i++) {
+		for(int i=0;i<nbinsr;i++) {
 			if(PreSel_Correction_R -> GetBinContent(i+1,S+1)>0){
 				PreSel_Correction_R_Graph[S]->SetPoint(j,PRB.RigBinCent(i),PreSel_Correction_R -> GetBinContent(i+1,S+1));
 				PreSel_Correction_R_Graph[S]->SetPointError(j,0,PreSel_Correction_R -> GetBinError(i+1,S+1));
@@ -172,9 +173,10 @@ void DVSMCPreSeleff(){
                 gPad->SetLogx();
                 gPad->SetGridx();
                 gPad->SetGridy();
-                MCEff_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_R").c_str());
+                MCEff_Graph[S] = new TGraphErrors(nbinsr);
+		MCEff_Graph[S]->SetName(("Data vs MC: "+tagli[S] +"_R").c_str());
                 j=0;
-                for(int i=1;i<nbinsr;i++) {
+                for(int i=0;i<nbinsr;i++) {
                         if(EffMC_R  -> GetBinContent(i+1,S+1)>0){
                                 MCEff_Graph[S]->SetPoint(j,PRB.RigBinCent(i),EffMC_R   -> GetBinContent(i+1,S+1));
                                 MCEff_Graph[S]->SetPointError(j,0,EffMC_R   -> GetBinError(i+1,S+1));
@@ -187,7 +189,7 @@ void DVSMCPreSeleff(){
                 MCEff_Graph[S]->SetLineWidth(4);
                 MCEff_Graph[S]->Draw("AP4C");
 		
-		DATAEff_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_R").c_str());
+		DATAEff_Graph[S] = new TGraphErrors(); DATAEff_Graph[S]->SetName(("Data vs MC: "+tagli[S] +"_R").c_str());
                 j=0;
                 for(int i=1;i<nbinsr;i++) {
                         if(EffData_R  -> GetBinContent(i+1,S+1)>0){
@@ -211,9 +213,9 @@ void DVSMCPreSeleff(){
                 gPad->SetGridx();
                 gPad->SetGridy();
 	
-		PreSel_Correction_TOF_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_TOF").c_str());
-               	PreSel_Correction_NaF_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_NaF").c_str());
-		PreSel_Correction_Agl_Graph[S] = new TGraphErrors("",("Data vs MC: "+tagli[S] +"_Agl").c_str());
+		PreSel_Correction_TOF_Graph[S] = new TGraphErrors(); PreSel_Correction_TOF_Graph[S]->SetName(("Data vs MC: "+tagli[S] +"_TOF").c_str());
+               	PreSel_Correction_NaF_Graph[S] = new TGraphErrors(); PreSel_Correction_NaF_Graph[S]->SetName(("Data vs MC: "+tagli[S] +"_NaF").c_str());
+		PreSel_Correction_Agl_Graph[S] = new TGraphErrors(); PreSel_Correction_Agl_Graph[S]->SetName(("Data vs MC: "+tagli[S] +"_Agl").c_str());
 
 		j=0;
                 for(int i=1;i<nbinsToF;i++) {

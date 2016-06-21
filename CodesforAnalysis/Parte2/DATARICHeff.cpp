@@ -162,7 +162,7 @@ void DATARICHeff(string fileName) {
    }
    CorrLATrichNaF->Draw("AP");
 
-   TGraphErrors *CorrLAT_richNaF_Spl=new TGraphErrors("CorrLAT_richNaF_Spl");
+   TGraphErrors *CorrLAT_richNaF_Spl=new TGraphErrors();
    CorrLAT_richNaF_Spl->SetName("CorrLAT_richNaF_Spl");
    for(int i=1; i<11; i++) {
       CorrLAT_richNaF_Spl->SetPoint(i-1,geomagC[i],LATrichcorr_NaF_fit->GetBinContent(i+1));
@@ -191,7 +191,7 @@ void DATARICHeff(string fileName) {
    }
    CorrLATrichAgl->Draw("AP");
 
-   TGraphErrors *CorrLAT_richAgl_Spl=new TGraphErrors("CorrLAT_richAgl_Spl");
+   TGraphErrors *CorrLAT_richAgl_Spl=new TGraphErrors();
    CorrLAT_richAgl_Spl->SetName("CorrLAT_richAgl_Spl");
    for(int i=1; i<11; i++) {
       CorrLAT_richAgl_Spl->SetPoint(i-1,geomagC[i],LATrichcorr_Agl_fit->GetBinContent(i+1));

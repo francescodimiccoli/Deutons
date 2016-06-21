@@ -285,7 +285,7 @@ void DATAQualeff (string histoName)
       CorrLATLik->SetPointError (i-1,0,LikLATcorr_TOF->GetBinError (i+1,1) );
    }
    CorrLATLik->Draw ("AP");
-   TGraphErrors *CorrLAT_Lik_Spl=new TGraphErrors ("CorrLAT_Lik_Spl");
+   TGraphErrors *CorrLAT_Lik_Spl=new TGraphErrors ();
    CorrLAT_Lik_Spl->SetName ("CorrLAT_Lik_Spl");
    for (int i=1; i<11; i++) {
       CorrLAT_Lik_Spl->SetPoint (i-1,geomagC[i],LikLATcorr_TOF_fit->GetBinContent (i+1) );
@@ -314,7 +314,7 @@ void DATAQualeff (string histoName)
       CorrLATLikNaF->SetPointError (i-1,0,LikLATcorr_NaF->GetBinError (i+1,1) );
    }
    CorrLATLikNaF->Draw ("AP");
-   TGraphErrors *CorrLAT_LikNaF_Spl=new TGraphErrors ("CorrLAT_LikNaF_Spl");
+   TGraphErrors *CorrLAT_LikNaF_Spl=new TGraphErrors ();
    CorrLAT_LikNaF_Spl->SetName ("CorrLAT_LikNaF_Spl");
    for (int i=1; i<11; i++) {
       CorrLAT_LikNaF_Spl->SetPoint (i-1,geomagC[i],LikLATcorr_NaF_fit->GetBinContent (i+1) );
@@ -342,7 +342,7 @@ void DATAQualeff (string histoName)
       CorrLATLikAgl->SetPointError (i-1,0,LikLATcorr_Agl->GetBinError (i+1,1) );
    }
    CorrLATLikAgl->Draw ("AP");
-   TGraphErrors *CorrLAT_LikAgl_Spl=new TGraphErrors ("CorrLAT_LikAgl_Spl");
+   TGraphErrors *CorrLAT_LikAgl_Spl=new TGraphErrors ();
    CorrLAT_LikAgl_Spl->SetName ("CorrLAT_LikAgl_Spl");
    for (int i=1; i<11; i++) {
       CorrLAT_LikAgl_Spl->SetPoint (i-1,geomagC[i],LikLATcorr_Agl_fit->GetBinContent (i+1) );
@@ -465,7 +465,7 @@ void DATAQualeff (string histoName)
       CorrLATDist->SetPointError (i-1,0,DistLATcorr_TOF->GetBinError (i+1,1) );
    }
    CorrLATDist->Draw ("AP");
-   TGraphErrors *CorrLAT_Dist_Spl=new TGraphErrors ("CorrLAT_Dist_Spl");
+   TGraphErrors *CorrLAT_Dist_Spl=new TGraphErrors ();
    CorrLAT_Dist_Spl->SetName ("CorrLAT_Dist_Spl");
    for (int i=1; i<11; i++) {
       CorrLAT_Dist_Spl->SetPoint (i-1,geomagC[i],DistLATcorr_TOF_fit->GetBinContent (i+1,1) );
@@ -494,7 +494,7 @@ void DATAQualeff (string histoName)
       CorrLATDistNaF->SetPointError (i-1,0,DistLATcorr_NaF->GetBinError (i+1,1) );
    }
    CorrLATDistNaF->Draw ("AP");
-   TGraphErrors *CorrLAT_DistNaF_Spl=new TGraphErrors ("CorrLAT_DistNaF_Spl");
+   TGraphErrors *CorrLAT_DistNaF_Spl=new TGraphErrors ();
    CorrLAT_DistNaF_Spl->SetName ("CorrLAT_DistNaF_Spl");
    for (int i=1; i<11; i++) {
       CorrLAT_DistNaF_Spl->SetPoint (i-1,geomagC[i],DistLATcorr_NaF_fit->GetBinContent (i+1) );
@@ -522,7 +522,7 @@ void DATAQualeff (string histoName)
       CorrLATDistAgl->SetPointError (i-1,0,DistLATcorr_Agl->GetBinError (i+1,1) );
    }
    CorrLATDistAgl->Draw ("AP");
-   TGraphErrors *CorrLAT_DistAgl_Spl=new TGraphErrors ("CorrLAT_DistAgl_Spl");
+   TGraphErrors *CorrLAT_DistAgl_Spl=new TGraphErrors ();
    CorrLAT_DistAgl_Spl->SetName ("CorrLAT_DistAgl_Spl");
    for (int i=1; i<11; i++) {
       CorrLAT_DistAgl_Spl->SetPoint (i-1,geomagC[i],DistLATcorr_Agl_fit->GetBinContent (i+1) );
