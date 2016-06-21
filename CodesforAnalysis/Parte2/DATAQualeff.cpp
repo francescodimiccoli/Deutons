@@ -535,18 +535,18 @@ void DATAQualeff (TFile * inputHistoFile)
    CorrLAT_DistAgl_Spl->SetLineWidth (2);
    CorrLAT_DistAgl_Spl->Draw ("Csame");
 
-
-	TObjArray* objarr=new TObjArray(6);
-	objarr->Add(c15);
-	objarr->Add(c16);
-   writeObjArrayInFinalPlotFolder(objarr, "DATA-driven Results/Latitude effect/Quality");
-	objarr->Add(CorrLAT_Lik_Spl    );
-	objarr->Add(CorrLAT_LikNaF_Spl );
-	objarr->Add(CorrLAT_LikAgl_Spl );
-	objarr->Add(CorrLAT_Dist_Spl   );
-	objarr->Add(CorrLAT_DistNaF_Spl);
-	objarr->Add(CorrLAT_DistAgl_Spl);
-	writeObjArrayInFinalPlotFolder(objarr, "Export");
+finalPlots.Add(c15);
+	
+	finalPlots.Add(c15);
+	finalPlots.Add(c16);
+   finalPlots.writeObjsInFolder("DATA-driven Results/Latitude effect/Quality");
+	finalPlots.Add(CorrLAT_Lik_Spl    );
+	finalPlots.Add(CorrLAT_LikNaF_Spl );
+	finalPlots.Add(CorrLAT_LikAgl_Spl );
+	finalPlots.Add(CorrLAT_Dist_Spl   );
+	finalPlots.Add(CorrLAT_DistNaF_Spl);
+	finalPlots.Add(CorrLAT_DistAgl_Spl);
+	finalPlots.writeObjsInFolder("Export");
 
 
 

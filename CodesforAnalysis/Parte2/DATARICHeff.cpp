@@ -203,14 +203,10 @@ void DATARICHeff(TFile * inputHistoFile) {
    CorrLAT_richAgl_Spl->SetFillStyle(3001);
    CorrLAT_richAgl_Spl->SetLineWidth(2);
    CorrLAT_richAgl_Spl->Draw("Csame");
-   
-   cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->mkdir("DATA-driven Results/Latitude effect/RICH");
-   fileFinalPlots->cd("DATA-driven Results/Latitude effect/RICH");
-   c15->Write();
-   fileFinalPlots->cd("Export");
-   CorrLAT_richNaF_Spl->Write("CorrLAT_richNaF_Spl");
-   CorrLAT_richAgl_Spl->Write("CorrLAT_richAgl_Spl");   	
-   fileFinalPlots->Write();
+
+   finalPlots.Add(c15);
+   finalPlots.writeObjsInFolder("DATA-driven Results/Latitude effect/RICH");
+   finalPlots.Add(CorrLAT_richNaF_Spl);
+   finalPlots.writeObjsInFolder("Export");
 
 }

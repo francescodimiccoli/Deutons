@@ -479,16 +479,15 @@ void DistanceCut(TFile * file1){
         BadPrejLik_Agl ->GetYaxis()->SetTitle("Bad P rejection");
         BadPrejLik_Agl ->Draw("APC");
 
-	TObjArray* objarr=new TObjArray(10);
-	objarr->Add(c1);
-	objarr->Add(c2);
-	objarr->Add(c3);
-	objarr->Add(c4);
-	objarr->Add(c5);
-	objarr->Add(c6);
-	objarr->Add(c7);
-	objarr->Add(c8);
-	writeObjArrayInFinalPlotFolder(objarr, "MC Results/Distance Cut");
+	finalPlots.Add(c1);
+	finalPlots.Add(c2);
+	finalPlots.Add(c3);
+	finalPlots.Add(c4);
+	finalPlots.Add(c5);
+	finalPlots.Add(c6);
+	finalPlots.Add(c7);
+	finalPlots.Add(c8);
+	finalPlots.writeObjsInFolder("MC Results/Distance Cut");
 
 	return;
 }

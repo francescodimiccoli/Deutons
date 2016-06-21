@@ -38,29 +38,29 @@ TSpline3 *EdepTrackbeta;
 
 ///  Variables retrieved from Root ntuples
 struct Tuplevar {
-float BDT_response;
-float Beta;
-float Beta_pre;
-float BetaRICH;
-float Dist5D;
-float Dist5D_P;
-float EdepECAL;
-float EdepL1;
-float EdepTOFD;
-float EdepTOFU;
-float EdepTrack;
-float Ev_Num;
-float Cutmask;
-float Latitude;
-float LDiscriminant;
-float MC_type;
-float Momento_gen;
-float R;
-float Rcutoff;
-float Rmin;
-float R_pre;
-float Trig_Num;
-float Unbias;
+   float BDT_response;
+   float Beta;
+   float Beta_pre;
+   float BetaRICH;
+   float Dist5D;
+   float Dist5D_P;
+   float EdepECAL;
+   float EdepL1;
+   float EdepTOFD;
+   float EdepTOFU;
+   float EdepTrack;
+   float Ev_Num;
+   float Cutmask;
+   float Latitude;
+   float LDiscriminant;
+   float MC_type;
+   float Momento_gen;
+   float R;
+   float Rcutoff;
+   float Rmin;
+   float R_pre;
+   float Trig_Num;
+   float Unbias;
 };
 
 //// Global Variables
@@ -129,19 +129,38 @@ void FillBinMGen (TH3* h, int bin, int S)
 }
 
 
-void writeObjArrayInFinalPlotFolder(TObjArray* fArr, string folder) {
+
+class FileSaver {
+   public:
+      FileSaver() : filename("") {fArr=new TObjArray();}
+      FileSaver (string fname) : filename (fname) {fArr=new TObjArray();}
+      void writeObjsInFolder(string folder);
+      void setName(string fname) {filename=fname;}
+      void Add(TObject* obj) {fArr->Add(obj);}
+      string setName() {return filename;}
+   private:
+      string filename;
+      TObjArray* fArr;
+      TFile* fileFinalPlots;
+};
+
+void FileSaver::writeObjsInFolder(string folder)
+{
    cout<<"*** Updating Results file in "<< folder << endl;
-   fileFinalPlots-> ReOpen("UPDATE");
-   fileFinalPlots->mkdir(folder.data());
-	fileFinalPlots->cd   (folder.data());
+   fileFinalPlots-> Open(filename.data(), "UPDATE");
+   if (!fileFinalPlots->GetDirectory(folder.data()))
+      fileFinalPlots->mkdir(folder.data());
+   fileFinalPlots->cd   (folder.data());
    for (int i = 0; i <= fArr->GetLast(); i++)
       fArr->At(i)->Write();
    fileFinalPlots->Write();
    fileFinalPlots->Flush();
+   fileFinalPlots->Close();
    fArr->Clear();
-return;
-   
+   return;
 }
+
+FileSaver finalPlots;
 
 Particle proton(0.9382720813, 1, 1);  // proton mass 938 MeV
 Particle deuton(1.8756129   , 1, 2);  // deuterium mass 1876 MeV, Z=1, A=2
@@ -153,7 +172,7 @@ Binning NaFPB(proton);
 Binning AglDB(deuton);
 Binning AglPB(proton);
 
-Binning DRB(deuton); 
-Binning PRB(proton); 
+Binning DRB(deuton);
+Binning PRB(proton);
 
 Cutmask cmask;
