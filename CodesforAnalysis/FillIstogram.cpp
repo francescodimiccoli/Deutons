@@ -181,6 +181,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DVSMCQualeff2();
       DVSMCQualeffD();
       Acceptance();
+      inputHistoFile=TFile::Open(filename.c_str(), "READ");
       ProtonFlux();
       if(frac=="tot") DeutonFlux();
       if(frac=="tot") OtherExperimentsComparison();
