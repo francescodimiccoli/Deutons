@@ -98,8 +98,10 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
       cout<<endl<<"************************ SAVING DATA ************************"<<endl;
 
+      inputHistoFile->Flush();
+      inputHistoFile->Close();
       delete inputHistoFile;
-      inputHistoFile =new TFile(filename.c_str(), "UPDATE");
+      inputHistoFile =new TFile(filename.c_str(), "RECREATE");
       inputHistoFile->cd();
 
       DATAQualeff_Write();
@@ -121,12 +123,12 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DVSMCTrackeff_Write();
       MCMC_Write();
       MCpreeff_Write();
-      //MCpreCheck_Write();
       MCQualeff_Write();
       MCTrackeff_Write();
       MCUnbiaseff_Write();
       MigrationMatrix_Write();
       ProtonFlux_Write();
+
 
       Tempi->Write();
       esposizionegeo->Write();

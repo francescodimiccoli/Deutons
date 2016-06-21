@@ -29,7 +29,7 @@ void DATApreSeleff_Write()
 
 void DATApreSeleff(TFile * inputHistoFile)
 {
-
+   inputHistoFile->cd();
    LATcorr * LATpreSelDATA = new LATcorr(inputHistoFile,"LATpreSelDATA",3);
 
    string tagli[3]= {"Matching TOF","Chi^2 R","1 Tr. Track"};
@@ -134,6 +134,7 @@ void DATApreSeleff(TFile * inputHistoFile)
    }
 
    cout<<"*** Updating Results file ***"<<endl;
+   fileFinalPlots->ReOpen("UPDATE");
    fileFinalPlots->mkdir("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
    fileFinalPlots->cd("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
    for(int S=0; S<3; S++) c14[S]->Write();

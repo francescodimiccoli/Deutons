@@ -88,6 +88,7 @@ void DVSMCTrackeff(TFile * file){
 	cout<<"*** Updating P1 file ****"<<endl;
    	inputHistoFile->ReOpen("UPDATE");
 
+	inputHistoFile->mkdir("Results");
 	inputHistoFile->cd("Results");
  
          TrackerEfficiencyData -> Write("TrackerEfficiencyData");
