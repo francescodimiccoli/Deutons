@@ -58,14 +58,14 @@ void Acceptance(){
 	TH2F* PreSel_Correction_Agl=(TH2F*) inputHistoFile -> Get("Results/PreSel_DvsMC_P_CorrectionAgl");
 
 	TH1F* DistP_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionR"  		); 
-	TH1F* DistP_Correction_TOF =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionTOF"		);
-	TH1F* DistP_Correction_NaF =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionNaF"		);
-	TH1F* DistP_Correction_Agl =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionAgl"		);
+	//TH1F* DistP_Correction_TOF =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionTOF"		);
+	//TH1F* DistP_Correction_NaF =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionNaF"		);
+	//TH1F* DistP_Correction_Agl =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_P_CorrectionAgl"		);
                                                                                       
 	TH1F* LikP_Correction_R    =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionR"   		);
-	TH1F* LikP_Correction_TOF  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionTOF" 		);
-	TH1F* LikP_Correction_NaF  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionNaF" 		);
-	TH1F* LikP_Correction_Agl  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionAgl" 		);
+	//TH1F* LikP_Correction_TOF  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionTOF" 		);
+	//TH1F* LikP_Correction_NaF  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionNaF" 		);
+	//TH1F* LikP_Correction_Agl  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionAgl" 		);
 
 	TH1F* RICH_Correction_P_NaF =(TH1F*) inputHistoFile -> Get ("Results/RICH_DvsMC_P_CorrectionNaF"		);
 	TH1F* RICH_Correction_P_Agl =(TH1F*) inputHistoFile -> Get ("Results/RICH_DvsMC_P_CorrectionAgl"		);

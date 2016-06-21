@@ -36,9 +36,9 @@ void CorrLAT(string histoName) {
    PreLATCorr -> Multiply( LATpreSelDATA2	);
    PreLATCorr -> Multiply( LATpreSelDATA3	);
 
-   TH1F *  TOTLATCorrTOF; TOTLATCorrTOF->Copy( *PreLATCorr );
-   TH1F *  TOTLATCorrNaF; TOTLATCorrNaF->Copy( *PreLATCorr );
-   TH1F *  TOTLATCorrAgl; TOTLATCorrAgl->Copy( *PreLATCorr );
+   TH1F *  TOTLATCorrTOF=new TH1F(); TOTLATCorrTOF->Copy( *PreLATCorr );
+   TH1F *  TOTLATCorrNaF=new TH1F(); TOTLATCorrNaF->Copy( *PreLATCorr );
+   TH1F *  TOTLATCorrAgl=new TH1F(); TOTLATCorrAgl->Copy( *PreLATCorr );
 
    TOTLATCorrTOF  -> Multiply (LATLikelihoodDATA_TOF ->  LATcorrR_fit);
    TOTLATCorrTOF  -> Multiply (LATDistanceDATA_TOF   ->  LATcorrR_fit);

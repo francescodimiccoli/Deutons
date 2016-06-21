@@ -29,7 +29,7 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
    EffUnbiasDATA -> Eval_Efficiency();
 
    TH1F *EffUnbDATA_R_TH1F = (TH1F *) EffUnbiasDATA -> effR   ->Clone();
-   TH1F *EffUnbDATA_TH1F   = (TH1F *) EffUnbiasDATA -> effTOF ->Clone();
+
 
   float EffMean = 0;
    for(int n = 0; n< EffUnbDATA_R_TH1F->GetNbinsX();n++){
