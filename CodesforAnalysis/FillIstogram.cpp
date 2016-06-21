@@ -162,7 +162,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       MigrationMatrix(inputHistoFile);
       DVSMCTrackeff(inputHistoFile);
       DATAUnbiaseff(inputHistoFile);
-      inputHistoFile =TFile::Open(filename.c_str(), "READ");
+      inputHistoFile->ReOpen("READ");
       DATApreSeleff(inputHistoFile);
       inputHistoFile =TFile::Open(filename.c_str(), "READ");
       DATAQualeff(inputHistoFile);
