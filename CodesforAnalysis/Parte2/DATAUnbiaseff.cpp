@@ -31,12 +31,22 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
    TH1F *EffUnbDATA_R_TH1F = (TH1F *) EffUnbiasDATA -> effR   ->Clone();
    TH1F *EffUnbDATA_TH1F   = (TH1F *) EffUnbiasDATA -> effTOF ->Clone();
 
+  float EffMean = 0;
+   for(int n = 0; n< EffUnbDATA_R_TH1F->GetNbinsX();n++){
+		EffMean+=EffUnbDATA_R_TH1F->GetBinContent(n+1);
+	}
+   EffMean=EffMean/(float)EffUnbDATA_R_TH1F->GetNbinsX();	
+
+   TH1F * TriggerGlobalFactor = new TH1F("TriggerGlobalFactor","TriggerGlobalFactor",1,0,1);
+   TriggerGlobalFactor -> SetBinContent(1,EffMean);
+   TriggerGlobalFactor -> SetBinError(1,0.01); 
+
    cout<<"*** Updating P1 file ****"<<endl;
    inputHistoFile->ReOpen("UPDATE");
 
    inputHistoFile->cd ("Results");
    EffUnbDATA_R_TH1F ->Write();
-   EffUnbDATA_TH1F	  ->Write();
+   TriggerGlobalFactor -> Write();
    inputHistoFile-> Write();
 
    TCanvas *c12=new TCanvas ("DATA: Unb. Trigger Efficiency");

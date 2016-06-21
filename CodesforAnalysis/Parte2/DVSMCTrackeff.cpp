@@ -75,15 +75,9 @@ void DVSMCTrackeff(TFile * file){
 	TH1F * TrackerEfficiencyMC    = (TH1F *)TrackerEfficiencyMCP  -> effR    ->    Clone();
 	TH1F * TrackerEfficiencyData  = (TH1F *)TrackerEfficiencyD    -> effR    ->    Clone();		
 
-	TH1F * Tracker_DvsMC_CorrectionR   = new TH1F("Tracker_DvsMC_CorrectionR  ","Tracker_DvsMC_CorrectionR  ",nbinsr  ,0,nbinsr  );
-	TH1F * Tracker_DvsMC_CorrectionTOF = new TH1F("Tracker_DvsMC_CorrectionTOF","Tracker_DvsMC_CorrectionTOF",nbinsToF,0,nbinsToF);
-	TH1F * Tracker_DvsMC_CorrectionNaF = new TH1F("Tracker_DvsMC_CorrectionNaF","Tracker_DvsMC_CorrectionNaF",nbinsNaF,0,nbinsNaF);	
-	TH1F * Tracker_DvsMC_CorrectionAgl = new TH1F("Tracker_DvsMC_CorrectionAgl","Tracker_DvsMC_CorrectionAgl",nbinsAgl,0,nbinsAgl);
-
-	Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionR  ,TrackerEfficiencyData,TrackerEfficiencyMC);
-        Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionTOF,TrackerEfficiencyData,TrackerEfficiencyMC);
-        Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionNaF,TrackerEfficiencyData,TrackerEfficiencyMC);
-	Set_GlobalDatavsMCCorr(Tracker_DvsMC_CorrectionAgl,TrackerEfficiencyData,TrackerEfficiencyMC);
+	TH1F * TrackerGlobalFactor = new TH1F ("TrackerGlobalFactor","TrackerGlobalFactor",1,0,1);
+	TrackerGlobalFactor -> SetBinContent(1,TrackerEfficiencyData -> GetBinContent(PRB.GetRBin(20)+1)/(float)TrackerEfficiencyMC -> GetBinContent(PRB.GetRBin(20)+1));
+	TrackerGlobalFactor -> SetBinError(1,TrackerEfficiencyData -> GetBinError(PRB.GetRBin(20)+1));		
 	
 	cout<<"*** Updating P1 file ****"<<endl;
    	inputHistoFile->ReOpen("UPDATE");
@@ -91,11 +85,8 @@ void DVSMCTrackeff(TFile * file){
 	inputHistoFile->mkdir("Results");
 	inputHistoFile->cd("Results");
  
-         TrackerEfficiencyData -> Write("TrackerEfficiencyData");
-         Tracker_DvsMC_CorrectionR     -> Write();
-         Tracker_DvsMC_CorrectionTOF   -> Write();
-         Tracker_DvsMC_CorrectionNaF   -> Write();
-         Tracker_DvsMC_CorrectionAgl   -> Write();
+        TrackerEfficiencyData -> Write("TrackerEfficiencyData");
+	TrackerGlobalFactor -> Write();
 	
 	inputHistoFile->Write();
 	
