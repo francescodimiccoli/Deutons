@@ -255,16 +255,10 @@ void Hecut(TFile * inputHistoFile) {
         He_Agl  -> Draw("same");
 
 
+	finalPlots.Add(c36	 );
+	finalPlots.Add(c36_bis);
+	finalPlots.Add(c37	 );
+	finalPlots.Add(c38	 );
+   finalPlots.writeObjsInFolder("MC Results/He related cuts");
 
-
-
-	cout<<"*** Updating Results file ***"<<endl;
-	fileFinalPlots->mkdir("MC Results/He related cuts");
-	fileFinalPlots->cd("MC Results/He related cuts");
-	c36	->Write();
-	c36_bis ->Write();
-	c37	->Write();
-	c38	->Write();
-
-	fileFinalPlots->Write();
 }
