@@ -165,6 +165,7 @@ void DATAQualeff (TFile * inputHistoFile)
    DistLATcorr_Agl_fit  ->Write();
 
    inputHistoFile->Write();
+	inputHistoFile->Close();
 
 
 
