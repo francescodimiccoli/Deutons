@@ -141,16 +141,9 @@ void OtherExperimentsComparison(){
 	legD->Draw("same");
 
 
-
-
-
-
-	cout<<"*** Updating Results file ***"<<endl;
-        fileFinalPlots->mkdir("Comparison with others");
-        fileFinalPlots->cd("Comparison with others");
-        c1->Write();
-        c2->Write();
-	fileFinalPlots->Write();
+        finalPlots.Add(c1);
+	finalPlots.Add(c2);
+        finalPlots.writeObjsInFolder("Comparison with others");
 
 	return;
 

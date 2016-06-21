@@ -828,35 +828,35 @@ void SlidesforPlot (TFile * file1)
 
 
 
-   cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->mkdir ("Common plots for slides");
-   fileFinalPlots->cd ("Common plots for slides");
-   p1->Write();
-   p2->Write();
-   p3 ->Write();
-   p4 ->Write();
-   p5 ->Write();
-   p6 ->Write();
-   p7 ->Write();
-   p8 ->Write();
-   p9 ->Write();
-   p10->Write();
-   p11->Write();
-   p12->Write();
-   p13->Write();
-   p14->Write();
-   p15->Write();
-   p10Q->Write();
-   p11Q->Write();
-   p12Q->Write();
-   p13Q->Write();
-   p14Q->Write();
-   p15Q->Write();
-   p16->Write();
-   p17->Write();
-   p18->Write();
-   p19->Write();
-   p20->Write();
-   p21->Write();
-   fileFinalPlots->Write();
+   
+   
+   finalPlots.Add(p1  );
+   finalPlots.Add(p2  );
+   finalPlots.Add(p3  );
+   finalPlots.Add(p4  );
+   finalPlots.Add(p5  );
+   finalPlots.Add(p6  );
+   finalPlots.Add(p7  );
+   finalPlots.Add(p8  );
+   finalPlots.Add(p9  );
+   finalPlots.Add(p10 );
+   finalPlots.Add(p11 );
+   finalPlots.Add(p12 );
+   finalPlots.Add(p13 );
+   finalPlots.Add(p14 );
+   finalPlots.Add(p15 );
+   finalPlots.Add(p10Q);
+   finalPlots.Add(p11Q);
+   finalPlots.Add(p12Q);
+   finalPlots.Add(p13Q);
+   finalPlots.Add(p14Q);
+   finalPlots.Add(p15Q);
+   finalPlots.Add(p16 );
+   finalPlots.Add(p17 );
+   finalPlots.Add(p18 );
+   finalPlots.Add(p19 );
+   finalPlots.Add(p20 );
+   finalPlots.Add(p21 );
+   finalPlots.writeObjsInFolder("Common plots for slides");
+   
 }
