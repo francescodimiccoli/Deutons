@@ -98,8 +98,10 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
       cout<<endl<<"************************ SAVING DATA ************************"<<endl;
 
+      inputHistoFile->Flush();
+      inputHistoFile->Close();
       delete inputHistoFile;
-      inputHistoFile =new TFile(filename.c_str(), "UPDATE");
+      inputHistoFile =new TFile(filename.c_str(), "RECREATE");
       inputHistoFile->cd();
 
       DATAQualeff_Write();
