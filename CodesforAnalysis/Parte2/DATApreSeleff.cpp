@@ -27,7 +27,7 @@ void DATApreSeleff_Write()
 }
 
 
-void DATApreSeleff(TFile * inputHistoFile)
+void DATApreSeleff(string histoName)
 {
    inputHistoFile->cd();
    LATcorr * LATpreSelDATA = new LATcorr(inputHistoFile,"LATpreSelDATA",3);
@@ -49,9 +49,13 @@ void DATApreSeleff(TFile * inputHistoFile)
 
    cout<<"*** Updating P1 file ****"<<endl;
 
-   inputHistoFile->ReOpen("UPDATE");
+   //inputHistoFile->Close();
+   //delete inputHistoFile;
+   inputHistoFile=TFile::Open(histoName.data(),  "UPDATE");
 
    inputHistoFile->cd("Results");
+//inputHistoFile->ls();
+   cout << LATpreSelDATA_R ->GetName() << " : " <<  LATpreSelDATA_R ->GetEntries();
    LATpreSelDATA_R  -> Write();
    preSelLATcorr    -> Write();
    preSelLATcorr_fit-> Write();

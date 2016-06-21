@@ -68,7 +68,7 @@ void DATAQualeff_Write()
 
 
 
-void DATAQualeff (TFile * inputHistoFile)
+void DATAQualeff (string histoName)
 {
    LATcorr * LATLikelihoodDATA_TOF = new LATcorr (inputHistoFile,"LATLikDATA_TOF" );
    LATcorr * LATDistanceDATA_TOF   = new LATcorr (inputHistoFile,"LATDistDATA_TOF");
@@ -139,7 +139,8 @@ void DATAQualeff (TFile * inputHistoFile)
 
 
    cout<<"*** Updating P1 file ****"<<endl;
-   inputHistoFile->ReOpen("UPDATE");
+   inputHistoFile->Close();
+	inputHistoFile=TFile::Open(histoName.data(), "UPDATE");
 
    inputHistoFile->cd ("Results");
 

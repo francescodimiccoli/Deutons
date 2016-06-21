@@ -150,7 +150,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    if(INDX!=1) {
       if(frac=="tot") Hecut(inputHistoFile);
       SlidesforPlot(inputHistoFile);
-      DistanceCut(inputHistoFile);
+//      DistanceCut(inputHistoFile);
       Correlazione_Preselezioni(inputHistoFile);
 
       MCpreeff(inputHistoFile);
@@ -162,10 +162,13 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       MigrationMatrix(inputHistoFile);
       DVSMCTrackeff(inputHistoFile);
       DATAUnbiaseff(inputHistoFile);
-      inputHistoFile->ReOpen("READ");
-      DATApreSeleff(inputHistoFile);
+delete inputHistoFile;
       inputHistoFile =TFile::Open(filename.c_str(), "READ");
-      DATAQualeff(inputHistoFile);
+      DATApreSeleff(filename);
+delete inputHistoFile;
+      inputHistoFile =TFile::Open(filename.c_str(), "READ");
+      DATAQualeff(filename);
+delete inputHistoFile;
       inputHistoFile =TFile::Open(filename.c_str(), "READ");
       DATARICHeff(inputHistoFile);
       if(frac=="tot") DeutonsTemplFits();
