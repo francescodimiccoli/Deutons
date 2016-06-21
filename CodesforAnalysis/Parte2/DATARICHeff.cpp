@@ -31,7 +31,7 @@ void DATARICHeff_Write() {
 
 
 
-void DATARICHeff(TFile * inputHistoFile) {
+void DATARICHeff(string fileName) {
    LATcorr * LATrichDATA_NaF = new LATcorr(inputHistoFile,"LATrichDATA_NaF");
    LATcorr * LATrichDATA_Agl = new LATcorr(inputHistoFile,"LATrichDATA_Agl");
 
@@ -59,7 +59,7 @@ void DATARICHeff(TFile * inputHistoFile) {
    TH1F *LATrichcorr_Agl_fit	= (TH1F *) LATrichDATA_Agl   -> LATcorrR_fit-> Clone();
 
    cout<<"*** Updating P1 file ****"<<endl;
-   inputHistoFile->ReOpen("UPDATE");
+   inputHistoFile=TFile::Open(fileName.data(), "UPDATE");
 
    inputHistoFile->cd("Results");
 

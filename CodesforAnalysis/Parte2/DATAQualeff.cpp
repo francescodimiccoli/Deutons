@@ -139,7 +139,6 @@ void DATAQualeff (string histoName)
 
 
    cout<<"*** Updating P1 file ****"<<endl;
-   inputHistoFile->Close();
 	inputHistoFile=TFile::Open(histoName.data(), "UPDATE");
 
    inputHistoFile->cd ("Results");
@@ -166,7 +165,6 @@ void DATAQualeff (string histoName)
    DistLATcorr_Agl_fit  ->Write();
 
    inputHistoFile->Write();
-	inputHistoFile->Close();
 
 
 

@@ -60,7 +60,6 @@ void DATApreSeleff(string histoName)
    preSelLATcorr    -> Write();
    preSelLATcorr_fit-> Write();
    inputHistoFile->Write();
-   inputHistoFile->Close();
 
 
    TGraphErrors * Eff_preSelLAT[3][11];

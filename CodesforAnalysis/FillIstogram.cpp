@@ -45,11 +45,11 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    string filename=outputpath+"Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
    inputHistoFile=new TFile(filename.c_str(),"READ");
    if (inputHistoFile->IsZombie()) {
-         cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl;
-         INDX=BUILDALL;
-         cout<<"Running in Mode 0 ..."<<endl;
-      }
-      
+      cout<<"## Histograms file not detected: rebuilding from trigger ##"<<endl;
+      INDX=BUILDALL;
+      cout<<"Running in Mode 0 ..."<<endl;
+   }
+
 
    string finalfilename=outputpath+"Final_plots/"+mese+".root";
    finalPlots.setName(finalfilename);
@@ -150,7 +150,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    if(INDX!=1) {
       if(frac=="tot") Hecut(inputHistoFile);
       SlidesforPlot(inputHistoFile);
-//      DistanceCut(inputHistoFile);
+      //      DistanceCut(inputHistoFile);
       Correlazione_Preselezioni(inputHistoFile);
 
       MCpreeff(inputHistoFile);
@@ -162,15 +162,15 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       MigrationMatrix(inputHistoFile);
       DVSMCTrackeff(inputHistoFile);
       DATAUnbiaseff(inputHistoFile);
-delete inputHistoFile;
+      //delete inputHistoFile;
       inputHistoFile =TFile::Open(filename.c_str(), "READ");
       DATApreSeleff(filename);
-delete inputHistoFile;
+      //delete inputHistoFile;
       inputHistoFile =TFile::Open(filename.c_str(), "READ");
       DATAQualeff(filename);
-delete inputHistoFile;
+      //delete inputHistoFile;
       inputHistoFile =TFile::Open(filename.c_str(), "READ");
-      DATARICHeff(inputHistoFile);
+      DATARICHeff(filename);
       if(frac=="tot") DeutonsTemplFits();
       if(frac=="tot") DeutonsTemplFits_Dist();
 
@@ -269,7 +269,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
 {
    int nentries=ntupMCTrig->GetEntries();
    EffUnbiasMCP = new Efficiency("EffUnbiasMCP");
-   EffUnbiasMCD = new Efficiency("EffUnbiasMCD");   
+   EffUnbiasMCD = new Efficiency("EffUnbiasMCD");
    for(int i=0; i<ntupMCTrig->GetEntries(); i++) {
       ntupMCTrig->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
@@ -277,7 +277,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
-      
+
       MCpreseff_Fill();
       MCUnbiaseff_Fill();
       MCTrackeff_Fill();
@@ -362,7 +362,7 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
       cmask.setMask(Tup.Cutmask);
       if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
       if(Tup.Beta<=0||Tup.R<=0) continue;
-      
+
       Cuts();
       float Zona=getGeoZone(Tup.Latitude);
       RUsed=Tup.R;
