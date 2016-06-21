@@ -102,7 +102,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       inputHistoFile->Flush();
       inputHistoFile->Close();
       delete inputHistoFile;
-      inputHistoFile =new TFile(filename.c_str(), "RECREATE");
+      inputHistoFile =TFile::Open(filename.c_str(), "RECREATE");
       inputHistoFile->cd();
 
       DATAQualeff_Write();
@@ -163,7 +163,9 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DVSMCTrackeff(inputHistoFile);
       DATAUnbiaseff(inputHistoFile);
       DATApreSeleff(inputHistoFile);
+      inputHistoFile =TFile::Open(filename.c_str(), "READ");
       DATAQualeff(inputHistoFile);
+      inputHistoFile =TFile::Open(filename.c_str(), "READ");
       DATARICHeff(inputHistoFile);
       if(frac=="tot") DeutonsTemplFits();
       if(frac=="tot") DeutonsTemplFits_Dist();
