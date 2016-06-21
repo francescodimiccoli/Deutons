@@ -174,7 +174,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       if(frac=="tot") DeutonsTemplFits();
       if(frac=="tot") DeutonsTemplFits_Dist();
 
-      CorrLAT();
+      inputHistoFile=TFile::Open(filename.c_str(), "READ");
+      CorrLAT(filename);
       DVSMCPreSeleff();
       DVSMCPreSeleffD();
       DVSMCRICHeff();
