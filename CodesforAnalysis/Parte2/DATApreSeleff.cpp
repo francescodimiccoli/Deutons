@@ -56,6 +56,7 @@ void DATApreSeleff(TFile * inputHistoFile)
    preSelLATcorr    -> Write();
    preSelLATcorr_fit-> Write();
    inputHistoFile->Write();
+   inputHistoFile->Close();
 
 
    TGraphErrors * Eff_preSelLAT[3][11];
@@ -134,7 +135,7 @@ void DATApreSeleff(TFile * inputHistoFile)
    }
 
    cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->ReOpen("UPDATE");
+   fileFinalPlots->Open("UPDATE");
    fileFinalPlots->mkdir("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
    fileFinalPlots->cd("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
    for(int S=0; S<3; S++) c14[S]->Write();
@@ -143,6 +144,8 @@ void DATApreSeleff(TFile * inputHistoFile)
    for(int S=0; S<3; S++)
       CorrLATpre_Spl[S]->Write(tagli[S].c_str());
    fileFinalPlots->Write();
+   fileFinalPlots->Close();
+
 
 
 }
