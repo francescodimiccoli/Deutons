@@ -1,8 +1,8 @@
 
 TH1 * Weighted_CorrLAT(TH2 * esposizionegeo, TH1 * LATcorr);
 
-void CorrLAT() {
-  inputHistoFile->ReOpen("READ");
+void CorrLAT(string histoName) {
+  inputHistoFile=TFile::Open(histoName.data(), "READ");
 
    TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get( "esposizionegeo"       );
    TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeo"	);
@@ -29,25 +29,27 @@ void CorrLAT() {
    cout<<"******* TOTAL LAT. CORRECTION *************"<<endl;
 
 
-   TH1F * PreLATCorr = (TH1F *)(( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",1,1)) -> Clone();
+   TH1D * PreLATCorr =      ( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",1,1) ;
+   TH1D * LATpreSelDATA2 =  ( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",2,2) ;
+   TH1D * LATpreSelDATA3 =  ( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",3,3) ;
 
-   PreLATCorr -> Multiply( (TH1F *)( ( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",2,2))->Clone()	);
-   PreLATCorr -> Multiply( (TH1F *)( ( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",3,3))->Clone()	);
+   PreLATCorr -> Multiply( LATpreSelDATA2	);
+   PreLATCorr -> Multiply( LATpreSelDATA3	);
 
-   TH1F *  TOTLATCorrTOF = (TH1F *) PreLATCorr -> Clone();
-   TH1F *  TOTLATCorrNaF = (TH1F *) PreLATCorr -> Clone();
-   TH1F *  TOTLATCorrAgl = (TH1F *) PreLATCorr -> Clone();
+   TH1F *  TOTLATCorrTOF; TOTLATCorrTOF->Copy( *PreLATCorr );
+   TH1F *  TOTLATCorrNaF; TOTLATCorrNaF->Copy( *PreLATCorr );
+   TH1F *  TOTLATCorrAgl; TOTLATCorrAgl->Copy( *PreLATCorr );
 
-   TOTLATCorrTOF  -> Multiply ( ( (TH1F *)LATLikelihoodDATA_TOF ->  LATcorrR_fit) );
-   TOTLATCorrTOF  -> Multiply ( ( (TH1F *)LATDistanceDATA_TOF   ->  LATcorrR_fit) );
+   TOTLATCorrTOF  -> Multiply (LATLikelihoodDATA_TOF ->  LATcorrR_fit);
+   TOTLATCorrTOF  -> Multiply (LATDistanceDATA_TOF   ->  LATcorrR_fit);
 
-   TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATLikelihoodDATA_NaF ->  LATcorrR_fit) );
-   TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATDistanceDATA_NaF   ->  LATcorrR_fit) );
-   TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATrichDATA_NaF       ->  LATcorrR_fit) );   
+   TOTLATCorrNaF  -> Multiply (LATLikelihoodDATA_NaF ->  LATcorrR_fit);
+   TOTLATCorrNaF  -> Multiply (LATDistanceDATA_NaF   ->  LATcorrR_fit);
+   TOTLATCorrNaF  -> Multiply (LATrichDATA_NaF       ->  LATcorrR_fit);   
 
-   TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LATLikelihoodDATA_Agl ->  LATcorrR_fit) );
-   TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LATDistanceDATA_Agl   ->  LATcorrR_fit) );
-   TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATrichDATA_Agl       ->  LATcorrR_fit) );
+   TOTLATCorrAgl  -> Multiply (LATLikelihoodDATA_Agl ->  LATcorrR_fit);
+   TOTLATCorrAgl  -> Multiply (LATDistanceDATA_Agl   ->  LATcorrR_fit);
+   TOTLATCorrNaF  -> Multiply (LATrichDATA_Agl       ->  LATcorrR_fit);
 
    //Only pres.
    TH1F * CorrezioneLATpre_pR = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorr  	);
