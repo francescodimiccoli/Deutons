@@ -29,9 +29,8 @@ void MigrationMatrix(TFile * file1){
 	MigrMatrix->GetYaxis()->SetTitle("n.bin (R gen)");
 	MigrMatrix->Draw("col");
 
-	cout<<"*** Updating Results file ***"<<endl;
-        fileFinalPlots->cd("MC Results");
-	c27 -> Write();
-        fileFinalPlots->Write();
-	
+
+	finalPlots.Add(c27);
+	finalPlots.writeObjsInFolder("MC Results");
+
 }

@@ -51,9 +51,9 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       }
       
 
-   filename=outputpath+"Final_plots/"+mese+".root";
-   finalPlots.setName(filename);
-   fileFinalPlots=new TFile(filename.c_str(),"UPDATE");
+   string finalfilename=outputpath+"Final_plots/"+mese+".root";
+   finalPlots.setName(finalfilename);
+   fileFinalPlots=new TFile(finalfilename.c_str(),"UPDATE");
 
 
    if(INDX!=READ) {
