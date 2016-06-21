@@ -535,18 +535,19 @@ void DATAQualeff (TFile * inputHistoFile)
    CorrLAT_DistAgl_Spl->SetLineWidth (2);
    CorrLAT_DistAgl_Spl->Draw ("Csame");
 
-   cout<<"*** Updating Results file ***"<<endl;
-   fileFinalPlots->mkdir ("DATA-driven Results/Latitude effect/Quality");
-   fileFinalPlots->cd ("DATA-driven Results/Latitude effect/Quality");
-   c15->Write();
-   c16->Write();
-   fileFinalPlots->cd ("Export");
-   CorrLAT_Lik_Spl->Write ("CorrLAT_LikTOF_Spl");
-   CorrLAT_LikNaF_Spl->Write ("CorrLAT_LikNaF_Spl");
-   CorrLAT_LikAgl_Spl->Write ("CorrLAT_LikAgl_Spl");
-   CorrLAT_Dist_Spl->Write ("CorrLAT_DistTOF_Spl");
-   CorrLAT_DistNaF_Spl->Write ("CorrLAT_DistNaF_Spl");
-   CorrLAT_DistAgl_Spl->Write ("CorrLAT_DistAgl_Spl");
-   fileFinalPlots->Write();
+
+	TObjArray* objarr=new TObjArray(6);
+	objarr->Add(c15);
+	objarr->Add(c16);
+   writeObjArrayInFinalPlotFolder(objarr, "DATA-driven Results/Latitude effect/Quality");
+	objarr->Add(CorrLAT_Lik_Spl    );
+	objarr->Add(CorrLAT_LikNaF_Spl );
+	objarr->Add(CorrLAT_LikAgl_Spl );
+	objarr->Add(CorrLAT_Dist_Spl   );
+	objarr->Add(CorrLAT_DistNaF_Spl);
+	objarr->Add(CorrLAT_DistAgl_Spl);
+	writeObjArrayInFinalPlotFolder(objarr, "Export");
+
+
 
 }
