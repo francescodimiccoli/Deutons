@@ -37,6 +37,7 @@ void Correlazione_Preselezioni(TFile * inputHistoFile){
 	for(int S=0;S<11;S++)
 		for(int F=0;F<11;F++) 
 			if(Norm[S]>0) CorrelazionePreselezioni->SetBinContent(S+1,F+1,CorrelazionePreselezioni->GetBinContent(S+1,F+1)/(float)Norm[S]);
+
 	
 	cout<<"*** Updating P1 file ****"<<endl;
 	inputHistoFile->ReOpen("UPDATE");
@@ -52,10 +53,8 @@ void Correlazione_Preselezioni(TFile * inputHistoFile){
 	c13->cd();
 	CorrelazionePreselezioni->Draw("col");
 
-	cout<<"*** Updating Results file ***"<<endl;
-        fileFinalPlots->cd("MC Results");
-        c13->Write();
-        fileFinalPlots->Write();
+	finalPlots.Add(c13);
+	finalPlots.writeObjsInFolder("MC Results");
 
 
 }
