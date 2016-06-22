@@ -134,7 +134,7 @@ void DATApreSeleff(string histoName)
          CorrLATpre[S]->SetPoint(i-1,geomagC[i],preSelLATcorr->GetBinContent(i+1,S+1));
          CorrLATpre[S]->SetPointError(i-1,0,preSelLATcorr->GetBinError(i+1,S+1));
       }
-      CorrLATpre[S]->Fit(nome.c_str());
+      //CorrLATpre[S]->Fit(nome.c_str());
       CorrLATpre[S]->Draw("AP");
 
       nome="CorrLATpre_spl"+tagli[S];
