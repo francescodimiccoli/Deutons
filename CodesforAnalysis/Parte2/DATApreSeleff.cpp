@@ -49,6 +49,12 @@ void DATApreSeleff(string histoName)
 
    cout<<"*** Updating P1 file ****"<<endl;
 
+   cout << LATpreSelDATA_R ->GetName() << " : " <<  LATpreSelDATA_R ->GetEntries() << endl;
+   cout << preSelLATcorr ->GetName() << " : " <<  preSelLATcorr ->GetEntries() << endl;
+   cout << preSelLATcorr_fit ->GetName() << " : " <<  preSelLATcorr_fit ->GetEntries() << endl;
+   cout << LATpreSelDATA   -> LATcorrR_fit << " : " <<  LATpreSelDATA   -> LATcorrR_fit << endl;
+
+
    //inputHistoFile->Close();
    //delete inputHistoFile;
    inputHistoFile=TFile::Open(histoName.data(),  "UPDATE");
@@ -56,6 +62,10 @@ void DATApreSeleff(string histoName)
    inputHistoFile->cd("Results");
 //inputHistoFile->ls();
    cout << LATpreSelDATA_R ->GetName() << " : " <<  LATpreSelDATA_R ->GetEntries() << endl;
+   cout << preSelLATcorr ->GetName() << " : " <<  preSelLATcorr ->GetEntries() << endl;
+   cout << preSelLATcorr_fit ->GetName() << " : " <<  preSelLATcorr_fit ->GetEntries() << endl;
+   cout << LATpreSelDATA   -> LATcorrR_fit << " : " <<  LATpreSelDATA   -> LATcorrR_fit << endl;
+   
    LATpreSelDATA_R  -> Write();
    preSelLATcorr    -> Write();
    preSelLATcorr_fit-> Write();
