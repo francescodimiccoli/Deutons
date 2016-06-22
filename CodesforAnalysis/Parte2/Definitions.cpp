@@ -188,3 +188,9 @@ TH1F* ProjectionXtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
    TH1F* hf=TH1DtoTH1F(hd);
    return hf;
    }
+
+TH1F* ProjectionYtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
+   TH1D* hd=h2->ProjectionY(title.data(), binmin, binmax);
+   TH1F* hf=TH1DtoTH1F(hd);
+   return hf;
+   }
