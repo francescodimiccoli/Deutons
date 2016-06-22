@@ -55,11 +55,12 @@ void DATApreSeleff(string histoName)
 
    inputHistoFile->cd("Results");
 //inputHistoFile->ls();
-   cout << LATpreSelDATA_R ->GetName() << " : " <<  LATpreSelDATA_R ->GetEntries();
+   cout << LATpreSelDATA_R ->GetName() << " : " <<  LATpreSelDATA_R ->GetEntries() << endl;
    LATpreSelDATA_R  -> Write();
    preSelLATcorr    -> Write();
    preSelLATcorr_fit-> Write();
    inputHistoFile->Write();
+	inputHistoFile->Close();
 
 
    TGraphErrors * Eff_preSelLAT[3][11];
@@ -121,7 +122,7 @@ void DATApreSeleff(string histoName)
       CorrLATpre[S]->Draw("AP");
 
       nome="CorrLATpre_spl"+tagli[S];
-      CorrLATpre_Spl[S]=new TGraphErrors(tagli[S].c_str());
+      CorrLATpre_Spl[S]=new TGraphErrors(11);
       CorrLATpre_Spl[S]->SetName(tagli[S].c_str());
       int j=0;
       for(int i=1; i<11; i++) {
@@ -139,8 +140,8 @@ void DATApreSeleff(string histoName)
 
    
    for(int S=0; S<3; S++) finalPlots.Add(c14[S]);
-   finalPlots.writeObjsInFolder("DATA-driven Results/Latitude effect/\"Clean-event\" Selections");
-   for(int S=0; S<3; S++) CorrLATpre_Spl[S]->Write(tagli[S].c_str());
+   finalPlots.writeObjsInFolder("DATA-driven Results/Latitude effect/Clean-event Selections");
+   for(int S=0; S<3; S++) finalPlots.Add(CorrLATpre_Spl[S]);
    finalPlots.writeObjsInFolder("Export");
    
 
