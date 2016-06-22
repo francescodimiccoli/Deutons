@@ -100,11 +100,8 @@ public:
 	void Eval_Corrections();	
 	
 	TH1 * GetCorrection_R()  { return Correction_R  ;};
-	
 	TH1 * GetCorrection_TOF(){ return Correction_TOF;};
-	
 	TH1 * GetCorrection_NaF(){ return Correction_NaF;};
-	
 	TH1 * GetCorrection_Agl(){ return Correction_Agl;}; 
 };
 
@@ -118,10 +115,10 @@ void DatavsMC::Write(){
 void DatavsMC::Eval_Corrected_DataEff(){
 
 	if(selections == 1) {
-		DataEff_corr -> beforeR   = (TH1F*)((TH1F *)((TH2F*)DataEff -> beforeR  ) -> ProjectionX((Basename + "1_R" ).c_str(),0,latzones)) -> Clone();
-		DataEff_corr -> beforeTOF = (TH1F*)((TH1F *)((TH2F*)DataEff -> beforeTOF) -> ProjectionX((Basename + "1"   ).c_str(),0,latzones)) -> Clone();
-		DataEff_corr -> beforeNaF = (TH1F*)((TH1F *)((TH2F*)DataEff -> beforeNaF) -> ProjectionX((Basename + "1NaF").c_str(),0,latzones)) -> Clone();
-		DataEff_corr -> beforeAgl = (TH1F*)((TH1F *)((TH2F*)DataEff -> beforeAgl) -> ProjectionX((Basename + "1Agl").c_str(),0,latzones)) -> Clone();
+		DataEff_corr -> beforeR   = ProjectionXtoTH1F(DataEff -> beforeR  , (Basename + "1_R" ),0,latzones);
+		DataEff_corr -> beforeTOF = ProjectionXtoTH1F(DataEff -> beforeTOF, (Basename + "1"   ),0,latzones);
+		DataEff_corr -> beforeNaF = ProjectionXtoTH1F(DataEff -> beforeNaF, (Basename + "1NaF"),0,latzones);
+		DataEff_corr -> beforeAgl = ProjectionXtoTH1F(DataEff -> beforeAgl, (Basename + "1Agl"),0,latzones);
 	}
 
 	else {
@@ -236,5 +233,3 @@ TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
 	
 	return Histo_corr;
 }
-
-
