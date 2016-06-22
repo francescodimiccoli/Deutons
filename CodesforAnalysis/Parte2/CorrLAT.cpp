@@ -28,9 +28,9 @@ void CorrLAT(string histoName) {
    cout<<"******* TOTAL LAT. CORRECTION *************"<<endl;
 
 
-   TH1F * PreLATCorr =      ProjectionXtoTH1F((TH2F*) (LATpreSelDATA ->  LATcorrR_fit), "PreLATCorr"    ,1,1) ;
-   TH1F * LATpreSelDATA2 =  ProjectionXtoTH1F((TH2F*) (LATpreSelDATA ->  LATcorrR_fit), "LATpreSelDATA2",2,2) ;
-   TH1F * LATpreSelDATA3 =  ProjectionXtoTH1F((TH2F*) (LATpreSelDATA ->  LATcorrR_fit), "LATpreSelDATA3",3,3) ;
+   TH1F * PreLATCorr =      ProjectionXtoTH1F( static_cast<TH2F *> (LATpreSelDATA ->  LATcorrR_fit), "PreLATCorr"    ,1,1) ;
+   TH1F * LATpreSelDATA2 =  ProjectionXtoTH1F( static_cast<TH2F *> (LATpreSelDATA ->  LATcorrR_fit), "LATpreSelDATA2",2,2) ;
+   TH1F * LATpreSelDATA3 =  ProjectionXtoTH1F( static_cast<TH2F *> (LATpreSelDATA ->  LATcorrR_fit), "LATpreSelDATA3",3,3) ;
 
    PreLATCorr -> Multiply( LATpreSelDATA2	);
    PreLATCorr -> Multiply( LATpreSelDATA3	);
