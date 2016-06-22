@@ -8,10 +8,10 @@ Flux * P_Flux_geo_prim= new Flux("P_Flux_geo_prim",11);
 Flux * P_Flux_pre = new Flux("P_Flux_pre" );
 Flux * P_Flux_sel = new Flux("P_Flux_sel" );
 
-void ProtonFlux_Fill(TNtuple *ntupla, int l,int zona) {
-    ntupla->GetEvent(l);
-   if(Tup.Beta<=0||Tup.R<=0) return;
-   int Kbin=RB.GetRBin(Tup.R);
+void ProtonFlux_Fill(int zona) {
+    
+   
+   int Kbin=PRB.GetRBin(Tup.R);
 
    if(Tup.Dist5D_P<6 && Likcut) {
       P_Flux_geo-> Counts_R -> Fill(Kbin,zona);
@@ -41,22 +41,21 @@ void ProtonFlux_Write() {
 }
 
 
-void ProtonFlux() {
-   string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
+void ProtonFlux(string nomefile) {
+   
 
-   TH2F * esposizionegeo_R    = (TH2F*)file1->Get( "esposizionegeo"        );
-   TH2F * esposizionepgeoTOF  = (TH2F*)file1->Get(	"esposizionepgeo"	);
-   TH2F * esposizionepgeoNaF  = (TH2F*)file1->Get(	"esposizionepgeoNaF"	);
-   TH2F * esposizionepgeoAgl  = (TH2F*)file1->Get(	"esposizionepgeoAgl"	);
+   TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get( "esposizionegeo"        );
+   TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeo"	);
+   TH2F * esposizionepgeoNaF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoNaF"	);
+   TH2F * esposizionepgeoAgl  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoAgl"	);
 
 
-   Flux * P_Flux         = new Flux(file1, "P_Flux"    	 ,"Results","Corr_AcceptanceP",1);
-   Flux * P_Flux_geo     = new Flux(file1, "P_Flux_geo"     ,"Results","Geomag_AcceptanceP",11);
-   Flux * P_Flux_geo_prim= new Flux(file1, "P_Flux_geo_prim","Results","Geomag_AcceptanceP",11);
+   Flux * P_Flux         = new Flux(inputHistoFile, "P_Flux"    	 ,"Results","Corr_AcceptanceP",1);
+   Flux * P_Flux_geo     = new Flux(inputHistoFile, "P_Flux_geo"     ,"Results","Geomag_AcceptanceP",11);
+   Flux * P_Flux_geo_prim= new Flux(inputHistoFile, "P_Flux_geo_prim","Results","Geomag_AcceptanceP",11);
 
-   Flux * P_Flux_pre     = new Flux(file1, "P_Flux_pre" 	 ,"Results","Corr_AcceptancePreP",1);
-   Flux * P_Flux_sel     = new Flux(file1, "P_Flux_sel"     ,"Results","Corr_AcceptanceP",1);
+   Flux * P_Flux_pre     = new Flux(inputHistoFile, "P_Flux_pre" 	 ,"Results","Corr_AcceptancePreP",1);
+   Flux * P_Flux_sel     = new Flux(inputHistoFile, "P_Flux_sel"     ,"Results","Corr_AcceptanceP",1);
 
    cout<<"*************** PROTONS FLUXES CALCULATION *******************"<<endl;
 
@@ -83,18 +82,17 @@ void ProtonFlux() {
 
    cout<<"*** Updating P1 file ****"<<endl;
 
-   nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
-   file1 = TFile::Open(nomefile.c_str(),"UPDATE");
-   file1->mkdir("Results/Fluxes");
-   file1->cd("Results/Fluxes");
+   inputHistoFile = TFile::Open(nomefile.c_str(),"UPDATE");
+   inputHistoFile->mkdir("Results/Fluxes");
+   inputHistoFile->cd("Results/Fluxes");
 	
    ProtonsPrimaryFlux  ->Write("ProtonsPrimaryFlux" 	);
    ProtonsGeomagFlux   ->Write("ProtonsGeomagFlux"  	);
    P_pre_PrimaryFlux   ->Write("P_pre_PrimaryFlux"  	);
    P_sel_PrimaryFlux   ->Write("P_sel_PrimaryFlux"  	);
 
-   file1->Write();
-   file1->Close();
+   inputHistoFile->Write();
+   inputHistoFile->Close();
 
 
 
@@ -119,8 +117,8 @@ void ProtonFlux() {
       P_Fluxgeo[j]=new TGraphErrors();
       P_Fluxgeo[j]->SetName(nome.c_str());
       for(int i=0; i<nbinsr; i++) {
-         P_Fluxgeo[j]->SetPoint(i,encinprot[i],ProtonsGeomagFlux->GetBinContent(i+1,j+1)*pow(encinprot[i],potenza));
-         P_Fluxgeo[j]->SetPointError(i,0,ProtonsGeomagFlux->GetBinError(i+1,j+1)*pow(encinprot[i],potenza));
+         P_Fluxgeo[j]->SetPoint(i,PRB.EkBinCent(i),ProtonsGeomagFlux->GetBinContent(i+1,j+1)*pow(PRB.EkBinCent(i),potenza));
+         P_Fluxgeo[j]->SetPointError(i,0,ProtonsGeomagFlux->GetBinError(i+1,j+1)*pow(PRB.EkBinCent(i),potenza));
       }
       P_Fluxgeo[j]->SetMarkerStyle(8);
       P_Fluxgeo[j]->SetMarkerColor(j-1);
@@ -145,8 +143,8 @@ void ProtonFlux() {
    gPad->SetGridy();
    PFlux=new TGraphErrors();
    for(int i=0; i<nbinsr; i++) {
-      PFlux->SetPoint(i,encinprot[i],ProtonsPrimaryFlux->GetBinContent(i+1)*pow(encinprot[i],potenza));
-      PFlux->SetPointError(i,0,ProtonsPrimaryFlux->GetBinError(i+1)*pow(encinprot[i],potenza));
+      PFlux->SetPoint(i,PRB.EkBinCent(i),ProtonsPrimaryFlux->GetBinContent(i+1)*pow(PRB.EkBinCent(i),potenza));
+      PFlux->SetPointError(i,0,ProtonsPrimaryFlux->GetBinError(i+1)*pow(PRB.EkBinCent(i),potenza));
    }
    PFlux->SetName("Protons Primary Flux");
    PFlux->SetMarkerStyle(8);
@@ -199,14 +197,14 @@ void ProtonFlux() {
    PFlux_pre->SetName("Protons Primary Flux (only pres.)");
    int p=0;
    for(int i=1; i<nbinsr; i++) {
-      PFlux_->SetPoint(p,RB.RigBinCent(i),1);
-      PFlux_pre->SetPoint(p,encinprot[i],1);
+      PFlux_->SetPoint(p,PRB.RigBinCent(i),1);
+      PFlux_pre->SetPoint(p,PRB.EkBinCent(i),1);
       PFlux_->SetPointError(p,0,(P_sel_PrimaryFlux->GetBinError(i+1,2)+P_pre_PrimaryFlux->GetBinError(i+1,2))/P_pre_PrimaryFlux->GetBinContent(i+1,1));
       p++;
    }
    p=0;
    for(int i=1; i<nbinsr; i++) {
-      PFluxpre->SetPoint(p,RB.RigBinCent(i),P_sel_PrimaryFlux->GetBinContent(i+1)/P_pre_PrimaryFlux->GetBinContent(i+1,1));
+      PFluxpre->SetPoint(p,PRB.RigBinCent(i),P_sel_PrimaryFlux->GetBinContent(i+1)/P_pre_PrimaryFlux->GetBinContent(i+1,1));
       p++;
    }
    PFluxpre->SetMarkerStyle(8);
@@ -242,9 +240,3 @@ void ProtonFlux() {
 
    return;
 }
-
-
-
-
-
-

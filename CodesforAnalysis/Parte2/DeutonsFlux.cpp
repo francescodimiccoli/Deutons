@@ -1,8 +1,8 @@
 using namespace std;
 
 
-void DeutonFlux() {
-	string nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+void DeutonFlux(string nomefile) {
+	
 	TFile * file1 = TFile::Open(nomefile.c_str(),"READ");
 
 	TH2F * esposizionegeo_R    = (TH2F*)file1->Get(      "esposizionegeo"        );
@@ -118,7 +118,7 @@ void DeutonFlux() {
 
 	cout<<"*** Updating P1 file ****"<<endl;
 
-	nomefile="../Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
+	
 	file1 = TFile::Open(nomefile.c_str(),"UPDATE");
 	file1->cd("Results/Fluxes");	
 
@@ -172,7 +172,7 @@ void DeutonFlux() {
 	TGraphErrors * esposp_TOF=new TGraphErrors();
 	TGraphErrors * esposp_NaF=new TGraphErrors();
 	TGraphErrors * esposp_Agl=new TGraphErrors();
-	for(int m=0;m<nbinsbeta;m++){
+	for(int m=0;m<ToFPB.size();m++){
 		esposd_TOF->SetPoint(m,ToFPB.EkBinCent(m),D_Flux -> Exposure_TOF -> GetBinContent(m+1));
 		esposp_TOF->SetPoint(m,ToFPB.EkBinCent(m),P_Flux -> Exposure_TOF -> GetBinContent(m+1));
 		esposd_NaF->SetPoint(m,NaFPB.EkBinCent(m),D_Flux -> Exposure_NaF -> GetBinContent(m+1));
