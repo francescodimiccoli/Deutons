@@ -45,8 +45,8 @@ void InitProtonFlux()
    P_Flux         = new Flux("P_Flux"    	  , "", PRB  );
    P_Flux_geo     = new Flux("P_Flux_geo"     , "", PRB, NGEOBINS);
    P_Flux_geo_prim= new Flux("P_Flux_geo_prim", "", PRB, NGEOBINS);
-   P_Flux_pre = new Flux("P_Flux_pre" , "", PRB);
-   P_Flux_sel = new Flux("P_Flux_sel" , "", PRB);
+   P_Flux_pre     = new Flux("P_Flux_pre" , "", PRB);
+   P_Flux_sel     = new Flux("P_Flux_sel" , "", PRB);
 
    return;
 }
@@ -99,7 +99,6 @@ class PFluxComputing {
 
 PFluxComputing::PFluxComputing(string objname, bool geobin, string acceptname)
 {
-   inputHistoFile->ReOpen("READ");
    ngeobins=1;
    if (geobin) {
       ngeobins=NGEOBINS;
