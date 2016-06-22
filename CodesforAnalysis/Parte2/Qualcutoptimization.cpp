@@ -146,14 +146,14 @@ void DistanceCut(TFile * file1){
 	TH1F * DistanceHe_NaF   = ProjectionXtoTH1F(Dist5D_PdistrHe_NaF , "DistanceHe_NaF",0,Dist5D_PdistrHe_NaF->GetNbinsY());
 	TH1F * DistanceHe_Agl   = ProjectionXtoTH1F(Dist5D_PdistrHe_Agl , "DistanceHe_Agl",0,Dist5D_PdistrHe_Agl->GetNbinsY());
 
-	TH2F * DistvsLikTOF_P = (TH2F*)file1->Get(	"DistvsLikTOF_P"		);
-        TH2F * DistvsLikTOF_D = (TH2F*)file1->Get(	"DistvsLikTOF_D"		);
-                                                                      
-        TH2F * DistvsLikNaF_P = (TH2F*)file1->Get(	"DistvsLikNaF_P"		);
-	TH2F * DistvsLikNaF_D = (TH2F*)file1->Get(	"DistvsLikNaF_D"		);
-                                                                      
-        TH2F * DistvsLikAgl_P = (TH2F*)file1->Get(	"DistvsLikAgl_P"		);
-        TH2F * DistvsLikAgl_D = (TH2F*)file1->Get(	"DistvsLikAgl_D"		);
+	TH2F * DistvsLikTOF_P = (TH2F*)file1->Get( "DistvsLikTOF_P" );
+        TH2F * DistvsLikTOF_D = (TH2F*)file1->Get( "DistvsLikTOF_D" );
+                                                                    
+        TH2F * DistvsLikNaF_P = (TH2F*)file1->Get( "DistvsLikNaF_P" );
+	TH2F * DistvsLikNaF_D = (TH2F*)file1->Get( "DistvsLikNaF_D" );
+                                                                    
+        TH2F * DistvsLikAgl_P = (TH2F*)file1->Get( "DistvsLikAgl_P" );
+        TH2F * DistvsLikAgl_D = (TH2F*)file1->Get( "DistvsLikAgl_D" );
 
 	TH1F * Distance_goodD_TOF = ProjectionYtoTH1F(DistvsLikTOF_D , "Distance_goodD_TOF",0,DistvsLikTOF_D->GetNbinsY());
 	TH1F * Distance_badP_TOF =  ProjectionYtoTH1F(DistvsLikTOF_P , "Distance_badP_TOF ",0,DistvsLikTOF_P->GetNbinsY());
