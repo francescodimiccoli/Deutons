@@ -183,8 +183,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DVSMCQualeffD();
       Acceptance();
       inputHistoFile=TFile::Open(filename.c_str(), "READ");
-      ProtonFlux();
-      if(frac=="tot") DeutonFlux();
+      ProtonFlux(filename);
+      if(frac=="tot") DeutonFlux(filename);
       if(frac=="tot") OtherExperimentsComparison();
    }
 
@@ -357,7 +357,7 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 
 void LoopOnDataSepD(TNtuple* ntupDataSepD)
 {
-   InitProtonFlux();
+   //InitProtonFlux();
    int nentries=ntupDataSepD->GetEntries();
    for(int i=0; i<nentries; i++) {
       ntupDataSepD->GetEvent(i);
