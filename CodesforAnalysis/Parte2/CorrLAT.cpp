@@ -28,16 +28,18 @@ void CorrLAT(string histoName) {
    cout<<"******* TOTAL LAT. CORRECTION *************"<<endl;
 
 
-   TH1F * PreLATCorr =      ProjectionXtoTH1F( static_cast<TH2F *> (LATpreSelDATA ->  LATcorrR_fit), "PreLATCorr"    ,1,1) ;
-   TH1F * LATpreSelDATA2 =  ProjectionXtoTH1F( static_cast<TH2F *> (LATpreSelDATA ->  LATcorrR_fit), "LATpreSelDATA2",2,2) ;
-   TH1F * LATpreSelDATA3 =  ProjectionXtoTH1F( static_cast<TH2F *> (LATpreSelDATA ->  LATcorrR_fit), "LATpreSelDATA3",3,3) ;
+	TH2F*  PreLATCorr(static_cast<TH2F *>(LATpreSelDATA   -> LATcorrR_fit));
+cout << PreLATCorr->GetEntries() << " " << PreLATCorr->GetName() << " " << PreLATCorr->ClassName ()  << endl;
+   TH1F * LATpreSelDATA1 =      ProjectionXtoTH1F(PreLATCorr , "LATpreSelDATA1"    ,1,1) ;
+   TH1F * LATpreSelDATA2 =  ProjectionXtoTH1F(PreLATCorr , "LATpreSelDATA2",2,2) ;
+   TH1F * LATpreSelDATA3 =  ProjectionXtoTH1F(PreLATCorr , "LATpreSelDATA3",3,3) ;
 
-   PreLATCorr -> Multiply( LATpreSelDATA2	);
-   PreLATCorr -> Multiply( LATpreSelDATA3	);
+   LATpreSelDATA1 -> Multiply( LATpreSelDATA2	);
+   LATpreSelDATA1 -> Multiply( LATpreSelDATA3	);
 
-   TH1F *  TOTLATCorrTOF( PreLATCorr);
-   TH1F *  TOTLATCorrNaF( PreLATCorr);
-   TH1F *  TOTLATCorrAgl( PreLATCorr);
+   TH1F *  TOTLATCorrTOF( LATpreSelDATA1);
+   TH1F *  TOTLATCorrNaF( LATpreSelDATA1);
+   TH1F *  TOTLATCorrAgl( LATpreSelDATA1);
 
    TOTLATCorrTOF  -> Multiply (LATLikelihoodDATA_TOF ->  LATcorrR_fit);
    TOTLATCorrTOF  -> Multiply (LATDistanceDATA_TOF   ->  LATcorrR_fit);
@@ -51,9 +53,9 @@ void CorrLAT(string histoName) {
    TOTLATCorrNaF  -> Multiply (LATrichDATA_Agl       ->  LATcorrR_fit);
 
    //Only pres.
-   TH1F * CorrezioneLATpre_pR = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorr  	);
+   TH1F * CorrezioneLATpre_pR = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , LATpreSelDATA1);
 
-   TH1F * CorrezioneLATpre_dR = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorr  	);
+   TH1F * CorrezioneLATpre_dR = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , LATpreSelDATA1);
 
    //Full set
    TH1F * CorrezioneLAT_pR   = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R   , TOTLATCorrTOF 	);
@@ -70,10 +72,10 @@ void CorrLAT(string histoName) {
    inputHistoFile->ReOpen("UPDATE");
    inputHistoFile->cd("Results");
 
-   PreLATCorr     -> Write(     "PreLATCorr_LATcorrR_fit" 	);
-   PreLATCorr     -> Write(     "PreLATCorr_LATcorrTOF_fit");
-   PreLATCorr     -> Write(     "PreLATCorr_LATcorrNaF_fit");
-   PreLATCorr     -> Write(     "PreLATCorr_LATcorrAgl_fit");
+    LATpreSelDATA1    -> Write(     "PreLATCorr_LATcorrR_fit" 	);
+        LATpreSelDATA1-> Write(     "PreLATCorr_LATcorrTOF_fit");
+        LATpreSelDATA1-> Write(     "PreLATCorr_LATcorrNaF_fit");
+        LATpreSelDATA1-> Write(     "PreLATCorr_LATcorrAgl_fit");
 
    TOTLATCorrTOF  -> Write(     "TOTLATCorr_LATcorrR_fit"  );
    TOTLATCorrTOF  -> Write(     "TOTLATCorr_LATcorrTOF_fit");
