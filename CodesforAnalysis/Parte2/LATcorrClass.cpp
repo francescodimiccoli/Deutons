@@ -1,7 +1,7 @@
 using namespace std;
 
-void  CalcLATcorr(TH1 * before,TH1 * after, TH1 * LATcorr,int n);
-void  FitLATcorr (TH1 * LATcorr,TH1 * LATcorr_fit,int n);
+void  CalcLATcorr(TH1 * before,TH1 * after, TH1 * hLATcorr,int n);
+void  FitLATcorr (TH1 * hLATcorr,TH1 * hLATcorr_fit,int n);
 
 class LATcorr {
    public:
@@ -124,9 +124,9 @@ void  CalcLATcorr(TH1 * before,TH1 * after, TH1 * hLATcorr,int n)
          float HEeff_before[11];
          float HEeff_after[11];
 
-         for(int i=0; i<11; i++) {
-            HEeff_before[i] = ((TH3 *)before)-> Integral(30,nbinsr,i+1,i+1,m+1,m+1);
-            HEeff_after[i]  = ((TH3 *)after )-> Integral(30,nbinsr,i+1,i+1,m+1,m+1);
+         for(int i=1; i<11; i++) {
+            HEeff_before[i-1] = ((TH3 *)before)-> Integral(30,nbinsr,i+1,i+1,m+1,m+1); // Bin 1 always 0!!!
+            HEeff_after[i-1]  = ((TH3 *)after )-> Integral(30,nbinsr,i+1,i+1,m+1,m+1);
             hLATcorr -> SetBinContent(i+1,m+1,(HEeff_after[0]/HEeff_before[0])/(HEeff_after[i]/HEeff_before[i]));
             hLATcorr -> SetBinError(i+1,m+1,pow(HEeff_after[i],-0.5)*hLATcorr -> GetBinContent(i+1,m+1));
          }
@@ -135,9 +135,9 @@ void  CalcLATcorr(TH1 * before,TH1 * after, TH1 * hLATcorr,int n)
       float HEeff_before[11];
       float HEeff_after[11];
 
-      for(int i=0; i<11; i++) {
-         HEeff_before[i] = ((TH2 *)before)-> Integral(30,nbinsr,i+1,i+1);
-         HEeff_after[i]  = ((TH2 *)after )-> Integral(30,nbinsr,i+1,i+1);
+      for(int i=1; i<11; i++) {
+         HEeff_before[i-1] = ((TH2 *)before)-> Integral(30,nbinsr,i+1,i+1);
+         HEeff_after[i-1]  = ((TH2 *)after )-> Integral(30,nbinsr,i+1,i+1);
          hLATcorr -> SetBinContent(i+1,1,(HEeff_after[0]/HEeff_before[0])/(HEeff_after[i]/HEeff_before[i]));
          hLATcorr -> SetBinError  (i+1,1,pow(HEeff_after[i],-0.5)*hLATcorr -> GetBinContent(i+1));
       }
