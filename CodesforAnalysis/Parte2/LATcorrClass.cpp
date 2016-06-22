@@ -160,7 +160,7 @@ void FitLATcorr( TH1 * hLATcorr,TH1 * hLATcorr_fit,int n)
          }
          TF1 * Fitcorr = new TF1("Fitcorr","pol3");
          latcorr -> Fit ("Fitcorr");
-         for(int i=0; i<11; i++) {
+         for(int i=1; i<11; i++) {
 	    float eval=Fitcorr->Eval(i+0.5);
             latcorr_fit ->  SetBinContent(i+1, eval);
             hLATcorr_fit -> SetBinContent(i+1,m+1, eval);
@@ -171,7 +171,7 @@ void FitLATcorr( TH1 * hLATcorr,TH1 * hLATcorr_fit,int n)
       TH1F * latcorr = ((TH1F *)hLATcorr);
       TF1 * Fitcorr = new TF1("Fitcorr","pol3");
       latcorr -> Fit ("Fitcorr");
-      for(int i=0; i<11; i++) {
+      for(int i=1; i<11; i++) {
 	float eval=Fitcorr->Eval(i+0.5);
          hLATcorr_fit -> SetBinContent(i+1, eval);
          hLATcorr_fit -> SetBinError(i+1,FitError(((TH1F *)hLATcorr_fit),latcorr,11,3));
