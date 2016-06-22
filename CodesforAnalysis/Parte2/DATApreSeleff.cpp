@@ -43,9 +43,9 @@ void DATApreSeleff(string histoName)
 
    LATpreSelDATA -> Eval_LATcorr(3);
 
-   TH2F * preSelLATcorr = ((TH2F *) LATpreSelDATA   -> LATcorrR) -> Clone();
-
-   TH2F * preSelLATcorr_fit = ((TH2F *) LATpreSelDATA   -> LATcorrR_fit) -> Clone();
+   // (LATpreSelDATA   -> LATcorrR))
+   TH2F * preSelLATcorr (static_cast<TH2F *>(LATpreSelDATA   -> LATcorrR));
+   TH2F * preSelLATcorr_fit(static_cast<TH2F *>(LATpreSelDATA   -> LATcorrR_fit));
 
    cout<<"*** Updating P1 file ****"<<endl;
 
