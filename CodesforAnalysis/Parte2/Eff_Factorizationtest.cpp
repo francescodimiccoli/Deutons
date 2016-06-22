@@ -15,7 +15,7 @@ void FluxFactorizationtest_Pre_Fill()
    if(Tup.Unbias!=0||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
    int Rbin;
    // full set efficiency before
-   if(cmask.notPassed(0)) {
+   if(cmask.notPassed(2)) {
       Rbin=PRB.GetRBin(RUsed);
       if(Massa_gen<1&&Massa_gen>0.5) {
          EffFullSETselectionsMCP->beforeR->Fill(Rbin);

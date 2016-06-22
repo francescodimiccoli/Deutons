@@ -80,5 +80,6 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
 
    finalPlots.Add(c12);
    finalPlots.writeObjsInFolder("DATA-driven Results");
-
+   finalPlots.Add(TriggerGlobalFactor);
+   finalPlots.writeObjsInFolder("Export");	
 }

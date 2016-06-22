@@ -123,6 +123,7 @@ void DVSMCTrackeff(TFile * file){
         finalPlots.Add(c29);
 	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/Tracker Efficiency");
 	finalPlots.Add(TrackerEfficiencyData);
+	finalPlots.Add(TrackerGlobalFactor);
 	finalPlots.writeObjsInFolder("Export");
 	
 }

@@ -92,14 +92,14 @@ void Cutmask::printANSIYesNo (string legend, bool condition, int width) {
 bool Cutmask::notPassed (uint i)
 {
    if (i>2) return 0;
-   int notpassed[3]= {11,43,59};
+   int notpassed[3]= {139,171,11};
    return (cmask&notpassed[i]) ==notpassed[i];
 }
 
 bool Cutmask::passed (uint i)
 {
    if (i>2) return 0;
-   int passed[3]= {43,59,187};
+   int passed[3]= {171,187,139};
    return (cmask&passed[i]) ==passed[i];
 }
 
