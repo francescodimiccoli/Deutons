@@ -1,5 +1,4 @@
-
-TH1 * Weighted_CorrLAT(TH2 * esposizionegeo, TH1 * LATcorr);
+TH1 * Weighted_CorrLAT(TH2F * esposizionegeo, TH1 * LATcorr);
 
 void CorrLAT(string histoName) {
   inputHistoFile=TFile::Open(histoName.data(), "READ");
@@ -29,16 +28,16 @@ void CorrLAT(string histoName) {
    cout<<"******* TOTAL LAT. CORRECTION *************"<<endl;
 
 
-   TH1D * PreLATCorr =     (TH1D *) ( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("PreLATCorr",1,1) ;
-   TH1D * LATpreSelDATA2 = (TH1D *) ( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("LATpreSelDATA2",2,2) ;
-   TH1D * LATpreSelDATA3 = (TH1D *) ( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("LATpreSelDATA3",3,3) ;
+   TH1F * PreLATCorr =      ProjectionXtoTH1F((TH2F*) LATpreSelDATA ->  LATcorrR_fit, "PreLATCorr"    ,1,1) ;
+   TH1F * LATpreSelDATA2 =  ProjectionXtoTH1F((TH2F*) LATpreSelDATA ->  LATcorrR_fit, "LATpreSelDATA2",2,2) ;
+   TH1F * LATpreSelDATA3 =  ProjectionXtoTH1F((TH2F*) LATpreSelDATA ->  LATcorrR_fit, "LATpreSelDATA3",3,3) ;
 
    PreLATCorr -> Multiply( LATpreSelDATA2	);
    PreLATCorr -> Multiply( LATpreSelDATA3	);
 
-   TH1F *  TOTLATCorrTOF=new TH1F(); TOTLATCorrTOF->Copy( *PreLATCorr );
-   TH1F *  TOTLATCorrNaF=new TH1F(); TOTLATCorrNaF->Copy( *PreLATCorr );
-   TH1F *  TOTLATCorrAgl=new TH1F(); TOTLATCorrAgl->Copy( *PreLATCorr );
+   TH1F *  TOTLATCorrTOF( PreLATCorr);
+   TH1F *  TOTLATCorrNaF( PreLATCorr);
+   TH1F *  TOTLATCorrAgl( PreLATCorr);
 
    TOTLATCorrTOF  -> Multiply (LATLikelihoodDATA_TOF ->  LATcorrR_fit);
    TOTLATCorrTOF  -> Multiply (LATDistanceDATA_TOF   ->  LATcorrR_fit);
@@ -272,7 +271,7 @@ void CorrLAT(string histoName) {
 
 
 
-TH1 * Weighted_CorrLAT(TH2 * esposizionegeo, TH1 * LATcorr) {
+TH1 * Weighted_CorrLAT(TH2F * esposizionegeo, TH1 * LATcorr) {
    TH2F * temp    = (TH2F *)esposizionegeo -> Clone();
    TH2F * temp_err= (TH2F *)esposizionegeo -> Clone(); 
   for(int m=0; m<11; m++) {
@@ -282,14 +281,14 @@ TH1 * Weighted_CorrLAT(TH2 * esposizionegeo, TH1 * LATcorr) {
 	}
    }
    //summ all over latitudes	
-   TH1F * temp2     =(TH1F *)temp     -> ProjectionX("",0,10) -> Clone();
-   TH1F * temp2_err =(TH1F *)temp_err -> ProjectionX("",0,10) -> Clone();	   
+   TH1F * temp2     = ProjectionXtoTH1F(temp     , "",0,10);
+   TH1F * temp2_err = ProjectionXtoTH1F(temp_err , "",0,10);
   
    for(int i=0; i< temp2_err -> GetNbinsX(); i++) temp2_err->SetBinContent(i+1,pow(temp2_err->GetBinContent(i+1),0.5));
    //	
    
    //Divide by total exposure time
-   TH1F * Exptime =(TH1F *) esposizionegeo -> ProjectionX("",0,10) -> Clone();
+   TH1F * Exptime =ProjectionXtoTH1F( esposizionegeo , "",0,10);
    temp2     -> Divide ( Exptime );
    temp2_err -> Divide ( Exptime );
    //

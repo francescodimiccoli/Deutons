@@ -115,10 +115,10 @@ void DatavsMC::Write(){
 void DatavsMC::Eval_Corrected_DataEff(){
 
 	if(selections == 1) {
-		DataEff_corr -> beforeR   = ProjectionXtoTH1F(DataEff -> beforeR  , (Basename + "1_R" ),0,latzones);
-		DataEff_corr -> beforeTOF = ProjectionXtoTH1F(DataEff -> beforeTOF, (Basename + "1"   ),0,latzones);
-		DataEff_corr -> beforeNaF = ProjectionXtoTH1F(DataEff -> beforeNaF, (Basename + "1NaF"),0,latzones);
-		DataEff_corr -> beforeAgl = ProjectionXtoTH1F(DataEff -> beforeAgl, (Basename + "1Agl"),0,latzones);
+		DataEff_corr -> beforeR   = ProjectionXtoTH1F((TH2F*)DataEff -> beforeR  , (Basename + "1_R" ),0,latzones);
+		DataEff_corr -> beforeTOF = ProjectionXtoTH1F((TH2F*)DataEff -> beforeTOF, (Basename + "1"   ),0,latzones);
+		DataEff_corr -> beforeNaF = ProjectionXtoTH1F((TH2F*)DataEff -> beforeNaF, (Basename + "1NaF"),0,latzones);
+		DataEff_corr -> beforeAgl = ProjectionXtoTH1F((TH2F*)DataEff -> beforeAgl, (Basename + "1Agl"),0,latzones);
 	}
 
 	else {
@@ -207,22 +207,21 @@ void DatavsMC::DivideHisto(TH1 *Histo1, TH1 *Histo2,TH1 * Correction){
 
 TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
 	TH1 * Histo_corr;
-	TH1 * temp; 
   
 	int selections = Histo ->GetNbinsZ();
 	int latzones   = Histo ->GetNbinsY();
 	
 	if(selections == 1){
-		temp = (TH2 *)Histo -> Clone();
+		TH2F* temp = (TH2F *)Histo -> Clone();
 		//Histo_corr = new TH1F("","",Histo-> GetNbinsX(),0,Histo-> GetNbinsX());
 		for(int iR = 0;iR < Histo ->GetNbinsX();iR++) 
 		     for(int lat =0; lat < latzones; lat++){	
 				temp -> SetBinContent(iR+1,lat+1,Histo->GetBinContent(iR+1,lat+1)*LATcorr->GetBinContent(lat+1));
 		}
-		Histo_corr = (TH1F*)((TH1 *)((TH2*)temp ) -> ProjectionX(histoname.c_str(),0,latzones)) -> Clone();		
+		Histo_corr = (TH1F*) ProjectionXtoTH1F( temp, histoname,0,latzones );
 	}
 	else {
-		temp = (TH3 *)Histo -> Clone();
+		TH3* temp = (TH3 *)Histo -> Clone();
 		for(int iS = 0; iS < selections; iS++)	
 			for(int iR = 0;iR < Histo ->GetNbinsX();iR++) 
 				for(int lat =0; lat < latzones; lat++){	
