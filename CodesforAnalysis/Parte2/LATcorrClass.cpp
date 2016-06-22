@@ -152,7 +152,7 @@ void FitLATcorr( TH1 * hLATcorr,TH1 * hLATcorr_fit,int n)
          TH1F * latcorr     = new TH1F("","",11,0,11);
          TH1F * latcorr_fit = new TH1F("","",11,0,11);
 
-         for(int i=0; i<11; i++) {
+         for(int i=1; i<11; i++) {
 	    float bincontent=((TH2 *)hLATcorr)->GetBinContent(i+1,m+1);
             latcorr -> SetBinContent(i+1, bincontent);
 	    float binerror=((TH2 *)hLATcorr)->GetBinError(i+1,m+1);
