@@ -240,6 +240,8 @@ TH1 * ExposureTime(TH2 * esposizionegeo) {
 }
 
 void TimeGeo(TH2 * Exposure, TH1 * Tempi) {
+	HistInfo(Exposure);
+	HistInfo(Tempi);
 	for(int R=0; R<Exposure ->GetNbinsX() ; R++ )
 		for(int lat =1; lat< Tempi->GetNbinsX(); lat++){
 			Exposure  -> SetBinContent(R+1,lat+1,Tempi -> GetBinContent(lat));

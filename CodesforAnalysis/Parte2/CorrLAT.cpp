@@ -30,11 +30,11 @@ void CorrLAT(string histoName) {
 
 	TH2F*  PreLATCorr(static_cast<TH2F *>(LATpreSelDATA   -> LATcorrR_fit));
    HistInfo(PreLATCorr);
-   TH1F * LATpreSelDATA1 = ProjectionXtoTH1F(PreLATCorr , "LATpreSelDATA1"    ,1,1) ;
+   TH1F * LATpreSelDATA1 = ProjectionXtoTH1F(PreLATCorr , "LATpreSelDATA_px1"    ,1,1) ;
    HistInfo(LATpreSelDATA1);
-   TH1F * LATpreSelDATA2 =  ProjectionXtoTH1F(PreLATCorr , "LATpreSelDATA2",2,2) ;
+   TH1F * LATpreSelDATA2 =  ProjectionXtoTH1F(PreLATCorr , "LATpreSelDATA_px2",2,2) ;
    HistInfo(LATpreSelDATA2);
-   TH1F * LATpreSelDATA3 =  ProjectionXtoTH1F(PreLATCorr , "LATpreSelDATA3",3,3) ;
+   TH1F * LATpreSelDATA3 =  ProjectionXtoTH1F(PreLATCorr , "LATpreSelDATA_px3",3,3) ;
 
    LATpreSelDATA1 -> Multiply( LATpreSelDATA2	);
    LATpreSelDATA1 -> Multiply( LATpreSelDATA3	);
