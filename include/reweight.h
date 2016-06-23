@@ -46,7 +46,7 @@ void Reweight::init()
 Spectrum Reweight::loadDataSpectrum()
 {
    Histogram hdata;
-   hdata.fillWithGalpropFile("CRDB_ProtonsAMS_R.galprop");
+   hdata.fillWithGalpropFile("/storage/gpfs_ams/ams/users/fdimicco/Deutons/include/CRDB_ProtonsAMS_R.galprop");
    Spectrum dataspectrum(bins);
    dataspectrum.rebinHistoInRig(hdata);
    return dataspectrum;
