@@ -20,3 +20,6 @@ all:
 # include/GCR_data.cpp  -Wno-pointer-arith  -fmax-errors=5
 #
 # g++ -g -std=c++11 $(root-config --libs --cflags)  -lTMVA -o AnalyzeMC.exe AnalyzeMC5D.C ../include/GCR_data.cpp  -I../include/ -Wno-pointer-arith
+#
+# g++ -g -std=c++11 $(root-config --libs --cflags)  -lTMVA -o AnalyzeDATA.exe AnalyzeDATA5D.C ../include/GCR_data.cpp  -I../include/ -Wno-pointer-arith
+# 
