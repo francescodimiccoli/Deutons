@@ -50,6 +50,7 @@ void ProtonFlux(string nomefile) {
    TH2F * esposizionepgeoAgl  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoAgl"	);
 
 
+
    Flux * P_Flux         = new Flux(inputHistoFile, "P_Flux"    	 ,"Results","Corr_AcceptanceP",1);
    Flux * P_Flux_geo     = new Flux(inputHistoFile, "P_Flux_geo"     ,"Results","Geomag_AcceptanceP",11);
    Flux * P_Flux_geo_prim= new Flux(inputHistoFile, "P_Flux_geo_prim","Results","Geomag_AcceptanceP",11);
@@ -58,6 +59,8 @@ void ProtonFlux(string nomefile) {
    Flux * P_Flux_sel     = new Flux(inputHistoFile, "P_Flux_sel"     ,"Results","Corr_AcceptanceP",1);
 
    cout<<"*************** PROTONS FLUXES CALCULATION *******************"<<endl;
+
+   Tempi = (TH1F *)inputHistoFile->Get("Tempi");
 
    P_Flux         -> Set_Exposure_Time (esposizionegeo_R,esposizionepgeoTOF,esposizionepgeoNaF,esposizionepgeoAgl);
    P_Flux_geo     -> Set_Exposure_Time (Tempi);
