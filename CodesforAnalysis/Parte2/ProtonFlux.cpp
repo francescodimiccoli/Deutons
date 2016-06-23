@@ -222,21 +222,16 @@ void ProtonFlux(string nomefile) {
    PFluxpre->Draw("AP");
    PFlux_->Draw("P4same");
 
+  
 
-
-   cout<<"*** Updating Results file ***"<<endl;
-   nomefile="./Final_plots/"+mese+".root";
-   TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
-   f_out->mkdir("P Fluxes");
-   f_out->cd("P Fluxes");
-   c23->Write();
-   c24->Write();
-   c25->Write();
-   f_out->cd("Export");
-   PFlux->Write("Protons Primary Flux");
-   f_out->Write();
-   f_out->Close();
-
+   finalPlots.Add(c23);
+   finalPlots.Add(c24);
+   finalPlots.Add(c25);
+   finalPlots.writeObjsInFolder("P Fluxes");
+   
+   finalPlots.Add(PFlux);
+   finalPlots.writeObjsInFolder("Export");
+   
 
    return;
 }

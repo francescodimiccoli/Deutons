@@ -667,24 +667,20 @@ void DeutonFlux(string nomefile) {
 
 	c35->cd(2);
 	PD_ratioAgl_Dist->Draw("Psame");
+
+
+
+   finalPlots.Add(c32);
+   finalPlots.Add(c33);
+   finalPlots.Add(c34);
+   finalPlots.Add(c35);
+   finalPlots.writeObjsInFolder("D Fluxes");
+   
+   finalPlots.Add(D_FluxTOF);
+	finalPlots.Add(D_FluxNaF);
+	finalPlots.Add(D_FluxAgl);
+   finalPlots.writeObjsInFolder("Export");
 	
-	cout<<"*** Updating Results file ***"<<endl;
-	nomefile="./Final_plots/"+mese+".root";
-	TFile *f_out=new TFile(nomefile.c_str(), "UPDATE");
-	f_out->mkdir("D Fluxes");
-	f_out->cd("D Fluxes");
-	c33-> Write();
-	c32->Write();
-	c34-> Write();
-	c35->Write();
-	f_out->cd("Export");
-	D_FluxTOF->Write("Deutons Primary Flux: TOF");
-	D_FluxNaF->Write("Deutons Primary Flux: NaF");
-	D_FluxAgl->Write("Deutons Primary Flux: Agl");
-	f_out->Write();
-	f_out->Close();
-
-
 
 	return;
 }
