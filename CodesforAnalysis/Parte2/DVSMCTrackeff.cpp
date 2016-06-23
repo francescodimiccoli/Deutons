@@ -88,7 +88,6 @@ void DVSMCTrackeff(TFile * file){
         TrackerEfficiencyData -> Write("TrackerEfficiencyData");
 	TrackerGlobalFactor -> Write();
 	
-	inputHistoFile->Write();
 	
 	TCanvas *c28= new TCanvas("R vs ECAL E.dep.");
 	c28->Divide(1,2);

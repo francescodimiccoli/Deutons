@@ -179,17 +179,17 @@ Cutmask cmask;
 
 
 void HistInfo(TH1* histo) {
-   cout << ">>> Info on :" << histo->GetName() << " >> Class " << histo->ClassName () << " >> ";
+   cout << ">>> Class " << histo->ClassName () << " >> Info :  ";
   histo->Print();
    return;
    }
 
 TH1F* TH1DtoTH1F(TH1D* hd) {
-   cout << " TH1D:" << endl;
-   HistInfo(hd);
+//   cout << " TH1D:" << endl;
+   //HistInfo(hd);
    TH1F*  hf=(TH1F*)hd->Clone();
    cout << " TH1F:" << endl;
-   HistInfo(hf);
+   //HistInfo(hf);
    return hf;
 }
 

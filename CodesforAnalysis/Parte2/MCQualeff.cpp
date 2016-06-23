@@ -157,7 +157,6 @@ void MCQualeff(TFile * inputHistoFile) {
    EffMCDistD_BetaNaF_TH2F  ->Write();
    EffMCDistP_BetaAgl_TH1F  ->Write();
    EffMCDistD_BetaAgl_TH2F  ->Write();
-   inputHistoFile->Write();
 
 
 

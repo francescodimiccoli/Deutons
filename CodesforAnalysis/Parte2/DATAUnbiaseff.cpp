@@ -47,7 +47,6 @@ void DATAUnbiaseff (TFile * inputHistoFile) {
    inputHistoFile->cd ("Results");
    EffUnbDATA_R_TH1F ->Write();
    TriggerGlobalFactor -> Write();
-   inputHistoFile-> Write();
    inputHistoFile->Flush();
    inputHistoFile->Close();
 

@@ -192,7 +192,6 @@ void DVSMCQualeff2(){
 	LikP_Correction_Agl   -> Write("Lik_DvsMC_P_CorrectionAgl"  );
 
 
-	inputHistoFile->Write();
 
 
 

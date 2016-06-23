@@ -46,7 +46,6 @@ void Correlazione_Preselezioni(TFile * inputHistoFile){
 	}
 	inputHistoFile->cd("Results");
    CorrelazionePreselezioni->Write();
-	inputHistoFile-> Write();
 	
 
 	TCanvas *c13=new TCanvas("Correlazione Selezioni");

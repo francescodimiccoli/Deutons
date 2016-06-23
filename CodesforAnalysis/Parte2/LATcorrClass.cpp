@@ -45,6 +45,7 @@ class LATcorr {
 
       LATcorr(TFile * file, std::string basename)
       {
+  	if (!file->IsOpen()) file->Open("READ");
          beforeR   	= (TH1 *)file->Get((basename + "1" ).c_str());
          afterR    	= (TH1 *)file->Get((basename + "2" ).c_str());
          LATcorrR   	= new TH1F((basename  + "_LATcorr"	    ).c_str(),(basename  + "_LATcorr"    	).c_str(),11,0,11);
@@ -55,6 +56,7 @@ class LATcorr {
 
       LATcorr(TFile * file, std::string basename,int n)
       {
+  	if (!file->IsOpen()) file->Open("READ");
          beforeR   	= (TH1 *)file->Get((basename + "1" ).c_str());
          afterR    	= (TH1 *)file->Get((basename + "2" ).c_str());
          LATcorrR   	= new TH2F((basename  + "_LATcorr"	    ).c_str(),(basename  + "_LATcorr"    	).c_str(),11,0,11,n,0,n);

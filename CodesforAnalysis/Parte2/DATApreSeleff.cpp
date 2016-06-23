@@ -75,7 +75,6 @@ void DATApreSeleff(string histoName)
    LATpreSelDATA_R  -> Write();
    preSelLATcorr    -> Write();
    preSelLATcorr_fit-> Write();
-   inputHistoFile->Write();
 	inputHistoFile->Close();
 
 

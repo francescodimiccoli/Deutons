@@ -164,7 +164,6 @@ void DATAQualeff (string histoName)
    LikLATcorr_Agl_fit   ->Write();
    DistLATcorr_Agl_fit  ->Write();
 
-   inputHistoFile->Write();
 
 
 

@@ -113,7 +113,6 @@ void DVSMCPreSeleffD(){
 	PreSelD_Correction_NaF  -> Write("PreSel_DvsMC_D_CorrectionNaF");
 	PreSelD_Correction_Agl  -> Write("PreSel_DvsMC_D_CorrectionAgl");
 
-	inputHistoFile->Write();
 
 	string tagli[3]={"Matching TOF","Chi^2 R","1 Tr. Track"};
 	string nome;

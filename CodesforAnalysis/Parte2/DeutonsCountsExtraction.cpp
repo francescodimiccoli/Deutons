@@ -212,7 +212,6 @@ void DeutonsTemplFits()
    FitNaF_Pbins -> PCounts -> Write ("P_FluxCounts_NaF");
    FitAgl_Pbins -> PCounts -> Write ("P_FluxCounts_Agl");
 
-   inputHistoFile -> Write();
 
    TCanvas *c30_TOF[2][nbinsToF];
    TCanvas *c30_NaF[2][nbinsNaF];

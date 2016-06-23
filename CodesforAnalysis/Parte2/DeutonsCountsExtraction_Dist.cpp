@@ -208,7 +208,6 @@ void DeutonsTemplFits_Dist()
    FitNaF_Pbins_Dist -> PCounts -> Write ("P_Flux_DistCounts_NaF");
    FitAgl_Pbins_Dist -> PCounts -> Write ("P_Flux_DistCounts_Agl");
 
-   inputHistoFile -> Write();
 
    TCanvas *c30_TOF[2][nbinsToF];
    TCanvas *c30_NaF[2][nbinsNaF];

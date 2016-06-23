@@ -166,7 +166,6 @@ void MCTrackeff (TFile * inputHistoFile)
    EffTOF_MCP_TH1F		-> Write();
    EffTOF_MCD_R_TH2F	-> Write();
    EffTOF_MCD_TH2F		-> Write();
-   inputHistoFile->Write();
 
 
    TCanvas *c_7 	=new TCanvas ("Trigger sel. efficiency");

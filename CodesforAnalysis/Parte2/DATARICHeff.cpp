@@ -58,8 +58,14 @@ void DATARICHeff(string fileName) {
    TH1F *LATrichcorr_NaF_fit  	= (TH1F *) LATrichDATA_NaF   -> LATcorrR_fit-> Clone();
    TH1F *LATrichcorr_Agl_fit	= (TH1F *) LATrichDATA_Agl   -> LATcorrR_fit-> Clone();
 
+	HistInfo(LATrichcorr_NaF);
+       	HistInfo(LATrichcorr_Agl);
+       	HistInfo(LATrichcorr_NaF_fit);
+       	HistInfo(LATrichcorr_Agl_fit);
+
+
    cout<<"*** Updating P1 file ****"<<endl;
-   inputHistoFile=TFile::Open(fileName.data(), "UPDATE");
+   inputHistoFile->ReOpen("UPDATE");
 
    inputHistoFile->cd("Results");
 
@@ -72,8 +78,8 @@ void DATARICHeff(string fileName) {
    LATrichcorr_NaF_fit-> Write();
    LATrichcorr_Agl_fit-> Write();
 
-   inputHistoFile->Write();
-
+	inputHistoFile->Flush();
+//inputHistoFile->Close();
 
 
    TCanvas *c15=new TCanvas("Latitude RICH  Efficiency");

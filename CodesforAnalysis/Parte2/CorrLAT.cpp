@@ -97,7 +97,6 @@ void CorrLAT(string histoName) {
    CorrezioneLAT_dNaF-> Write(  "CorrezioneLATd_NaF"	);
    CorrezioneLAT_dAgl-> Write(  "CorrezioneLATd_Agl"       );
 
-   inputHistoFile->Write();
 
 
 
