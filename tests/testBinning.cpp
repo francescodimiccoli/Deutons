@@ -9,17 +9,13 @@ protected:
 
     BinningTest():
               p_bin(0.938, 1, 1), 
-              d_bin(1.875, 2, 1), 
+              d_bin(1.875, 1, 2), 
              he_bin(3.727, 2, 4), 
             he3_bin(2.814, 2, 3) {}
 
     virtual void SetUp() { }
     virtual void TearDown() { }
 };
-
-float R_from_beta(float beta, float mq) { return mq * beta / sqrt(1 - beta * beta);  }
-float beta_from_R(float R,    float mq) { return R / sqrt(R * R + mq * mq);  }
-float Ek_from_beta(float beta, float m, float  n) { return (m / sqrt(1 - beta * beta) - m) / n; }
 
 TEST_F(BinningTest, TestBinsLogarithmic) { 
     p_bin.setBinsFromEk(10,1,10);
@@ -35,10 +31,6 @@ TEST_F(BinningTest, TestBinsLogarithmic) {
 }
 
 TEST_F(BinningTest, TestBinsParticle) { 
-    Binning   p_bin(0.938, 1, 1); 
-    Binning   d_bin(1.875, 1, 2); 
-    Binning  he_bin(3.727, 2, 4); 
-    Binning he3_bin(2.814, 2, 3);
 
     EXPECT_FLOAT_EQ( 0.938,   p_bin.getParticle().getMass() );
     EXPECT_FLOAT_EQ( 1.875,   d_bin.getParticle().getMass() );
@@ -55,3 +47,47 @@ TEST_F(BinningTest, TestBinsParticle) {
     EXPECT_EQ( 4,  he_bin.getParticle().getA() );
     EXPECT_EQ( 3, he3_bin.getParticle().getA() );
 }
+
+TEST_F(BinningTest, TestBinsCopyConstr) { 
+    p_bin.setBinsFromEk(10,1,10);
+
+    Binning copy(p_bin);
+
+    EXPECT_FLOAT_EQ( 0.938, copy.getParticle().getMass() );
+    EXPECT_FLOAT_EQ(     1, copy.getParticle().getZ()    );
+    EXPECT_FLOAT_EQ(     1, copy.getParticle().getA()    );
+
+    EXPECT_EQ(10, copy.size());
+    for(int i = 0; i < 10; i++){
+        EXPECT_EQ(p_bin.EkBins  ()[i], copy.EkBins  ()[i]);
+        EXPECT_EQ(p_bin.EtotBins()[i], copy.EtotBins()[i]);
+        EXPECT_EQ(p_bin.MomBins ()[i], copy.MomBins ()[i]);
+        EXPECT_EQ(p_bin.RigBins ()[i], copy.RigBins ()[i]);
+        EXPECT_EQ(p_bin.BetaBins()[i], copy.BetaBins()[i]);
+    }
+}
+
+
+
+float R_from_beta(float beta, float mq) { return mq * beta / sqrt(1 - beta * beta);  }
+float beta_from_R(float R,    float mq) { return R / sqrt(R * R + mq * mq);  }
+float Ek_from_beta(float beta, float m, float  n) { return (m / sqrt(1 - beta * beta) - m) / n; }
+
+
+//float Ek_from_R(float R, int z, float m) { return sqrt( z*z*R*R + m*m ) - m; }
+//TEST_F(BinningTest, TestEkToRigidity) { 
+//      p_bin.setBinsFromEk(2,1,10);
+//      d_bin.setBinsFromEk(2,1,10);
+//     he_bin.setBinsFromEk(2,1,10);
+//    he3_bin.setBinsFromEk(2,1,10);
+//    
+//    EXPECT_FLOAT_EQ( 1, Ek_from_R(  p_bin.RigBins()[0], 1, 0.938) );
+//    EXPECT_FLOAT_EQ( 1, Ek_from_R(  d_bin.RigBins()[0], 1, 1.875) );
+//    EXPECT_FLOAT_EQ( 1, Ek_from_R( he_bin.RigBins()[0], 2, 3.727) );
+//    EXPECT_FLOAT_EQ( 1, Ek_from_R(he3_bin.RigBins()[0], 2, 2.814) );
+//    
+//    EXPECT_FLOAT_EQ( 10, Ek_from_R(  p_bin.RigBins()[1], 1, 0.938) );
+//    EXPECT_FLOAT_EQ( 10, Ek_from_R(  d_bin.RigBins()[1], 1, 1.875) );
+//    EXPECT_FLOAT_EQ( 10, Ek_from_R( he_bin.RigBins()[1], 2, 3.727) );
+//    EXPECT_FLOAT_EQ( 10, Ek_from_R(he3_bin.RigBins()[1], 2, 2.814) );
+//}
