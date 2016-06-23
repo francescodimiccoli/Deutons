@@ -185,10 +185,8 @@ void HistInfo(TH1* histo) {
    }
 
 TH1F* TH1DtoTH1F(TH1D* hd) {
-//   cout << " TH1D:" << endl;
    //HistInfo(hd);
    TH1F*  hf=(TH1F*)hd->Clone();
-   cout << " TH1F:" << endl;
    //HistInfo(hf);
    return hf;
 }
@@ -197,18 +195,16 @@ TH1F* TH1DtoTH1F(TH1D* hd) {
 
 TH1F* ProjectionXtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
    TH1D* hd=h2->ProjectionX(title.data(), binmin, binmax);
-   cout << " TH2F:" << endl;
-   HistInfo(h2);
-   cout << " TH1D before call:" << endl;
-   HistInfo(hd);
+   //HistInfo(h2);
+   //HistInfo(hd);
    TH1F* hf=TH1DtoTH1F(hd);
    return hf;
    }
 
 TH1F* ProjectionYtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
-   HistInfo(h2);
+   //HistInfo(h2);
    TH1D* hd=h2->ProjectionY(title.data(), binmin, binmax);
-   HistInfo(hd);
+   //HistInfo(hd);
    TH1F* hf=TH1DtoTH1F(hd);
    return hf;
    }
