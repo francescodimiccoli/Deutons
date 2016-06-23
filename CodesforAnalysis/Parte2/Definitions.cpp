@@ -179,9 +179,8 @@ Cutmask cmask;
 
 
 void HistInfo(TH1* histo) {
-   cout << ">>> Info on :" << histo->GetName() << endl;
-   cout << " Class : " << histo->ClassName () << " -- Entries : " << histo->GetEntries() << endl;
-   histo->Print();
+   cout << ">>> Info on :" << histo->GetName() << " >> Class " << histo->ClassName () << " >> ";
+  histo->Print();
    return;
    }
 
