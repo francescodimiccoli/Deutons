@@ -16,7 +16,7 @@ void DVSMCTrackeff_D_Fill(){
 	if(cmask.isPreselected()&&Tup.EdepECAL>1)
 		ECALvsR_D->Fill(Tup.R_pre,Tup.EdepECAL);
         //R bins
-	int Kbin=PRB.GetRBin (Tup.R_pre) ;
+	int Kbin=PRB.GetRBin (20) ;
 	if(((int) Tup.Cutmask&3 ) == 3   && Tup.Beta_pre>0)            TrackerEfficiencyD -> beforeR -> Fill(Kbin);
 	if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0) 	       TrackerEfficiencyD -> afterR  -> Fill(Kbin); 	
 
@@ -33,7 +33,7 @@ void DVSMCTrackeff_Fill(){
 	if(cmask.isPreselected()&&Tup.EdepECAL>1)
 		ECALvsR_MC->Fill(Tup.R_pre,Tup.EdepECAL);	
         //R bins
-        int Kbin=PRB.GetRBin (Tup.R_pre) ;
+        int Kbin=PRB.GetRBin (20) ;
 	if(((int) Tup.Cutmask&3)  == 3   && Tup.Beta_pre>0) 	      TrackerEfficiencyMCP -> beforeR -> Fill(Kbin);
         if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0)	      TrackerEfficiencyMCP -> afterR  -> Fill(Kbin);
         
