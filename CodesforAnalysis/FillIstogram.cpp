@@ -157,13 +157,13 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       FluxFactorizationtest(filename);
       MCTrackeff(filename);
       MCFullseteff(filename);
-      /*MigrationMatrix(inputHistoFile);
-      DVSMCTrackeff(inputHistoFile);
-      DATAUnbiaseff(inputHistoFile);
+      MigrationMatrix(filename);
+      DVSMCTrackeff(filename);
+      DATAUnbiaseff(filename);
       DATApreSeleff(filename);
       DATAQualeff(filename);
       DATARICHeff(filename);
-      if(frac=="tot") DeutonsTemplFits();
+      /*if(frac=="tot") DeutonsTemplFits();
       if(frac=="tot") DeutonsTemplFits_Dist();
 
       CorrLAT(filename);
