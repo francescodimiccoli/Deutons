@@ -9,7 +9,6 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD);
 void UpdateProgressBar(int currentevent, int totalentries);
 float getGeoZone(float latitude);
 
-
 void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputpath)
 {
 
@@ -40,7 +39,6 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    TFile *fileData;
    TNtuple *ntupDataSepD;
    TNtuple *ntupDataTrig;
-
 
    string filename=outputpath+"Histos/"+mese+"/"+mese+"_"+frac+"_P1.root";
    inputHistoFile=new TFile(filename.c_str(),"READ");
@@ -75,11 +73,11 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    cout<<endl<<"*********************** DATA READING *********************"<<endl;
    TFile *usedfile=(INDX==READ?inputHistoFile:fileData);
    Tempi = (TH1F *)usedfile->Get("Tempi");
-   TH2F* esposizionegeo = (TH2F *)usedfile->Get("esposizionegeo");
-   TH2F* esposizionepgeo = (TH2F*)usedfile->Get("esposizionepgeo");
+   TH2F* esposizionegeo     = (TH2F *)usedfile->Get("esposizionegeo");
+   TH2F* esposizionepgeo    = (TH2F*)usedfile->Get("esposizionepgeo");
    TH2F* esposizionepgeoNaF = (TH2F*)usedfile->Get("esposizionepgeoNaF");
    TH2F* esposizionepgeoAgl = (TH2F*)usedfile->Get("esposizionepgeoAgl");
-   TH2F* esposizionedgeo = (TH2F*)usedfile->Get("esposizionedgeo");
+   TH2F* esposizionedgeo    = (TH2F*)usedfile->Get("esposizionedgeo");
    TH2F* esposizionedgeoNaF = (TH2F*)usedfile->Get("esposizionedgeoNaF");
    TH2F* esposizionedgeoAgl = (TH2F*)usedfile->Get("esposizionedgeoAgl");
 
@@ -93,10 +91,17 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       LoopOnDataSepD(ntupDataSepD);
    }
 
-   usedfile->Close();	
-      cout<<endl<<"************************ SAVING DATA ************************"<<endl;
-   if(INDX==BUILDALL||INDX==BUILDSEPD) {
+   
 
+    cout<<endl<<"************************ SAVING DATA ************************"<<endl;
+  
+
+
+    if(INDX==BUILDALL||INDX==BUILDSEPD) {
+
+      TFile * outputHistoFile=TFile::Open(filename.c_str(),"RECREATE");
+	
+      
       DATAQualeff_Write();
       DATARICHeff_Write();
       DATApreSeleff_Write();
@@ -115,10 +120,10 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DVSMCQualeffD_Write();
       DVSMCTrackeff_Write();
       MCMC_Write();
+      MCUnbiaseff_Write();
       MCpreeff_Write();
       MCQualeff_Write();
       MCTrackeff_Write();
-      MCUnbiaseff_Write();
       MigrationMatrix_Write();
       ProtonFlux_Write();
 
@@ -132,11 +137,9 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       esposizionedgeoNaF->Write();
       esposizionedgeoAgl->Write();
 
-	
+     outputHistoFile->Write();
+     outputHistoFile->Close();		
    }
-
-      	
-      inputHistoFile->Close();
    
    cout<<"************************* ANALYSIS **********************************************************************"<<endl;
    
@@ -144,6 +147,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    string finalfilename="./Final_plots/"+mese+".root";
    finalPlots.setName(finalfilename);
    finalHistos.setName(filename);  
+   INDX = READ; 	
 
    if(INDX==READ) {
       if(frac=="tot") Hecut(filename);
@@ -392,3 +396,9 @@ float getGeoZone(float latitude)
    }
    return zone;
 }
+
+
+
+
+
+
