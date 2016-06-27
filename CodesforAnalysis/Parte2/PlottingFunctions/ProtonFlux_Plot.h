@@ -143,7 +143,7 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 	finalPlots.writeObjsInFolder("P Fluxes");
 
 	finalPlots.Add(PFlux);
-	finalPlots.writeObjsInFolder("Export");
+	finalPlots.writeObjsInFolder("Export/PFluxes");
 
 
 	return;

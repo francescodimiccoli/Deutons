@@ -145,11 +145,13 @@ void Hecut_Plot(
         He_Agl  -> Draw("same");
 
 
+	bool recreate = true;
+
 	finalPlots.Add(c36	 );
 	finalPlots.Add(c36_bis);
 	finalPlots.Add(c37	 );
 	finalPlots.Add(c38	 );
 
-        finalPlots.writeObjsInFolder("MC Results/He related cuts");
+        finalPlots.writeObjsInFolder("MC Results/He related cuts",recreate);
 
 }

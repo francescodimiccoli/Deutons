@@ -549,9 +549,9 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
    finalPlots.writeObjsInFolder("D Fluxes");
    
    finalPlots.Add(D_FluxTOF);
-	finalPlots.Add(D_FluxNaF);
-	finalPlots.Add(D_FluxAgl);
-   finalPlots.writeObjsInFolder("Export");
+   finalPlots.Add(D_FluxNaF);
+   finalPlots.Add(D_FluxAgl);
+   finalPlots.writeObjsInFolder("Export/DFluxes");
 	
 
 	return;

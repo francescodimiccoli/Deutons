@@ -134,7 +134,7 @@ class FileSaver {
    public:
       FileSaver() : filename("") {fArr=new TObjArray();}
       FileSaver (string fname) : filename (fname) {fArr=new TObjArray();}
-      void writeObjsInFolder(string folder);
+      void writeObjsInFolder(string folder, bool recreate = false);
       void writeObjs();
       void setName(string fname) {filename=fname;}
       void Add(TObject* obj) {fArr->Add(obj);}
@@ -144,10 +144,14 @@ class FileSaver {
       TObjArray* fArr;
 };
 
-void FileSaver::writeObjsInFolder(string folder)
+void FileSaver::writeObjsInFolder(string folder, bool recreate)
 {
    cout<<"*** Updating "<<filename.c_str()<<" file in "<< folder << endl;
-   TFile* fileFinalPlots=TFile::Open(filename.c_str(), "UPDATE");
+   TFile * fileFinalPlots;
+   
+   if(recreate) fileFinalPlots=TFile::Open(filename.c_str(), "RECREATE");
+   else fileFinalPlots=TFile::Open(filename.c_str(), "UPDATE");
+   
    if (!fileFinalPlots->GetDirectory(folder.c_str()))
       fileFinalPlots->mkdir(folder.c_str());
    fileFinalPlots->cd   (folder.c_str());
@@ -156,7 +160,7 @@ void FileSaver::writeObjsInFolder(string folder)
    }
    fileFinalPlots->Write();
    fileFinalPlots->Flush();
-   //fileFinalPlots->Close();
+   fileFinalPlots->Close();
    fArr->Clear();
    return;
 }
