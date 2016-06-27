@@ -63,6 +63,12 @@ class Flux
          Counts_TOF      =(TH1 *)file->Get((basename + "Counts_TOF"      ).c_str());
          Counts_NaF      =(TH1 *)file->Get((basename + "Counts_NaF"      ).c_str());
          Counts_Agl      =(TH1 *)file->Get((basename + "Counts_Agl"      ).c_str());
+	
+	 if(!Counts_R  ) Counts_R	 =(TH1 *)file->Get(("/" + dirname +"/" +basename + "Counts_R"        ).c_str());
+         if(!Counts_TOF) Counts_TOF      =(TH1 *)file->Get(("/" + dirname +"/" +basename + "Counts_TOF"      ).c_str());
+         if(!Counts_NaF) Counts_NaF      =(TH1 *)file->Get(("/" + dirname +"/" +basename + "Counts_NaF"      ).c_str());
+         if(!Counts_Agl) Counts_Agl      =(TH1 *)file->Get(("/" + dirname +"/" +basename + "Counts_Agl"      ).c_str());
+
 
          Acceptance_R  =(TH1 *)file->Get(("/" + dirname +"/" +acceptname + "_R"   ).c_str());
          Acceptance_TOF=(TH1 *)file->Get(("/" + dirname +"/" +acceptname + "_TOF" ).c_str());

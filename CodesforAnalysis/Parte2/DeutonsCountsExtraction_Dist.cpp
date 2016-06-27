@@ -1,3 +1,5 @@
+
+
 TemplateFIT * FitTOF_Dbins_Dist  = new TemplateFIT("FitTOF_Dbins_Dist ",nbinsToF,-1.2,1.2,6);
 TemplateFIT * FitNaF_Dbins_Dist  = new TemplateFIT("FitNaF_Dbins_Dist ",nbinsNaF,-1.2,1.2,6);
 TemplateFIT * FitAgl_Dbins_Dist  = new TemplateFIT("FitAgl_Dbins_Dist ",nbinsAgl,-1.2,1.2,6);
@@ -123,9 +125,14 @@ void DeutonsMC_Dist_Write()
 }
 
 
-void DeutonsTemplFits_Dist()
+void DeutonsTemplFits_Dist(string filename)
 {
-   inputHistoFile->ReOpen("READ");
+
+  cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
+   cout<<"*** Reading  P1 file ****"<<endl;
+   TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
+
+
 
    TemplateFIT * FitTOF_Dbins_Dist	= new TemplateFIT(inputHistoFile,"FitTOF_Dbins_Dist ","FitTOF_Dbins_Dist ");
    TemplateFIT * FitNaF_Dbins_Dist	= new TemplateFIT(inputHistoFile,"FitNaF_Dbins_Dist ","FitNaF_Dbins_Dist ");
@@ -145,9 +152,9 @@ void DeutonsTemplFits_Dist()
    FitNaF_Dbins_Dist 	-> DisableFit();//SetFitConstraints(0.8,1,0.0000,0.01,0.0005,0.0015);
    FitAgl_Dbins_Dist 	-> DisableFit();//SetFitConstraints(0.8,1,0.0000,0.01,0.0001,0.0005);
 
-   FitTOFgeo_Dbins_Dist 	-> DisableFit();
-   FitNaFgeo_Dbins_Dist 	-> DisableFit();
-   FitAglgeo_Dbins_Dist 	-> DisableFit();
+   FitTOFgeo_Dbins_Dist	-> DisableFit();
+   FitNaFgeo_Dbins_Dist	-> DisableFit();
+   FitAglgeo_Dbins_Dist	-> DisableFit();
 
    FitTOF_Pbins_Dist 	-> DisableFit();// SetFitConstraints(0.5,1,0.0000,0.01,0.0001,0.0025);
    FitNaF_Pbins_Dist 	-> DisableFit();// SetFitConstraints(0.8,1,0.0000,0.01,0.0005,0.0015);
@@ -196,132 +203,48 @@ void DeutonsTemplFits_Dist()
 
    inputHistoFile->ReOpen("UPDATE");
 
-   FitTOF_Dbins_Dist -> DCounts -> Write ("D_Flux_DistCounts_TOF");
-   FitNaF_Dbins_Dist -> DCounts -> Write ("D_Flux_DistCounts_NaF");
-   FitAgl_Dbins_Dist -> DCounts -> Write ("D_Flux_DistCounts_Agl");
+   FitTOF_Dbins_Dist -> DCounts -> SetName ("D_Flux_DistCounts_TOF");
+   FitNaF_Dbins_Dist -> DCounts -> SetName ("D_Flux_DistCounts_NaF");
+   FitAgl_Dbins_Dist -> DCounts -> SetName ("D_Flux_DistCounts_Agl");
 
-   FitTOFgeo_Dbins_Dist -> DCounts -> Write ("D_Flux_geo_DistCounts_TOF");
-   FitNaFgeo_Dbins_Dist -> DCounts -> Write ("D_Flux_geo_DistCounts_NaF");
-   FitAglgeo_Dbins_Dist -> DCounts -> Write ("D_Flux_geo_DistCounts_Agl");
+   FitTOFgeo_Dbins_Dist -> DCounts -> SetName ("D_Flux_geo_DistCounts_TOF");
 
-   FitTOF_Pbins_Dist -> PCounts -> Write ("P_Flux_DistCounts_TOF");
-   FitNaF_Pbins_Dist -> PCounts -> Write ("P_Flux_DistCounts_NaF");
-   FitAgl_Pbins_Dist -> PCounts -> Write ("P_Flux_DistCounts_Agl");
+   FitTOF_Pbins_Dist -> PCounts -> SetName ("P_Flux_DistCounts_TOF");
+   FitNaF_Pbins_Dist -> PCounts -> SetName ("P_Flux_DistCounts_NaF");
+   FitAgl_Pbins_Dist -> PCounts -> SetName ("P_Flux_DistCounts_Agl");
 
+    	finalHistos.Add(FitTOF_Dbins_Dist -> DCounts         );
+        finalHistos.Add(FitNaF_Dbins_Dist -> DCounts         );
+        finalHistos.Add(FitAgl_Dbins_Dist -> DCounts         );
 
-   TCanvas *c30_TOF[2][nbinsToF];
-   TCanvas *c30_NaF[2][nbinsNaF];
-   TCanvas *c30_Agl[2][nbinsAgl];
+        finalHistos.Add(FitTOFgeo_Dbins_Dist -> DCounts   );
+        finalHistos.Add(FitNaFgeo_Dbins_Dist -> DCounts   );
+        finalHistos.Add(FitAglgeo_Dbins_Dist -> DCounts   );
 
-   TCanvas *c30_TOFgeo[11];
-   TCanvas *c30_NaFgeo[11];
-   TCanvas *c30_Aglgeo[11];
+        finalHistos.Add(FitTOF_Pbins_Dist -> PCounts         );
+        finalHistos.Add(FitNaF_Pbins_Dist -> PCounts         );
+        finalHistos.Add(FitAgl_Pbins_Dist -> PCounts         );
+        finalHistos.writeObjsInFolder("Results");
 
-   //Primaries
-   for(int bin=0; bin <nbinsToF; bin++) {
-      c30_TOF[0][bin] = new TCanvas(("TOF bin:" + to_string(bin) + "(Dist.)").c_str());
-      c30_TOF[0][bin]->cd();
-      FitTOF_Dbins_Dist -> TemplateFitPlot(gPad,"Distance Discr.",bin);
-   }
-   for(int bin=0; bin <nbinsNaF; bin++) {
-      c30_NaF[0][bin] = new TCanvas(("NaF bin:" + to_string(bin) + "(Dist.)").c_str());
-      c30_NaF[0][bin]->cd();
-      FitNaF_Dbins_Dist -> TemplateFitPlot(gPad,"Distance Discr.",bin);
-   }
-   for(int bin=0; bin <nbinsAgl; bin++) {
-      c30_Agl[0][bin] = new TCanvas(("Agl bin:" + to_string(bin) + "(Dist.)").c_str());
-      c30_Agl[0][bin]->cd();
-      FitAgl_Dbins_Dist -> TemplateFitPlot(gPad,"Distance Discr.",bin);
-   }
+        cout<<"*** Plotting ...  ****"<<endl;
 
-   for(int bin=0; bin <nbinsToF; bin++) {
-      c30_TOF[1][bin] = new TCanvas(("TOF P bin:" + to_string(bin) + "(Dist.)").c_str());
-      c30_TOF[1][bin]->cd();
-      FitTOF_Pbins_Dist -> TemplateFitPlot(gPad,"Distance Discr.",bin);
-   }
-   for(int bin=0; bin <nbinsNaF; bin++) {
-      c30_NaF[1][bin] = new TCanvas(("NaF P bin:" + to_string(bin) + "(Dist.)").c_str());
-      c30_NaF[1][bin]->cd();
-      FitNaF_Pbins_Dist -> TemplateFitPlot(gPad,"Distance Discr.",bin);
-   }
-   for(int bin=0; bin <nbinsAgl; bin++) {
-      c30_Agl[1][bin] = new TCanvas(("Agl P bin:" + to_string(bin) + "(Dist.)").c_str());
-      c30_Agl[1][bin]->cd();
-      FitAgl_Pbins_Dist -> TemplateFitPlot(gPad,"Distance Discr.",bin);
-   }
-   //Geo. Zones
-   for(int lat=1; lat<11; lat++) {
+	string varname = " Dist. ";
+        DeutonsTemplateFits_Plot(FitTOF_Dbins_Dist,
+                                 FitNaF_Dbins_Dist ,
+                                 FitAgl_Dbins_Dist,
+
+                                 FitTOFgeo_Dbins_Dist,
+                                 FitNaFgeo_Dbins_Dist,
+                                 FitAglgeo_Dbins_Dist,
+
+                                 FitTOF_Pbins_Dist,
+                                 FitNaF_Pbins_Dist ,
+                                 FitAgl_Pbins_Dist,
+				 varname
+        );
 
 
-      c30_TOFgeo[lat] = new TCanvas(("TOF Geo. Zone: " + to_string(lat) + "(Dist.)").c_str());
-      c30_NaFgeo[lat] = new TCanvas(("NaF Geo. Zone: " + to_string(lat) + "(Dist.)").c_str());
-      c30_Aglgeo[lat] = new TCanvas(("Agl Geo. Zone: " + to_string(lat) + "(Dist.)").c_str());
-
-      c30_TOFgeo[lat] -> Divide(6,3);
-      c30_NaFgeo[lat] -> Divide(6,3);
-      c30_Aglgeo[lat] -> Divide(6,3);
-
-
-      for(int bin=0; bin <nbinsToF; bin++) {
-         c30_TOFgeo[lat] -> cd (bin +1);
-         FitTOFgeo_Dbins_Dist -> TemplateFitPlot(gPad,"Distance Discr.",bin,lat);
-      }
-      for(int bin=0; bin <nbinsNaF; bin++) {
-         c30_NaFgeo[lat] -> cd (bin +1);
-         FitNaFgeo_Dbins_Dist -> TemplateFitPlot(gPad,"Distance Discr.",bin,lat);
-      }
-      for(int bin=0; bin <nbinsAgl; bin++) {
-         c30_Aglgeo[lat] -> cd (bin +1);
-         FitAglgeo_Dbins_Dist -> TemplateFitPlot(gPad,"Distance Discr.",bin,lat);
-      }
-   }
-
-
-   //Primaries
-
-
-   for(int bin=0; bin <nbinsToF; bin++)
-      finalPlots.Add(c30_TOF[0][bin]);
-   finalPlots.writeObjsInFolder("Distance Template Fits/TOF/TOF Primaries/Dbins");
-
-
-   for(int bin=0; bin <nbinsNaF; bin++)
-      finalPlots.Add(c30_NaF[0][bin]);
-   finalPlots.writeObjsInFolder("Distance Template Fits/NaF/NaF Primaries/Dbins");
-
-
-   for(int bin=0; bin <nbinsAgl; bin++)
-      finalPlots.Add(c30_Agl[0][bin]);
-   finalPlots.writeObjsInFolder("Distance Template Fits/Agl/Agl Primaries/Dbins");
-
-
-   for(int bin=0; bin <nbinsToF; bin++)
-      finalPlots.Add(c30_TOF[1][bin]);
-   finalPlots.writeObjsInFolder("Distance Template Fits/TOF/TOF Primaries/Pbins");
-
-   for(int bin=0; bin <nbinsNaF; bin++)
-      finalPlots.Add(c30_NaF[1][bin]);
-   finalPlots.writeObjsInFolder("Distance Template Fits/NaF/NaF Primaries/Pbins");
-
-   for(int bin=0; bin <nbinsAgl; bin++)
-      finalPlots.Add(c30_Agl[1][bin]);
-   finalPlots.writeObjsInFolder("Distance Template Fits/Agl/Agl Primaries/Pbins");
-
-
-   //Geom. Zones
-   for(int lat=1; lat<11; lat++)
-      finalPlots.Add(c30_TOFgeo[lat] );
-   finalPlots.writeObjsInFolder("Distance Template Fits/TOF/TOF Geom. Zones");
-
-   for(int lat=1; lat<11; lat++)
-      finalPlots.Add(c30_NaFgeo[lat] );
-   finalPlots.writeObjsInFolder("Distance Template Fits/NaF/NaF Geom. Zones ");
-
-   for(int lat=1; lat<11; lat++)
-      finalPlots.Add(c30_Aglgeo[lat] );
-   finalPlots.writeObjsInFolder("Distance Template Fits/Agl/Agl Geom. Zones  ");
-
-
-   return;
-
+        return;
 }
+
+	

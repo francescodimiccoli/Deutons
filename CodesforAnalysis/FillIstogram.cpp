@@ -163,19 +163,19 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATApreSeleff(filename);
       DATAQualeff(filename);
       DATARICHeff(filename);
-      /*if(frac=="tot") DeutonsTemplFits();
-      if(frac=="tot") DeutonsTemplFits_Dist();
+      if(frac=="tot") DeutonsTemplFits(filename);
+      if(frac=="tot") DeutonsTemplFits_Dist(filename);
 
       CorrLAT(filename);
-      DVSMCPreSeleff();
-      DVSMCPreSeleffD();
-      DVSMCRICHeff();
-      DVSMCQualeff2();
-      DVSMCQualeffD();
-      Acceptance();
+      DVSMCPreSeleff(filename);
+      DVSMCPreSeleffD(filename);
+      DVSMCRICHeff(filename);
+      DVSMCQualeff2(filename);
+      DVSMCQualeffD(filename);
+      Acceptance(filename);
       ProtonFlux(filename);
       if(frac=="tot") DeutonFlux(filename);
-      if(frac=="tot") OtherExperimentsComparison();*/
+      if(frac=="tot") OtherExperimentsComparison(filename);
    }
 
 

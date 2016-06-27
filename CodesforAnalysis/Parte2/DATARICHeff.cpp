@@ -66,12 +66,7 @@ void DATARICHeff(string filename) {
    TH1F *LATrichcorr_NaF_fit  	= (TH1F *) LATrichDATA_NaF   -> LATcorrR_fit-> Clone();
    TH1F *LATrichcorr_Agl_fit	= (TH1F *) LATrichDATA_Agl   -> LATcorrR_fit-> Clone();
 
-	HistInfo(LATrichcorr_NaF);
-       	HistInfo(LATrichcorr_Agl);
-       	HistInfo(LATrichcorr_NaF_fit);
-       	HistInfo(LATrichcorr_Agl_fit);
-
-
+	
 	finalHistos.Add(LATrichDATANaF 		);	
         finalHistos.Add(LATrichDATAAgl 		);
                              

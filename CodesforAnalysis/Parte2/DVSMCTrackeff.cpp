@@ -84,14 +84,7 @@ void DVSMCTrackeff(string filename){
 	TrackerGlobalFactor -> SetBinContent(1,TrackerEfficiencyData -> GetBinContent(PRB.GetRBin(20)+1)/(float)TrackerEfficiencyMC -> GetBinContent(PRB.GetRBin(20)+1));
 	TrackerGlobalFactor -> SetBinError(1,TrackerEfficiencyData -> GetBinError(PRB.GetRBin(20)+1));		
 	
-	cout<<"*** Updating P1 file ****"<<endl;
-	inputHistoFile->ReOpen("UPDATE");
-
-	//inputHistoFile->mkdir("Results");
-	inputHistoFile->cd("Results");
-
-	TrackerEfficiencyData -> Write("TrackerEfficiencyData");
-	TrackerGlobalFactor -> Write();
+	TrackerEfficiencyData -> SetName("TrackerEfficiencyData");	
 
 
 	finalHistos.Add(TrackerEfficiencyData);

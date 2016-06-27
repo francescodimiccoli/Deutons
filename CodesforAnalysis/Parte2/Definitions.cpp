@@ -135,6 +135,7 @@ class FileSaver {
       FileSaver() : filename("") {fArr=new TObjArray();}
       FileSaver (string fname) : filename (fname) {fArr=new TObjArray();}
       void writeObjsInFolder(string folder);
+      void writeObjs();
       void setName(string fname) {filename=fname;}
       void Add(TObject* obj) {fArr->Add(obj);}
       string setName() {return filename;}
@@ -146,18 +147,20 @@ class FileSaver {
 void FileSaver::writeObjsInFolder(string folder)
 {
    cout<<"*** Updating "<<filename.c_str()<<" file in "<< folder << endl;
-   TFile* fileFinalPlots=TFile::Open(filename.data(), "UPDATE");
-   if (!fileFinalPlots->GetDirectory(folder.data()))
-      fileFinalPlots->mkdir(folder.data());
-   fileFinalPlots->cd   (folder.data());
-   for (int i = 0; i <= fArr->GetLast(); i++)
-      fArr->At(i)->Write();
+   TFile* fileFinalPlots=TFile::Open(filename.c_str(), "UPDATE");
+   if (!fileFinalPlots->GetDirectory(folder.c_str()))
+      fileFinalPlots->mkdir(folder.c_str());
+   fileFinalPlots->cd   (folder.c_str());
+   for (int i = 0; i <= fArr->GetLast(); i++){
+   fArr->At(i)->Write();
+   }
    fileFinalPlots->Write();
    fileFinalPlots->Flush();
-   fileFinalPlots->Close();
+   //fileFinalPlots->Close();
    fArr->Clear();
    return;
 }
+
 
 
 FileSaver finalPlots,finalHistos;

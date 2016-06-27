@@ -51,31 +51,6 @@ void DATApreSeleff(string filename)
 	TH2F * preSelLATcorr (static_cast<TH2F *>(LATpreSelDATA   -> LATcorrR));
 	TH2F * preSelLATcorr_fit(static_cast<TH2F *>(LATpreSelDATA   -> LATcorrR_fit));
 
-	cout<<"*** Updating P1 file ****"<<endl;
-
-	cout << LATpreSelDATA_R ->GetName() << " : " <<  LATpreSelDATA_R ->GetEntries() << endl;
-	cout << preSelLATcorr ->GetName() << " : " <<  preSelLATcorr ->GetEntries() << endl;
-	cout << preSelLATcorr_fit ->GetName() << " : " <<  preSelLATcorr_fit ->GetEntries() << endl;
-	cout << ((TH2F *) LATpreSelDATA   -> LATcorrR_fit)->GetName() << " : " <<
-		((TH2F *) LATpreSelDATA   -> LATcorrR_fit)->GetEntries() << endl;
-	cout << ((TH2F *) LATpreSelDATA   -> LATcorrR)->GetName() << " : " <<
-		((TH2F *) LATpreSelDATA   -> LATcorrR)->GetEntries() << endl;
-
-
-
-	cout << LATpreSelDATA_R ->GetName() << " : " <<  LATpreSelDATA_R ->GetEntries() << endl;
-	cout << preSelLATcorr ->GetName() << " : " <<  preSelLATcorr ->GetEntries() << endl;
-	cout << preSelLATcorr_fit ->GetName() << " : " <<  preSelLATcorr_fit ->GetEntries() << endl;
-	cout << ((TH2F *) LATpreSelDATA   -> LATcorrR_fit)->GetName() << " : " <<
-		((TH2F *) LATpreSelDATA   -> LATcorrR_fit)->GetEntries() << endl;
-	cout << ((TH2F *) LATpreSelDATA   -> LATcorrR)->GetName() << " : " <<
-		((TH2F *) LATpreSelDATA   -> LATcorrR)->GetEntries() << endl;
-
-	LATpreSelDATA_R  -> Write();
-	preSelLATcorr    -> Write();
-	preSelLATcorr_fit-> Write();
-	inputHistoFile->Close();
-
 
 	finalHistos.Add(LATpreSelDATA_R  );
         finalHistos.Add(preSelLATcorr    );
