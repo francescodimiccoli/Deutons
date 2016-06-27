@@ -83,12 +83,12 @@ void Reweight::getVectorsFromSpectra(Spectrum data, Spectrum mc) {
 void Reweight::normalizeVectors() {
    Histogram hDataOMC;
    hDataOMC.fillWithVectors(bins.RigBins(), DataOverMC);
-   hDataOMC.normalizeToNonEmptyBins();
+   hDataOMC.normalize();
    DataOverMC=hDataOMC.getContent();
 
    Histogram hMCOData;
    hMCOData.fillWithVectors(bins.RigBins(), MCOverData);
-   hMCOData.normalizeToNonEmptyBins();
+   hMCOData.normalize();
    MCOverData=hMCOData.getContent();
 
    return;
