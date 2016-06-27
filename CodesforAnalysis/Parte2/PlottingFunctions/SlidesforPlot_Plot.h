@@ -594,7 +594,6 @@ void SlidesforPlot (string filename)
    finalPlots.Add(p11 );
    finalPlots.Add(p12 );
    finalPlots.Add(p13 );
-   finalPlots.writeObjsInFolder("Common plots for slides");
    finalPlots.Add(p14 );
    finalPlots.Add(p15 );
    finalPlots.Add(p10Q);
