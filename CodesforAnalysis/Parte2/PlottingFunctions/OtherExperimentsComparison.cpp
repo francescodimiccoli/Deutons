@@ -27,7 +27,7 @@ void OtherExperimentsComparison(string filename){
 		if(obj->InheritsFrom("TGraphAsymmErrors")) P_Graphs.push_back((TGraphAsymmErrors *)obj); 
 	}
 	
-	TH1F * ThisWork_P = (TH1F*) inputHistoFile -> Get("Results/Fluxes/ProtonsPrimaryFlux");
+	TH1F * ThisWork_P = (TH1F*) inputHistoFile -> Get("Results/ProtonsPrimaryFlux");
 
 	cout<<"*** Deutons ***"<<endl;
 
@@ -43,9 +43,9 @@ void OtherExperimentsComparison(string filename){
         }
 	
 
-	TH1F * ThisWork_DTOF = (TH1F*) inputHistoFile -> Get("Results/Fluxes/DeutonsPrimaryFlux_TOF");
-	TH1F * ThisWork_DNaF = (TH1F*) inputHistoFile -> Get("Results/Fluxes/DeutonsPrimaryFlux_NaF"); 	
-	TH1F * ThisWork_DAgl = (TH1F*) inputHistoFile -> Get("Results/Fluxes/DeutonsPrimaryFlux_Agl");
+	TH1F * ThisWork_DTOF = (TH1F*) inputHistoFile -> Get("Results/DeutonsPrimaryFlux_TOF");
+	TH1F * ThisWork_DNaF = (TH1F*) inputHistoFile -> Get("Results/DeutonsPrimaryFlux_NaF"); 	
+	TH1F * ThisWork_DAgl = (TH1F*) inputHistoFile -> Get("Results/DeutonsPrimaryFlux_Agl");
 
 	TCanvas * c1 = new TCanvas ("Proton Flux");
 	TCanvas * c2 = new TCanvas ("Deuton Flux");

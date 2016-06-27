@@ -102,7 +102,7 @@ void ProtonFlux(string filename) {
         finalHistos.Add( P_pre_PrimaryFlux );
         finalHistos.Add( P_sel_PrimaryFlux );
 
-	finalHistos.writeObjsInFolder("Results/Fluxes");
+	finalHistos.writeObjsInFolder("Results");
 
         cout<<"*** Plotting ...  ****"<<endl;
 
