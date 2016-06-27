@@ -298,9 +298,15 @@ void ACCEPTANCE::Eval_Corrected_Acceptance(int n){
 
 void GlobalFactor(TH1* Acceptance,float factor, float error){
 		Acceptance -> Scale(factor);
+		float Error = 0;
 		for(int m=0;m<Acceptance->GetNbinsY();m++)
                         for(int R=0;R<Acceptance->GetNbinsX();R++)
-				Acceptance -> SetBinError(R+1,m+1,pow(pow(Acceptance -> GetBinError(R+1,m+1),2)+pow(error,2),0.5) );
+				for(int R=0;R<Acceptance->GetNbinsX();R++){
+				Error = pow(error/factor,2);
+				Error +=pow( Acceptance -> GetBinError(R+1,m+1) /  Acceptance -> GetBinContent(R+1,m+1),2);
+				Error = pow(Error,0.5)*Acceptance -> GetBinContent(R+1,m+1);
+				Acceptance -> SetBinError(R+1,m+1,Error);
+			}
 		return;
 }
 

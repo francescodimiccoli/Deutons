@@ -16,9 +16,9 @@ class Particle {
       Particle (float m, float z) : mass (m), Z(z) {}
       Particle (float m, float z, float a) : mass (m), Z(z), A (a)  {}
 
-      void FillFromEk        (float);
-      void FillFromEkPerMass (float);
-      void FillFromRig       (float);
+      inline void FillFromEk        (float);
+      inline void FillFromEkPerMass (float);
+      inline void FillFromRig       (float);
 
       float getMass() {return mass;}
       int   getA   () {return A   ;}

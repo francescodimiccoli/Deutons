@@ -1,3 +1,6 @@
+#include "PlottingFunctions/DVSMCRICHeff_Plot.h"
+
+
 using namespace std;
 
 DatavsMC * RICH_DvsMC_P = new DatavsMC("RICH_DvsMC_P",11);
@@ -71,9 +74,12 @@ void DVSMCRICHeff_Write(){
 }
 
 
-void DVSMCRICHeff(){
+void DVSMCRICHeff(string filename){
 
-   inputHistoFile->ReOpen("READ");
+	cout<<"******* Data vs MC: RICH ********"<<endl;
+	
+	cout<<"*** Reading  P1 file ****"<<endl;
+        TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
 
 	DatavsMC * RICH_DvsMC_P = new DatavsMC(inputHistoFile,"RICH_DvsMC_P");
 	DatavsMC * RICH_DvsMC_D = new DatavsMC(inputHistoFile,"RICH_DvsMC_D",6);
@@ -110,70 +116,29 @@ void DVSMCRICHeff(){
 	TH2F* RICH_Correction_D_Agl =(TH2F*) RICH_DvsMC_D -> GetCorrection_Agl();
 
 
+	RICH_Correction_P_NaF  -> SetName("RICH_DvsMC_P_CorrectionNaF");
+	RICH_Correction_P_Agl  -> SetName("RICH_DvsMC_P_CorrectionAgl");
 
-	cout<<"*** Updating P1 file ****"<<endl;
-   inputHistoFile->ReOpen("UPDATE");
+	RICH_Correction_D_NaF  -> SetName("RICH_DvsMC_D_CorrectionNaF");
+	RICH_Correction_D_Agl  -> SetName("RICH_DvsMC_D_CorrectionAgl");
 
-	inputHistoFile->cd("Results");
+	finalHistos.Add(RICH_Correction_P_NaF);
+       finalHistos.Add( RICH_Correction_P_Agl);
+                             
+       finalHistos.Add( RICH_Correction_D_NaF);
+       finalHistos.Add( RICH_Correction_D_Agl);
 
-	RICH_Correction_P_NaF  -> Write("RICH_DvsMC_P_CorrectionNaF");
-	RICH_Correction_P_Agl  -> Write("RICH_DvsMC_P_CorrectionAgl");
+	finalHistos.writeObjsInFolder("Results");
 
-	RICH_Correction_D_NaF  -> Write("RICH_DvsMC_D_CorrectionNaF");
-	RICH_Correction_D_Agl  -> Write("RICH_DvsMC_D_CorrectionAgl");
+        cout<<"*** Plotting ...  ****"<<endl;
 
-	inputHistoFile->Write();
-
-
-	TCanvas *c20_bis=new TCanvas("Data vs MC: RICH");
-
-
-	c20_bis->Divide(2,1);
-
-	c20_bis->cd(1);
-	gPad->SetLogx();
-	gPad->SetGridx();
-	gPad->SetGridy();
-	TGraphErrors * RICHDVSMC_P_GraphNaF=new TGraphErrors();
-	RICHDVSMC_P_GraphNaF->SetName("RICHDVSMC_P_GraphNaF");
-	int j=0;
-	for(int i=1;i<nbinsNaF;i++) {
-		if(RICH_Correction_P_NaF -> GetBinContent(i+1)>0){
-			RICHDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkBinCent(i),RICH_Correction_P_NaF -> GetBinContent(i+1));
-			RICHDVSMC_P_GraphNaF->SetPointError(j,0,RICH_Correction_P_NaF -> GetBinError(i+1));
-			j++;
-		}
-	}
-	RICHDVSMC_P_GraphNaF->SetLineColor(2);
-	RICHDVSMC_P_GraphNaF->SetFillColor(2);
-	RICHDVSMC_P_GraphNaF->SetFillStyle(3001);
-	RICHDVSMC_P_GraphNaF->SetLineWidth(4);
-	RICHDVSMC_P_GraphNaF->Draw("AP4C");
-
-	c20_bis->cd(2);
-	gPad->SetLogx();
-	gPad->SetGridx();
-	gPad->SetGridy();
-	TGraphErrors * RICHDVSMC_P_GraphAgl=new TGraphErrors();
-        RICHDVSMC_P_GraphAgl->SetName("RICHDVSMC_P_GraphAgl");
-        j=0;
-        for(int i=1;i<nbinsAgl;i++) {
-                if(RICH_Correction_P_Agl -> GetBinContent(i+1)>0){
-                        RICHDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkBinCent(i),RICH_Correction_P_Agl -> GetBinContent(i+1));
-                        RICHDVSMC_P_GraphAgl->SetPointError(j,0,RICH_Correction_P_Agl -> GetBinError(i+1));
-                        j++;
-                }
-        }
-        RICHDVSMC_P_GraphAgl->SetLineColor(2);
-        RICHDVSMC_P_GraphAgl->SetFillColor(2);
-        RICHDVSMC_P_GraphAgl->SetFillStyle(3001);
-        RICHDVSMC_P_GraphAgl->SetLineWidth(4);
-        RICHDVSMC_P_GraphAgl->Draw("AP4C");
-
-
-	finalPlots.Add(c20_bis);
-	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/RICH");
+	DVSMCRICHeff_Plot (RICH_Correction_P_NaF,
+                           RICH_Correction_P_Agl,
+                                
+                           RICH_Correction_D_NaF,
+                           RICH_Correction_D_Agl
+	);
 	
-
 	return;
 }
+

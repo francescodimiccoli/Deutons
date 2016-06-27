@@ -1,3 +1,5 @@
+#include "PlottingFunctions/DVSMCTrackeff_Plot.h"
+
 using namespace std;
 
 TH2F * ECALvsR_D=new TH2F("ECALvsR_D","ECALvsR_D",1000,0,100,1000,0,100);
@@ -16,7 +18,7 @@ void DVSMCTrackeff_D_Fill(){
 	if(cmask.isPreselected()&&Tup.EdepECAL>1)
 		ECALvsR_D->Fill(Tup.R_pre,Tup.EdepECAL);
         //R bins
-	int Kbin=PRB.GetRBin (Tup.R_pre) ;
+	int Kbin=PRB.GetRBin (20) ;
 	if(((int) Tup.Cutmask&3 ) == 3   && Tup.Beta_pre>0)            TrackerEfficiencyD -> beforeR -> Fill(Kbin);
 	if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0) 	       TrackerEfficiencyD -> afterR  -> Fill(Kbin); 	
 
@@ -33,7 +35,7 @@ void DVSMCTrackeff_Fill(){
 	if(cmask.isPreselected()&&Tup.EdepECAL>1)
 		ECALvsR_MC->Fill(Tup.R_pre,Tup.EdepECAL);	
         //R bins
-        int Kbin=PRB.GetRBin (Tup.R_pre) ;
+        int Kbin=PRB.GetRBin (20) ;
 	if(((int) Tup.Cutmask&3)  == 3   && Tup.Beta_pre>0) 	      TrackerEfficiencyMCP -> beforeR -> Fill(Kbin);
         if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0)	      TrackerEfficiencyMCP -> afterR  -> Fill(Kbin);
         
@@ -59,14 +61,17 @@ void Set_GlobalDatavsMCCorr(TH1F * Correction, TH1F * DataEff, TH1F * MCEff){
 	return;
 }
 
-void DVSMCTrackeff(TFile * file){
-	file->ReOpen("READ");
+void DVSMCTrackeff(string filename){
 
-	Efficiency * TrackerEfficiencyMCP = new Efficiency(file,"TrackerEfficiencyMCP");
-	Efficiency * TrackerEfficiencyD   = new Efficiency(file,"TrackerEfficiencyC"  );
+	cout<<"*************** Tracker Eff: Data vs MC ***************"<<endl;
+	 TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
 
-	TH2F * ECALvsR_D =(TH2F*) file->Get("ECALvsR_D");
-        TH2F * ECALvsR_MC =(TH2F*) file->Get("ECALvsR_MC");
+
+	Efficiency * TrackerEfficiencyMCP = new Efficiency(inputHistoFile,"TrackerEfficiencyMCP");
+	Efficiency * TrackerEfficiencyD   = new Efficiency(inputHistoFile,"TrackerEfficiencyC"  );
+
+	TH2F * ECALvsR_D =(TH2F*) inputHistoFile->Get("ECALvsR_D");
+        TH2F * ECALvsR_MC =(TH2F*) inputHistoFile->Get("ECALvsR_MC");
 
 	cout<<"*************** Tracker Eff: Data vs MC ***************"<<endl;	
  	TrackerEfficiencyMCP  -> Eval_Efficiency();
@@ -79,50 +84,23 @@ void DVSMCTrackeff(TFile * file){
 	TrackerGlobalFactor -> SetBinContent(1,TrackerEfficiencyData -> GetBinContent(PRB.GetRBin(20)+1)/(float)TrackerEfficiencyMC -> GetBinContent(PRB.GetRBin(20)+1));
 	TrackerGlobalFactor -> SetBinError(1,TrackerEfficiencyData -> GetBinError(PRB.GetRBin(20)+1));		
 	
-	cout<<"*** Updating P1 file ****"<<endl;
-   	inputHistoFile->ReOpen("UPDATE");
+	TrackerEfficiencyData -> SetName("TrackerEfficiencyData");	
 
-	//inputHistoFile->mkdir("Results");
-	inputHistoFile->cd("Results");
- 
-        TrackerEfficiencyData -> Write("TrackerEfficiencyData");
-	TrackerGlobalFactor -> Write();
-	
-	inputHistoFile->Write();
-	
-	TCanvas *c28= new TCanvas("R vs ECAL E.dep.");
-	c28->Divide(1,2);
-	c28->cd(1);
-	gPad->SetLogx();
-	gPad->SetLogy();
-	gPad->SetLogz();
-	ECALvsR_MC->SetTitle("Protons MC");
-	ECALvsR_MC->GetXaxis()->SetTitle("R [GV]");
-	ECALvsR_MC->GetYaxis()->SetTitle("ECAL E.dep.");
-	ECALvsR_MC->Draw("col");
-	c28->cd(2);
-        gPad->SetLogx();
-        gPad->SetLogy();
-	gPad->SetLogz();
-        ECALvsR_D->SetTitle("DATA");
-        ECALvsR_D->GetXaxis()->SetTitle("R [GV]");
-        ECALvsR_D->GetYaxis()->SetTitle("ECAL E.dep.");
-        ECALvsR_D->Draw("col");
 
-	TCanvas *c29= new TCanvas("Global Tracker Efficiency");
-	c29 -> cd();
-	TrackerEfficiencyMC    -> SetFillColor(2);
-	TrackerEfficiencyData  -> SetFillColor(1);
-	TrackerEfficiencyMC  ->SetBarWidth(0.5);
-        TrackerEfficiencyData->SetBarWidth(0.5);
-	
-	TrackerEfficiencyMC    -> Draw("B");
-        TrackerEfficiencyData  -> Draw("B,same");
+	finalHistos.Add(TrackerEfficiencyData);
+	finalHistos.Add(TrackerGlobalFactor  );
+	finalHistos.writeObjsInFolder("Results");
 
-	finalPlots.Add(c28);
-        finalPlots.Add(c29);
-	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/Tracker Efficiency");
-	finalPlots.Add(TrackerEfficiencyData);
-	finalPlots.writeObjsInFolder("Export");
-	
+	cout<<"*** Plotting ...  ****"<<endl;
+
+	DVSMCTrackeff_Plot(TrackerEfficiencyData,
+			TrackerEfficiencyMC,
+			TrackerGlobalFactor,
+			ECALvsR_D, 
+			ECALvsR_MC
+
+			);
+
+	return;
 }
+

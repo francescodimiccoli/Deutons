@@ -213,7 +213,10 @@ int main(int argc, char * argv[])
 		entries++;
 		if (Quality(geo_stuff,i)) {
 			giov++;
+			
 			mcweight=weight.MCToDataForRig(fabs(Momento_gen));
+			if(Momento_gen<1) mcweight=1;
+			
 			if(scelta==1) aggiungiantupla(geo_stuff,i,pre);
 			//cout<<Beta<<" "<<BetanS<<endl;
 			if(control==1) continue;

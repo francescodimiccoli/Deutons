@@ -22,19 +22,19 @@ class Binning {
       Binning (float m, float z, float a) :  particle (m, z, a) {}
       Binning (Particle p) : particle (p) {}
 
-      void setBinsFromEk (int, float, float); ///< nbins, min, max
-      void setBinsFromRigidity (int, float, float);
-      void setBinsFromEkPerMass(int, float, float);
+      inline void setBinsFromEk (int, float, float); ///< nbins, min, max
+      inline void setBinsFromRigidity (int, float, float);
+      inline void setBinsFromEkPerMass(int, float, float);
       int size() {return ekbincent.size(); };
       
       /** @brief Returns the rigidity bin containing the variable
        *  @param float var : the variable whose location to search
        *  @return int      : the bin number in rigidity of the variable
        */
-      int GetRBin (float var);
+      inline int GetRBin (float var);
       Particle getParticle() {return particle; }
-      void  RFill (TH1* h, float Var); ///< Fill the histogram with var indicating the rigidity bin
-      void Print(); ///< Print the content of the bins
+      inline void  RFill (TH1* h, float Var); ///< Fill the histogram with var indicating the rigidity bin
+      inline void Print(); ///< Print the content of the bins
 
 
       std::vector<float> EkBins  ()   {  return   ekbin;   }
@@ -49,7 +49,7 @@ class Binning {
       std::vector<float> RigBinsCent () { return   rigbincent; }
       std::vector<float> BetaBinsCent() { return  betabincent; }
 
-      std::vector<float> EtotPerMassBins();  ///< returns Etot per mass
+inline std::vector<float> EtotPerMassBins();  ///< returns Etot per mass
 
       float EkBin  (int bin)        {  return   ekbin[bin];        }
       float EtotBin  (int bin)      {  return   etotbin[bin];      }
@@ -84,10 +84,10 @@ class Binning {
       std::vector<float> betabincent ;
       std::vector<float> ekpermassbincent ;
 
-      void pushBackVelocities ();
-      void pushBackCentralVelocities ();
-      std::vector<float> computeLogBinEdges(int nbins, float min, float max);
-      std::vector<float> computeLogBinCenters(int nbins, float min, float max);
+      inline void pushBackVelocities ();
+      inline void pushBackCentralVelocities ();
+      inline std::vector<float> computeLogBinEdges(int nbins, float min, float max);
+      inline std::vector<float> computeLogBinCenters(int nbins, float min, float max);
 
 };
 

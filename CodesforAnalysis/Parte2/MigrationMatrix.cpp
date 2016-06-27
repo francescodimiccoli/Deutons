@@ -1,3 +1,5 @@
+#include "PlottingFunctions/MigrationMatrix_Plot.h"
+
 using namespace std;
 
 
@@ -14,23 +16,25 @@ void MigrationMatrix_Write(){
 }
 
 
-void MigrationMatrix(TFile * file1){
-	TH2F * MigrMatrix= (TH2F*) file1->Get("MigrMatrix");
+void MigrationMatrix(string filename){
+	cout<<"****** Migration Matrix **********"<<endl;
+	
+	cout<<"*** Reading  P1 file ****"<<endl;
+        TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
+
+	
+	TH2F * MigrMatrix= (TH2F*) inputHistoFile->Get("MigrMatrix");
 	
 	cout<<"****** Migration Matrix **********"<<endl;
 	float norm[nbinsr]={0};
 	for(int M=0;M<nbinsr;M++)for(int l=0;l<nbinsr;l++) norm[M]+=MigrMatrix->GetBinContent(l+1,M+1);
 	for(int M=0;M<nbinsr;M++)for(int l=0;l<nbinsr;l++) MigrMatrix->SetBinContent(l+1,M+1,MigrMatrix->GetBinContent(l+1,M+1)/norm[M]);
 	
-	TCanvas * c27 = new TCanvas("Rigidity Migration matrix");
-	c27->cd();
-	gPad->SetLogz();
-	MigrMatrix->GetXaxis()->SetTitle("n.bin (R meas)");
-	MigrMatrix->GetYaxis()->SetTitle("n.bin (R gen)");
-	MigrMatrix->Draw("col");
+	
+	cout<<"*** Plotting ...  ****"<<endl;
 
+	MigrationMatrix_Plot( MigrMatrix);
 
-	finalPlots.Add(c27);
-	finalPlots.writeObjsInFolder("MC Results");
-
+	return;
 }
+

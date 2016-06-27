@@ -1,3 +1,6 @@
+#include "PlottingFunctions/Correlazione_Preselezioni_Plot.h"
+
+
 TH2F * CorrelazionePreselezioni = new TH2F("CorrelazionePreselezioni","CorrelazionePreselezioni",11,0,11,11,0,11);
 int Norm[11]= {0};
 
@@ -30,7 +33,13 @@ void Correlazione_Preselezioni_Write(){
 }
 
 
-void Correlazione_Preselezioni(TFile * inputHistoFile){
+void Correlazione_Preselezioni(string filename){
+	
+	cout<<"***************** CORR. PRESELEZIONI ********************"<<endl;
+
+	cout<<"*** Reading  P1 file ****"<<endl;
+        TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
+
 	TH2F * CorrelazionePreselezioni = (TH2F*) inputHistoFile->Get("CorrelazionePreselezioni");
 	
 	cout<<"***************** CORR. PRESELEZIONI ********************"<<endl;	
@@ -39,22 +48,12 @@ void Correlazione_Preselezioni(TFile * inputHistoFile){
 			if(Norm[S]>0) CorrelazionePreselezioni->SetBinContent(S+1,F+1,CorrelazionePreselezioni->GetBinContent(S+1,F+1)/(float)Norm[S]);
 
 	
-	cout<<"*** Updating P1 file ****"<<endl;
-	inputHistoFile->ReOpen("UPDATE");
-	if (! inputHistoFile->GetDirectory("Results")) {
-		inputHistoFile->mkdir("Results");
-	}
-	inputHistoFile->cd("Results");
-   CorrelazionePreselezioni->Write();
-	inputHistoFile-> Write();
-	
+        finalHistos.Add(CorrelazionePreselezioni);
+	finalHistos.writeObjsInFolder("Results");
 
-	TCanvas *c13=new TCanvas("Correlazione Selezioni");
-	c13->cd();
-	CorrelazionePreselezioni->Draw("col");
+        cout<<"*** Plotting ...  ****"<<endl;
 
-	finalPlots.Add(c13);
-	finalPlots.writeObjsInFolder("MC Results");
-
-
+	Correlazione_Preselezioni_Plot(CorrelazionePreselezioni);
+	return;
 }
+

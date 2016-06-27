@@ -134,7 +134,8 @@ class FileSaver {
    public:
       FileSaver() : filename("") {fArr=new TObjArray();}
       FileSaver (string fname) : filename (fname) {fArr=new TObjArray();}
-      void writeObjsInFolder(string folder);
+      void writeObjsInFolder(string folder, bool recreate = false);
+      void writeObjs();
       void setName(string fname) {filename=fname;}
       void Add(TObject* obj) {fArr->Add(obj);}
       string setName() {return filename;}
@@ -143,15 +144,20 @@ class FileSaver {
       TObjArray* fArr;
 };
 
-void FileSaver::writeObjsInFolder(string folder)
+void FileSaver::writeObjsInFolder(string folder, bool recreate)
 {
-   cout<<"*** Updating Results file in "<< folder << endl;
-   TFile* fileFinalPlots=TFile::Open(filename.data(), "UPDATE");
-   if (!fileFinalPlots->GetDirectory(folder.data()))
-      fileFinalPlots->mkdir(folder.data());
-   fileFinalPlots->cd   (folder.data());
-   for (int i = 0; i <= fArr->GetLast(); i++)
-      fArr->At(i)->Write();
+   cout<<"*** Updating "<<filename.c_str()<<" file in "<< folder << endl;
+   TFile * fileFinalPlots;
+   
+   if(recreate) fileFinalPlots=TFile::Open(filename.c_str(), "RECREATE");
+   else fileFinalPlots=TFile::Open(filename.c_str(), "UPDATE");
+   
+   if (!fileFinalPlots->GetDirectory(folder.c_str()))
+      fileFinalPlots->mkdir(folder.c_str());
+   fileFinalPlots->cd   (folder.c_str());
+   for (int i = 0; i <= fArr->GetLast(); i++){
+   fArr->At(i)->Write();
+   }
    fileFinalPlots->Write();
    fileFinalPlots->Flush();
    fileFinalPlots->Close();
@@ -159,7 +165,9 @@ void FileSaver::writeObjsInFolder(string folder)
    return;
 }
 
-FileSaver finalPlots;
+
+
+FileSaver finalPlots,finalHistos;
 
 Particle proton(0.9382720813, 1, 1);  // proton mass 938 MeV
 Particle deuton(1.8756129   , 1, 2);  // deuterium mass 1876 MeV, Z=1, A=2
@@ -178,19 +186,33 @@ Cutmask cmask;
 
 
 
+void HistInfo(TH1* histo) {
+   cout << ">>> Class " << histo->ClassName () << " >> Info :  ";
+  histo->Print();
+   return;
+   }
+
 TH1F* TH1DtoTH1F(TH1D* hd) {
+   //HistInfo(hd);
    TH1F*  hf=(TH1F*)hd->Clone();
+   //HistInfo(hf);
    return hf;
 }
 
+
+
 TH1F* ProjectionXtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
    TH1D* hd=h2->ProjectionX(title.data(), binmin, binmax);
+   //HistInfo(h2);
+   //HistInfo(hd);
    TH1F* hf=TH1DtoTH1F(hd);
    return hf;
    }
 
 TH1F* ProjectionYtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
+   //HistInfo(h2);
    TH1D* hd=h2->ProjectionY(title.data(), binmin, binmax);
+   //HistInfo(hd);
    TH1F* hf=TH1DtoTH1F(hd);
    return hf;
    }

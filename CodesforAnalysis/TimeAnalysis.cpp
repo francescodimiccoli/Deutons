@@ -167,6 +167,7 @@ int main()
 	TGraphErrors *LikDVSMC_P[40];
         TGraphErrors *DistDVSMC_P[40];
 	TH1F * TrackerEff[40];
+	TH1F * TriggerEff[40];
 	TGraphErrors *P_Fluxes[40];
 	TGraphErrors *P_Fluxesratio[40];
 	TGraphErrors *D_FluxesTOF[40];
@@ -196,6 +197,7 @@ int main()
 		LikDVSMC_P[i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/LikDVSMC_P_Graph");
                 DistDVSMC_P[i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DistDVSMC_P_Graph");
 		TrackerEff[i]  =  (TH1F *) 	   result[i]->Get("Export/TrakerEfficiencyData");	
+		TriggerEff[i]  =  (TH1F *) 	   result[i]->Get("Export/TriggerGlobalFactor");
 		P_Fluxes[i]    =  (TGraphErrors *) result[i]->Get("Export/Protons Primary Flux");
 		D_FluxesTOF[i] =  (TGraphErrors *) result[i]->Get("Export/Deutons Primary Flux: TOF");
 		D_FluxesNaF[i] =  (TGraphErrors *) result[i]->Get("Export/Deutons Primary Flux: NaF");
@@ -284,18 +286,30 @@ int main()
 	gPad->SetGridy();
 	double effy,effey=0;
 	TH1F * Trackeff_time = new TH1F("","",num_mesi,0,num_mesi);
-        for(int i=0;i<num_mesi;i++) {
-                cout<<TrackerEff[i]<<endl;
+        TH1F * Triggeff_time = new TH1F("","",num_mesi,0,num_mesi);
+	for(int i=0;i<num_mesi;i++) {
 		effy = TrackerEff[i]-> GetBinContent(30);
 		Trackeff_time -> SetBinContent(i+1,effy);
                 effey = TrackerEff[i]-> GetBinError(30);
                 Trackeff_time -> SetBinError(i+1,effey);
                 Trackeff_time -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
-        }
+        	effy = TriggerEff[i]-> GetBinContent(1);                
+                Triggeff_time -> SetBinContent(i+1,effy);
+                effey = TriggerEff[i]-> GetBinError(1);
+                Triggeff_time -> SetBinError(i+1,effey);
+		Trackeff_time -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+	}
 	Trackeff_time -> SetMarkerStyle(8);
 	Trackeff_time -> LabelsOption("v");
+	Triggeff_time -> SetMarkerStyle(8);
+	Trackeff_time -> LabelsOption();
 	Trackeff_time -> GetXaxis() -> SetLabelSize(0.085);
 	Trackeff_time -> SetMarkerColor(1);
+	Trackeff_time -> SetMarkerColor(4);
+	Triggeff_time -> SetMarkerColor(2);
+	Trackeff_time ->GetYaxis()->SetRangeUser(0,1); 
+	Trackeff_time -> Draw();
+	Triggeff_time -> Draw("same");
 	Trackeff_time -> Draw();
 
 

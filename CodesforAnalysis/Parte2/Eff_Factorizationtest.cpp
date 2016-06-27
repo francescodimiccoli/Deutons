@@ -1,3 +1,5 @@
+#include "PlottingFunctions/FluxFactorizationtest_Plot.h"
+
 using namespace std;
 
 Efficiency * EffFullSETselectionsMCP =  new Efficiency("EffFullSETselectionsMCP");
@@ -15,7 +17,7 @@ void FluxFactorizationtest_Pre_Fill()
    if(Tup.Unbias!=0||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
    int Rbin;
    // full set efficiency before
-   if(cmask.notPassed(0)) {
+   if(cmask.notPassed(2)) {
       Rbin=PRB.GetRBin(RUsed);
       if(Massa_gen<1&&Massa_gen>0.5) {
          EffFullSETselectionsMCP->beforeR->Fill(Rbin);
@@ -88,8 +90,13 @@ void FluxFactorizationtest_Write()
 }
 
 
-void FluxFactorizationtest(TFile * inputHistoFile)
+void FluxFactorizationtest(string filename)
 {
+  cout<<"********* MC \"GOLDEN\" SEL. EFFICIENCIES *********"<<endl;
+
+  cout<<"*** Reading  P1 file ****"<<endl;
+  TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
+
 
    Efficiency * EffFullSETselectionsMCP  = new Efficiency(inputHistoFile,"EffFullSETselectionsMCP");
 
@@ -131,42 +138,12 @@ void FluxFactorizationtest(TFile * inputHistoFile)
          FactorizedEffMCP_R -> SetBinContent(iR+1,FactorizedEffMCP_R -> GetBinContent(iR+1)*Eff_do_preSelMCP_R_TH2F-> GetBinContent(iR+1,iS+1) );
    }
 
-   cout<<"*** Updating P1 file ****"<<endl;
-   inputHistoFile->ReOpen("UPDATE");
-
-   inputHistoFile->cd("Results");
-   inputHistoFile-> Write();
-
-
-   TCanvas *c9 = new TCanvas("MC Protons Factorization Test");
-   c9->cd();
-   gPad->SetLogx();
-   gPad->SetGridx();
-   gPad->SetGridy();
-
-   TGraphErrors * FullsetEfficiency    = new TGraphErrors();
-   TGraphErrors * FactorizedEfficiency = new TGraphErrors();
-
-   for(int i=0; i<Eff_FullSETMCP_R_TH1F->GetNbinsX(); i++) {
-      FullsetEfficiency    ->SetPoint(i,PRB.RigBinCent(i),Eff_FullSETMCP_R_TH1F->GetBinContent(i+1));
-      FactorizedEfficiency ->SetPoint(i,PRB.RigBinCent(i),FactorizedEffMCP_R->GetBinContent(i+1));
-   }
-
-   FullsetEfficiency->SetMarkerColor(2);
-   FullsetEfficiency->SetMarkerStyle(8);
-   FullsetEfficiency->SetLineColor(2);
-   FullsetEfficiency->SetLineWidth(2);
-
-   FactorizedEfficiency->SetMarkerColor(2);
-   FactorizedEfficiency->SetMarkerStyle(4);
-   FactorizedEfficiency->SetLineColor(2);
-   FactorizedEfficiency->SetLineWidth(2);
-
-   FullsetEfficiency->Draw("APC");
-   FactorizedEfficiency->Draw("PCsame");
-
-   finalPlots.Add(c9);
-   finalPlots.writeObjsInFolder("MC Results/Eff. Factorization Test");
+   cout<<"*** Plotting ...  ****"<<endl;
+   FluxFactorizationtest_Plot(
+	Eff_FullSETMCP_R_TH1F,
+	FactorizedEffMCP_R
+	);  	
 
    return;
 }
+

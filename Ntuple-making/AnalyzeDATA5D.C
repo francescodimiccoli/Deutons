@@ -193,8 +193,9 @@ int main(int argc, char * argv[])
    bool check=geo_stuff?true:false;
    
    if(check==false) std::cout<<"Skipping file!"<<endl;
-   string indirizzo_out="Results.root";
-   TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
+   string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/"+calib+"/RisultatiDATI_"+ARGV+".root";
+   
+    TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
 
    TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:LDiscriminant:DistD,IsCharge1");
    TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:Rmin:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");

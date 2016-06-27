@@ -51,11 +51,6 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    }
 
 
-   string finalfilename=outputpath+"Final_plots/"+mese+".root";
-   finalPlots.setName(finalfilename);
-   fileFinalPlots=new TFile(finalfilename.c_str(),"UPDATE");
-
-
    if(INDX!=READ) {
       string nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
       fileMC =TFile::Open(nomefile.c_str());
@@ -96,14 +91,11 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    }
    if(INDX==BUILDALL||INDX==BUILDSEPD) {
       LoopOnDataSepD(ntupDataSepD);
+   }
 
+   usedfile->Close();	
       cout<<endl<<"************************ SAVING DATA ************************"<<endl;
-
-      inputHistoFile->Flush();
-      inputHistoFile->Close();
-      delete inputHistoFile;
-      inputHistoFile =TFile::Open(filename.c_str(), "RECREATE");
-      inputHistoFile->cd();
+   if(INDX==BUILDALL||INDX==BUILDSEPD) {
 
       DATAQualeff_Write();
       DATARICHeff_Write();
@@ -140,56 +132,52 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       esposizionedgeoNaF->Write();
       esposizionedgeoAgl->Write();
 
-      inputHistoFile->Write();
-      inputHistoFile->Flush();
+	
    }
 
-   inputHistoFile->ReOpen("READ");
-
+      	
+      inputHistoFile->Close();
+   
    cout<<"************************* ANALYSIS **********************************************************************"<<endl;
-   if(INDX!=1) {
-      if(frac=="tot") Hecut(inputHistoFile);
-      SlidesforPlot(inputHistoFile);
-      //      DistanceCut(inputHistoFile);
-      Correlazione_Preselezioni(inputHistoFile);
+   
 
-      MCpreeff(inputHistoFile);
-      MCUnbiaseff(inputHistoFile);
-      MCQualeff(inputHistoFile);
-      FluxFactorizationtest(inputHistoFile);
-      MCTrackeff(inputHistoFile);
-      MCFullseteff(inputHistoFile);
-      MigrationMatrix(inputHistoFile);
-      DVSMCTrackeff(inputHistoFile);
-      DATAUnbiaseff(inputHistoFile);
-      //delete inputHistoFile;
-      inputHistoFile =TFile::Open(filename.c_str(), "READ");
+   string finalfilename="./Final_plots/"+mese+".root";
+   finalPlots.setName(finalfilename);
+   finalHistos.setName(filename);  
+
+   if(INDX==READ) {
+      if(frac=="tot") Hecut(filename);
+      SlidesforPlot(filename);
+      //DistanceCut(filename);
+      Correlazione_Preselezioni(filename);
+
+      MCpreeff(filename);
+      MCUnbiaseff(filename);
+      MCQualeff(filename);
+      FluxFactorizationtest(filename);
+      MCTrackeff(filename);
+      MCFullseteff(filename);
+      MigrationMatrix(filename);
+      DVSMCTrackeff(filename);
+      DATAUnbiaseff(filename);
       DATApreSeleff(filename);
-      //delete inputHistoFile;
-      inputHistoFile =TFile::Open(filename.c_str(), "READ");
       DATAQualeff(filename);
-      //delete inputHistoFile;
-      inputHistoFile =TFile::Open(filename.c_str(), "READ");
       DATARICHeff(filename);
-      if(frac=="tot") DeutonsTemplFits();
-      if(frac=="tot") DeutonsTemplFits_Dist();
+      if(frac=="tot") DeutonsTemplFits(filename);
+      if(frac=="tot") DeutonsTemplFits_Dist(filename);
 
-      inputHistoFile=TFile::Open(filename.c_str(), "READ");
       CorrLAT(filename);
-      DVSMCPreSeleff();
-      DVSMCPreSeleffD();
-      DVSMCRICHeff();
-      DVSMCQualeff2();
-      DVSMCQualeffD();
-      Acceptance();
-      inputHistoFile=TFile::Open(filename.c_str(), "READ");
-      ProtonFlux();
-      if(frac=="tot") DeutonFlux();
-      if(frac=="tot") OtherExperimentsComparison();
+      DVSMCPreSeleff(filename);
+      DVSMCPreSeleffD(filename);
+      DVSMCRICHeff(filename);
+      DVSMCQualeff2(filename);
+      DVSMCQualeffD(filename);
+      Acceptance(filename);
+      ProtonFlux(filename);
+      if(frac=="tot") DeutonFlux(filename);
+      if(frac=="tot") OtherExperimentsComparison(filename);
    }
 
-   fileFinalPlots->Close();
-   inputHistoFile->Close();
 
 
    return;
@@ -357,7 +345,7 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 
 void LoopOnDataSepD(TNtuple* ntupDataSepD)
 {
-   InitProtonFlux();
+   //InitProtonFlux();
    int nentries=ntupDataSepD->GetEntries();
    for(int i=0; i<nentries; i++) {
       ntupDataSepD->GetEvent(i);
