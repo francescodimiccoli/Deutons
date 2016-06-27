@@ -1,4 +1,6 @@
 
+#include "binning.h"
+
 class ParticleBins {
     Particle particle;
     Binning RB;
@@ -6,7 +8,7 @@ class ParticleBins {
     Binning NaFB;
     Binning AglB;
 public:
-    ParticleBins(Praticle p, int nbinsr, int nbinsToF, int nbinsNaF, int nbinsAgl):
+    ParticleBins(Particle p, int nbinsr, int nbinsToF, int nbinsNaF, int nbinsAgl):
         particle(p), ToFB(p), NaFB(p), AglB(p), RB(p)
     { 
         RB.setBinsFromRigidity(nbinsr, 0.5, 100); 

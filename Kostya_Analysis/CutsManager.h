@@ -1,7 +1,7 @@
 #ifndef CUTSMANAGER__H__
 #define CUTSMANAGER__H__
 
-#include "TupleVars.hpp"
+#include "TupleVars.h"
 #include "Calibrations.h"
 
 class CutsManager {

@@ -50,16 +50,23 @@ int main(int argc, char **argv){
     std::cout << "Input Calibrations file: \""     << calFname    << "\"\n";
     std::cout << "Output file with histograms: \"" << outFname    << "\"\n";
 
-    AnalysisBins bins();
+    Calibrations calibs(calFname);
+    AnalysisBins bins(20,20,20,20);
 
-    fileMC   = TFile::Open(  inMCFname.c_str(), "READ");
-    distTrigMC = Distributions::TriggerMC()
-    Loop()
+    Distributions * distTrigMC = Distributions::TriggerMC(bins, calibs);
+    Distributions * distQualMC = Distributions::QualMC   (bins, calibs);
 
+    TFile * fileTirgMC = TFile::Open(inMCFname.c_str(), "READ");
+        TNtuple * ntupTrigMC = static_cast<TNtuple *>(fileTrigMC->Get("trig"));
+        TNtuple * ntupQualMC = static_cast<TNtuple *>(fileTrigMC->Get("grandezzesepd"));
+        Loop(ntupTrigMC, distTrigMC);
+        Loop(ntupQualMC, distQualMC);
+    fileTrigMC->Close();
 
-
-
-    fileData = TFile::Open(inDataFname.c_str(), "READ");
+    fileOut = TFile::Open(outFname.c_str(), "RECREATE");
+        distTrigMC->Write(fileOut);
+        distQualMC->Write(fileOut);
+    fileOut->Close();
 
     return 0;
 }

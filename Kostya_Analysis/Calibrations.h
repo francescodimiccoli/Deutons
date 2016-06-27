@@ -24,6 +24,7 @@ class Calibrations {
 public:
     float OffsetTrackBeta(float beta, float edep) const;
     float OffsetTOFBeta(float beta, float edep) const;
+    float TOFBetaInside1(float beta, float edep) const;
     Calibrations(std::string filename);
 };
 

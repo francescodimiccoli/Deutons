@@ -1,3 +1,6 @@
+#include "AnalysisBins.h"
+#include "Calibrations.h"
+#include "TupleVars.h"
 
 class Distributions {
 public:

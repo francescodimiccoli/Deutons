@@ -2,21 +2,21 @@
 #include "TFile.h"
 #include <iostream>
 
-float Calibrations::OffsetTrackBeta(float beta, float edep)
+float Calibrations::OffsetTrackBeta(float beta, float edep) const
 {
     float expectedEdep = EdepTrackbeta->Eval(beta);
     float sigmaEdep    = etrack->Eval(beta);
     return fabs(expectedEdep - edep)/(pow(expectedEdep,2) * sigmaEdep);
 }
 
-float Calibrations::OffsetTOFBeta(float beta, float edep)
+float Calibrations::OffsetTOFBeta(float beta, float edep) const
 {
     float expectedEdep = EdepTOFbeta->Eval(beta);
     float sigmaEdep    = etofu->Eval(beta);
     return fabs(expectedEdep - edep)/(pow(expectedEdep, 2) * sigmaEdep);
 }
 
-float Calibrations::TOFBetaInside1(float beta, float edep)
+float Calibrations::TOFBetaInside1(float beta, float edep) const
 {
     return fabs( edep - EdepTOFbeta->Eval(beta) ) < 1;
 }
