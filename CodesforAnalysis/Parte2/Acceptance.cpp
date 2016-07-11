@@ -83,17 +83,17 @@ void Acceptance(string filename){
 
 
 	//global factors
-	AcceptanceP    -> ApplyGlobalFactor(TriggerGlobalFactor -> GetBinContent(1), TriggerGlobalFactor -> GetBinError(1));
+	/*AcceptanceP    -> ApplyGlobalFactor(TriggerGlobalFactor -> GetBinContent(1), TriggerGlobalFactor -> GetBinError(1));
 	AcceptanceD    -> ApplyGlobalFactor(TriggerGlobalFactor -> GetBinContent(1), TriggerGlobalFactor -> GetBinError(1));
 	AcceptancePreP -> ApplyGlobalFactor(TriggerGlobalFactor -> GetBinContent(1), TriggerGlobalFactor -> GetBinError(1));
  
 	AcceptanceP    -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
 	AcceptanceD    -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
 	AcceptancePreP -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
-	
+	*/
 	//preselections
-	
-/*	AcceptanceP -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,1,3);
+
+	AcceptanceP -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,1,3);
 	AcceptanceP -> Apply_DvsMCcorrection_TOF(PreSel_Correction_TOF,1,3);
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,1,3);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);
@@ -102,7 +102,7 @@ void Acceptance(string filename){
         AcceptancePreP -> Apply_DvsMCcorrection_TOF(PreSel_Correction_TOF,1,3);
         AcceptancePreP -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,1,3);
 	AcceptancePreP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);
-*/	
+	
 	//qual
 	AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);
 	AcceptanceP -> Apply_DvsMCcorrection_R(LikP_Correction_R );

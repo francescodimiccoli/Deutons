@@ -3,8 +3,9 @@ using namespace std;
 float FitError(TH1F * fit,TH1F * values,float bins,int param){
 
 	float fitX2=0;
-        for(int i=1;i<bins;i++) 
+        for(int i=1;i<bins;i++) {
 		fitX2+=pow((fit->GetBinContent(i+1)-values->GetBinContent(i+1))/values->GetBinError(i+1),2);
+		}
 	fitX2=(fitX2)/(bins-param);
         
 	float sigmamean=0;

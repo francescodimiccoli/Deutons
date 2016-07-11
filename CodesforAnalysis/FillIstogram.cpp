@@ -138,7 +138,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       esposizionedgeoAgl->Write();
 
    outputHistoFile -> Write();
-   //outputHistoFile -> Close();	
+   outputHistoFile -> Close();	
    }
    
    cout<<"************************* ANALYSIS **********************************************************************"<<endl;

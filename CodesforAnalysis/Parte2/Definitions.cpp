@@ -158,9 +158,8 @@ void FileSaver::writeObjsInFolder(string folder, bool recreate)
    for (int i = 0; i <= fArr->GetLast(); i++){
    fArr->At(i)->Write();
    }
-   fileFinalPlots->Flush();
-   //fileFinalPlots->Write();
-   fileFinalPlots->Close();
+   fileFinalPlots->Write();
+   
    fArr->Clear();
    return;
 }

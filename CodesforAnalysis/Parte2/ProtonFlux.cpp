@@ -12,7 +12,7 @@ Flux * P_Flux_sel = new Flux("P_Flux_sel" );
 
 void ProtonFlux_Fill(int zona) {
 
-
+	if(Tup.Beta<=0||Tup.R<=0) return;
 	int Kbin=PRB.GetRBin(Tup.R);
 
 	if(Tup.Dist5D_P<6 && Likcut) {
@@ -23,7 +23,7 @@ void ProtonFlux_Fill(int zona) {
 		}
 	}
 
-	if(Herejcut && Tup.R>1.2*Tup.Rcutoff) {
+	if(Herejcut && Tup.R>1.2*Tup.Rcutoff && Tup.Beta<protons->Eval(Tup.R)+0.1 && Tup.Beta>protons->Eval(Tup.R)-0.1) {
 		P_Flux_pre -> Counts_R -> Fill(Kbin);
 		if(Tup.Dist5D_P<6&&Likcut)  P_Flux_sel -> Counts_R -> Fill(Kbin);
 	}
