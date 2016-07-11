@@ -130,10 +130,11 @@ void DVSMCPreSeleff(string filename){
 	PreSel_Correction_NaF  -> SetName("PreSel_DvsMC_P_CorrectionNaF");
 	PreSel_Correction_Agl  -> SetName("PreSel_DvsMC_P_CorrectionAgl");
 
+	
 	finalHistos.Add(PreSel_Correction_R   );
         finalHistos.Add(PreSel_Correction_TOF );
-       finalHistos.Add( PreSel_Correction_NaF );
-       finalHistos.Add( PreSel_Correction_Agl );
+        finalHistos.Add( PreSel_Correction_NaF );
+        finalHistos.Add( PreSel_Correction_Agl );
 
 	finalHistos.writeObjsInFolder("Results");
 

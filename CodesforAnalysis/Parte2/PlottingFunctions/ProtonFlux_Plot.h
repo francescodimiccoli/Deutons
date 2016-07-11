@@ -17,7 +17,7 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 	TGraphErrors * P_Fluxgeo[11];
 	TGraphErrors * PFlux;
 	TGraphErrors * PFlux_pre;
-	float potenza=0;
+	float potenza=2.7;
 
 	c23->cd();
 	gPad->SetLogx();

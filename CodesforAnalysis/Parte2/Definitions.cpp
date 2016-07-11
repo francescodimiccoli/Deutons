@@ -132,8 +132,8 @@ void FillBinMGen (TH3* h, int bin, int S)
 
 class FileSaver {
    public:
-      FileSaver() : filename("") {fArr=new TObjArray();}
-      FileSaver (string fname) : filename (fname) {fArr=new TObjArray();}
+      FileSaver(bool Isfinal=false) : filename("") {fArr=new TObjArray(); IsFinal = Isfinal;}
+      FileSaver (string fname,bool Isfinal=false) : filename (fname) {fArr=new TObjArray(); IsFinal = Isfinal;}
       void writeObjsInFolder(string folder, bool recreate = false);
       void writeObjs();
       void setName(string fname) {filename=fname;}
@@ -142,31 +142,34 @@ class FileSaver {
    private:
       string filename;
       TObjArray* fArr;
+      bool IsFinal;	
 };
 
 void FileSaver::writeObjsInFolder(string folder, bool recreate)
 {
-   cout<<"*** Updating "<<filename.c_str()<<" file in "<< folder << endl;
-   TFile * fileFinalPlots;
-   
-   if(recreate) fileFinalPlots=TFile::Open(filename.c_str(), "RECREATE");
-   else fileFinalPlots=TFile::Open(filename.c_str(), "UPDATE");
-   
-   if (!fileFinalPlots->GetDirectory(folder.c_str()))
-      fileFinalPlots->mkdir(folder.c_str());
-   fileFinalPlots->cd   (folder.c_str());
-   for (int i = 0; i <= fArr->GetLast(); i++){
-   fArr->At(i)->Write();
-   }
-   fileFinalPlots->Write();
-   fileFinalPlots->Close(); 
-   fArr->Clear();
-   return;
+	cout<<"*** Updating "<<filename.c_str()<<" file in "<< folder << endl;
+	TFile * fileFinalPlots;
+
+	if(recreate) fileFinalPlots=TFile::Open(filename.c_str(), "RECREATE");
+	else fileFinalPlots=TFile::Open(filename.c_str(), "UPDATE");
+
+	if (!fileFinalPlots->GetDirectory(folder.c_str()))
+		fileFinalPlots->mkdir(folder.c_str());
+	fileFinalPlots->cd   (folder.c_str());
+	for (int i = 0; i <= fArr->GetLast(); i++){
+		fArr->At(i)->Write();
+	}
+	fileFinalPlots->Flush();
+	fileFinalPlots->Write();
+	if(IsFinal) fileFinalPlots->Close(); 
+	fArr->Clear();
+	return;
 }
 
 
-
-FileSaver finalPlots,finalHistos;
+bool Isfinal=true;
+FileSaver finalPlots(Isfinal);
+FileSaver finalHistos;
 
 Particle proton(0.9382720813, 1, 1);  // proton mass 938 MeV
 Particle deuton(1.8756129   , 1, 2);  // deuterium mass 1876 MeV, Z=1, A=2
