@@ -5,7 +5,7 @@
 
 class Reweighter {
 public:
-    Reweight(Histogram from, Histogram to);
+    Reweighter(Histogram from, Histogram to);
     Histogram getFrom() const { return from; }
     Histogram getTo  () const { return to;   }
     inline float getWeight(float value, float def = 0.0) const;
@@ -16,7 +16,7 @@ private:
 
 Reweighter::Reweighter(Histogram f, Histogram t): from(f), to(t) {}
 
-float Histogram::getWeight(float value, float def) const {
+float Reweighter::getWeight(float value, float def) const {
     float fromV = from.at(value);
     float   toV =   to.at(value);
     if(fromV == 0.0) return def;

@@ -50,7 +50,7 @@ Histogram::Histogram(std::vector<float> e, std::vector<float> c): edges(e), cont
 
 float Histogram::at(float x) const {
     if( x < edges.front() ) return 0;
-    if( edges.back() > x  ) return 0;
+    if( edges.back() < x  ) return 0;
     for( int i = 0; i < content.size(); i++ ) {
         if(edges[i] < x && x < edges[i+1]) return content[i];
     }
@@ -58,7 +58,7 @@ float Histogram::at(float x) const {
 
 void Histogram::fill(float x, float w) {
     if( x < edges.front() ) return;
-    if( edges.back() > x  ) return;
+    if( edges.back() < x  ) return;
     for( int i = 0; i < content.size(); i++ ) {
         if(edges[i] < x && x < edges[i+1]) {
             content[i] += w / (edges[i+1] - edges[i]);
