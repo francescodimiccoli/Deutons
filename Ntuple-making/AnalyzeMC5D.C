@@ -4,6 +4,8 @@
 #include "Selections5D.h"
 #include "Commonglobals.cpp"
 #include "reweight.h"
+#include "histUtils.h"
+
 
 using namespace std;
 void Trigg (TTree *albero,int i,TNtuple *ntupla);
@@ -193,8 +195,15 @@ int main(int argc, char * argv[])
 	cout<<"Eventi: "<<events<<endl;
 	//entries=entries/5;
 
-	// The spectrum inialization may as well be here
-	Reweight weight;
+    //Initializing reweighting classes 
+    // MC flux is logarithmic
+    Histogram   mcFlux = makeLogUniform(43, 0.5, 100);
+    // Data flux obtained from galprop file
+    Histogram dataFlux = loadGalpropFile("/storage/gpfs_ams/ams/users/fdimicco/Deutons/include/CRDB_ProtonsAMS_R.galprop");
+    // Scale the data flux so that the lowest bins are coinciding (lowest weight = 1)
+    dataFlux.multiply( mcFlux.getContent()[0] / dataFlux.getContent()[0] );
+    // Calling "Reweighter" constructor
+    Reweighter reweighter(mcFlux, dataFlux);
 
 	for(int i=(events/100)*INDX; i<(events/100)*(INDX+1); i++) {
 		if(i%1300==0) cout<<i/(float)events*100<<"%"<<endl;
@@ -214,7 +223,7 @@ int main(int argc, char * argv[])
 		if (Quality(geo_stuff,i)) {
 			giov++;
 			
-			mcweight=weight.MCToDataForRig(fabs(Momento_gen));
+			mcweight=reweighter.getWeight(fabs(Momento_gen));
 			if(Momento_gen<1) mcweight=1;
 			
 			if(scelta==1) aggiungiantupla(geo_stuff,i,pre);

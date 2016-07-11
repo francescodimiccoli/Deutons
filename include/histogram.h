@@ -22,6 +22,7 @@ public:
     inline void fill(float x, float w=1.0);
     inline void fillWithCounts (std::vector<float> counts);
     inline void normalize();
+    inline void multiply(float s);
 
     inline float integrate(float min, float max) const;
     inline Histogram reBin(std::vector<float> targetEdges);
@@ -72,6 +73,10 @@ void Histogram::fillWithCounts(std::vector<float> counts) {
         throw std::length_error("Histogram::fillWithCounts counts vector length should correspond to the number of bins.");
     for( int i = 0; i < content.size(); i++ ) 
         content[i] = counts[i] / (edges[i+1] - edges[i]);
+}
+
+void Histogram::multiply(float s) {
+    for(int i = 0; i < content.size(); i++) content[i] *= s;
 }
 
 void Histogram::normalize() {
