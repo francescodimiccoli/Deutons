@@ -201,7 +201,7 @@ int main(int argc, char * argv[])
     // Data flux obtained from galprop file
     Histogram dataFlux = loadGalpropFile("/storage/gpfs_ams/ams/users/fdimicco/Deutons/include/CRDB_ProtonsAMS_R.galprop");
     // Scale the data flux so that the lowest bins are coinciding (lowest weight = 1)
-    dataFlux.multiply( mcFlux.getContent()[0] / dataFlux.getContent()[0] );
+    dataFlux.multiply( mcFlux.at(1.05) / dataFlux.getContent()[0] );
     // Calling "Reweighter" constructor
     Reweighter reweighter(mcFlux, dataFlux);
 
