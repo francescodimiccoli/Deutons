@@ -24,9 +24,9 @@ public:
 
     void FillMC(double Bm, double Rm, double Rt)
     {
-        if( Massa_gen < 1 && Massa_gen > 0.5) MCMCPTemplates->Fill(Bm, Rm, Rt);
-        if( Massa_gen < 2 && Massa_gen > 1.5) MCMCDTemplates->Fill(Bm, Rm, Rt);
-        if( Massa_gen < 4 && Massa_gen > 2.5) MCMCHeTemplates->Fill(Bm, Rm, Rt);
+        if( Massa_gen < 1 && Massa_gen > 0.5) MCMCPTemplates->Fill(Bm, Rm, Rt,Tup.mcweight);
+        if( Massa_gen < 2 && Massa_gen > 1.5) MCMCDTemplates->Fill(Bm, Rm, Rt,Tup.mcweight);
+        if( Massa_gen < 4 && Massa_gen > 2.5) MCMCHeTemplates->Fill(Bm, Rm, Rt,Tup.mcweight);
     }
     void FillData(double Bm , double Rm) { MCMCData->Fill(Bm, Rm); }
 

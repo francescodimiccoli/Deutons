@@ -36,8 +36,8 @@ void DVSMCTrackeff_Fill(){
 		ECALvsR_MC->Fill(Tup.R_pre,Tup.EdepECAL);	
         //R bins
         int Kbin=PRB.GetRBin (20) ;
-	if(((int) Tup.Cutmask&3)  == 3   && Tup.Beta_pre>0) 	      TrackerEfficiencyMCP -> beforeR -> Fill(Kbin);
-        if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0)	      TrackerEfficiencyMCP -> afterR  -> Fill(Kbin);
+	if(((int) Tup.Cutmask&3)  == 3   && Tup.Beta_pre>0) 	      TrackerEfficiencyMCP -> beforeR -> Fill(Kbin,Tup.mcweight);
+        if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0)	      TrackerEfficiencyMCP -> afterR  -> Fill(Kbin,Tup.mcweight);
         
 	return;
 

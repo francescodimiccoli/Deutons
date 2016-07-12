@@ -20,7 +20,7 @@ void FluxFactorizationtest_Pre_Fill()
    if(cmask.notPassed(2)) {
       Rbin=PRB.GetRBin(RUsed);
       if(Massa_gen<1&&Massa_gen>0.5) {
-         EffFullSETselectionsMCP->beforeR->Fill(Rbin);
+         ((TH2*)EffFullSETselectionsMCP->beforeR)->Fill(Rbin,Tup.mcweight);
       }
    }
 
@@ -28,8 +28,8 @@ void FluxFactorizationtest_Pre_Fill()
    for(int iS=0; iS<3; iS++) {
       Rbin=PRB.GetRBin(RUsed);
       if(Massa_gen<1&&Massa_gen>0.5) {
-         if(cmask.notPassed(iS)) Eff_do_preSelMCP->beforeR->Fill(Rbin,iS);
-         if(cmask.passed(iS)) Eff_do_preSelMCP->afterR ->Fill(Rbin,iS);
+         if(cmask.notPassed(iS)) ((TH2*)Eff_do_preSelMCP->beforeR)->Fill(Rbin,iS,Tup.mcweight);
+         if(cmask.passed(iS)) ((TH2*)Eff_do_preSelMCP->afterR) ->Fill(Rbin,iS,Tup.mcweight);
       }
 
       if(Massa_gen>1&&Massa_gen<2) {
@@ -53,7 +53,7 @@ void FluxFactorizationtest_Qual_Fill()
    Kbin = PRB.GetRBin(RUsed);
 
    //full set efficiency after
-   if(Tup.Dist5D_P<6&&Likcut)  EffFullSETselectionsMCP->afterR->Fill(Kbin);
+   if(Tup.Dist5D_P<6&&Likcut)  ((TH2*)EffFullSETselectionsMCP->afterR)->Fill(Kbin,Tup.mcweight);
 
 
    //Drop-one approach eff calc.
@@ -62,12 +62,12 @@ void FluxFactorizationtest_Qual_Fill()
    if(!Herejcut) return;
 
    if(Massa_gen<1&&Massa_gen>0.5) {
-      Eff_do_DistMCP -> beforeR -> Fill(Kbin);
-      if(Tup.Dist5D_P<6) Eff_do_LikMCP -> beforeR -> Fill(Kbin);
+     ((TH2*) Eff_do_DistMCP -> beforeR) -> Fill(Kbin,Tup.mcweight);
+      if(Tup.Dist5D_P<6)((TH2*) Eff_do_LikMCP -> beforeR) -> Fill(Kbin,Tup.mcweight);
 
       if(Tup.Dist5D_P<6) {
-         Eff_do_DistMCP -> afterR -> Fill(Kbin);
-         if(Likcut) Eff_do_LikMCP -> afterR -> Fill(Kbin);
+        ((TH2*) Eff_do_DistMCP -> afterR) -> Fill(Kbin,Tup.mcweight);
+         if(Likcut) ((TH2*)Eff_do_LikMCP -> afterR) -> Fill(Kbin,Tup.mcweight);
       }
 
    }

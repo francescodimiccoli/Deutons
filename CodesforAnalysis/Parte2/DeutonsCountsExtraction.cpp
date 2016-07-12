@@ -24,28 +24,28 @@ void DeutonsMC_Fill()
    for(int m=0; m<nbinsToF; m++) { //TOF
       mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));
       if(RUsed>ToFDB.MomBins()[m]&&RUsed<=ToFDB.MomBins()[m+1]) {
-         if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Dbins -> TemplateP -> Fill(mass,m);
-         if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
-         if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Dbins -> TemplateHe-> Fill(mass,m);
+         if(Massa_gen<1&&Massa_gen>0.5) ((TH2*)FitTOF_Dbins -> TemplateP) -> Fill(mass,m,Tup.mcweight);
+         if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType(),Tup.mcweight);
+         if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitTOF_Dbins -> TemplateHe)-> Fill(mass,m);
       }
       if(RUsed>ToFPB.MomBins()[m]&&RUsed<=ToFPB.MomBins()[m+1]) {
-         if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Pbins -> TemplateP -> Fill(mass,m);
-         if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
-         if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Pbins -> TemplateHe-> Fill(mass,m);
+         if(Massa_gen<1&&Massa_gen>0.5) ((TH2*)FitTOF_Pbins -> TemplateP) -> Fill(mass,m,Tup.mcweight);
+         if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType(),Tup.mcweight);
+         if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitTOF_Pbins -> TemplateHe)-> Fill(mass,m,Tup.mcweight);
       }
    }
    for(int m=0; m<nbinsNaF; m++) { //NaF
       if(cmask.isFromNaF()) {
          mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
          if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
-            if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Dbins -> TemplateP -> Fill(mass,m);
-            if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
-            if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Dbins -> TemplateHe-> Fill(mass,m);
+            if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitNaF_Dbins -> TemplateP) -> Fill(mass,m,Tup.mcweight);
+            if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType(),Tup.mcweight);
+            if(Massa_gen<4&&Massa_gen>2.5)((TH2*) FitNaF_Dbins -> TemplateHe)-> Fill(mass,m,Tup.mcweight);
          }
          if(RUsed>NaFPB.MomBins()[m]&&RUsed<=NaFPB.MomBins()[m+1]) {
-            if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Pbins -> TemplateP -> Fill(mass,m);
-            if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
-            if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Pbins -> TemplateHe-> Fill(mass,m);
+            if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitNaF_Pbins -> TemplateP) -> Fill(mass,m,Tup.mcweight);
+            if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType(),Tup.mcweight);
+            if(Massa_gen<4&&Massa_gen>2.5)((TH2*) FitNaF_Pbins -> TemplateHe)-> Fill(mass,m,Tup.mcweight);
          }
       }
    }
@@ -53,14 +53,14 @@ void DeutonsMC_Fill()
       if(cmask.isFromAgl()) {
          mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
          if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
-            if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Dbins -> TemplateP -> Fill(mass,m);
-            if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
-            if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Dbins -> TemplateHe-> Fill(mass,m);
+            if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitAgl_Dbins -> TemplateP) -> Fill(mass,m,Tup.mcweight);
+            if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Dbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType(),Tup.mcweight);
+            if(Massa_gen<4&&Massa_gen>2.5)((TH2*) FitAgl_Dbins -> TemplateHe)-> Fill(mass,m,Tup.mcweight);
          }
          if(RUsed>AglPB.MomBins()[m]&&RUsed<=AglPB.MomBins()[m+1]) {
-            if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Pbins -> TemplateP -> Fill(mass,m);
-            if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType());
-            if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Pbins -> TemplateHe-> Fill(mass,m);
+            if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitAgl_Pbins -> TemplateP) -> Fill(mass,m,Tup.mcweight);
+            if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Pbins -> TemplateD) -> Fill(mass,m,ReturnMCGenType(),Tup.mcweight);
+            if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitAgl_Pbins -> TemplateHe)-> Fill(mass,m,Tup.mcweight);
          }
       }
    }

@@ -302,6 +302,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
+      Disable_MCreweighting();
 
       HecutMC_Fill();
       SlidesforPlot_Fill();
@@ -332,10 +333,10 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
       if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
       if(Tup.Beta_pre<=0) continue;
       Cuts_Pre();
-
-      // Temporary Betarich check
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
+      Disable_MCreweighting(); 
+	     
       DATAUnbiaseff_Fill();
       float Zona=getGeoZone(Tup.Latitude);
       DATApreSeleff_Fill(Zona);
