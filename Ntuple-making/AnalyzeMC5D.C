@@ -48,6 +48,7 @@ int main(int argc, char * argv[])
 		_file2 = TFile::Open(nomecal.c_str());
 		control=1;
 	}
+	control=1;
 	Rig = (TSpline3 *) _file2->Get("Fit Results/Splines/Rig");
 	beta = (TSpline3 *) _file2->Get("Fit Results/Splines/beta");
 	betaNaF = (TF1 *) _file2->Get("Fit Results/Splines/SigmaInvBetaNaF_spl");
@@ -197,7 +198,7 @@ int main(int argc, char * argv[])
 
     //Initializing reweighting classes 
     // MC flux is logarithmic
-    Histogram   mcFlux = makeLogUniform(43, 0.5, 100);
+    Histogram   mcFlux = makeLogUniform(500, 0.5, 100);
     // Data flux obtained from galprop file
     Histogram dataFlux = loadGalpropFile("/storage/gpfs_ams/ams/users/fdimicco/Deutons/include/CRDB_ProtonsAMS_R.galprop");
     // Scale the data flux so that the lowest bins are coinciding (lowest weight = 1)

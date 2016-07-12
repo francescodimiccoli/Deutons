@@ -58,7 +58,6 @@ public:
 
 
 	// reading constructor
-
 	ACCEPTANCE(TFile * file , std::string dirname , std::string basename, std::string effname,std::string latcorrname , std::string wlatcorrname, int n)
 	{
 		after_TOF   = (TH1 *)file->Get((basename + "1"   ).c_str());

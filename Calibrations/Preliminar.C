@@ -50,6 +50,7 @@ float Beta_corr=0;
 float Rcutoff=0;
 float bin[24];
 float Qbest=0;
+float mcweight=0;
 double betacent[30];
 float B1,B2;
 float EdepL1=0;
@@ -179,6 +180,7 @@ int main(int argc, char * argv[]){
 	ntupla1->SetBranchAddress("BetaRICH_new",&BetaRICH);
 	ntupla1->SetBranchAddress("Cutmask",&Cutmask);
 	ntupla1->SetBranchAddress("MC_type",&MC_type);
+	ntupla1->SetBranchAddress("mcweight",&mcweight);
 
 	ntupla2->SetBranchAddress("Beta",&Beta);
 	ntupla2->SetBranchAddress("EdepL1",&EdepL1);
@@ -417,7 +419,7 @@ int main(int argc, char * argv[]){
                 B1=B1+0.05/30.;
         }
 	cout<<"*************************** DATA READING **********************************"<<endl;
-	for(int i=0; i<ntupla2->GetEntries();i++) {
+	for(int i=0; i<ntupla2->GetEntries()/10;i++) {
 		int k = ntupla2->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
@@ -590,30 +592,31 @@ int main(int argc, char * argv[]){
 
 	}
 	cout<<"*************************** MC READING **********************************"<<endl;
-	for(int i=0; i<ntupla1->GetEntries();i++) {
+	for(int i=0; i<ntupla1->GetEntries()/5;i++) {
 		int k = ntupla1->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
 		if(i%100000==0) cout<<i<<endl;
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
+		Betagen=(pow(pow(Momentogen/Massagen,2)/(1+pow(Momentogen/Massagen,2)),0.5));
 		if((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0) Massa=pow(fabs(pow(fabs(R)*pow((1-pow(BetaRICH,2)),0.5)/BetaRICH,2)),0.5);
 		Massagen =  ReturnMass_Gen(MC_type);
 		if(Massagen<1){
 			for(int j=0; j<30;j++){
 				if(Beta>B1&&Beta<=B2){
 					if(EdepL1>0){
-						RisoluzioniL1[j]->Fill(1/EdepL1);
-						DistribuzioniL1[j]->Fill(EdepL1);
+						RisoluzioniL1[j]->Fill(1/EdepL1,mcweight);
+						DistribuzioniL1[j]->Fill(EdepL1,mcweight);
 					}
-					RisoluzioniTOFU[j]->Fill(1/EdepTOFU);
-					DistribuzioniTOFU[j]->Fill(EdepTOFU);                
-					RisoluzioniTrack[j]->Fill(1/EdepTrack);
-					DistribuzioniTrack[j]->Fill(EdepTrack);
-					RisoluzioniTOFD[j]->Fill(1/EdepTOFD);
-					DistribuzioniTOFD[j]->Fill(EdepTOFD);
+					RisoluzioniTOFU[j]->Fill(1/EdepTOFU,mcweight);
+					DistribuzioniTOFU[j]->Fill(EdepTOFU,mcweight);                
+					RisoluzioniTrack[j]->Fill(1/EdepTrack,mcweight);
+					DistribuzioniTrack[j]->Fill(EdepTrack,mcweight);
+					RisoluzioniTOFD[j]->Fill(1/EdepTOFD,mcweight);
+					DistribuzioniTOFD[j]->Fill(EdepTOFD,mcweight);
 				}
 				if(Betagen>B1&&Betagen<=B1+(B2-B1)/3){
-					RisoluzioniBeta[j]->Fill(1/Beta);
+					RisoluzioniBeta[j]->Fill(1/Beta,mcweight);
 					mean_beta[j]=B1+(B2-B1)/6;
 
 				}
@@ -621,31 +624,31 @@ int main(int argc, char * argv[]){
 				B2=B2+0.02;	
 			}
 			for(int l=0; l<23;l++) if(Momentogen>bin[l]&&Momentogen<=bin[l+1]&&Massagen>0.5&&Massagen<1){
-				RisoluzioniR[l]->Fill(1/R-1/Momentogen);	}
+				RisoluzioniR[l]->Fill(1/R-1/Momentogen,mcweight);	}
 			for(int l=0; l<24;l++) if(R>bin[l]&&R<=bin[l+1]&&Massagen>0.5&&Massagen<1){
-				RisoluzioniBeta_R[l]->Fill(1/Beta);
+				RisoluzioniBeta_R[l]->Fill(1/Beta,mcweight);
 			}
-			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) RisoluzioniBetaTOF_R[m]->Fill(1/Beta);
-                        if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>BetabinsNaFR_D[m]&&R<=BetabinsNaFR_D[m+1]) {RisoluzioniBetaNaF_R[m]->Fill(1/BetaRICH);}
-                        if((((int)Cutmask)>>11)==0) for(int m=0; m<18;m++) if(R>BetabinsAglR_D[m]&&R<=BetabinsAglR_D[m+1]) {RisoluzioniBetaAgl_R[m]->Fill(1/BetaRICH);}
+			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) RisoluzioniBetaTOF_R[m]->Fill(1/Beta,mcweight);
+                        if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>BetabinsNaFR_D[m]&&R<=BetabinsNaFR_D[m+1]) {RisoluzioniBetaNaF_R[m]->Fill(1/BetaRICH,mcweight);}
+                        if((((int)Cutmask)>>11)==0) for(int m=0; m<18;m++) if(R>BetabinsAglR_D[m]&&R<=BetabinsAglR_D[m+1]) {RisoluzioniBetaAgl_R[m]->Fill(1/BetaRICH,mcweight);}
 
 			for(int m=0; m<18;m++) if(Beta>Betabins[m]&&Beta<=Betabins[m+1]){
-				RisoluzioniR_Beta[m]->Fill(1/R);
-				RisoluzioniM_Beta[m]->Fill(1/Massa);
+				RisoluzioniR_Beta[m]->Fill(1/R,mcweight);
+				RisoluzioniM_Beta[m]->Fill(1/Massa,mcweight);
 			}
 			for(int m=0; m<18;m++) if(BetaRICH>BetabinsNaF[m]&&BetaRICH<=BetabinsNaF[m+1]&&(((int)Cutmask)>>11)==512){
-				RisoluzioniR_BetaNaF[m]->Fill(1/R);
-				RisoluzioniM_BetaNaF[m]->Fill(1/Massa);				
+				RisoluzioniR_BetaNaF[m]->Fill(1/R,mcweight);
+				RisoluzioniM_BetaNaF[m]->Fill(1/Massa,mcweight);				
 			}
 			for(int m=0; m<18;m++) if(BetaRICH>BetabinsAgl[m]&&BetaRICH<=BetabinsAgl[m+1]&&(((int)Cutmask)>>11)==0){
-				RisoluzioniR_BetaAgl[m]->Fill(1/R);
-				RisoluzioniM_BetaAgl[m]->Fill(1/Massa);
+				RisoluzioniR_BetaAgl[m]->Fill(1/R,mcweight);
+				RisoluzioniM_BetaAgl[m]->Fill(1/Massa,mcweight);
 			}
 
 			B1=0.8;
 			B2=0.8+0.2/30.;
 			for(int j=0; j<30;j++){
-				if(Betagen>B1&&Betagen<=B1+(B2-B1)/3&&((int)Cutmask>>11)==512) RisoluzioniBetaNaF[j]->Fill(1/BetaRICH-1/Betagen);
+				if(Betagen>B1&&Betagen<=B1+(B2-B1)/3&&((int)Cutmask>>11)==512) RisoluzioniBetaNaF[j]->Fill(1/BetaRICH-1/Betagen,mcweight);
 				mean_betaNaF[j]=B1+(B2-B1)/6;
 				B1=B1+0.2/30.;
 				B2=B2+0.2/30.;	
@@ -653,7 +656,7 @@ int main(int argc, char * argv[]){
 			B1=0.95;
 			B2=0.95+0.05/30.;
 			for(int j=0; j<30;j++){
-				if(Betagen>B1&&Betagen<=B1+(B2-B1)/3&&((int)Cutmask>>11)==0) RisoluzioniBetaAgl[j]->Fill(1/BetaRICH-1/Betagen);
+				if(Betagen>B1&&Betagen<=B1+(B2-B1)/3&&((int)Cutmask>>11)==0) RisoluzioniBetaAgl[j]->Fill(1/BetaRICH-1/Betagen,mcweight);
 				mean_betaAgl[j]=B1+(B2-B1)/6;
 				B1=B1+0.05/30.;
 				B2=B2+0.05/30.;
@@ -1256,8 +1259,8 @@ int main(int argc, char * argv[]){
 		beta_r_D[j]->SetParameter(1,RisoluzioniBeta_R_D[j]->GetMean());
 		beta_r_D[j]->SetParameter(2,RisoluzioniBeta_R_D[j]->GetRMS());
 		if(j==0) {
-			RisoluzioniBeta_R[j]->Fit("betaMC","","",PiccoBeta_R[j]-0.3,PiccoBeta_R[j]+0.10);
-	                RisoluzioniBeta_R_D[j]->Fit("betaD","","",PiccoBeta_R[j]-0.3,PiccoBeta_R[j]+0.10);
+			RisoluzioniBeta_R[j]->Fit("betaMC","","",PiccoBeta_R[j]-0.15,PiccoBeta_R[j]+0.10);
+	                RisoluzioniBeta_R_D[j]->Fit("betaD","","",PiccoBeta_R[j]-0.15,PiccoBeta_R[j]+0.10);
 		}
 		else{
 			RisoluzioniBeta_R[j]->Fit("betaMC","","",PiccoBeta_R[j]-0.15,PiccoBeta_R[j]+0.10);
@@ -1287,8 +1290,8 @@ int main(int argc, char * argv[]){
                 betaTOF_r_D[j]->SetParameter(1,RisoluzioniBetaTOF_R_D[j]->GetMean());
                 betaTOF_r_D[j]->SetParameter(2,RisoluzioniBetaTOF_R_D[j]->GetRMS());
                 if(j==0) {
-                        RisoluzioniBetaTOF_R[j]->Fit("betaTOFMC","","",PiccoBetaTOF_R[j]-0.3,PiccoBetaTOF_R[j]+0.10);
-                        RisoluzioniBetaTOF_R_D[j]->Fit("betaTOFD","","",PiccoBetaTOF_R[j]-0.3,PiccoBetaTOF_R[j]+0.10);
+                        RisoluzioniBetaTOF_R[j]->Fit("betaTOFMC","","",PiccoBetaTOF_R[j]-0.15,PiccoBetaTOF_R[j]+0.10);
+                        RisoluzioniBetaTOF_R_D[j]->Fit("betaTOFD","","",PiccoBetaTOF_R[j]-0.15,PiccoBetaTOF_R[j]+0.10);
                 }
                 else{
                         RisoluzioniBetaTOF_R[j]->Fit("betaTOFMC","","",PiccoBetaTOF_R[j]-0.15,PiccoBetaTOF_R[j]+0.10);
@@ -1856,35 +1859,35 @@ int main(int argc, char * argv[]){
 			SigmaBeta_R_D->SetPointError(j,0,sigma_beta_R_D_err[j]/sigma_beta_R[j]);
 		}
 		if(j<18) {
-			SigmaR_Beta->SetPoint(j,Betacent[j],sigma_R_beta[j]);
-			SigmaR_Beta->SetPointError(j,0,sigma_R_beta_err[j]);
-			SigmaR_Beta_D->SetPoint(j,Betacent[j],sigma_R_beta_D[j]);
-			SigmaR_Beta_D->SetPointError(j,0,sigma_R_beta_D_err[j]);
+			SigmaR_Beta->SetPoint(j,Betacent[j],sigma_R_beta[j]/sigma_R_beta[j]);
+			SigmaR_Beta->SetPointError(j,0,sigma_R_beta_err[j]/sigma_R_beta[j]);
+			SigmaR_Beta_D->SetPoint(j,Betacent[j],sigma_R_beta_D[j]/sigma_R_beta[j]);
+			SigmaR_Beta_D->SetPointError(j,0,sigma_R_beta_D_err[j]/sigma_R_beta[j]);
 
-			SigmaR_BetaNaF->SetPoint(j,BetacentNaF[j],sigma_R_betaNaF[j]);
-			SigmaR_BetaNaF->SetPointError(j,0,sigma_R_betaNaF_err[j]);
-			SigmaR_BetaNaF_D->SetPoint(j,BetacentNaF[j],sigma_R_betaNaF_D[j]);
-			SigmaR_BetaNaF_D->SetPointError(j,0,sigma_R_betaNaF_D_err[j]);
+			SigmaR_BetaNaF->SetPoint(j,BetacentNaF[j],sigma_R_betaNaF[j]/sigma_R_betaNaF[j]);
+			SigmaR_BetaNaF->SetPointError(j,0,sigma_R_betaNaF_err[j]/sigma_R_betaNaF[j]);
+			SigmaR_BetaNaF_D->SetPoint(j,BetacentNaF[j],sigma_R_betaNaF_D[j]/sigma_R_betaNaF[j]);
+			SigmaR_BetaNaF_D->SetPointError(j,0,sigma_R_betaNaF_D_err[j]/sigma_R_betaNaF[j]);
 
-			SigmaR_BetaAgl->SetPoint(j,BetacentAgl[j],sigma_R_betaAgl[j]);
-			SigmaR_BetaAgl->SetPointError(j,0,sigma_R_betaAgl_err[j]);
-			SigmaR_BetaAgl_D->SetPoint(j,BetacentAgl[j],sigma_R_betaAgl_D[j]);
-			SigmaR_BetaAgl_D->SetPointError(j,0,sigma_R_betaAgl_D_err[j]);
+			SigmaR_BetaAgl->SetPoint(j,BetacentAgl[j],sigma_R_betaAgl[j]/sigma_R_betaAgl[j]);
+			SigmaR_BetaAgl->SetPointError(j,0,sigma_R_betaAgl_err[j]/sigma_R_betaAgl[j]);
+			SigmaR_BetaAgl_D->SetPoint(j,BetacentAgl[j],sigma_R_betaAgl_D[j]/sigma_R_betaAgl[j]);
+			SigmaR_BetaAgl_D->SetPointError(j,0,sigma_R_betaAgl_D_err[j]/sigma_R_betaAgl[j]);
 			
-			SigmaBetaTOF_R->SetPoint(j,BetacentcentR_D[j],sigma_betaR[j]);
-                        SigmaBetaTOF_R->SetPointError(j,0,sigma_betaR_err[j]);
-                        SigmaBetaTOF_R_D->SetPoint(j,BetacentcentR_D[j],sigma_betaR_D[j]);
-                        SigmaBetaTOF_R_D->SetPointError(j,0,sigma_betaR_D_err[j]);
+			SigmaBetaTOF_R->SetPoint(j,BetacentcentR_D[j],sigma_betaR[j]/sigma_betaR[j]);
+                        SigmaBetaTOF_R->SetPointError(j,0,sigma_betaR_err[j]/sigma_betaR[j]);
+                        SigmaBetaTOF_R_D->SetPoint(j,BetacentcentR_D[j],sigma_betaR_D[j]/sigma_betaR[j]);
+                        SigmaBetaTOF_R_D->SetPointError(j,0,sigma_betaR_D_err[j]/sigma_betaR[j]);
 
-			SigmaBetaNaF_R->SetPoint(j,BetacentcentNaFR_D[j],sigma_betaNaFR[j]);
-                        SigmaBetaNaF_R->SetPointError(j,0,sigma_betaNaFR_err[j]);
-                        SigmaBetaNaF_R_D->SetPoint(j,BetacentcentNaFR_D[j],sigma_betaNaFR_D[j]);
-                        SigmaBetaNaF_R_D->SetPointError(j,0,sigma_betaNaFR_D_err[j]);
+			SigmaBetaNaF_R->SetPoint(j,BetacentcentNaFR_D[j],sigma_betaNaFR[j]/sigma_betaNaFR[j]);
+                        SigmaBetaNaF_R->SetPointError(j,0,sigma_betaNaFR_err[j]/sigma_betaNaFR[j]);
+                        SigmaBetaNaF_R_D->SetPoint(j,BetacentcentNaFR_D[j],sigma_betaNaFR_D[j]/sigma_betaNaFR[j]);
+                        SigmaBetaNaF_R_D->SetPointError(j,0,sigma_betaNaFR_D_err[j]/sigma_betaNaFR[j]);
 
-			SigmaBetaAgl_R->SetPoint(j,BetacentcentAglR_D[j],sigma_betaAglR[j]);
-                        SigmaBetaAgl_R->SetPointError(j,0,sigma_betaAglR_err[j]);
-                        SigmaBetaAgl_R_D->SetPoint(j,BetacentcentAglR_D[j],sigma_betaAglR_D[j]);
-                        SigmaBetaAgl_R_D->SetPointError(j,0,sigma_betaAglR_D_err[j]);
+			SigmaBetaAgl_R->SetPoint(j,BetacentcentAglR_D[j],sigma_betaAglR[j]/sigma_betaAglR[j]);
+                        SigmaBetaAgl_R->SetPointError(j,0,sigma_betaAglR_err[j]/sigma_betaAglR[j]);
+                        SigmaBetaAgl_R_D->SetPoint(j,BetacentcentAglR_D[j],sigma_betaAglR_D[j]/sigma_betaAglR[j]);
+                        SigmaBetaAgl_R_D->SetPointError(j,0,sigma_betaAglR_D_err[j]/sigma_betaAglR[j]);
 
 			SigmaM_Beta->SetPoint(j,Ekincent[j],sigma_M_beta[j]);
                         SigmaM_Beta->SetPointError(j,0,sigma_M_beta_err[j]);
@@ -2002,6 +2005,7 @@ int main(int argc, char * argv[]){
 	SigmaBeta_R->SetTitle("Sigma Inverse Beta (MC)");
 	SigmaBeta_R_D->GetXaxis()->SetTitle("R [GV]");
 	SigmaBeta_R_D->GetYaxis()->SetTitle("Sigma Inverse Beta (Data/MC)");
+	SigmaBeta_R_D->GetYaxis()->SetRangeUser(0.7,1.3);
 	SigmaBeta_R_D->Draw("AP");
 	SigmaBeta_R->Draw("sameP");
 
@@ -2018,7 +2022,8 @@ int main(int argc, char * argv[]){
         SigmaBetaTOF_R->SetTitle("Sigma Inverse Beta (MC)");
         SigmaBetaTOF_R_D->GetXaxis()->SetTitle("R [GV]");
         SigmaBetaTOF_R_D->GetYaxis()->SetTitle("Sigma Inverse Beta TOF");
-        SigmaBetaTOF_R_D->Draw("AP");
+        SigmaBetaTOF_R_D->GetYaxis()->SetRangeUser(0.7,1.3);
+	SigmaBetaTOF_R_D->Draw("AP");
         SigmaBetaTOF_R->Draw("sameP");
 
 	c13_bis->cd(2);
@@ -2034,7 +2039,8 @@ int main(int argc, char * argv[]){
         SigmaBetaNaF_R->SetTitle("Sigma Inverse Beta (MC)");
         SigmaBetaNaF_R_D->GetXaxis()->SetTitle("R [GV]");
         SigmaBetaNaF_R_D->GetYaxis()->SetTitle("Sigma Inverse Beta NaF");
-        SigmaBetaNaF_R_D->Draw("AP");
+        SigmaBetaNaF_R_D->GetYaxis()->SetRangeUser(0.7,1.3);
+	SigmaBetaNaF_R_D->Draw("AP");
         SigmaBetaNaF_R->Draw("sameP"); 
 	
 	c13_bis->cd(3);
@@ -2050,7 +2056,8 @@ int main(int argc, char * argv[]){
         SigmaBetaAgl_R->SetTitle("Sigma Inverse Beta (MC)");
         SigmaBetaAgl_R_D->GetXaxis()->SetTitle("R [GV]");
         SigmaBetaAgl_R_D->GetYaxis()->SetTitle("Sigma Inverse Beta Agl");
-        SigmaBetaAgl_R_D->Draw("AP");
+        SigmaBetaAgl_R_D->GetYaxis()->SetRangeUser(0.7,1.3);
+	SigmaBetaAgl_R_D->Draw("AP");
         SigmaBetaAgl_R->Draw("sameP");
 	
 	c16->cd(1);
@@ -2066,6 +2073,7 @@ int main(int argc, char * argv[]){
 	SigmaR_Beta->SetTitle("Sigma Inverse R (MC)");
 	SigmaR_Beta_D->GetXaxis()->SetTitle("Beta TOF");
 	SigmaR_Beta_D->GetYaxis()->SetTitle("Sigma Inverse R [1/GV]");
+	SigmaR_Beta_D->GetYaxis()->SetRangeUser(0.7,1.3);
 	SigmaR_Beta_D->Draw("AP");
 	SigmaR_Beta->Draw("sameP");
 	c16->cd(2);
@@ -2081,6 +2089,7 @@ int main(int argc, char * argv[]){
 	SigmaR_BetaNaF->SetTitle("Sigma Inverse R (MC)");
 	SigmaR_BetaNaF_D->GetXaxis()->SetTitle("Beta RICH NaF");
 	SigmaR_BetaNaF_D->GetYaxis()->SetTitle("Sigma Inverse R [1/GV]");
+	SigmaR_BetaNaF_D->GetYaxis()->SetRangeUser(0.7,1.3);
 	SigmaR_BetaNaF_D->Draw("AP");
 	SigmaR_BetaNaF->Draw("sameP");
 	c16->cd(3);
@@ -2096,6 +2105,7 @@ int main(int argc, char * argv[]){
 	SigmaR_BetaAgl->SetTitle("Sigma Inverse R (MC)");
 	SigmaR_BetaAgl_D->GetXaxis()->SetTitle("Beta RICH Agl");
 	SigmaR_BetaAgl_D->GetYaxis()->SetTitle("Sigma Inverse R [1/GV]");
+	SigmaR_BetaAgl_D->GetYaxis()->SetRangeUser(0.7,1.3);
 	SigmaR_BetaAgl_D->Draw("AP");
 	SigmaR_BetaAgl->Draw("sameP");
 
