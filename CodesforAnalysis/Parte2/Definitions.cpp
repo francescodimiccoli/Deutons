@@ -22,6 +22,7 @@ TF1 *deutons = new TF1("f1","pow((pow(x,2)/pow(1.875,2)/(1 + pow(x,2)/pow(1.875,
 
 enum mode {BUILDALL, BUILDSEPD, READ};
 
+enum {Betaedges,Redges};
 ////////////// DEFINIZIONE SPLINES //////////////////
 TSpline3 *Rig;
 TSpline3 *beta;

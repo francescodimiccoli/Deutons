@@ -31,7 +31,11 @@ class Binning {
        *  @param float var : the variable whose location to search
        *  @return int      : the bin number in rigidity of the variable
        */
+      inline void UseBetaEdges() {Betaedges=true; Redges=false;}
+      inline void UseREdges()    {Betaedges=false;Redges=true; }	
+      inline int GetBin (float var);
       inline int GetRBin (float var);
+      inline int GetBetaBin (float var);
       Particle getParticle() {return particle; }
       inline void  RFill (TH1* h, float Var); ///< Fill the histogram with var indicating the rigidity bin
       inline void Print(); ///< Print the content of the bins
@@ -88,7 +92,9 @@ inline std::vector<float> EtotPerMassBins();  ///< returns Etot per mass
       inline void pushBackCentralVelocities ();
       inline std::vector<float> computeLogBinEdges(int nbins, float min, float max);
       inline std::vector<float> computeLogBinCenters(int nbins, float min, float max);
-
+      
+      bool Betaedges=false;
+      bool Redges   =false;		
 };
 
 
@@ -216,7 +222,10 @@ std::vector<float> Binning::EtotPerMassBins()
    return etotpermass;
 }
 
-
+int Binning::GetBin(float var){
+	if(Redges)    return GetRBin    (var);
+	if(Betaedges) return GetBetaBin (var);
+}
 
 int Binning::GetRBin (float var)
 {
@@ -227,6 +236,17 @@ int Binning::GetRBin (float var)
    }
    return -1;
 }
+
+int Binning::GetBetaBin (float var)
+{
+   if (var<betabin[0]) return -1;
+   for (uint ib=0; ib<betabin.size(); ib++)  {
+      if (var>betabin[ib] && var<=betabin[ib+1])
+         return ib;
+   }
+   return -1;
+}
+
 
 void Binning::RFill (TH1* h, float var)
 {
