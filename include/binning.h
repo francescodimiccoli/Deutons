@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <vector>
+#include "TH1F.h"
 
 
 /** @brief Class used for all the binning manipulation
@@ -32,12 +33,7 @@ class Binning {
        */
       inline int GetRBin (float var);
       Particle getParticle() {return particle; }
-
-
-      template<typename T>
-      void  RFill (T * h, float Var)  ///< Fill the histogram with var indicating the rigidity bin
-      { h->Fill(GetRBin(Var)); }
-      
+      inline void  RFill (TH1* h, float Var); ///< Fill the histogram with var indicating the rigidity bin
       inline void Print(); ///< Print the content of the bins
 
 
@@ -231,5 +227,13 @@ int Binning::GetRBin (float var)
    }
    return -1;
 }
+
+void Binning::RFill (TH1* h, float var)
+{
+   h->Fill (GetRBin (var) );
+}
+
+
+
 
 #endif
