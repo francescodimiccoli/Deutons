@@ -207,6 +207,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCTrig->SetBranchAddress("EdepECAL",&Tup.EdepECAL);
    ntupMCTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
    ntupMCTrig->SetBranchAddress("Unbias",&Tup.Unbias);
+   ntupMCTrig->SetBranchAddress("mcweight",&Tup.mcweight);
 
    ntupMCSepD->SetBranchAddress("Momentogen",&Tup.Momento_gen);
    ntupMCSepD->SetBranchAddress("R",&Tup.R);
@@ -223,6 +224,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCSepD->SetBranchAddress("Cutmask",&Tup.Cutmask);
    ntupMCSepD->SetBranchAddress("Dist5D",&Tup.Dist5D);
    ntupMCSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
+   ntupMCSepD->SetBranchAddress("mcweight",&Tup.mcweight);
 
    ntupDataTrig->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
    ntupDataTrig->SetBranchAddress("R_pre",&Tup.R_pre);

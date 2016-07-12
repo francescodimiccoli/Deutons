@@ -62,6 +62,7 @@ struct Tuplevar {
    float R_pre;
    float Trig_Num;
    float Unbias;
+   float mcweight;	
 };
 
 //// Global Variables
