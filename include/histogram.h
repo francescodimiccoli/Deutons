@@ -1,10 +1,9 @@
 #ifndef HISTOGRAM_H
 #define HISTOGRAM_H
 
-#include "GCR_data.h"
 #include "printmatrix.h"
-#include "binning.h"
 #include <string>
+#include <stdexcept>
 #include <algorithm>
 
 /** A histogram is a combination of two vectors, edges and contents
@@ -13,105 +12,112 @@
  * */
 
 class Histogram {
-   public:
-      std::vector<float> getEdges()   {return edges  ;}
-      std::vector<float> getContent() {return content;}
+public:
+    std::vector<float> getEdges()   {return edges  ;}
+    std::vector<float> getContent() {return content;}
 
-      bool checkIntegrity();
-      bool fillWithVectors (std::vector<float> edge, std::vector<float> cont );
-      void fillWithGalpropFile (std::string filename);
-      void genMCLogNormFlux (int nbins=100, float rmin=0.5, float rmax=10);
-      void genMCLogNormFlux (Binning bins);
-      void normalize();
-      void printContent();
+    inline Histogram(std::vector<float> edges);
+    inline Histogram(std::vector<float> edges, std::vector<float> content);
+    inline float at(float x) const;
+    inline void fill(float x, float w=1.0);
+    inline void fillWithCounts (std::vector<float> counts);
+    inline void normalize();
+    inline void multiply(float s);
 
-   private:
-      std::vector<float> fluxtoHisto (std::vector<float> inContent);
-      bool checkIntegrity ( std::vector<float> edge, std::vector<float> cont );
-      std::vector<float> edges ;
-      std::vector<float> content ;
+    inline float integrate(float min, float max) const;
+    inline Histogram reBin(std::vector<float> targetEdges);
+    inline void printContent() const;
+
+
+private:
+    std::vector<float> edges ;
+    std::vector<float> content ;
 };
 
 
-
-
-
-bool Histogram::checkIntegrity (std::vector<float> edge, std::vector<float> cont  ) {
-   if ( !std::is_sorted (edge.begin(),edge.end() ) ) return false;
-   if ( edge.size() != cont.size() +1 )              return false;
-   return true;
-}
-
-bool Histogram::checkIntegrity() {
-   return checkIntegrity (edges, content);
-}
-
-bool Histogram::fillWithVectors (std::vector<float> edge, std::vector<float> cont) {
-   bool goodEntryVectors=checkIntegrity (edge, cont);
-   if (goodEntryVectors) {
-      edges=edge;
-      content=cont;
-   }
-   return goodEntryVectors;
-}
-
-
-void Histogram::fillWithGalpropFile (std::string filename)
+Histogram::Histogram(std::vector<float> e): edges(e), content(e.size()-1, 0) 
 {
-   GCR_data galprop;
-   galprop.read ( (char *) filename.data(), ( char*) "m2", ( char*) "GeV");
-   int nentries=galprop.n;
-   std::vector<float> fluxContent (nentries);
-   edges.assign(nentries, 0);
-
-   for (int i=0; i<nentries; i++) {
-      edges      [i] = galprop.E_low_input[i];
-      fluxContent[i] = galprop.value_input[i];
-   }
-
-   edges.push_back (galprop.E_high_input[nentries-1]); // last bin
-   content=fluxtoHisto (fluxContent);
-   return;
+    if( !std::is_sorted(edges.begin(),edges.end()) ) 
+        throw std::invalid_argument("Histogram::Histogram sorted bin edges are expected.");
 }
 
-
-/** In our jargon, a histo is an (integrated) number of events in a bin, as opposed to a flux (derivative, independent of binning)
- *  This function turns a flux and histo
- * */
-std::vector<float> Histogram::fluxtoHisto (std::vector<float> inContent) {
-   int nbins=inContent.size();
-   std::vector<float> outContent (nbins);
-   for (int i=0; i<nbins; i++)
-      outContent[i]=inContent[i] * (edges[i+1] - edges[i]);
-   return outContent;
+Histogram::Histogram(std::vector<float> e, std::vector<float> c): edges(e), content(c) 
+{
+    if( !std::is_sorted(edges.begin(),edges.end()) ) 
+        throw std::invalid_argument("Histogram::Histogram sorted bin edges are expected.");
+    if( edges.size() != content.size() + 1)            
+        throw std::length_error("Histogram::Histogram contents vector length should correspond to the number of bins.");
 }
 
-/** MC AMS LogNorm flux has the same number of entries in a normalised binning in momentum.
- *  This function creates such a basic histogram
- * */
-void Histogram::genMCLogNormFlux (int nbins, float rmin, float rmax) {
-   Binning bins (1); // Mass not important, we only work in rigidity
-   bins.setBinsFromRigidity (nbins, rmin, rmax);
-   genMCLogNormFlux(bins);
-   return;
+float Histogram::at(float x) const {
+    if( x < edges.front() ) return 0;
+    if( edges.back() < x  ) return 0;
+    for( int i = 0; i < content.size(); i++ ) {
+        if(edges[i] < x && x < edges[i+1]) return content[i];
+    }
 }
 
-void Histogram::genMCLogNormFlux (Binning bins) {
-   edges=bins.RigBins();
-   content.assign (bins.size(), 1);
-   return;
+void Histogram::fill(float x, float w) {
+    if( x < edges.front() ) return;
+    if( edges.back() < x  ) return;
+    for( int i = 0; i < content.size(); i++ ) {
+        if(edges[i] < x && x < edges[i+1]) {
+            content[i] += w / (edges[i+1] - edges[i]);
+            return;
+        } 
+    }
+}
+
+void Histogram::fillWithCounts(std::vector<float> counts) {
+    if( edges.size() != counts.size() + 1)            
+        throw std::length_error("Histogram::fillWithCounts counts vector length should correspond to the number of bins.");
+    for( int i = 0; i < content.size(); i++ ) 
+        content[i] = counts[i] / (edges[i+1] - edges[i]);
+}
+
+void Histogram::multiply(float s) {
+    for(int i = 0; i < content.size(); i++) content[i] *= s;
 }
 
 void Histogram::normalize() {
-    float integral=0;
-    for (int i=0; i<content.size(); i++)  
-        integral += content[i] * (edges[i+1]-edges[i]);
-   for (int i=0; i<content.size(); i++)  content[i] /= integral;
-   return;
+    float integral = 0;
+    for(int i = 0; i < content.size(); i++)  
+        integral += content[i] * (edges[i+1] - edges[i]);
+    for (int i = 0; i < content.size(); i++)  content[i] /= integral;
 }
 
-void Histogram::printContent() {
-   printMatrix::print( {edges, content} );
+float Histogram::integrate(float min, float max) const {
+    // This is for integrals with "backward" limits
+    int sign = 1;
+    if( min > max ) { std::swap(min,max); sign = -1; }
+
+    float integral = 0;
+    for( int i = 0; i < content.size(); i++ ) {
+        if( edges[i+1] < min || max < edges[i] ) // bin is not inside the range, skip
+            continue;
+        else if( edges[i] <= min && max <= edges[i+1] ) // range is fully inside the bin, break 
+            return sign * content[i] * (max - min);
+        else if( min <= edges[i] && edges[i+1] <= max ) // bin is fully inside the range, add
+            integral += content[i] * (edges[i+1] - edges[i]);
+        else if( edges[i] <= min && edges[i+1] <= max ) // lower bound is inside the bin, add
+            integral += content[i] * (edges[i+1] - min);
+        else if( min <= edges[i] && max <= edges[i+1] ) // upper bound is inside the bin, add 
+            integral += content[i] * (max - edges[i]);
+    }
+    return sign * integral; 
 }
+
+
+inline Histogram Histogram::reBin(std::vector<float> targetEdges){
+    std::vector<float> newContent(targetEdges.size() - 1, 0);
+    for( int i = 0; i < targetEdges.size() - 1; i++ ) {
+        float dx = targetEdges[i+1] - targetEdges[i];
+        newContent[i] = integrate(targetEdges[i], targetEdges[i+1]) / dx; 
+    }
+    return Histogram(targetEdges, newContent);
+}
+
+
+void Histogram::printContent() const { printMatrix::print( {edges, content} ); }
 
 #endif

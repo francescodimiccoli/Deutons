@@ -1,7 +1,7 @@
 #include "particle.h"
 #include "binning.h"
 #include "histogram.h"
-#include "spectrum.h"
+#include "histUtils.h"
 
 // Preferred compilation command : g++ -g -std=c++11 $(root-config --libs --cflags)  -o GCRtest GCRtest.cpp GCR_data.cpp -fmax-errors=10 -Wno-pointer-arith
 
@@ -15,31 +15,26 @@ int main() {
    bins.setBinsFromEk(15, 2, 16);
 
    // Get normalized protons histogram
-   Histogram histo;
-   histo.fillWithGalpropFile("CRDB_ProtonsAMS_R.galprop");
+   Histogram histo = loadGalpropFile("CRDB_ProtonsAMS_R.galprop");
    std::cout << " #####  AMS-02 proton file, raw histogram  ##### " << std::endl;
    histo.printContent();
    std::cout << " #####  AMS-02 proton file, normalized histogram  ##### " << std::endl;
    histo.normalize();
    histo.printContent();
-   Spectrum spectrum(bins);
+/*   Spectrum spectrum(bins);
    spectrum.rebinHistoInRig(histo);
    std::cout << " #####  Migration matrix (transposed)  ##### " << std::endl;
    spectrum.printTMatrix();
    std::cout << " #####  AMS-02 proton file, rebinned  ##### " << std::endl;
    spectrum.printContentInRig();
-
+   */
+/*
    // Mock MC lognorm histo
    std::cout << " #####  AMS-02 generated lognorm spectrum ##### " << std::endl;
-   Histogram MCgen;
-   MCgen.genMCLogNormFlux();
+   Histogram MCgen = makeLogUniform();
    MCgen.normalize();
    MCgen.printContent();
-   Spectrum mcspectrum(bins);
-   mcspectrum.rebinHistoInRig(MCgen);
-   mcspectrum.printContentInRig();
    
-
    // Flux ratio
    int size=bins.size();
    std::vector<float> MCOverP(size);
@@ -60,7 +55,7 @@ int main() {
    } else {
       std::cout << "Error fill" << std::endl;
    }
-   
+ */  
 
    return 0;
 }
