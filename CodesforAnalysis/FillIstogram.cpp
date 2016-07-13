@@ -273,6 +273,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
+      Disable_MCreweighting();
 
       MCpreseff_Fill();
       MCUnbiaseff_Fill();
@@ -335,7 +336,6 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
       Cuts_Pre();
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
-      Disable_MCreweighting(); 
 	     
       DATAUnbiaseff_Fill();
       float Zona=getGeoZone(Tup.Latitude);
