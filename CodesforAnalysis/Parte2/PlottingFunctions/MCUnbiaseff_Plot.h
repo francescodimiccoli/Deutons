@@ -51,7 +51,7 @@ void MCUnbiaseff_Plot(
    gPad->SetGridx();
    gPad->SetGridy();
    TGraph * EffUnbMCP = new TGraph();
-   for(int i=0; i<17; i++) EffUnbMCP->SetPoint(i,ToFPB.EkBinCent(i),1);
+   for(int i=0; i<17; i++) EffUnbMCP->SetPoint(i,ToFPB.EkPerMassBinCent(i),1);
    TGraph * EffUnbMCD[6];
    EffUnbMCP->SetMarkerColor(2);
    EffUnbMCP->SetMarkerStyle(8);
@@ -69,7 +69,7 @@ void MCUnbiaseff_Plot(
 
       for(int h=0; h<6; h++) {
          EffUnbMCD[h]= new TGraph();
-         for(int i=0; i<17; i++) EffUnbMCD[h]->SetPoint(i,ToFPB.EkBinCent(i),EffUnbMCD_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<17; i++) EffUnbMCD[h]->SetPoint(i,ToFPB.EkPerMassBinCent(i),EffUnbMCD_TH2F->GetBinContent(i+1,h+1));
          EffUnbMCD[h]->SetMarkerColor(4);
          EffUnbMCD[h]->SetMarkerStyle(h+3);
          leg->AddEntry(EffUnbMCD[h],MCLegend[h+1].c_str(), "ep");

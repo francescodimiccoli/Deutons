@@ -128,7 +128,7 @@ int main(int argc, char * argv[])
 
    DRB.setBinsFromRigidity(nbinsr, 0.5, 100); // RB did not have Ek
    PRB.setBinsFromRigidity(nbinsr, 0.5, 100); 
-   
+
    float ekmin=0.1, ekmax=1;
    ToFDB.setBinsFromEkPerMass (nbinsToF, ekmin, ekmax);
    ToFPB.setBinsFromEkPerMass(nbinsToF, ekmin, ekmax);
@@ -140,6 +140,17 @@ int main(int argc, char * argv[])
    ekmin=2.57, ekmax=9.01;
    AglDB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
    AglPB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
+
+   ToFDB.UseREdges();
+   ToFPB.UseREdges();
+   NaFDB.UseREdges();
+   NaFPB.UseREdges();
+   AglDB.UseREdges();
+   AglPB.UseREdges();
+
+   DRB.UseREdges();
+   PRB.UseREdges();   
+
 
    cout<<endl;
    

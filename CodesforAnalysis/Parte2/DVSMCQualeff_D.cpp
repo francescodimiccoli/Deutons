@@ -28,7 +28,7 @@ void DVSMCQualeffD_D_Fill(int zona){
 	}
 	//NaF
 	if(cmask.isFromNaF()) {	
-		Kbin=NaFDB.GetRBin(RUsed);
+		Kbin=NaFDB.GetBin(RUsed);
 		Dist_DvsMC_D -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_D  -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 
@@ -39,7 +39,7 @@ void DVSMCQualeffD_D_Fill(int zona){
 	}
 	//Agl
 	if(cmask.isFromAgl()) {
-		Kbin=AglDB.GetRBin(RUsed);
+		Kbin=AglDB.GetBin(RUsed);
 		Dist_DvsMC_D -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 		if(Distcut) Lik_DvsMC_D  -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 
@@ -66,34 +66,34 @@ void DVSMCQualeffD_Fill(){
 
 		//ToF
 		Kbin=ToFDB.GetRBin(RUsed);	
-		Dist_DvsMC_D -> MCEff -> beforeTOF -> Fill(Kbin,ReturnMCGenType());
-		if(Distcut) Lik_DvsMC_D  -> MCEff -> beforeTOF -> Fill(Kbin,ReturnMCGenType());
+		((TH2*)Dist_DvsMC_D -> MCEff -> beforeTOF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
+		if(Distcut) ((TH2*)Lik_DvsMC_D  -> MCEff -> beforeTOF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 
 		if(Distcut){
-			Dist_DvsMC_D -> MCEff -> afterTOF -> Fill(Kbin,ReturnMCGenType());
-			if(Likcut) Lik_DvsMC_D  -> MCEff -> afterTOF -> Fill(Kbin,ReturnMCGenType());
+			((TH2*)Dist_DvsMC_D -> MCEff -> afterTOF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
+			if(Likcut) ((TH2*)Lik_DvsMC_D  -> MCEff -> afterTOF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 		}
 		//NaF
 		if(cmask.isFromNaF()) {	
-			Kbin=NaFDB.GetRBin(RUsed);	
-			Dist_DvsMC_D -> MCEff -> beforeNaF -> Fill(Kbin,ReturnMCGenType());
-			if(Distcut) Lik_DvsMC_D  -> MCEff -> beforeNaF -> Fill(Kbin,ReturnMCGenType());
+			Kbin=NaFDB.GetBin(RUsed);	
+			((TH2*)Dist_DvsMC_D -> MCEff -> beforeNaF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
+			if(Distcut) ((TH2*)Lik_DvsMC_D  -> MCEff -> beforeNaF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 
 			if(Distcut){
-				Dist_DvsMC_D -> MCEff -> afterNaF -> Fill(Kbin,ReturnMCGenType());
-				if(Likcut) Lik_DvsMC_D  -> MCEff -> afterNaF -> Fill(Kbin,ReturnMCGenType());
+				((TH2*)Dist_DvsMC_D -> MCEff -> afterNaF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
+				if(Likcut) ((TH2*)Lik_DvsMC_D  -> MCEff -> afterNaF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 			}
 
 		}
 		//Agl
 		if(cmask.isFromAgl()) {	
-			Kbin=AglDB.GetRBin(RUsed);
-			Dist_DvsMC_D -> MCEff -> beforeAgl -> Fill(Kbin,ReturnMCGenType());
-			if(Distcut) Lik_DvsMC_D  -> MCEff -> beforeAgl -> Fill(Kbin,ReturnMCGenType());
+			Kbin=AglDB.GetBin(RUsed);
+			((TH2*)Dist_DvsMC_D -> MCEff -> beforeAgl) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
+			if(Distcut) ((TH2*)Lik_DvsMC_D  -> MCEff -> beforeAgl) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 
 			if(Distcut){
-				Dist_DvsMC_D -> MCEff -> afterAgl -> Fill(Kbin,ReturnMCGenType());
-				if(Likcut) Lik_DvsMC_D  -> MCEff -> afterAgl -> Fill(Kbin,ReturnMCGenType());
+			((TH2*)	Dist_DvsMC_D -> MCEff -> afterAgl )-> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
+				if(Likcut) ((TH2*)Lik_DvsMC_D  -> MCEff -> afterAgl) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 			}
 
 		}

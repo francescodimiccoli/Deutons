@@ -22,6 +22,7 @@ TF1 *deutons = new TF1("f1","pow((pow(x,2)/pow(1.875,2)/(1 + pow(x,2)/pow(1.875,
 
 enum mode {BUILDALL, BUILDSEPD, READ};
 
+enum {Betaedges,Redges};
 ////////////// DEFINIZIONE SPLINES //////////////////
 TSpline3 *Rig;
 TSpline3 *beta;
@@ -61,6 +62,7 @@ struct Tuplevar {
    float R_pre;
    float Trig_Num;
    float Unbias;
+   float mcweight;	
 };
 
 //// Global Variables
@@ -117,14 +119,14 @@ int ReturnMCGenType()
 void FillBinMGen (TH1* h, int bin)
 {
    int mass = ReturnMCGenType();
-   h->Fill (bin, mass);
+   ((TH2*)h)->Fill (bin, mass,Tup.mcweight);
    return;
 }
 
 void FillBinMGen (TH3* h, int bin, int S)
 {
    int mass = ReturnMCGenType();
-   h->Fill (bin, mass, S);
+   ((TH3*)h)->Fill (bin, mass, S, Tup.mcweight);
    return;
 }
 
@@ -218,3 +220,8 @@ TH1F* ProjectionYtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
    TH1F* hf=TH1DtoTH1F(hd);
    return hf;
    }
+
+void Disable_MCreweighting(){
+Tup.mcweight =1;
+return;
+}

@@ -71,7 +71,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	j=0;
 	for(int i=1;i<nbinsToF;i++) {
 		if(LikP_Correction_TOF -> GetBinContent(i+1)>0){
-			LikDVSMC_P_GraphTOF->SetPoint(j,ToFPB.EkBinCent(i),LikP_Correction_TOF -> GetBinContent(i+1));
+			LikDVSMC_P_GraphTOF->SetPoint(j,ToFPB.EkPerMassBinCent(i),LikP_Correction_TOF -> GetBinContent(i+1));
 			LikDVSMC_P_GraphTOF->SetPointError(j,0,LikP_Correction_TOF -> GetBinError(i+1));
 			j++;
 		}
@@ -91,7 +91,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	j=0;
 	for(int i=1;i<nbinsNaF;i++) {
 		if(LikP_Correction_NaF -> GetBinContent(i+1)>0){
-			LikDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkBinCent(i),LikP_Correction_NaF -> GetBinContent(i+1));
+			LikDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkPerMassBinCent(i),LikP_Correction_NaF -> GetBinContent(i+1));
 			LikDVSMC_P_GraphNaF->SetPointError(j,0,LikP_Correction_NaF -> GetBinError(i+1));
 			j++;
 		}
@@ -111,7 +111,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	j=0;
 	for(int i=1;i<nbinsAgl;i++) {
 		if(LikP_Correction_Agl -> GetBinContent(i+1)>0){
-			LikDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkBinCent(i),LikP_Correction_Agl -> GetBinContent(i+1));
+			LikDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkPerMassBinCent(i),LikP_Correction_Agl -> GetBinContent(i+1));
 			LikDVSMC_P_GraphAgl->SetPointError(j,0,LikP_Correction_Agl -> GetBinError(i+1));
 			j++;
 		}
@@ -133,7 +133,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	j=0;
 	for(int i=1;i<nbinsToF;i++) {
 		if(DistP_Correction_TOF -> GetBinContent(i+1)>0){
-			DistDVSMC_P_GraphTOF->SetPoint(j,ToFPB.EkBinCent(i),DistP_Correction_TOF -> GetBinContent(i+1));
+			DistDVSMC_P_GraphTOF->SetPoint(j,ToFPB.EkPerMassBinCent(i),DistP_Correction_TOF -> GetBinContent(i+1));
 			DistDVSMC_P_GraphTOF->SetPointError(j,0,DistP_Correction_TOF -> GetBinError(i+1));
 			j++;
 		}
@@ -153,7 +153,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	j=0;
 	for(int i=1;i<nbinsNaF;i++) {
 		if(DistP_Correction_NaF -> GetBinContent(i+1)>0){
-			DistDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkBinCent(i),DistP_Correction_NaF -> GetBinContent(i+1));
+			DistDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkPerMassBinCent(i),DistP_Correction_NaF -> GetBinContent(i+1));
 			DistDVSMC_P_GraphNaF->SetPointError(j,0,DistP_Correction_NaF -> GetBinError(i+1));
 			j++;
 		}
@@ -173,7 +173,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	j=0;
 	for(int i=1;i<nbinsAgl;i++) {
 		if(DistP_Correction_Agl -> GetBinContent(i+1)>0){
-			DistDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkBinCent(i),DistP_Correction_Agl -> GetBinContent(i+1));
+			DistDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkPerMassBinCent(i),DistP_Correction_Agl -> GetBinContent(i+1));
 			DistDVSMC_P_GraphAgl->SetPointError(j,0,DistP_Correction_Agl -> GetBinError(i+1));
 			j++;
 		}

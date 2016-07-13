@@ -207,6 +207,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCTrig->SetBranchAddress("EdepECAL",&Tup.EdepECAL);
    ntupMCTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
    ntupMCTrig->SetBranchAddress("Unbias",&Tup.Unbias);
+   ntupMCTrig->SetBranchAddress("mcweight",&Tup.mcweight);
 
    ntupMCSepD->SetBranchAddress("Momentogen",&Tup.Momento_gen);
    ntupMCSepD->SetBranchAddress("R",&Tup.R);
@@ -223,6 +224,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCSepD->SetBranchAddress("Cutmask",&Tup.Cutmask);
    ntupMCSepD->SetBranchAddress("Dist5D",&Tup.Dist5D);
    ntupMCSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
+   ntupMCSepD->SetBranchAddress("mcweight",&Tup.mcweight);
 
    ntupDataTrig->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
    ntupDataTrig->SetBranchAddress("R_pre",&Tup.R_pre);
@@ -271,6 +273,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
+      Disable_MCreweighting();
 
       MCpreseff_Fill();
       MCUnbiaseff_Fill();
@@ -300,6 +303,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
+      //Disable_MCreweighting();
 
       HecutMC_Fill();
       SlidesforPlot_Fill();
@@ -330,10 +334,9 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
       if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
       if(Tup.Beta_pre<=0) continue;
       Cuts_Pre();
-
-      // Temporary Betarich check
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
+	     
       DATAUnbiaseff_Fill();
       float Zona=getGeoZone(Tup.Latitude);
       DATApreSeleff_Fill(Zona);
