@@ -160,18 +160,18 @@ void Flux::Set_DeltaE(int n,bool deutons) {
       
     if(deutons) {
          for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)
-            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(iR+1,lat+1, DRB.EkBinCent(iR+1)-DRB.EkBinCent(iR));
+            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(iR+1,lat+1, DRB.EkPerMassBinCent(iR+1)-DRB.EkPerMassBinCent(iR));
       }
       else { //only in R bins p/d have different DeltaE
          for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)
-            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(iR+1,lat+1, PRB.EkBinCent(iR+1)-PRB.EkBinCent(iR));
+            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(iR+1,lat+1, PRB.EkPerMassBinCent(iR+1)-PRB.EkPerMassBinCent(iR));
       }
       for(int iR=0; iR<DeltaE_TOF->GetNbinsX(); iR++)
-         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_TOF->SetBinContent(iR+1,lat+1, ToFDB.EkBinCent(iR+1)-ToFPB.EkBinCent(iR));
+         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_TOF->SetBinContent(iR+1,lat+1, ToFDB.EkPerMassBinCent(iR+1)-ToFPB.EkPerMassBinCent(iR));
       for(int iR=0; iR<DeltaE_NaF->GetNbinsX(); iR++)
-         for(int lat =0; lat<DeltaE_NaF->GetNbinsX(); lat++) DeltaE_NaF->SetBinContent(iR+1,lat+1, NaFDB.EkBinCent(iR+1)-NaFPB.EkBinCent(iR));
+         for(int lat =0; lat<DeltaE_NaF->GetNbinsX(); lat++) DeltaE_NaF->SetBinContent(iR+1,lat+1, NaFDB.EkPerMassBinCent(iR+1)-NaFPB.EkPerMassBinCent(iR));
       for(int iR=0; iR<DeltaE_Agl->GetNbinsX(); iR++)
-         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_Agl->SetBinContent(iR+1,lat+1, AglDB.EkBinCent(iR+1)-AglDB.EkBinCent(iR));
+         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_Agl->SetBinContent(iR+1,lat+1, AglDB.EkPerMassBinCent(iR+1)-AglDB.EkPerMassBinCent(iR));
 
    }
    else {

@@ -59,7 +59,7 @@ void MCpreeff_Plot(
    gPad->SetGridx();
    gPad->SetGridy();
    TGraph * EffPreMCP = new TGraph();
-   for(int i=0; i<nbinsToF; i++) EffPreMCP->SetPoint(i,ToFPB.EkBinCent(i),EffPreMCP_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsToF; i++) EffPreMCP->SetPoint(i,ToFPB.EkPerMassBinCent(i),EffPreMCP_TH1F->GetBinContent(i+1));
    TGraph * EffPreMCD[6];
    EffPreMCP->SetMarkerColor(2);
    EffPreMCP->SetMarkerStyle(8);
@@ -77,7 +77,7 @@ void MCpreeff_Plot(
 
       for(int h=0; h<6; h++) {
          EffPreMCD[h]= new TGraph();
-         for(int i=0; i<nbinsToF; i++) EffPreMCD[h]->SetPoint(i,ToFPB.EkBinCent(i), EffPreMCD_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsToF; i++) EffPreMCD[h]->SetPoint(i,ToFPB.EkPerMassBinCent(i), EffPreMCD_TH2F->GetBinContent(i+1,h+1));
          EffPreMCD[h]->SetMarkerColor(4);
          EffPreMCD[h]->SetMarkerStyle(h+3);
          leg->AddEntry(EffPreMCD[h],MCLegend[h+1].c_str(), "ep");
@@ -94,7 +94,7 @@ void MCpreeff_Plot(
    gPad->SetGridx();
    gPad->SetGridy();
    TGraph * EffPreMCPNaF = new TGraph();
-   for(int i=0; i<nbinsNaF; i++) EffPreMCPNaF->SetPoint(i,NaFPB.EkBinCent(i),EffPreMCPNaF_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsNaF; i++) EffPreMCPNaF->SetPoint(i,NaFPB.EkPerMassBinCent(i),EffPreMCPNaF_TH1F->GetBinContent(i+1));
    TGraph * EffPreMCDNaF[6];
    EffPreMCPNaF->SetMarkerColor(2);
    EffPreMCPNaF->SetMarkerStyle(8);
@@ -112,7 +112,7 @@ void MCpreeff_Plot(
 
       for(int h=0; h<6; h++) {
          EffPreMCDNaF[h]= new TGraph();
-         for(int i=0; i<nbinsNaF; i++) EffPreMCDNaF[h]->SetPoint(i,NaFPB.EkBinCent(i),
+         for(int i=0; i<nbinsNaF; i++) EffPreMCDNaF[h]->SetPoint(i,NaFPB.EkPerMassBinCent(i),
                   EffPreMCDNaF_TH2F->GetBinContent(i+1,h+1));
          EffPreMCDNaF[h]->SetMarkerColor(4);
          EffPreMCDNaF[h]->SetMarkerStyle(h+3);
@@ -130,7 +130,7 @@ void MCpreeff_Plot(
    gPad->SetGridx();
    gPad->SetGridy();
    TGraph * EffPreMCPAgl = new TGraph();
-   for(int i=0; i<nbinsAgl; i++) EffPreMCPAgl->SetPoint(i,AglPB.EkBinCent(i),EffPreMCPAgl_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsAgl; i++) EffPreMCPAgl->SetPoint(i,AglPB.EkPerMassBinCent(i),EffPreMCPAgl_TH1F->GetBinContent(i+1));
    TGraph * EffPreMCDAgl[6];
    EffPreMCPAgl->SetMarkerColor(2);
    EffPreMCPAgl->SetMarkerStyle(8);
@@ -148,7 +148,7 @@ void MCpreeff_Plot(
 
       for(int h=0; h<6; h++) {
          EffPreMCDAgl[h]= new TGraph();
-         for(int i=0; i<nbinsAgl; i++) EffPreMCDAgl[h]->SetPoint(i,AglPB.EkBinCent(i), EffPreMCDAgl_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsAgl; i++) EffPreMCDAgl[h]->SetPoint(i,AglPB.EkPerMassBinCent(i), EffPreMCDAgl_TH2F->GetBinContent(i+1,h+1));
          EffPreMCDAgl[h]->SetMarkerColor(4);
          EffPreMCDAgl[h]->SetMarkerStyle(h+3);
          leg->AddEntry(EffPreMCDAgl[h],MCLegend[h+1].c_str(), "ep");

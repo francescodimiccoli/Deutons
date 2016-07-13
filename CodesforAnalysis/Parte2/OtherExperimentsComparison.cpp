@@ -56,8 +56,8 @@ void OtherExperimentsComparison(){
 	int potenza = 0;
 	TGraphErrors * ThisWorkP = new TGraphErrors;
 	for(int i=0; i<nbinsr; i++) {
-                ThisWorkP->SetPoint(i,PRB.EkBinCent(i),ThisWork_P->GetBinContent(i+1)*pow(PRB.EkBinCent(i),potenza));
-                ThisWorkP->SetPointError(i,0,ThisWork_P->GetBinError(i+1)*pow(PRB.EkBinCent(i),potenza));
+                ThisWorkP->SetPoint(i,PRB.EkPerMassBinCent(i),ThisWork_P->GetBinContent(i+1)*pow(PRB.EkPerMassBinCent(i),potenza));
+                ThisWorkP->SetPointError(i,0,ThisWork_P->GetBinError(i+1)*pow(PRB.EkPerMassBinCent(i),potenza));
         }
         ThisWorkP->SetName("Protons Primary Flux");
         ThisWorkP->SetMarkerStyle(8);
@@ -88,8 +88,8 @@ void OtherExperimentsComparison(){
 	potenza = 0;
         TGraphErrors * ThisWorkDTOF = new TGraphErrors;
         for(int i=0; i<nbinsToF; i++) {
-                ThisWorkDTOF->SetPoint(i,ToFDB.EkBinCent(i),ThisWork_DTOF->GetBinContent(i+1)*pow(ToFDB.EkBinCent(i),potenza));
-                ThisWorkDTOF->SetPointError(i,0,ThisWork_DTOF->GetBinError(i+1)*pow(ToFDB.EkBinCent(i),potenza));
+                ThisWorkDTOF->SetPoint(i,ToFDB.EkPerMassBinCent(i),ThisWork_DTOF->GetBinContent(i+1)*pow(ToFDB.EkPerMassBinCent(i),potenza));
+                ThisWorkDTOF->SetPointError(i,0,ThisWork_DTOF->GetBinError(i+1)*pow(ToFDB.EkPerMassBinCent(i),potenza));
         }
 	ThisWorkDTOF->SetPoint(nbinsToF,30,0.000001);
         ThisWorkDTOF->SetPoint(nbinsToF+1,0.01,0.000001);
@@ -108,8 +108,8 @@ void OtherExperimentsComparison(){
 
 	TGraphErrors * ThisWorkDNaF = new TGraphErrors;
         for(int i=0; i<nbinsNaF; i++) {
-                ThisWorkDNaF->SetPoint(i,NaFDB.EkBinCent(i),ThisWork_DNaF->GetBinContent(i+1)*pow(NaFDB.EkBinCent(i),potenza));
-                ThisWorkDNaF->SetPointError(i,0,ThisWork_DNaF->GetBinError(i+1)*pow(NaFDB.EkBinCent(i),potenza));
+                ThisWorkDNaF->SetPoint(i,NaFDB.EkPerMassBinCent(i),ThisWork_DNaF->GetBinContent(i+1)*pow(NaFDB.EkPerMassBinCent(i),potenza));
+                ThisWorkDNaF->SetPointError(i,0,ThisWork_DNaF->GetBinError(i+1)*pow(NaFDB.EkPerMassBinCent(i),potenza));
         }
         ThisWorkDNaF->SetName("Protons Primary Flux");
         ThisWorkDNaF->SetMarkerStyle(4);
@@ -118,8 +118,8 @@ void OtherExperimentsComparison(){
 	
 	TGraphErrors * ThisWorkDAgl = new TGraphErrors;
         for(int i=0; i<nbinsAgl; i++) {
-                ThisWorkDAgl->SetPoint(i,AglDB.EkBinCent(i),ThisWork_DAgl->GetBinContent(i+1)*pow(AglDB.EkBinCent(i),potenza));
-                ThisWorkDAgl->SetPointError(i,0,ThisWork_DAgl->GetBinError(i+1)*pow(AglDB.EkBinCent(i),potenza));
+                ThisWorkDAgl->SetPoint(i,AglDB.EkPerMassBinCent(i),ThisWork_DAgl->GetBinContent(i+1)*pow(AglDB.EkPerMassBinCent(i),potenza));
+                ThisWorkDAgl->SetPointError(i,0,ThisWork_DAgl->GetBinError(i+1)*pow(AglDB.EkPerMassBinCent(i),potenza));
         }
         ThisWorkDAgl->SetName("Protons Primary Flux");
         ThisWorkDAgl->SetMarkerStyle(3);

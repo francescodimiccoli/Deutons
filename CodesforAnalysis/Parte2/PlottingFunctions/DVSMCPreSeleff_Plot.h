@@ -99,7 +99,7 @@ void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
 		j=0;
 		for(int i=1;i<nbinsToF;i++) {
 			if(PreSel_Correction_TOF -> GetBinContent(i+1,S+1)>0){
-				PreSel_Correction_TOF_Graph[S]->SetPoint(j,ToFPB.EkBinCent(i),PreSel_Correction_TOF -> GetBinContent(i+1,S+1));
+				PreSel_Correction_TOF_Graph[S]->SetPoint(j,ToFPB.EkPerMassBinCent(i),PreSel_Correction_TOF -> GetBinContent(i+1,S+1));
 				PreSel_Correction_TOF_Graph[S]->SetPointError(j,0,PreSel_Correction_TOF -> GetBinError(i+1,S+1));
 				j++;
 			}
@@ -118,7 +118,7 @@ void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
 		j=0;
 		for(int i=1;i<nbinsNaF;i++) {
 			if(PreSel_Correction_NaF -> GetBinContent(i+1,S+1)>0){
-				PreSel_Correction_NaF_Graph[S]->SetPoint(j,ToFPB.EkBinCent(i),PreSel_Correction_NaF -> GetBinContent(i+1,S+1));
+				PreSel_Correction_NaF_Graph[S]->SetPoint(j,ToFPB.EkPerMassBinCent(i),PreSel_Correction_NaF -> GetBinContent(i+1,S+1));
 				PreSel_Correction_NaF_Graph[S]->SetPointError(j,0,PreSel_Correction_NaF -> GetBinError(i+1,S+1));
 				j++;
 			}
@@ -137,7 +137,7 @@ void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
 		j=0;
 		for(int i=1;i<nbinsToF;i++) {
 			if(PreSel_Correction_Agl -> GetBinContent(i+1,S+1)>0){
-				PreSel_Correction_Agl_Graph[S]->SetPoint(j,ToFPB.EkBinCent(i),PreSel_Correction_Agl -> GetBinContent(i+1,S+1));
+				PreSel_Correction_Agl_Graph[S]->SetPoint(j,ToFPB.EkPerMassBinCent(i),PreSel_Correction_Agl -> GetBinContent(i+1,S+1));
 				PreSel_Correction_Agl_Graph[S]->SetPointError(j,0,PreSel_Correction_Agl -> GetBinError(i+1,S+1));
 				j++;
 			}

@@ -303,7 +303,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
-      Disable_MCreweighting();
+      //Disable_MCreweighting();
 
       HecutMC_Fill();
       SlidesforPlot_Fill();
