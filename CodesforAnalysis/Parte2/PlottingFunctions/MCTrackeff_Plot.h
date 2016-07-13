@@ -61,7 +61,7 @@ void 	MCTrackeff_Plot(TH1* EffTriggerMCP_R_TH1F,
    gPad->SetGridx();
    gPad->SetGridy();
    TGraph * EffTriggerMCP = new TGraph();
-   for (int i=0; i<17; i++) EffTriggerMCP->SetPoint (i,ToFPB.EkBinCent (i),EffTriggerMCP_TH1F->GetBinContent (i+1) );
+   for (int i=0; i<17; i++) EffTriggerMCP->SetPoint (i,ToFPB.EkPerMassBinCent (i),EffTriggerMCP_TH1F->GetBinContent (i+1) );
    TGraph * EffTriggerMCD[6];
    EffTriggerMCP->SetMarkerColor (2);
    EffTriggerMCP->SetMarkerStyle (8);
@@ -79,7 +79,7 @@ void 	MCTrackeff_Plot(TH1* EffTriggerMCP_R_TH1F,
 
       for (int h=0; h<6; h++) {
          EffTriggerMCD[h]= new TGraph();
-         for (int i=0; i<17; i++) EffTriggerMCD[h]->SetPoint (i,ToFPB.EkBinCent (i),EffTriggerMCD_TH2F->GetBinContent (i+1,h+1) );
+         for (int i=0; i<17; i++) EffTriggerMCD[h]->SetPoint (i,ToFPB.EkPerMassBinCent (i),EffTriggerMCD_TH2F->GetBinContent (i+1,h+1) );
          EffTriggerMCD[h]->SetMarkerColor (4);
          EffTriggerMCD[h]->SetMarkerStyle (h+3);
          leg->AddEntry (EffTriggerMCD[h],MCLegend[h+1].c_str(), "ep");
@@ -132,7 +132,7 @@ void 	MCTrackeff_Plot(TH1* EffTriggerMCP_R_TH1F,
    gPad->SetGridx();
    gPad->SetGridy();
    TGraph * EffTrackerMCP = new TGraph();
-   for (int i=0; i<17; i++) EffTrackerMCP->SetPoint (i,ToFPB.EkBinCent (i),EffTrackerMCP_TH1F->GetBinContent (i+1) );
+   for (int i=0; i<17; i++) EffTrackerMCP->SetPoint (i,ToFPB.EkPerMassBinCent (i),EffTrackerMCP_TH1F->GetBinContent (i+1) );
    TGraph * EffTrackerMCD[6];
    EffTrackerMCP->SetMarkerColor (2);
    EffTrackerMCP->SetMarkerStyle (8);
@@ -150,7 +150,7 @@ void 	MCTrackeff_Plot(TH1* EffTriggerMCP_R_TH1F,
 
       for (int h=0; h<6; h++) {
          EffTrackerMCD[h]= new TGraph();
-         for (int i=0; i<17; i++) EffTrackerMCD[h]->SetPoint (i,ToFPB.EkBinCent (i),EffTrackerMCD_TH2F->GetBinContent (i+1,h+1) );
+         for (int i=0; i<17; i++) EffTrackerMCD[h]->SetPoint (i,ToFPB.EkPerMassBinCent (i),EffTrackerMCD_TH2F->GetBinContent (i+1,h+1) );
          EffTrackerMCD[h]->SetMarkerColor (4);
          EffTrackerMCD[h]->SetMarkerStyle (h+3);
          leg->AddEntry (EffTrackerMCD[h],MCLegend[h+1].c_str(), "ep");
@@ -204,7 +204,7 @@ void 	MCTrackeff_Plot(TH1* EffTriggerMCP_R_TH1F,
    gPad->SetGridx();
    gPad->SetGridy();
    TGraph * EffTOF_MCP = new TGraph();
-   for (int i=0; i<17; i++) EffTOF_MCP->SetPoint (i,ToFPB.EkBinCent (i),EffTOF_MCP_TH1F->GetBinContent (i+1) );
+   for (int i=0; i<17; i++) EffTOF_MCP->SetPoint (i,ToFPB.EkPerMassBinCent (i),EffTOF_MCP_TH1F->GetBinContent (i+1) );
    TGraph * EffTOF_MCD[6];
    EffTOF_MCP->SetMarkerColor (2);
    EffTOF_MCP->SetMarkerStyle (8);
@@ -222,7 +222,7 @@ void 	MCTrackeff_Plot(TH1* EffTriggerMCP_R_TH1F,
 
       for (int h=0; h<6; h++) {
          EffTOF_MCD[h]= new TGraph();
-         for (int i=0; i<17; i++) EffTOF_MCD[h]->SetPoint (i,ToFPB.EkBinCent (i),EffTOF_MCD_TH2F->GetBinContent (i+1,h+1) );
+         for (int i=0; i<17; i++) EffTOF_MCD[h]->SetPoint (i,ToFPB.EkPerMassBinCent (i),EffTOF_MCD_TH2F->GetBinContent (i+1,h+1) );
          EffTOF_MCD[h]->SetMarkerColor (4);
          EffTOF_MCD[h]->SetMarkerStyle (h+3);
          leg->AddEntry (EffTOF_MCD[h],MCLegend[h+1].c_str(), "ep");

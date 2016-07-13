@@ -16,14 +16,14 @@ void MCUnbiaseff_Fill() {
 
    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
-      Kbin=PRB.GetRBin(fabs(Tup.Momento_gen));
-      EffUnbiasMCP->beforeR->Fill(Kbin);
-      if(Tup.Unbias==0) EffUnbiasMCP->afterR->Fill(Kbin);
+      Kbin=PRB.GetRBin(Tup.Momento_gen);
+      EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
+      if(Tup.Unbias==0) EffUnbiasMCP->afterR->Fill(Kbin,Tup.mcweight);
 
       //Beta bins
-      Kbin=ToFPB.GetRBin(Tup.Momento_gen);
-      EffUnbiasMCP->beforeTOF->Fill(Kbin);
-      if(Tup.Unbias==0) EffUnbiasMCP->afterTOF->Fill(Kbin);
+      Kbin=ToFPB.GetBin(Tup.Momento_gen);
+      EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
+      if(Tup.Unbias==0) EffUnbiasMCP->afterTOF->Fill(Kbin,Tup.mcweight);
       
    }
 
@@ -34,7 +34,7 @@ void MCUnbiaseff_Fill() {
       if(Tup.Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
       
       //Beta bins
-      Kbin=ToFDB.GetRBin(Tup.Momento_gen);
+      Kbin=ToFDB.GetBin(Tup.Momento_gen);
       FillBinMGen(EffUnbiasMCD->beforeTOF, Kbin);
       if(Tup.Unbias==0) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin);
       

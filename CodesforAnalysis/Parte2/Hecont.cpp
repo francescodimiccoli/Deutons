@@ -18,7 +18,7 @@ void HecutMC_Fill() {
 
 	float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
 	int Kbin=PRB.GetRBin(Tup.Momento_gen);
-
+	float dummy=0;
 	if(Massa_gen<1) {
 		HecutMC_P->Fill( fabs(EdepTOFbeta  ->Eval(Tup.Beta)-EdepTOFud) / (pow(EdepTOFbeta  ->Eval(Tup.Beta),2)*etofu ->Eval(Tup.Beta)) ,
 				fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack) / (pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)) );
@@ -26,16 +26,16 @@ void HecutMC_Fill() {
 		if(Herejcut) HecutMCP->afterR->Fill(Kbin);
 
 		if(Betastrongcut&&Likcut){		
-			if(cmask.isOnlyFromToF()&&Tup.R<3)    HeliumContaminationTOF -> TemplateP -> Fill(Tup.Dist5D_P,0);
-			if(cmask.isFromNaF()&&Tup.R<6)		  HeliumContaminationNaF -> TemplateP -> Fill(Tup.Dist5D_P,0);	
-			if(cmask.isFromAgl()&&Tup.R<14)  	  HeliumContaminationAgl -> TemplateP -> Fill(Tup.Dist5D_P,0);
+			if(cmask.isOnlyFromToF()&&Tup.R<3)  ((TH2*)HeliumContaminationTOF -> TemplateP)->Fill(Tup.Dist5D_P,dummy,Tup.mcweight);
+			if(cmask.isFromNaF()&&Tup.R<6)		((TH2*)  HeliumContaminationNaF -> TemplateP) -> Fill(Tup.Dist5D_P,dummy,Tup.mcweight);	
+			if(cmask.isFromAgl()&&Tup.R<14)  	((TH2*)  HeliumContaminationAgl -> TemplateP )-> Fill(Tup.Dist5D_P,dummy,Tup.mcweight);
 		}	
 	}
 	if(Massa_gen>1&&Massa_gen<2){
 		if(Betastrongcut&&Likcut){
-			if(cmask.isOnlyFromToF()&&Tup.R<3)    HeliumContaminationTOF -> TemplateD -> Fill(Tup.Dist5D_P,0);
-			if(cmask.isFromNaF()&&Tup.R<6)		  HeliumContaminationNaF -> TemplateD -> Fill(Tup.Dist5D_P,0);
-			if(cmask.isFromAgl()&&Tup.R<14) 		  HeliumContaminationAgl -> TemplateD -> Fill(Tup.Dist5D_P,0);
+			if(cmask.isOnlyFromToF()&&Tup.R<3)   ((TH2*) HeliumContaminationTOF -> TemplateD) -> Fill(Tup.Dist5D_P,dummy,Tup.mcweight);
+			if(cmask.isFromNaF()&&Tup.R<6)		((TH2*)  HeliumContaminationNaF -> TemplateD )-> Fill(Tup.Dist5D_P,dummy,Tup.mcweight);
+			if(cmask.isFromAgl()&&Tup.R<14) 	((TH2*)	  HeliumContaminationAgl -> TemplateD )-> Fill(Tup.Dist5D_P,dummy,Tup.mcweight);
 		}
 		
 	}
@@ -46,9 +46,9 @@ void HecutMC_Fill() {
 		if(Herejcut) HecutMCHe->afterR->Fill(Kbin);
 
 		if(Betastrongcut&&Likcut){
-			if(cmask.isOnlyFromToF()&&Tup.R<3)    HeliumContaminationTOF -> TemplateHe -> Fill(Tup.Dist5D_P,0);
-			if(cmask.isFromNaF()&&Tup.R<6)		  HeliumContaminationNaF -> TemplateHe -> Fill(Tup.Dist5D_P,0);
-			if(cmask.isFromAgl()&&Tup.R<14) 		  HeliumContaminationAgl -> TemplateHe -> Fill(Tup.Dist5D_P,0);
+			if(cmask.isOnlyFromToF()&&Tup.R<3)   ((TH2*) HeliumContaminationTOF -> TemplateHe) -> Fill(Tup.Dist5D_P,dummy,Tup.mcweight);
+			if(cmask.isFromNaF()&&Tup.R<6)		((TH2*)  HeliumContaminationNaF -> TemplateHe )-> Fill(Tup.Dist5D_P,dummy,Tup.mcweight);
+			if(cmask.isFromAgl()&&Tup.R<14) 	((TH2*)	  HeliumContaminationAgl -> TemplateHe) -> Fill(Tup.Dist5D_P,dummy,Tup.mcweight);
 		}
 	}
 }
@@ -58,11 +58,11 @@ void HecutD_Fill() {
 	if(!Tup.R>1.2*Tup.Rcutoff) return;
 	float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
 	Hecut_D->Fill(fabs(EdepTOFbeta->Eval(Tup.Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta),2)*etofu->Eval(Tup.Beta)),fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)));
-
+	float dummy=0;
 	if(Betastrongcut&&Likcut){
-		if(cmask.isOnlyFromToF()&&Tup.R<3)  HeliumContaminationTOF -> DATA -> Fill(Tup.Dist5D_P,0);
-		if(cmask.isFromNaF()&&Tup.R<6)		HeliumContaminationNaF -> DATA -> Fill(Tup.Dist5D_P,0);
-		if(cmask.isFromAgl()&&Tup.R<14)  	HeliumContaminationAgl -> DATA -> Fill(Tup.Dist5D_P,0);	
+		if(cmask.isOnlyFromToF()&&Tup.R<3)  HeliumContaminationTOF -> DATA -> Fill(Tup.Dist5D_P,dummy);
+		if(cmask.isFromNaF()&&Tup.R<6)		HeliumContaminationNaF -> DATA -> Fill(Tup.Dist5D_P,dummy);
+		if(cmask.isFromAgl()&&Tup.R<14)  	HeliumContaminationAgl -> DATA -> Fill(Tup.Dist5D_P,dummy);	
 	}
 }
 

@@ -49,8 +49,8 @@ void DeutonFlux(string filename) {
         if(D_Flux -> Counts_NaF)SystNaF -> Add(	(TH1F*) D_Flux_Dist -> Counts_NaF->Clone()	,-1);
         if(D_Flux -> Counts_Agl)SystAgl -> Add(	(TH1F*) D_Flux_Dist -> Counts_Agl->Clone()	,-1);
 
-	D_Flux      -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
-	D_Flux_Dist -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
+//	D_Flux      -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
+//	D_Flux_Dist -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
 
 
 	//

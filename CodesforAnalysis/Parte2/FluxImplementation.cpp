@@ -170,7 +170,7 @@ void ProtonFlux()
       string nome="Protons Flux: Geo. Zone "+to_string(j);
       P_Fluxgeo[j]->SetName(nome.c_str());
       for(uint i=0; i<PRB.EkBinsCent().size(); i++) {
-         float ekin=PRB.EkBinCent(i);
+         float ekin=PRB.EkPerMassBinCent(i);
          P_Fluxgeo[j]->SetPoint(i,ekin,ProtonsGeomagFlux->GetBinContent(i+1,j+1)*pow(ekin,potenza));
          P_Fluxgeo[j]->SetPointError(i,0,ProtonsGeomagFlux->GetBinError(i+1,j+1)*pow(ekin,potenza));
       }
@@ -189,7 +189,7 @@ void ProtonFlux()
 
    PFlux=new TGraphErrors();
    for(uint i=0; i<PRB.EkBinsCent().size(); i++) {
-      float ekin=PRB.EkBinCent(i);
+      float ekin=PRB.EkPerMassBinCent(i);
       PFlux->SetPoint(i,ekin,ProtonsPrimaryFlux->GetBinContent(i+1)*pow(ekin,potenza));
       PFlux->SetPointError(i,0,ProtonsPrimaryFlux->GetBinError(i+1)*pow(ekin,potenza));
    }
@@ -219,7 +219,7 @@ void ProtonFlux()
 
    for(uint ip=0; ip<PRB.EkBinsCent().size()-1; ip++) {
       PFlux_->   SetPoint(ip,PRB.RigBinCent(ip), 1);
-      PFlux_pre->SetPoint(ip,PRB.EkBinCent(ip) , 1);
+      PFlux_pre->SetPoint(ip,PRB.EkPerMassBinCent(ip) , 1);
       float err=(P_sel_PrimaryFlux->GetBinError(ip+1,2)+P_pre_PrimaryFlux->GetBinError(ip+1,2))/P_pre_PrimaryFlux->GetBinContent(ip+1,1);
       PFlux_->SetPointError(ip,0,err);
       PFluxpre->SetPoint(ip,PRB.RigBinCent(ip+1),
@@ -452,8 +452,8 @@ void DeutonFlux()
       ged[i]=new TGraphErrors();
       gep[i]=new TGraphErrors();
       for(uint m=0; m<binD[i].EkBinsCent().size(); m++) {
-         ged[i]->SetPoint(m,binD[i].EkBinCent(m), vD_Exp[i]->GetBinContent(m+1));
-         gep[i]->SetPoint(m,binP[i].EkBinCent(m), vP_Exp[i]->GetBinContent(m+1));
+         ged[i]->SetPoint(m,binD[i].EkPerMassBinCent(m), vD_Exp[i]->GetBinContent(m+1));
+         gep[i]->SetPoint(m,binP[i].EkPerMassBinCent(m), vP_Exp[i]->GetBinContent(m+1));
       }
       c33->cd(i+1);
       gPad->SetLogy();
@@ -696,7 +696,7 @@ TGraphErrors* FillGraphErrorFromBinningAndHisto(Binning bin, TH1* histo)
 {
    TGraphErrors* graph=new TGraphErrors();
    for(uint ibin=0; ibin<bin.EkBinsCent().size(); ibin++) {
-      graph->SetPoint     (ibin, bin.EkBinCent(ibin),  histo->GetBinContent(ibin));
+      graph->SetPoint     (ibin, bin.EkPerMassBinCent(ibin),  histo->GetBinContent(ibin));
       graph->SetPointError(ibin, 0,                 histo->GetBinError(ibin)  );
    }
    return graph;

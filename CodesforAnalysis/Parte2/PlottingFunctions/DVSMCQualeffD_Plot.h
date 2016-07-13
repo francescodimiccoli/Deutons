@@ -31,7 +31,7 @@ void DVSMCQualeffD_Plot (TH1 *   DistD_Correction_R  ,
 		LikDVSMC_D_GraphTOF[mc_type]=new TGraphErrors();
 		j=0;
 		for(int i=1;i<nbinsToF;i++) {
-				LikDVSMC_D_GraphTOF[mc_type]->SetPoint(j,ToFPB.EkBinCent(i),LikD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
+				LikDVSMC_D_GraphTOF[mc_type]->SetPoint(j,ToFPB.EkPerMassBinCent(i),LikD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
 				LikDVSMC_D_GraphTOF[mc_type]->SetPointError(j,0,LikD_Correction_TOF -> GetBinError(i+1,mc_type+1));
 				j++;
 		}
@@ -55,7 +55,7 @@ void DVSMCQualeffD_Plot (TH1 *   DistD_Correction_R  ,
                 j=0;
                 for(int i=1;i<nbinsToF;i++) {
                         if(LikD_Correction_NaF -> GetBinContent(i+1,mc_type+1)>0){
-                                LikDVSMC_D_GraphNaF[mc_type]->SetPoint(j,NaFPB.EkBinCent(i),LikD_Correction_NaF -> GetBinContent(i+1,mc_type+1));
+                                LikDVSMC_D_GraphNaF[mc_type]->SetPoint(j,NaFPB.EkPerMassBinCent(i),LikD_Correction_NaF -> GetBinContent(i+1,mc_type+1));
                                 LikDVSMC_D_GraphNaF[mc_type]->SetPointError(j,0,LikD_Correction_NaF -> GetBinError(i+1,mc_type+1));
                                 j++;
                         }
@@ -87,7 +87,7 @@ void DVSMCQualeffD_Plot (TH1 *   DistD_Correction_R  ,
                 j=0;
                 for(int i=1;i<nbinsToF;i++) {
                         if(LikD_Correction_Agl -> GetBinContent(i+1,mc_type+1)>0){
-                                LikDVSMC_D_GraphAgl[mc_type]->SetPoint(j,AglPB.EkBinCent(i),LikD_Correction_Agl -> GetBinContent(i+1,mc_type+1));
+                                LikDVSMC_D_GraphAgl[mc_type]->SetPoint(j,AglPB.EkPerMassBinCent(i),LikD_Correction_Agl -> GetBinContent(i+1,mc_type+1));
                                 LikDVSMC_D_GraphAgl[mc_type]->SetPointError(j,0,LikD_Correction_Agl -> GetBinError(i+1,mc_type+1));
                                 j++;
                         }
@@ -114,7 +114,7 @@ void DVSMCQualeffD_Plot (TH1 *   DistD_Correction_R  ,
                 DistDVSMC_D_GraphTOF[mc_type]=new TGraphErrors();
                 j=0;
                 for(int i=1;i<nbinsToF;i++) {
-                                DistDVSMC_D_GraphTOF[mc_type]->SetPoint(j,ToFPB.EkBinCent(i),DistD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
+                                DistDVSMC_D_GraphTOF[mc_type]->SetPoint(j,ToFPB.EkPerMassBinCent(i),DistD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
                                 DistDVSMC_D_GraphTOF[mc_type]->SetPointError(j,0,DistD_Correction_TOF -> GetBinError(i+1,mc_type+1));
                                 j++;
                 }
@@ -138,7 +138,7 @@ void DVSMCQualeffD_Plot (TH1 *   DistD_Correction_R  ,
                 j=0;
                 for(int i=1;i<nbinsToF;i++) {
                         if(DistD_Correction_NaF -> GetBinContent(i+1,mc_type+1)>0){
-                                DistDVSMC_D_GraphNaF[mc_type]->SetPoint(j,NaFPB.EkBinCent(i),DistD_Correction_NaF -> GetBinContent(i+1,mc_type+1));
+                                DistDVSMC_D_GraphNaF[mc_type]->SetPoint(j,NaFPB.EkPerMassBinCent(i),DistD_Correction_NaF -> GetBinContent(i+1,mc_type+1));
                                 DistDVSMC_D_GraphNaF[mc_type]->SetPointError(j,0,DistD_Correction_NaF -> GetBinError(i+1,mc_type+1));
                                 j++;
                         }
@@ -172,7 +172,7 @@ void DVSMCQualeffD_Plot (TH1 *   DistD_Correction_R  ,
                 j=0;
                 for(int i=1;i<nbinsToF;i++) {
                         if(DistD_Correction_Agl -> GetBinContent(i+1,mc_type+1)>0){
-				DistDVSMC_D_GraphAgl[mc_type]->SetPoint(j,AglPB.EkBinCent(i),DistD_Correction_Agl -> GetBinContent(i+1,mc_type+1));
+				DistDVSMC_D_GraphAgl[mc_type]->SetPoint(j,AglPB.EkPerMassBinCent(i),DistD_Correction_Agl -> GetBinContent(i+1,mc_type+1));
                                 DistDVSMC_D_GraphAgl[mc_type]->SetPointError(j,0,DistD_Correction_Agl -> GetBinError(i+1,mc_type+1));
                                 j++;
                         }

@@ -17,91 +17,70 @@ void DeutonsMC_Dist_Fill()
 {
 
 	float Distance_Discr = 0;
+	int Kbin;
 	if(!(Likcut&&Distcut)) return;
-	for(int m=0; m<nbinsToF; m++) { //TOF
 		Distance_Discr = ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
-		if(RUsed>ToFDB.MomBins()[m]&&RUsed<=ToFDB.MomBins()[m+1]) {
-			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
-			if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Dbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
-		}
-		if(RUsed>ToFPB.MomBins()[m]&&RUsed<=ToFPB.MomBins()[m+1]) {
-			if(Massa_gen<1&&Massa_gen>0.5) FitTOF_Pbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
-			if(Massa_gen<4&&Massa_gen>2.5) FitTOF_Pbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
-		}
-	}
-	for(int m=0; m<nbinsNaF; m++) { //NaF
+		Kbin=ToFDB.GetBin(RUsed);
+			if(Massa_gen<1&&Massa_gen>0.5) ((TH2*)FitTOF_Dbins_Dist -> TemplateP) -> Fill(Distance_Discr,Kbin,Tup.mcweight);
+			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,Kbin,ReturnMCGenType(),Tup.mcweight);
+			if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitTOF_Dbins_Dist -> TemplateHe)-> Fill(Distance_Discr,Kbin,Tup.mcweight);
+		Kbin=ToFPB.GetBin(RUsed);	
+			if(Massa_gen<1&&Massa_gen>0.5) ((TH2*)FitTOF_Pbins_Dist -> TemplateP) -> Fill(Distance_Discr,Kbin,Tup.mcweight);
+			if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,Kbin,ReturnMCGenType(),Tup.mcweight);
+			if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitTOF_Pbins_Dist -> TemplateHe)-> Fill(Distance_Discr,Kbin,Tup.mcweight);
+	
 		if(cmask.isFromNaF()) {
 			Distance_Discr = ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
-			if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
-				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
-				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Dbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
-			}
-			if(RUsed>NaFPB.MomBins()[m]&&RUsed<=NaFPB.MomBins()[m+1]) {
-				if(Massa_gen<1&&Massa_gen>0.5) FitNaF_Pbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
-				if(Massa_gen<4&&Massa_gen>2.5) FitNaF_Pbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
-			}
+			Kbin=NaFDB.GetBin(RUsed);	
+				if(Massa_gen<1&&Massa_gen>0.5) ((TH2*)FitNaF_Dbins_Dist -> TemplateP) -> Fill(Distance_Discr,Kbin,Tup.mcweight);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,Kbin,ReturnMCGenType(),Tup.mcweight);
+				if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitNaF_Dbins_Dist -> TemplateHe)-> Fill(Distance_Discr,Kbin,Tup.mcweight);
+			Kbin=NaFPB.GetBin(RUsed);		
+				if(Massa_gen<1&&Massa_gen>0.5) ((TH2*)FitNaF_Pbins_Dist -> TemplateP) -> Fill(Distance_Discr,Kbin,Tup.mcweight);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,Kbin,ReturnMCGenType(),Tup.mcweight);
+				if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitNaF_Pbins_Dist -> TemplateHe)-> Fill(Distance_Discr,Kbin,Tup.mcweight);
 		}
-	}
-	for(int m=0; m<nbinsAgl; m++) { //Agl
 		if(cmask.isFromAgl()) {
 			Distance_Discr = ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
-			if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
-				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Dbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
-				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Dbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
+			Kbin=AglDB.GetBin(RUsed);
+				if(Massa_gen<1&&Massa_gen>0.5) ((TH2*)FitAgl_Dbins_Dist -> TemplateP) -> Fill(Distance_Discr,Kbin,Tup.mcweight);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Dbins_Dist -> TemplateD) -> Fill(Distance_Discr,Kbin,ReturnMCGenType(),Tup.mcweight);
+				if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitAgl_Dbins_Dist -> TemplateHe)-> Fill(Distance_Discr,Kbin,Tup.mcweight);
+			Kbin=AglPB.GetBin(RUsed);	
+				if(Massa_gen<1&&Massa_gen>0.5) ((TH2*)FitAgl_Pbins_Dist -> TemplateP) -> Fill(Distance_Discr,Kbin,Tup.mcweight);
+				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,Kbin,ReturnMCGenType(),Tup.mcweight);
+				if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitAgl_Pbins_Dist -> TemplateHe)-> Fill(Distance_Discr,Kbin,Tup.mcweight);
 			}
-			if(RUsed>AglPB.MomBins()[m]&&RUsed<=AglPB.MomBins()[m+1]) {
-				if(Massa_gen<1&&Massa_gen>0.5) FitAgl_Pbins_Dist -> TemplateP -> Fill(Distance_Discr,m);
-				if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Pbins_Dist -> TemplateD) -> Fill(Distance_Discr,m,ReturnMCGenType());
-				if(Massa_gen<4&&Massa_gen>2.5) FitAgl_Pbins_Dist -> TemplateHe-> Fill(Distance_Discr,m);
-			}
-		}
-	}
 }
 
 
 void DeutonsDATA_Dist_Fill(int zona)
 {
 	float Distance_Discr = 0;
+	int Kbin;
 	if(!(Likcut&&Distcut)) return;
-	for(int m=0; m<nbinsToF; m++) { //TOF
 		Distance_Discr = ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
-		if(RUsed>ToFDB.MomBins()[m]&&RUsed<=ToFDB.MomBins()[m+1]) {
-			if(Tup.R>1.2*Tup.Rcutoff) FitTOF_Dbins_Dist -> DATA -> Fill(Distance_Discr,m);
-			((TH3*)FitTOFgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,m,zona);
-		}
-		if(RUsed>ToFPB.MomBins()[m]&&RUsed<=ToFPB.MomBins()[m+1]) {
-			if(Tup.R>1.2*Tup.Rcutoff) FitTOF_Pbins_Dist -> DATA -> Fill(Distance_Discr,m);
-		}
-	}
-	for(int m=0; m<nbinsNaF; m++) { //NaF
+		Kbin=ToFDB.GetBin(RUsed);	
+			if(Tup.R>1.2*Tup.Rcutoff) FitTOF_Dbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
+			((TH3*)FitTOFgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,Kbin,zona);
+		Kbin=ToFPB.GetBin(RUsed);	
+			if(Tup.R>1.2*Tup.Rcutoff) FitTOF_Pbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
 		if(cmask.isFromNaF()) {
 			Distance_Discr =  ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
-			if(RUsed>NaFDB.MomBins()[m]&&RUsed<=NaFDB.MomBins()[m+1]) {
-				if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Dbins_Dist -> DATA -> Fill(Distance_Discr,m);
-				((TH3*)FitNaFgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,m,zona);
-			}
-			if(RUsed>NaFPB.MomBins()[m]&&RUsed<=NaFPB.MomBins()[m+1]) {
-				if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Pbins_Dist -> DATA -> Fill(Distance_Discr,m);
-			}
+			Kbin=NaFDB.GetBin(RUsed);
+				if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Dbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
+				((TH3*)FitNaFgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,Kbin,zona);
+			Kbin=NaFPB.GetBin(RUsed);	
+				if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Pbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
 		}
-	}
-	for(int m=0; m<nbinsAgl; m++) { //Agl
 		if(cmask.isFromAgl()) {
 			Distance_Discr =  ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
-			if(RUsed>AglDB.MomBins()[m]&&RUsed<=AglDB.MomBins()[m+1]) {
-				if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Dbins_Dist -> DATA -> Fill(Distance_Discr,m);
-				((TH3*)FitAglgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,m,zona);
+			Kbin=AglDB.GetBin(RUsed);	
+				if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Dbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
+				((TH3*)FitAglgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,Kbin,zona);
+			Kbin=AglPB.GetBin(RUsed);	
+				if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Pbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
 			}
-			if(RUsed>AglPB.MomBins()[m]&&RUsed<=AglPB.MomBins()[m+1]) {
-				if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Pbins_Dist -> DATA -> Fill(Distance_Discr,m);
-			}
-		}
-	}
 	return;
 }
 
