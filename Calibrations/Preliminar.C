@@ -34,6 +34,7 @@ using namespace std;
 float Massa=0;
 float Massagen=0;
 float Beta=0;
+float BetanS=0;
 float Betacorr=0;
 float CaricaTOF=0;
 float CaricaTRD=0;
@@ -181,6 +182,8 @@ int main(int argc, char * argv[]){
 	ntupla1->SetBranchAddress("Cutmask",&Cutmask);
 	ntupla1->SetBranchAddress("MC_type",&MC_type);
 	ntupla1->SetBranchAddress("mcweight",&mcweight);
+	ntupla1->SetBranchAddress("BetanS",&BetanS);
+
 
 	ntupla2->SetBranchAddress("Beta",&Beta);
 	ntupla2->SetBranchAddress("EdepL1",&EdepL1);
@@ -192,6 +195,7 @@ int main(int argc, char * argv[]){
 	ntupla2->SetBranchAddress("R",&R);
 	ntupla2->SetBranchAddress("Rcutoff",&Rcutoff);
 	ntupla2->SetBranchAddress("Cutmask",&Cutmask);
+	ntupla2->SetBranchAddress("BetanS",&BetanS);
 
 	cout<<"**************************** BETA BINS TOF***********************************"<<endl;
 	float B=0.4;
@@ -332,6 +336,10 @@ int main(int argc, char * argv[]){
 	TH1F *RisoluzioniBetaNaF[30];
 	TH1F *RisoluzioniBetaAgl[30];
 	TH1F *RisoluzioniR[24];
+	TH1F *RisoluzioniBeta_RnS[24];
+        TH1F *RisoluzioniBeta_R_DnS[24];
+        TH1F *RisoluzioniBetaTOF_RnS[18];
+        TH1F *RisoluzioniBetaTOF_R_DnS[18];
 	TH1F *RisoluzioniBeta_R[24];
 	TH1F *RisoluzioniBeta_R_D[24];
 	TH1F *RisoluzioniBetaTOF_R[18];
@@ -382,6 +390,8 @@ int main(int argc, char * argv[]){
 		DistribuzioniTrack_D[i]=new TH1F("","",150,0,1);
 		DistribuzioniTOFD_D[i]=new TH1F("","",150,0,20);
 		DistribuzioniL1_D[i]=new TH1F("","",150,0,1);
+		if(i<24) RisoluzioniBeta_R_DnS[i]=new TH1F("","",300,0,4);
+                if(i<18) RisoluzioniBetaTOF_R_DnS[i]=new TH1F("","",300,0,4);
 		if(i<24) RisoluzioniBeta_R_D[i]=new TH1F("","",300,0,4);
 		if(i<18) RisoluzioniBetaTOF_R_D[i]=new TH1F("","",300,0,4);
 		if(i<18) RisoluzioniBetaNaF_R_D[i]=new TH1F("","",300,0.9,1.4);
@@ -452,8 +462,9 @@ int main(int argc, char * argv[]){
 		if(EdepL1>0.04&&EdepL1<0.15) {
 			for(int l=0; l<24;l++) if(R>bin[l]&&R<=bin[l+1]){
 				RisoluzioniBeta_R_D[l]->Fill(1/Beta);
+				RisoluzioniBeta_R_DnS[l]->Fill(1/BetanS);
 			}
-			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) RisoluzioniBetaTOF_R_D[m]->Fill(1/Beta);
+			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]){ RisoluzioniBetaTOF_R_D[m]->Fill(1/Beta);RisoluzioniBetaTOF_R_DnS[m]->Fill(1/BetanS); }
 			if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>BetabinsNaFR_D[m]&&R<=BetabinsNaFR_D[m+1]) RisoluzioniBetaNaF_R_D[m]->Fill(1/BetaRICH);
 			if((((int)Cutmask)>>11)==0) for(int m=0; m<18;m++) if(R>BetabinsAglR_D[m]&&R<=BetabinsAglR_D[m+1]) RisoluzioniBetaAgl_R_D[m]->Fill(1/BetaRICH);	
 		}
@@ -490,9 +501,21 @@ int main(int argc, char * argv[]){
 			RisoluzioniTOFD_D[j-1]->SetBinError(i, RisoluzioniTOFD_D[j-1]->GetBinError(i)/ RisoluzioniTOFD_D[j-1]->GetEntries());}
 		for(int L=1;L<=DistribuzioniTOFD_D[j-1]->GetNbinsX();L++) { DistribuzioniTOFD_D[j-1]->SetBinContent(L, DistribuzioniTOFD_D[j-1]->GetBinContent(L)/DistribuzioniTOFD_D[j-1]->GetEntries());
 			DistribuzioniTOFD_D[j-1]->SetBinError(L, DistribuzioniTOFD_D[j-1]->GetBinError(L)/DistribuzioniTOFD_D[j-1]->GetEntries()); }
+			
+		if(j<24)
+                        for(int i=1;i<=RisoluzioniBeta_R_DnS[j-1]->GetNbinsX();i++) { RisoluzioniBeta_R_DnS[j-1]->SetBinContent(i, RisoluzioniBeta_R_DnS[j-1]->GetBinContent(i)/ RisoluzioniBeta_R_DnS[j-1]->GetEntries());
+                                RisoluzioniBeta_R_DnS[j-1]->SetBinError(i, RisoluzioniBeta_R_DnS[j-1]->GetBinError(i)/ RisoluzioniBeta_R_DnS[j-1]->GetEntries()); }
+		if(j<18)
+                        for(int i=1;i<=RisoluzioniBetaTOF_R_DnS[j-1]->GetNbinsX();i++) if(RisoluzioniBetaTOF_R_DnS[j-1]->GetEntries()>0)  { RisoluzioniBetaTOF_R_DnS[j-1]->SetBinContent(i, RisoluzioniBetaTOF_R_DnS[j-1]->GetBinContent(i)/ RisoluzioniBetaTOF_R_DnS[j-1]->GetEntries());
+                                RisoluzioniBetaTOF_R_DnS[j-1]->SetBinError(i, RisoluzioniBetaTOF_R_DnS[j-1]->GetBinError(i)/ RisoluzioniBetaTOF_R_DnS[j-1]->GetEntries()); }
+
 		if(j<24)
 			for(int i=1;i<=RisoluzioniBeta_R_D[j-1]->GetNbinsX();i++) { RisoluzioniBeta_R_D[j-1]->SetBinContent(i, RisoluzioniBeta_R_D[j-1]->GetBinContent(i)/ RisoluzioniBeta_R_D[j-1]->GetEntries());
 				RisoluzioniBeta_R_D[j-1]->SetBinError(i, RisoluzioniBeta_R_D[j-1]->GetBinError(i)/ RisoluzioniBeta_R_D[j-1]->GetEntries()); }
+		if(j<18)
+                        for(int i=1;i<=RisoluzioniBetaTOF_R_D[j-1]->GetNbinsX();i++) if(RisoluzioniBetaTOF_R_D[j-1]->GetEntries()>0)  { RisoluzioniBetaTOF_R_D[j-1]->SetBinContent(i, RisoluzioniBetaTOF_R_D[j-1]->GetBinContent(i)/ RisoluzioniBetaTOF_R_D[j-1]->GetEntries());
+                                RisoluzioniBetaTOF_R_D[j-1]->SetBinError(i, RisoluzioniBetaTOF_R_D[j-1]->GetBinError(i)/ RisoluzioniBetaTOF_R_D[j-1]->GetEntries()); }
+		
 		if(j<18)
                         for(int i=1;i<=RisoluzioniBetaNaF_R_D[j-1]->GetNbinsX();i++) if(RisoluzioniBetaNaF_R_D[j-1]->GetEntries()>0)  { RisoluzioniBetaNaF_R_D[j-1]->SetBinContent(i, RisoluzioniBetaNaF_R_D[j-1]->GetBinContent(i)/ RisoluzioniBetaNaF_R_D[j-1]->GetEntries());
                                 RisoluzioniBetaNaF_R_D[j-1]->SetBinError(i, RisoluzioniBetaNaF_R_D[j-1]->GetBinError(i)/ RisoluzioniBetaNaF_R_D[j-1]->GetEntries()); }
@@ -579,9 +602,11 @@ int main(int argc, char * argv[]){
 		if(i<24) {
 			RisoluzioniR[i]=new TH1F("","",1000,-1,1);
 			RisoluzioniBeta_R[i]=new TH1F("","",300,0,4);
+			RisoluzioniBeta_RnS[i]=new TH1F("","",300,0,4);
 		}
 		if(i<18) RisoluzioniBetaTOF_R[i]=new TH1F("","",300,0,4);
-                if(i<18) RisoluzioniBetaNaF_R[i]=new TH1F("","",300,0.9,1.4);
+                if(i<18) RisoluzioniBetaTOF_RnS[i]=new TH1F("","",300,0,4);
+		if(i<18) RisoluzioniBetaNaF_R[i]=new TH1F("","",300,0.9,1.4);
                 if(i<18) RisoluzioniBetaAgl_R[i]=new TH1F("","",300,0.96,1.04);
 		if(i<18) RisoluzioniR_Beta[i]=new TH1F("","",300,0,4);
 		if(i<18) RisoluzioniR_BetaNaF[i]=new TH1F("","",200,0.2,4);
@@ -627,8 +652,9 @@ int main(int argc, char * argv[]){
 				RisoluzioniR[l]->Fill(1/R-1/Momentogen,mcweight);	}
 			for(int l=0; l<24;l++) if(R>bin[l]&&R<=bin[l+1]&&Massagen>0.5&&Massagen<1){
 				RisoluzioniBeta_R[l]->Fill(1/Beta,mcweight);
+				RisoluzioniBeta_RnS[l]->Fill(1/Beta,mcweight);
 			}
-			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) RisoluzioniBetaTOF_R[m]->Fill(1/Beta,mcweight);
+			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) {RisoluzioniBetaTOF_R[m]->Fill(1/Beta,mcweight);RisoluzioniBetaTOF_RnS[m]->Fill(1/Beta,mcweight);}
                         if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>BetabinsNaFR_D[m]&&R<=BetabinsNaFR_D[m+1]) {RisoluzioniBetaNaF_R[m]->Fill(1/BetaRICH,mcweight);}
                         if((((int)Cutmask)>>11)==0) for(int m=0; m<18;m++) if(R>BetabinsAglR_D[m]&&R<=BetabinsAglR_D[m+1]) {RisoluzioniBetaAgl_R[m]->Fill(1/BetaRICH,mcweight);}
 
@@ -685,12 +711,20 @@ int main(int argc, char * argv[]){
 			RisoluzioniTOFD[j-1]->SetBinError(i, RisoluzioniTOFD[j-1]->GetBinError(i)/ RisoluzioniTOFD[j-1]->GetEntries());}
 		for(int L=1;L<=DistribuzioniTOFD[j-1]->GetNbinsX();L++) { DistribuzioniTOFD[j-1]->SetBinContent(L, DistribuzioniTOFD[j-1]->GetBinContent(L)/DistribuzioniTOFD[j-1]->GetEntries());
 			DistribuzioniTOFD[j-1]->SetBinError(L, DistribuzioniTOFD[j-1]->GetBinError(L)/DistribuzioniTOFD[j-1]->GetEntries());}
+		
+		if(j<24)
+                        for(int i=1;i<=RisoluzioniBeta_RnS[j-1]->GetNbinsX();i++) { RisoluzioniBeta_RnS[j-1]->SetBinContent(i, RisoluzioniBeta_RnS[j-1]->GetBinContent(i)/ RisoluzioniBeta_RnS[j-1]->GetEntries());
+                                RisoluzioniBeta_RnS[j-1]->SetBinError(i, RisoluzioniBeta_RnS[j-1]->GetBinError(i)/ RisoluzioniBeta_RnS[j-1]->GetEntries()); }
+                if(j<18)
+                        for(int i=1;i<=RisoluzioniBetaTOF_RnS[j-1]->GetNbinsX();i++) { RisoluzioniBetaTOF_RnS[j-1]->SetBinContent(i, RisoluzioniBetaTOF_RnS[j-1]->GetBinContent(i)/ RisoluzioniBetaTOF_RnS[j-1]->GetEntries());
+                                RisoluzioniBetaTOF_RnS[j-1]->SetBinError(i, RisoluzioniBetaTOF_RnS[j-1]->GetBinError(i)/ RisoluzioniBetaTOF_RnS[j-1]->GetEntries()); }
+
 		if(j<24)
 			for(int i=1;i<=RisoluzioniBeta_R[j-1]->GetNbinsX();i++) { RisoluzioniBeta_R[j-1]->SetBinContent(i, RisoluzioniBeta_R[j-1]->GetBinContent(i)/ RisoluzioniBeta_R[j-1]->GetEntries());
 				RisoluzioniBeta_R[j-1]->SetBinError(i, RisoluzioniBeta_R[j-1]->GetBinError(i)/ RisoluzioniBeta_R[j-1]->GetEntries()); }
-		if(j<24)
-                        for(int i=1;i<=RisoluzioniBeta_R[j-1]->GetNbinsX();i++) { RisoluzioniBeta_R[j-1]->SetBinContent(i, RisoluzioniBeta_R[j-1]->GetBinContent(i)/ RisoluzioniBeta_R[j-1]->GetEntries());
-                                RisoluzioniBeta_R[j-1]->SetBinError(i, RisoluzioniBeta_R[j-1]->GetBinError(i)/ RisoluzioniBeta_R[j-1]->GetEntries()); }
+		if(j<18)
+                        for(int i=1;i<=RisoluzioniBetaTOF_R[j-1]->GetNbinsX();i++) { RisoluzioniBetaTOF_R[j-1]->SetBinContent(i, RisoluzioniBetaTOF_R[j-1]->GetBinContent(i)/ RisoluzioniBetaTOF_R[j-1]->GetEntries());
+                                RisoluzioniBetaTOF_R[j-1]->SetBinError(i, RisoluzioniBetaTOF_R[j-1]->GetBinError(i)/ RisoluzioniBetaTOF_R[j-1]->GetEntries()); }
                 if(j<18)
                         for(int i=1;i<=RisoluzioniBetaNaF_R[j-1]->GetNbinsX();i++) if(RisoluzioniBetaNaF_R[j-1]->GetEntries()>0) { RisoluzioniBetaNaF_R[j-1]->SetBinContent(i, RisoluzioniBetaNaF_R[j-1]->GetBinContent(i)/ RisoluzioniBetaNaF_R[j-1]->GetEntries());
                                 RisoluzioniBetaNaF_R[j-1]->SetBinError(i, RisoluzioniBetaNaF_R[j-1]->GetBinError(i)/ RisoluzioniBetaNaF_R[j-1]->GetEntries()); }
@@ -948,6 +982,10 @@ int main(int argc, char * argv[]){
 	TF1 *beta_r_D[24];	
 	TF1 *betaTOF_r_MC[18];
         TF1 *betaTOF_r_D[18];
+	TF1 *beta_r_MCnS[24];
+        TF1 *beta_r_DnS[24];
+        TF1 *betaTOF_r_MCnS[18];
+        TF1 *betaTOF_r_DnS[18];
 	TF1 *betaNaF_r_MC[18];
         TF1 *betaNaF_r_D[18];
 	TF1 *betaAgl_r_MC[18];
@@ -1008,6 +1046,15 @@ int main(int argc, char * argv[]){
 	double sigma_beta_R[24]={0};
 	double mean_beta_R_err[24]={0};
 	double sigma_beta_R_err[24]={0};
+	double mean_beta_R_DnS[24]={0};
+        double sigma_beta_R_DnS[24]={0};
+        double mean_beta_R_D_errnS[24]={0};
+        double sigma_beta_R_D_errnS[24]={0};
+        double mean_beta_RnS[24]={0};
+        double sigma_beta_RnS[24]={0};
+        double mean_beta_R_errnS[24]={0};
+        double sigma_beta_R_errnS[24]={0};
+
 	double sigma_R[24]={0};
 	double sigma_R_err[24]={0};
 
@@ -1018,7 +1065,18 @@ int main(int argc, char * argv[]){
         double mean_betaR[18]={0};
         double sigma_betaR[18]={0};
         double mean_betaR_err[18]={0};
-        double sigma_betaR_err[18]={0};
+         
+        double mean_betaR_DnS[18]={0};
+        double sigma_betaR_DnS[18]={0};
+        double mean_betaR_D_errnS[18]={0};
+        double sigma_betaR_D_errnS[18]={0};
+        double mean_betaRnS[18]={0};
+        double sigma_betaRnS[18]={0};
+        double mean_betaR_errnS[18]={0};
+	double sigma_betaR_errnS[18]={0};
+
+
+	double sigma_betaR_err[18]={0};
         double mean_betaNaFR_D[18]={0};
         double sigma_betaNaFR_D[18]={0};
         double mean_betaNaFR_D_err[18]={0};
@@ -1229,9 +1287,11 @@ int main(int argc, char * argv[]){
 	}
 	float PiccoBeta_R[24];
 	float PiccoR_Beta[18];
+	float PiccoBeta_RnS[24];
 	float PiccoR_BetaNaF[18];
 	float PiccoR_BetaAgl[18];
 	float PiccoBetaTOF_R[18];
+	float PiccoBetaTOF_RnS[18];
 	float PiccoBetaNaF_R[18];
 	float PiccoBetaAgl_R[18];
 	float PiccoM_Beta[18];
@@ -1276,6 +1336,34 @@ int main(int argc, char * argv[]){
 		sigma_beta_R_D_err[j]=beta_r_D[j]->GetParError(2);
 		
 
+		PiccoBeta_RnS[j]=RisoluzioniBeta_RnS[j]->GetBinCenter(RisoluzioniBeta_RnS[j]->GetMaximumBin());
+                beta_r_MCnS[j]=new TF1("betaMCnS","gaus",0,20);
+                beta_r_DnS[j]=new TF1("betaDnS","gaus",0,20);
+                beta_r_DnS[j]->SetLineColor(4);
+                beta_r_MCnS[j]->SetParameter(0,RisoluzioniBeta_RnS[j]->GetBinContent(RisoluzioniBeta_RnS[j]->GetMaximumBin()));
+                beta_r_MCnS[j]->SetParameter(1,RisoluzioniBeta_RnS[j]->GetMean());
+                beta_r_MCnS[j]->SetParameter(2,RisoluzioniBeta_RnS[j]->GetRMS());
+                beta_r_DnS[j]->SetParameter(0,RisoluzioniBeta_R_DnS[j]->GetBinContent(RisoluzioniBeta_R_DnS[j]->GetMaximumBin()));
+                beta_r_DnS[j]->SetParameter(1,RisoluzioniBeta_R_DnS[j]->GetMean());
+                beta_r_DnS[j]->SetParameter(2,RisoluzioniBeta_R_DnS[j]->GetRMS());
+                if(j==0) {
+                        RisoluzioniBeta_RnS[j]->Fit("betaMCnS","","",PiccoBeta_RnS[j]-0.15,PiccoBeta_RnS[j]+0.10);
+                        RisoluzioniBeta_R_DnS[j]->Fit("betaDnS","","",PiccoBeta_RnS[j]-0.15,PiccoBeta_RnS[j]+0.10);
+                }
+                else{
+                        RisoluzioniBeta_RnS[j]->Fit("betaMCnS","","",PiccoBeta_RnS[j]-0.15,PiccoBeta_RnS[j]+0.10);
+                        RisoluzioniBeta_R_DnS[j]->Fit("betaDnS","","",PiccoBeta_RnS[j]-0.15,PiccoBeta_RnS[j]+0.10);
+                }
+                mean_beta_RnS[j]=beta_r_MCnS[j]->GetParameter(1);
+                sigma_beta_RnS[j]=beta_r_MCnS[j]->GetParameter(2);
+                mean_beta_R_errnS[j]=beta_r_MCnS[j]->GetParError(1);
+                sigma_beta_R_errnS[j]=beta_r_MCnS[j]->GetParError(2);
+                mean_beta_R_DnS[j]=beta_r_DnS[j]->GetParameter(1);
+                sigma_beta_R_DnS[j]=beta_r_DnS[j]->GetParameter(2);
+                mean_beta_R_D_errnS[j]=beta_r_DnS[j]->GetParError(1);
+                sigma_beta_R_D_errnS[j]=beta_r_DnS[j]->GetParError(2);
+
+
 
 		// BETA Reso (Analysis bins)
 		if(j<18){
@@ -1306,6 +1394,39 @@ int main(int argc, char * argv[]){
                 mean_betaR_D_err[j]=betaTOF_r_D[j]->GetParError(1);
                 sigma_betaR_D_err[j]=betaTOF_r_D[j]->GetParError(2);		
 		}
+		
+		 if(j<18){
+                PiccoBetaTOF_RnS[j]=RisoluzioniBetaTOF_RnS[j]->GetBinCenter(RisoluzioniBetaTOF_RnS[j]->GetMaximumBin());
+                betaTOF_r_MCnS[j]=new TF1("betaTOFMCnS","gaus",0,20);
+                betaTOF_r_DnS[j]=new TF1("betaTOFDnS","gaus",0,20);
+                betaTOF_r_DnS[j]->SetLineColor(4);
+                betaTOF_r_MCnS[j]->SetParameter(0,RisoluzioniBetaTOF_RnS[j]->GetBinContent(RisoluzioniBetaTOF_RnS[j]->GetMaximumBin()));
+                betaTOF_r_MCnS[j]->SetParameter(1,RisoluzioniBetaTOF_RnS[j]->GetMean());
+                betaTOF_r_MCnS[j]->SetParameter(2,RisoluzioniBetaTOF_RnS[j]->GetRMS());
+                betaTOF_r_DnS[j]->SetParameter(0,RisoluzioniBetaTOF_R_DnS[j]->GetBinContent(RisoluzioniBetaTOF_R_DnS[j]->GetMaximumBin()));
+                betaTOF_r_DnS[j]->SetParameter(1,RisoluzioniBetaTOF_R_DnS[j]->GetMean());
+                betaTOF_r_DnS[j]->SetParameter(2,RisoluzioniBetaTOF_R_DnS[j]->GetRMS());
+                if(j==0) {
+                        RisoluzioniBetaTOF_RnS[j]->Fit("betaTOFMCnS","","",PiccoBetaTOF_RnS[j]-0.15,PiccoBetaTOF_RnS[j]+0.10);
+                        RisoluzioniBetaTOF_R_DnS[j]->Fit("betaTOFDnS","","",PiccoBetaTOF_RnS[j]-0.15,PiccoBetaTOF_RnS[j]+0.10);
+                }
+                else{
+                        RisoluzioniBetaTOF_RnS[j]->Fit("betaTOFMCnS","","",PiccoBetaTOF_RnS[j]-0.15,PiccoBetaTOF_RnS[j]+0.10);
+                        RisoluzioniBetaTOF_R_DnS[j]->Fit("betaTOFDnS","","",PiccoBetaTOF_RnS[j]-0.15,PiccoBetaTOF_RnS[j]+0.10);
+                }
+                mean_betaRnS[j]=betaTOF_r_MCnS[j]->GetParameter(1);
+                sigma_betaRnS[j]=betaTOF_r_MCnS[j]->GetParameter(2);
+                mean_betaR_errnS[j]=betaTOF_r_MCnS[j]->GetParError(1);
+                sigma_betaR_errnS[j]=betaTOF_r_MCnS[j]->GetParError(2);
+                mean_betaR_DnS[j]=betaTOF_r_DnS[j]->GetParameter(1);
+                sigma_betaR_DnS[j]=betaTOF_r_DnS[j]->GetParameter(2);
+                mean_betaR_D_errnS[j]=betaTOF_r_DnS[j]->GetParError(1);
+                sigma_betaR_D_errnS[j]=betaTOF_r_DnS[j]->GetParError(2);
+                }
+
+
+
+
 		if(j<18){
 		PiccoBetaNaF_R[j]=RisoluzioniBetaNaF_R[j]->GetBinCenter(RisoluzioniBetaNaF_R[j]->GetMaximumBin());
                 betaNaF_r_MC[j]=new TF1("betaNaFMC","gaus",0,20);
@@ -1799,8 +1920,10 @@ int main(int argc, char * argv[]){
 	TGraphErrors *ResoR=new TGraphErrors();
 	TGraphErrors *SigmaBeta_R=new TGraphErrors();
 	TGraphErrors *SigmaBeta_R_D=new TGraphErrors();
+	TGraphErrors *SigmaBeta_R_DnS=new TGraphErrors();
 	TGraphErrors *SigmaBetaTOF_R=new TGraphErrors();
         TGraphErrors *SigmaBetaTOF_R_D=new TGraphErrors();
+	TGraphErrors *SigmaBetaTOF_R_DnS=new TGraphErrors();
 	TGraphErrors *SigmaBetaNaF_R=new TGraphErrors();
         TGraphErrors *SigmaBetaNaF_R_D=new TGraphErrors();
 	TGraphErrors *SigmaBetaAgl_R=new TGraphErrors();
@@ -1857,6 +1980,8 @@ int main(int argc, char * argv[]){
 			SigmaBeta_R->SetPointError(j,0,sigma_beta_R_err[j]/sigma_beta_R[j]);
 			SigmaBeta_R_D->SetPoint(j,valorecent[j],sigma_beta_R_D[j]/sigma_beta_R[j]);
 			SigmaBeta_R_D->SetPointError(j,0,sigma_beta_R_D_err[j]/sigma_beta_R[j]);
+			SigmaBeta_R_DnS->SetPoint(j,valorecent[j],sigma_beta_R_DnS[j]/sigma_beta_RnS[j]);
+                        SigmaBeta_R_DnS->SetPointError(j,0,sigma_beta_R_D_errnS[j]/sigma_beta_RnS[j]);
 		}
 		if(j<18) {
 			SigmaR_Beta->SetPoint(j,Betacent[j],sigma_R_beta[j]/sigma_R_beta[j]);
@@ -1878,6 +2003,9 @@ int main(int argc, char * argv[]){
                         SigmaBetaTOF_R->SetPointError(j,0,sigma_betaR_err[j]/sigma_betaR[j]);
                         SigmaBetaTOF_R_D->SetPoint(j,BetacentcentR_D[j],sigma_betaR_D[j]/sigma_betaR[j]);
                         SigmaBetaTOF_R_D->SetPointError(j,0,sigma_betaR_D_err[j]/sigma_betaR[j]);
+			SigmaBetaTOF_R_DnS->SetPoint(j,BetacentcentR_D[j],sigma_betaR_DnS[j]/sigma_betaRnS[j]);
+                        SigmaBetaTOF_R_DnS->SetPointError(j,0,sigma_betaR_D_errnS[j]/sigma_betaRnS[j]);
+
 
 			SigmaBetaNaF_R->SetPoint(j,BetacentcentNaFR_D[j],sigma_betaNaFR[j]/sigma_betaNaFR[j]);
                         SigmaBetaNaF_R->SetPointError(j,0,sigma_betaNaFR_err[j]/sigma_betaNaFR[j]);
@@ -1997,7 +2125,10 @@ int main(int argc, char * argv[]){
 	c13->SetLogx();
 	SigmaBeta_R->SetMarkerStyle(8);
 	SigmaBeta_R_D->SetMarkerStyle(8);
+	SigmaBeta_R_DnS->SetMarkerStyle(8);
 	SigmaBeta_R->SetMarkerColor(2);
+	SigmaBeta_R_DnS->SetMarkerColor(4);
+	SigmaBeta_R_DnS->SetLineColor(4);
 	SigmaBeta_R->SetLineColor(2);
 	SigmaBeta_R->SetLineWidth(2);
 	SigmaBeta_R_D->SetLineWidth(2);
@@ -2008,14 +2139,19 @@ int main(int argc, char * argv[]){
 	SigmaBeta_R_D->GetYaxis()->SetRangeUser(0.7,1.3);
 	SigmaBeta_R_D->Draw("AP");
 	SigmaBeta_R->Draw("sameP");
+	SigmaBeta_R_DnS->Draw("sameP");
+
 
 	c13_bis->cd(1);
         gPad->SetGridx();
         gPad->SetGridy();
         SigmaBetaTOF_R->SetMarkerStyle(8);
         SigmaBetaTOF_R_D->SetMarkerStyle(8);
-        SigmaBetaTOF_R->SetMarkerColor(2);
-        SigmaBetaTOF_R->SetLineColor(2);
+        SigmaBetaTOF_R_DnS->SetMarkerStyle(8);
+	SigmaBetaTOF_R->SetMarkerColor(2);
+        SigmaBetaTOF_R_DnS->SetMarkerColor(4);
+	SigmaBetaTOF_R_DnS->SetLineColor(4);
+	SigmaBetaTOF_R->SetLineColor(2);
         SigmaBetaTOF_R->SetLineWidth(2);
         SigmaBetaTOF_R_D->SetLineWidth(2);
         SigmaBetaTOF_R_D->SetTitle("Sigma Inverse Beta TOF (Meas. R bins)");
@@ -2024,6 +2160,7 @@ int main(int argc, char * argv[]){
         SigmaBetaTOF_R_D->GetYaxis()->SetTitle("Sigma Inverse Beta TOF");
         SigmaBetaTOF_R_D->GetYaxis()->SetRangeUser(0.7,1.3);
 	SigmaBetaTOF_R_D->Draw("AP");
+	SigmaBetaTOF_R_DnS->Draw("sameP");
         SigmaBetaTOF_R->Draw("sameP");
 
 	c13_bis->cd(2);

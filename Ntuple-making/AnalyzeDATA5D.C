@@ -13,6 +13,7 @@ int nprotoni=0;
 int entriestot=0;
 int events=0;
 int INDX;
+float BetanS=0;
 float Encinp;
 float Encind;
 float esposizionep[18]= {0};
@@ -199,7 +200,7 @@ int main(int argc, char * argv[])
 
    TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:LDiscriminant:DistD,IsCharge1");
    TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:Rmin:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
-   TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:LDiscriminant");
+   TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:LDiscriminant:BetanS");
    TNtuple * trig = new TNtuple("trig","trig","U_time:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias:BetaR");
 
    BDTreader();
@@ -489,7 +490,7 @@ void Trigg (TTree *albero,int i,TNtuple *ntupla)
 void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla)
 {
    albero->GetEvent(i);
-   ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,EdepECAL,Rcutoff,Latitude,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,LDiscriminant);
+   ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,EdepECAL,Rcutoff,Latitude,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,LDiscriminant,BetanS);
 }
 
 void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
