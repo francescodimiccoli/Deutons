@@ -203,6 +203,7 @@ int main(int argc, char * argv[])
    TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:LDiscriminant:BetanS");
    TNtuple * trig = new TNtuple("trig","trig","U_time:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias:BetaR");
 
+
    BDTreader();
    if(check) {
       geo_stuff->SetBranchAddress("U_time",&U_time);

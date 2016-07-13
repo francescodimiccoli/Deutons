@@ -1424,9 +1424,6 @@ int main(int argc, char * argv[]){
                 sigma_betaR_D_errnS[j]=betaTOF_r_DnS[j]->GetParError(2);
                 }
 
-
-
-
 		if(j<18){
 		PiccoBetaNaF_R[j]=RisoluzioniBetaNaF_R[j]->GetBinCenter(RisoluzioniBetaNaF_R[j]->GetMaximumBin());
                 betaNaF_r_MC[j]=new TF1("betaNaFMC","gaus",0,20);
