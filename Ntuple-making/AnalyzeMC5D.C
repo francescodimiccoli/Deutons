@@ -48,7 +48,6 @@ int main(int argc, char * argv[])
 		_file2 = TFile::Open(nomecal.c_str());
 		control=1;
 	}
-	control=1;
 	Rig = (TSpline3 *) _file2->Get("Fit Results/Splines/Rig");
 	beta = (TSpline3 *) _file2->Get("Fit Results/Splines/beta");
 	betaNaF = (TF1 *) _file2->Get("Fit Results/Splines/SigmaInvBetaNaF_spl");
