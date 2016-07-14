@@ -122,9 +122,16 @@ void  CalcLATcorr(TH1 * before,TH1 * after, TH1 * LATcorr,int n){
 				HEeff_after[i]  = ((TH3 *)after )-> Integral(30,nbinsr,i+1,i+1,m+1,m+1);
 			} 
 			for(int i=1;i<11;i++){
+			    if(HEeff_before[i]>0){	
 				LATcorr -> SetBinContent(i+1,m+1,(HEeff_after[1]/HEeff_before[1])/(HEeff_after[i]/HEeff_before[i]));
 				LATcorr -> SetBinError(i+1,m+1,pow(HEeff_after[i],-0.5)*LATcorr -> GetBinContent(i+1,m+1));
-			}
+				}
+			    else{
+				LATcorr -> SetBinContent(i+1,m+1,1);
+                                LATcorr -> SetBinError(i+1,m+1,0.5);
+    
+				}	
+			   }
 		}
 	}
 	else{
@@ -136,8 +143,14 @@ void  CalcLATcorr(TH1 * before,TH1 * after, TH1 * LATcorr,int n){
 			HEeff_after[i]  = ((TH2 *)after )-> Integral(30,nbinsr,i+1,i+1);
 		}
 		for(int i=1;i<11;i++){
+		       if(HEeff_before[i]>0){	  
 			  LATcorr -> SetBinContent(i+1,1,(HEeff_after[1]/HEeff_before[1])/(HEeff_after[i]/HEeff_before[i]));
 			  LATcorr -> SetBinError(i+1,1,pow(HEeff_after[i],-0.5)*LATcorr -> GetBinContent(i+1));
+			}
+			else{
+			  LATcorr -> SetBinContent(i+1,1,1);
+                          LATcorr -> SetBinError(i+1,1,0.5);	
+			}
 		}
 	}	
 }

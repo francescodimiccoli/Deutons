@@ -18,11 +18,9 @@ void DVSMCRICHeff_Plot (TH1 *  RICH_Correction_P_NaF,
 	RICHDVSMC_P_GraphNaF->SetName("RICHDVSMC_P_GraphNaF");
 	int j=0;
 	for(int i=1;i<nbinsNaF;i++) {
-		if(RICH_Correction_P_NaF -> GetBinContent(i+1)>0){
 			RICHDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkPerMassBinCent(i),RICH_Correction_P_NaF -> GetBinContent(i+1));
 			RICHDVSMC_P_GraphNaF->SetPointError(j,0,RICH_Correction_P_NaF -> GetBinError(i+1));
 			j++;
-		}
 	}
 	RICHDVSMC_P_GraphNaF->SetLineColor(2);
 	RICHDVSMC_P_GraphNaF->SetFillColor(2);
@@ -38,11 +36,9 @@ void DVSMCRICHeff_Plot (TH1 *  RICH_Correction_P_NaF,
         RICHDVSMC_P_GraphAgl->SetName("RICHDVSMC_P_GraphAgl");
         j=0;
         for(int i=1;i<nbinsAgl;i++) {
-                if(RICH_Correction_P_Agl -> GetBinContent(i+1)>0){
                         RICHDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkPerMassBinCent(i),RICH_Correction_P_Agl -> GetBinContent(i+1));
                         RICHDVSMC_P_GraphAgl->SetPointError(j,0,RICH_Correction_P_Agl -> GetBinError(i+1));
                         j++;
-                }
         }
         RICHDVSMC_P_GraphAgl->SetLineColor(2);
         RICHDVSMC_P_GraphAgl->SetFillColor(2);

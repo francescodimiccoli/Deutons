@@ -24,10 +24,9 @@ void	DATARICHeff_Plot(TH1 *LATrichDATANaF 	 ,
 		EffDATArichNaF[l]=new TGraphErrors();
 		int j=0;
 		for(int i=1; i<nbinsr; i++) {
-			if(LATrichDATANaF->GetBinContent(i+1,l+1)>0) {
 				EffDATArichNaF[l]->SetPoint(j,PRB.RigBinCent(i),LATrichDATANaF->GetBinContent(i+1,l+1));
 				EffDATArichNaF[l]->SetPointError(j,0,   LATrichDATANaF->GetBinError(i+1,l+1));
-				j++;}
+				j++;
 		}
 	}
 	EffDATArichNaF[10]->SetMarkerColor(1);
@@ -56,11 +55,9 @@ void	DATARICHeff_Plot(TH1 *LATrichDATANaF 	 ,
 		EffDATArichAgl[l]=new TGraphErrors();
 		int j=0;
 		for(int i=1; i<nbinsr; i++) {
-			if(LATrichDATAAgl ->GetBinContent(i+1,l+1)>0){
 				EffDATArichAgl[l]->SetPoint(j,PRB.RigBinCent(i),LATrichDATAAgl ->GetBinContent(i+1,l+1));
 				EffDATArichAgl[l]->SetPointError(j,0,   LATrichDATAAgl ->GetBinError(i+1,l+1));
 				j++;
-			}
 		}
 	}
 	EffDATArichAgl[10]->SetMarkerColor(1);

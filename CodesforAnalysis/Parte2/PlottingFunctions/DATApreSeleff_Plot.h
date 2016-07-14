@@ -24,11 +24,9 @@ void	DATApreSeleff_Plot(TH1 * LATpreSelDATA_R  ,
 			Eff_preSelLAT[S][l]=new TGraphErrors();
 			int point=0;
 			for(int i=1; i<nbinsr; i++) {
-				if(LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1)>0) {
 					Eff_preSelLAT[S][l]->SetPoint(point,PRB.RigBinCent(i),LATpreSelDATA_R->GetBinContent(i+1,l+1,S+1));
 					Eff_preSelLAT[S][l]->SetPointError(point,0,LATpreSelDATA_R->GetBinError(i+1,l+1,S+1));
 					point++;
-				}
 			}
 		}
 		Eff_preSelLAT[S][10]->SetMarkerColor(1);

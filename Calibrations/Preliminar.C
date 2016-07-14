@@ -652,9 +652,9 @@ int main(int argc, char * argv[]){
 				RisoluzioniR[l]->Fill(1/R-1/Momentogen,mcweight);	}
 			for(int l=0; l<24;l++) if(R>bin[l]&&R<=bin[l+1]&&Massagen>0.5&&Massagen<1){
 				RisoluzioniBeta_R[l]->Fill(1/Beta,mcweight);
-				RisoluzioniBeta_RnS[l]->Fill(1/Beta,mcweight);
+				RisoluzioniBeta_RnS[l]->Fill(1/BetanS,mcweight);
 			}
-			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) {RisoluzioniBetaTOF_R[m]->Fill(1/Beta,mcweight);RisoluzioniBetaTOF_RnS[m]->Fill(1/Beta,mcweight);}
+			for(int m=0; m<18;m++) if(R>BetabinsR_D[m]&&R<=BetabinsR_D[m+1]) {RisoluzioniBetaTOF_R[m]->Fill(1/Beta,mcweight);RisoluzioniBetaTOF_RnS[m]->Fill(1/BetanS,mcweight);}
                         if((((int)Cutmask)>>11)==512) for(int m=0; m<18;m++) if(R>BetabinsNaFR_D[m]&&R<=BetabinsNaFR_D[m+1]) {RisoluzioniBetaNaF_R[m]->Fill(1/BetaRICH,mcweight);}
                         if((((int)Cutmask)>>11)==0) for(int m=0; m<18;m++) if(R>BetabinsAglR_D[m]&&R<=BetabinsAglR_D[m+1]) {RisoluzioniBetaAgl_R[m]->Fill(1/BetaRICH,mcweight);}
 
