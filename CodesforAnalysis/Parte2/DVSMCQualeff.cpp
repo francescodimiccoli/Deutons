@@ -9,8 +9,9 @@ void DVSMCQualeff2_D_Fill(int zona){
 
 	//cuts
 	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
-	if(!(Tup.R>1.2*Tup.Rcutoff)) return;
 	if(!Herejcut) return;
+        //if((Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta)-0.1)) L1cut=true;
+	//if(!L1cut) return;
 	//
 	int Kbin;
 	
@@ -64,7 +65,11 @@ void DVSMCQualeff2_Fill(){
 
 	//cuts
 	if(Tup.Beta<=0||Tup.R<=0||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
-        if(!Herejcut) return;
+        if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta_pre)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta_pre)-0.1)) return;
+	if(!Herejcut) return;
+	//bool L1cut=false;
+        //if((Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta)-0.1)) L1cut=true;
+        //if(!L1cut) return;
 	//
 	int Kbin;
 

@@ -199,8 +199,8 @@ int main(int argc, char * argv[])
     TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
 
    TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:LDiscriminant:DistD,IsCharge1");
-   TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:Rmin:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
-   TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:LDiscriminant:BetanS");
+   TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:Unbias:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
+   TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:BetaRICH_new:Cutmask:BetanS:BetaR");
    TNtuple * trig = new TNtuple("trig","trig","U_time:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias:BetaR");
 
 
@@ -491,7 +491,7 @@ void Trigg (TTree *albero,int i,TNtuple *ntupla)
 void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla)
 {
    albero->GetEvent(i);
-   ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,EdepECAL,Rcutoff,Latitude,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,LDiscriminant,BetanS);
+   ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,EdepECAL,Rcutoff,Latitude,BetaRICH_new,Cutmask,Beta_pre,BetaR);
 }
 
 void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
@@ -503,7 +503,7 @@ void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
    albero->GetEvent(i);
-   ntupla->Fill(R,Beta,(*trtrack_edep)[0],Cutmask,Latitude,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Rcutoff,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
+   ntupla->Fill(R,Beta,(*trtrack_edep)[0],Cutmask,Latitude,Unbias,EdepTOFU,EdepTrack,EdepTOFD,Rcutoff,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
 }
 
 

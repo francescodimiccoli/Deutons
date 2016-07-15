@@ -16,9 +16,9 @@ void Acceptance(string filename){
 	ACCEPTANCE * AcceptancePreP = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCP","EffpreselMCP","PreLATCorr","CorrezioneLATPrep",1);
 	ACCEPTANCE * AcceptancePreD = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCD","EffpreselMCD","PreLATCorr","CorrezioneLATPred",6);
        
-	TH1F * TrackerGlobalFactor = (TH1F *) inputHistoFile -> Get("Results/TrackerGlobalFactor");	
-	TH1F * TriggerGlobalFactor = (TH1F *) inputHistoFile -> Get("Results/TriggerGlobalFactor"); 
-
+	TH1F * TrackerGlobalFactor =  (TH1F *) inputHistoFile -> Get("Results/TrackerGlobalFactor");	
+	TH1F * TriggerGlobalFactor =  (TH1F *) inputHistoFile -> Get("Results/TriggerGlobalFactor"); 
+	TH1F * TriggerGlobalFactorQ = (TH1F *) inputHistoFile -> Get("Results/TriggerGlobalFactorQ");
 	cout<<"****************** ACCEPTANCE CALCULATION ******************"<<endl;
 
 
@@ -83,17 +83,17 @@ void Acceptance(string filename){
 
 
 	//global factors
-/*	AcceptanceP    -> ApplyGlobalFactor(TriggerGlobalFactor -> GetBinContent(1), TriggerGlobalFactor -> GetBinError(1));
-	AcceptanceD    -> ApplyGlobalFactor(TriggerGlobalFactor -> GetBinContent(1), TriggerGlobalFactor -> GetBinError(1));
+	AcceptanceP    -> ApplyGlobalFactor(TriggerGlobalFactorQ -> GetBinContent(1), TriggerGlobalFactorQ -> GetBinError(1));
+	AcceptanceD    -> ApplyGlobalFactor(TriggerGlobalFactorQ -> GetBinContent(1), TriggerGlobalFactorQ -> GetBinError(1));
 	AcceptancePreP -> ApplyGlobalFactor(TriggerGlobalFactor -> GetBinContent(1), TriggerGlobalFactor -> GetBinError(1));
  
-	AcceptanceP    -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
+/*	AcceptanceP    -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
 	AcceptanceD    -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
 	AcceptancePreP -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
 */	
 	//preselections
 
-	AcceptanceP -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,1,3);
+/*	AcceptanceP -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,1,3);
 	AcceptanceP -> Apply_DvsMCcorrection_TOF(PreSel_Correction_TOF,1,3);
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,1,3);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);
@@ -102,18 +102,18 @@ void Acceptance(string filename){
         AcceptancePreP -> Apply_DvsMCcorrection_TOF(PreSel_Correction_TOF,1,3);
         AcceptancePreP -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,1,3);
 	AcceptancePreP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);
-	
+*/	
 	//qual
 	AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);
 	AcceptanceP -> Apply_DvsMCcorrection_R(LikP_Correction_R );
 	
 	//rich
-	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
+/*	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(RICH_Correction_P_Agl);
 	
 	AcceptanceD -> Apply_DvsMCcorrection_NaF(RICH_Correction_D_NaF,6);
         AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl,6);
-	
+*/	
 	
 	
 	//Protons

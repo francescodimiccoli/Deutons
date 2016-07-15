@@ -111,6 +111,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       SlidesforPlot_Write();
       DistanceCut_Write();
       DATAUnbiaseff_Write();
+      DATAUnbiaseffQ_Write();
       DeutonsMC_Write();
       DeutonsMC_Dist_Write();
       DVSMCPreSeleff_Write();
@@ -214,7 +215,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCSepD->SetBranchAddress("Beta",&Tup.Beta);
    ntupMCSepD->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
    ntupMCSepD->SetBranchAddress("EdepL1",&Tup.EdepL1);
-   ntupMCSepD->SetBranchAddress("Rmin",&Tup.Rmin);
+   ntupMCSepD->SetBranchAddress("Unbias",&Tup.Unbias);
    ntupMCSepD->SetBranchAddress("EdepTOF",&Tup.EdepTOFU);
    ntupMCSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
    ntupMCSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
@@ -225,6 +226,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCSepD->SetBranchAddress("Dist5D",&Tup.Dist5D);
    ntupMCSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
    ntupMCSepD->SetBranchAddress("mcweight",&Tup.mcweight);
+   
 
    ntupDataTrig->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
    ntupDataTrig->SetBranchAddress("R_pre",&Tup.R_pre);
@@ -245,7 +247,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupDataSepD->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
    ntupDataSepD->SetBranchAddress("EdepL1",&Tup.EdepL1);
    ntupDataSepD->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
-   ntupDataSepD->SetBranchAddress("Rmin",&Tup.Rmin);
+   ntupDataSepD->SetBranchAddress("Unbias",&Tup.Unbias);
    ntupDataSepD->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
    ntupDataSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
    ntupDataSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
@@ -367,6 +369,7 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
 
       HecutD_Fill();
       SlidesforPlot_D_Fill();
+      DATAUnbiaseffQ_Fill ();
       DATAQualeff_Fill(Zona);
       DATARICHeff_Fill(Zona);
       ProtonFlux_Fill(Zona);

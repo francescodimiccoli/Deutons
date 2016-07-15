@@ -14,7 +14,7 @@ void MCpreseff_Fill() {
 	if(Massa_gen<1&&Massa_gen>0.5) {
 		//R bins
 		EffpreselMCP->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
-		if(Tup.Unbias==0&&cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0) 
+		if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0) 
 			EffpreselMCP->afterR->Fill(PRB.GetRBin(RUsed),Tup.mcweight);
 
 		// Beta bins
@@ -22,7 +22,7 @@ void MCpreseff_Fill() {
 		EffpreselMCP->beforeNaF->Fill(NaFPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
 		EffpreselMCP->beforeAgl->Fill(AglPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
 
-		if(Tup.Unbias==0 && cmask.isPreselected() && Tup.Beta_pre>0 && Tup.R_pre>0)
+		if(cmask.isPreselected() && Tup.Beta_pre>0 && Tup.R_pre>0)
 		{
 			kbin=ToFPB.GetBin(RUsed);
 			EffpreselMCP->afterTOF->Fill(kbin,Tup.mcweight); 
@@ -41,7 +41,7 @@ void MCpreseff_Fill() {
 	if(Massa_gen>1&&Massa_gen<2) {
 		// R bins      
 		((TH2*)EffpreselMCD->beforeR) ->Fill( PRB.GetRBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight);
-		if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.Unbias==0&&Tup.R_pre>0)
+		if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0)
 			((TH2*) EffpreselMCD->beforeR) ->Fill( PRB.GetRBin(RUsed),ReturnMCGenType(),Tup.mcweight);
 
 		// Beta bins
@@ -50,7 +50,7 @@ void MCpreseff_Fill() {
 		((TH2*)EffpreselMCD->beforeNaF)->Fill( NaFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
 		((TH2*)EffpreselMCD->beforeAgl)->Fill( AglDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
 
-		if(Tup.Unbias==0 && cmask.isPreselected() && Tup.Beta_pre>0 && Tup.R_pre>0)
+		if(cmask.isPreselected() && Tup.Beta_pre>0 && Tup.R_pre>0)
 		{
 			kbin=ToFDB.GetBin(RUsed);
 			((TH2*)EffpreselMCD->afterTOF)->Fill(kbin,ReturnMCGenType(),Tup.mcweight);

@@ -12,6 +12,8 @@ Efficiency * EffDistMCD = new Efficiency ("EffDistMCD",6);
 void MCQualeff_Fill() {
 
 	int Kbin;
+	if(Tup.Beta<=0||Tup.R<=0) return;
+	
 	if(Massa_gen<1) {
 		//R bins
 		Kbin=PRB.GetRBin(Tup.R);

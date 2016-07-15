@@ -10,21 +10,22 @@ Efficiency * EffUnbiasMCD;
 void MCUnbiaseff_Fill() {
 
    if(!cmask.isPreselected()||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
-   if(!(Tup.EdepTrack<EdepTrackbeta->Eval(Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval(Tup.Beta_pre)-0.2)) return;
-
+   //if(!(Tup.EdepTrack<EdepTrackbeta->Eval(Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval(Tup.Beta_pre)-0.2)) return;
+   if(!Herejcut) return;
    int Kbin;
-
-   if(Massa_gen<1&&Massa_gen>0.5) {
+    	   
+    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
-      Kbin=PRB.GetRBin(Tup.Momento_gen);
-      EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
-      if(Tup.Unbias==0) EffUnbiasMCP->afterR->Fill(Kbin,Tup.mcweight);
+      Kbin=PRB.GetRBin(Tup.R_pre);
+      if(Tup.Unbias==0) EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
+      if(Tup.Unbias==1) EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
+      if(Tup.Unbias==1) EffUnbiasMCP->afterR->Fill(Kbin,Tup.mcweight);
 
       //Beta bins
-      Kbin=ToFPB.GetBin(Tup.Momento_gen);
-      EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
-      if(Tup.Unbias==0) EffUnbiasMCP->afterTOF->Fill(Kbin,Tup.mcweight);
-      
+      Kbin=ToFPB.GetBin(Tup.R_pre);
+      if(Tup.Unbias==0) EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
+      if(Tup.Unbias==1) EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
+      if(Tup.Unbias==1) EffUnbiasMCP->afterTOF ->Fill(Kbin,Tup.mcweight);  
    }
 
    if(Massa_gen>1&&Massa_gen<2) {

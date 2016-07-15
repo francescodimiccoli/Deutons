@@ -22,8 +22,9 @@ void ProtonFlux_Fill(int zona) {
 			P_Flux_geo_prim -> Counts_R -> Fill(Kbin,zona);
 		}
 	}
-
-	if(Herejcut && Tup.R>1.2*Tup.Rcutoff && Tup.Beta<protons->Eval(Tup.R)+0.1 && Tup.Beta>protons->Eval(Tup.R)-0.1) {
+	//bool L1cut=false;
+	//if((Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta)-0.1)) L1cut=true;
+	if(Herejcut && Tup.Beta>0 && Tup.R>1.2*Tup.Rcutoff && Tup.Beta<protons->Eval(Tup.R)+0.1 && Tup.Beta>protons->Eval(Tup.R)-0.1) {
 		P_Flux_pre -> Counts_R -> Fill(Kbin);
 		if(Tup.Dist5D_P<6&&Likcut)  P_Flux_sel -> Counts_R -> Fill(Kbin);
 	}
