@@ -130,26 +130,43 @@ void SlidesforPlot_Fill ()
       EdepUTOFvsR_P->Fill (Tup.R,Tup.EdepTOFU,Tup.mcweight);
       EdepLTOFvsR_P->Fill (Tup.R,Tup.EdepTOFD,Tup.mcweight);
       EdepTrackvsR_P->Fill (Tup.R,Tup.EdepTrack,Tup.mcweight);
-      if (Betastrongcut&&Tup.BetaRICH<0) DistTOF_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      if (Betastrongcut&& cmask.isFromNaF() ) DistNaF_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      if (Betastrongcut&& cmask.isFromAgl() ) DistAgl_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
+      if (Herejcut&&Betastrongcut&&Tup.BetaRICH<0) {
+							DistTOF_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
+						        LikvsDistTOF_P->Fill(Tup.Dist5D,Tup.LDiscriminant);
+						   }	
+      if (Herejcut&&Betastrongcut&& cmask.isFromNaF() ) {
+							DistNaF_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
+      							LikvsDistNaF_P->Fill(Tup.Dist5D,Tup.LDiscriminant);
+      							}
+      if (Herejcut&&Betastrongcut&& cmask.isFromAgl() ) {
+							DistAgl_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
+							LikvsDistAgl_P->Fill(Tup.Dist5D,Tup.LDiscriminant);
+							}
 
-      if (Tup.BetaRICH<0) RvsDistTOF_P->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
-      if ( cmask.isFromNaF() ) RvsDistNaF_P->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
-      if ( cmask.isFromAgl() ) RvsDistAgl_P->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
+      if (Herejcut&&Tup.BetaRICH<0) RvsDistTOF_P->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
+      if (Herejcut&& cmask.isFromNaF() ) RvsDistNaF_P->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
+      if (Herejcut&& cmask.isFromAgl() ) RvsDistAgl_P->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
 
    }
    if (Massa_gen<2&&Massa_gen>1.5) {
       EdepUTOFvsR_D->Fill (Tup.R,Tup.EdepTOFU,Tup.mcweight);
       EdepLTOFvsR_D->Fill (Tup.R,Tup.EdepTOFD,Tup.mcweight);
       EdepTrackvsR_D->Fill (Tup.R,Tup.EdepTrack,Tup.mcweight);
-      if (Betastrongcut&&Tup.BetaRICH<0) DistTOF_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      if (Betastrongcut&& cmask.isFromNaF() ) DistNaF_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      if (Betastrongcut&& cmask.isFromAgl() ) DistAgl_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
-
-      if (Tup.BetaRICH<0) RvsDistTOF_D->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
-      if ( cmask.isFromNaF() ) RvsDistNaF_D->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      if ( cmask.isFromAgl() ) RvsDistAgl_D->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
+      if (Herejcut&&Betastrongcut&&Tup.BetaRICH<0) {
+						DistTOF_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
+      						LikvsDistTOF_D->Fill(Tup.Dist5D,Tup.LDiscriminant);
+						}
+	if (Herejcut&&Betastrongcut&& cmask.isFromNaF() ) {
+						DistNaF_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
+      						LikvsDistNaF_D->Fill(Tup.Dist5D,Tup.LDiscriminant); 
+						}									
+	if (Herejcut&&Betastrongcut&& cmask.isFromAgl() ) {
+						DistAgl_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
+						LikvsDistAgl_D->Fill(Tup.Dist5D,Tup.LDiscriminant);
+						}
+      if (Herejcut&&Tup.BetaRICH<0) RvsDistTOF_D->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
+      if (Herejcut&& cmask.isFromNaF() ) RvsDistNaF_D->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
+      if (Herejcut&& cmask.isFromAgl() ) RvsDistAgl_D->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
 
    }
    if (Massa_gen<4.5&&Massa_gen>2.5) {

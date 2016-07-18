@@ -16,6 +16,7 @@ int INDX;
 float BetanS=0;
 float Encinp;
 float Encind;
+int PhysBPatt=0;
 float esposizionep[18]= {0};
 float esposizioned[18]= {0};
 float esposizionepgeo[18][11]= {{0}};
@@ -199,9 +200,9 @@ int main(int argc, char * argv[])
     TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
 
    TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:LDiscriminant:DistD,IsCharge1");
-   TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:Unbias:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
+   TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:PhysBPatt:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
    TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:BetaRICH_new:Cutmask:BetanS:BetaR");
-   TNtuple * trig = new TNtuple("trig","trig","U_time:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias:BetaR");
+   TNtuple * trig = new TNtuple("trig","trig","U_time:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:BetaR");
 
 
    BDTreader();
@@ -211,7 +212,7 @@ int main(int argc, char * argv[])
       geo_stuff->SetBranchAddress("zonageo",&zonageo);
       geo_stuff->SetBranchAddress("Rcutoff",&Rcutoff);
       geo_stuff->SetBranchAddress("Livetime",&Livetime);
-      geo_stuff->SetBranchAddress("Unbias",&Unbias);
+      geo_stuff->SetBranchAddress("PhysBPatt",&PhysBPatt);
       geo_stuff->SetBranchAddress("Pres_Unbias",&Pres_Unbias);
       geo_stuff->SetBranchAddress("Preselected",&Preselected);
       geo_stuff->SetBranchAddress("R_pre",&R_pre);
@@ -483,7 +484,7 @@ int main(int argc, char * argv[])
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
    albero->GetEvent(i);
-   ntupla->Fill(U_time,Latitude,Rcutoff,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,Unbias);
+   ntupla->Fill(U_time,Latitude,Rcutoff,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt);
 
 }
 
@@ -503,7 +504,7 @@ void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
    albero->GetEvent(i);
-   ntupla->Fill(R,Beta,(*trtrack_edep)[0],Cutmask,Latitude,Unbias,EdepTOFU,EdepTrack,EdepTOFD,Rcutoff,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
+   ntupla->Fill(R,Beta,(*trtrack_edep)[0],Cutmask,Latitude,PhysBPatt,EdepTOFU,EdepTrack,EdepTOFD,Rcutoff,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
 }
 
 

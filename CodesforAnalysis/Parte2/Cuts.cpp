@@ -16,6 +16,9 @@ void Cuts_Pre()
      )
       Betastrongcut = true;
 
+   ProtonsMassWindow = false;
+   	if(Tup.Beta_pre<protons->Eval(Tup.R_pre)+0.15 && Tup.Beta_pre>protons->Eval(Tup.R_pre)-0.15) ProtonsMassWindow = true;	
+
    return;
 }
 
@@ -52,5 +55,8 @@ void Cuts()
      )
       Betastrongcut = true;
 
+   ProtonsMassWindow = false;
+        if(Tup.Beta<protons->Eval(Tup.R)+0.15 && Tup.Beta>protons->Eval(Tup.R)-0.15) ProtonsMassWindow = true;
+	
    return;
 }

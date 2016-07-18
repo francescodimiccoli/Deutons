@@ -8,13 +8,13 @@ Efficiency * EffUnbiasDATAQ = new Efficiency ("EffUnbiasDATAQ");
 
 void DATAUnbiaseff_Fill () {
 	if (!cmask.isPreselected() ||Tup.R_pre<=0||Tup.Beta_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff) return;
-	//if (!(Tup.EdepTrack<EdepTrackbeta->Eval (Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval (Tup.Beta_pre)-0.2)) return;	
+	if(!ProtonsMassWindow) return;
 	if(!Herejcut) return;
 
 	int Kbin=PRB.GetRBin (fabs (Tup.R_pre) );
-	if(Tup.Unbias==0) EffUnbiasDATA->beforeR->Fill(Kbin);
-	if(Tup.Unbias==1) EffUnbiasDATA->beforeR->Fill(Kbin,100);
-	if(Tup.Unbias==0) EffUnbiasDATA->afterR->Fill(Kbin);
+	if(trgpatt.IsPhysical()) EffUnbiasDATA->beforeR->Fill(Kbin);
+	if(trgpatt.IsUnbias()  ) EffUnbiasDATA->beforeR->Fill(Kbin,100);
+	if(trgpatt.IsPhysical()) EffUnbiasDATA->afterR->Fill(Kbin);
 
 	return;
 }
@@ -22,12 +22,14 @@ void DATAUnbiaseff_Fill () {
 void DATAUnbiaseffQ_Fill () {
 	if(Tup.Beta<=0||Tup.R<=0||Tup.Beta<=0||Tup.R<1.2*Tup.Rcutoff) return;
 	if(!Herejcut) return;
+	if(!ProtonsMassWindow) return;
 	if(!(Tup.Dist5D_P<6&&Likcut)) return;
-
+        
+         if(!(Tup.Beta<protons->Eval(Tup.R)+0.15 && Tup.Beta>protons->Eval(Tup.R)-0.15)) cout<<"casd"<<endl;
 	int Kbin=PRB.GetRBin (fabs (Tup.R) );
-        if(Tup.Unbias==0) EffUnbiasDATAQ->beforeR->Fill(Kbin);
-        if(Tup.Unbias==1) EffUnbiasDATAQ->beforeR->Fill(Kbin,100);
-        if(Tup.Unbias==0) EffUnbiasDATAQ->afterR->Fill(Kbin);
+        if(trgpatt.IsPhysical()) EffUnbiasDATAQ->beforeR->Fill(Kbin);
+        if(trgpatt.IsUnbias()  ) EffUnbiasDATAQ->beforeR->Fill(Kbin,100);
+        if(trgpatt.IsPhysical()) EffUnbiasDATAQ->afterR->Fill(Kbin);
 
         return;
 }

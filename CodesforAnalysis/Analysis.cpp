@@ -22,6 +22,8 @@
 
 
 #include "Parte2/cutmask.h"
+#include "Parte2/TriggPatt.h"
+
 
 #include "Parte2/Definitions.cpp"
 #include "Parte2/FitError.cpp"

@@ -207,7 +207,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCTrig->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
    ntupMCTrig->SetBranchAddress("EdepECAL",&Tup.EdepECAL);
    ntupMCTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
-   ntupMCTrig->SetBranchAddress("Unbias",&Tup.Unbias);
+   ntupMCTrig->SetBranchAddress("PhysBPatt",&Tup.PhysBPatt);
    ntupMCTrig->SetBranchAddress("mcweight",&Tup.mcweight);
 
    ntupMCSepD->SetBranchAddress("Momentogen",&Tup.Momento_gen);
@@ -215,7 +215,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCSepD->SetBranchAddress("Beta",&Tup.Beta);
    ntupMCSepD->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
    ntupMCSepD->SetBranchAddress("EdepL1",&Tup.EdepL1);
-   ntupMCSepD->SetBranchAddress("Unbias",&Tup.Unbias);
+   ntupMCSepD->SetBranchAddress("PhysBPatt",&Tup.PhysBPatt);
    ntupMCSepD->SetBranchAddress("EdepTOF",&Tup.EdepTOFU);
    ntupMCSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
    ntupMCSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
@@ -239,7 +239,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupDataTrig->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
    ntupDataTrig->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
    ntupDataTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
-   ntupDataTrig->SetBranchAddress("Unbias",&Tup.Unbias);
+   ntupDataTrig->SetBranchAddress("PhysBPatt",&Tup.PhysBPatt);
 
 
    ntupDataSepD->SetBranchAddress("R",&Tup.R);
@@ -247,7 +247,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupDataSepD->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
    ntupDataSepD->SetBranchAddress("EdepL1",&Tup.EdepL1);
    ntupDataSepD->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
-   ntupDataSepD->SetBranchAddress("Unbias",&Tup.Unbias);
+   ntupDataSepD->SetBranchAddress("PhysBPatt",&Tup.PhysBPatt);
    ntupDataSepD->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
    ntupDataSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
    ntupDataSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
@@ -271,6 +271,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
    for(int i=0; i<ntupMCTrig->GetEntries(); i++) {
       ntupMCTrig->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
+      trgpatt.SetTriggPatt(Tup.PhysBPatt); 
       Cuts_Pre();
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
@@ -301,6 +302,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       ntupMCSepD->GetEvent(i);
       if(Tup.Beta<=0 || Tup.R<=0) continue;
       cmask.setMask(Tup.Cutmask);
+      trgpatt.SetTriggPatt(Tup.PhysBPatt);
       Massa_gen = ReturnMass_Gen();
       UpdateProgressBar(i, nentries);
       Cuts();
@@ -312,11 +314,9 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       FluxFactorizationtest_Qual_Fill();
       DistanceCut_Fill();
       MCQualeff_Fill();
-      if(!(Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) && Herejcut) {
-         DVSMCQualeff2_Fill();
-         DVSMCQualeffD_Fill();
-         DVSMCRICHeff_Fill();
-      }
+      DVSMCQualeff2_Fill();
+      DVSMCQualeffD_Fill();
+      DVSMCRICHeff_Fill();
       DeutonsMC_Fill();
       DeutonsMC_Dist_Fill();
       MCMC_Fill();
@@ -333,6 +333,7 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
    for(int i=0; i<ntupDataTrig->GetEntries(); i++) {
       ntupDataTrig->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
+      trgpatt.SetTriggPatt(Tup.PhysBPatt);
       if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
       if(Tup.Beta_pre<=0) continue;
       Cuts_Pre();
@@ -359,6 +360,7 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
    for(int i=0; i<nentries; i++) {
       ntupDataSepD->GetEvent(i);
       cmask.setMask(Tup.Cutmask);
+      trgpatt.SetTriggPatt(Tup.PhysBPatt);
       if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
       if(Tup.Beta<=0||Tup.R<=0) continue;
 

@@ -11,16 +11,15 @@ Efficiency * TrackerEfficiencyD   = new Efficiency("TrackerEfficiencyC"  );
 void DVSMCTrackeff_D_Fill(){
 	
 	//cuts
-	if(Tup.Unbias!=0) return;
+	if(!trgpatt.IsPhysical()) return;
 	if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
-	if(!(Tup.R_pre>1.2*Tup.Rcutoff))  return;	
 
 	if(cmask.isPreselected()&&Tup.EdepECAL>1)
 		ECALvsR_D->Fill(Tup.R_pre,Tup.EdepECAL);
         //R bins
 	int Kbin=PRB.GetRBin (20) ;
-	if(((int) Tup.Cutmask&3 ) == 3   && Tup.Beta_pre>0)            TrackerEfficiencyD -> beforeR -> Fill(Kbin);
-	if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0) 	       TrackerEfficiencyD -> afterR  -> Fill(Kbin); 	
+	if(((int) Tup.Cutmask&3 ) == 3   )             TrackerEfficiencyD -> beforeR -> Fill(Kbin);
+	if(((int) Tup.Cutmask&11) == 11  ) 	       TrackerEfficiencyD -> afterR  -> Fill(Kbin); 	
 
 	return;
 }
@@ -28,16 +27,15 @@ void DVSMCTrackeff_D_Fill(){
 
 void DVSMCTrackeff_Fill(){
         //cuts
-	if(Tup.Unbias!=0||Tup.Beta_pre<=0) return;
+	if(!trgpatt.IsPhysical()||Tup.Beta_pre<=0) return;
 	if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
 	if(!(Massa_gen<1&&Massa_gen>0.5)) return;
- 	if(!(Tup.R_pre>0)) return;	
 	if(cmask.isPreselected()&&Tup.EdepECAL>1)
 		ECALvsR_MC->Fill(Tup.R_pre,Tup.EdepECAL);	
         //R bins
         int Kbin=PRB.GetRBin (20) ;
-	if(((int) Tup.Cutmask&3)  == 3   && Tup.Beta_pre>0) 	      TrackerEfficiencyMCP -> beforeR -> Fill(Kbin,Tup.mcweight);
-        if(((int) Tup.Cutmask&11) == 11  && Tup.Beta_pre>0)	      TrackerEfficiencyMCP -> afterR  -> Fill(Kbin,Tup.mcweight);
+	if(((int) Tup.Cutmask&3)  == 3   ) 	      TrackerEfficiencyMCP -> beforeR -> Fill(Kbin,Tup.mcweight);
+        if(((int) Tup.Cutmask&11) == 11  )	      TrackerEfficiencyMCP -> afterR  -> Fill(Kbin,Tup.mcweight);
         
 	return;
 

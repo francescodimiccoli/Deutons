@@ -18,6 +18,7 @@ double totaltrig2=0;
 double response[44][44];
 double norm[44];
 float BetanS=0;
+int PhysBPatt=0;
 int Number=0;
 TH1F * selezioni_PHLMC[10];
 TH1F * selected_PHLMC[10];
@@ -136,9 +137,9 @@ int main(int argc, char * argv[])
 	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/"+calib+"/RisultatiMC_"+ARGV+".root";
 	TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
 	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:MC_type:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD:IsCharge1");
-	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:Unbias:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
+	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
 	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:MC_type:Momentogen:mcweight:BetaRICH_new:Cutmask:BetanS:BetaR");
-	TNtuple * trig = new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias:BetaR:mcweight");
+	TNtuple * trig = new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:BetaR:mcweight");
 
 	BDTreader();
 	geo_stuff->SetBranchAddress("Momento_gen",&Momento_gen);
@@ -158,7 +159,7 @@ int main(int argc, char * argv[])
 	geo_stuff->SetBranchAddress("BetaRICH_new",&BetaRICH_new);
 	geo_stuff->SetBranchAddress("RICHmask_new",&RICHmask_new);
 	geo_stuff->SetBranchAddress("EdepECAL",&EdepECAL);
-	geo_stuff->SetBranchAddress("Unbias",&Unbias);
+	geo_stuff->SetBranchAddress("PhysBPatt",&PhysBPatt);
 	geo_stuff->SetBranchAddress("Beta_gen",&Beta_gen);
 	geo_stuff->SetBranchAddress("Massa_gen",&Massa_gen);
 	geo_stuff->SetBranchAddress("layernonusati",&layernonusati);
@@ -272,11 +273,13 @@ int main(int argc, char * argv[])
 		EdepTrack=0;
 		EdepTOFU=((*Endep)[0]+(*Endep)[1])/2;
 		EdepTOFD=((*Endep)[2]+(*Endep)[3])/2;
-		EdepTOFU=((EdepTOFU)*Corr_TOFU->Eval(Beta));
-		EdepTOFD=((EdepTOFD)*Corr_TOFD->Eval(Beta));
+		EdepTOFU=((EdepTOFU)*Corr_TOFU->Eval(Beta_pre));
+		EdepTOFD=((EdepTOFD)*Corr_TOFD->Eval(Beta_pre));
+
+
 		for(int layer=1; layer<8; layer++) EdepTrack+=(*trtot_edep)[layer];
 		EdepTrack=EdepTrack/7;
-		EdepTrack=((EdepTrack)*Corr_Track->Eval(Beta));
+		EdepTrack=((EdepTrack)*Corr_Track->Eval(Beta_pre));
 
 		if(scelta==1) Trigg(geo_stuff,z,trig);
 
@@ -363,7 +366,7 @@ int main(int argc, char * argv[])
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
-	ntupla->Fill(MC_type,Momento_gen,Ev_Num,Trig_Num,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,Unbias,mcweight);
+	ntupla->Fill(MC_type,Momento_gen,Ev_Num,Trig_Num,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,mcweight);
 
 }
 
@@ -383,7 +386,7 @@ void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
-	ntupla->Fill(R,Beta,(*trtrack_edep)[0],MC_type,Cutmask,Unbias,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
+	ntupla->Fill(R,Beta,(*trtrack_edep)[0],MC_type,Cutmask,PhysBPatt,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
 }
 
 int AssignMC_type(float Massa_gen)

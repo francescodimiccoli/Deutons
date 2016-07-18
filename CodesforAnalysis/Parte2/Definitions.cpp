@@ -61,7 +61,7 @@ struct Tuplevar {
    float Rmin;
    float R_pre;
    float Trig_Num;
-   float Unbias;
+   float PhysBPatt;
    float mcweight;	
 };
 
@@ -85,7 +85,7 @@ bool Likcut=false;
 bool Distcut=false;
 bool Herejcut=false;
 bool Betastrongcut=false;
-
+bool ProtonsMassWindow=false;
 
 
 Tuplevar Tup;
@@ -187,7 +187,7 @@ Binning DRB(deuton);
 Binning PRB(proton);
 
 Cutmask cmask;
-
+TriggPatt trgpatt;
 
 
 void HistInfo(TH1* histo) {

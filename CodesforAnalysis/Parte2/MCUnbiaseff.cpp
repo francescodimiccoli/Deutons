@@ -17,27 +17,27 @@ void MCUnbiaseff_Fill() {
     if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
       Kbin=PRB.GetRBin(Tup.R_pre);
-      if(Tup.Unbias==0) EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
-      if(Tup.Unbias==1) EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
-      if(Tup.Unbias==1) EffUnbiasMCP->afterR->Fill(Kbin,Tup.mcweight);
+      if(trgpatt.IsPhysical()) EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
+      if(trgpatt.IsUnbias()  ) EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
+      if(trgpatt.IsPhysical()) EffUnbiasMCP->afterR->Fill(Kbin,Tup.mcweight);
 
       //Beta bins
       Kbin=ToFPB.GetBin(Tup.R_pre);
-      if(Tup.Unbias==0) EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
-      if(Tup.Unbias==1) EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
-      if(Tup.Unbias==1) EffUnbiasMCP->afterTOF ->Fill(Kbin,Tup.mcweight);  
+      if(trgpatt.IsPhysical()) EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
+      if(trgpatt.IsUnbias()  ) EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
+      if(trgpatt.IsPhysical()) EffUnbiasMCP->afterTOF ->Fill(Kbin,Tup.mcweight);  
    }
 
    if(Massa_gen>1&&Massa_gen<2) {
       //R bins
       Kbin=PRB.GetRBin(fabs(Tup.Momento_gen));
       FillBinMGen(EffUnbiasMCD->beforeR, Kbin);
-      if(Tup.Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
+      if(trgpatt.IsPhysical()) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
       
       //Beta bins
       Kbin=ToFDB.GetBin(Tup.Momento_gen);
       FillBinMGen(EffUnbiasMCD->beforeTOF, Kbin);
-      if(Tup.Unbias==0) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin);
+      if(trgpatt.IsPhysical()) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin);
       
    }
 

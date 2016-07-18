@@ -11,16 +11,16 @@ void Correlazione_Preselezioni(){
 			for(int F=0;F<10;F++) 
 				if(((cmask.getMask()>>F)&1)==1) 
 					CorrelazionePreselezioni->Fill(S,F);
-			if(Tup.Unbias==0)  
+			if(trgpatt.IsPhysical())  
 				CorrelazionePreselezioni->Fill(S,10);
 		}		
 		if(((cmask.getMask()>>S)&1)==1) Norm[S]++;
 	}
-	if(Tup.Unbias==0){
+	if(trgpatt.IsPhysical()){
 		for(int F=0;F<10;F++) 
 			if(((cmask.getMask()>>F)&1)==1) 
 				CorrelazionePreselezioni->Fill(10,F);
-		if(Tup.Unbias==0) {
+		if(trgpatt.IsPhysical()) {
 			CorrelazionePreselezioni->Fill(10,10);
 			Norm[10]++;
 		}

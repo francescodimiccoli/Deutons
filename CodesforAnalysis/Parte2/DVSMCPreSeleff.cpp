@@ -8,11 +8,10 @@ DatavsMC * PreSel_DvsMC_P = new DatavsMC("PreSel_DvsMC_P",11,3);
 void DVSMCPreSeleff_D_Fill(int zona){
 
 	//cuts
-	if(Tup.Unbias!=0||Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
+	if(!trgpatt.IsPhysical()||Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff||!ProtonsMassWindow) return;
 	if(!((Tup.R_pre>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!Herejcut) return;
 	if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
-//	if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta_pre)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta_pre)-0.1)) return;
 	//
 	int Kbin;
 	for(int S=0;S<3;S++){
@@ -44,25 +43,24 @@ void DVSMCPreSeleff_D_Fill(int zona){
 }
 void DVSMCPreSeleff_Fill(){
 
-	//cuts
-	if(Tup.Unbias!=0||Tup.Beta_pre<=0||Tup.R_pre<=0||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
+	if(!trgpatt.IsPhysical()||Tup.R_pre<=0||!ProtonsMassWindow) return;
 	if(!Herejcut) return;
 	if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
-//	if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta_pre)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta_pre)-0.1)) return;
+	//cuts
 	//
 	int Kbin;
 	for(int S=0;S<3;S++){
 		if(Massa_gen<1) {
 			//R bins
 			Kbin = PRB.GetRBin(RUsed);	
-			if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeR) -> Fill(Kbin,S,Tup.mcweight);
-			if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterR ) -> Fill(Kbin,S,Tup.mcweight);
+			 if(cmask.notPassed(S))		  ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeR) -> Fill(Kbin,S,Tup.mcweight);
+			 if(cmask.passed(S))                  ((TH2*)PreSel_DvsMC_P -> MCEff -> afterR ) -> Fill(Kbin,S,Tup.mcweight);
 			//Beta bins
 
 			//ToF
 			Kbin=ToFDB.GetBin(RUsed);	
 			if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeTOF) -> Fill(Kbin,S,Tup.mcweight);
-			if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterTOF ) -> Fill(Kbin,S,Tup.mcweight);
+			if(cmask.passed(S))   ((TH2*)PreSel_DvsMC_P -> MCEff -> afterTOF ) -> Fill(Kbin,S,Tup.mcweight);
 
 			//NaF
 			if(cmask.isFromNaF()) {	
