@@ -197,9 +197,7 @@ void HistInfo(TH1* histo) {
    }
 
 TH1F* TH1DtoTH1F(TH1D* hd) {
-   //HistInfo(hd);
    TH1F*  hf=(TH1F*)hd->Clone();
-   //HistInfo(hf);
    return hf;
 }
 
@@ -207,8 +205,6 @@ TH1F* TH1DtoTH1F(TH1D* hd) {
 
 TH1F* ProjectionXtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
    TH1D* hd=h2->ProjectionX(title.data(), binmin, binmax);
-   //HistInfo(h2);
-   //HistInfo(hd);
    TH1F* hf=TH1DtoTH1F(hd);
    return hf;
    }

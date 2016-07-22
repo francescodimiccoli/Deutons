@@ -110,6 +110,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       HecutMC_Write();
       SlidesforPlot_Write();
       DistanceCut_Write();
+      AntiDCutOptimization_Write();
       DATAUnbiaseff_Write();
       DATAUnbiaseffQ_Write();
       DeutonsMC_Write();
@@ -161,6 +162,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       MCQualeff(filename);
       FluxFactorizationtest(filename);
       MCTrackeff(filename);
+      AntiDCutOptimization(filename);	
+      AntiDEfficiencies(filename);
       MCFullseteff(filename);
       MigrationMatrix(filename);
       DVSMCTrackeff(filename);
@@ -178,6 +181,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DVSMCQualeff2(filename);
       DVSMCQualeffD(filename);
       Acceptance(filename);
+      AntiDpredictions(filename);
       ProtonFlux(filename);
       if(frac=="tot") DeutonFlux(filename);
       if(frac=="tot") OtherExperimentsComparison(filename);
@@ -303,6 +307,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       if(Tup.Beta<=0 || Tup.R<=0) continue;
       cmask.setMask(Tup.Cutmask);
       trgpatt.SetTriggPatt(Tup.PhysBPatt);
+      if(!cmask.isPreselected()) continue;
       Massa_gen = ReturnMass_Gen();
       UpdateProgressBar(i, nentries);
       Cuts();
@@ -313,6 +318,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       SlidesforPlot_Fill();
       FluxFactorizationtest_Qual_Fill();
       DistanceCut_Fill();
+      AntiDCutOptimization_Fill();
       MCQualeff_Fill();
       DVSMCQualeff2_Fill();
       DVSMCQualeffD_Fill();
@@ -363,6 +369,7 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
       trgpatt.SetTriggPatt(Tup.PhysBPatt);
       if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
       if(Tup.Beta<=0||Tup.R<=0) continue;
+      if(!cmask.isPreselected()) continue;
 
       Cuts();
       float Zona=getGeoZone(Tup.Latitude);

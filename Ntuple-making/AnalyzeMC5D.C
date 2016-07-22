@@ -270,6 +270,8 @@ int main(int argc, char * argv[])
 		Cutmask=CUTMASK|(1<<10);
 		Cutmask = Cutmask|(RICHmask_new<<11);
 
+		mcweight=reweighter.getWeight(fabs(Momento_gen));
+
 		EdepTrack=0;
 		EdepTOFU=((*Endep)[0]+(*Endep)[1])/2;
 		EdepTOFD=((*Endep)[2]+(*Endep)[3])/2;

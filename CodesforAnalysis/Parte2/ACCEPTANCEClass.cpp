@@ -205,10 +205,10 @@ void ACCEPTANCE::Eval_MC_Acceptance(){
 	if(Gen_Acceptance_NaF)  MCAcceptance_NaF =(TH1 *) Gen_Acceptance_NaF->Clone();
 	if(Gen_Acceptance_Agl)  MCAcceptance_Agl =(TH1 *) Gen_Acceptance_Agl->Clone();
 
-	MCAcceptance_R  -> Multiply (	Efficiency_R  	);
-	MCAcceptance_TOF-> Multiply (	Efficiency_TOF	);
-	MCAcceptance_NaF-> Multiply (	Efficiency_NaF	);
-	MCAcceptance_Agl-> Multiply (	Efficiency_Agl	);
+	if(	Efficiency_R  	) MCAcceptance_R  -> Multiply (	Efficiency_R  	);
+	if(	Efficiency_TOF	) MCAcceptance_TOF-> Multiply (	Efficiency_TOF	);
+	if(	Efficiency_NaF	) MCAcceptance_NaF-> Multiply (	Efficiency_NaF	);
+	if(	Efficiency_Agl	) MCAcceptance_Agl-> Multiply (	Efficiency_Agl	);
 
 }
 

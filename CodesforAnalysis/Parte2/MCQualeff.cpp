@@ -20,8 +20,8 @@ void MCQualeff_Fill() {
 
 		EffLikMCP->beforeR->Fill(Kbin,Tup.mcweight);
 		EffDistMCP->beforeR->Fill(Kbin,Tup.mcweight);
-		if(Tup.Dist5D_P<6)          EffDistMCP->afterR->Fill(Kbin,Tup.mcweight);
-		if(Tup.Dist5D_P<6&&Likcut)	EffLikMCP->afterR->Fill(Kbin,Tup.mcweight);
+		if(Likcut)          EffLikMCP->afterR->Fill(Kbin,Tup.mcweight);
+		if(Tup.Dist5D_P<6&&Likcut)	EffDistMCP->afterR->Fill(Kbin,Tup.mcweight);
 
 
 		//Beta bins
@@ -29,24 +29,24 @@ void MCQualeff_Fill() {
 
 		EffLikMCP ->beforeTOF->Fill(Kbin,Tup.mcweight);
 		EffDistMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
-		if(Distcut)             EffDistMCP ->afterTOF ->Fill(Kbin,Tup.mcweight);
-		if(Distcut&&Likcut)	EffLikMCP->afterTOF ->Fill(Kbin,Tup.mcweight);
+		if(Likcut)             EffLikMCP ->afterTOF ->Fill(Kbin,Tup.mcweight);
+		if(Distcut&&Likcut)	EffDistMCP->afterTOF ->Fill(Kbin,Tup.mcweight);
 
 
 		if(cmask.isFromNaF()) {
 			Kbin=NaFPB.GetBin(RUsed);
 			EffLikMCP  ->beforeNaF->Fill(Kbin,Tup.mcweight);
 			EffDistMCP ->beforeNaF->Fill(Kbin,Tup.mcweight);
-			if(Distcut)             EffDistMCP  ->afterNaF ->Fill(Kbin,Tup.mcweight);
-			if(Distcut&&Likcut)	EffLikMCP ->afterNaF ->Fill(Kbin,Tup.mcweight);
+			if(Likcut)             EffLikMCP  ->afterNaF ->Fill(Kbin,Tup.mcweight);
+			if(Distcut&&Likcut)	EffDistMCP ->afterNaF ->Fill(Kbin,Tup.mcweight);
 		}
 
 		if(cmask.isFromAgl()) {
 			Kbin=AglPB.GetBin(RUsed);
 			EffLikMCP->beforeAgl->Fill(Kbin,Tup.mcweight);
 			EffDistMCP->beforeAgl->Fill(Kbin,Tup.mcweight);
-			if(Distcut) 		EffDistMCP->afterAgl->Fill(Kbin,Tup.mcweight);
-			if(Distcut&&Likcut)	EffLikMCP->afterAgl->Fill(Kbin,Tup.mcweight);
+			if(Likcut) 		EffLikMCP->afterAgl->Fill(Kbin,Tup.mcweight);
+			if(Distcut&&Likcut)	EffDistMCP->afterAgl->Fill(Kbin,Tup.mcweight);
 		}
 
 
@@ -57,31 +57,31 @@ void MCQualeff_Fill() {
 
 		FillBinMGen(EffLikMCD ->beforeR, Kbin);
 		FillBinMGen(EffDistMCD->beforeR, Kbin);
-		if(Distcut)             FillBinMGen(EffDistMCD ->afterR,  Kbin);
-		if(Tup.Dist5D<6&&Likcut)	FillBinMGen(EffLikMCD->afterR,  Kbin);
+		if(Likcut)             FillBinMGen(EffLikMCD ->afterR,  Kbin);
+		if(Tup.Dist5D<6&&Likcut)	FillBinMGen(EffDistMCD->afterR,  Kbin);
 
 
 		//Beta bins
 		Kbin=ToFDB.GetBin(RUsed);
 		FillBinMGen(EffLikMCD ->beforeTOF, Kbin);
 		FillBinMGen(EffDistMCD->beforeTOF, Kbin);
-		if(Distcut)             FillBinMGen(EffDistMCD ->afterTOF , Kbin);
-		if(Distcut&&Likcut)	FillBinMGen(EffLikMCD->afterTOF , Kbin);
+		if(Likcut)             FillBinMGen(EffLikMCD ->afterTOF , Kbin);
+		if(Distcut&&Likcut)	FillBinMGen(EffDistMCD->afterTOF , Kbin);
 
 		if(cmask.isFromNaF()) {
 			Kbin=NaFDB.GetBin(RUsed);
 			FillBinMGen(EffLikMCD ->beforeNaF, Kbin);
 			FillBinMGen(EffDistMCD->beforeNaF, Kbin);
-			if(Distcut)             FillBinMGen(EffDistMCD ->afterNaF , Kbin);
-			if(Distcut&&Likcut)	FillBinMGen(EffLikMCD->afterNaF , Kbin);
+			if(Likcut)             FillBinMGen(EffLikMCD ->afterNaF , Kbin);
+			if(Distcut&&Likcut)	FillBinMGen(EffDistMCD->afterNaF , Kbin);
 		}
 
 		if(cmask.isFromAgl()) {
 			Kbin=AglDB.GetBin(RUsed);
 			FillBinMGen(EffLikMCD ->beforeAgl, Kbin);
 			FillBinMGen(EffDistMCD->beforeAgl, Kbin);
-			if(Distcut)          FillBinMGen(EffDistMCD ->afterAgl , Kbin);
-			if(Distcut&&Likcut)	FillBinMGen(EffLikMCD->afterAgl , Kbin);
+			if(Likcut)          FillBinMGen(EffLikMCD ->afterAgl , Kbin);
+			if(Distcut&&Likcut)	FillBinMGen(EffDistMCD->afterAgl , Kbin);
 		}
 	}
 
@@ -127,8 +127,8 @@ void MCQualeff(string filename) {
 
    TH1F * EffMCLikP_TH1F 		=(TH1F *)EffLikMCP ->effR  ->Clone();
    TH2F * EffMCLikD_TH2F 		=(TH2F *)EffLikMCD ->effR  ->Clone();
-   TH1F * EffMCLikP_Beta_TH1F 	=(TH1F *)EffLikMCP ->effTOF->Clone();
-   TH2F * EffMCLikD_Beta_TH2F 	=(TH2F *)EffLikMCD ->effTOF->Clone();
+   TH1F * EffMCLikP_Beta_TH1F 		=(TH1F *)EffLikMCP ->effTOF->Clone();
+   TH2F * EffMCLikD_Beta_TH2F 		=(TH2F *)EffLikMCD ->effTOF->Clone();
    TH1F * EffMCLikP_BetaNaF_TH1F 	=(TH1F *)EffLikMCP ->effNaF->Clone();
    TH2F * EffMCLikD_BetaNaF_TH2F 	=(TH2F *)EffLikMCD ->effNaF->Clone();
    TH1F * EffMCLikP_BetaAgl_TH1F 	=(TH1F *)EffLikMCP ->effAgl->Clone();
@@ -136,8 +136,8 @@ void MCQualeff(string filename) {
 
    TH1F * EffMCDistP_TH1F 		=(TH1F *)EffDistMCP->effR  ->Clone();
    TH2F * EffMCDistD_TH2F 		=(TH2F *)EffDistMCD->effR  ->Clone();
-   TH1F * EffMCDistP_Beta_TH1F 	=(TH1F *)EffDistMCP->effTOF->Clone();
-   TH2F * EffMCDistD_Beta_TH2F 	=(TH2F *)EffDistMCD->effTOF->Clone();
+   TH1F * EffMCDistP_Beta_TH1F 	        =(TH1F *)EffDistMCP->effTOF->Clone();
+   TH2F * EffMCDistD_Beta_TH2F 	        =(TH2F *)EffDistMCD->effTOF->Clone();
    TH1F * EffMCDistP_BetaNaF_TH1F  =(TH1F *)EffDistMCP->effNaF->Clone();
    TH2F * EffMCDistD_BetaNaF_TH2F  =(TH2F *)EffDistMCD->effNaF->Clone();
    TH1F * EffMCDistP_BetaAgl_TH1F  =(TH1F *)EffDistMCP->effAgl->Clone();

@@ -46,11 +46,11 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	TGraphErrors * esposp_Agl=new TGraphErrors();
 	for(int m=0;m<ToFDB.size();m++){
 		esposd_TOF->SetPoint(m,ToFDB.EkPerMassBinCent(m),D_Flux -> Exposure_TOF -> GetBinContent(m+1));
-		esposp_TOF->SetPoint(m,ToFDB.EkPerMassBinCent(m),P_Flux -> Exposure_TOF -> GetBinContent(m+1));
+		esposp_TOF->SetPoint(m,ToFPB.EkPerMassBinCent(m),P_Flux -> Exposure_TOF -> GetBinContent(m+1));
 		esposd_NaF->SetPoint(m,NaFDB.EkPerMassBinCent(m),D_Flux -> Exposure_NaF -> GetBinContent(m+1));
-		esposp_NaF->SetPoint(m,NaFDB.EkPerMassBinCent(m),P_Flux -> Exposure_NaF -> GetBinContent(m+1));
+		esposp_NaF->SetPoint(m,NaFPB.EkPerMassBinCent(m),P_Flux -> Exposure_NaF -> GetBinContent(m+1));
 		esposd_Agl->SetPoint(m,AglDB.EkPerMassBinCent(m),D_Flux -> Exposure_Agl -> GetBinContent(m+1));
-		esposp_Agl->SetPoint(m,AglDB.EkPerMassBinCent(m),P_Flux -> Exposure_Agl -> GetBinContent(m+1));
+		esposp_Agl->SetPoint(m,AglPB.EkPerMassBinCent(m),P_Flux -> Exposure_Agl -> GetBinContent(m+1));
 	}
 	c33->cd(1);
 	gPad->SetLogy();

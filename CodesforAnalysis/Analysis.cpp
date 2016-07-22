@@ -32,6 +32,9 @@
 #include "Parte2/ACCEPTANCEClass.cpp"
 #include "Parte2/TemplateFITClass.cpp"
 #include "Parte2/DatavsMCClass.h"
+#include "Parte2/OptimizationCutClass.h"
+
+
 #include "Parte2/MCpreeff.cpp"
 #include "Parte2/MCUnbiaseff.cpp"
 #include "Parte2/Hecont.cpp"
@@ -43,6 +46,8 @@
 #include "Parte2/Eff_Factorizationtest.cpp"
 #include "Parte2/MigrationMatrix.cpp"
 #include "Parte2/MCFullSeteff.cpp"
+#include "Parte2/AntiDCutOptimization.h"
+#include "Parte2/AntiDPredictions.h"
 #include "Parte2/DATAUnbiaseff.cpp"
 #include "Parte2/CorrelazionePreselezioni.cpp"
 #include "Parte2/DATApreSeleff.cpp"
