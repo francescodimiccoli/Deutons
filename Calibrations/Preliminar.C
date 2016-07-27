@@ -429,7 +429,7 @@ int main(int argc, char * argv[]){
                 B1=B1+0.05/30.;
         }
 	cout<<"*************************** DATA READING **********************************"<<endl;
-	for(int i=0; i<ntupla2->GetEntries()/10;i++) {
+	for(int i=0; i<ntupla2->GetEntries();i++) {
 		int k = ntupla2->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
@@ -617,7 +617,7 @@ int main(int argc, char * argv[]){
 
 	}
 	cout<<"*************************** MC READING **********************************"<<endl;
-	for(int i=0; i<ntupla1->GetEntries()/5;i++) {
+	for(int i=0; i<ntupla1->GetEntries();i++) {
 		int k = ntupla1->GetEvent(i);
 		B1=0.4;
 		B2=0.42;
@@ -2035,7 +2035,7 @@ int main(int argc, char * argv[]){
 	for(int j=0; j<24;j++) if(sigma_R[j]!=0) SigmaR->SetPoint(j,valorecent[j],pow(valorecent[j],2)*sigma_R[j]);
 	for(int j=0; j<24;j++) if(sigma_R[j]!=0) ResoR->SetPoint(j,valorecent[j],pow(valorecent[j],1)*sigma_R[j]);
 	double PiccoBeta_Inv[30]={0};
-	for(int j=0; j<30;j++) if(PiccoBeta[j]>=0.2) PiccoBeta_Inv[j]=1/PiccoBeta[j]; else PiccoBeta_Inv[j]=j/100.; 
+	for(int j=0; j<30;j++) if(RisoluzioniBeta[j]->GetEntries()>100) PiccoBeta_Inv[j]=1/PiccoBeta[j]; else PiccoBeta_Inv[j]=j/100.; 
 	TSpline3 *SigmaBeta_spl= new TSpline3("Cubic Spline",PiccoBeta_Inv,sigma_beta,30);
 	double PiccoBetaNaF_Inv[30]={0};
         for(int j=0; j<30;j++)  PiccoBetaNaF_Inv[j]=1/mean_betaNaF[j]; 

@@ -12,7 +12,7 @@ void DVSMCRICHeff_D_Fill(int zona){
 	//cuts
 	if(Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
 	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
-	if(!Herejcut) return;
+	if(!Likcut||!Distcut) return;
 	//
 	int Kbin;
 	
@@ -38,6 +38,8 @@ void DVSMCRICHeff_D_Fill(int zona){
 
 void DVSMCRICHeff_Fill(){
 
+	if(Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
+	if(!Likcut||!Distcut) return;
 	//
 	int Kbin;
 

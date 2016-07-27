@@ -30,6 +30,10 @@ void DeutonFlux(string filename) {
 	Flux * P_Flux         = new Flux(inputHistoFile, "P_Flux"         ,"Results","Corr_AcceptanceP",1);
 	Flux * P_Flux_Dist    = new Flux(inputHistoFile, "P_Flux_Dist"    ,"Results","Corr_AcceptanceP",1);
 
+	TH1F * ProtonsPrimaryFlux = (TH1F*)inputHistoFile->Get("Results/ProtonsPrimaryFlux");
+
+	cout<<ProtonsPrimaryFlux<<endl;
+
 	cout<<"*************** DEUTONS FLUXES CALCULATION *******************"<<endl;
 	
 	//Evaluation additional Fit Error
@@ -217,7 +221,9 @@ void DeutonFlux(string filename) {
                         DP_ratioNaF_Dist,
                         DP_ratioAgl_Dist,
 			D_Flux,
-			P_Flux
+			P_Flux,
+			ProtonsPrimaryFlux
+
 	
 	);
 

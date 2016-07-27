@@ -130,10 +130,10 @@ int main(int argc, char * argv[])
 	}
 
 
-
-	TFile *file =TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/sommaMCB800.root");
-	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string ARGV(argv[1]);
+	string indirizzo_in = "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/B800/sommaMC_"+ARGV+ ".root";
+	TFile *file =TFile::Open(indirizzo_in.c_str());
+	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/"+calib+"/RisultatiMC_"+ARGV+".root";
 	TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
 	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:MC_type:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD:IsCharge1");
@@ -206,7 +206,8 @@ int main(int argc, char * argv[])
     // Calling "Reweighter" constructor
     Reweighter reweighter(mcFlux, dataFlux);
 
-	for(int i=(events/100)*INDX; i<(events/100)*(INDX+1); i++) {
+	//for(int i=(events/100)*INDX; i<(events/100)*(INDX+1); i++) {
+	for(int i=(0); i<(events); i++) {
 		if(i%1300==0) cout<<i/(float)events*100<<"%"<<endl;
 		geo_stuff->GetEvent(i);
 		if(Massa_gen>1.8569&&Massa_gen<1.8571) Massa_gen=1.8570;
@@ -257,7 +258,9 @@ int main(int argc, char * argv[])
 	TotalTrig=0;
 	Trig=0;
 	int z;
-	for(z=(events/100)*INDX; z<(events/100)*(INDX+1); z++) {
+//	for(z=(events/100)*INDX; z<(events/100)*(INDX+1); z++) {
+		
+	for(z=(0); z<(events); z++) {
 		geo_stuff->GetEvent(z);
 		if(Massa_gen>1.8569&&Massa_gen<1.8571) Massa_gen=1.8570;
 		if(Trig_Num<Trig)TotalTrig=TotalTrig+(double)Trig;

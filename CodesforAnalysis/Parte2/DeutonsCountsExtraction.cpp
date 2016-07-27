@@ -136,18 +136,41 @@ void DeutonsTemplFits(string filename)
    TemplateFIT * FitAgl_Pbins	= new TemplateFIT(inputHistoFile,"FitAgl_Pbins","FitAgl_Pbins");
 
    cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
+/*
+   FitTOF_Dbins 	-> DisableFit();// 
+   FitNaF_Dbins 	-> DisableFit();// 
+   FitAgl_Dbins 	-> DisableFit();// 
+                                                                                              
+   FitTOFgeo_Dbins 	-> DisableFit();// 
+   FitNaFgeo_Dbins 	-> DisableFit();// 
+   FitAglgeo_Dbins 	-> DisableFit();// 
+                                                                                              
+   FitTOF_Pbins 	-> DisableFit();// 
+   FitNaF_Pbins 	-> DisableFit();// 
+   FitAgl_Pbins 	-> DisableFit();// 
+*/
+   FitTOF_Dbins 	 ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0025);
+   FitNaF_Dbins 	 ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0015);
+   FitAgl_Dbins 	 ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0005);
+                                                                                              
+   FitTOFgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0025);
+   FitNaFgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0015);
+   FitAglgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0005);
+                                                                                              
+   FitTOF_Pbins 	 ->  SetFitConstraints(0.8,1,0.00,0.02,0.00,0.0025);
+   FitNaF_Pbins 	 ->  SetFitConstraints(0.8,1,0.00,0.02,0.00,0.0015);
+   FitAgl_Pbins 	->  SetFitConstraints(0.8,1,0.00,0.02,0.00,0.0005);
 
-   FitTOF_Dbins 	-> DisableFit();// ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0025);
-   FitNaF_Dbins 	-> DisableFit();// ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0015);
-   FitAgl_Dbins 	-> DisableFit();// ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0005);
-                                                                                              
-   FitTOFgeo_Dbins 	-> DisableFit();//     ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0025);
-   FitNaFgeo_Dbins 	-> DisableFit();//     ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0015);
-   FitAglgeo_Dbins 	-> DisableFit();//     ->  SetFitConstraints(0.8,1,0.00,0.2,0.0001,0.0005);
-                                                                                              
-   FitTOF_Pbins 	-> DisableFit();// ->  SetFitConstraints(0.8,1,0.00001,0.02,0.0001,0.0025);
-   FitNaF_Pbins 	-> DisableFit();// ->  SetFitConstraints(0.8,1,0.00001,0.02,0.0005,0.0015);
-   FitAgl_Pbins 	-> DisableFit();// ->  SetFitConstraints(0.8,1,0.00001,0.02,0.0001,0.0005);
+
+
+
+
+
+
+
+
+
+
 
    cout<<"** TOF **"<<endl;
    FitTOF_Dbins 	-> TemplateFits();

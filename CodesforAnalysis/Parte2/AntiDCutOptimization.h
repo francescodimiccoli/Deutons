@@ -18,10 +18,11 @@ void AntiDCutOptimization_Fill(){
 	//TOF
 	if(!cmask.isFromNaF()&&!cmask.isFromAgl()){
 		Kbin=ToFDB.GetBin(RUsed);
+		if(Tup.Beta<0.9){
 		Distance_Discr = ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
 		if(Massa_gen<1&&Massa_gen>0.5) ((TH2*)DiscriminantCutTOF -> Distrib_P) -> Fill(Distance_Discr,Kbin,Tup.mcweight);	
 		if(Massa_gen<2&&Massa_gen>1.5) ((TH2*)DiscriminantCutTOF -> Distrib_D) -> Fill(Distance_Discr,Kbin,Tup.mcweight);
-	}
+	}}
 
 	//NaF
 	if(cmask.isFromNaF()) {

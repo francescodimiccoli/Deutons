@@ -213,21 +213,21 @@ void AntiDpredictions(string filename){
 	float TOF_Pbar_Threshold = 0;
 	for (int i=0;i<nbinsToF;i++)
                 if(Acceptance_TOF->GetBinContent(i+1)>0) 
-			TOF_Pbar_Threshold +=  AntiP_Flux->Eval(ToFPB.EkPerMassBin(i))*AcceptanceP_TOF->GetBinContent(i+1)*((ToFPB.EkPerMassBin(i+1)-ToFPB.EkPerMassBin(i))*0.8*ExposureP_TOF->GetBinContent(i+1)); 	
+			TOF_Pbar_Threshold +=  AntiP_Flux->Eval(ToFPB.EkPerMassBin(i))*AcceptanceP_TOF->GetBinContent(i+1)*((ToFPB.EkPerMassBin(i+1)-ToFPB.EkPerMassBin(i))*0.8*ExposureD_TOF->GetBinContent(i+1)); 	
 			TOF_Pbar_Threshold*=TOF_Threshold;
 
 
 	float NaF_Pbar_Threshold = 0;
 	for (int i=0;i<nbinsNaF;i++)
                 if(Acceptance_NaF->GetBinContent(i+1)>0) 
-			NaF_Pbar_Threshold +=  AntiP_Flux->Eval(NaFPB.EkPerMassBin(i))*AcceptanceP_NaF->GetBinContent(i+1)*((ToFPB.EkPerMassBin(i+1)-ToFPB.EkPerMassBin(i))*0.8*ExposureP_NaF->GetBinContent(i+1)); 	
+			NaF_Pbar_Threshold +=  AntiP_Flux->Eval(NaFPB.EkPerMassBin(i))*AcceptanceP_NaF->GetBinContent(i+1)*((ToFPB.EkPerMassBin(i+1)-ToFPB.EkPerMassBin(i))*0.8*ExposureD_NaF->GetBinContent(i+1)); 	
 			NaF_Pbar_Threshold*=NaF_Threshold;
 
 
 	float Agl_Pbar_Threshold = 0;
 	for (int i=0;i<nbinsAgl;i++)
                 if(Acceptance_Agl->GetBinContent(i+1)>0) 
-			Agl_Pbar_Threshold +=  AntiP_Flux->Eval(AglPB.EkPerMassBin(i))*AcceptanceP_Agl->GetBinContent(i+1)*((ToFPB.EkPerMassBin(i+1)-ToFPB.EkPerMassBin(i))*0.8*ExposureP_Agl->GetBinContent(i+1)); 	
+			Agl_Pbar_Threshold +=  AntiP_Flux->Eval(AglPB.EkPerMassBin(i))*AcceptanceP_Agl->GetBinContent(i+1)*((ToFPB.EkPerMassBin(i+1)-ToFPB.EkPerMassBin(i))*0.8*ExposureD_Agl->GetBinContent(i+1)); 	
 			Agl_Pbar_Threshold*=Agl_Threshold;
 
 
