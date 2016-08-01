@@ -18,7 +18,7 @@ void ProtonFlux_Fill(int zona) {
 	int Kbin=PRB.GetRBin(Tup.R);
 	
 
-	if(Tup.Dist5D_P<6 && Likcut) {
+	if(/*Tup.Dist5D_P<6*/Distcut && Likcut) {
 		P_Flux_geo-> Counts_R -> Fill(Kbin,zona);
 		if(Tup.R>1.2*Tup.Rcutoff) {
 			P_Flux -> Counts_R-> Fill(Kbin);

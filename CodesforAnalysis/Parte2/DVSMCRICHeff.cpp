@@ -10,9 +10,10 @@ DatavsMC * RICH_DvsMC_D = new DatavsMC("RICH_DvsMC_D",11,1,6);
 void DVSMCRICHeff_D_Fill(int zona){
 
 	//cuts
-	if(Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
+	if(Tup.R<1.2*Tup.Rcutoff) return;
 	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
-	if(!Likcut||!Distcut) return;
+	if(!ProtonsMassWindow) return;
+	if(!trgpatt.IsPhysical()) return;
 	//
 	int Kbin;
 	
@@ -22,26 +23,27 @@ void DVSMCRICHeff_D_Fill(int zona){
 	RICH_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);	
 	RICH_DvsMC_D -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 	if(cmask.isFromNaF()) {
-        RICH_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
-        RICH_DvsMC_D -> DataEff -> afterNaF -> Fill(Kbin,zona);
-    }
+		RICH_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
+		RICH_DvsMC_D -> DataEff -> afterNaF -> Fill(Kbin,zona);
+	}
 	//Agl
 	Kbin=AglDB.GetBin(RUsed);
-    RICH_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);	
+        RICH_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);	
 	RICH_DvsMC_D -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 	if(cmask.isFromAgl()) { 
-        RICH_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona); 
-        RICH_DvsMC_D -> DataEff -> afterAgl -> Fill(Kbin,zona); 
-    }
+		RICH_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona); 
+		RICH_DvsMC_D -> DataEff -> afterAgl -> Fill(Kbin,zona); 
+	}
 	return;
 }
 
 void DVSMCRICHeff_Fill(){
 
-	if(Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
-	if(!Likcut||!Distcut) return;
+	if(!ProtonsMassWindow) return;
+	if(!trgpatt.IsPhysical()) return;
 	//
 	int Kbin;
+	
 
 	if(Massa_gen<1) {
 		//Beta bins
@@ -55,7 +57,7 @@ void DVSMCRICHeff_Fill(){
 			for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff -> afterNaF) -> Fill(Kbin,mc_type,Tup.mcweight);
 		}
 		//Agl
-    	Kbin=AglDB.GetBin(RUsed);
+    		Kbin=AglDB.GetBin(RUsed);
 		RICH_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin,Tup.mcweight);
 		for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff -> beforeAgl) -> Fill(Kbin,mc_type,Tup.mcweight);	
 

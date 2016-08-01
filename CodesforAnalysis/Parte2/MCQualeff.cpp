@@ -21,7 +21,7 @@ void MCQualeff_Fill() {
 		EffLikMCP->beforeR->Fill(Kbin,Tup.mcweight);
 		EffDistMCP->beforeR->Fill(Kbin,Tup.mcweight);
 		if(Likcut)          EffLikMCP->afterR->Fill(Kbin,Tup.mcweight);
-		if(Tup.Dist5D_P<6&&Likcut)	EffDistMCP->afterR->Fill(Kbin,Tup.mcweight);
+		if(/*Tup.Dist5D_P<6*/Distcut&&Likcut)	EffDistMCP->afterR->Fill(Kbin,Tup.mcweight);
 
 
 		//Beta bins

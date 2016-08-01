@@ -3,7 +3,7 @@
 #include <TSpline.h>
 #include "Selections5D.h"
 #include "Commonglobals.cpp"
-
+#include "../include/binning.h"
 
 void Controllodist (TTree *albero,int i,TNtuple *ntupla);
 void Controllodistd (TTree *albero,int i,TNtuple *ntupla);
@@ -133,61 +133,55 @@ int main(int argc, char * argv[])
 	//cin>>scelta;
 	scelta=1;
 	cout<<"**************************** R BINS ***********************************"<<endl;
-	for(int i=0; i<44; i++) {
-		float temp=i+14;
-		bin[i]=0.1*pow(10,temp/(9.5*2));
-		//************** bin DAV
-		/*        bin[i]=exp(E);
-			  E=E+a;*/
-		cout<<bin[i]<<endl;
-	}
+	Particle proton(0.9382720813, 1, 1);
+	Binning PRB(proton);
+
+	PRB.setBinsFromRigidity(43, 0.5, 100);
+	PRB.Print();
+
+
 
 	cout<<"**************************** BETA BINS ***********************************"<<endl;
-	float B=0.4;
-	float B1=0;
-	float E=0.1;
-	int binnum=1;
-	float a=(log(1)-log(0.1))/18;
-	float Betabins[18]= {0};
-	cout<<beta<<endl;
-	while(B<1) {
-		B=B+2*(pow(B,2)*beta->Eval(B));
-		E=exp(log(0.1)+binnum*a);
-		B1=sqrt(1-1/(pow(E+1,2)));
-		Betabins[binnum-1]=B1;
-		binnum++;
-	}
 
-	float encinTOF[18];
-	for(int i=0; i<18; i++) encinTOF[i]=1/pow(1-pow(Betabins[i],2),0.5)-1;
+	Particle deuton(1.8756129   , 1, 2);
+
+	Binning ToFDB(deuton);
+	Binning ToFPB(proton);
 	
-	cout<<"Encin"<<endl;
-	for(int i=0; i<18; i++) cout<<encinTOF[i]<<" "<<Betabins[i]<<endl;
+	float ekmin=0.1, ekmax=1;
+   	ToFDB.setBinsFromEkPerMass (18, ekmin, ekmax);
+	ToFPB.setBinsFromEkPerMass (18, ekmin, ekmax);
+	
+	ToFDB.Print();
+	
+
 	cout<<"**************************** BETA BINS NaF***********************************"<<endl;
-	float BetabinsNaF[18]= {0};
-	a=(log(4.025)-log(0.666))/18;
-	binnum=0;
-	while(B1<0.98) {
-		E=exp(log(0.666)+binnum*a);
-		B1=sqrt(1-1/(pow(E+1,2)));
-		BetabinsNaF[binnum]=B1;
-		binnum++;
-	}
-	float encinNaF[18];
-	for(int i=0; i<18; i++) encinNaF[i]=1/pow(1-pow(BetabinsNaF[i],2),0.5)-1;
+
+	Binning NaFDB(deuton);
+	Binning NaFPB(proton);        
+
+        ekmin=0.666; ekmax=4.025;
+        NaFDB.setBinsFromEkPerMass (18, ekmin, ekmax);
+        NaFPB.setBinsFromEkPerMass (18, ekmin, ekmax);
+	
+	NaFDB.Print();
+
 
 	cout<<"**************************** BETA BINS Agl***********************************"<<endl;
-	float BetabinsAgl[18]= {0};
-	a=(log(9.01)-log(2.57))/18;
-	binnum=0;
-	while(B1<0.995) {
-		E=exp(log(2.57)+binnum*a);
-		B1=sqrt(1-1/(pow(E+1,2)));
-		BetabinsAgl[binnum]=B1;
-		binnum++;
-	}
-	float encinAgl[18];
-	for(int i=0; i<18; i++) encinAgl[i]=1/pow(1-pow(BetabinsAgl[i],2),0.5)-1;
+
+	Binning AglDB(deuton);
+	Binning AglPB(proton);
+
+        ekmin=2.57; ekmax=9.01;
+        AglDB.setBinsFromEkPerMass (18, ekmin, ekmax);
+	AglPB.setBinsFromEkPerMass (18, ekmin, ekmax);
+
+        AglDB.Print();
+
+
+
+
+
 
 	string ARGV(argv[1]);
 
@@ -205,7 +199,7 @@ int main(int argc, char * argv[])
 	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:LDiscriminant:DistD,IsCharge1");
 	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:PhysBPatt:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P");
 	TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:BetaRICH_new:Cutmask:BetanS:BetaR");
-	TNtuple * trig = new TNtuple("trig","trig","U_time:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:BetaR");
+	TNtuple * trig = new TNtuple("trig","trig","U_time:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:BetaR:Livetime");
 
 
 	BDTreader();
@@ -333,43 +327,41 @@ int main(int argc, char * argv[])
 
 		////////// CALCOLO TEMPO DI ESPOSIZIONE /////////////
 		if(U_time!=Tempo) {
-			for(int i=0; i<43; i++)
-				if(fabs(1.2*Rcutoff)<bin[i+1]&&Rcutoff!=0) {
+			for(int i=0; i<PRB.size(); i++)
+				if(fabs(1.2*Rcutoff)<PRB.RigBins()[i]&&Rcutoff!=0) {
 					tempobin[i]=tempobin[i]+Livetime;
 					tempobingeo[i][zonageo]=tempobingeo[i][zonageo]+Livetime;
 				}
-			if(Rcutoff!=0) Tempo=U_time;
-			for(int m=0; m<18; m++) {
-				Encind=pow(((1+pow((fabs(1.2*Rcutoff)/1.875),2))),0.5)-1;
-				Encinp=pow(((1+pow((fabs(1.2*Rcutoff)/0.938),2))),0.5)-1;
+			for(int i=0; i<ToFDB.size(); i++) {
 				
-				if(Encinp<encinTOF[m]&&Rcutoff!=0) {
+				if(fabs(1.2*Rcutoff)<ToFPB.RigBins()[i]&&Rcutoff!=0) {
 					esposizionep[m]=esposizionep[m]+Livetime;
 					esposizionepgeo[m][zonageo]=esposizionepgeo[m][zonageo]+Livetime;
 				}
-				if(Encinp<encinNaF[m]&&Rcutoff!=0) {
+				if(fabs(1.2*Rcutoff)<NaFPB.RigBins()[i]&&Rcutoff!=0) {
 					esposizionepNaF[m]=esposizionepNaF[m]+Livetime;
 					esposizionepgeoNaF[m][zonageo]=esposizionepgeoNaF[m][zonageo]+Livetime;
 				}
-				if(Encinp<encinAgl[m]&&Rcutoff!=0) {
+				if(fabs(1.2*Rcutoff)<ToFPB.RigBins()[i]&&Rcutoff!=0) {
 					esposizionepAgl[m]=esposizionepAgl[m]+Livetime;
 					esposizionepgeoAgl[m][zonageo]=esposizionepgeoAgl[m][zonageo]+Livetime;
 				}
 
-				if(Encind<encinTOF[m]&&Rcutoff!=0) {
+				if(fabs(1.2*Rcutoff)<ToFDB.RigBins()[i]&&Rcutoff!=0) {
 					esposizioned[m]=esposizioned[m]+Livetime;
 					esposizionedgeo[m][zonageo]=esposizionedgeo[m][zonageo]+Livetime;
 				}
-				if(Encind<encinNaF[m]&&Rcutoff!=0) {
+				if(fabs(1.2*Rcutoff)<NaFDB.RigBins()[i]&&Rcutoff!=0) {
 					esposizionedNaF[m]=esposizionedNaF[m]+Livetime;
 					esposizionedgeoNaF[m][zonageo]=esposizionedgeoNaF[m][zonageo]+Livetime;
 				}
-				if(Encind<encinAgl[m]&&Rcutoff!=0) {
+				if(fabs(1.2*Rcutoff)<AglDB.RigBins()[i]&&Rcutoff!=0) {
 					esposizionedAgl[m]=esposizionedAgl[m]+Livetime;
 					esposizionedgeoAgl[m][zonageo]=esposizionedgeoAgl[m][zonageo]+Livetime;
 				}
 
 			}
+			if(Rcutoff!=0) Tempo=U_time;
 		}
 		/////////////////////////////////////////////////////
 
@@ -396,60 +388,6 @@ int main(int argc, char * argv[])
 	for(int i=1; i<11; i++)   { for(int m=0; m<18; m++) cout<<esposizionedgeo[m][i]<<" "; cout<<endl;}
 	cout<<endl;
 	for(int i=1; i<11; i++)   { for(int m=0; m<18; m++) cout<<esposizionepgeo[m][i]<<" "; cout<<endl;}
-	cout<<"Eventi Tot: "<<events<<endl;
-	cout<<"Preselezionate Tot: "<<entriestot<<endl;
-	cout<<endl;
-	cout<<"Eventi Analizzati: "<<contaeventi<<endl;
-	cout<<"Preselezionate Analizzate: "<<entries<<endl;
-	cout<<"selezioni di qualità: "<<giov<<endl;
-	cout<<"N. Protoni: "<<nprotoni<<endl;
-	cout<<endl;
-	cout<<"-----------------------"<<endl;
-	cout<<"-----EFF. SELEZIONI (risp a PRE)----"<<endl;
-	cout<<"Taglio anticluster: "<<f/(float)entries*100<<endl;
-	cout<<"Taglio segmenti TRD: "<<g/(float)entries*100<<endl;
-	cout<<"Taglio TOF Clusters inutilizzati: "<<h/(float)entries*100<<endl;
-	cout<<"Taglio Confronto Rup/Rdown: "<<l/(float)entries*100<<endl;
-	cout<<"Taglio Prob. Q: "<<m/(float)entries*100<<endl;
-	cout<<"Taglio Fit multipli: "<<n/(float)entries*100<<endl;
-	cout<<"Taglio HitX: "<<o/(float)entries*100<<endl;
-	cout<<"Taglio Chi-Quadro traccia: "<<r/(float)entries*100<<endl;
-	cout<<"Taglio carica TOF: "<<t/(float)entries*100<<endl;
-	cout<<"Taglio carica Track: "<<u/(float)entries*100<<endl;
-	cout<<"Taglio carica TRD: "<<v/(float)entries*100<<endl;
-	cout<<"Taglio layer non usati: "<<s/(float)entries*100<<endl;
-	cout<<endl;
-	cout<<"-----SELEZIONI DI REIEZIONE----"<<endl;
-	cout<<"Edep TOF (R): "<<a/(float)giov*100<<endl;
-	cout<<"Edep TOF (Beta): "<<alpha/(float)giov*100<<endl;
-	cout<<"Cluster TOF: "<<b/(float)giov*100<<endl;
-	cout<<endl;
-	cout<<"Edep Track (R): "<<c/(float)giov*100<<endl;
-	cout<<"Edep Track (Beta): "<<delta/(float)giov*100<<endl;
-	cout<<"Cluster Track: "<<d/(float)giov*100<<endl;
-	cout<<endl;
-	cout<<"Edep TRD (R): "<<e/(float)giov*100<<endl;
-	cout<<"Edep TRD (Beta): "<<Gamma/(float)giov*100<<endl;
-	cout<<endl;
-
-	cout<<"-----ANALISI TEMPI------------- "<<endl;
-	cout<<endl;
-	for(int i=0; i<11; i++) {
-		cout<<"Tempo trascorso in zona "<<i<<": "<<contasecondi[i];
-		if(contasecondi[i]!=0)
-			cout<<" sec: Percentuale di tempo vivo: "<<Time[i]/(double)contasecondi[i]*100<<"% "<<endl;
-		else cout<<" sec"<<endl;
-	}
-
-	cout<<"Tempo di Volo: "<<tend-tbeg<<" sec."<<endl;
-	int Contasecondi = 0;
-	for (int y=0; y<11; y++)
-		Contasecondi=Contasecondi+contasecondi[y];
-	cout<<"Tempo di Misura: "<<Contasecondi<<" sec."<<endl;
-
-	for(int i=0; i<43; i++)
-		cout<<"Tempo di esposizione bin "<<i<<": "<<tempobin[i]<<endl;
-
 
 	TH1F * Tempi=new TH1F("Tempi","Tempi",11,0,11);
 	for(int i=1; i<11; i++) Tempi->SetBinContent(i,Time[i]);
@@ -488,7 +426,7 @@ int main(int argc, char * argv[])
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
-	ntupla->Fill(U_time,Latitude,Rcutoff,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt);
+	ntupla->Fill(U_time,Latitude,Rcutoff,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,Livetime);
 
 }
 

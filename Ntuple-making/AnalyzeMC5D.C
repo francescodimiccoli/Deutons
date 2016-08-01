@@ -5,6 +5,7 @@
 #include "Commonglobals.cpp"
 #include "reweight.h"
 #include "histUtils.h"
+#include "../include/binning.h"
 
 
 using namespace std;
@@ -119,19 +120,15 @@ int main(int argc, char * argv[])
 	//cin>>scelta;
 	scelta=1;
 	cout<<"**************************** R BINS ***********************************"<<endl;
-	for(int i=0; i<44; i++) {
-		float temp=i+14;
-		bin[i]=0.1*pow(10,temp/(9.5*2));
-		//************** bin DAV
-		/*        bin[i]=exp(E);
-			  E=E+a;*/
-		cout<<bin[i]<<endl;
+	
+	Particle proton(0.9382720813, 1, 1);
+	Binning PRB(proton);
 
-	}
-
+	PRB.setBinsFromRigidity(43, 0.5, 100);
+	PRB.Print();
 
 	string ARGV(argv[1]);
-	string indirizzo_in = "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/B800/sommaMC_"+ARGV+ ".root";
+	string indirizzo_in = "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/B800/sommaMC"+ARGV+ ".root";
 	TFile *file =TFile::Open(indirizzo_in.c_str());
 	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/"+calib+"/RisultatiMC_"+ARGV+".root";
@@ -239,11 +236,11 @@ int main(int argc, char * argv[])
 			//////////////// MATRICE DI RISPOSTA ///////////////
 			if(Massa_gen<1&&Massa_gen>0.5) {
 				for(int I=0; I<44; I++)
-					if(fabs(Momento_gen)<bin[I+1]&&fabs(Momento_gen)>bin[I])
+					if(fabs(Momento_gen)<PRB.RigBins()[I+1]&&fabs(Momento_gen)>PRB.RigBins()[I])
 						for(int J=0; J<44; J++)
-							if(fabs(R_corr)<bin[J+1]&&fabs(R_corr)>bin[J])  response[J][I]++;
+							if(fabs(R_corr)<PRB.RigBins()[J+1]&&fabs(R_corr)>PRB.RigBins()[J])  response[J][I]++;
 				for(int I=0; I<44; I++)
-					if(fabs(Momento_gen)<bin[I+1]&&fabs(Momento_gen)>bin[I]) norm[I]++;
+					if(fabs(Momento_gen)<PRB.RigBins()[I+1]&&fabs(Momento_gen)>PRB.RigBins()[I]) norm[I]++;
 			}
 			////////////////////////////////////////////////////
 			Protoni(geo_stuff,i);
@@ -291,66 +288,7 @@ int main(int argc, char * argv[])
 	}
 
 
-
-
-	cout<<"Eventi Tot: "<<z<<endl;
-	cout<<"Preselezionate Tot: "<<entries<<endl;
-	cout<<endl;
-	cout<<"selezioni di qualità: "<<giov<<endl;
-	cout<<"N. Protoni: "<<nprotoni<<endl;
-	cout<<endl;
-	cout<<"-----------------------"<<endl;
-	cout<<"-----EFF. SELEZIONI (risp a PRE)----"<<endl;
-	cout<<"Taglio anticluster: "<<f/(float)entries*100<<endl;
-	cout<<"Taglio segmenti TRD: "<<g/(float)entries*100<<endl;
-	cout<<"Taglio TOF Clusters inutilizzati: "<<h/(float)entries*100<<endl;
-	cout<<"Taglio Confronto Rup/Rdown: "<<l/(float)entries*100<<endl;
-	cout<<"Taglio Prob. Q: "<<m/(float)entries*100<<endl;
-	cout<<"Taglio Fit multipli: "<<n/(float)entries*100<<endl;
-	cout<<"Taglio HitX: "<<o/(float)entries*100<<endl;
-	cout<<"Taglio Chi-Quadro: "<<r/(float)entries*100<<endl;
-	cout<<"Taglio carica TOF: "<<t/(float)entries*100<<endl;
-	cout<<"Taglio carica Track: "<<u/(float)entries*100<<endl;
-	cout<<"Taglio carica TRD: "<<v/(float)entries*100<<endl;
-	cout<<"Taglio layer non usati: "<<s/(float)entries*100<<endl;
-	cout<<endl;
-	cout<<"-----SELEZIONI DI REIEZIONE----"<<endl;
-	cout<<"Cluster TOF: "<<b/(float)giov*100<<endl;
-	cout<<endl;
-	cout<<"Cluster Track: "<<d/(float)giov*100<<endl;
-	cout<<endl;
-	cout<<"Cluster TRD: "<<e/(float)giov*100<<endl;
-	cout<<endl;
-
-	cout<<"-----ANALISI EFFICIENZA (PROTONI)------------- "<<endl;
-	cout<<endl;
-	for(int i=0; i<43; i++)
-		if(efficienzagen[i]!=0)
-			cout<<"efficienza da"<<bin[i]<<" a " << bin[i+1]<<": "<<protoni[i][0]<<" nel bin " <<i<<" "<<( protoni[i][0]/(double)efficienzagen[i]*100)<<"%"<< " rispetto a preselezione:  "<<protoni[i][0]/(double)preselezionate[i][0]*100<<"%"<<endl;
-
-		else cout<<"efficienza da "<<bin[i]<<" a "<< bin[i+1]<<": nessun evento generato nel bin"<<endl;
-	cout<<endl;
-	cout<<"-----ANALISI EFFICIENZA (DEUTONI)------------- "<<endl;
-	cout<<endl;
-	for(int i=0; i<43; i++)
-		if(efficienzagen_D[i]!=0)
-			cout<<"efficienza da"<<bin[i]<<" a " << bin[i+1]<<": "<<deutoni[i][0]<<" nel bin " <<i<<" "<<( deutoni[i][0]/(double)efficienzagen_D[i][0]*100)<<"%"<<endl;
-
-		else cout<<"efficienza da "<<bin[i]<<" a "<< bin[i+1]<<": nessun evento generato nel bin"<<endl;
-	cout<<endl;
-	cout<<"----ANALISI FONDO----"<<endl;
-	cout<<endl;
-	for(int i=0; i<43; i++) {
-		if(efficienzagen[i]!=0&&background[i]>0)
-			cout<<"Fondo da"<<bin[i]<<" a " << bin[i+1]<<": "<<background[i]<<" nel bin " <<i<<" su "<< efficienzagen[i]<<" : "<<(background[i]/(double)efficienzagen[i]*100)<<"% ---> R.P. : "<< protoni[i][0]/background[i]<<endl;
-
-		if(efficienzagen[i]!=0&&background[i]==0)
-			cout<<"Fondo da"<<bin[i]<<" a " << bin[i+1]<<": "<<background[i]<<" nel bin " <<i<<" su "<<efficienzagen[i]<<" : "<<"Minore di: "<<(1/(double)efficienzagen[i]*100)<<"% ---> R.P. Maggiore di: "<<protoni[i][0]<<endl;
-
-		if(efficienzagen[i]==0) cout<<"Fondo da "<<bin[i]<<" a "<< bin[i+1]<<": nessun evento generato nel bin"<<endl;
-	}
-
-	cout<<"------------------- MATRICE DI RISPOSTA -------------"<<endl;
+	cout<<"------------------- RvsRgen MATRIX -------------"<<endl;
 	for(int j=0; j<43; j++) {
 		for(int i=0; i<43; i++)
 			cout<<response[j][i]<<" ";

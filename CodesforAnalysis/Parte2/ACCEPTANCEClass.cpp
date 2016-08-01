@@ -261,7 +261,7 @@ TH1 * ACCEPTANCE::Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW){
 		for(int m=0;m<n;m++)
 			for(int iR=0;iR<MCAcceptance->GetNbinsX();iR++)
 				if(MCAcceptance->GetBinContent(iR+1,m+1)>0&&LATcorrW->GetBinContent(iR)>0){
-					Corrected_Acceptance -> SetBinContent(iR+1,m+1,MCAcceptance->GetBinContent(iR+1,m+1)/LATcorrW->GetBinContent(iR+1));
+					Corrected_Acceptance -> SetBinContent(iR+1,m+1,MCAcceptance->GetBinContent(iR+1,m+1)/*LATcorrW->GetBinContent(iR+1)*/);
 					error=pow(MCAcceptance->GetBinContent(iR+1,m+1)*LATcorrW->GetBinError(iR+1),2);
                                         error=pow(MCAcceptance->GetBinError(iR+1,m+1)*LATcorrW->GetBinContent(iR+1),2);
                                         error=pow(error,0.5);
@@ -272,7 +272,7 @@ TH1 * ACCEPTANCE::Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW){
 	else{
 		for(int iR=0;iR<MCAcceptance->GetNbinsX();iR++){
 			if(MCAcceptance->GetBinContent(iR+1)>0&&LATcorrW->GetBinContent(iR)>0){
-				Corrected_Acceptance -> SetBinContent(iR+1,MCAcceptance->GetBinContent(iR+1)/LATcorrW->GetBinContent(iR+1));}
+				Corrected_Acceptance -> SetBinContent(iR+1,MCAcceptance->GetBinContent(iR+1)/*LATcorrW->GetBinContent(iR+1)*/);}
 				error=pow(MCAcceptance->GetBinContent(iR+1)*LATcorrW->GetBinError(iR+1),2);
                                 error=pow(MCAcceptance->GetBinError(iR+1)*LATcorrW->GetBinContent(iR+1),2);
                                 error=pow(error,0.5);

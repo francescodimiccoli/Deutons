@@ -148,14 +148,14 @@ void TemplateFIT::TemplateFits(int mc_type)
          TH1F * Data          = GetResult_Data(bin,lat);
 
          if(!Geomag) {
-            PCounts -> SetBinContent(bin+1,Data->Integral()*GetFitFraction(0,bin));
+            PCounts -> SetBinContent(bin+1,Data->Integral()/*GetFitFraction(0,bin)*/);
             DCounts -> SetBinContent(bin+1,Data->Integral()*GetFitFraction(1,bin));
             PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
             DCounts -> SetBinError(bin+1,GetFitErrors(1,bin));
          }
 
          if(Geomag) {
-            PCounts -> SetBinContent(bin+1,lat+1,Data->Integral()*GetFitFraction(0,bin,lat));
+            PCounts -> SetBinContent(bin+1,lat+1,Data->Integral()/*GetFitFraction(0,bin,lat)*/);
             DCounts -> SetBinContent(bin+1,lat+1,Data->Integral()*GetFitFraction(1,bin,lat));
             PCounts -> SetBinError(bin+1,lat+1,GetFitErrors(0,bin,lat));
             DCounts -> SetBinError(bin+1,lat+1,GetFitErrors(1,bin,lat));
