@@ -104,8 +104,8 @@ void Acceptance(string filename){
 	AcceptancePreP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);
 */	
 	//qual
-	//AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);
-	//AcceptanceP -> Apply_DvsMCcorrection_R(LikP_Correction_R );
+	AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);
+	AcceptanceP -> Apply_DvsMCcorrection_R(LikP_Correction_R );
 	
 	//rich
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
