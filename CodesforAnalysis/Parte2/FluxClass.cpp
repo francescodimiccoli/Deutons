@@ -223,10 +223,10 @@ void Flux::Eval_Flux(int n,bool deutons,int mc_type) {
 	if(Counts_NaF)	SetCountsToOne(Counts_NaF);
 	if(Counts_Agl)	SetCountsToOne(Counts_Agl);
 */
-	if(Counts_R  ) 	Flux_R	= (TH1 *) Counts_R    -> Clone();
-	if(Counts_TOF)	Flux_TOF= (TH1 *) Counts_TOF  -> Clone();
-	if(Counts_NaF)	Flux_NaF= (TH1 *) Counts_NaF  -> Clone();
-	if(Counts_Agl)	Flux_Agl= (TH1 *) Counts_Agl  -> Clone();
+	if(Counts_R  ) 	Flux_R	= (TH1 *) Counts_R   -> Clone();
+	if(Counts_TOF)	Flux_TOF= (TH1 *) Counts_TOF -> Clone();
+	if(Counts_NaF)	Flux_NaF= (TH1 *) Counts_NaF -> Clone();
+	if(Counts_Agl)	Flux_Agl= (TH1 *) Counts_Agl -> Clone();
 
 	if(deutons){	
 		if(Counts_R  ) 	Flux_R	->Divide (ExtractParticularMC_cs( Acceptance_R      ,n,mc_type));

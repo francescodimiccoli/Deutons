@@ -134,8 +134,8 @@ int main(int argc, char * argv[])
    
    cout<<"****************************** BINS ***************************************"<<endl;
 
-   DRB.setBinsFromRigidity(nbinsr, 0.5, 100); // RB did not have Ek
-   PRB.setBinsFromRigidity(nbinsr, 0.5, 100); 
+   DRB.setBinsFromEkPerMass(nbinsr, 0.15, 100); // RB did not have Ek
+   PRB.setBinsFromEkPerMass(nbinsr, 0.15, 100); 
 
    float ekmin=0.1, ekmax=1;
    ToFDB.setBinsFromEkPerMass (nbinsToF, ekmin, ekmax);

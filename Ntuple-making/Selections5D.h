@@ -231,6 +231,7 @@ int UnbiasPre=9;
 int noR=33;
 int notpassed[10]= {0,1021,955,33,1007,799,959,799,187,187};
 float Velocity=0;
+int seconds=0;
 TMVA::Reader *reader;
 Float_t BDT_response;
 TFile *_file0 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Final_Def.root");

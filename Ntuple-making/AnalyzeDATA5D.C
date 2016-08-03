@@ -199,7 +199,7 @@ int main(int argc, char * argv[])
 	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:LDiscriminant:DistD,IsCharge1");
 	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:PhysBPatt:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P");
 	TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:BetaRICH_new:Cutmask:BetanS:BetaR");
-	TNtuple * trig = new TNtuple("trig","trig","U_time:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:BetaR:Livetime");
+	TNtuple * trig = new TNtuple("trig","trig","Seconds:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:Livetime");
 
 
 	BDTreader();
@@ -291,26 +291,18 @@ int main(int argc, char * argv[])
 	int contaeventi=0;
 	int z=0;
 	int Tempo=0;
+	seconds=0;
 	for(z=0; z<events; z++) {
 		if(!check) break;
 		geo_stuff->GetEvent(z);
 		contaeventi++;
 		R=R_pre;
 
+		if(z==0) { tbeg=U_time; cout <<"Tempo Iniziale: "<<tbeg<<endl;}	
+		seconds = U_time - tbeg;
+		
 		if(z%1000000==0) cout<<z/(float)events*100<<"%"<<endl;
-		//////// SCARTO EVENTI FINCHE' NON ENTRO IN UNA NUOVA ZONA GEOM
-		zona2=zona1;
-		for(int x=0; x<11; x++) {
-			double geo= geomag[x]  ;
-			double geo2=geomag[x+1];
-			if(Latitude>geo && Latitude<=geo2)
-				zona1=x;
-		}
-
-		if(zona1!=zona2&&z!=0) contriniz=1;
-		if(contriniz!=1) {continue;}
-
-		/////////////////////////////////////////////////////
+	
 		for(int i=0; i<11; i++) {
 			double geo= geomag[i]  ;
 			double geo2=geomag[i+1];
@@ -325,45 +317,6 @@ int main(int argc, char * argv[])
 			contasecondi[zona]++;
 		}
 
-		////////// CALCOLO TEMPO DI ESPOSIZIONE /////////////
-		if(U_time!=Tempo) {
-			for(int i=0; i<PRB.size(); i++)
-				if(fabs(1.2*Rcutoff)<PRB.RigBins()[i]&&Rcutoff!=0) {
-					tempobin[i]=tempobin[i]+Livetime;
-					tempobingeo[i][zonageo]=tempobingeo[i][zonageo]+Livetime;
-				}
-			for(int i=0; i<ToFDB.size(); i++) {
-				
-				if(fabs(1.2*Rcutoff)<ToFPB.RigBins()[i]&&Rcutoff!=0) {
-					esposizionep[m]=esposizionep[m]+Livetime;
-					esposizionepgeo[m][zonageo]=esposizionepgeo[m][zonageo]+Livetime;
-				}
-				if(fabs(1.2*Rcutoff)<NaFPB.RigBins()[i]&&Rcutoff!=0) {
-					esposizionepNaF[m]=esposizionepNaF[m]+Livetime;
-					esposizionepgeoNaF[m][zonageo]=esposizionepgeoNaF[m][zonageo]+Livetime;
-				}
-				if(fabs(1.2*Rcutoff)<ToFPB.RigBins()[i]&&Rcutoff!=0) {
-					esposizionepAgl[m]=esposizionepAgl[m]+Livetime;
-					esposizionepgeoAgl[m][zonageo]=esposizionepgeoAgl[m][zonageo]+Livetime;
-				}
-
-				if(fabs(1.2*Rcutoff)<ToFDB.RigBins()[i]&&Rcutoff!=0) {
-					esposizioned[m]=esposizioned[m]+Livetime;
-					esposizionedgeo[m][zonageo]=esposizionedgeo[m][zonageo]+Livetime;
-				}
-				if(fabs(1.2*Rcutoff)<NaFDB.RigBins()[i]&&Rcutoff!=0) {
-					esposizionedNaF[m]=esposizionedNaF[m]+Livetime;
-					esposizionedgeoNaF[m][zonageo]=esposizionedgeoNaF[m][zonageo]+Livetime;
-				}
-				if(fabs(1.2*Rcutoff)<AglDB.RigBins()[i]&&Rcutoff!=0) {
-					esposizionedAgl[m]=esposizionedAgl[m]+Livetime;
-					esposizionedgeoAgl[m][zonageo]=esposizionedgeoAgl[m][zonageo]+Livetime;
-				}
-
-			}
-			if(Rcutoff!=0) Tempo=U_time;
-		}
-		/////////////////////////////////////////////////////
 
 		Cutmask=CUTMASK;
 		Cutmask=CUTMASK|(1<<10);
@@ -375,7 +328,6 @@ int main(int argc, char * argv[])
 
 		for(int layer=1; layer<8; layer++) EdepTrack+=(*trtot_edep)[layer];
 		EdepTrack=EdepTrack/7;
-
 		if(scelta==1) Trigg(geo_stuff,z,trig);
 	}
 	/////////////////////////////////////////////////////
@@ -385,37 +337,6 @@ int main(int argc, char * argv[])
 		std::cout<<endl;
 	}
 
-	for(int i=1; i<11; i++)   { for(int m=0; m<18; m++) cout<<esposizionedgeo[m][i]<<" "; cout<<endl;}
-	cout<<endl;
-	for(int i=1; i<11; i++)   { for(int m=0; m<18; m++) cout<<esposizionepgeo[m][i]<<" "; cout<<endl;}
-
-	TH1F * Tempi=new TH1F("Tempi","Tempi",11,0,11);
-	for(int i=1; i<11; i++) Tempi->SetBinContent(i,Time[i]);
-
-	TH2F * Esposizionegeo=new TH2F("esposizionegeo","esposizionegeo",43,0,43,11,0,11);
-	for(int i=1; i<11; i++) for(int j=0; j<43; j++) Esposizionegeo->SetBinContent(j+1,i,tempobingeo[j][i]);
-
-	TH2F * Esposizionepgeo=new TH2F("esposizionepgeo","esposizionepgeo",18,0,18,11,0,11);
-	for(int i=1; i<11; i++) for(int j=0; j<18; j++) Esposizionepgeo->SetBinContent(j+1,i,esposizionepgeo[j][i]);
-	TH2F * EsposizionepgeoNaF=new TH2F("esposizionepgeoNaF","esposizionepgeoNaF",18,0,18,11,0,11);
-	for(int i=1; i<11; i++) for(int j=0; j<18; j++) EsposizionepgeoNaF->SetBinContent(j+1,i,esposizionepgeoNaF[j][i]);
-	TH2F * EsposizionepgeoAgl=new TH2F("esposizionepgeoAgl","esposizionepgeoAgl",18,0,18,11,0,11);
-	for(int i=1; i<11; i++) for(int j=0; j<18; j++) EsposizionepgeoAgl->SetBinContent(j+1,i,esposizionepgeoAgl[j][i]);
-
-	TH2F * Esposizionedgeo=new TH2F("esposizionedgeo","esposizionedgeo",18,0,18,11,0,11);
-	for(int i=1; i<11; i++) for(int j=0; j<18; j++) Esposizionedgeo->SetBinContent(j+1,i,esposizionedgeo[j][i]);
-	TH2F * EsposizionedgeoNaF=new TH2F("esposizionedgeoNaF","esposizionedgeoNaF",18,0,18,11,0,11);
-	for(int i=1; i<11; i++) for(int j=0; j<18; j++) EsposizionedgeoNaF->SetBinContent(j+1,i,esposizionedgeoNaF[j][i]);
-	TH2F * EsposizionedgeoAgl=new TH2F("esposizionedgeoAgl","esposizionedgeoAgl",18,0,18,11,0,11);
-	for(int i=1; i<11; i++) for(int j=0; j<18; j++) EsposizionedgeoAgl->SetBinContent(j+1,i,esposizionedgeoAgl[j][i]);
-	Tempi->Write();
-	Esposizionegeo->Write();
-	Esposizionepgeo->Write();
-	EsposizionepgeoNaF->Write();
-	EsposizionepgeoAgl->Write();
-	Esposizionedgeo->Write();
-	EsposizionedgeoNaF->Write();
-	EsposizionedgeoAgl->Write();
 
 	if(scelta==1) File->Write();
 	if(scelta==1) File->Close();
@@ -426,8 +347,7 @@ int main(int argc, char * argv[])
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
-	ntupla->Fill(U_time,Latitude,Rcutoff,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,Livetime);
-
+	ntupla->Fill(seconds,Latitude,Rcutoff,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,Livetime);
 }
 
 

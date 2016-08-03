@@ -11,11 +11,11 @@ void DeutonFlux(string filename) {
         TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
 
 
-	TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get(      "esposizionegeo"        );
-	TH2F * esposizionedgeoTOF  = (TH2F*)inputHistoFile->Get(      "esposizionedgeo"       );
+	TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get(      "esposizionegeo_R"        );
+	TH2F * esposizionedgeoTOF  = (TH2F*)inputHistoFile->Get(      "esposizionedgeoTOF"       );
 	TH2F * esposizionedgeoNaF  = (TH2F*)inputHistoFile->Get(      "esposizionedgeoNaF"    );
 	TH2F * esposizionedgeoAgl  = (TH2F*)inputHistoFile->Get(      "esposizionedgeoAgl"    );
-	TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(      "esposizionepgeo"       );
+	TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(      "esposizionepgeoTOF"       );
 	TH2F * esposizionepgeoNaF  = (TH2F*)inputHistoFile->Get(      "esposizionepgeoNaF"    );
 	TH2F * esposizionepgeoAgl  = (TH2F*)inputHistoFile->Get(      "esposizionepgeoAgl"    );
 

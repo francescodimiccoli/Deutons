@@ -138,7 +138,7 @@ void DeutonsTemplFits(string filename)
 
    cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
-   FitTOF_Dbins 	-> DisableFit();// 
+/*   FitTOF_Dbins 	-> DisableFit();// 
    FitNaF_Dbins 	-> DisableFit();// 
    FitAgl_Dbins 	-> DisableFit();// 
                                                                                               
@@ -149,8 +149,8 @@ void DeutonsTemplFits(string filename)
    FitTOF_Pbins 	-> DisableFit();// 
    FitNaF_Pbins 	-> DisableFit();// 
    FitAgl_Pbins 	-> DisableFit();// 
+*/
 
-/*
    FitTOF_Dbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0025);
    FitNaF_Dbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0015);
    FitAgl_Dbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0005);
@@ -162,7 +162,7 @@ void DeutonsTemplFits(string filename)
    FitTOF_Pbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.02,0.00,0.0025);
    FitNaF_Pbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.02,0.00,0.0015);
    FitAgl_Pbins 	->  SetFitConstraints(0.8,1,0.0001,0.02,0.00,0.0005);
-*/
+
 
    cout<<"** TOF **"<<endl;
    FitTOF_Dbins 	-> TemplateFits();

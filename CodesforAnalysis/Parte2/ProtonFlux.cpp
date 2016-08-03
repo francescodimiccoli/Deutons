@@ -56,8 +56,8 @@ void ProtonFlux(string filename) {
         TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
 
 
-	TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get(        "esposizionegeo"        );
-	TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeo"	);
+	TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get(        "esposizionegeo_R"        );
+	TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoTOF"	);
 	TH2F * esposizionepgeoNaF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoNaF"	);
 	TH2F * esposizionepgeoAgl  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoAgl"	);
 
