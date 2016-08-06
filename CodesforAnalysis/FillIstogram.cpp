@@ -115,6 +115,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       MCMC_Write();
       MCUnbiaseff_Write();
       MCpreeff_Write();
+      MCControlsamplecuteff_Write();
       MCQualeff_Write();
       MCTrackeff_Write();
       MigrationMatrix_Write();
@@ -140,6 +141,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
       MCpreeff(filename);
       MCUnbiaseff(filename);
+      MCControlsamplecuteff(filename);
       MCQualeff(filename);
       FluxFactorizationtest(filename);
       MCTrackeff(filename);
@@ -152,8 +154,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATApreSeleff(filename);
       DATAQualeff(filename);
       DATARICHeff(filename);
-      if(frac=="tot") DeutonsTemplFits(filename);
-      if(frac=="tot") DeutonsTemplFits_Dist(filename);
+      DeutonsTemplFits(filename);
+      DeutonsTemplFits_Dist(filename);
 
       CorrLAT(filename);
       DVSMCPreSeleff(filename);
@@ -164,8 +166,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       Acceptance(filename);
       AntiDpredictions(filename);
       ProtonFlux(filename);
-      if(frac=="tot") DeutonFlux(filename);
-      if(frac=="tot") OtherExperimentsComparison(filename);
+      DeutonFlux(filename);
+      OtherExperimentsComparison(filename);
    }
 
 
@@ -302,6 +304,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       FluxFactorizationtest_Qual_Fill();
       DistanceCut_Fill();
       AntiDCutOptimization_Fill();
+      MCControlsamplecuteff_Fill();
       MCQualeff_Fill();
       DVSMCQualeff2_Fill();
       DVSMCQualeffD_Fill();
@@ -339,7 +342,6 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
                 if(Tup.Beta_pre<=0) continue;
 
 
-		DATAUnbiaseff_Fill();
 		DATApreSeleff_Fill(Zona);
 		DVSMCTrackeff_D_Fill(); // < Check if needs the ones before
 		DVSMCPreSeleff_D_Fill(Zona);

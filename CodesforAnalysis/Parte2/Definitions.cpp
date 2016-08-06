@@ -87,7 +87,7 @@ bool Distcut=false;
 bool Herejcut=false;
 bool Betastrongcut=false;
 bool ProtonsMassWindow=false;
-
+bool ProtonsMassThres=false;
 
 Tuplevar Tup;
 

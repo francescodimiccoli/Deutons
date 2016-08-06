@@ -16,8 +16,12 @@ TemplateFIT * HeliumContaminationAgl = new TemplateFIT("HeliumContaminationAgl",
 
 void HecutMC_Fill() {
 
+	 if(!trgpatt.IsPhysical()) return;
+         if(Tup.Beta<=0||Tup.R<=0) return;
+
+
 	float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
-	int Kbin=PRB.GetRBin(Tup.Momento_gen);
+	int Kbin=PRB.GetRBin(Tup.R);
 	float dummy=0;
 	if(Massa_gen<1) {
 		HecutMC_P->Fill( fabs(EdepTOFbeta  ->Eval(Tup.Beta)-EdepTOFud) / (pow(EdepTOFbeta  ->Eval(Tup.Beta),2)*etofu ->Eval(Tup.Beta)) ,
@@ -55,7 +59,10 @@ void HecutMC_Fill() {
 
 void HecutD_Fill() {
 
+	if(!trgpatt.IsPhysical()) return;
+        if(Tup.Beta<=0||Tup.R<=0) return;
 	if(!Tup.R>1.2*Tup.Rcutoff) return;
+
 	float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
 	Hecut_D->Fill(fabs(EdepTOFbeta->Eval(Tup.Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta),2)*etofu->Eval(Tup.Beta)),fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)));
 	float dummy=0;

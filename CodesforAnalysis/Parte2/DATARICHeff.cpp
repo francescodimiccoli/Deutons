@@ -9,9 +9,8 @@ LATcorr * LATrichDATA_Agl   = new LATcorr("LATrichDATA_Agl");
 void DATARICHeff_Fill(int zona) {
 
 	//cuts
-	if(/*Tup.R<1.2*Tup.Rcutoff||*/Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
 	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
-	if(!Herejcut) return;
+	if(!(Distcut&&Likcut)) return;
 
 	int Kbin=PRB.GetRBin(Tup.R);
 

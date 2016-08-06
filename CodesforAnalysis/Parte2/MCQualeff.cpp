@@ -12,7 +12,6 @@ Efficiency * EffDistMCD = new Efficiency ("EffDistMCD",6);
 void MCQualeff_Fill() {
 
 	int Kbin;
-	if(Tup.Beta<=0||Tup.R<=0) return;
 	
 	if(Massa_gen<1) {
 		//R bins
@@ -21,7 +20,7 @@ void MCQualeff_Fill() {
 		EffLikMCP->beforeR->Fill(Kbin,Tup.mcweight);
 		EffDistMCP->beforeR->Fill(Kbin,Tup.mcweight);
 		if(Likcut)          EffLikMCP->afterR->Fill(Kbin,Tup.mcweight);
-		if(/*Tup.Dist5D_P<6*/Distcut&&Likcut)	EffDistMCP->afterR->Fill(Kbin,Tup.mcweight);
+		if(Distcut&&Likcut)	EffDistMCP->afterR->Fill(Kbin,Tup.mcweight);
 
 
 		//Beta bins

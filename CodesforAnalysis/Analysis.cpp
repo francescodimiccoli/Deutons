@@ -41,6 +41,7 @@
 #include "Parte2/Hecont.cpp"
 #include "Parte2/SlidesforPlot.cpp"
 #include "Parte2/Qualcutoptimization.cpp"
+#include "Parte2/MCControlsamplecuteff.cpp"
 #include "Parte2/MCQualeff.cpp"
 #include "Parte2/Cuts.cpp"
 #include "Parte2/MCTrackeff.cpp"

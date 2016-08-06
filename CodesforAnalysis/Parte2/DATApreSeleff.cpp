@@ -9,9 +9,10 @@ LATcorr *LATpreSelDATA = new LATcorr("LATpreSelDATA",3);
 void DATApreSeleff_Fill(int zona)
 {
 
-	if(!trgpatt.IsPhysical()||Tup.R_pre<=0||Tup.Beta_pre>protons->Eval(Tup.R_pre)+0.1||Tup.Beta_pre<protons->Eval(Tup.R_pre)-0.1) return;
-	if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta_pre)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta_pre)-0.1)) return;
-	if(!Herejcut) return;  
+	if(!trgpatt.IsPhysical()) return;
+	if(!Herejcut) return;
+  	if(Tup.Beta_pre<=0||Tup.R_pre<=0) return;
+  	if(!ProtonsMassWindow) return;
 
 	for(int S=0; S<3; S++) {
 		int Kbin=PRB.GetRBin(fabs(Tup.R_pre));

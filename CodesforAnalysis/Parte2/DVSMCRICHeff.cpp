@@ -13,7 +13,8 @@ void DVSMCRICHeff_D_Fill(int zona){
 	if(Tup.R<1.2*Tup.Rcutoff) return;
 	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!trgpatt.IsPhysical()) return;
-	if(!(Tup.Dist5D_P<6)) return;
+	if(Tup.Beta<=0||Tup.R<=0) return;
+	if(!(Distcut&&Likcut)) return;
 	//
 	int Kbin;
 	
@@ -22,7 +23,7 @@ void DVSMCRICHeff_D_Fill(int zona){
 	Kbin=NaFDB.GetBin(RUsed);
 	RICH_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);	
 	RICH_DvsMC_D -> DataEff -> beforeNaF -> Fill(Kbin,zona);
-	if(cmask.isFromNaF()&&Distcut) {
+	if(cmask.isFromNaF()) {
 		RICH_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
 		RICH_DvsMC_D -> DataEff -> afterNaF -> Fill(Kbin,zona);
 	}
@@ -30,7 +31,7 @@ void DVSMCRICHeff_D_Fill(int zona){
 	Kbin=AglDB.GetBin(RUsed);
         RICH_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);	
 	RICH_DvsMC_D -> DataEff -> beforeAgl -> Fill(Kbin,zona);
-	if(cmask.isFromAgl()&&Distcut) { 
+	if(cmask.isFromAgl()) { 
 		RICH_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona); 
 		RICH_DvsMC_D -> DataEff -> afterAgl -> Fill(Kbin,zona); 
 	}
@@ -39,8 +40,9 @@ void DVSMCRICHeff_D_Fill(int zona){
 
 void DVSMCRICHeff_Fill(){
 
-	//if(!trgpatt.IsPhysical()) return;
-	if(!(Tup.Dist5D_P<6)) return;
+	if(!trgpatt.IsPhysical()) return;
+        if(Tup.Beta<=0||Tup.R<=0) return;
+	if(!(Distcut&&Likcut)) return;
 	//
 	int Kbin;
 	
@@ -52,7 +54,7 @@ void DVSMCRICHeff_Fill(){
 		RICH_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin,Tup.mcweight);
 		for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff -> beforeNaF) -> Fill(Kbin,mc_type,Tup.mcweight);
 
-		if(cmask.isFromNaF()&&Distcut){
+		if(cmask.isFromNaF()){
 			RICH_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin,Tup.mcweight);
 			for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff -> afterNaF) -> Fill(Kbin,mc_type,Tup.mcweight);
 		}
@@ -61,7 +63,7 @@ void DVSMCRICHeff_Fill(){
 		RICH_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin,Tup.mcweight);
 		for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff -> beforeAgl) -> Fill(Kbin,mc_type,Tup.mcweight);	
 
-		if(cmask.isFromAgl()&&Distcut) {
+		if(cmask.isFromAgl()) {
 			RICH_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin,Tup.mcweight); 	
 			for(int mc_type=0;mc_type<6;mc_type++) 	((TH2*)RICH_DvsMC_D -> MCEff -> afterAgl) -> Fill(Kbin,mc_type,Tup.mcweight);
 		}

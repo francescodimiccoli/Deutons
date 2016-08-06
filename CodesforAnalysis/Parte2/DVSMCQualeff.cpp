@@ -8,17 +8,19 @@ DatavsMC * Lik_DvsMC_P  = new DatavsMC("Lik_DvsMC_P" ,11);
 void DVSMCQualeff2_D_Fill(int zona){
 
 	//cuts
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
 	if(!trgpatt.IsPhysical()) return;
-	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff||!ProtonsMassWindow) return;
-	if(!Herejcut) return;
+        if(!Herejcut) return;
+        if(!ProtonsMassThres) return;
+	
 	int Kbin;
 	
 	//R bins
 	Kbin = PRB.GetRBin(Tup.R);
 	Dist_DvsMC_P -> DataEff -> beforeR -> Fill(Kbin,zona);	
-	if(Tup.Dist5D_P<6) Lik_DvsMC_P  -> DataEff -> beforeR -> Fill(Kbin,zona);
+	if(Distcut) Lik_DvsMC_P  -> DataEff -> beforeR -> Fill(Kbin,zona);
 	
-	if(Tup.Dist5D_P<6){
+	if(Distcut){
 		Dist_DvsMC_P -> DataEff -> afterR -> Fill(Kbin,zona);     
         	if(Likcut) Lik_DvsMC_P  -> DataEff -> afterR -> Fill(Kbin,zona);
 	}
@@ -62,10 +64,11 @@ void DVSMCQualeff2_D_Fill(int zona){
 void DVSMCQualeff2_Fill(){
 
 	//cuts
-	if(!trgpatt.IsPhysical()) return;
-	if(Tup.Beta<=0||Tup.R<=0||!ProtonsMassWindow) return;
-        if(!(Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta_pre)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta_pre)-0.1)) return;
+        if(Tup.Beta<=0||Tup.R<=0) return;
 	if(!Herejcut) return;
+ 	if(!trgpatt.IsPhysical()) return;       
+	if(!ProtonsMassThres) return;
+	
 	//
 	int Kbin;
 
@@ -76,9 +79,9 @@ void DVSMCQualeff2_Fill(){
 		//R bins
 		Kbin = PRB.GetRBin(Tup.R);	
 		Dist_DvsMC_P -> MCEff -> beforeR -> Fill(Kbin,Tup.mcweight);
-		if(Tup.Dist5D_P<6) Lik_DvsMC_P  -> MCEff -> beforeR -> Fill(Kbin,Tup.mcweight);
+		if(Distcut) Lik_DvsMC_P  -> MCEff -> beforeR -> Fill(Kbin,Tup.mcweight);
 
-		if(Tup.Dist5D_P<6){
+		if(Distcut){
 			Dist_DvsMC_P -> MCEff -> afterR -> Fill(Kbin,Tup.mcweight);
 			if(Likcut) Lik_DvsMC_P  -> MCEff -> afterR -> Fill(Kbin,Tup.mcweight);
 		}

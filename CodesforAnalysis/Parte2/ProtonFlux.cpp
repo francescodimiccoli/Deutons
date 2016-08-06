@@ -18,20 +18,19 @@ void ProtonFlux_Fill(int zona) {
 	int Kbin=PRB.GetRBin(Tup.R);
 	
 
-	if(/*Tup.Dist5D_P<6*/Distcut && Likcut) {
+	if(Distcut && Likcut) {
 		P_Flux_geo-> Counts_R -> Fill(Kbin,zona);
 		if(Tup.R>1.2*Tup.Rcutoff) {
 			P_Flux -> Counts_R-> Fill(Kbin);
 			P_Flux_geo_prim -> Counts_R -> Fill(Kbin,zona);
 		}
 	}
-	//bool L1cut=false;
-	//if((Tup.EdepL1>0&&Tup.EdepL1<EdepL1beta->Eval(Tup.Beta)+0.1&&Tup.EdepL1>EdepL1beta->Eval(Tup.Beta)-0.1)) L1cut=true;
-	if(Herejcut && Tup.Beta>0 && Tup.R>1.2*Tup.Rcutoff && ProtonsMassWindow ) {
-		P_Flux_pre -> Counts_R -> Fill(Kbin);
-		if(Tup.Dist5D_P<6&&Likcut)  P_Flux_sel -> Counts_R -> Fill(Kbin);
-	}
+	
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
 
+	if(Herejcut && ProtonsMassWindow) P_Flux_pre -> Counts_R -> Fill(Kbin);
+	if(Distcut  && Likcut           ) P_Flux_sel -> Counts_R -> Fill(Kbin);
+	
 	return;
 }
 

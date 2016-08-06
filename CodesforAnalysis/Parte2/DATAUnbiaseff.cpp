@@ -5,28 +5,19 @@ using namespace std;
 Efficiency * EffUnbiasDATA  = new Efficiency ("EffUnbiasDATA" );
 Efficiency * EffUnbiasDATAQ = new Efficiency ("EffUnbiasDATAQ");
 
-
-void DATAUnbiaseff_Fill () {
-	if (!cmask.isPreselected() ||Tup.R_pre<=0||Tup.Beta_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff) return;
-	if(!ProtonsMassWindow) return;
-	if(!Herejcut) return;
-
-	int Kbin=PRB.GetRBin (fabs (Tup.R_pre) );
-	if(trgpatt.IsPhysical()) EffUnbiasDATA->beforeR->Fill(Kbin);
-	if(trgpatt.IsUnbias()  ) EffUnbiasDATA->beforeR->Fill(Kbin,100);
-	if(trgpatt.IsPhysical()) EffUnbiasDATA->afterR->Fill(Kbin);
-
-	return;
-}
-
 void DATAUnbiaseffQ_Fill () {
 	if(Tup.Beta<=0||Tup.R<=0||Tup.Beta<=0||Tup.R<1.2*Tup.Rcutoff) return;
 	if(!Herejcut) return;
 	if(!ProtonsMassWindow) return;
-	if(!(Tup.Dist5D_P<6&&Likcut)) return;
-        
-         if(!(Tup.Beta<protons->Eval(Tup.R)+0.15 && Tup.Beta>protons->Eval(Tup.R)-0.15)) cout<<"casd"<<endl;
+	
 	int Kbin=PRB.GetRBin (fabs (Tup.R) );
+        if(trgpatt.IsPhysical()) EffUnbiasDATA->beforeR->Fill(Kbin);
+        if(trgpatt.IsUnbias()  ) EffUnbiasDATA->beforeR->Fill(Kbin,100);
+        if(trgpatt.IsPhysical()) EffUnbiasDATA->afterR->Fill(Kbin);
+
+
+	if(!(Distcut&&Likcut)) return;
+        
         if(trgpatt.IsPhysical()) EffUnbiasDATAQ->beforeR->Fill(Kbin);
         if(trgpatt.IsUnbias()  ) EffUnbiasDATAQ->beforeR->Fill(Kbin,100);
         if(trgpatt.IsPhysical()) EffUnbiasDATAQ->afterR->Fill(Kbin);
