@@ -26,8 +26,8 @@ class Cutmask {
       bool isMinimumBiasToF4Layers()    { return cmask& (1<<8);}
       bool isGoldenToF4Layers()         { return cmask& (1<<9);}
       // Bit 10 is always set
-      bool isFromNaF() {return true;/*(cmask>>11) == 512;*/}
-      bool isFromAgl() {return true;/*(cmask>>11) == 0;*/}
+      bool isFromNaF() {return (cmask>>11) == 512;}
+      bool isFromAgl() {return (cmask>>11) == 0;}
       bool isOnlyFromToF() {return ( !isFromAgl() && !isFromNaF() );}
 
       bool isPreselected(); ///< This 187 thing
