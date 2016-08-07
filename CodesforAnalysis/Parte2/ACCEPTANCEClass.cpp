@@ -205,11 +205,11 @@ void ACCEPTANCE::Eval_MC_Acceptance(){
 	if(Gen_Acceptance_NaF )  MCAcceptance_NaF =(TH1 *) Gen_Acceptance_NaF ->Clone();
 	if(Gen_Acceptance_Agl )  MCAcceptance_Agl =(TH1 *) Gen_Acceptance_Agl ->Clone();
 
-	/*if(	Efficiency_R  	) MCAcceptance_R  -> Multiply (	Efficiency_R  	);
+	if(	Efficiency_R  	) MCAcceptance_R  -> Multiply (	Efficiency_R  	);
 	if(	Efficiency_TOF	) MCAcceptance_TOF-> Multiply (	Efficiency_TOF	);
 	if(	Efficiency_NaF	) MCAcceptance_NaF-> Multiply (	Efficiency_NaF	);
 	if(	Efficiency_Agl	) MCAcceptance_Agl-> Multiply (	Efficiency_Agl	);
-	*/	
+		
 }
 
 TH1 * ACCEPTANCE::Geomag_Acceptance(int n, TH1* MCAcceptance, TH1* LATcorr){
@@ -261,7 +261,7 @@ TH1 * ACCEPTANCE::Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW){
 		for(int m=0;m<n;m++)
 			for(int iR=0;iR<MCAcceptance->GetNbinsX();iR++)
 				if(MCAcceptance->GetBinContent(iR+1,m+1)>0&&LATcorrW->GetBinContent(iR)>0){
-					Corrected_Acceptance -> SetBinContent(iR+1,m+1,MCAcceptance->GetBinContent(iR+1,m+1)/*LATcorrW->GetBinContent(iR+1)*/);
+					Corrected_Acceptance -> SetBinContent(iR+1,m+1,MCAcceptance->GetBinContent(iR+1,m+1)*LATcorrW->GetBinContent(iR+1));
 					error=pow(MCAcceptance->GetBinContent(iR+1,m+1)*LATcorrW->GetBinError(iR+1),2);
                                         error=pow(MCAcceptance->GetBinError(iR+1,m+1)*LATcorrW->GetBinContent(iR+1),2);
                                         error=pow(error,0.5);
@@ -272,7 +272,7 @@ TH1 * ACCEPTANCE::Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW){
 	else{
 		for(int iR=0;iR<MCAcceptance->GetNbinsX();iR++){
 			if(MCAcceptance->GetBinContent(iR+1)>0&&LATcorrW->GetBinContent(iR)>0){
-				Corrected_Acceptance -> SetBinContent(iR+1,MCAcceptance->GetBinContent(iR+1)/*LATcorrW->GetBinContent(iR+1)*/);}
+				Corrected_Acceptance -> SetBinContent(iR+1,MCAcceptance->GetBinContent(iR+1)*LATcorrW->GetBinContent(iR+1));}
 				error=pow(MCAcceptance->GetBinContent(iR+1)*LATcorrW->GetBinError(iR+1),2);
                                 error=pow(MCAcceptance->GetBinError(iR+1)*LATcorrW->GetBinContent(iR+1),2);
                                 error=pow(error,0.5);

@@ -10,12 +10,11 @@ DatavsMC * RICH_DvsMC_D = new DatavsMC("RICH_DvsMC_D",11,1,6);
 void DVSMCRICHeff_D_Fill(int zona){
 
 	//cuts
-	if(Tup.R<1.2*Tup.Rcutoff) return;
-	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
-	if(!trgpatt.IsPhysical()) return;
-	if(Tup.Beta<=0||Tup.R<=0) return;
-	if(!(Distcut&&Likcut)) return;
-	//
+	
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
+        if(!trgpatt.IsPhysical()) return;
+        if(!Herejcut) return;
+        if(!ProtonsMassThres) return;	//
 	int Kbin;
 	
 	//Beta bins
@@ -40,9 +39,11 @@ void DVSMCRICHeff_D_Fill(int zona){
 
 void DVSMCRICHeff_Fill(){
 
-	if(!trgpatt.IsPhysical()) return;
-        if(Tup.Beta<=0||Tup.R<=0) return;
-	if(!(Distcut&&Likcut)) return;
+	if(Tup.Beta<=0||Tup.R<=0) return;
+        if(!trgpatt.IsPhysical()) return;
+        if(!Herejcut) return;
+        if(!ProtonsMassThres) return;	//
+        
 	//
 	int Kbin;
 	

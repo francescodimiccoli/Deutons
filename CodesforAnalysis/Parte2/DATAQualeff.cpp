@@ -34,7 +34,8 @@ void DATAQualeff_Fill (int zona)
       }
       if (Tup.Dist5D_P<6 && Likcut)
          LATLikelihoodDATA_NaF->afterR ->Fill (Kbin,zona);
-   } else if (cmask.isFromAgl() ) { // Agl
+   }  
+   if (cmask.isFromAgl() ) { // Agl
       LATDistanceDATA_Agl     ->beforeR->Fill (Kbin,zona);
       if (Tup.Dist5D_P<6) {
          LATDistanceDATA_Agl  ->afterR ->Fill (Kbin,zona);
@@ -43,8 +44,8 @@ void DATAQualeff_Fill (int zona)
       if (Tup.Dist5D_P<6 && Likcut)
          LATLikelihoodDATA_Agl->afterR ->Fill (Kbin,zona);
    }
-   else // ToF
-   {
+   // ToF
+   
       LATDistanceDATA_TOF  ->beforeR->Fill (Kbin,zona);
       if (Tup.Dist5D_P<6) {
          LATDistanceDATA_TOF  ->afterR ->Fill (Kbin,zona);
@@ -52,7 +53,7 @@ void DATAQualeff_Fill (int zona)
       }
       if (Tup.Dist5D_P<6 && Likcut)
          LATLikelihoodDATA_TOF->afterR ->Fill (Kbin,zona);
-   }
+   
 
    return;
 }
