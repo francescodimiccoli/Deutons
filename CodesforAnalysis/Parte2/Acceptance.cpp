@@ -118,11 +118,11 @@ void Acceptance(string filename){
 	*/
 	
 	//rich
-	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
-	AcceptanceP -> Apply_DvsMCcorrection_Agl(RICH_Correction_P_Agl);
+	//AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
+	//AcceptanceP -> Apply_DvsMCcorrection_Agl(RICH_Correction_P_Agl);
 	
-	AcceptanceD -> Apply_DvsMCcorrection_NaF(RICH_Correction_D_NaF,6);
-        AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl,6);
+	//AcceptanceD -> Apply_DvsMCcorrection_NaF(RICH_Correction_D_NaF,6);
+        //AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl,6);
 	
 	
 	

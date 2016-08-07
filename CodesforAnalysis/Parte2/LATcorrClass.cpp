@@ -179,7 +179,7 @@ void FitLATcorr( TH1 * LATcorr,TH1 * LATcorr_fit,int n){
 	}
 	else{
 		TH1F * latcorr = ((TH1F *)LATcorr);
-		TF1 * Fitcorr = new TF1("Fitcorr","pol3");
+		TF1 * Fitcorr = new TF1("Fitcorr","pol4");
 		latcorr -> Fit ("Fitcorr");
 		for(int i=1;i<11;i++) 
 			LATcorr_fit -> SetBinContent(i+1,Fitcorr->Eval(i+0.5));

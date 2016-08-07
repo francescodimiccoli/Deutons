@@ -55,11 +55,11 @@ void CorrLAT(string filename) {
 
 	TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATLikelihoodDATA_NaF ->  LATcorrR_fit) );
 	TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATDistanceDATA_NaF   ->  LATcorrR_fit) );
-	TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATrichDATA_NaF       ->  LATcorrR_fit) );   
+//	TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATrichDATA_NaF       ->  LATcorrR_fit) );   
 
 	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LATLikelihoodDATA_Agl ->  LATcorrR_fit) );
 	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LATDistanceDATA_Agl   ->  LATcorrR_fit) );
-	TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATrichDATA_Agl       ->  LATcorrR_fit) );
+//	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LATrichDATA_Agl       ->  LATcorrR_fit) );
 
 	//Only pres.
 	TH1F * CorrezioneLATpre_pR = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorr);
