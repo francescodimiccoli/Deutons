@@ -50,7 +50,8 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat)
    } else {
       if(Fit -> Data -> Integral() > 500) {
          Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
-
+	
+	 Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(1.1), Fit -> Data -> GetNbinsX()+1);
          Fit -> Tfit -> Constrain(0, lowP ,highP );
          Fit -> Tfit -> Constrain(1, lowD ,highD );
          Fit -> Tfit -> Constrain(2, lowHe,highHe);
@@ -85,9 +86,9 @@ double TemplateFIT::GetFitWheights(int par, int bin,int lat)
    TH1F * Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();
    float itot= Result->Integral();
    float i1;
-   if(par == 0) i1 = fits[lat][bin]-> Templ_P  ->Integral();
-   if(par == 1) i1 = fits[lat][bin]-> Templ_D  ->Integral();
-   if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral();
+   if(par == 0) i1 = fits[lat][bin]-> Templ_P  ->Integral(fits[lat][bin]->  Data -> FindBin(1.1), fits[lat][bin]->  Data -> GetNbinsX()+1);
+   if(par == 1) i1 = fits[lat][bin]-> Templ_D  ->Integral(fits[lat][bin]->  Data -> FindBin(1.1), fits[lat][bin]->  Data -> GetNbinsX()+1);
+   if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral(fits[lat][bin]->  Data -> FindBin(1.1), fits[lat][bin]->  Data -> GetNbinsX()+1);
    return w1*itot/i1;
 }
 
@@ -149,14 +150,14 @@ void TemplateFIT::TemplateFits(int mc_type)
 
          if(!Geomag) {
             PCounts -> SetBinContent(bin+1,Data->Integral()/*GetFitFraction(0,bin)*/);
-            DCounts -> SetBinContent(bin+1,Data->Integral()*GetFitFraction(1,bin));
+            DCounts -> SetBinContent(bin+1,GetResult_D(bin)->Integral());
             PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
             DCounts -> SetBinError(bin+1,GetFitErrors(1,bin));
          }
 
          if(Geomag) {
             PCounts -> SetBinContent(bin+1,lat+1,Data->Integral()/*GetFitFraction(0,bin,lat)*/);
-            DCounts -> SetBinContent(bin+1,lat+1,Data->Integral()*GetFitFraction(1,bin,lat));
+            DCounts -> SetBinContent(bin+1,lat+1,GetResult_D(bin,lat)->Integral());
             PCounts -> SetBinError(bin+1,lat+1,GetFitErrors(0,bin,lat));
             DCounts -> SetBinError(bin+1,lat+1,GetFitErrors(1,bin,lat));
          }

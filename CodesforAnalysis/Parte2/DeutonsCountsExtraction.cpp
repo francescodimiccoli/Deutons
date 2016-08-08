@@ -34,7 +34,7 @@ void DeutonsMC_Fill()
          if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitTOF_Pbins -> TemplateD) -> Fill(mass,Kbin,ReturnMCGenType(),Tup.mcweight);
          if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitTOF_Pbins -> TemplateHe)-> Fill(mass,Kbin,Tup.mcweight);
    
-    //  if(cmask.isFromNaF()) {//NaF
+      if(cmask.isFromNaF()) {//NaF
          mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
          Kbin=NaFDB.GetBin(RUsed);
 	    if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitNaF_Dbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
@@ -44,8 +44,8 @@ void DeutonsMC_Fill()
             if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitNaF_Pbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
             if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins -> TemplateD) -> Fill(mass,Kbin,ReturnMCGenType(),Tup.mcweight);
             if(Massa_gen<4&&Massa_gen>2.5)((TH2*) FitNaF_Pbins -> TemplateHe)-> Fill(mass,Kbin,Tup.mcweight);
-   //	}
-   //   if(cmask.isFromAgl()) {//Agl
+   	}
+      if(cmask.isFromAgl()) {//Agl
          mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
          Kbin=AglDB.GetBin(RUsed);   
 	    if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitAgl_Dbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
@@ -55,7 +55,7 @@ void DeutonsMC_Fill()
 	    if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitAgl_Pbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
             if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Pbins -> TemplateD) -> Fill(mass,Kbin,ReturnMCGenType(),Tup.mcweight);
             if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitAgl_Pbins -> TemplateHe)-> Fill(mass,Kbin,Tup.mcweight);
-    //  }
+      }
 }
 
 
@@ -65,6 +65,7 @@ void DeutonsDATA_Fill(int zona)
    float mass = 0;
    //cuts
    if(!trgpatt.IsPhysical()) return;
+   if(Tup.Beta<=0||Tup.R<=0) return;
    if(!(Likcut&&Distcut)) return;
    //
    int Kbin;

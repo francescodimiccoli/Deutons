@@ -13,15 +13,21 @@ void DATARICHeff_Fill(int zona) {
         if(!trgpatt.IsPhysical()) return;
         if(!Herejcut) return;
         if(!ProtonsMassThres) return;	//
-	
+	//if(!(Distcut&&Likcut)) return;
+	float mass=0;	
 	int Kbin=PRB.GetRBin(Tup.R);
 
 	LATrichDATA_NaF -> beforeR -> Fill(Kbin,zona);
 	LATrichDATA_Agl	-> beforeR -> Fill(Kbin,zona);
 	
-	if (cmask.isFromNaF()) LATrichDATA_NaF -> afterR -> Fill(Kbin,zona); 
-	if (cmask.isFromAgl()) LATrichDATA_Agl -> afterR -> Fill(Kbin,zona); 
-
+	if (cmask.isFromNaF()) {
+				mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
+				/*if(mass>0&&mass<3)*/ LATrichDATA_NaF -> afterR -> Fill(Kbin,zona); 
+				}
+	if (cmask.isFromAgl()) {
+				mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
+				/*if(mass>0&&mass<3)*/ LATrichDATA_Agl -> afterR -> Fill(Kbin,zona); 
+				}
    	return;
 }
 
