@@ -115,7 +115,6 @@ void Acceptance(string filename){
 	AcceptanceP -> Apply_DvsMCcorrection_TOF(LikP_Correction_TOF);
         AcceptanceP -> Apply_DvsMCcorrection_NaF(LikP_Correction_NaF);
         AcceptanceP -> Apply_DvsMCcorrection_Agl(LikP_Correction_Agl);
-
 	
 	//rich
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
