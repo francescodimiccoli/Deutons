@@ -16,7 +16,9 @@ void Hecut_Plot(
 	TCanvas * c36	=new TCanvas("Sigma E. dep. Track vs TOF");
 	TCanvas * c36_bis    =new TCanvas("Sigma E. dep. Track vs TOF (MC)");
 	TCanvas * c37	=new TCanvas("Eff. He cut");
-	TCanvas * c38 	=new TCanvas("He fragm. contamination");
+	TCanvas * c38 	=new TCanvas("He fragm. TOF");
+	TCanvas * c39   =new TCanvas("He fragm. NaF");
+	TCanvas * c40   =new TCanvas("He fragm. Agl");
 
 	
 	c36->cd();
@@ -66,36 +68,39 @@ void Hecut_Plot(
         //effHecutHe->Draw("Psame");
 
 
-	c38 -> Divide(3,1);
-	c38 -> cd(1);
+	c38 -> Divide(6,3);
 	gPad -> SetGridx();
-        gPad -> SetGridy();
-        gPad -> SetLogy();
-	TH1F * P_TOF = 	HeliumContaminationTOF   -> GetResult_P(0);  
-	TH1F * D_TOF =  HeliumContaminationTOF   -> GetResult_D(0);  
-	TH1F * He_TOF=  HeliumContaminationTOF   -> GetResult_He(0); 
-	
-	HeliumContaminationTOF   -> GetResult_Data(0) -> GetXaxis() -> SetTitle("Distance from D");
-	HeliumContaminationTOF   -> GetResult_Data(0) -> SetTitle(("He fragm. cont. : " + to_string(HeCont_TOF)).c_str());	
-	P_TOF -> SetFillColor(2);
-	D_TOF -> SetFillColor(4);
-	He_TOF-> SetFillColor(3);
-	HeliumContaminationTOF   -> GetResult_Data(0) -> SetMarkerStyle(8);
-	
-	P_TOF  -> SetFillStyle(3001);
-        D_TOF  -> SetFillStyle(3001);
-        He_TOF -> SetFillStyle(3001);
+	gPad -> SetGridy();
+	gPad -> SetLogy();
+	for(int i=0;i<nbinsToF;i++){
+		c38 -> cd(i);
 
-	HeliumContaminationTOF   -> GetResult_Data(0) -> Draw("P");
-	P_TOF -> Draw("same");
-        D_TOF  -> Draw("same");
-        He_TOF -> Draw("same");
-	
-	HeliumContaminationTOF   -> GetResult_Data(0) -> Draw("P");
-	P_TOF -> Draw("same");
-        D_TOF  -> Draw("same");
-        He_TOF -> Draw("same");
+		TH1F * P_TOF = 	HeliumContaminationTOF   -> GetResult_P(i);  
+		TH1F * D_TOF =  HeliumContaminationTOF   -> GetResult_D(i);  
+		TH1F * He_TOF=  HeliumContaminationTOF   -> GetResult_He(i); 
 
+		HeliumContaminationTOF   -> GetResult_Data(i) -> GetXaxis() -> SetTitle("Distance from D");
+		HeliumContaminationTOF   -> GetResult_Data(i) -> SetTitle(("He fragm. cont. : " + to_string(HeCont_TOF)).c_str());	
+		P_TOF -> SetFillColor(2);
+		D_TOF -> SetFillColor(4);
+		He_TOF-> SetFillColor(3);
+		HeliumContaminationTOF   -> GetResult_Data(i) -> SetMarkerStyle(8);
+
+		P_TOF  -> SetFillStyle(3001);
+		D_TOF  -> SetFillStyle(3001);
+		He_TOF -> SetFillStyle(3001);
+
+		HeliumContaminationTOF   -> GetResult_Data(i) -> Draw("P");
+		P_TOF -> Draw("same");
+		D_TOF  -> Draw("same");
+		He_TOF -> Draw("same");
+
+		HeliumContaminationTOF   -> GetResult_Data(i) -> Draw("P");
+		P_TOF -> Draw("same");
+		D_TOF  -> Draw("same");
+		He_TOF -> Draw("same");
+	}
+	/*
 	c38 -> cd(2);
 	gPad -> SetGridx();
         gPad -> SetGridy();
@@ -143,7 +148,7 @@ void Hecut_Plot(
         P_Agl  -> Draw("same");
 	D_Agl   -> Draw("same");
         He_Agl  -> Draw("same");
-
+	*/
 
 	bool recreate = true;
 

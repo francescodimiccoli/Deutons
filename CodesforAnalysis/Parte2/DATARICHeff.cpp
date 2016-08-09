@@ -12,7 +12,7 @@ void DATARICHeff_Fill(int zona) {
 	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
         if(!trgpatt.IsPhysical()) return;
         if(!Herejcut) return;
-        //if(!ProtonsMassWindow) return;	//
+        if(!ProtonsMassWindow) return;	//
 	float mass=0;	
 	int Kbin=PRB.GetRBin(Tup.R);
 

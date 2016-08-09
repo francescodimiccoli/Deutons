@@ -41,8 +41,8 @@ class TemplateFIT {
       bool TemplateFITenabled = true;
 
       //Fit constraints
-      float lowP ,lowD ,lowHe    = 0.0;
-      float highP,highD,highHe   = 1.0;
+      std::vector<float>  lowP ,lowD ,lowHe    ;
+      std::vector<float>  highP,highD,highHe   ;
 
       //creation constructors
       //standard
@@ -120,7 +120,8 @@ class TemplateFIT {
 
       TH1F * Extract_Bin(TH1 * Histo, int bin,int third_dim=0);
       void SetFitConstraints(float LowP=0,float HighP=1, float LowD=0,float HighD=1, float LowHe=0,float HighHe=1);
-      void Do_TemplateFIT(TFit * Fit, int lat=0);
+      void SetFitConstraints(TH1F * ContHe, float LowP=0,float HighP=1, float LowD=0,float HighD=1);
+      void Do_TemplateFIT(TFit * Fit, int bin, int lat=0);
       int GetFitOutcome(uint bin,uint lat=0)
       {
          if(lat < fits.size() && bin < fits[lat].size())

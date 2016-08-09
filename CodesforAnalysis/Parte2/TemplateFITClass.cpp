@@ -18,7 +18,7 @@ void TemplateFIT::DisableFit()
 
 TH1F * TemplateFIT::Extract_Bin(TH1 * Histo, int bin,int third_dim)
 {
-   TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),Histo->GetXaxis()->GetBinLowEdge(1),Histo->GetXaxis()->GetBinLowEdge(101));
+   TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),Histo->GetXaxis()->GetBinLowEdge(1),Histo->GetXaxis()->GetBinLowEdge(Histo->GetNbinsX()+1));
    for(int i = 0; i< Histo->GetNbinsX(); i++)
       Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1,third_dim+1));
    return Slice;
@@ -26,18 +26,32 @@ TH1F * TemplateFIT::Extract_Bin(TH1 * Histo, int bin,int third_dim)
 
 void TemplateFIT::SetFitConstraints(float LowP, float HighP, float LowD, float HighD,float LowHe, float HighHe)
 {
-   lowP   = LowP	;
-   highP  = HighP	;
-   lowD   = LowD	;
-   highD  = HighD	;
-   lowHe  = LowHe	;
-   highHe = HighHe	;
-   return;
+   for(int i=0; i<nbins;i++){
+	lowP.push_back(   LowP   ); 
+        highP.push_back(  HighP  );
+        lowD.push_back(   LowD   );
+        highD.push_back(  HighD  );
+        lowHe.push_back(  LowHe  );
+        highHe.push_back( HighHe );
+   }
+   
+	return;
+}
+
+void TemplateFIT::SetFitConstraints(TH1F * ContHe, float LowP, float HighP, float LowD, float HighD){
+	for(int i=0; i<nbins;i++){
+		lowP.push_back(   LowP   );
+        	highP.push_back(  HighP  );
+        	lowD.push_back(   LowD   );
+        	highD.push_back(  HighD  );
+		lowHe.push_back( 0.7*ContHe->GetBinContent(i+1));
+		highHe.push_back( 1.3*ContHe->GetBinContent(i+1));
+	}
+	return;
 }
 
 
-
-void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat)
+void TemplateFIT::Do_TemplateFIT(TFit * Fit,int bin,int lat)
 {
    TObjArray *Tpl;
    Tpl = new TObjArray(3);
@@ -52,16 +66,16 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int lat)
          Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
 	
 	 Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(1.1), Fit -> Data -> GetNbinsX()+1);
-         Fit -> Tfit -> Constrain(0, lowP ,highP );
-         Fit -> Tfit -> Constrain(1, lowD ,highD );
-         Fit -> Tfit -> Constrain(2, lowHe,highHe);
+         Fit -> Tfit -> Constrain(0, lowP[bin] ,highP[bin] );
+         Fit -> Tfit -> Constrain(1, lowD[bin] ,highD[bin] );
+         Fit -> Tfit -> Constrain(2, lowHe[bin],highHe[bin]);
          Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
          for(int fit_attempt=0; fit_attempt<20; fit_attempt++) {
             if(Fit -> Tfit_outcome == 0) break;
             else {
-               Fit -> Tfit -> Constrain(0, lowP+(float)fit_attempt/1000 ,highP );
-               Fit -> Tfit -> Constrain(1, lowD-(float)fit_attempt/10000 ,highD-fit_attempt/10000 );
-               Fit -> Tfit -> Constrain(2, lowHe-(float)fit_attempt/100000,highHe+(float)fit_attempt/100000);
+               Fit -> Tfit -> Constrain(0, lowP[bin]+(float)fit_attempt/1000 ,highP[bin] );
+               Fit -> Tfit -> Constrain(1, lowD[bin]-(float)fit_attempt/10000 ,highD[bin]-fit_attempt/10000 );
+               Fit -> Tfit -> Constrain(2, lowHe[bin]-(float)fit_attempt/100000,highHe[bin]+(float)fit_attempt/100000);
                Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
             }
          }
@@ -145,7 +159,7 @@ void TemplateFIT::TemplateFits(int mc_type)
          if(Geomag) Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin, lat);
          else 	   Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin);
 
-         TemplateFIT::Do_TemplateFIT(Fit,lat);
+         TemplateFIT::Do_TemplateFIT(Fit,bin,lat);
          TH1F * Data          = GetResult_Data(bin,lat);
 
          if(!Geomag) {

@@ -137,12 +137,18 @@ void DeutonsTemplFits(string filename)
    TemplateFIT * FitNaF_Pbins	= new TemplateFIT(inputHistoFile,"FitNaF_Pbins","FitNaF_Pbins");
    TemplateFIT * FitAgl_Pbins	= new TemplateFIT(inputHistoFile,"FitAgl_Pbins","FitAgl_Pbins");
 
+   TH1F * ContaminationTOF = (TH1F*) inputHistoFile->Get("Results/ContaminationTOF");
+   TH1F * ContaminationNaF = (TH1F*) inputHistoFile->Get("Results/ContaminationNaF");
+   TH1F * ContaminationAgl = (TH1F*) inputHistoFile->Get("Results/ContaminationAgl");	
+
+   
+
    cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
-   FitTOF_Dbins 	-> DisableFit();// 
+/* FitTOF_Dbins 	-> DisableFit();// 
    FitNaF_Dbins 	-> DisableFit();// 
    FitAgl_Dbins 	-> DisableFit();// 
-                                                                                              
+*/                                                                                              
    FitTOFgeo_Dbins 	-> DisableFit();// 
    FitNaFgeo_Dbins 	-> DisableFit();// 
    FitAglgeo_Dbins 	-> DisableFit();// 
@@ -151,11 +157,11 @@ void DeutonsTemplFits(string filename)
    FitNaF_Pbins 	-> DisableFit();// 
    FitAgl_Pbins 	-> DisableFit();// 
 
-/*
-   FitTOF_Dbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0025);
-   FitNaF_Dbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0015);
-   FitAgl_Dbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0005);
-                                                                                              
+
+   FitTOF_Dbins 	 ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
+   FitNaF_Dbins 	 ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
+   FitAgl_Dbins 	 ->  SetFitConstraints(ContaminationAgl,0.8,1,0.0001,0.2);
+/*                                                                                              
    FitTOFgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0025);
    FitNaFgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0015);
    FitAglgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0005);
