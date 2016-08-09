@@ -11,7 +11,7 @@ void DVSMCQualeff2_D_Fill(int zona){
 	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
 	if(!trgpatt.IsPhysical()) return;
         if(!Herejcut) return;
-        if(!ProtonsMassThres) return;
+        //if(!ProtonsMassThres) return;
 	
 	int Kbin;
 	float mass = 0;
@@ -70,7 +70,7 @@ void DVSMCQualeff2_Fill(){
         if(Tup.Beta<=0||Tup.R<=0) return;
 	if(!Herejcut) return;
  	if(!trgpatt.IsPhysical()) return;       
-	if(!ProtonsMassThres) return;
+	//if(!ProtonsMassThres) return;
 	
 	//
 	int Kbin;

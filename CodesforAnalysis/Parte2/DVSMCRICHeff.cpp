@@ -14,8 +14,7 @@ void DVSMCRICHeff_D_Fill(int zona){
 	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
         if(!trgpatt.IsPhysical()) return;
         if(!Herejcut) return;
-        if(!ProtonsMassThres) return;	//
-	//if(!(Distcut&&Likcut)) return;
+       // if(!ProtonsMassThres) return;	//
 	float mass = 0;	
  
 	int Kbin;
@@ -46,8 +45,7 @@ void DVSMCRICHeff_Fill(){
 	if(Tup.Beta<=0||Tup.R<=0) return;
         if(!trgpatt.IsPhysical()) return;
         if(!Herejcut) return;
-        if(!ProtonsMassThres) return;	//
-	//if(!(Distcut&&Likcut)) return;        
+        //if(!ProtonsMassThres) return;	//
 	//
 	int Kbin;
 	float mass=0;
