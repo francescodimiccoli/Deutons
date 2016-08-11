@@ -266,7 +266,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
-      Disable_MCreweighting();
+//      Disable_MCreweighting();
 
       MCpreseff_Fill();
       MCUnbiaseff_Fill();
@@ -298,7 +298,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
-      //Disable_MCreweighting();
+//      Disable_MCreweighting();
 
       HecutMC_Fill();
       SlidesforPlot_Fill();

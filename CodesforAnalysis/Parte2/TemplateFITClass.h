@@ -43,6 +43,8 @@ class TemplateFIT {
       //Fit constraints
       std::vector<float>  lowP ,lowD ,lowHe    ;
       std::vector<float>  highP,highD,highHe   ;
+	
+      float tolerance=0;
 
       //creation constructors
       //standard
@@ -121,6 +123,7 @@ class TemplateFIT {
       TH1F * Extract_Bin(TH1 * Histo, int bin,int third_dim=0);
       void SetFitConstraints(float LowP=0,float HighP=1, float LowD=0,float HighD=1, float LowHe=0,float HighHe=1);
       void SetFitConstraints(TH1F * ContHe, float LowP=0,float HighP=1, float LowD=0,float HighD=1);
+      void SetTolerance(float tol);
       void Do_TemplateFIT(TFit * Fit, int bin, int lat=0);
       int GetFitOutcome(uint bin,uint lat=0)
       {
@@ -129,6 +132,7 @@ class TemplateFIT {
          cout<<"Fit not yet performed: bin nr. "<<bin<<endl;
          return -2;
       };
+      void PrintResults(int bin,int lat=0);
       double GetFitWheights(int par, int bin,int lat=0);
       double GetFitFraction(int par, int bin,int lat=0);
       double GetFitErrors(int par,int bin,int lat=0);
@@ -137,6 +141,6 @@ class TemplateFIT {
       TH1F * GetResult_He(int bin, int lat=0) {TH1F * res = (TH1F*)fits[lat][bin]->Templ_He ->Clone(); res -> Scale(fits[lat][bin]->wheightHe); return res;};
       TH1F * GetResult_Data(int bin,int lat=0) {return (TH1F*)fits[lat][bin] -> Data;};
       void DisableFit();
-      void TemplateFits(int mc_type=0);
+      void TemplateFits(int mc_type=1);
       void TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,int lat=0);
 };

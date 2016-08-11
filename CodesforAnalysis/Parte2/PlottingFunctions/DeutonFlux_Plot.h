@@ -206,7 +206,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 		D_FluxgeoDistTOF[j]->SetName((nome + "Distance Fit").c_str());
 
 		p=0;
-		for(int m=1;m<nbinsToF;m++){
+		for(int m=0;m<nbinsToF;m++){
 			D_FluxgeoTOF[j]->SetPoint(p,ToFDB.EkPerMassBinCent(m),DeutonsGeomagFlux_TOF->GetBinContent(m+1,j+1));
 			D_FluxgeoTOF[j]->SetPointError(p,0,DeutonsGeomagFlux_TOF->GetBinError(m+1,j+1));
 			D_FluxgeoDistTOF[j]->SetPoint(p,ToFDB.EkPerMassBinCent(m),DeutonsGeomagFlux_Dist_TOF->GetBinContent(m+1,j+1));
@@ -243,7 +243,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 		D_FluxgeoDistNaF[j]->SetName((nome + "Distance Fit").c_str());
 
 		p=0;
-		for(int m=1;m<nbinsToF;m++){
+		for(int m=0;m<nbinsToF;m++){
 			D_FluxgeoNaF[j]->SetPoint(p,NaFDB.EkPerMassBinCent(m),DeutonsGeomagFlux_NaF->GetBinContent(m+1,j+1));
 			D_FluxgeoNaF[j]->SetPointError(p,0,DeutonsGeomagFlux_NaF->GetBinError(m+1,j+1));
 			D_FluxgeoDistNaF[j]->SetPoint(p,NaFDB.EkPerMassBinCent(m),DeutonsGeomagFlux_Dist_NaF->GetBinContent(m+1,j+1));
@@ -280,7 +280,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 		D_FluxgeoDistAgl[j]->SetName((nome + "Distance Fit").c_str());
 
 		p=0;
-		for(int m=1;m<nbinsToF;m++){
+		for(int m=0;m<nbinsToF;m++){
 			D_FluxgeoAgl[j]->SetPoint(p,AglDB.EkPerMassBinCent(m),DeutonsGeomagFlux_Agl->GetBinContent(m+1,j+1));
 			D_FluxgeoAgl[j]->SetPointError(p,0,DeutonsGeomagFlux_Agl->GetBinError(m+1,j+1));
 			D_FluxgeoDistAgl[j]->SetPoint(p,AglDB.EkPerMassBinCent(m),DeutonsGeomagFlux_Dist_Agl->GetBinContent(m+1,j+1));
@@ -341,7 +341,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	D_FluxDistTOF->SetName((nome + "Distance Fit").c_str());
 
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		D_FluxTOF->SetPoint(p,ToFDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_TOF->GetBinContent(m+1));
 		D_FluxTOF->SetPointError(p,0,DeutonsPrimaryFlux_TOF->GetBinError(m+1));
 		D_FluxDistTOF->SetPoint(p,ToFDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_Dist_TOF->GetBinContent(m+1));
@@ -373,7 +373,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	D_FluxDistNaF->SetName((nome + "Distance Fit").c_str());
 
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		D_FluxNaF->SetPoint(p,NaFDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_NaF->GetBinContent(m+1));
 		D_FluxNaF->SetPointError(p,0,DeutonsPrimaryFlux_NaF->GetBinError(m+1));
 		D_FluxDistNaF->SetPoint(p,NaFDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_Dist_NaF->GetBinContent(m+1));
@@ -405,7 +405,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	D_FluxDistAgl->SetName((nome + "Distance Fit").c_str());
 
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		D_FluxAgl->SetPoint(p,AglDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_Agl->GetBinContent(m+1));
 		D_FluxAgl->SetPointError(p,0,DeutonsPrimaryFlux_Agl->GetBinError(m+1));
 		D_FluxDistAgl->SetPoint(p,AglDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_Dist_Agl->GetBinContent(m+1));
@@ -546,7 +546,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	TGraphErrors * PD_ratioTOF=new TGraphErrors();
 	TGraphErrors * PD_ratioTOF_Dist=new TGraphErrors();
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		PD_ratioTOF->SetPoint(p,ToFDB.EkPerMassBinCent(m),DP_ratioTOF->GetBinContent(m+1));
 		PD_ratioTOF_Dist->SetPoint(p,ToFDB.EkPerMassBinCent(m),DP_ratioTOF_Dist->GetBinContent(m+1));
 		PD_ratioTOF->SetPointError(p,0,DP_ratioTOF->GetBinError(m+1));
@@ -575,7 +575,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	TGraphErrors * PD_ratioNaF=new TGraphErrors();
 	TGraphErrors * PD_ratioNaF_Dist=new TGraphErrors();
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		PD_ratioNaF->SetPoint(p,NaFDB.EkPerMassBinCent(m),DP_ratioNaF->GetBinContent(m+1));
 		PD_ratioNaF_Dist->SetPoint(p,NaFDB.EkPerMassBinCent(m),DP_ratioNaF_Dist->GetBinContent(m+1));
 		PD_ratioNaF->SetPointError(p,0,DP_ratioNaF->GetBinError(m+1));
@@ -603,7 +603,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	TGraphErrors * PD_ratioAgl=new TGraphErrors();
 	TGraphErrors * PD_ratioAgl_Dist=new TGraphErrors();
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		PD_ratioAgl->SetPoint(p,AglDB.EkPerMassBinCent(m),DP_ratioAgl->GetBinContent(m+1));
 		PD_ratioAgl_Dist->SetPoint(p,AglDB.EkPerMassBinCent(m),DP_ratioAgl_Dist->GetBinContent(m+1));
 		PD_ratioAgl->SetPointError(p,0,DP_ratioAgl->GetBinError(m+1));

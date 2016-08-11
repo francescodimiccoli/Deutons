@@ -241,17 +241,17 @@ void Flux::Eval_Flux(int n,bool deutons,int mc_type) {
 		if(Counts_NaF)	Flux_NaF->Divide (Acceptance_NaF	);
 		if(Counts_Agl)	Flux_Agl->Divide (Acceptance_Agl	);
 	}
-
+/*
 	if(Counts_R  )	Flux_R	->Divide (Exposure_R 		);
 	if(Counts_TOF)  Flux_TOF->Divide (Exposure_TOF          );
 	if(Counts_NaF)  Flux_NaF->Divide (Exposure_NaF          );
 	if(Counts_Agl)  Flux_Agl->Divide (Exposure_Agl          );
-
+*/	
 	if(Counts_R  )	Flux_R	->Divide (DeltaE_R 		);
 	if(Counts_TOF)  Flux_TOF->Divide (DeltaE_TOF            );
 	if(Counts_NaF)  Flux_NaF->Divide (DeltaE_NaF            );
 	if(Counts_Agl)  Flux_Agl->Divide (DeltaE_Agl            );
-
+	
 	return;
 }
 

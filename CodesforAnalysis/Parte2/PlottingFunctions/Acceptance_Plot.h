@@ -51,9 +51,9 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 					
 	
 	EffgenbetaD[h]->SetMarkerStyle(8);
-        EffgenbetaD[h]->SetMarkerColor(4);
+        EffgenbetaD[h]->SetMarkerColor(0);
         EffgenbetaD[h]->SetMarkerSize(1);
-        EffgenbetaD[h]->SetLineColor(4);
+        EffgenbetaD[h]->SetLineColor(0);
         EffgenbetaD[h]->SetLineWidth(1);
         EffgenbetaD[h]->SetMarkerStyle(h+3);
         EffgenbetaD[h]->SetTitle("");
@@ -63,9 +63,6 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
         EffgenbetaD[h]->GetYaxis()->SetTitleSize(0.045);
 	}
 	EffgenbetaD[0]->Draw("ACP");
-        for(int h=1;h<6;h++){
-                EffgenbetaD[h]->Draw("CPsame");
-        }
 	
 	TGraphErrors * EffgenbetaDTOF[6];
         p=0;

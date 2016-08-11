@@ -37,22 +37,22 @@ void DeutonsMC_Fill()
       if(cmask.isFromNaF()) {//NaF
          mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
          Kbin=NaFDB.GetBin(RUsed);
-	    if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitNaF_Dbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
+	    if(Massa_gen<1&&Massa_gen>0.5) ((TH2*) FitNaF_Dbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
             if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins -> TemplateD) -> Fill(mass,Kbin,ReturnMCGenType(),Tup.mcweight);
-            if(Massa_gen<4&&Massa_gen>2.5)((TH2*) FitNaF_Dbins -> TemplateHe)-> Fill(mass,Kbin,Tup.mcweight);
+            if(Massa_gen<4&&Massa_gen>2.5) ((TH2*) FitNaF_Dbins -> TemplateHe)-> Fill(mass,Kbin,Tup.mcweight);
       	 Kbin=NaFPB.GetBin(RUsed);   
-            if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitNaF_Pbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
+            if(Massa_gen<1&&Massa_gen>0.5) ((TH2*) FitNaF_Pbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
             if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins -> TemplateD) -> Fill(mass,Kbin,ReturnMCGenType(),Tup.mcweight);
-            if(Massa_gen<4&&Massa_gen>2.5)((TH2*) FitNaF_Pbins -> TemplateHe)-> Fill(mass,Kbin,Tup.mcweight);
+            if(Massa_gen<4&&Massa_gen>2.5) ((TH2*) FitNaF_Pbins -> TemplateHe)-> Fill(mass,Kbin,Tup.mcweight);
    	}
       if(cmask.isFromAgl()) {//Agl
          mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
          Kbin=AglDB.GetBin(RUsed);   
-	    if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitAgl_Dbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
+	    if(Massa_gen<1&&Massa_gen>0.5) ((TH2*) FitAgl_Dbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
             if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Dbins -> TemplateD) -> Fill(mass,Kbin,ReturnMCGenType(),Tup.mcweight);
-            if(Massa_gen<4&&Massa_gen>2.5)((TH2*) FitAgl_Dbins -> TemplateHe)-> Fill(mass,Kbin,Tup.mcweight);
+            if(Massa_gen<4&&Massa_gen>2.5) ((TH2*) FitAgl_Dbins -> TemplateHe)-> Fill(mass,Kbin,Tup.mcweight);
          Kbin=AglPB.GetBin(RUsed);   
-	    if(Massa_gen<1&&Massa_gen>0.5)((TH2*) FitAgl_Pbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
+	    if(Massa_gen<1&&Massa_gen>0.5) ((TH2*) FitAgl_Pbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
             if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitAgl_Pbins -> TemplateD) -> Fill(mass,Kbin,ReturnMCGenType(),Tup.mcweight);
             if(Massa_gen<4&&Massa_gen>2.5) ((TH2*)FitAgl_Pbins -> TemplateHe)-> Fill(mass,Kbin,Tup.mcweight);
       }
@@ -145,10 +145,14 @@ void DeutonsTemplFits(string filename)
 
    cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
-/* FitTOF_Dbins 	-> DisableFit();// 
+  FitTOF_Dbins->SetTolerance(0.5);
+  FitNaF_Dbins->SetTolerance(0.1);
+  FitAgl_Dbins->SetTolerance(0.1);
+ 
+   FitTOF_Dbins 	-> DisableFit();// 
    FitNaF_Dbins 	-> DisableFit();// 
    FitAgl_Dbins 	-> DisableFit();// 
-*/                                                                                              
+                                                                                              
    FitTOFgeo_Dbins 	-> DisableFit();// 
    FitNaFgeo_Dbins 	-> DisableFit();// 
    FitAglgeo_Dbins 	-> DisableFit();// 
@@ -157,11 +161,11 @@ void DeutonsTemplFits(string filename)
    FitNaF_Pbins 	-> DisableFit();// 
    FitAgl_Pbins 	-> DisableFit();// 
 
-
+/*
    FitTOF_Dbins 	 ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
    FitNaF_Dbins 	 ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
-   FitAgl_Dbins 	 ->  SetFitConstraints(ContaminationAgl,0.8,1,0.0001,0.2);
-/*                                                                                              
+   FitAgl_Dbins 	 ->  SetFitConstraints(ContaminationAgl,0.8,1,0.0001,0.2); 
+                                                                                              
    FitTOFgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0025);
    FitNaFgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0015);
    FitAglgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0005);

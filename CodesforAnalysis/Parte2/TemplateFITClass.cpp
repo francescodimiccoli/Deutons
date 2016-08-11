@@ -38,14 +38,18 @@ void TemplateFIT::SetFitConstraints(float LowP, float HighP, float LowD, float H
 	return;
 }
 
+void TemplateFIT::SetTolerance(float tol){
+	tolerance = tol;
+}
+
 void TemplateFIT::SetFitConstraints(TH1F * ContHe, float LowP, float HighP, float LowD, float HighD){
 	for(int i=0; i<nbins;i++){
 		lowP.push_back(   LowP   );
         	highP.push_back(  HighP  );
         	lowD.push_back(   LowD   );
         	highD.push_back(  HighD  );
-		lowHe.push_back( 0.7*ContHe->GetBinContent(i+1));
-		highHe.push_back( 1.3*ContHe->GetBinContent(i+1));
+		lowHe.push_back((1-tolerance)*ContHe->GetBinContent(i+1));
+		highHe.push_back((1+tolerance)*ContHe->GetBinContent(i+1));
 	}
 	return;
 }
@@ -75,7 +79,7 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int bin,int lat)
             else {
                Fit -> Tfit -> Constrain(0, lowP[bin]+(float)fit_attempt/1000 ,highP[bin] );
                Fit -> Tfit -> Constrain(1, lowD[bin]-(float)fit_attempt/10000 ,highD[bin]-fit_attempt/10000 );
-               Fit -> Tfit -> Constrain(2, lowHe[bin]-(float)fit_attempt/100000,highHe[bin]+(float)fit_attempt/100000);
+               Fit -> Tfit -> Constrain(2, lowHe[bin],highHe[bin]-(float)fit_attempt/100000);
                Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
             }
          }
@@ -160,7 +164,8 @@ void TemplateFIT::TemplateFits(int mc_type)
          else 	   Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin);
 
          TemplateFIT::Do_TemplateFIT(Fit,bin,lat);
-         TH1F * Data          = GetResult_Data(bin,lat);
+         if(TemplateFITenabled) PrintResults(bin,lat); 
+	 TH1F * Data          = GetResult_Data(bin,lat);
 
          if(!Geomag) {
             PCounts -> SetBinContent(bin+1,Data->Integral()/*GetFitFraction(0,bin)*/);
@@ -177,6 +182,25 @@ void TemplateFIT::TemplateFits(int mc_type)
          }
       }
    return;
+}
+
+void TemplateFIT::PrintResults(int bin, int lat){
+	cout<<endl;
+	cout<<"**Fit results bin "<<bin<<", lat "<<lat<<endl;
+	cout<<"P Fraction: "<<GetFitFraction(0, bin,lat)<<" low edge: "<<lowP[bin]<<" high edge: "<<highP[bin];
+	if(fabs(GetFitFraction(0, bin,lat)-lowP[bin])<0.00001||fabs(GetFitFraction(0, bin,lat)-highP[bin])<0.00001) cout<<"AT LIMIT!"<<endl;
+	else cout<<endl;
+
+	cout<<"D Fraction: "<<GetFitFraction(1, bin,lat)<<" low edge: "<<lowD[bin]<<" high edge: "<<highD[bin];
+	if(fabs(GetFitFraction(1, bin,lat)-lowD[bin])<0.00001||fabs(GetFitFraction(1, bin,lat)-highD[bin])<0.00001) cout<<"AT LIMIT!"<<endl;
+        else cout<<endl;
+
+	cout<<"He Fraction: "<<GetFitFraction(2, bin,lat)<<" low edge: "<<lowHe[bin]<<" high edge: "<<highHe[bin];
+	if(fabs(GetFitFraction(2, bin,lat)-lowHe[bin])<0.00001||fabs(GetFitFraction(2, bin,lat)-highHe[bin])<0.00001) cout<<"AT LIMIT!"<<endl;
+        else cout<<endl;
+
+	cout<<"*****"<<endl;
+	cout<<endl;
 }
 
 

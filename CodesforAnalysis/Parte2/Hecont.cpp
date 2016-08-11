@@ -125,6 +125,8 @@ void Hecut(string filename) {
 	TH1F * HecutMCP_TH1F = 	(TH1F *)HecutMCP ->effR->Clone();
 	TH1F * HecutMCHe_TH1F=  (TH1F *)HecutMCHe->effR->Clone();
 
+	cout<<"*************** He Contamination ******************"<<endl;
+
 	TH1F * ContaminationTOF = Eval_Contamination((TH1F *)DataHeCont->afterTOF,(TH1F *)DataHeCont->beforeTOF,(TH1F *)HeEff->effTOF);
 	TH1F * ContaminationNaF = Eval_Contamination((TH1F *)DataHeCont->afterNaF,(TH1F *)DataHeCont->beforeNaF,(TH1F *)HeEff->effNaF);
 	TH1F * ContaminationAgl = Eval_Contamination((TH1F *)DataHeCont->afterAgl,(TH1F *)DataHeCont->beforeAgl,(TH1F *)HeEff->effAgl);
@@ -138,11 +140,22 @@ void Hecut(string filename) {
 	finalHistos.Add(ContaminationAgl);
    	finalHistos.writeObjsInFolder("Results");
 
-
-	cout<<"*************** He Contamination ******************"<<endl;
-
-
 	cout<<"*** Plotting ...  ****"<<endl;
+
+	Hecut_Plot(
+
+        HecutMC_He        ,
+        Hecut_D    ,
+        HecutMCP_TH1F,
+        HecutMCHe_TH1F,
+        HecutMC_P,
+	(TH1F *)HeEff->effTOF,
+	(TH1F *)HeEff->effNaF,
+	(TH1F *)HeEff->effAgl,
+	ContaminationTOF,	
+        ContaminationNaF,
+	ContaminationAgl);
+
 
 	return; 
 }

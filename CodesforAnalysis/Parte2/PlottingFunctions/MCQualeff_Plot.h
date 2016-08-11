@@ -34,7 +34,7 @@ void   MCQualeff_Plot(
    gPad->SetGridy();
    TGraph *EffMCLikP= new TGraph();
    TGraph *EffMCLikD[6];
-   for(int i=1; i<nbinsr; i++) EffMCLikP->SetPoint(i,PRB.RigBinCent(i),EffMCLikP_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsr; i++) EffMCLikP->SetPoint(i,PRB.RigBinCent(i),EffMCLikP_TH1F->GetBinContent(i+1));
    EffMCLikP->SetMarkerColor(2);
    EffMCLikP->SetMarkerStyle(8);
    EffMCLikP->SetLineColor(2);
@@ -53,7 +53,7 @@ void   MCQualeff_Plot(
       for(int h=0; h<6; h++) {
          EffMCLikD[h]= new TGraph();
          EffMCLikD[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsr; i++) EffMCLikD[h]->SetPoint(i,PRB.RigBinCent(i), EffMCLikD_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsr; i++) EffMCLikD[h]->SetPoint(i,PRB.RigBinCent(i), EffMCLikD_TH2F->GetBinContent(i+1,h+1));
          //leg->AddEntry(EffMCLikD[h],MCLegend[h+1].c_str(), "ep");
          EffMCLikD[h]->SetMarkerColor(4);
          EffMCLikD[h]->SetMarkerStyle(h+3);
@@ -91,7 +91,7 @@ void   MCQualeff_Plot(
       for(int h=0; h<6; h++) {
          EffMCLikD_Beta[h]= new TGraph();
          EffMCLikD_Beta[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsToF; i++) EffMCLikD_Beta[h]->SetPoint(i,ToFPB.EkPerMassBinCent(i),EffMCLikD_Beta_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsToF; i++) EffMCLikD_Beta[h]->SetPoint(i,ToFPB.EkPerMassBinCent(i),EffMCLikD_Beta_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffMCLikD_Beta[h],MCLegend[h+1].c_str(), "ep");
          EffMCLikD_Beta[h]->SetMarkerColor(4);
          EffMCLikD_Beta[h]->SetMarkerStyle(h+3);
@@ -127,7 +127,7 @@ void   MCQualeff_Plot(
       for(int h=0; h<6; h++) {
          EffMCLikD_BetaNaF[h]= new TGraph();
          EffMCLikD_BetaNaF[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsNaF; i++) EffMCLikD_BetaNaF[h]->SetPoint(i,NaFPB.EkPerMassBinCent(i),EffMCLikD_BetaNaF_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsNaF; i++) EffMCLikD_BetaNaF[h]->SetPoint(i,NaFPB.EkPerMassBinCent(i),EffMCLikD_BetaNaF_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffMCLikD_BetaNaF[h],MCLegend[h+1].c_str(), "ep");
          EffMCLikD_BetaNaF[h]->SetMarkerColor(4);
          EffMCLikD_BetaNaF[h]->SetMarkerStyle(h+3);
@@ -163,7 +163,7 @@ void   MCQualeff_Plot(
       for(int h=0; h<6; h++) {
          EffMCLikD_BetaAgl[h]= new TGraph();
          EffMCLikD_BetaAgl[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsAgl; i++) EffMCLikD_BetaAgl[h]->SetPoint(i,AglPB.EkPerMassBinCent(i), EffMCLikD_BetaAgl_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsAgl; i++) EffMCLikD_BetaAgl[h]->SetPoint(i,AglPB.EkPerMassBinCent(i), EffMCLikD_BetaAgl_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffMCLikD_BetaAgl[h],MCLegend[h+1].c_str(), "ep");
          EffMCLikD_BetaAgl[h]->SetMarkerColor(4);
          EffMCLikD_BetaAgl[h]->SetMarkerStyle(h+3);
@@ -180,7 +180,7 @@ void   MCQualeff_Plot(
    gPad->SetGridy();
    TGraph *EffMCDistP= new TGraph();
    TGraph *EffMCDistD[6];
-   for(int i=1; i<nbinsr; i++) EffMCDistP->SetPoint(i,PRB.RigBinCent(i),EffMCDistP_TH1F->GetBinContent(i+1));
+   for(int i=0; i<nbinsr; i++) EffMCDistP->SetPoint(i,PRB.RigBinCent(i),EffMCDistP_TH1F->GetBinContent(i+1));
    EffMCDistP->SetMarkerColor(2);
    EffMCDistP->SetMarkerStyle(8);
    EffMCDistP->SetLineColor(2);
@@ -199,7 +199,7 @@ void   MCQualeff_Plot(
       for(int h=0; h<6; h++) {
          EffMCDistD[h]= new TGraph();
          EffMCDistD[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsr; i++) EffMCDistD[h]->SetPoint(i,PRB.RigBinCent(i),EffMCDistD_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsr; i++) EffMCDistD[h]->SetPoint(i,PRB.RigBinCent(i),EffMCDistD_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffMCDistD[h],MCLegend[h+1].c_str(), "ep");
          EffMCDistD[h]->SetMarkerColor(4);
          EffMCDistD[h]->SetMarkerStyle(h+3);
@@ -237,7 +237,7 @@ void   MCQualeff_Plot(
       for(int h=0; h<6; h++) {
          EffMCDistD_Beta[h]= new TGraph();
          EffMCDistD_Beta[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsToF; i++) EffMCDistD_Beta[h]->SetPoint(i,ToFPB.EkPerMassBinCent(i),EffMCDistD_Beta_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsToF; i++) EffMCDistD_Beta[h]->SetPoint(i,ToFPB.EkPerMassBinCent(i),EffMCDistD_Beta_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffMCDistD_Beta[h],MCLegend[h+1].c_str(), "ep");
          EffMCDistD_Beta[h]->SetMarkerColor(4);
          EffMCDistD_Beta[h]->SetMarkerStyle(h+3);
@@ -274,7 +274,7 @@ void   MCQualeff_Plot(
       for(int h=0; h<6; h++) {
          EffMCDistD_BetaNaF[h]= new TGraph();
          EffMCDistD_BetaNaF[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsNaF; i++) EffMCDistD_BetaNaF[h]->SetPoint(i,NaFPB.EkPerMassBinCent(i),EffMCDistD_BetaNaF_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsNaF; i++) EffMCDistD_BetaNaF[h]->SetPoint(i,NaFPB.EkPerMassBinCent(i),EffMCDistD_BetaNaF_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffMCDistD_BetaNaF[h],MCLegend[h+1].c_str(), "ep");
          EffMCDistD_BetaNaF[h]->SetMarkerColor(4);
          EffMCDistD_BetaNaF[h]->SetMarkerStyle(h+3);
@@ -310,7 +310,7 @@ void   MCQualeff_Plot(
       for(int h=0; h<6; h++) {
          EffMCDistD_BetaAgl[h]= new TGraph();
          EffMCDistD_BetaAgl[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsAgl; i++) EffMCDistD_BetaAgl[h]->SetPoint(i,AglPB.EkPerMassBinCent(i),EffMCDistD_BetaAgl_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsAgl; i++) EffMCDistD_BetaAgl[h]->SetPoint(i,AglPB.EkPerMassBinCent(i),EffMCDistD_BetaAgl_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffMCDistD_BetaAgl[h],MCLegend[h+1].c_str(), "ep");
          EffMCDistD_BetaAgl[h]->SetMarkerColor(4);
          EffMCDistD_BetaAgl[h]->SetMarkerStyle(h+3);

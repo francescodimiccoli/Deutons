@@ -70,11 +70,11 @@ void DeutonFlux(string filename) {
 
 	enum {protons, deutons};
 
-	D_Flux         -> Eval_Flux(1 , deutons, 2 );
-	D_Flux_geo     -> Eval_Flux(11, deutons, 2 );
+	D_Flux         -> Eval_Flux(1 , deutons, 1 );
+	D_Flux_geo     -> Eval_Flux(11, deutons, 1 );
 
-	D_Flux_Dist    -> Eval_Flux(1 , deutons, 2 );
-	D_Flux_geo_Dist-> Eval_Flux(11, deutons, 2 );
+	D_Flux_Dist    -> Eval_Flux(1 , deutons, 1 );
+	D_Flux_geo_Dist-> Eval_Flux(11, deutons, 1 );
 
 	P_Flux         -> Eval_Flux(1 , protons );
 	P_Flux_Dist    -> Eval_Flux(1 , protons );
