@@ -33,11 +33,11 @@ void Cuts()
    /////////////////////Analysis cuts//////////////////////////
 
    //likelihood cut
-   Likcut=true;
+   Likcut=false;
    if(((cmask.isFromNaF()||cmask.isFromAgl())&&-log(1-Tup.LDiscriminant)>2.6)||((!(cmask.isFromNaF()||cmask.isFromAgl()))&&-log(1-Tup.LDiscriminant)>1.4)) Likcut=true;
 
    //Distance cut
-   Distcut=true;
+   Distcut=false;
    if((Tup.Dist5D<4||Tup.Dist5D_P<4)) Distcut=true;
 
 

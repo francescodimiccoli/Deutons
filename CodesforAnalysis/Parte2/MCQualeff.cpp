@@ -67,7 +67,7 @@ void MCQualeff_Fill() {
 		FillBinMGen(EffLikMCD ->beforeTOF, Kbin);
 		FillBinMGen(EffDistMCD->beforeTOF, Kbin);
 		if(Likcut)             FillBinMGen(EffLikMCD ->afterTOF , Kbin);
-		if(Distcut&&Likcut&&mass>=0 && mass<3)	FillBinMGen(EffDistMCD->afterTOF , Kbin);
+		if(Distcut&&Likcut&&mass>=0 && mass<=3)	FillBinMGen(EffDistMCD->afterTOF , Kbin);
 
 		if(cmask.isFromNaF()) {
 			Kbin=NaFDB.GetBin(RUsed);
@@ -75,7 +75,7 @@ void MCQualeff_Fill() {
 			FillBinMGen(EffDistMCD->beforeNaF, Kbin);
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			if(Likcut)             FillBinMGen(EffLikMCD ->afterNaF , Kbin);
-			if(Distcut&&Likcut&&mass>=0&&mass<3)	FillBinMGen(EffDistMCD->afterNaF , Kbin);
+			if(Distcut&&Likcut&&mass>=0&&mass<=3)	FillBinMGen(EffDistMCD->afterNaF , Kbin);
 		}
 
 		if(cmask.isFromAgl()) {
@@ -84,7 +84,7 @@ void MCQualeff_Fill() {
 			FillBinMGen(EffDistMCD->beforeAgl, Kbin);
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			if(Likcut)          FillBinMGen(EffLikMCD ->afterAgl , Kbin);
-			if(Distcut&&Likcut && mass>=0 &&mass <3 )FillBinMGen(EffDistMCD->afterAgl , Kbin);
+			if(Distcut&&Likcut && mass>=0 &&mass <=3 )FillBinMGen(EffDistMCD->afterAgl , Kbin);
 		}
 	}
 
