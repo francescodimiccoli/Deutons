@@ -21,7 +21,7 @@ void MCQualeff_Fill() {
 		EffLikMCP->beforeR->Fill(Kbin,Tup.mcweight);
 		EffDistMCP->beforeR->Fill(Kbin,Tup.mcweight);
 		if(Likcut)          EffLikMCP->afterR->Fill(Kbin,Tup.mcweight);
-		if(Distcut&&Likcut)	EffDistMCP->afterR->Fill(Kbin,Tup.mcweight);
+		if(Distcut&&Likcut&&mass>=0 && mass<=3)	EffDistMCP->afterR->Fill(Kbin,Tup.mcweight);
 
 
 		//Beta bins
@@ -30,7 +30,7 @@ void MCQualeff_Fill() {
 		EffLikMCP ->beforeTOF->Fill(Kbin,Tup.mcweight);
 		EffDistMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
 		if(Likcut)             EffLikMCP ->afterTOF ->Fill(Kbin,Tup.mcweight);
-		if(Distcut&&Likcut)	EffDistMCP->afterTOF ->Fill(Kbin,Tup.mcweight);
+		if(Distcut&&Likcut&&mass>=0 && mass<=3)	EffDistMCP->afterTOF ->Fill(Kbin,Tup.mcweight);
 
 
 		if(cmask.isFromNaF()) {
@@ -38,7 +38,7 @@ void MCQualeff_Fill() {
 			EffLikMCP  ->beforeNaF->Fill(Kbin,Tup.mcweight);
 			EffDistMCP ->beforeNaF->Fill(Kbin,Tup.mcweight);
 			if(Likcut)             EffLikMCP  ->afterNaF ->Fill(Kbin,Tup.mcweight);
-			if(Distcut&&Likcut)	EffDistMCP ->afterNaF ->Fill(Kbin,Tup.mcweight);
+			if(Distcut&&Likcut&&mass>=0 && mass<=3)	EffDistMCP ->afterNaF ->Fill(Kbin,Tup.mcweight);
 		}
 
 		if(cmask.isFromAgl()) {
@@ -46,7 +46,7 @@ void MCQualeff_Fill() {
 			EffLikMCP->beforeAgl->Fill(Kbin,Tup.mcweight);
 			EffDistMCP->beforeAgl->Fill(Kbin,Tup.mcweight);
 			if(Likcut) 		EffLikMCP->afterAgl->Fill(Kbin,Tup.mcweight);
-			if(Distcut&&Likcut)	EffDistMCP->afterAgl->Fill(Kbin,Tup.mcweight);
+			if(Distcut&&Likcut&&mass>=0 && mass<=3)	EffDistMCP->afterAgl->Fill(Kbin,Tup.mcweight);
 		}
 
 

@@ -167,7 +167,7 @@ void FitLATcorr( TH1 * LATcorr,TH1 * LATcorr_fit,int n){
 				latcorr -> SetBinError  (i+1,((TH2 *)LATcorr)->GetBinError(i+1,m+1));
 			}
 			string fitname = LATcorr->GetName() ;
-			TF1 * Fitcorr = new TF1(fitname.c_str(),"pol3");
+			TF1 * Fitcorr = new TF1(fitname.c_str(),"pol4");
 			latcorr -> Fit (fitname.c_str());
 			for(int i=1;i<11;i++)
 				 latcorr_fit ->  SetBinContent(i+1,Fitcorr->Eval(i+0.5));
@@ -181,7 +181,7 @@ void FitLATcorr( TH1 * LATcorr,TH1 * LATcorr_fit,int n){
 	else{
 		TH1F * latcorr = ((TH1F *)LATcorr);
 		string fitname = LATcorr->GetName() ;
-		TF1 * Fitcorr = new TF1(fitname.c_str(),"pol3");
+		TF1 * Fitcorr = new TF1(fitname.c_str(),"pol4");
 		latcorr -> Fit (fitname.c_str());
 		for(int i=1;i<11;i++) {
 			cout<<Fitcorr->Eval(i+0.5)<<endl;
