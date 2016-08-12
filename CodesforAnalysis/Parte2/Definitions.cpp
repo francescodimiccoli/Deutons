@@ -120,14 +120,14 @@ int ReturnMCGenType()
 void FillBinMGen (TH1* h, int bin)
 {
    int mass = ReturnMCGenType();
-   ((TH2*)h)->Fill (bin, mass,Tup.mcweight);
+   ((TH2*)h)->Fill (bin, mass);
    return;
 }
 
 void FillBinMGen (TH3* h, int bin, int S)
 {
    int mass = ReturnMCGenType();
-   ((TH3*)h)->Fill (bin, mass, S, Tup.mcweight);
+   ((TH3*)h)->Fill (bin, mass, S);
    return;
 }
 

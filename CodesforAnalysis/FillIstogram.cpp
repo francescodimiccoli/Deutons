@@ -14,8 +14,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
    cout<<"*********************** CALIB. READING *********************"<<endl;
 
-   string inputpath="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
-   //string inputpath="/home/francesco/PhD/Deutons"; 
+   //string inputpath="/storage/gpfs_ams/ams/users/fdimicco/Deutons";
+   string inputpath="/home/francesco/PhD/Deutons"; 
    string nomecal=inputpath + "/CodesforAnalysis/CALIBRAZIONI/"+mese+".root";
    TFile *calib = TFile::Open(nomecal.c_str());
    if(calib) cout<<"MC calibration for month "<<mese<<" ... ok"<<endl;
@@ -298,7 +298,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
-      Disable_MCreweighting();
+     // Disable_MCreweighting();
 
       HecutMC_Fill();
       SlidesforPlot_Fill();

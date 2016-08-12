@@ -34,7 +34,7 @@ void DVSMCQualeff2_D_Fill(int zona){
 
 	if(Distcut){
 		Dist_DvsMC_P -> DataEff -> afterTOF -> Fill(Kbin,zona);
-		if(Likcut && mass>0&&mass<3) Lik_DvsMC_P  -> DataEff -> afterTOF -> Fill(Kbin,zona);
+		if(Likcut && mass>=0&&mass<=3) Lik_DvsMC_P  -> DataEff -> afterTOF -> Fill(Kbin,zona);
 	}
 	//NaF
 	if(cmask.isFromNaF()) {	
@@ -45,7 +45,7 @@ void DVSMCQualeff2_D_Fill(int zona){
 
 		if(Distcut){
 			Dist_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
-			if(Likcut && mass>0 && mass<3 ) Lik_DvsMC_P  -> DataEff -> afterNaF -> Fill(Kbin,zona);
+			if(Likcut && mass>=0 && mass<=3 ) Lik_DvsMC_P  -> DataEff -> afterNaF -> Fill(Kbin,zona);
 		}
 	}
 	//Agl
@@ -99,7 +99,7 @@ void DVSMCQualeff2_Fill(){
 
 		if(Distcut){
 			Dist_DvsMC_P -> MCEff -> afterTOF -> Fill(Kbin,Tup.mcweight);
-			if(Likcut && mass>0 && mass<3) Lik_DvsMC_P  -> MCEff -> afterTOF -> Fill(Kbin,Tup.mcweight);
+			if(Likcut && mass>=0 && mass<=3) Lik_DvsMC_P  -> MCEff -> afterTOF -> Fill(Kbin,Tup.mcweight);
 		}
 		//NaF
 		if(cmask.isFromNaF()) {	
@@ -110,7 +110,7 @@ void DVSMCQualeff2_Fill(){
 
 			if(Distcut){
 				Dist_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin,Tup.mcweight);
-				if(Likcut && mass>0 && mass<3) Lik_DvsMC_P  -> MCEff -> afterNaF -> Fill(Kbin,Tup.mcweight);
+				if(Likcut && mass>=0 && mass<=3) Lik_DvsMC_P  -> MCEff -> afterNaF -> Fill(Kbin,Tup.mcweight);
 			}
 
 		}
@@ -123,7 +123,7 @@ void DVSMCQualeff2_Fill(){
 
 			if(Distcut){
 				Dist_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin,Tup.mcweight);
-				if(Likcut && mass>0 && mass<3) Lik_DvsMC_P  -> MCEff -> afterAgl -> Fill(Kbin,Tup.mcweight);
+				if(Likcut && mass>=0 && mass<=3) Lik_DvsMC_P  -> MCEff -> afterAgl -> Fill(Kbin,Tup.mcweight);
 			}
 
 		}
