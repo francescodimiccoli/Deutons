@@ -42,6 +42,12 @@ void TemplateFIT::SetTolerance(float tol){
 	tolerance = tol;
 }
 
+void TemplateFIT::SetFitRange(float min,float max){
+	minrange = min;
+	maxrange = max;
+}
+
+
 void TemplateFIT::SetFitConstraints(TH1F * ContHe, float LowP, float HighP, float LowD, float HighD){
 	for(int i=0; i<nbins;i++){
 		lowP.push_back(   LowP   );
@@ -69,7 +75,7 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int bin,int lat)
       if(Fit -> Data -> Integral() > 500) {
          Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
 	
-	 Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(1.1), Fit -> Data -> GetNbinsX()+1);
+	 Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(minrange), Fit -> Data -> FindBin(maxrange));
          Fit -> Tfit -> Constrain(0, lowP[bin] ,highP[bin] );
          Fit -> Tfit -> Constrain(1, lowD[bin] ,highD[bin] );
          Fit -> Tfit -> Constrain(2, lowHe[bin],highHe[bin]);
@@ -104,9 +110,9 @@ double TemplateFIT::GetFitWheights(int par, int bin,int lat)
    TH1F * Result = (TH1F*)fits[lat][bin] -> Tfit -> GetPlot();
    float itot= Result->Integral();
    float i1;
-   if(par == 0) i1 = fits[lat][bin]-> Templ_P  ->Integral(fits[lat][bin]->  Data -> FindBin(1.1), fits[lat][bin]->  Data -> GetNbinsX()+1);
-   if(par == 1) i1 = fits[lat][bin]-> Templ_D  ->Integral(fits[lat][bin]->  Data -> FindBin(1.1), fits[lat][bin]->  Data -> GetNbinsX()+1);
-   if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral(fits[lat][bin]->  Data -> FindBin(1.1), fits[lat][bin]->  Data -> GetNbinsX()+1);
+   if(par == 0) i1 = fits[lat][bin]-> Templ_P  ->Integral(fits[lat][bin]->  Data -> FindBin(minrange), fits[lat][bin]->  Data -> FindBin(maxrange));
+   if(par == 1) i1 = fits[lat][bin]-> Templ_D  ->Integral(fits[lat][bin]->  Data -> FindBin(minrange), fits[lat][bin]->  Data -> FindBin(maxrange));
+   if(par == 2) i1 = fits[lat][bin]-> Templ_He ->Integral(fits[lat][bin]->  Data -> FindBin(minrange), fits[lat][bin]->  Data -> FindBin(maxrange));
    return w1*itot/i1;
 }
 
@@ -164,7 +170,7 @@ void TemplateFIT::TemplateFits(int mc_type)
          else 	   Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin);
 
          TemplateFIT::Do_TemplateFIT(Fit,bin,lat);
-         if(TemplateFITenabled) PrintResults(bin,lat); 
+         //if(TemplateFITenabled) PrintResults(bin,lat); 
 	 TH1F * Data          = GetResult_Data(bin,lat);
 
          if(!Geomag) {

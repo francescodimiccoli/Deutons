@@ -45,7 +45,7 @@ class TemplateFIT {
       std::vector<float>  highP,highD,highHe   ;
 	
       float tolerance=0;
-
+      float minrange,maxrange=0;
       //creation constructors
       //standard
       TemplateFIT(std::string basename ,int Nbins ,float val_min , float val_max,int mc_types = 0, int n=0)
@@ -93,6 +93,8 @@ class TemplateFIT {
          Geomag = false;
 
          fits.push_back(std::vector<TFit *>());
+	 minrange = 0;
+	 maxrange = 100;
       }
       //geom. zones
       TemplateFIT(TFile * file , std::string basename_MC, std::string basename_data, int n)
@@ -112,7 +114,10 @@ class TemplateFIT {
          Geomag = true;
 
          for(int lat=0; lat<n; lat ++) fits.push_back(std::vector<TFit *>());
-      }
+     	 minrange = 0;
+	 maxrange = 100;
+
+	 }
 
 
 
@@ -124,6 +129,7 @@ class TemplateFIT {
       void SetFitConstraints(float LowP=0,float HighP=1, float LowD=0,float HighD=1, float LowHe=0,float HighHe=1);
       void SetFitConstraints(TH1F * ContHe, float LowP=0,float HighP=1, float LowD=0,float HighD=1);
       void SetTolerance(float tol);
+      void SetFitRange(float min,float max); 
       void Do_TemplateFIT(TFit * Fit, int bin, int lat=0);
       int GetFitOutcome(uint bin,uint lat=0)
       {
