@@ -124,7 +124,7 @@ TH1F * ExtractDCounts(TH3F * FitResults, string name, TemplateFIT * Template){
 	for (int j=0;j<5;j++) 
 		for (int i=0;i<5;i++){	
 			for(int x=0;x<FitResults->GetNbinsX();x++){
-						if(FitResults -> GetBinContent(x+1,j+1,i+1)>0) successfulfits[x]++;
+						if(FitResults -> GetBinContent(x+1,j+1,i+1)>500) successfulfits[x]++;
 						meancounts[x]+=FitResults -> GetBinContent(x+1,j+1,i+1);
 		}		
 	}
@@ -132,16 +132,17 @@ TH1F * ExtractDCounts(TH3F * FitResults, string name, TemplateFIT * Template){
 	for (int j=0;j<5;j++)
                 for (int i=0;i<5;i++){
 			for(int x=0;x<FitResults->GetNbinsX();x++){
-				if(FitResults -> GetBinContent(x+1,j+1,i+1)>0)
+				if(FitResults -> GetBinContent(x+1,j+1,i+1)>500)
 					stddevcounts[x] += pow((FitResults -> GetBinContent(x+1,j+1,i+1) - meancounts[x]/successfulfits[x]) ,2);
 			}
 		
 	}
 		
 	for(int x=0;x<FitResults->GetNbinsX();x++) {
+		if(meancounts[x]/successfulfits[x]>0){
 		DCounts -> SetBinContent(x+1,meancounts[x]/successfulfits[x]);
 		DCounts -> SetBinError(x+1,Template -> DCounts -> GetBinError(x+1) + pow(stddevcounts[x]/successfulfits[x],0.5));
-		}
+		}}
 	return DCounts; 
 }
 
@@ -190,9 +191,9 @@ void DeutonsTemplFits(string filename)
 		   FitNaF_Dbins[i][j]->SetFitRange(0.9+0.05*i,3);
 		   FitAgl_Dbins[i][j]->SetFitRange(0.9+0.05*i,3);
 
-		   //FitTOF_Dbins[i][j]         -> DisableFit(); 
-		   //FitNaF_Dbins[i][j]         -> DisableFit(); 
-		   //FitAgl_Dbins[i][j]         -> DisableFit();
+		   FitTOF_Dbins[i][j]         -> DisableFit(); 
+		   FitNaF_Dbins[i][j]         -> DisableFit(); 
+		   FitAgl_Dbins[i][j]         -> DisableFit();
 
 		   FitTOF_Dbins[i][j]       ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
 		   FitNaF_Dbins[i][j]       ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
@@ -293,9 +294,9 @@ void DeutonsTemplFits(string filename)
 	TH1F * DCountsgeoNaF	=(TH1F*)  FitNaFgeo_Dbins -> DCounts ; 
 	TH1F * DCountsgeoAgl 	=(TH1F*)  FitAglgeo_Dbins -> DCounts ; 
 
-	TH1F * PCountsTOF 	=(TH1F*)  FitTOF_Pbins -> DCounts ; 
-	TH1F * PCountsNaF 	=(TH1F*)  FitNaF_Pbins -> DCounts ; 
-	TH1F * PCountsAgl 	=(TH1F*)  FitAgl_Pbins -> DCounts ; 
+	TH1F * PCountsTOF 	=(TH1F*)  FitTOF_Pbins -> PCounts ; 
+	TH1F * PCountsNaF 	=(TH1F*)  FitNaF_Pbins -> PCounts ; 
+	TH1F * PCountsAgl 	=(TH1F*)  FitAgl_Pbins -> PCounts ; 
 
 
 

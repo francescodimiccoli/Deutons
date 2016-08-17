@@ -80,6 +80,8 @@ void DeutonFlux(string filename) {
 	P_Flux_Dist    -> Eval_Flux(1 , protons );
 
 
+	cout<<"uno"<<endl;
+
 	//Fit on Mass
 	TH1F * DeutonsPrimaryFlux_TOF 		= (TH1F *)D_Flux     -> Flux_TOF ;
 	TH1F * DeutonsPrimaryFlux_NaF 		= (TH1F *)D_Flux     -> Flux_NaF ;
@@ -100,6 +102,7 @@ void DeutonFlux(string filename) {
 	TH2F * DeutonsGeomagFlux_Dist_NaF 	= (TH2F *)D_Flux_geo_Dist-> Flux_NaF ;
 	TH2F * DeutonsGeomagFlux_Dist_Agl  	= (TH2F *)D_Flux_geo_Dist-> Flux_Agl ;
 
+	cout<<"due"<<endl;
 
 	//for D/P ratio: P Flux
 	//Fit on Mass
@@ -118,6 +121,7 @@ void DeutonFlux(string filename) {
 	TH1F * DP_ratioNaF = (TH1F *)D_Flux     -> Flux_NaF -> Clone();
 	TH1F * DP_ratioAgl = (TH1F *)D_Flux     -> Flux_Agl -> Clone();
 
+	cout<<"tre"<<endl;
 	DP_ratioTOF ->  Divide((TH1F *)P_Flux     -> Flux_TOF			);
 	DP_ratioNaF ->  Divide((TH1F *)P_Flux     -> Flux_NaF			);
 	DP_ratioAgl ->  Divide((TH1F *)P_Flux     -> Flux_Agl			);
@@ -130,8 +134,8 @@ void DeutonFlux(string filename) {
 	DP_ratioTOF_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_TOF                   );
 	DP_ratioNaF_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_NaF                   );
 	DP_ratioAgl_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_Agl                   );	
-
-
+        
+	cout<<"quattro"<<endl;
 	DeutonsPrimaryFlux_TOF 	    	->SetName("DeutonsPrimaryFlux_TOF"); 
 	DeutonsPrimaryFlux_NaF 	  	->SetName("DeutonsPrimaryFlux_NaF");
 	DeutonsPrimaryFlux_Agl 	  	->SetName("DeutonsPrimaryFlux_Agl");
@@ -148,9 +152,12 @@ void DeutonFlux(string filename) {
 	DeutonsGeomagFlux_Dist_NaF 	->SetName("DeutonsGeomagFlux_Dist_NaF");
 	DeutonsGeomagFlux_Dist_Agl 	->SetName("DeutonsGeomagFlux_Dist_Agl");
 
+	cout<<"cinque"<<endl;
+
 	ProtonsPrimaryFlux_TOF 	  	->SetName("ProtonsPrimaryFlux_TOF");
 	ProtonsPrimaryFlux_NaF 	  	->SetName("ProtonsPrimaryFlux_NaF");
 	ProtonsPrimaryFlux_Agl 	  	->SetName("ProtonsPrimaryFlux_Agl");
+ cout<<"cinque"<<endl;
 
 	ProtonsPrimaryFlux_Dist_TOF	->SetName("ProtonsPrimaryFlux_Dist_TOF");
 	ProtonsPrimaryFlux_Dist_NaF	->SetName("ProtonsPrimaryFlux_Dist_NaF");
@@ -163,7 +170,7 @@ void DeutonFlux(string filename) {
 	DP_ratioNaF_Dist -> SetName("DP_ratioNaF_Dist"	);
 	DP_ratioAgl_Dist -> SetName("DP_ratioAgl_Dist"	);
 
-
+	cout<<"cinque"<<endl;
 
 
 	finalHistos.Add(DeutonsPrimaryFlux_TOF 	   );
@@ -192,6 +199,8 @@ void DeutonFlux(string filename) {
         finalHistos.Add(DP_ratioAgl_Dist);
 
         finalHistos.writeObjsInFolder("Results");
+
+	cout<<"sei"<<endl;
 
         cout<<"*** Plotting ...  ****"<<endl;
 

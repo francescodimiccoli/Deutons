@@ -158,6 +158,13 @@ void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
 	}
 	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/Protons");
 
+	for(int S=0;S<3;S++){
+
+		PreSel_Correction_R_Graph[S]  ->SetName(("DvsMC: " + tagli[S] + "_R").c_str()); 
+		PreSel_Correction_TOF_Graph[S]->SetName(("DvsMC: " + tagli[S] + "_TOF").c_str());
+		PreSel_Correction_NaF_Graph[S]->SetName(("DvsMC: " + tagli[S] + "_NaF").c_str());
+		PreSel_Correction_Agl_Graph[S]->SetName(("DvsMC: " + tagli[S] + "_Agl").c_str());
+	}
 
 	for(int S=0;S<3;S++){
 		finalPlots.Add(PreSel_Correction_R_Graph[S]  );

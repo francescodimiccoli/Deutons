@@ -185,23 +185,25 @@ int main()
 		CorrLATpre_Spl[0][i] =  (TGraphErrors *) result[i]->Get("Export/Matching TOF");
 		CorrLATpre_Spl[1][i] =  (TGraphErrors *) result[i]->Get("Export/Chi^2 R");
 		CorrLATpre_Spl[2][i] =  (TGraphErrors *) result[i]->Get("Export/1 Tr. Track");
-		CorrLAT_LikTOF_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikTOF_Spl");
+		CorrLAT_LikTOF_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_Lik_Spl");
 		CorrLAT_LikNaF_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikNaF_Spl");
 		CorrLAT_LikAgl_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikAgl_Spl");
-		CorrLAT_DistTOF_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikTOF_Spl");
-		CorrLAT_DistNaF_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikNaF_Spl");
-		CorrLAT_DistAgl_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikAgl_Spl");
+		CorrLAT_DistTOF_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_Dist_Spl");
+		CorrLAT_DistNaF_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_DistNaF_Spl");
+		CorrLAT_DistAgl_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_DistAgl_Spl");
 		preDVSMC_P[0][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: Matching TOF_R");
                 preDVSMC_P[1][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: Chi^2 R_R");
                 preDVSMC_P[2][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: 1 Tr. Track_R");
-		LikDVSMC_P[i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/LikDVSMC_P_Graph");
-                DistDVSMC_P[i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DistDVSMC_P_Graph");
-		TrackerEff[i]  =  (TH1F *) 	   result[i]->Get("Export/TrakerEfficiencyData");	
+		LikDVSMC_P[i]    =  (TGraphErrors *) result[i]->Get("Export/DvsMC/LikDVSMC_P_Graph");
+                DistDVSMC_P[i]   =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DistDVSMC_P_Graph");
+		TrackerEff[i]  =  (TH1F *) 	   result[i]->Get("Export/TrackerEfficiencyData");	
 		TriggerEff[i]  =  (TH1F *) 	   result[i]->Get("Export/TriggerGlobalFactor");
-		P_Fluxes[i]    =  (TGraphErrors *) result[i]->Get("Export/Protons Primary Flux");
-		D_FluxesTOF[i] =  (TGraphErrors *) result[i]->Get("Export/Deutons Primary Flux: TOF");
-		D_FluxesNaF[i] =  (TGraphErrors *) result[i]->Get("Export/Deutons Primary Flux: NaF");
-		D_FluxesAgl[i] =  (TGraphErrors *) result[i]->Get("Export/Deutons Primary Flux: Agl");
+		P_Fluxes[i]    =  (TGraphErrors *) result[i]->Get("Export/PFluxes/Protons Primary Flux");
+		D_FluxesTOF[i] =  (TGraphErrors *) result[i]->Get("Export/DFluxes/Deutons Flux: Primaries TOF");
+		D_FluxesNaF[i] =  (TGraphErrors *) result[i]->Get("Export/DFluxes/Deutons Flux: Primaries NaF");
+		D_FluxesAgl[i] =  (TGraphErrors *) result[i]->Get("Export/DFluxes/Deutons Flux: Primaries Agl");
+
+
 	}	
 	cout<<endl;
         cout<<" *************** DRAW  ************************ "<<endl;
@@ -224,7 +226,6 @@ int main()
 	TCanvas *c16=new TCanvas("Deutons Fluxes");
 	TCanvas *c17=new TCanvas("Time dependence");
 	
-
 	c1->cd();
 	DrawCalibration(c1,Corr_L1,"L1 E.dep. Corr. factors","Beta","Corr. Factor");
 	
@@ -236,7 +237,6 @@ int main()
 
 	c4->cd();
 	DrawCalibration(c4,Corr_TOFD,"Lower E.dep. Corr. factors","Beta","Corr. Factor");
-	
 	c5->cd();
 	DrawCorrection(c5,CorrLATpre_Spl[0],"","Latitude","Corr. Factor");
 
@@ -245,7 +245,6 @@ int main()
 
 	c7->cd();
 	DrawCorrection(c6,CorrLATpre_Spl[2],"","Latitude","Corr. Factor");
-
 	c8->Divide(1,3);
 	c8->cd(1);
 	DrawCorrection(c8,CorrLAT_LikTOF_Spl,"","latitude","Corr. Factor");
@@ -255,7 +254,6 @@ int main()
 
 	c8->cd(3);
 	DrawCorrection(c8,CorrLAT_LikAgl_Spl,"nome","Latitude","Corr. Factor");
-
 	c9->Divide(1,3);
 	c9->cd(1);
 	DrawCorrection(c9,CorrLAT_DistTOF_Spl,"","Latitude","Corr. Factor");
@@ -265,7 +263,6 @@ int main()
 
 	c9->cd(3);
 	DrawCorrection(c9,CorrLAT_DistNaF_Spl,"","Latitude","Corr. Factor");
-
 	c10->cd();
 	DrawCorrection(c10,preDVSMC_P[0],"","R [GV]","Corr. Factor");
 		
@@ -274,10 +271,8 @@ int main()
 	
 	c12->cd();
 	DrawCorrection(c12,preDVSMC_P[2],"","R [GV]","Corr. Factor");
-	
 	c13->cd();
 	DrawCorrection(c12,LikDVSMC_P,"","R [GV]","Corr. Factor");
-	
 	c14->cd();
 	DrawCorrection(c12,DistDVSMC_P,"","R [GV]","Corr. Factor");
 	

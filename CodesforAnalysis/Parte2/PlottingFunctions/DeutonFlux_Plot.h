@@ -334,7 +334,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	galprop3P->Draw("AC");
 	galprop3P2->Draw("sameC");
 
-	nome="Deutons Flux: Primaries" ;
+	nome="Deutons Flux: Primaries TOF" ;
 	D_FluxTOF=new TGraphErrors();
 	D_FluxTOF->SetName(nome.c_str());
 	D_FluxDistTOF=new TGraphErrors();
@@ -366,7 +366,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	c34->cd(2);
 	D_FluxDistTOF->Draw("Psame");
 
-	nome="Deutons Flux: Primaries" ;
+	nome="Deutons Flux: Primaries NaF" ;
 	D_FluxNaF=new TGraphErrors();
 	D_FluxNaF->SetName(nome.c_str());
 	D_FluxDistNaF=new TGraphErrors();
@@ -398,7 +398,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	c34->cd(2);
 	D_FluxDistNaF->Draw("Psame");
 
-	nome="Deutons Flux: Primaries" ;
+	nome="Deutons Flux: Primaries Agl" ;
 	D_FluxAgl=new TGraphErrors();
 	D_FluxAgl->SetName(nome.c_str());
 	D_FluxDistAgl=new TGraphErrors();
