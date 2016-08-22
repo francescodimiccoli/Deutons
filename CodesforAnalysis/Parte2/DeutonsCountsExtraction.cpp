@@ -38,11 +38,11 @@ void DeutonsMC_Fill()
          mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
          Kbin=NaFDB.GetBin(RUsed);
 	    if(Massa_gen<1&&Massa_gen>0.5) ((TH2*) FitNaF_Dbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
-            if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Dbins -> TemplateD) -> Fill(mass,Kbin,ReturnMCGenType());
+            if(Massa_gen<2&&Massa_gen>1.5) for(int mctype=0;mctype<6;mctype++) ((TH3*)FitNaF_Dbins -> TemplateD) -> Fill(mass,Kbin,mctype);
             if(Massa_gen<4&&Massa_gen>2.5) ((TH2*) FitNaF_Dbins -> TemplateHe)-> Fill(mass,Kbin);
       	 Kbin=NaFPB.GetBin(RUsed);   
             if(Massa_gen<1&&Massa_gen>0.5) ((TH2*) FitNaF_Pbins -> TemplateP) -> Fill(mass,Kbin,Tup.mcweight);
-            if(Massa_gen<2&&Massa_gen>1.5) ((TH3*)FitNaF_Pbins -> TemplateD) -> Fill(mass,Kbin,ReturnMCGenType());
+            if(Massa_gen<2&&Massa_gen>1.5) for(int mctype=0;mctype<6;mctype++) ((TH3*)FitNaF_Pbins -> TemplateD) -> Fill(mass,Kbin,mctype);
             if(Massa_gen<4&&Massa_gen>2.5) ((TH2*) FitNaF_Pbins -> TemplateHe)-> Fill(mass,Kbin);
    	}
       if(cmask.isFromAgl()) {//Agl
@@ -124,25 +124,32 @@ TH1F * ExtractDCounts(TH3F * FitResults, string name, TemplateFIT * Template){
 	for (int j=0;j<5;j++) 
 		for (int i=0;i<5;i++){	
 			for(int x=0;x<FitResults->GetNbinsX();x++){
-						if(FitResults -> GetBinContent(x+1,j+1,i+1)>500) successfulfits[x]++;
-						meancounts[x]+=FitResults -> GetBinContent(x+1,j+1,i+1);
+						if(FitResults -> GetBinContent(x+1,j+1,i+1)>5){ successfulfits[x]++;
+						meancounts[x]+=FitResults -> GetBinContent(x+1,j+1,i+1);}
 		}		
 	}
 
 	for (int j=0;j<5;j++)
                 for (int i=0;i<5;i++){
 			for(int x=0;x<FitResults->GetNbinsX();x++){
-				if(FitResults -> GetBinContent(x+1,j+1,i+1)>500)
-					stddevcounts[x] += pow((FitResults -> GetBinContent(x+1,j+1,i+1) - meancounts[x]/successfulfits[x]) ,2);
+				if(Template  -> GetFitOutcome(x)==0&&FitResults -> GetBinContent(x+1,j+1,i+1)>5)
+					stddevcounts[x] += pow((FitResults -> GetBinContent(x+1,j+1,i+1) - Template  -> DCounts -> GetBinContent(x+1)) ,2);
+				else if(FitResults -> GetBinContent(x+1,j+1,i+1)>5) 
+					stddevcounts[x] += pow((FitResults -> GetBinContent(x+1,j+1,i+1) - meancounts[x]/successfulfits[x]),2);
 			}
 		
 	}
 		
 	for(int x=0;x<FitResults->GetNbinsX();x++) {
-		if(meancounts[x]/successfulfits[x]>0){
-		DCounts -> SetBinContent(x+1,meancounts[x]/successfulfits[x]);
-		DCounts -> SetBinError(x+1,Template -> DCounts -> GetBinError(x+1) + pow(stddevcounts[x]/successfulfits[x],0.5));
-		}}
+		if(Template  -> GetFitOutcome(x)==0){
+			DCounts -> SetBinContent(x+1, Template  -> DCounts -> GetBinContent(x+1));
+			DCounts -> SetBinError(x+1,Template -> DCounts -> GetBinError(x+1) + pow(stddevcounts[x]/successfulfits[x],0.5));
+			}
+		else {
+			DCounts -> SetBinContent(x+1, meancounts[x]/successfulfits[x]);
+                        DCounts -> SetBinError(x+1, pow(stddevcounts[x]/successfulfits[x],0.5));
+		}
+		}
 	return DCounts; 
 }
 
@@ -152,6 +159,13 @@ void DeutonsTemplFits(string filename)
    cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
    cout<<"*** Reading  P1 file ****"<<endl;
    TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
+
+
+   	
+  TemplateFIT * FitTOF_Dbest= new TemplateFIT(inputHistoFile,"FitTOF_Dbins","FitTOF_Dbins");
+  TemplateFIT * FitNaF_Dbest= new TemplateFIT(inputHistoFile,"FitNaF_Dbins","FitNaF_Dbins");
+  TemplateFIT * FitAgl_Dbest= new TemplateFIT(inputHistoFile,"FitAgl_Dbins","FitAgl_Dbins");
+
 
   TemplateFIT * FitTOF_Dbins[5][5];
   TemplateFIT * FitNaF_Dbins[5][5];
@@ -181,19 +195,44 @@ void DeutonsTemplFits(string filename)
 
    cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
 
+
+		   FitTOF_Dbest->SetTolerance(0.1);
+		   FitNaF_Dbest->SetTolerance(0.1);
+		   FitAgl_Dbest->SetTolerance(0.1);
+
+		   FitTOF_Dbest->SetFitRange(1.1,3);
+		   FitNaF_Dbest->SetFitRange(1.1,3);
+		   FitAgl_Dbest->SetFitRange(1.1,3);
+
+		   //FitTOF_Dbest         -> DisableFit(); 
+		   //FitNaF_Dbest         -> DisableFit(); 
+		   //FitAgl_Dbest         -> DisableFit();
+
+		   FitTOF_Dbest       ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
+		   FitNaF_Dbest       ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
+		   FitAgl_Dbest       ->  SetFitConstraints(ContaminationAgl,0.8,1,0.0001,0.2);
+
+		   cout<<"TOF FITS"<<endl;
+		   FitTOF_Dbest    -> TemplateFits();
+		   cout<<"NaF FITS"<<endl;
+		   FitNaF_Dbest    -> TemplateFits();
+		   cout<<"Agl FITS"<<endl;
+		   FitAgl_Dbest    -> TemplateFits();
+
+
    for(int j=0;j<5;j++)
 	   for(int i=0;i<5;i++){
-		   FitTOF_Dbins[i][j]->SetTolerance(0.4+0.05*j);
-		   FitNaF_Dbins[i][j]->SetTolerance(0.4+0.05*j);
-		   FitAgl_Dbins[i][j]->SetTolerance(0.4+0.05*j);
+		   FitTOF_Dbins[i][j]->SetTolerance(0.1+0.2*j);
+		   FitNaF_Dbins[i][j]->SetTolerance(0.1+0.2*j);
+		   FitAgl_Dbins[i][j]->SetTolerance(0.1+0.2*j);
 
-		   FitTOF_Dbins[i][j]->SetFitRange(0.9+0.05*i,3);
-		   FitNaF_Dbins[i][j]->SetFitRange(0.9+0.05*i,3);
-		   FitAgl_Dbins[i][j]->SetFitRange(0.9+0.05*i,3);
+		   FitTOF_Dbins[i][j]->SetFitRange(0.9+0.07*i,3);
+		   FitNaF_Dbins[i][j]->SetFitRange(0.8+0.1*i,3);
+		   FitAgl_Dbins[i][j]->SetFitRange(0.8+0.1*i,3);
 
-		   FitTOF_Dbins[i][j]         -> DisableFit(); 
-		   FitNaF_Dbins[i][j]         -> DisableFit(); 
-		   FitAgl_Dbins[i][j]         -> DisableFit();
+		   //FitTOF_Dbins[i][j]         -> DisableFit(); 
+		   //FitNaF_Dbins[i][j]         -> DisableFit(); 
+		   //FitAgl_Dbins[i][j]         -> DisableFit();
 
 		   FitTOF_Dbins[i][j]       ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
 		   FitNaF_Dbins[i][j]       ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
@@ -286,9 +325,9 @@ void DeutonsTemplFits(string filename)
 
 
 	
-	TH1F * DCountsTOF 	=(TH1F*)  ExtractDCounts(FitResultsTOF,"D_FluxCounts_TOF",FitTOF_Dbins[2][2]); 
-	TH1F * DCountsNaF 	=(TH1F*)  ExtractDCounts(FitResultsNaF,"D_FluxCounts_NaF",FitNaF_Dbins[2][2]); 
-	TH1F * DCountsAgl 	=(TH1F*)  ExtractDCounts(FitResultsAgl,"D_FluxCounts_Agl",FitAgl_Dbins[2][2]); 
+	TH1F * DCountsTOF 	=(TH1F*)  ExtractDCounts(FitResultsTOF,"D_FluxCounts_TOF",FitTOF_Dbest); 
+	TH1F * DCountsNaF 	=(TH1F*)  ExtractDCounts(FitResultsNaF,"D_FluxCounts_NaF",FitNaF_Dbest); 
+	TH1F * DCountsAgl 	=(TH1F*)  ExtractDCounts(FitResultsAgl,"D_FluxCounts_Agl",FitAgl_Dbest); 
 
 	TH1F * DCountsgeoTOF 	=(TH1F*)  FitTOFgeo_Dbins -> DCounts ; 
 	TH1F * DCountsgeoNaF	=(TH1F*)  FitNaFgeo_Dbins -> DCounts ; 
@@ -320,9 +359,9 @@ void DeutonsTemplFits(string filename)
         cout<<"*** Plotting ...  ****"<<endl;
 
 	string varname = " Mass ";
-	DeutonsTemplateFits_Plot(FitTOF_Dbins[2][2], 
-	                         FitNaF_Dbins[2][2],
-				 FitAgl_Dbins[2][2],       
+	DeutonsTemplateFits_Plot(FitTOF_Dbest, 
+	                         FitNaF_Dbest,
+				 FitAgl_Dbest,       
                                                 
                                  FitTOFgeo_Dbins,
                                  FitNaFgeo_Dbins,

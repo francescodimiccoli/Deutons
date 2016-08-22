@@ -80,10 +80,10 @@ void DATAUnbiaseff (string filename) {
 	TH1F * TriggerGlobalFactor = new TH1F("TriggerGlobalFactor","TriggerGlobalFactor",1,0,1);
 	TH1F * TriggerGlobalFactorQ = new TH1F("TriggerGlobalFactorQ","TriggerGlobalFactorQ",1,0,1);
 	TriggerGlobalFactor -> SetBinContent(1,EffMean);
-	TriggerGlobalFactor -> SetBinError(1,0.01); 
+	TriggerGlobalFactor -> SetBinError(1,0.001); 
 
 	TriggerGlobalFactorQ -> SetBinContent(1,EffMeanQ);
-        TriggerGlobalFactorQ -> SetBinError(1,0.01);
+        TriggerGlobalFactorQ -> SetBinError(1,0.001);
 
 	finalHistos.Add(EffUnbDATA_R_TH1F  );
 	finalHistos.Add(TriggerGlobalFactor);

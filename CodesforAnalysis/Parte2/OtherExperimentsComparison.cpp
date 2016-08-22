@@ -2,7 +2,7 @@ using namespace std;
 
 
 void OtherExperimentsComparison(){
-   inputHistoFile->ReOpen("READ");
+        inputHistoFile->ReOpen("READ");
 	
 	string filename2="../database_P.root";
         TFile * file2 = TFile::Open(filename2.c_str(),"READ");

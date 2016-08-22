@@ -148,7 +148,7 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat)
    double Err = Sigma;//pow((Sigma/w2,2) + pow(Sigma/w1,2),0.5); //Fit relative error
 
    TH1F * ResultPlot;
-   if(par == 0)	ResultPlot = GetResult_P (bin,lat);
+   if(par == 0)	  ResultPlot = GetResult_P (bin,lat);
    if(par == 1)   ResultPlot = GetResult_D (bin,lat);
    if(par == 2)   ResultPlot = GetResult_He(bin,lat);
 
@@ -170,7 +170,7 @@ void TemplateFIT::TemplateFits(int mc_type)
          else 	   Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin);
 
          TemplateFIT::Do_TemplateFIT(Fit,bin,lat);
-         //if(TemplateFITenabled) PrintResults(bin,lat); 
+         if(TemplateFITenabled) PrintResults(bin,lat); 
 	 TH1F * Data          = GetResult_Data(bin,lat);
 
          if(!Geomag) {

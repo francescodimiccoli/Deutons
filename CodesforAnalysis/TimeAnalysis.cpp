@@ -37,14 +37,14 @@ void DrawCalibration(TVirtualPad * c, TSpline3 * Corr[],const string &name,const
 	gPad->SetGridy();
 	gStyle->SetPalette(1);
 	TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
-	Corr[0]->SetLineWidth(2);
-	Corr[0]->SetLineColor(1);
-	leg->AddEntry(Corr[0],mesi[0].c_str(), "ep");
-	Corr[0]->Draw("");
+	Corr[1]->SetLineWidth(2);
+	Corr[1]->SetLineColor(1);
+	leg->AddEntry(Corr[1],mesi[1].c_str(), "ep");
+	Corr[1]->Draw("");
 	TH1F *frame=c->DrawFrame(0.4,0.85,1,1.1,name.c_str());
 	frame->GetXaxis()->SetTitle(xaxisname.c_str());
 	frame->GetYaxis()->SetTitle(yaxisname.c_str());
-	for(int i=1;i<num_mesi;i++) {
+	for(int i=2;i<num_mesi;i++) {
 		Corr[i]->SetLineWidth(2);
 		Corr[i]->SetLineColor(colorbase+i);
 		Corr[i]->SetMarkerColor(colorbase+i);
@@ -64,16 +64,16 @@ void DrawCorrection(TVirtualPad * c, TGraphErrors * Corr[],const string &name,co
 	gPad->SetLogx();
 	gStyle->SetPalette(1);
 	TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
-	Corr[0]->SetLineWidth(2);
-	Corr[0]->SetLineColor(1);
-	Corr[0]->SetMarkerStyle(8);
-	Corr[0]->SetMarkerColor(1);
-	leg->AddEntry(Corr[0],mesi[0].c_str(), "ep");
-	Corr[0]->Draw("AC");
-	Corr[0]->GetXaxis()->SetTitle(xaxisname.c_str());
-	Corr[0]->GetYaxis()->SetTitle(yaxisname.c_str());
-	Corr[0]->GetYaxis()->SetRangeUser(0.7,1.3);
-	for(int i=1;i<num_mesi;i++) {
+	Corr[1]->SetLineWidth(2);
+	Corr[1]->SetLineColor(1);
+	Corr[1]->SetMarkerStyle(8);
+	Corr[1]->SetMarkerColor(1);
+	leg->AddEntry(Corr[1],mesi[1].c_str(), "ep");
+	Corr[1]->Draw("AC");
+	Corr[1]->GetXaxis()->SetTitle(xaxisname.c_str());
+	Corr[1]->GetYaxis()->SetTitle(yaxisname.c_str());
+	Corr[1]->GetYaxis()->SetRangeUser(0.7,1.3);
+	for(int i=2;i<num_mesi;i++) {
 		Corr[i]->SetLineWidth(2);
 		Corr[i]->SetLineColor(colorbase+i);
 		Corr[i]->SetMarkerStyle(8);
@@ -111,7 +111,7 @@ void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[],const string &name,c
                 Fluxesratio[0]->SetMarkerStyle(8);
                 Fluxesratio[0]->SetMarkerColor(1);
                 Fluxesratio[0]->SetFillStyle(3002);
-                leg->AddEntry(Fluxesratio[0],mesi[0].c_str(), "ep");
+                leg->AddEntry(Fluxesratio[0],"Mean", "ep");
                 Fluxesratio[0]->GetYaxis()->SetRangeUser(0.2,1.3);
                 Fluxesratio[0]->Draw("AP");
                 Fluxesratio[0]->GetXaxis()->SetTitle(xaxisname.c_str());
@@ -225,7 +225,8 @@ int main()
 	TCanvas *c15=new TCanvas("Protons Fluxes");
 	TCanvas *c16=new TCanvas("Deutons Fluxes");
 	TCanvas *c17=new TCanvas("Time dependence");
-	
+
+	mesi[0] = "Mean";	
 	c1->cd();
 	DrawCalibration(c1,Corr_L1,"L1 E.dep. Corr. factors","Beta","Corr. Factor");
 	
@@ -282,17 +283,17 @@ int main()
 	double effy,effey=0;
 	TH1F * Trackeff_time = new TH1F("","",num_mesi,0,num_mesi);
         TH1F * Triggeff_time = new TH1F("","",num_mesi,0,num_mesi);
-	for(int i=0;i<num_mesi;i++) {
-		effy = TrackerEff[i]-> GetBinContent(30);
-		Trackeff_time -> SetBinContent(i+1,effy);
-                effey = TrackerEff[i]-> GetBinError(30);
-                Trackeff_time -> SetBinError(i+1,effey);
-                Trackeff_time -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+	for(int i=1;i<num_mesi;i++) {
+		effy = TrackerEff[i]-> GetBinContent(33);
+		Trackeff_time -> SetBinContent(i,effy);
+                effey = TrackerEff[i]-> GetBinError(33);
+                Trackeff_time -> SetBinError(i,effey);
+                Trackeff_time -> GetXaxis() -> SetBinLabel(i,mesi[i].c_str());
         	effy = TriggerEff[i]-> GetBinContent(1);                
-                Triggeff_time -> SetBinContent(i+1,effy);
+                Triggeff_time -> SetBinContent(i,effy);
                 effey = TriggerEff[i]-> GetBinError(1);
-                Triggeff_time -> SetBinError(i+1,effey);
-		Trackeff_time -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+                Triggeff_time -> SetBinError(i,effey);
+		Trackeff_time -> GetXaxis() -> SetBinLabel(i,mesi[i].c_str());
 	}
 	Trackeff_time -> SetMarkerStyle(8);
 	Trackeff_time -> LabelsOption("v");
@@ -310,24 +311,24 @@ int main()
 
 	c15-> Divide(1,2);
 	c15->cd(1);
-	DrawFluxRatio(c15,P_Fluxes,"R [GV]","Proton Flux","Proton Flux (norm. to first month)");
+	DrawFluxRatio(c15,P_Fluxes,"R [GV]","Proton Flux","Proton Flux (norm. to mean flux)");
 
 	c16->cd();
-        DrawFluxRatio(c16,D_FluxesTOF,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to first month)");	
-	DrawFluxRatio(c16,D_FluxesNaF,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to first month)");
-	DrawFluxRatio(c16,D_FluxesAgl,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to first month)");
+        DrawFluxRatio(c16,D_FluxesTOF,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)");	
+	DrawFluxRatio(c16,D_FluxesNaF,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)");
+	DrawFluxRatio(c16,D_FluxesAgl,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)");
 	
 	c17->Divide(1,3);
 
-	TH1F * Time_depD1 = new TH1F("","",num_mesi,0,num_mesi);
-	TH1F * Time_depP1 = new TH1F("","",num_mesi,0,num_mesi);
-	TH1F * Time_depD2 = new TH1F("","",num_mesi,0,num_mesi);
-        TH1F * Time_depP2 = new TH1F("","",num_mesi,0,num_mesi);
-	TH1F * Time_depD3 = new TH1F("","",num_mesi,0,num_mesi);
-        TH1F * Time_depP3 = new TH1F("","",num_mesi,0,num_mesi);
+	TH1F * Time_depD1 = new TH1F("","",num_mesi-1,0,num_mesi-1);
+	TH1F * Time_depP1 = new TH1F("","",num_mesi-1,0,num_mesi-1);
+	TH1F * Time_depD2 = new TH1F("","",num_mesi-1,0,num_mesi-1);
+        TH1F * Time_depP2 = new TH1F("","",num_mesi-1,0,num_mesi-1);
+	TH1F * Time_depD3 = new TH1F("","",num_mesi-1,0,num_mesi-1);
+        TH1F * Time_depP3 = new TH1F("","",num_mesi-1,0,num_mesi-1);
 	
-	TH1F * Time_depP4 = new TH1F("","",num_mesi,0,num_mesi);
-	TH1F * errorP4 = new TH1F("","",num_mesi,0,num_mesi);
+	TH1F * Time_depP4 = new TH1F("","",num_mesi-1,0,num_mesi-1);
+	TH1F * errorP4 = new TH1F("","",num_mesi-1,0,num_mesi-1);
 	
 
 	double x01,x02,x03,x04;
@@ -336,7 +337,7 @@ int main()
 	double y1,y2,y3,y4;
 	double ey1,ey2,ey3,ey4;
 
-	for(int i=0;i<num_mesi;i++) {
+	for(int i=1;i<num_mesi;i++) {
 		D_FluxesTOF[i]->GetPoint(4,x1,y1);
 		D_FluxesTOF[0]->GetPoint(4,x01,y01);
 		
@@ -346,23 +347,23 @@ int main()
 		D_FluxesAgl[i]->GetPoint(9,x3,y3);
                 D_FluxesAgl[0]->GetPoint(9,x03,y03);
 
-		Time_depD1 -> SetBinContent(i+1,y1/y01);
-		Time_depD2 -> SetBinContent(i+1,y2/y02);		
-		Time_depD3 -> SetBinContent(i+1,y3/y03);		
+		Time_depD1 -> SetBinContent(i,y1/y01);
+		Time_depD2 -> SetBinContent(i,y2/y02);		
+		Time_depD3 -> SetBinContent(i,y3/y03);		
 
 		ey1 = D_FluxesTOF[i]->GetErrorY(4);
 		ey2 = D_FluxesTOF[i]->GetErrorY(12);
 		ey3 = D_FluxesAgl[i]->GetErrorY(9);
 		
-		Time_depD1 -> SetBinError(i+1,ey1/y01);
-		Time_depD2 -> SetBinError(i+1,ey2/y02);
-		Time_depD3 -> SetBinError(i+1,ey3/y03);
+		Time_depD1 -> SetBinError(i,ey1/y01);
+		Time_depD2 -> SetBinError(i,ey2/y02);
+		Time_depD3 -> SetBinError(i,ey3/y03);
 
-		Time_depD1 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
-		Time_depD2 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
-		Time_depD3 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+		Time_depD1 -> GetXaxis() -> SetBinLabel(i,mesi[i].c_str());
+		Time_depD2 -> GetXaxis() -> SetBinLabel(i,mesi[i].c_str());
+		Time_depD3 -> GetXaxis() -> SetBinLabel(i,mesi[i].c_str());
 	}
-	for(int i=0;i<num_mesi;i++) {
+	for(int i=1;i<num_mesi;i++) {
                 P_Fluxes[i]->GetPoint(6,x1,y1);
                 P_Fluxes[0]->GetPoint(6,x01,y01);
                 
@@ -375,11 +376,11 @@ int main()
 		P_Fluxes[i]->GetPoint(40,x4,y4);
                 P_Fluxes[0]->GetPoint(40,x04,y04);
                 
-		Time_depP1 -> SetBinContent(i+1,y1/y01);
-		Time_depP2 -> SetBinContent(i+1,y2/y02);         
-		Time_depP3 -> SetBinContent(i+1,y3/y03);         
-		Time_depP4 -> SetBinContent(i+1,y4/y04);
-		errorP4 -> SetBinContent(i+1,y04/y04);
+		Time_depP1 -> SetBinContent(i,y1/y01);
+		Time_depP2 -> SetBinContent(i,y2/y02);         
+		Time_depP3 -> SetBinContent(i,y3/y03);         
+		Time_depP4 -> SetBinContent(i,y4/y04);
+		errorP4 -> SetBinContent(i,y04/y04);
 
 
 	        ey1 = P_Fluxes[i]->GetErrorY(6);
@@ -387,11 +388,11 @@ int main()
 		ey3 = P_Fluxes[i]->GetErrorY(25);	
 		ey4 = P_Fluxes[i]->GetErrorY(40);		
 
-		Time_depP1 -> SetBinError(i+1,ey1/y01);
-        	Time_depP2 -> SetBinError(i+1,ey2/y02);
-		Time_depP3 -> SetBinError(i+1,ey3/y03);
-		errorP4    -> SetBinError(i+1,2*ey4/y04);
-		Time_depP4 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+		Time_depP1 -> SetBinError(i,ey1/y01);
+        	Time_depP2 -> SetBinError(i,ey2/y02);
+		Time_depP3 -> SetBinError(i,ey3/y03);
+		errorP4    -> SetBinError(i,ey4/y04);
+		Time_depP4 -> GetXaxis() -> SetBinLabel(i,mesi[i].c_str());
 
 		
 	}
@@ -425,6 +426,8 @@ int main()
 	Time_depD1 -> SetTitle("R = 1 GV");
 	Time_depD1 -> GetYaxis() -> SetLabelSize(0.085);
 	Time_depD1 -> GetXaxis() -> SetLabelSize(0.085);
+	Time_depD1 -> GetYaxis() -> SetTitle("Flux / Mean");
+	Time_depD1 -> GetYaxis() -> SetTitleSize(0.085);
 	Time_depD1 -> Draw();
 	Time_depP1 -> Draw("same");	
 	 TLegend* leg =new TLegend(0.7,0.1,0.9,0.3);
@@ -440,6 +443,8 @@ int main()
 	Time_depD2 -> LabelsOption("h");
 	Time_depD2 -> GetYaxis() -> SetLabelSize(0.085);
 	Time_depD2 -> GetXaxis() -> SetLabelSize(0.085);
+	Time_depD2 -> GetYaxis() -> SetTitle("Flux / Mean");
+	Time_depD2 -> GetYaxis() -> SetTitleSize(0.085);
 	Time_depD2 -> Draw();
         Time_depP2 -> Draw("same");
 
@@ -451,6 +456,8 @@ int main()
 	Time_depD3 -> LabelsOption("h");
 	Time_depD3 -> GetYaxis() -> SetLabelSize(0.085);
 	Time_depD3 -> GetXaxis() -> SetLabelSize(0.085);
+	Time_depD3 -> GetYaxis() -> SetTitle("Flux / Mean");
+	Time_depD3 -> GetYaxis() -> SetTitleSize(0.085);
 	Time_depD3 -> Draw();
         Time_depP3 -> Draw("same");
 
@@ -461,6 +468,8 @@ int main()
 	Time_depP4 -> SetTitle("High Energy Flux stability (R=80 GV)");
 	Time_depP4 -> GetYaxis() -> SetLabelSize(0.085);
 	Time_depP4 -> GetXaxis() -> SetLabelSize(0.085);
+	Time_depP4 -> GetYaxis() -> SetTitle("Flux / Mean");
+	Time_depP4 -> GetYaxis() -> SetTitleSize(0.085);
 	Time_depP4 -> Draw("P");
 	errorP4 -> SetFillStyle(3001);
 	errorP4 -> Draw("E4same");

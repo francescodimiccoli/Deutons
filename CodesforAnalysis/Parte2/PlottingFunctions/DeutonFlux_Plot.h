@@ -373,7 +373,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	D_FluxDistNaF->SetName((nome + "Distance Fit").c_str());
 
 	p=0;
-	for(int m=0;m<nbinsToF;m++){
+	for(int m=0;m<nbinsNaF;m++){
 		D_FluxNaF->SetPoint(p,NaFDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_NaF->GetBinContent(m+1));
 		D_FluxNaF->SetPointError(p,0,DeutonsPrimaryFlux_NaF->GetBinError(m+1));
 		D_FluxDistNaF->SetPoint(p,NaFDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_Dist_NaF->GetBinContent(m+1));

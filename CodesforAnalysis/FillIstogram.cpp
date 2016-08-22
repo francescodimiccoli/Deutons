@@ -19,7 +19,10 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    string nomecal=inputpath + "/CodesforAnalysis/CALIBRAZIONI/"+mese+".root";
    TFile *calib = TFile::Open(nomecal.c_str());
    if(calib) cout<<"MC calibration for month "<<mese<<" ... ok"<<endl;
-   else cout<<"ERROR: MC calibration not found"<<endl;
+   else {cout<<"ERROR: MC calibration not found: using first"<<endl;
+   nomecal=inputpath + "/CodesforAnalysis/CALIBRAZIONI/2011_07.root";
+   calib = TFile::Open(nomecal.c_str());
+   }
    Rig           = (TSpline3 *) calib->Get("Fit Results/Splines/Rig");
    beta          = (TSpline3 *) calib->Get("Fit Results/Splines/beta");
    etofu         = (TSpline3 *) calib->Get("Fit Results/Splines/etofu");

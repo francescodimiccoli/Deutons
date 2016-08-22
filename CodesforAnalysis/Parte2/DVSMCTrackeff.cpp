@@ -86,6 +86,7 @@ void DVSMCTrackeff(string filename){
 
 
 	finalHistos.Add(TrackerEfficiencyData);
+	finalHistos.Add(TrackerEfficiencyMC);
 	finalHistos.Add(TrackerGlobalFactor  );
 	finalHistos.writeObjsInFolder("Results");
 

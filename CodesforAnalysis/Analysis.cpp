@@ -141,14 +141,21 @@ int main(int argc, char * argv[])
    float ekmin=0.1, ekmax=1;
    ToFDB.setBinsFromEkPerMass (nbinsToF, ekmin, ekmax);
    ToFPB.setBinsFromEkPerMass(nbinsToF, ekmin, ekmax);
+   ToFDB.Print();
+   ToFPB.Print();		
 
    ekmin=0.666, ekmax=4.025;
    NaFDB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
    NaFPB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
-
+   NaFDB.Print();
+   NaFPB.Print();		
+   
    ekmin=2.57, ekmax=9.01;
    AglDB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
    AglPB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
+
+   AglDB.Print();
+   AglPB.Print();		
 
    ToFDB.UseREdges();
    ToFPB.UseREdges();
