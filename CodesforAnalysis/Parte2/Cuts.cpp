@@ -5,7 +5,7 @@ void Cuts_Pre()
    //Helium rej. cut
    float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
    Herejcut=false;
-   if(fabs(EdepTrackbeta->Eval(Tup.Beta_pre)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta_pre),2)*etrack->Eval(Tup.Beta_pre))<4||fabs(EdepTOFbeta->Eval(Tup.Beta_pre)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta_pre),2)*etofu->Eval(Tup.Beta_pre))<10)
+   if(fabs(EdepTrackbeta->Eval(Tup.Beta_pre)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta_pre),2)*etrack->Eval(Tup.Beta_pre))<3||fabs(EdepTOFbeta->Eval(Tup.Beta_pre)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta_pre),2)*etofu->Eval(Tup.Beta_pre))<10)
       Herejcut=true;
 
    //Strong beta cut
@@ -16,6 +16,11 @@ void Cuts_Pre()
      )
       Betastrongcut = true;
 
+   ProtonsMassWindow = false;
+   	if(Tup.Beta_pre<protons->Eval(Tup.R_pre)+0.1 && Tup.Beta_pre>protons->Eval(Tup.R_pre)-0.1) ProtonsMassWindow = true;	
+
+  ProtonsMassThres = false;
+        if(Tup.Beta_pre>protons->Eval(Tup.R_pre)) ProtonsMassThres = true;
    return;
 }
 
@@ -29,7 +34,7 @@ void Cuts()
 
    //likelihood cut
    Likcut=false;
-   if(((cmask.isFromNaF()||cmask.isFromAgl())&&-log(1-Tup.LDiscriminant)>2.6)||((!(cmask.isFromNaF()||cmask.isFromAgl()))&&-log(1-Tup.LDiscriminant)>0.55)) Likcut=true;
+   if(((cmask.isFromNaF()||cmask.isFromAgl())&&-log(1-Tup.LDiscriminant)>2.6)||((!(cmask.isFromNaF()||cmask.isFromAgl()))&&-log(1-Tup.LDiscriminant)>1.4)) Likcut=true;
 
    //Distance cut
    Distcut=false;
@@ -41,7 +46,7 @@ void Cuts()
    //Helium rej. cut
    float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
    Herejcut=false;
-   if(fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta))<4||fabs(EdepTOFbeta->Eval(Tup.Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta),2)*etofu->Eval(Tup.Beta))<10)
+   if(fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta))<3||fabs(EdepTOFbeta->Eval(Tup.Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta),2)*etofu->Eval(Tup.Beta))<10)
       Herejcut=true;
 
    //Strong beta cut
@@ -52,5 +57,10 @@ void Cuts()
      )
       Betastrongcut = true;
 
+   ProtonsMassWindow = false;
+        if(Tup.Beta<protons->Eval(Tup.R)+0.1 && Tup.Beta>protons->Eval(Tup.R)-0.1) ProtonsMassWindow = true;
+
+   ProtonsMassThres = false;
+        if(Tup.Beta>protons->Eval(Tup.R)) ProtonsMassThres = true;	
    return;
 }

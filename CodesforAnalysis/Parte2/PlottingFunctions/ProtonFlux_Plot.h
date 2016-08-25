@@ -16,6 +16,7 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 
 	TGraphErrors * P_Fluxgeo[11];
 	TGraphErrors * PFlux;
+	TGraphErrors * PFluxNoQ;
 	TGraphErrors * PFlux_pre;
 	float potenza=2.7;
 
@@ -55,13 +56,19 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 	gPad->SetGridx();
 	gPad->SetGridy();
 	PFlux=new TGraphErrors();
+	PFluxNoQ = new TGraphErrors();
 	for(int i=0; i<nbinsr; i++) {
 		PFlux->SetPoint(i,PRB.EkPerMassBinCent(i),ProtonsPrimaryFlux->GetBinContent(i+1)*pow(PRB.EkPerMassBinCent(i),potenza));
 		PFlux->SetPointError(i,0,ProtonsPrimaryFlux->GetBinError(i+1)*pow(PRB.EkPerMassBinCent(i),potenza));
+		
+		PFluxNoQ->SetPoint(i,PRB.EkPerMassBinCent(i),P_pre_PrimaryFlux->GetBinContent(i+1)*pow(PRB.EkPerMassBinCent(i),potenza));
+                PFluxNoQ->SetPointError(i,0,P_pre_PrimaryFlux->GetBinError(i+1)*pow(PRB.EkPerMassBinCent(i),potenza));
 	}
 	PFlux->SetName("Protons Primary Flux");
 	PFlux->SetMarkerStyle(8);
 	PFlux->SetMarkerColor(2);
+	PFluxNoQ->SetMarkerStyle(8);
+        PFluxNoQ->SetMarkerColor(4);
 	PFlux->SetTitle("Primary Protons Flux");
 	PFlux->GetXaxis()->SetTitle("Kin. En./nucl. [GeV/nucl.]");
 	PFlux->GetYaxis()->SetTitle("Flux [(m^2 sr GeV/nucl.)^-1]");
@@ -69,7 +76,7 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 	PFlux->GetYaxis()->SetTitleSize(0.045);
 	PFlux->GetYaxis()->SetRangeUser(1e-2,1e4);
 	PFlux->Draw("AP");
-	P_Fluxgeo[10]->Draw("Psame");
+	PFluxNoQ->Draw("Psame");
 	TGraph* galprop3P=new TGraph();
 	TGraph* galprop3P2=new TGraph();
 	float x,y=0;

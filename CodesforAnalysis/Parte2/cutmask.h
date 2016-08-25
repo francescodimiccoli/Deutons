@@ -49,7 +49,10 @@ bool Cutmask::isPreselected() {
 	    && isMinimumBiasTracker()
 	    && isGoldenTracker()
 	    && isGoldenToF3or4Layers()
-	    && hasSingleTrTrack();
+	    && hasSingleTrTrack()
+	    //&& isMinimumBiasTRD()
+            //&& isGoldenTRD()
+            ;		
 }
 
 	

@@ -15,16 +15,16 @@ void MCFullseteff(string filename){
 	Efficiency * EffpreselMCP = new Efficiency(inputHistoFile, "EffpreselMCP");
 	Efficiency * EffpreselMCD = new Efficiency(inputHistoFile, "EffpreselMCD");
 
-	Efficiency * EffLikMCP = new Efficiency (inputHistoFile,"EffLikMCP");
-	Efficiency * EffLikMCD = new Efficiency (inputHistoFile,"EffLikMCD");
+	Efficiency * EffDistMCP = new Efficiency (inputHistoFile,"EffDistMCP");
+	Efficiency * EffDistMCD = new Efficiency (inputHistoFile,"EffDistMCD");
 	
 	cout<<"**** MC FULL SET  EFFICIENCY  ****"<<endl;
 	
 	EffpreselMCP -> Eval_Efficiency();
 	EffpreselMCD -> Eval_Efficiency();
 
-	EffLikMCP   -> Eval_Efficiency();
-	EffLikMCD   -> Eval_Efficiency();
+	EffDistMCP   -> Eval_Efficiency();
+	EffDistMCD   -> Eval_Efficiency();
 
 	TH1F * EffPreMCP_R_TH1F  =  (TH1F *)EffpreselMCP->effR	->Clone();  
 	TH1F * EffPreMCP_TH1F    =  (TH1F *)EffpreselMCP->effTOF->Clone();
@@ -36,14 +36,14 @@ void MCFullseteff(string filename){
 	TH2F * EffPreMCDAgl_TH2F =  (TH2F *)EffpreselMCD->effAgl->Clone();
 
 
-	TH1F * EffFullsetMCP_R_TH1F  =  (TH1F *)EffLikMCP->effR  ->Clone();
-	TH1F * EffFullsetMCP_TH1F    =  (TH1F *)EffLikMCP->effTOF->Clone();
-	TH1F * EffFullsetMCPNaF_TH1F =  (TH1F *)EffLikMCP->effNaF->Clone();
-	TH1F * EffFullsetMCPAgl_TH1F =  (TH1F *)EffLikMCP->effAgl->Clone();
-	TH2F * EffFullsetMCD_R_TH2F  =  (TH2F *)EffLikMCD->effR  ->Clone();
-	TH2F * EffFullsetMCD_TH2F    =  (TH2F *)EffLikMCD->effTOF->Clone();
-	TH2F * EffFullsetMCDNaF_TH2F =  (TH2F *)EffLikMCD->effNaF->Clone();
-	TH2F * EffFullsetMCDAgl_TH2F =  (TH2F *)EffLikMCD->effAgl->Clone();
+	TH1F * EffFullsetMCP_R_TH1F  =  (TH1F *)EffDistMCP->effR  ->Clone();
+	TH1F * EffFullsetMCP_TH1F    =  (TH1F *)EffDistMCP->effTOF->Clone();
+	TH1F * EffFullsetMCPNaF_TH1F =  (TH1F *)EffDistMCP->effNaF->Clone();
+	TH1F * EffFullsetMCPAgl_TH1F =  (TH1F *)EffDistMCP->effAgl->Clone();
+	TH2F * EffFullsetMCD_R_TH2F  =  (TH2F *)EffDistMCD->effR  ->Clone();
+	TH2F * EffFullsetMCD_TH2F    =  (TH2F *)EffDistMCD->effTOF->Clone();
+	TH2F * EffFullsetMCDNaF_TH2F =  (TH2F *)EffDistMCD->effNaF->Clone();
+	TH2F * EffFullsetMCDAgl_TH2F =  (TH2F *)EffDistMCD->effAgl->Clone();
 
 	
 	EffFullsetMCP_R_TH1F -> Multiply( EffPreMCP_R_TH1F  	); 

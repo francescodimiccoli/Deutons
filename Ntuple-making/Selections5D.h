@@ -231,6 +231,7 @@ int UnbiasPre=9;
 int noR=33;
 int notpassed[10]= {0,1021,955,33,1007,799,959,799,187,187};
 float Velocity=0;
+int seconds=0;
 TMVA::Reader *reader;
 Float_t BDT_response;
 TFile *_file0 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Final_Def.root");
@@ -301,8 +302,8 @@ bool Quality(TTree *albero,int i)
    else r++;
    TOF_Up_Down=fabs(((*Endep)[2]+(*Endep)[3])-((*Endep)[0]+(*Endep)[1]));
    DiffTrackEdep=0;
-   for(int layer=0; layer<9; layer++) DiffTrackEdep+=fabs((*trtot_edep)[layer]-(*trtrack_edep)[layer]);
-   Track_Up_Down=fabs((*trtot_edep)[7]-(*trtot_edep)[0]);
+   for(int layer=0; layer<9; layer++) DiffTrackEdep+=fabs((*trtrack_edep)[layer]-(*trtrack_edep)[layer]);
+   Track_Up_Down=fabs((*trtrack_edep)[7]-(*trtrack_edep)[0]);
 
    selection=true;
    ///////Matter or Antimatter
@@ -378,7 +379,7 @@ bool Quality(TTree *albero,int i)
    EdepTOFU=((*Endep)[0]+(*Endep)[1])/2;
    EdepTOFD=((*Endep)[2]+(*Endep)[3])/2;
 
-   for(int layer=1; layer<8; layer++) EdepTrack+=(*trtot_edep)[layer];
+   for(int layer=1; layer<8; layer++) EdepTrack+=(*trtrack_edep)[layer];
    EdepTrack=EdepTrack/7;
    if(EdepTrack<0) cout<<"ecco!"<<endl;
    E_depTRD=EdepTRD/NTRDclusters;
@@ -424,7 +425,7 @@ void Nuovasel(float RG,float M, TF1 *RBETA)
    Dist2=1000000;
    Dist3=1000000;
    for(int z=0; z<1e6; z++) {
-      passo=0.05;
+      passo=0.075;
       BT=RBETA->Eval(RGDT);
       distR=(RGDT-RG)/(pow(RGDT,2)*Rig->Eval(RGDT));
       distB=(BT-Beta)/(pow(BT,2)*beta->Eval(BT));
@@ -433,8 +434,10 @@ void Nuovasel(float RG,float M, TF1 *RBETA)
       distETOFU=(EdepTOFbeta->Eval(BT)-EdepTOFU)/(pow(EdepTOFbeta->Eval(BT),2)*etofu->Eval(BT));
       distETrack=(EdepTrackbeta->Eval(BT)-EdepTrack)/(pow(EdepTrackbeta->Eval(BT),2)*etrack->Eval(BT));
       distETOFD=(EdepTOFbeta->Eval(BT)-EdepTOFD)/(pow(EdepTOFbeta->Eval(BT),2)*etofd->Eval(BT));
-      //if(((((int)Cutmask)>>11)==0||(((int)Cutmask)>>11)==0)&&R<20) std::cout<<Dist<<" "<<z<<" : "<<R<<" "<<Rmin<<" "<<RGDT<<std::endl;
-      Dist=pow(pow(distR,2)+pow(distB,2)+pow(distETrack,2)+pow(distETOFU,2)+pow(distETOFD,2),0.5);
+      
+      //std::cout<<Dist<<" "<<z<<" : "<<R<<" "<<Rmin<<" "<<RGDT<<std::endl;
+
+	Dist=pow(pow(distR,2)+pow(distB,2)+pow(distETrack,2)+pow(distETOFU,2)+pow(distETOFD,2),0.5);
       if(Dist<Dist1) {
          DR1=0;
          Dist1=Dist;
@@ -459,15 +462,14 @@ void Nuovasel(float RG,float M, TF1 *RBETA)
             //	if(R<20&&(((int)Cutmask)>>11)==0) cout<<" "<<Dist1<<" R "<<R<<" Rmin "<<Rmin<<" dR "<<CooTOF[2]<<" dB "<<CooTOF[1]<<" "<<distETOFU<<" "<<distETrack<<" "<<distETOFD<<endl;
             break;
          }
-         RGDT=RGDT+0.5*passo;
+         RGDT=RGDT+passo;
       }
       Dist2=Dist;
       if(z>1e5) std::cout<<"cazzo"<<std::endl;
    }
    Dist5D=Dist1;
-   /*if(IsPrescaled==0)
-     {cout<<Rmin<<" : "<<R<<" "<<CooTOF[0]<<" "<<CooTOF[1]<<" "<<CooTOF[2]<<endl;
-     cout<<endl;}*/
+     //{cout<<Rmin<<" : "<<R<<" "<<Dist5D<<endl;
+    // cout<<endl;}
    /////////////////////////////////////////////////////////////////
 
    PhiTOF=acos(CooTOF[2]/pow(pow(CooTOF[0],2)+pow(CooTOF[2],2),0.5));

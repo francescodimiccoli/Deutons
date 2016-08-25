@@ -103,7 +103,7 @@ PFluxComputing::PFluxComputing(string objname, bool geobin, string acceptname)
    if (geobin) {
       ngeobins=NGEOBINS;
       acceptname="Geomag_AcceptanceP";
-      H2ExpoGeo=(TH2F*)inputHistoFile->Get("esposizionegeo")->Clone();
+      H2ExpoGeo=(TH2F*)inputHistoFile->Get("esposizionegeo_R")->Clone();
    }
    PFlux=new Flux(inputHistoFile, objname, "","Results", acceptname, ngeobins);
 }
@@ -276,8 +276,8 @@ void DeutonFlux()
    std::string suf[4] = {"ToF", "NaF", "Agl", "R"};
    Binning binP[4] = {ToFPB, NaFPB, AglPB, PRB};
    Binning binD[4] = {ToFDB, NaFDB, AglDB, PRB};
-   string expodnames[4] = {"esposizionedgeo", "esposizionedgeoNaF", "esposizionedgeoAgl", "esposizionegeo" };
-   string expopnames[4] = {"esposizionepgeo", "esposizionepgeoNaF", "esposizionepgeoAgl", "esposizionegeo" };
+   string expodnames[4] = {"esposizionedgeoTOF", "esposizionedgeoNaF", "esposizionedgeoAgl", "esposizionegeo_R" };
+   string expopnames[4] = {"esposizionepgeoTOF", "esposizionepgeoNaF", "esposizionepgeoAgl", "esposizionegeo_R" };
    enum {protons, deutons};
 
    std::vector <TH1F*> vD_Flux (NSUBDETECTORS);

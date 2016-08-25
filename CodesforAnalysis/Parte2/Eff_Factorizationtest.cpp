@@ -14,22 +14,28 @@ Efficiency * Eff_do_LikMCP   = new Efficiency("Eff_do_LikMCP");
 
 void FluxFactorizationtest_Pre_Fill()
 {
-   if(Tup.Unbias!=0||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
+   if(!trgpatt.IsPhysical()) return;
+
    int Rbin;
    // full set efficiency before
-   if(cmask.notPassed(2)) {
-      Rbin=PRB.GetRBin(RUsed);
+   if(cmask.isMinimumBiasTrigger()&&cmask.isMinimumBiasToF3or4Layers()&&cmask.isMinimumBiasTracker()&&Tup.Beta_pre>0&&Tup.R_pre>0) {
+      Rbin=PRB.GetRBin(Tup.R_pre);
       if(Massa_gen<1&&Massa_gen>0.5) {
-         ((TH2*)EffFullSETselectionsMCP->beforeR)->Fill(Rbin,Tup.mcweight);
-      }
+         (EffFullSETselectionsMCP->beforeR)->Fill(Rbin);
+	}
    }
 
+
+  if(!Herejcut) return;
+  if(Tup.Beta_pre<=0||Tup.R_pre<=0) return;
+  if(!ProtonsMassWindow) return;
+	
    //Drop-one approach eff. calc.
    for(int iS=0; iS<3; iS++) {
       Rbin=PRB.GetRBin(RUsed);
       if(Massa_gen<1&&Massa_gen>0.5) {
-         if(cmask.notPassed(iS)) ((TH2*)Eff_do_preSelMCP->beforeR)->Fill(Rbin,iS,Tup.mcweight);
-         if(cmask.passed(iS)) ((TH2*)Eff_do_preSelMCP->afterR) ->Fill(Rbin,iS,Tup.mcweight);
+         if(cmask.notPassed(iS)) ((TH2*)Eff_do_preSelMCP->beforeR)->Fill(Rbin,iS);
+         if(cmask.passed(iS)) ((TH2*)Eff_do_preSelMCP->afterR) ->Fill(Rbin,iS);
       }
 
       if(Massa_gen>1&&Massa_gen<2) {
@@ -48,27 +54,34 @@ void FluxFactorizationtest_Pre_Fill()
 void FluxFactorizationtest_Qual_Fill()
 {
 
+  if(!trgpatt.IsPhysical())return;
+  //control sample cuts
+  if(!Herejcut) return;
+  if(Tup.Beta<=0||Tup.R<=0) return;	
+  if(!ProtonsMassWindow) return;
+ 
    //R bins
    int Kbin;
    Kbin = PRB.GetRBin(RUsed);
 
    //full set efficiency after
-   if(Tup.Dist5D_P<6&&Likcut)  ((TH2*)EffFullSETselectionsMCP->afterR)->Fill(Kbin,Tup.mcweight);
+   if(Massa_gen<1&&Massa_gen>0.5) {
+	if(Distcut&&Likcut)  (EffFullSETselectionsMCP->afterR)->Fill(Kbin);
+	}
 
-
-   //Drop-one approach eff calc.
-   //eff evaluation cuts
-   if(Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
-   if(!Herejcut) return;
+  //Drop-one approach eff calc.
+  if(!Herejcut) return;
+  if(Tup.Beta_pre<=0||Tup.R_pre<=0) return;
+  if(!ProtonsMassWindow) return;
 
    if(Massa_gen<1&&Massa_gen>0.5) {
-     ((TH2*) Eff_do_DistMCP -> beforeR) -> Fill(Kbin,Tup.mcweight);
-      if(Tup.Dist5D_P<6)((TH2*) Eff_do_LikMCP -> beforeR) -> Fill(Kbin,Tup.mcweight);
+    Kbin = PRB.GetRBin(RUsed);
+                  ( Eff_do_DistMCP -> beforeR) -> Fill(Kbin);
+      if(Distcut) (Eff_do_LikMCP -> beforeR) -> Fill(Kbin);
 
-      if(Tup.Dist5D_P<6) {
-        ((TH2*) Eff_do_DistMCP -> afterR) -> Fill(Kbin,Tup.mcweight);
-         if(Likcut) ((TH2*)Eff_do_LikMCP -> afterR) -> Fill(Kbin,Tup.mcweight);
-      }
+      if(Distcut)            ( Eff_do_DistMCP -> afterR) -> Fill(Kbin);
+      if(Distcut&&Likcut)    (Eff_do_LikMCP -> afterR) -> Fill(Kbin);
+      
 
    }
    ///////////////////////////

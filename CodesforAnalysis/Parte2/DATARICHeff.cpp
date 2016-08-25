@@ -9,18 +9,24 @@ LATcorr * LATrichDATA_Agl   = new LATcorr("LATrichDATA_Agl");
 void DATARICHeff_Fill(int zona) {
 
 	//cuts
-	if(Tup.R<1.2*Tup.Rcutoff||Tup.Beta>protons->Eval(Tup.R)+0.1||Tup.Beta<protons->Eval(Tup.R)-0.1) return;
-	if(!((Tup.R>Rcut[zona]&&zona<10)||(zona==10)))  return;
-	if(!Herejcut) return;
-
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
+        if(!trgpatt.IsPhysical()) return;
+        if(!Herejcut) return;
+        if(!ProtonsMassWindow) return;	//
+	float mass=0;	
 	int Kbin=PRB.GetRBin(Tup.R);
 
 	LATrichDATA_NaF -> beforeR -> Fill(Kbin,zona);
 	LATrichDATA_Agl	-> beforeR -> Fill(Kbin,zona);
 	
-	if (cmask.isFromNaF()) LATrichDATA_NaF -> afterR -> Fill(Kbin,zona); 
-	if (cmask.isFromAgl()) LATrichDATA_Agl -> afterR -> Fill(Kbin,zona); 
-
+	if (cmask.isFromNaF()) {
+				mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
+				/*if(mass>0&&mass<3)*/ LATrichDATA_NaF -> afterR -> Fill(Kbin,zona); 
+				}
+	if (cmask.isFromAgl()) {
+				mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
+				/*if(mass>0&&mass<3)*/ LATrichDATA_Agl -> afterR -> Fill(Kbin,zona); 
+				}
    	return;
 }
 

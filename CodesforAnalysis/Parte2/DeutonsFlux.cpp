@@ -11,11 +11,11 @@ void DeutonFlux(string filename) {
         TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
 
 
-	TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get(      "esposizionegeo"        );
-	TH2F * esposizionedgeoTOF  = (TH2F*)inputHistoFile->Get(      "esposizionedgeo"       );
+	TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get(      "esposizionegeo_R"        );
+	TH2F * esposizionedgeoTOF  = (TH2F*)inputHistoFile->Get(      "esposizionedgeoTOF"       );
 	TH2F * esposizionedgeoNaF  = (TH2F*)inputHistoFile->Get(      "esposizionedgeoNaF"    );
 	TH2F * esposizionedgeoAgl  = (TH2F*)inputHistoFile->Get(      "esposizionedgeoAgl"    );
-	TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(      "esposizionepgeo"       );
+	TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(      "esposizionepgeoTOF"       );
 	TH2F * esposizionepgeoNaF  = (TH2F*)inputHistoFile->Get(      "esposizionepgeoNaF"    );
 	TH2F * esposizionepgeoAgl  = (TH2F*)inputHistoFile->Get(      "esposizionepgeoAgl"    );
 
@@ -29,6 +29,10 @@ void DeutonFlux(string filename) {
 
 	Flux * P_Flux         = new Flux(inputHistoFile, "P_Flux"         ,"Results","Corr_AcceptanceP",1);
 	Flux * P_Flux_Dist    = new Flux(inputHistoFile, "P_Flux_Dist"    ,"Results","Corr_AcceptanceP",1);
+
+	TH1F * ProtonsPrimaryFlux = (TH1F*)inputHistoFile->Get("Results/ProtonsPrimaryFlux");
+
+	cout<<ProtonsPrimaryFlux<<endl;
 
 	cout<<"*************** DEUTONS FLUXES CALCULATION *******************"<<endl;
 	
@@ -66,15 +70,17 @@ void DeutonFlux(string filename) {
 
 	enum {protons, deutons};
 
-	D_Flux         -> Eval_Flux(1 , deutons, 2 );
-	D_Flux_geo     -> Eval_Flux(11, deutons, 2 );
+	D_Flux         -> Eval_Flux(1 , deutons, 1 );
+	D_Flux_geo     -> Eval_Flux(11, deutons, 1 );
 
-	D_Flux_Dist    -> Eval_Flux(1 , deutons, 2 );
-	D_Flux_geo_Dist-> Eval_Flux(11, deutons, 2 );
+	D_Flux_Dist    -> Eval_Flux(1 , deutons, 1 );
+	D_Flux_geo_Dist-> Eval_Flux(11, deutons, 1 );
 
 	P_Flux         -> Eval_Flux(1 , protons );
 	P_Flux_Dist    -> Eval_Flux(1 , protons );
 
+
+	cout<<"uno"<<endl;
 
 	//Fit on Mass
 	TH1F * DeutonsPrimaryFlux_TOF 		= (TH1F *)D_Flux     -> Flux_TOF ;
@@ -96,6 +102,7 @@ void DeutonFlux(string filename) {
 	TH2F * DeutonsGeomagFlux_Dist_NaF 	= (TH2F *)D_Flux_geo_Dist-> Flux_NaF ;
 	TH2F * DeutonsGeomagFlux_Dist_Agl  	= (TH2F *)D_Flux_geo_Dist-> Flux_Agl ;
 
+	cout<<"due"<<endl;
 
 	//for D/P ratio: P Flux
 	//Fit on Mass
@@ -114,6 +121,7 @@ void DeutonFlux(string filename) {
 	TH1F * DP_ratioNaF = (TH1F *)D_Flux     -> Flux_NaF -> Clone();
 	TH1F * DP_ratioAgl = (TH1F *)D_Flux     -> Flux_Agl -> Clone();
 
+	cout<<"tre"<<endl;
 	DP_ratioTOF ->  Divide((TH1F *)P_Flux     -> Flux_TOF			);
 	DP_ratioNaF ->  Divide((TH1F *)P_Flux     -> Flux_NaF			);
 	DP_ratioAgl ->  Divide((TH1F *)P_Flux     -> Flux_Agl			);
@@ -126,8 +134,7 @@ void DeutonFlux(string filename) {
 	DP_ratioTOF_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_TOF                   );
 	DP_ratioNaF_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_NaF                   );
 	DP_ratioAgl_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_Agl                   );	
-
-
+        
 	DeutonsPrimaryFlux_TOF 	    	->SetName("DeutonsPrimaryFlux_TOF"); 
 	DeutonsPrimaryFlux_NaF 	  	->SetName("DeutonsPrimaryFlux_NaF");
 	DeutonsPrimaryFlux_Agl 	  	->SetName("DeutonsPrimaryFlux_Agl");
@@ -144,6 +151,7 @@ void DeutonFlux(string filename) {
 	DeutonsGeomagFlux_Dist_NaF 	->SetName("DeutonsGeomagFlux_Dist_NaF");
 	DeutonsGeomagFlux_Dist_Agl 	->SetName("DeutonsGeomagFlux_Dist_Agl");
 
+
 	ProtonsPrimaryFlux_TOF 	  	->SetName("ProtonsPrimaryFlux_TOF");
 	ProtonsPrimaryFlux_NaF 	  	->SetName("ProtonsPrimaryFlux_NaF");
 	ProtonsPrimaryFlux_Agl 	  	->SetName("ProtonsPrimaryFlux_Agl");
@@ -159,7 +167,7 @@ void DeutonFlux(string filename) {
 	DP_ratioNaF_Dist -> SetName("DP_ratioNaF_Dist"	);
 	DP_ratioAgl_Dist -> SetName("DP_ratioAgl_Dist"	);
 
-
+	cout<<"cinque"<<endl;
 
 
 	finalHistos.Add(DeutonsPrimaryFlux_TOF 	   );
@@ -189,6 +197,7 @@ void DeutonFlux(string filename) {
 
         finalHistos.writeObjsInFolder("Results");
 
+
         cout<<"*** Plotting ...  ****"<<endl;
 
 
@@ -217,7 +226,9 @@ void DeutonFlux(string filename) {
                         DP_ratioNaF_Dist,
                         DP_ratioAgl_Dist,
 			D_Flux,
-			P_Flux
+			P_Flux,
+			ProtonsPrimaryFlux
+
 	
 	);
 

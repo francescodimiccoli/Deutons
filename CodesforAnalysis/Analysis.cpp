@@ -22,6 +22,8 @@
 
 
 #include "Parte2/cutmask.h"
+#include "Parte2/TriggPatt.h"
+
 
 #include "Parte2/Definitions.cpp"
 #include "Parte2/FitError.cpp"
@@ -30,17 +32,25 @@
 #include "Parte2/ACCEPTANCEClass.cpp"
 #include "Parte2/TemplateFITClass.cpp"
 #include "Parte2/DatavsMCClass.h"
+#include "Parte2/OptimizationCutClass.h"
+
+#include "Parte2/ExposureTime.cpp"
+
 #include "Parte2/MCpreeff.cpp"
 #include "Parte2/MCUnbiaseff.cpp"
 #include "Parte2/Hecont.cpp"
+#include "Parte2/DATAEdepLAT.cpp"
 #include "Parte2/SlidesforPlot.cpp"
 #include "Parte2/Qualcutoptimization.cpp"
+#include "Parte2/MCControlsamplecuteff.cpp"
 #include "Parte2/MCQualeff.cpp"
 #include "Parte2/Cuts.cpp"
 #include "Parte2/MCTrackeff.cpp"
 #include "Parte2/Eff_Factorizationtest.cpp"
 #include "Parte2/MigrationMatrix.cpp"
 #include "Parte2/MCFullSeteff.cpp"
+#include "Parte2/AntiDCutOptimization.h"
+#include "Parte2/AntiDPredictions.h"
 #include "Parte2/DATAUnbiaseff.cpp"
 #include "Parte2/CorrelazionePreselezioni.cpp"
 #include "Parte2/DATApreSeleff.cpp"
@@ -126,20 +136,27 @@ int main(int argc, char * argv[])
    
    cout<<"****************************** BINS ***************************************"<<endl;
 
-   DRB.setBinsFromRigidity(nbinsr, 0.5, 100); // RB did not have Ek
-   PRB.setBinsFromRigidity(nbinsr, 0.5, 100); 
+   DRB.setBinsFromEkPerMass(nbinsr, 0.15, 100); // RB did not have Ek
+   PRB.setBinsFromEkPerMass(nbinsr, 0.15, 100); 
 
    float ekmin=0.1, ekmax=1;
    ToFDB.setBinsFromEkPerMass (nbinsToF, ekmin, ekmax);
    ToFPB.setBinsFromEkPerMass(nbinsToF, ekmin, ekmax);
+   ToFDB.Print();
+   ToFPB.Print();		
 
    ekmin=0.666, ekmax=4.025;
    NaFDB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
    NaFPB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
-
+   NaFDB.Print();
+   NaFPB.Print();		
+   
    ekmin=2.57, ekmax=9.01;
    AglDB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
    AglPB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
+
+   AglDB.Print();
+   AglPB.Print();		
 
    ToFDB.UseREdges();
    ToFPB.UseREdges();

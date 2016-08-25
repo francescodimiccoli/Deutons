@@ -12,22 +12,25 @@ Flux * P_Flux_sel = new Flux("P_Flux_sel" );
 
 void ProtonFlux_Fill(int zona) {
 
+	if(!trgpatt.IsPhysical()) return;
 	if(Tup.Beta<=0||Tup.R<=0) return;
-	int Kbin=PRB.GetRBin(Tup.R);
 
-	if(Tup.Dist5D_P<6 && Likcut) {
+	int Kbin=PRB.GetRBin(Tup.R);
+	
+
+	if(Distcut && Likcut) {
 		P_Flux_geo-> Counts_R -> Fill(Kbin,zona);
 		if(Tup.R>1.2*Tup.Rcutoff) {
 			P_Flux -> Counts_R-> Fill(Kbin);
 			P_Flux_geo_prim -> Counts_R -> Fill(Kbin,zona);
 		}
 	}
+	
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
 
-	if(Herejcut && Tup.R>1.2*Tup.Rcutoff && Tup.Beta<protons->Eval(Tup.R)+0.1 && Tup.Beta>protons->Eval(Tup.R)-0.1) {
-		P_Flux_pre -> Counts_R -> Fill(Kbin);
-		if(Tup.Dist5D_P<6&&Likcut)  P_Flux_sel -> Counts_R -> Fill(Kbin);
-	}
-
+	if(Herejcut && ProtonsMassWindow) P_Flux_pre -> Counts_R -> Fill(Kbin);
+	if(Distcut  && Likcut           ) P_Flux_sel -> Counts_R -> Fill(Kbin);
+	
 	return;
 }
 
@@ -52,8 +55,8 @@ void ProtonFlux(string filename) {
         TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
 
 
-	TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get( "esposizionegeo"        );
-	TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeo"	);
+	TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get(        "esposizionegeo_R"        );
+	TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoTOF"	);
 	TH2F * esposizionepgeoNaF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoNaF"	);
 	TH2F * esposizionepgeoAgl  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoAgl"	);
 

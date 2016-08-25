@@ -19,6 +19,7 @@ class TemplateFIT {
 
    private:
       std::vector<std::vector<TFit *>> fits;
+	int binstemplate = 50;
 
    public:
       // Templates
@@ -40,27 +41,29 @@ class TemplateFIT {
       bool TemplateFITenabled = true;
 
       //Fit constraints
-      float lowP ,lowD ,lowHe    = 0.0;
-      float highP,highD,highHe   = 1.0;
-
+      std::vector<float>  lowP ,lowD ,lowHe    ;
+      std::vector<float>  highP,highD,highHe   ;
+	
+      float tolerance=0;
+      float minrange,maxrange=0;
       //creation constructors
       //standard
       TemplateFIT(std::string basename ,int Nbins ,float val_min , float val_max,int mc_types = 0, int n=0)
       {
 
-         TemplateP   = 	new TH2F((basename + "_P"   ).c_str(),(basename + "_P"   ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
-         TemplateHe  =   new TH2F((basename + "_He"  ).c_str(),(basename + "_He"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
+         TemplateP   = 	new TH2F((basename + "_P"   ).c_str(),(basename + "_P"   ).c_str(),binstemplate,val_min,val_max,Nbins,0,Nbins);
+         TemplateHe  =   new TH2F((basename + "_He"  ).c_str(),(basename + "_He"  ).c_str(),binstemplate,val_min,val_max,Nbins,0,Nbins);
 
          if(mc_types == 0)
-            TemplateD   =	new TH2F((basename + "_D"   ).c_str(),(basename + "_D"     ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
+            TemplateD   =	new TH2F((basename + "_D"   ).c_str(),(basename + "_D"     ).c_str(),binstemplate,val_min,val_max,Nbins,0,Nbins);
          if(mc_types >  0 )
-            TemplateD   =   new TH3F((basename + "_D"   ).c_str(),(basename + "_D"     ).c_str(),100,val_min,val_max,Nbins,0,Nbins,mc_types,0,mc_types);
+            TemplateD   =   new TH3F((basename + "_D"   ).c_str(),(basename + "_D"     ).c_str(),binstemplate,val_min,val_max,Nbins,0,Nbins,mc_types,0,mc_types);
          if(n == 0) {
-            DATA        =	new TH2F((basename + "_Data").c_str(),(basename + "_Data"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins);
+            DATA        =	new TH2F((basename + "_Data").c_str(),(basename + "_Data"  ).c_str(),binstemplate,val_min,val_max,Nbins,0,Nbins);
             Geomag = false;
          }
          if(n > 0) {
-            DATA        =   new TH3F((basename + "_Data").c_str(),(basename + "_Data"  ).c_str(),100,val_min,val_max,Nbins,0,Nbins,n,0,n);
+            DATA        =   new TH3F((basename + "_Data").c_str(),(basename + "_Data"  ).c_str(),binstemplate,val_min,val_max,Nbins,0,Nbins,n,0,n);
             Geomag = true;
          }
          PCounts	   =	new TH1F((basename + "_PCounts"  	 ).c_str(),(basename + "_PCounts"   	).c_str(),Nbins,0,Nbins);
@@ -90,6 +93,8 @@ class TemplateFIT {
          Geomag = false;
 
          fits.push_back(std::vector<TFit *>());
+	 minrange = 0;
+	 maxrange = 100;
       }
       //geom. zones
       TemplateFIT(TFile * file , std::string basename_MC, std::string basename_data, int n)
@@ -109,7 +114,10 @@ class TemplateFIT {
          Geomag = true;
 
          for(int lat=0; lat<n; lat ++) fits.push_back(std::vector<TFit *>());
-      }
+     	 minrange = 0;
+	 maxrange = 100;
+
+	 }
 
 
 
@@ -119,7 +127,10 @@ class TemplateFIT {
 
       TH1F * Extract_Bin(TH1 * Histo, int bin,int third_dim=0);
       void SetFitConstraints(float LowP=0,float HighP=1, float LowD=0,float HighD=1, float LowHe=0,float HighHe=1);
-      void Do_TemplateFIT(TFit * Fit, int lat=0);
+      void SetFitConstraints(TH1F * ContHe, float LowP=0,float HighP=1, float LowD=0,float HighD=1);
+      void SetTolerance(float tol);
+      void SetFitRange(float min,float max); 
+      void Do_TemplateFIT(TFit * Fit, int bin, int lat=0);
       int GetFitOutcome(uint bin,uint lat=0)
       {
          if(lat < fits.size() && bin < fits[lat].size())
@@ -127,6 +138,7 @@ class TemplateFIT {
          cout<<"Fit not yet performed: bin nr. "<<bin<<endl;
          return -2;
       };
+      void PrintResults(int bin,int lat=0);
       double GetFitWheights(int par, int bin,int lat=0);
       double GetFitFraction(int par, int bin,int lat=0);
       double GetFitErrors(int par,int bin,int lat=0);
@@ -135,6 +147,6 @@ class TemplateFIT {
       TH1F * GetResult_He(int bin, int lat=0) {TH1F * res = (TH1F*)fits[lat][bin]->Templ_He ->Clone(); res -> Scale(fits[lat][bin]->wheightHe); return res;};
       TH1F * GetResult_Data(int bin,int lat=0) {return (TH1F*)fits[lat][bin] -> Data;};
       void DisableFit();
-      void TemplateFits(int mc_type=0);
+      void TemplateFits(int mc_type=1);
       void TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,int lat=0);
 };

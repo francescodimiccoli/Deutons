@@ -18,9 +18,11 @@ LATcorr * LATDistanceDATA_Agl   = new LATcorr ("LATDistDATA_Agl");
 void DATAQualeff_Fill (int zona)
 {
 
-   if (Tup.R<=Rcut[zona]) return;
-   if (! (Tup.EdepL1 > 0 && Tup.EdepL1 < EdepL1beta->Eval (Tup.Beta)+0.1 && Tup.EdepL1 > EdepL1beta->Eval (Tup.Beta)-0.1 ) ) return;
-
+   if(!trgpatt.IsPhysical()) return;
+   if(!Herejcut) return;
+   if(Tup.Beta<=0||Tup.R<=0) return; 
+   if(!ProtonsMassWindow) return;   
+	
    int Kbin=PRB.GetRBin (Tup.R);
 
 
@@ -32,7 +34,8 @@ void DATAQualeff_Fill (int zona)
       }
       if (Tup.Dist5D_P<6 && Likcut)
          LATLikelihoodDATA_NaF->afterR ->Fill (Kbin,zona);
-   } else if (cmask.isFromAgl() ) { // Agl
+   }  
+   if (cmask.isFromAgl() ) { // Agl
       LATDistanceDATA_Agl     ->beforeR->Fill (Kbin,zona);
       if (Tup.Dist5D_P<6) {
          LATDistanceDATA_Agl  ->afterR ->Fill (Kbin,zona);
@@ -41,8 +44,8 @@ void DATAQualeff_Fill (int zona)
       if (Tup.Dist5D_P<6 && Likcut)
          LATLikelihoodDATA_Agl->afterR ->Fill (Kbin,zona);
    }
-   else // ToF
-   {
+   // ToF
+   
       LATDistanceDATA_TOF  ->beforeR->Fill (Kbin,zona);
       if (Tup.Dist5D_P<6) {
          LATDistanceDATA_TOF  ->afterR ->Fill (Kbin,zona);
@@ -50,7 +53,7 @@ void DATAQualeff_Fill (int zona)
       }
       if (Tup.Dist5D_P<6 && Likcut)
          LATLikelihoodDATA_TOF->afterR ->Fill (Kbin,zona);
-   }
+   
 
    return;
 }

@@ -160,18 +160,18 @@ void Flux::Set_DeltaE(int n,bool deutons) {
       
     if(deutons) {
          for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)
-            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(iR+1,lat+1, DRB.EkPerMassBinCent(iR+1)-DRB.EkPerMassBinCent(iR));
+            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(iR+1,lat+1, DRB.EkPerMassBin(iR+1)-DRB.EkPerMassBin(iR));
       }
       else { //only in R bins p/d have different DeltaE
          for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)
-            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(iR+1,lat+1, PRB.EkPerMassBinCent(iR+1)-PRB.EkPerMassBinCent(iR));
+            for(int lat =1; lat<DeltaE_R->GetNbinsX(); lat++) DeltaE_R->SetBinContent(iR+1,lat+1, PRB.EkPerMassBin(iR+1)-PRB.EkPerMassBin(iR));
       }
       for(int iR=0; iR<DeltaE_TOF->GetNbinsX(); iR++)
-         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_TOF->SetBinContent(iR+1,lat+1, ToFDB.EkPerMassBinCent(iR+1)-ToFPB.EkPerMassBinCent(iR));
+         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_TOF->SetBinContent(iR+1,lat+1, ToFDB.EkPerMassBin(iR+1)-ToFPB.EkPerMassBin(iR));
       for(int iR=0; iR<DeltaE_NaF->GetNbinsX(); iR++)
-         for(int lat =0; lat<DeltaE_NaF->GetNbinsX(); lat++) DeltaE_NaF->SetBinContent(iR+1,lat+1, NaFDB.EkPerMassBinCent(iR+1)-NaFPB.EkPerMassBinCent(iR));
+         for(int lat =0; lat<DeltaE_NaF->GetNbinsX(); lat++) DeltaE_NaF->SetBinContent(iR+1,lat+1, NaFDB.EkPerMassBin(iR+1)-NaFPB.EkPerMassBin(iR));
       for(int iR=0; iR<DeltaE_Agl->GetNbinsX(); iR++)
-         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_Agl->SetBinContent(iR+1,lat+1, AglDB.EkPerMassBinCent(iR+1)-AglDB.EkPerMassBinCent(iR));
+         for(int lat =0; lat<DeltaE_TOF->GetNbinsX(); lat++) DeltaE_Agl->SetBinContent(iR+1,lat+1, AglDB.EkPerMassBin(iR+1)-AglDB.EkPerMassBin(iR));
 
    }
    else {
@@ -186,14 +186,14 @@ void Flux::Set_DeltaE(int n,bool deutons) {
 	 DeltaE_Agl ->Sumw2();
 
       if(deutons) {
-         for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)  DeltaE_R->SetBinContent(iR+1,DRB.EkBin(iR+1)-DRB.EkBin(iR));
+         for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)  DeltaE_R->SetBinContent(iR+1,DRB.EkPerMassBin(iR+1)-DRB.EkPerMassBin(iR));
       }
       else { //only in R bins p/d have different DeltaE
-         for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)  DeltaE_R->SetBinContent(iR+1,PRB.EkBin(iR+1)-PRB.EkBin(iR));
+         for(int iR=0; iR<DeltaE_R->GetNbinsX(); iR++)  DeltaE_R->SetBinContent(iR+1,PRB.EkPerMassBin(iR+1)-PRB.EkPerMassBin(iR));
       }
-      for(int iR=0; iR<DeltaE_TOF->GetNbinsX(); iR++) DeltaE_TOF->SetBinContent(iR+1,ToFPB.EkBin(iR+1)-ToFPB.EkBin(iR));
-      for(int iR=0; iR<DeltaE_NaF->GetNbinsX(); iR++) DeltaE_NaF->SetBinContent(iR+1,NaFPB.EkBin(iR+1)-NaFPB.EkBin(iR));
-      for(int iR=0; iR<DeltaE_Agl->GetNbinsX(); iR++) DeltaE_Agl->SetBinContent(iR+1, AglPB.EkBin(iR+1)-AglPB.EkBin(iR));
+      for(int iR=0; iR<DeltaE_TOF->GetNbinsX(); iR++) DeltaE_TOF->SetBinContent(iR+1,ToFPB.EkPerMassBin(iR+1)-ToFPB.EkPerMassBin(iR));
+      for(int iR=0; iR<DeltaE_NaF->GetNbinsX(); iR++) DeltaE_NaF->SetBinContent(iR+1,NaFPB.EkPerMassBin(iR+1)-NaFPB.EkPerMassBin(iR));
+      for(int iR=0; iR<DeltaE_Agl->GetNbinsX(); iR++) DeltaE_Agl->SetBinContent(iR+1, AglPB.EkPerMassBin(iR+1)-AglPB.EkPerMassBin(iR));
 
    }
 }
@@ -204,14 +204,29 @@ void Flux::Add_SystFitError(int n, TH1* syst_errR,TH1* syst_errTOF,TH1* syst_err
 		if(Counts_Agl) for(int iR = 0; iR < Counts_Agl  ->GetNbinsX();iR++) Counts_Agl  -> SetBinError(iR+1,Counts_Agl  -> GetBinError(iR+1)+fabs(syst_errAgl->GetBinContent(iR+1)) ) ;
 }
 
+void SetCountsToOne(TH1 * Counts){
+	for(int y=0;y<=Counts->GetNbinsY()+1;y++)
+	for(int x=0;x<=Counts->GetNbinsX()+1;x++)
+		Counts->SetBinContent(x+1,y+1,1);
+	return;	
+}
+
+
+
 
 void Flux::Eval_Flux(int n,bool deutons,int mc_type) {
 	Flux::Set_DeltaE(n,deutons);
 
-	if(Counts_R  ) 	Flux_R	= (TH1 *) Counts_R   -> Clone();
-	if(Counts_TOF)	Flux_TOF= (TH1 *) Counts_TOF -> Clone();
-	if(Counts_NaF)	Flux_NaF= (TH1 *) Counts_NaF -> Clone();
-	if(Counts_Agl)	Flux_Agl= (TH1 *) Counts_Agl -> Clone();
+
+/*	if(Counts_R  ) 	SetCountsToOne(Counts_R  );
+	if(Counts_TOF)	SetCountsToOne(Counts_TOF);
+	if(Counts_NaF)	SetCountsToOne(Counts_NaF);
+	if(Counts_Agl)	SetCountsToOne(Counts_Agl);
+*/
+	if(Counts_R  ) 	Flux_R	= (TH1 *) Counts_R  -> Clone();
+	if(Counts_TOF)	Flux_TOF= (TH1 *) Counts_TOF-> Clone();
+	if(Counts_NaF)	Flux_NaF= (TH1 *) Counts_NaF-> Clone();
+	if(Counts_Agl)	Flux_Agl= (TH1 *) Counts_Agl-> Clone();
 
 	if(deutons){	
 		if(Counts_R  ) 	Flux_R	->Divide (ExtractParticularMC_cs( Acceptance_R      ,n,mc_type));
@@ -236,13 +251,13 @@ void Flux::Eval_Flux(int n,bool deutons,int mc_type) {
 	if(Counts_TOF)  Flux_TOF->Divide (DeltaE_TOF            );
 	if(Counts_NaF)  Flux_NaF->Divide (DeltaE_NaF            );
 	if(Counts_Agl)  Flux_Agl->Divide (DeltaE_Agl            );
-
+	
 	return;
 }
 
 
 TH1 * ExposureTime(TH2 * esposizionegeo) {
-   return (TH1 *) esposizionegeo -> ProjectionX("",0,10) -> Clone();
+   return (TH1 *) esposizionegeo -> ProjectionX("",0,11) -> Clone();
 }
 
 void TimeGeo(TH2 * Exposure, TH1 * Tempi) {

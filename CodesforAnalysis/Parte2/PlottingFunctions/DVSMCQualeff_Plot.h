@@ -27,7 +27,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	LikDVSMC_P_Graph=new TGraphErrors();
 	LikDVSMC_P_Graph->SetName("LikDVSMC_P_Graph");
 	int j=0;
-	for(int i=1;i<nbinsr;i++) {
+	for(int i=0;i<nbinsr;i++) {
 		if(LikP_Correction_R -> GetBinContent(i+1)>0){
 			LikDVSMC_P_Graph->SetPoint(j,PRB.RigBinCent(i),LikP_Correction_R -> GetBinContent(i+1));
 			LikDVSMC_P_Graph->SetPointError(j,0,LikP_Correction_R -> GetBinError(i+1));
@@ -47,7 +47,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	DistDVSMC_P_Graph=new TGraphErrors();
 	DistDVSMC_P_Graph->SetName("DistDVSMC_P_Graph");
 	j=0;
-	for(int i=1;i<nbinsr;i++) {
+	for(int i=0;i<nbinsr;i++) {
 		if(DistP_Correction_R -> GetBinContent(i+1)>0){
 			DistDVSMC_P_Graph->SetPoint(j,PRB.RigBinCent(i),DistP_Correction_R -> GetBinContent(i+1));
 			DistDVSMC_P_Graph->SetPointError(j,0,DistP_Correction_R -> GetBinError(i+1));
@@ -69,7 +69,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	TGraphErrors * LikDVSMC_P_GraphTOF=new TGraphErrors();
 	LikDVSMC_P_GraphTOF->SetName("LikDVSMC_P_GraphTOF");
 	j=0;
-	for(int i=1;i<nbinsToF;i++) {
+	for(int i=0;i<nbinsToF;i++) {
 		if(LikP_Correction_TOF -> GetBinContent(i+1)>0){
 			LikDVSMC_P_GraphTOF->SetPoint(j,ToFPB.EkPerMassBinCent(i),LikP_Correction_TOF -> GetBinContent(i+1));
 			LikDVSMC_P_GraphTOF->SetPointError(j,0,LikP_Correction_TOF -> GetBinError(i+1));
@@ -89,7 +89,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	TGraphErrors * LikDVSMC_P_GraphNaF=new TGraphErrors();
 	LikDVSMC_P_GraphNaF->SetName("LikDVSMC_P_GraphNaF");
 	j=0;
-	for(int i=1;i<nbinsNaF;i++) {
+	for(int i=0;i<nbinsNaF;i++) {
 		if(LikP_Correction_NaF -> GetBinContent(i+1)>0){
 			LikDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkPerMassBinCent(i),LikP_Correction_NaF -> GetBinContent(i+1));
 			LikDVSMC_P_GraphNaF->SetPointError(j,0,LikP_Correction_NaF -> GetBinError(i+1));
@@ -109,7 +109,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	TGraphErrors * LikDVSMC_P_GraphAgl=new TGraphErrors();
 	LikDVSMC_P_GraphAgl->SetName("LikDVSMC_P_GraphAgl");
 	j=0;
-	for(int i=1;i<nbinsAgl;i++) {
+	for(int i=0;i<nbinsAgl;i++) {
 		if(LikP_Correction_Agl -> GetBinContent(i+1)>0){
 			LikDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkPerMassBinCent(i),LikP_Correction_Agl -> GetBinContent(i+1));
 			LikDVSMC_P_GraphAgl->SetPointError(j,0,LikP_Correction_Agl -> GetBinError(i+1));
@@ -131,7 +131,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	TGraphErrors * DistDVSMC_P_GraphTOF=new TGraphErrors();
 	DistDVSMC_P_GraphTOF->SetName("DistDVSMC_P_GraphTOF");
 	j=0;
-	for(int i=1;i<nbinsToF;i++) {
+	for(int i=0;i<nbinsToF;i++) {
 		if(DistP_Correction_TOF -> GetBinContent(i+1)>0){
 			DistDVSMC_P_GraphTOF->SetPoint(j,ToFPB.EkPerMassBinCent(i),DistP_Correction_TOF -> GetBinContent(i+1));
 			DistDVSMC_P_GraphTOF->SetPointError(j,0,DistP_Correction_TOF -> GetBinError(i+1));
@@ -151,7 +151,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	TGraphErrors * DistDVSMC_P_GraphNaF=new TGraphErrors();
 	DistDVSMC_P_GraphNaF->SetName("DistDVSMC_P_GraphNaF");
 	j=0;
-	for(int i=1;i<nbinsNaF;i++) {
+	for(int i=0;i<nbinsNaF;i++) {
 		if(DistP_Correction_NaF -> GetBinContent(i+1)>0){
 			DistDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkPerMassBinCent(i),DistP_Correction_NaF -> GetBinContent(i+1));
 			DistDVSMC_P_GraphNaF->SetPointError(j,0,DistP_Correction_NaF -> GetBinError(i+1));
@@ -171,7 +171,7 @@ void DVSMCQualeff_Plot(      TH1 *   DistP_Correction_R      ,
 	TGraphErrors * DistDVSMC_P_GraphAgl=new TGraphErrors();
 	DistDVSMC_P_GraphAgl->SetName("DistDVSMC_P_GraphAgl");
 	j=0;
-	for(int i=1;i<nbinsAgl;i++) {
+	for(int i=0;i<nbinsAgl;i++) {
 		if(DistP_Correction_Agl -> GetBinContent(i+1)>0){
 			DistDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkPerMassBinCent(i),DistP_Correction_Agl -> GetBinContent(i+1));
 			DistDVSMC_P_GraphAgl->SetPointError(j,0,DistP_Correction_Agl -> GetBinError(i+1));

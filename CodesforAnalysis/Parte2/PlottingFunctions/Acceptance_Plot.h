@@ -51,9 +51,9 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 					
 	
 	EffgenbetaD[h]->SetMarkerStyle(8);
-        EffgenbetaD[h]->SetMarkerColor(4);
+        EffgenbetaD[h]->SetMarkerColor(0);
         EffgenbetaD[h]->SetMarkerSize(1);
-        EffgenbetaD[h]->SetLineColor(4);
+        EffgenbetaD[h]->SetLineColor(0);
         EffgenbetaD[h]->SetLineWidth(1);
         EffgenbetaD[h]->SetMarkerStyle(h+3);
         EffgenbetaD[h]->SetTitle("");
@@ -63,16 +63,13 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
         EffgenbetaD[h]->GetYaxis()->SetTitleSize(0.045);
 	}
 	EffgenbetaD[0]->Draw("ACP");
-        for(int h=1;h<6;h++){
-                EffgenbetaD[h]->Draw("CPsame");
-        }
 	
 	TGraphErrors * EffgenbetaDTOF[6];
         p=0;
         for(int h=0;h<6;h++){
                 EffgenbetaDTOF[h]=new TGraphErrors();
                 p=0;
-                for(int i=0;i<nbinsToF;i++) {EffgenbetaDTOF[h]->SetPoint(p,ToFPB.EkPerMassBinCent(i),DGen_Acceptance_TOF  ->GetBinContent(i+1,h+1));p++;}
+                for(int i=0;i<nbinsToF;i++) {EffgenbetaDTOF[h]->SetPoint(p,ToFDB.EkPerMassBinCent(i),DGen_Acceptance_TOF  ->GetBinContent(i+1,h+1));p++;}
         EffgenbetaDTOF[h]->SetMarkerStyle(8);
         EffgenbetaDTOF[h]->SetMarkerColor(4);
         EffgenbetaDTOF[h]->SetMarkerSize(1.4);
@@ -95,7 +92,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
         for(int h=0;h<6;h++){
                 EffgenbetaDNaF[h]=new TGraphErrors();
                 p=0;
-                for(int i=0;i<nbinsNaF;i++) {EffgenbetaDNaF[h]->SetPoint(p,NaFPB.EkPerMassBinCent(i),DGen_Acceptance_NaF  ->GetBinContent(i+1,h+1));p++;}
+                for(int i=0;i<nbinsNaF;i++) {EffgenbetaDNaF[h]->SetPoint(p,NaFDB.EkPerMassBinCent(i),DGen_Acceptance_NaF  ->GetBinContent(i+1,h+1));p++;}
 
         EffgenbetaDNaF[h]->SetMarkerStyle(8);
         EffgenbetaDNaF[h]->SetMarkerColor(4);
@@ -119,7 +116,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
         for(int h=0;h<6;h++){
                 EffgenbetaDAgl[h]=new TGraphErrors();
                 p=0;
-                for(int i=0;i<nbinsAgl;i++) {EffgenbetaDAgl[h]->SetPoint(p,AglPB.EkPerMassBinCent(i),DGen_Acceptance_Agl ->GetBinContent(i+1,h+1));p++;}
+                for(int i=0;i<nbinsAgl;i++) {EffgenbetaDAgl[h]->SetPoint(p,AglDB.EkPerMassBinCent(i),DGen_Acceptance_Agl ->GetBinContent(i+1,h+1));p++;}
 
         EffgenbetaDAgl[h]->SetMarkerStyle(8);
         EffgenbetaDAgl[h]->SetMarkerColor(4);
@@ -298,7 +295,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	for(int h=0;h<6;h++){
                 AccSelMCDbeta[h]= new TGraphErrors();
                 int p=0;
-                for(int m=0;m<nbinsToF;m++) {AccSelMCDbeta[h]->SetPoint(p,ToFPB.EkPerMassBinCent(m),DMCAcceptance_TOF -> GetBinContent(m+1,h+1));
+                for(int m=0;m<nbinsToF;m++) {AccSelMCDbeta[h]->SetPoint(p,ToFDB.EkPerMassBinCent(m),DMCAcceptance_TOF -> GetBinContent(m+1,h+1));
 					    AccSelMCDbeta[h]->SetPointError(p,0,DMCAcceptance_TOF -> GetBinError(m+1,h+1));
 					     p++;}
 		if(h==0) 
@@ -347,7 +344,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	for(int h=0;h<6;h++){
                 AccSelMCDbetaNaF[h]= new TGraphErrors();
                 int p=0;
-                for(int m=0;m<nbinsNaF;m++) {AccSelMCDbetaNaF[h]->SetPoint(p,NaFPB.EkPerMassBinCent(m),DMCAcceptance_NaF -> GetBinContent(m+1,h+1));
+                for(int m=0;m<nbinsNaF;m++) {AccSelMCDbetaNaF[h]->SetPoint(p,NaFDB.EkPerMassBinCent(m),DMCAcceptance_NaF -> GetBinContent(m+1,h+1));
 					    AccSelMCDbetaNaF[h]->SetPointError(p,0,DMCAcceptance_NaF -> GetBinError(m+1,h+1));
 					     p++;}
 		if(h==0)
@@ -389,14 +386,14 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	for(int h=0;h<6;h++){
                 AccSelMCDbetaAgl[h]= new TGraphErrors();
                 int p=0;
-                for(int m=0;m<nbinsAgl;m++)  {AccSelMCDbetaAgl[h]->SetPoint(p,AglPB.EkPerMassBinCent(m),DMCAcceptance_Agl -> GetBinContent(m+1,h+1));
+                for(int m=0;m<nbinsAgl;m++)  {AccSelMCDbetaAgl[h]->SetPoint(p,AglDB.EkPerMassBinCent(m),DMCAcceptance_Agl -> GetBinContent(m+1,h+1));
 					      AccSelMCDbetaAgl[h]->SetPointError(p,0,DMCAcceptance_Agl -> GetBinError(m+1,h+1));
 					      p++;}
 		if(h==0)
                 {
                         p=0;
 			for(int m=0;m<nbinsAgl;m++) {AccSelMCPbetaAgl->SetPoint(p,AglPB.EkPerMassBinCent(m),PMCAcceptance_Agl -> GetBinContent(m+1));
-						     AccSelMCPbetaAgl->SetPointError(p,AglPB.EkPerMassBinCent(m),PMCAcceptance_Agl -> GetBinError(m+1));
+						     AccSelMCPbetaAgl->SetPointError(p,0,PMCAcceptance_Agl -> GetBinError(m+1));
 						     p++;}
                         AccSelMCPbetaAgl->SetMarkerStyle(8);
                         AccSelMCPbetaAgl->SetMarkerColor(2);

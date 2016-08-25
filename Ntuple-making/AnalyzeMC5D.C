@@ -5,6 +5,7 @@
 #include "Commonglobals.cpp"
 #include "reweight.h"
 #include "histUtils.h"
+#include "../include/binning.h"
 
 
 using namespace std;
@@ -18,6 +19,7 @@ double totaltrig2=0;
 double response[44][44];
 double norm[44];
 float BetanS=0;
+int PhysBPatt=0;
 int Number=0;
 TH1F * selezioni_PHLMC[10];
 TH1F * selected_PHLMC[10];
@@ -118,27 +120,23 @@ int main(int argc, char * argv[])
 	//cin>>scelta;
 	scelta=1;
 	cout<<"**************************** R BINS ***********************************"<<endl;
-	for(int i=0; i<44; i++) {
-		float temp=i+14;
-		bin[i]=0.1*pow(10,temp/(9.5*2));
-		//************** bin DAV
-		/*        bin[i]=exp(E);
-			  E=E+a;*/
-		cout<<bin[i]<<endl;
+	
+	Particle proton(0.9382720813, 1, 1);
+	Binning PRB(proton);
 
-	}
+	PRB.setBinsFromRigidity(43, 0.5, 100);
+	PRB.Print();
 
-
-
-	TFile *file =TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/sommaMCB800.root");
-	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string ARGV(argv[1]);
+	string indirizzo_in = "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/B800/sommaMC"+ARGV+ ".root";
+	TFile *file =TFile::Open(indirizzo_in.c_str());
+	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/"+calib+"/RisultatiMC_"+ARGV+".root";
 	TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
 	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:MC_type:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD:IsCharge1");
-	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:Rmin:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
-	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:MC_type:Momentogen:mcweight:Dist5D:Dist5D_P:BetaRICH_new:Cutmask:BetanS");
-	TNtuple * trig = new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:Unbias:BetaR:mcweight");
+	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
+	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:MC_type:Momentogen:mcweight:BetaRICH_new:Cutmask:BetanS:BetaR");
+	TNtuple * trig = new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:mcweight");
 
 	BDTreader();
 	geo_stuff->SetBranchAddress("Momento_gen",&Momento_gen);
@@ -158,7 +156,7 @@ int main(int argc, char * argv[])
 	geo_stuff->SetBranchAddress("BetaRICH_new",&BetaRICH_new);
 	geo_stuff->SetBranchAddress("RICHmask_new",&RICHmask_new);
 	geo_stuff->SetBranchAddress("EdepECAL",&EdepECAL);
-	geo_stuff->SetBranchAddress("Unbias",&Unbias);
+	geo_stuff->SetBranchAddress("PhysBPatt",&PhysBPatt);
 	geo_stuff->SetBranchAddress("Beta_gen",&Beta_gen);
 	geo_stuff->SetBranchAddress("Massa_gen",&Massa_gen);
 	geo_stuff->SetBranchAddress("layernonusati",&layernonusati);
@@ -205,7 +203,8 @@ int main(int argc, char * argv[])
     // Calling "Reweighter" constructor
     Reweighter reweighter(mcFlux, dataFlux);
 
-	for(int i=(events/100)*INDX; i<(events/100)*(INDX+1); i++) {
+	//for(int i=(events/100)*INDX; i<(events/100)*(INDX+1); i++) {
+	for(int i=(0); i<(events); i++) {
 		if(i%1300==0) cout<<i/(float)events*100<<"%"<<endl;
 		geo_stuff->GetEvent(i);
 		if(Massa_gen>1.8569&&Massa_gen<1.8571) Massa_gen=1.8570;
@@ -237,11 +236,11 @@ int main(int argc, char * argv[])
 			//////////////// MATRICE DI RISPOSTA ///////////////
 			if(Massa_gen<1&&Massa_gen>0.5) {
 				for(int I=0; I<44; I++)
-					if(fabs(Momento_gen)<bin[I+1]&&fabs(Momento_gen)>bin[I])
+					if(fabs(Momento_gen)<PRB.RigBins()[I+1]&&fabs(Momento_gen)>PRB.RigBins()[I])
 						for(int J=0; J<44; J++)
-							if(fabs(R_corr)<bin[J+1]&&fabs(R_corr)>bin[J])  response[J][I]++;
+							if(fabs(R_corr)<PRB.RigBins()[J+1]&&fabs(R_corr)>PRB.RigBins()[J])  response[J][I]++;
 				for(int I=0; I<44; I++)
-					if(fabs(Momento_gen)<bin[I+1]&&fabs(Momento_gen)>bin[I]) norm[I]++;
+					if(fabs(Momento_gen)<PRB.RigBins()[I+1]&&fabs(Momento_gen)>PRB.RigBins()[I]) norm[I]++;
 			}
 			////////////////////////////////////////////////////
 			Protoni(geo_stuff,i);
@@ -256,7 +255,9 @@ int main(int argc, char * argv[])
 	TotalTrig=0;
 	Trig=0;
 	int z;
-	for(z=(events/100)*INDX; z<(events/100)*(INDX+1); z++) {
+//	for(z=(events/100)*INDX; z<(events/100)*(INDX+1); z++) {
+		
+	for(z=(0); z<(events); z++) {
 		geo_stuff->GetEvent(z);
 		if(Massa_gen>1.8569&&Massa_gen<1.8571) Massa_gen=1.8570;
 		if(Trig_Num<Trig)TotalTrig=TotalTrig+(double)Trig;
@@ -269,80 +270,25 @@ int main(int argc, char * argv[])
 		Cutmask=CUTMASK|(1<<10);
 		Cutmask = Cutmask|(RICHmask_new<<11);
 
+		mcweight=reweighter.getWeight(fabs(Momento_gen));
+
 		EdepTrack=0;
 		EdepTOFU=((*Endep)[0]+(*Endep)[1])/2;
 		EdepTOFD=((*Endep)[2]+(*Endep)[3])/2;
-		EdepTOFU=((EdepTOFU)*Corr_TOFU->Eval(Beta));
-		EdepTOFD=((EdepTOFD)*Corr_TOFD->Eval(Beta));
+		EdepTOFU=((EdepTOFU)*Corr_TOFU->Eval(Beta_pre));
+		EdepTOFD=((EdepTOFD)*Corr_TOFD->Eval(Beta_pre));
+
+
 		for(int layer=1; layer<8; layer++) EdepTrack+=(*trtot_edep)[layer];
 		EdepTrack=EdepTrack/7;
-		EdepTrack=((EdepTrack)*Corr_Track->Eval(Beta));
+		EdepTrack=((EdepTrack)*Corr_Track->Eval(Beta_pre));
 
 		if(scelta==1) Trigg(geo_stuff,z,trig);
 
 	}
 
 
-
-
-	cout<<"Eventi Tot: "<<z<<endl;
-	cout<<"Preselezionate Tot: "<<entries<<endl;
-	cout<<endl;
-	cout<<"selezioni di qualità: "<<giov<<endl;
-	cout<<"N. Protoni: "<<nprotoni<<endl;
-	cout<<endl;
-	cout<<"-----------------------"<<endl;
-	cout<<"-----EFF. SELEZIONI (risp a PRE)----"<<endl;
-	cout<<"Taglio anticluster: "<<f/(float)entries*100<<endl;
-	cout<<"Taglio segmenti TRD: "<<g/(float)entries*100<<endl;
-	cout<<"Taglio TOF Clusters inutilizzati: "<<h/(float)entries*100<<endl;
-	cout<<"Taglio Confronto Rup/Rdown: "<<l/(float)entries*100<<endl;
-	cout<<"Taglio Prob. Q: "<<m/(float)entries*100<<endl;
-	cout<<"Taglio Fit multipli: "<<n/(float)entries*100<<endl;
-	cout<<"Taglio HitX: "<<o/(float)entries*100<<endl;
-	cout<<"Taglio Chi-Quadro: "<<r/(float)entries*100<<endl;
-	cout<<"Taglio carica TOF: "<<t/(float)entries*100<<endl;
-	cout<<"Taglio carica Track: "<<u/(float)entries*100<<endl;
-	cout<<"Taglio carica TRD: "<<v/(float)entries*100<<endl;
-	cout<<"Taglio layer non usati: "<<s/(float)entries*100<<endl;
-	cout<<endl;
-	cout<<"-----SELEZIONI DI REIEZIONE----"<<endl;
-	cout<<"Cluster TOF: "<<b/(float)giov*100<<endl;
-	cout<<endl;
-	cout<<"Cluster Track: "<<d/(float)giov*100<<endl;
-	cout<<endl;
-	cout<<"Cluster TRD: "<<e/(float)giov*100<<endl;
-	cout<<endl;
-
-	cout<<"-----ANALISI EFFICIENZA (PROTONI)------------- "<<endl;
-	cout<<endl;
-	for(int i=0; i<43; i++)
-		if(efficienzagen[i]!=0)
-			cout<<"efficienza da"<<bin[i]<<" a " << bin[i+1]<<": "<<protoni[i][0]<<" nel bin " <<i<<" "<<( protoni[i][0]/(double)efficienzagen[i]*100)<<"%"<< " rispetto a preselezione:  "<<protoni[i][0]/(double)preselezionate[i][0]*100<<"%"<<endl;
-
-		else cout<<"efficienza da "<<bin[i]<<" a "<< bin[i+1]<<": nessun evento generato nel bin"<<endl;
-	cout<<endl;
-	cout<<"-----ANALISI EFFICIENZA (DEUTONI)------------- "<<endl;
-	cout<<endl;
-	for(int i=0; i<43; i++)
-		if(efficienzagen_D[i]!=0)
-			cout<<"efficienza da"<<bin[i]<<" a " << bin[i+1]<<": "<<deutoni[i][0]<<" nel bin " <<i<<" "<<( deutoni[i][0]/(double)efficienzagen_D[i][0]*100)<<"%"<<endl;
-
-		else cout<<"efficienza da "<<bin[i]<<" a "<< bin[i+1]<<": nessun evento generato nel bin"<<endl;
-	cout<<endl;
-	cout<<"----ANALISI FONDO----"<<endl;
-	cout<<endl;
-	for(int i=0; i<43; i++) {
-		if(efficienzagen[i]!=0&&background[i]>0)
-			cout<<"Fondo da"<<bin[i]<<" a " << bin[i+1]<<": "<<background[i]<<" nel bin " <<i<<" su "<< efficienzagen[i]<<" : "<<(background[i]/(double)efficienzagen[i]*100)<<"% ---> R.P. : "<< protoni[i][0]/background[i]<<endl;
-
-		if(efficienzagen[i]!=0&&background[i]==0)
-			cout<<"Fondo da"<<bin[i]<<" a " << bin[i+1]<<": "<<background[i]<<" nel bin " <<i<<" su "<<efficienzagen[i]<<" : "<<"Minore di: "<<(1/(double)efficienzagen[i]*100)<<"% ---> R.P. Maggiore di: "<<protoni[i][0]<<endl;
-
-		if(efficienzagen[i]==0) cout<<"Fondo da "<<bin[i]<<" a "<< bin[i+1]<<": nessun evento generato nel bin"<<endl;
-	}
-
-	cout<<"------------------- MATRICE DI RISPOSTA -------------"<<endl;
+	cout<<"------------------- RvsRgen MATRIX -------------"<<endl;
 	for(int j=0; j<43; j++) {
 		for(int i=0; i<43; i++)
 			cout<<response[j][i]<<" ";
@@ -363,14 +309,14 @@ int main(int argc, char * argv[])
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
-	ntupla->Fill(MC_type,Momento_gen,Ev_Num,Trig_Num,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,Unbias,mcweight);
+	ntupla->Fill(MC_type,Momento_gen,Ev_Num,Trig_Num,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,mcweight);
 
 }
 
 void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
-	ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTrack,EdepTOFD,EdepECAL,MC_type,Momento_gen,mcweight,Dist5D,Dist5D_P,BetaRICH_new,Cutmask,BetanS);
+	ntupla->Fill(R,Beta,(*trtrack_edep)[0],EdepTOFU,EdepTrack,EdepTOFD,EdepECAL,MC_type,Momento_gen,mcweight,BetaRICH_new,Cutmask,Beta_pre,BetaR);
 
 }
 
@@ -383,7 +329,7 @@ void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
-	ntupla->Fill(R,Beta,(*trtrack_edep)[0],MC_type,Cutmask,Rmin,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
+	ntupla->Fill(R,Beta,(*trtrack_edep)[0],MC_type,Cutmask,PhysBPatt,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
 }
 
 int AssignMC_type(float Massa_gen)

@@ -12,6 +12,9 @@ void OtherExperimentsComparison(string filename){
 	string filename3="../database_D.root";
         TFile * file3 = TFile::Open(filename3.c_str(),"READ");
 
+	string filename4="../database_PD.root";
+        TFile * file4 = TFile::Open(filename4.c_str(),"READ");
+
 	cout<<"******************** OTHER EXPERIMENTS COMP. ********************"<<endl;
 
 	cout<<"*** Protons ***"<<endl;
@@ -41,14 +44,35 @@ void OtherExperimentsComparison(string filename){
                 obj = file3->Get(keyD->GetName());
 		if(obj->InheritsFrom("TGraphAsymmErrors")) D_Graphs.push_back((TGraphAsymmErrors *)obj);
         }
+
 	
+	cout<<"*** D / P ratio ***"<<endl;
+
+        std::vector<TGraphAsymmErrors *> PD_Graphs;
+
+        TList *ExperimentsPD = file4->GetListOfKeys();
+        TIter nextPD(ExperimentsPD);
+        TKey * keyPD;
+
+        while((keyPD = (TKey*)nextPD())){
+                obj = file4->Get(keyPD->GetName());
+                if(obj->InheritsFrom("TGraphAsymmErrors")) PD_Graphs.push_back((TGraphAsymmErrors *)obj);
+        }
+
+	cout<<"*** reading database completed ***"<<endl;	
 
 	TH1F * ThisWork_DTOF = (TH1F*) inputHistoFile -> Get("Results/DeutonsPrimaryFlux_TOF");
 	TH1F * ThisWork_DNaF = (TH1F*) inputHistoFile -> Get("Results/DeutonsPrimaryFlux_NaF"); 	
 	TH1F * ThisWork_DAgl = (TH1F*) inputHistoFile -> Get("Results/DeutonsPrimaryFlux_Agl");
 
+	TH1F * ThisWork_PDTOF = (TH1F*) inputHistoFile -> Get("Results/DP_ratioTOF");
+	TH1F * ThisWork_PDNaF = (TH1F*) inputHistoFile -> Get("Results/DP_ratioNaF"); 	
+	TH1F * ThisWork_PDAgl = (TH1F*) inputHistoFile -> Get("Results/DP_ratioAgl");
+
+
 	TCanvas * c1 = new TCanvas ("Proton Flux");
 	TCanvas * c2 = new TCanvas ("Deuton Flux");
+	TCanvas * c3 = new TCanvas ("D / P ratio");
 	
 	c1 -> cd();
 	gPad->SetLogx();
@@ -143,8 +167,78 @@ void OtherExperimentsComparison(string filename){
 	legD->Draw("same");
 
 
+	c3 -> cd();
+	gPad->SetLogx();
+        gPad->SetGridx();
+        gPad->SetGridy();
+	potenza = 0;
+        TGraphErrors * ThisWorkPDTOF = new TGraphErrors;
+        for(int i=0; i<nbinsToF; i++) {
+                ThisWorkPDTOF->SetPoint(i,ToFDB.EkPerMassBinCent(i),ThisWork_PDTOF->GetBinContent(i+1));
+                ThisWorkPDTOF->SetPointError(i,0,ThisWork_PDTOF->GetBinError(i+1));
+        }
+	ThisWorkPDTOF->SetPoint(nbinsToF,30,0.000001);
+        ThisWorkPDTOF->SetPoint(nbinsToF+1,0.01,0.000001);
+	ThisWorkPDTOF->SetName("Protons Primary Flux");
+        ThisWorkPDTOF->SetMarkerStyle(8);
+        ThisWorkPDTOF->SetMarkerColor(2);
+        ThisWorkPDTOF->SetLineColor(2);
+	ThisWorkPDTOF->SetMarkerSize(1.4);
+        ThisWorkPDTOF->SetTitle("D/P Fluxes ratio");
+        ThisWorkPDTOF->SetName(("This Work (" + mese + ")").c_str());
+        ThisWorkPDTOF->GetXaxis()->SetTitle("Kin. En./nucl. [GeV/nucl.]");
+        ThisWorkPDTOF->GetYaxis()->SetTitle("Flux ratio");
+        ThisWorkPDTOF->GetXaxis()->SetTitleSize(0.045);
+        ThisWorkPDTOF->GetYaxis()->SetTitleSize(0.045);
+        ThisWorkPDTOF->GetYaxis()->SetRangeUser(0.001,0.1);
+	ThisWorkPDTOF->GetXaxis()->SetRangeUser(1e-2,40);
+
+	TGraphErrors * ThisWorkPDNaF = new TGraphErrors;
+        for(int i=0; i<nbinsNaF; i++) {
+                ThisWorkPDNaF->SetPoint(i,NaFDB.EkPerMassBinCent(i),ThisWork_PDNaF->GetBinContent(i+1));
+                ThisWorkPDNaF->SetPointError(i,0,ThisWork_PDNaF->GetBinError(i+1));
+        }
+        
+        ThisWorkPDNaF->SetMarkerStyle(4);
+        ThisWorkPDNaF->SetMarkerColor(2);
+        ThisWorkPDNaF->SetLineColor(2);
+	ThisWorkPDNaF->SetMarkerSize(1.4);
+	
+	TGraphErrors * ThisWorkPDAgl = new TGraphErrors;
+        for(int i=0; i<nbinsAgl; i++) {
+                ThisWorkPDAgl->SetPoint(i,AglDB.EkPerMassBinCent(i),ThisWork_PDAgl->GetBinContent(i+1));
+                ThisWorkPDAgl->SetPointError(i,0,ThisWork_PDAgl->GetBinError(i+1));
+        }
+       
+        ThisWorkPDAgl->SetMarkerStyle(3);
+        ThisWorkPDAgl->SetMarkerColor(2);
+        ThisWorkPDAgl->SetLineColor(2);
+	ThisWorkPDAgl->SetMarkerSize(1.4);
+
+	TLegend * legPD =new TLegend(0.4, 0.7,0.95,0.95);
+        legPD->AddEntry(ThisWorkPDTOF,("This Work (" + mese + ") - TOF").c_str(), "ep");
+	legPD->AddEntry(ThisWorkPDNaF,("This Work (" + mese + ") - NaF").c_str(), "ep");
+	legPD->AddEntry(ThisWorkPDAgl,("This Work (" + mese + ") - Agl").c_str(), "ep");
+
+	ThisWorkPDTOF->Draw("AP");
+        ThisWorkPDNaF->Draw("Psame");
+        ThisWorkPDAgl->Draw("Psame");
+
+
+	for(uint n=0;n<PD_Graphs.size();n++){
+                PD_Graphs[n] ->Draw("Psame");
+                 legPD->AddEntry(PD_Graphs[n],PD_Graphs[n]->GetTitle(),"ep");
+        }
+
+	
+	legPD->Draw("same");
+
+
+
+
         finalPlots.Add(c1);
 	finalPlots.Add(c2);
+	finalPlots.Add(c3);
         finalPlots.writeObjsInFolder("Comparison with others");
 
 	return;

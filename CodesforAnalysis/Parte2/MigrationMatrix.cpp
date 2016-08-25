@@ -6,7 +6,7 @@ using namespace std;
 TH2F * MigrMatrix = new TH2F("MigrMatrix","MigrMatrix",nbinsr,0,nbinsr,nbinsr,0,nbinsr);
 
 void MigrationMatrix_Fill(){
-	if(!(Tup.Unbias==0&&cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0))	return;
+	if(!(trgpatt.IsUnbias()&&cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0))	return;
 	if(Massa_gen<1&&Massa_gen>0.5) 
 		MigrMatrix->Fill(PRB.GetRBin(fabs(Tup.R_pre)) , PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 }

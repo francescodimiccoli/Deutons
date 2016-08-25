@@ -4,20 +4,21 @@ void Hecut_Plot(
         TH1 * Hecut_D	 ,
         TH1 * HecutMCP_TH1F, 
         TH1 * HecutMCHe_TH1F,
-	TH1 * HecutMC_P     ,
-	TemplateFIT * HeliumContaminationTOF,
-	TemplateFIT * HeliumContaminationNaF,
-        TemplateFIT * HeliumContaminationAgl,
-	float   HeCont_TOF,float HeCont_NaF,float HeCont_Agl
-
+	TH1 * HecutMC_P,
+	TH1 * fragmeffTOF,
+	TH1 * fragmeffNaF,
+	TH1 * fragmeffAgl, 
+	TH1 * ContaminationTOF,
+	TH1 * ContaminationNaF,
+	TH1 * ContaminationAgl    
 ){
 
 
 	TCanvas * c36	=new TCanvas("Sigma E. dep. Track vs TOF");
 	TCanvas * c36_bis    =new TCanvas("Sigma E. dep. Track vs TOF (MC)");
-	TCanvas * c37	=new TCanvas("Eff. He cut");
-	TCanvas * c38 	=new TCanvas("He fragm. contamination");
-
+	TCanvas * c37	=new TCanvas("Eff. He Control sample cut");
+	TCanvas * c38   =new TCanvas("Helium fragmentation");
+	TCanvas * c39   =new TCanvas("Helium expected contamination");
 	
 	c36->cd();
 	gPad->SetLogz();
@@ -65,84 +66,87 @@ void Hecut_Plot(
         effHecut->Draw("AP");
         //effHecutHe->Draw("Psame");
 
+	c38->cd();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        gPad->SetLogx();
+	TH2F * Frame = new TH2F("Helium Fragmentation (He->D,P,T)","Helium Fragmentation (He->D,P,T)",1000,0.5,30,1000,0,1);
+        TGraphErrors *efffragmTOF=new TGraphErrors();
+        for(int K=0; K<nbinsToF; K++) {
+                efffragmTOF->SetPoint(K,ToFDB.RigBinCent(K),fragmeffTOF->GetBinContent(K+1));
+                efffragmTOF->SetPointError(K,0,   fragmeffTOF->GetBinError(K+1));
+        }
+	TGraphErrors *efffragmNaF=new TGraphErrors();
+	for(int K=0; K<nbinsNaF; K++) {
+                efffragmNaF->SetPoint(K,NaFDB.RigBinCent(K),fragmeffNaF->GetBinContent(K+1));
+                efffragmNaF->SetPointError(K,0,   fragmeffNaF->GetBinError(K+1));
+        }
+	TGraphErrors *efffragmAgl=new TGraphErrors();
+	for(int K=0; K<nbinsAgl; K++) {
+                efffragmAgl->SetPoint(K,AglDB.RigBinCent(K),fragmeffAgl->GetBinContent(K+1));
+                efffragmAgl->SetPointError(K,0,   fragmeffAgl->GetBinError(K+1));
+        }
 
-	c38 -> Divide(3,1);
-	c38 -> cd(1);
-	gPad -> SetGridx();
-        gPad -> SetGridy();
-        gPad -> SetLogy();
-	TH1F * P_TOF = 	HeliumContaminationTOF   -> GetResult_P(0);  
-	TH1F * D_TOF =  HeliumContaminationTOF   -> GetResult_D(0);  
-	TH1F * He_TOF=  HeliumContaminationTOF   -> GetResult_He(0); 
-	
-	HeliumContaminationTOF   -> GetResult_Data(0) -> GetXaxis() -> SetTitle("Distance from D");
-	HeliumContaminationTOF   -> GetResult_Data(0) -> SetTitle(("He fragm. cont. : " + to_string(HeCont_TOF)).c_str());	
-	P_TOF -> SetFillColor(2);
-	D_TOF -> SetFillColor(4);
-	He_TOF-> SetFillColor(3);
-	HeliumContaminationTOF   -> GetResult_Data(0) -> SetMarkerStyle(8);
-	
-	P_TOF  -> SetFillStyle(3001);
-        D_TOF  -> SetFillStyle(3001);
-        He_TOF -> SetFillStyle(3001);
+	efffragmTOF->SetMarkerStyle(8);
+	efffragmTOF->SetMarkerColor(3);
+	efffragmTOF->SetLineColor(3);
+	efffragmNaF->SetMarkerStyle(3);
+	efffragmNaF->SetMarkerColor(3);
+	efffragmNaF->SetLineColor(3);
+	efffragmAgl->SetMarkerStyle(4);
+	efffragmAgl->SetMarkerColor(3);
+	efffragmAgl->SetLineColor(3);
 
-	HeliumContaminationTOF   -> GetResult_Data(0) -> Draw("P");
-	P_TOF -> Draw("same");
-        D_TOF  -> Draw("same");
-        He_TOF -> Draw("same");
-	
-	HeliumContaminationTOF   -> GetResult_Data(0) -> Draw("P");
-	P_TOF -> Draw("same");
-        D_TOF  -> Draw("same");
-        He_TOF -> Draw("same");
+	Frame -> GetYaxis() -> SetRangeUser(0,0.3);	
+	Frame -> GetYaxis() -> SetTitle("He -> D,P,T / He -> He");
+	Frame -> GetXaxis() -> SetTitle("R [GV]"); 
+	Frame->Draw();
 
-	c38 -> cd(2);
-	gPad -> SetGridx();
-        gPad -> SetGridy();
-        gPad -> SetLogy();
-	TH1F * P_NaF = 	HeliumContaminationNaF   -> GetResult_P(0); 
-        TH1F * D_NaF =  HeliumContaminationNaF   -> GetResult_D(0); 
-	TH1F * He_NaF=  HeliumContaminationNaF   -> GetResult_He(0);
-	
-	HeliumContaminationNaF   -> GetResult_Data(0) -> GetXaxis() -> SetTitle("Distance from D");
-	HeliumContaminationNaF   -> GetResult_Data(0) -> SetTitle(("He fragm. cont. : " + to_string(HeCont_NaF)).c_str());
-	P_NaF  -> SetFillColor(2);
-        D_NaF  -> SetFillColor(4);
-        He_NaF -> SetFillColor(3);
-        HeliumContaminationNaF   -> GetResult_Data(0) -> SetMarkerStyle(8);
+	efffragmTOF->Draw("cpsame");
+	efffragmNaF->Draw("cpsame");
+	efffragmAgl->Draw("cpsame");
 
-        P_NaF  -> SetFillStyle(3001);
-        D_NaF  -> SetFillStyle(3001);
-        He_NaF -> SetFillStyle(3001);
+	c39->cd();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        gPad->SetLogx();
+        TH2F * Frame2 = new TH2F("He -> (D,P,T) Contamination estimation","He -> (D,P,T) Contamination estimation",1000,0.5,30,1000,0,1);
+        TGraphErrors *contTOF=new TGraphErrors();
+        for(int K=0; K<nbinsToF; K++) {
+                contTOF->SetPoint(K,ToFDB.RigBinCent(K),ContaminationTOF->GetBinContent(K+1));
+                contTOF->SetPointError(K,0,   ContaminationTOF->GetBinError(K+1));
+        }
+        TGraphErrors *contNaF=new TGraphErrors();
+        for(int K=0; K<nbinsNaF; K++) {
+                contNaF->SetPoint(K,NaFDB.RigBinCent(K),ContaminationNaF->GetBinContent(K+1));
+                contNaF->SetPointError(K,0,   ContaminationNaF->GetBinError(K+1));
+        }
+        TGraphErrors *contAgl=new TGraphErrors();
+        for(int K=0; K<nbinsAgl; K++) {
+                contAgl->SetPoint(K,AglDB.RigBinCent(K),ContaminationAgl->GetBinContent(K+1));
+                contAgl->SetPointError(K,0,   ContaminationAgl->GetBinError(K+1));
+        }
 
-        HeliumContaminationNaF   -> GetResult_Data(0) -> Draw("P");
-        P_NaF -> Draw("same");
-        D_NaF  -> Draw("same");
-        He_NaF -> Draw("same");
+        contTOF->SetMarkerStyle(8);
+        contTOF->SetMarkerColor(3);
+        contTOF->SetLineColor(3);
+        contNaF->SetMarkerStyle(3);
+        contNaF->SetMarkerColor(3);
+        contNaF->SetLineColor(3);
+        contAgl->SetMarkerStyle(4);
+        contAgl->SetMarkerColor(3);
+        contAgl->SetLineColor(3);
 
-	c38 -> cd(3);
-	gPad -> SetGridx();
-	gPad -> SetGridy();
-	gPad -> SetLogy();
-	TH1F * P_Agl =  HeliumContaminationAgl   -> GetResult_P(0);
-        TH1F * D_Agl =  HeliumContaminationAgl   -> GetResult_D(0);
-        TH1F * He_Agl=  HeliumContaminationAgl   -> GetResult_He(0);
+        Frame2 -> GetYaxis() -> SetRangeUser(0,0.3);
+        Frame2 -> GetYaxis() -> SetTitle("Expected He -> (Q=1) / Q=1");
+        Frame2 -> GetXaxis() -> SetTitle("R [GV]");
+        Frame2->Draw();
 
-	HeliumContaminationAgl   -> GetResult_Data(0) -> GetXaxis() -> SetTitle("Distance from D");
-	HeliumContaminationAgl   -> GetResult_Data(0) -> SetTitle(("He fragm. cont. : " + to_string(HeCont_Agl)).c_str());
-	P_Agl  -> SetFillColor(2);
-        D_Agl  -> SetFillColor(4);
-        He_Agl -> SetFillColor(3);
-        HeliumContaminationAgl   -> GetResult_Data(0) -> SetMarkerStyle(8);
+        contTOF->Draw("cpsame");
+        contNaF->Draw("cpsame");
+        contAgl->Draw("cpsame");
 
-        P_Agl  -> SetFillStyle(3001);
-        D_Agl  -> SetFillStyle(3001);
-        He_Agl -> SetFillStyle(3001);
 
-        HeliumContaminationAgl   -> GetResult_Data(0) -> Draw("P");
-        P_Agl  -> Draw("same");
-	D_Agl   -> Draw("same");
-        He_Agl  -> Draw("same");
 
 
 	bool recreate = true;
@@ -150,8 +154,12 @@ void Hecut_Plot(
 	finalPlots.Add(c36	 );
 	finalPlots.Add(c36_bis);
 	finalPlots.Add(c37	 );
-	finalPlots.Add(c38	 );
 
-        finalPlots.writeObjsInFolder("MC Results/He related cuts",recreate);
+        finalPlots.writeObjsInFolder("MC Results/He related cuts/Control Sample cuts",recreate);
+
+	finalPlots.Add(c38       );
+	finalPlots.Add(c39       );
+	
+	finalPlots.writeObjsInFolder("MC Results/He related cuts/He fragm.");
 
 }

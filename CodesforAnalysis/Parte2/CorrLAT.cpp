@@ -8,11 +8,11 @@ void CorrLAT(string filename) {
 	cout<<"*** Reading  P1 file ****"<<endl;
 	TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
 
-	TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get( "esposizionegeo"       );
-	TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeo"	);
+	TH2F * esposizionegeo_R    = (TH2F*)inputHistoFile->Get( 	"esposizionegeo_R"       );
+	TH2F * esposizionepgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoTOF"	);
 	TH2F * esposizionepgeoNaF  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoNaF"	);
 	TH2F * esposizionepgeoAgl  = (TH2F*)inputHistoFile->Get(	"esposizionepgeoAgl"	);
-	TH2F * esposizionedgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionedgeo"	);
+	TH2F * esposizionedgeoTOF  = (TH2F*)inputHistoFile->Get(	"esposizionedgeoTOF"	);
 	TH2F * esposizionedgeoNaF  = (TH2F*)inputHistoFile->Get(	"esposizionedgeoNaF"	);
 	TH2F * esposizionedgeoAgl  = (TH2F*)inputHistoFile->Get(	"esposizionedgeoAgl"	);
 
@@ -59,7 +59,7 @@ void CorrLAT(string filename) {
 
 	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LATLikelihoodDATA_Agl ->  LATcorrR_fit) );
 	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LATDistanceDATA_Agl   ->  LATcorrR_fit) );
-	TOTLATCorrNaF  -> Multiply ( ( (TH1F *)LATrichDATA_Agl       ->  LATcorrR_fit) );
+	TOTLATCorrAgl  -> Multiply ( ( (TH1F *)LATrichDATA_Agl       ->  LATcorrR_fit) );
 
 	//Only pres.
 	TH1F * CorrezioneLATpre_pR = (TH1F *) Weighted_CorrLAT ( esposizionegeo_R , PreLATCorr);
@@ -157,21 +157,21 @@ void CorrLAT(string filename) {
 TH1 * Weighted_CorrLAT(TH2F * esposizionegeo, TH1 * LATcorr) {
 	TH2F * temp    = (TH2F *)esposizionegeo -> Clone();
 	TH2F * temp_err= (TH2F *)esposizionegeo -> Clone(); 
-	for(int m=0; m<11; m++) {
+	for(int m=1; m<11; m++) {
 		for(int i=0; i< temp -> GetNbinsX(); i++) {
-			temp    ->SetBinContent(i+1,m,esposizionegeo->GetBinContent(i+1,m)*LATcorr -> GetBinContent(m+1));
-			temp_err->SetBinContent(i+1,m,pow(esposizionegeo->GetBinContent(i+1,m)*LATcorr -> GetBinError(m+1),2));
+			temp    ->SetBinContent(i+1,m+1,esposizionegeo->GetBinContent(i+1,m)*LATcorr -> GetBinContent(m+1));
+			temp_err->SetBinContent(i+1,m+1,pow(esposizionegeo->GetBinContent(i+1,m)*LATcorr -> GetBinError(m+1),2));
 		}
 	}
 	//summ all over latitudes	
-	TH1F * temp2     = ProjectionXtoTH1F(temp     , "",0,10);
-	TH1F * temp2_err = ProjectionXtoTH1F(temp_err , "",0,10);
+	TH1F * temp2     = ProjectionXtoTH1F(temp     , "temp2",0,11);
+	TH1F * temp2_err = ProjectionXtoTH1F(temp_err , "temp2_err",0,11);
 
 	for(int i=0; i< temp2_err -> GetNbinsX(); i++) temp2_err->SetBinContent(i+1,pow(temp2_err->GetBinContent(i+1),0.5));
 	//	
 
 	//Divide by total exposure time
-	TH1F * Exptime =ProjectionXtoTH1F( esposizionegeo , "",0,10);
+	TH1F * Exptime =ProjectionXtoTH1F( esposizionegeo , "Exptime",0,11);
 	temp2     -> Divide ( Exptime );
 	temp2_err -> Divide ( Exptime );
 	//

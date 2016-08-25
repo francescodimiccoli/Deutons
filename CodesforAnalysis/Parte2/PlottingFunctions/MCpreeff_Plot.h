@@ -42,7 +42,7 @@ void MCpreeff_Plot(
       for(int h=0; h<6; h++) {
          EffPreMCD_R[h]= new TGraph();
          EffPreMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
-         for(int i=1; i<nbinsr; i++) EffPreMCD_R[h]->SetPoint(i,PRB.RigBinCent(i),EffPreMCD_R_TH2F->GetBinContent(i+1,h+1));
+         for(int i=0; i<nbinsr; i++) EffPreMCD_R[h]->SetPoint(i,PRB.RigBinCent(i),EffPreMCD_R_TH2F->GetBinContent(i+1,h+1));
          leg->AddEntry(EffPreMCD_R[h],MCLegend[h+1].c_str(), "ep");
          EffPreMCD_R[h]->SetMarkerColor(4);
          EffPreMCD_R[h]->SetMarkerStyle(h+3);

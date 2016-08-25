@@ -10,33 +10,34 @@ Efficiency * EffUnbiasMCD;
 void MCUnbiaseff_Fill() {
 
    if(!cmask.isPreselected()||Tup.Beta_pre<=0||Tup.R_pre<=0) return;
-   if(!(Tup.EdepTrack<EdepTrackbeta->Eval(Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval(Tup.Beta_pre)-0.2)) return;
-
+   //if(!(Tup.EdepTrack<EdepTrackbeta->Eval(Tup.Beta_pre)+0.2&&Tup.EdepTrack>EdepTrackbeta->Eval(Tup.Beta_pre)-0.2)) return;
+   if(!Herejcut) return;
    int Kbin;
-
-   if(Massa_gen<1&&Massa_gen>0.5) {
+    	   
+    if(Massa_gen<1&&Massa_gen>0.5) {
       //R bins
-      Kbin=PRB.GetRBin(Tup.Momento_gen);
-      EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
-      if(Tup.Unbias==0) EffUnbiasMCP->afterR->Fill(Kbin,Tup.mcweight);
+      Kbin=PRB.GetRBin(Tup.R_pre);
+      if(trgpatt.IsPhysical()) EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
+      if(trgpatt.IsUnbias()  ) EffUnbiasMCP->beforeR->Fill(Kbin,Tup.mcweight);
+      if(trgpatt.IsPhysical()) EffUnbiasMCP->afterR->Fill(Kbin,Tup.mcweight);
 
       //Beta bins
-      Kbin=ToFPB.GetBin(Tup.Momento_gen);
-      EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
-      if(Tup.Unbias==0) EffUnbiasMCP->afterTOF->Fill(Kbin,Tup.mcweight);
-      
+      Kbin=ToFPB.GetBin(Tup.R_pre);
+      if(trgpatt.IsPhysical()) EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
+      if(trgpatt.IsUnbias()  ) EffUnbiasMCP->beforeTOF->Fill(Kbin,Tup.mcweight);
+      if(trgpatt.IsPhysical()) EffUnbiasMCP->afterTOF ->Fill(Kbin,Tup.mcweight);  
    }
 
    if(Massa_gen>1&&Massa_gen<2) {
       //R bins
       Kbin=PRB.GetRBin(fabs(Tup.Momento_gen));
       FillBinMGen(EffUnbiasMCD->beforeR, Kbin);
-      if(Tup.Unbias==0) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
+      if(trgpatt.IsPhysical()) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
       
       //Beta bins
       Kbin=ToFDB.GetBin(Tup.Momento_gen);
       FillBinMGen(EffUnbiasMCD->beforeTOF, Kbin);
-      if(Tup.Unbias==0) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin);
+      if(trgpatt.IsPhysical()) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin);
       
    }
 

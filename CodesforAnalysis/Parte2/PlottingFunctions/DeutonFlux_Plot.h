@@ -25,32 +25,41 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
                         TH1 *DP_ratioNaF_Dist,
                         TH1 *DP_ratioAgl_Dist,
 			Flux * D_Flux,
-			Flux * P_Flux
+			Flux * P_Flux,
+			TH1 *ProtonsPrimaryFlux
+
 
 	){
 
 	TCanvas * c32 = new TCanvas("Deutons Flux: Geo. Zones");
 	TCanvas * c33 = new TCanvas("Exposure Time");
 	TCanvas * c34 = new TCanvas("Deutons Flux: Primaries");
+	TCanvas * c31 = new TCanvas("Protons Flux (analysis vs R bins)");
 	TCanvas * c35 = new TCanvas("D/P ratio");
 
 	float potenza=0;
-	c33->Divide(1,3);
+	c33->Divide(1,4);
 	gPad->SetGridx();
 	gPad->SetGridy();
+
+	TGraphErrors * espos_R=new TGraphErrors();
 	TGraphErrors * esposd_TOF=new TGraphErrors();
 	TGraphErrors * esposd_NaF=new TGraphErrors();
 	TGraphErrors * esposd_Agl=new TGraphErrors();
 	TGraphErrors * esposp_TOF=new TGraphErrors();
 	TGraphErrors * esposp_NaF=new TGraphErrors();
 	TGraphErrors * esposp_Agl=new TGraphErrors();
+	for (int R=0;R<PRB.size();R++){
+		espos_R->SetPoint(R,PRB.RigBinCent(R),P_Flux-> Exposure_R -> GetBinContent(R+1));
+	}
+
 	for(int m=0;m<ToFDB.size();m++){
-		esposd_TOF->SetPoint(m,ToFDB.EkPerMassBinCent(m),D_Flux -> Exposure_TOF -> GetBinContent(m+1));
-		esposp_TOF->SetPoint(m,ToFDB.EkPerMassBinCent(m),P_Flux -> Exposure_TOF -> GetBinContent(m+1));
-		esposd_NaF->SetPoint(m,NaFDB.EkPerMassBinCent(m),D_Flux -> Exposure_NaF -> GetBinContent(m+1));
-		esposp_NaF->SetPoint(m,NaFDB.EkPerMassBinCent(m),P_Flux -> Exposure_NaF -> GetBinContent(m+1));
-		esposd_Agl->SetPoint(m,AglDB.EkPerMassBinCent(m),D_Flux -> Exposure_Agl -> GetBinContent(m+1));
-		esposp_Agl->SetPoint(m,AglDB.EkPerMassBinCent(m),P_Flux -> Exposure_Agl -> GetBinContent(m+1));
+		esposd_TOF->SetPoint(m,ToFDB.RigBinCent(m),D_Flux -> Exposure_TOF -> GetBinContent(m+1));
+		esposp_TOF->SetPoint(m,ToFPB.RigBinCent(m),P_Flux -> Exposure_TOF -> GetBinContent(m+1));
+		esposd_NaF->SetPoint(m,NaFDB.RigBinCent(m),D_Flux -> Exposure_NaF -> GetBinContent(m+1));
+		esposp_NaF->SetPoint(m,NaFPB.RigBinCent(m),P_Flux -> Exposure_NaF -> GetBinContent(m+1));
+		esposd_Agl->SetPoint(m,AglDB.RigBinCent(m),D_Flux -> Exposure_Agl -> GetBinContent(m+1));
+		esposp_Agl->SetPoint(m,AglPB.RigBinCent(m),P_Flux -> Exposure_Agl -> GetBinContent(m+1));
 	}
 	c33->cd(1);
 	gPad->SetLogy();
@@ -104,6 +113,23 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	esposd_Agl->Draw("APC");
 	esposp_Agl->Draw("PCsame");
 
+	c33->cd(4);
+	gPad->SetLogy();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	gPad->SetLogx();
+	espos_R->SetMarkerStyle(8);
+	espos_R->SetMarkerColor(1);
+	espos_R->SetLineColor(1);
+	espos_R->Draw("APC");
+	esposp_TOF->Draw("PCsame");
+	esposp_NaF->Draw("PCsame");
+	esposp_Agl->Draw("PCsame");
+	esposd_TOF->Draw("PCsame");
+	esposd_NaF->Draw("PCsame");
+	esposd_Agl->Draw("PCsame");
+
+
 	c32-> Divide(2,1);
 	c32->cd(1);
 	gPad->SetLogx();
@@ -120,7 +146,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	float x,y=0;
 	int j=0;
 	{
-		string filename="./Galprop/Trotta2011/Def/new_D500.txt";
+		string filename="./Galprop/Trotta2011/Def/new_D.txt";
 		cout<<filename<<endl;
 		ifstream fp(filename.c_str());
 		while (!fp.eof()){
@@ -180,7 +206,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 		D_FluxgeoDistTOF[j]->SetName((nome + "Distance Fit").c_str());
 
 		p=0;
-		for(int m=1;m<nbinsToF;m++){
+		for(int m=0;m<nbinsToF;m++){
 			D_FluxgeoTOF[j]->SetPoint(p,ToFDB.EkPerMassBinCent(m),DeutonsGeomagFlux_TOF->GetBinContent(m+1,j+1));
 			D_FluxgeoTOF[j]->SetPointError(p,0,DeutonsGeomagFlux_TOF->GetBinError(m+1,j+1));
 			D_FluxgeoDistTOF[j]->SetPoint(p,ToFDB.EkPerMassBinCent(m),DeutonsGeomagFlux_Dist_TOF->GetBinContent(m+1,j+1));
@@ -217,7 +243,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 		D_FluxgeoDistNaF[j]->SetName((nome + "Distance Fit").c_str());
 
 		p=0;
-		for(int m=1;m<nbinsToF;m++){
+		for(int m=0;m<nbinsToF;m++){
 			D_FluxgeoNaF[j]->SetPoint(p,NaFDB.EkPerMassBinCent(m),DeutonsGeomagFlux_NaF->GetBinContent(m+1,j+1));
 			D_FluxgeoNaF[j]->SetPointError(p,0,DeutonsGeomagFlux_NaF->GetBinError(m+1,j+1));
 			D_FluxgeoDistNaF[j]->SetPoint(p,NaFDB.EkPerMassBinCent(m),DeutonsGeomagFlux_Dist_NaF->GetBinContent(m+1,j+1));
@@ -254,7 +280,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 		D_FluxgeoDistAgl[j]->SetName((nome + "Distance Fit").c_str());
 
 		p=0;
-		for(int m=1;m<nbinsToF;m++){
+		for(int m=0;m<nbinsToF;m++){
 			D_FluxgeoAgl[j]->SetPoint(p,AglDB.EkPerMassBinCent(m),DeutonsGeomagFlux_Agl->GetBinContent(m+1,j+1));
 			D_FluxgeoAgl[j]->SetPointError(p,0,DeutonsGeomagFlux_Agl->GetBinError(m+1,j+1));
 			D_FluxgeoDistAgl[j]->SetPoint(p,AglDB.EkPerMassBinCent(m),DeutonsGeomagFlux_Dist_Agl->GetBinContent(m+1,j+1));
@@ -308,14 +334,14 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	galprop3P->Draw("AC");
 	galprop3P2->Draw("sameC");
 
-	nome="Deutons Flux: Primaries" ;
+	nome="Deutons Flux: Primaries TOF" ;
 	D_FluxTOF=new TGraphErrors();
 	D_FluxTOF->SetName(nome.c_str());
 	D_FluxDistTOF=new TGraphErrors();
 	D_FluxDistTOF->SetName((nome + "Distance Fit").c_str());
 
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		D_FluxTOF->SetPoint(p,ToFDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_TOF->GetBinContent(m+1));
 		D_FluxTOF->SetPointError(p,0,DeutonsPrimaryFlux_TOF->GetBinError(m+1));
 		D_FluxDistTOF->SetPoint(p,ToFDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_Dist_TOF->GetBinContent(m+1));
@@ -340,14 +366,14 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	c34->cd(2);
 	D_FluxDistTOF->Draw("Psame");
 
-	nome="Deutons Flux: Primaries" ;
+	nome="Deutons Flux: Primaries NaF" ;
 	D_FluxNaF=new TGraphErrors();
 	D_FluxNaF->SetName(nome.c_str());
 	D_FluxDistNaF=new TGraphErrors();
 	D_FluxDistNaF->SetName((nome + "Distance Fit").c_str());
 
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsNaF;m++){
 		D_FluxNaF->SetPoint(p,NaFDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_NaF->GetBinContent(m+1));
 		D_FluxNaF->SetPointError(p,0,DeutonsPrimaryFlux_NaF->GetBinError(m+1));
 		D_FluxDistNaF->SetPoint(p,NaFDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_Dist_NaF->GetBinContent(m+1));
@@ -372,14 +398,14 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	c34->cd(2);
 	D_FluxDistNaF->Draw("Psame");
 
-	nome="Deutons Flux: Primaries" ;
+	nome="Deutons Flux: Primaries Agl" ;
 	D_FluxAgl=new TGraphErrors();
 	D_FluxAgl->SetName(nome.c_str());
 	D_FluxDistAgl=new TGraphErrors();
 	D_FluxDistAgl->SetName((nome + "Distance Fit").c_str());
 
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		D_FluxAgl->SetPoint(p,AglDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_Agl->GetBinContent(m+1));
 		D_FluxAgl->SetPointError(p,0,DeutonsPrimaryFlux_Agl->GetBinError(m+1));
 		D_FluxDistAgl->SetPoint(p,AglDB.EkPerMassBinCent(m),DeutonsPrimaryFlux_Dist_Agl->GetBinContent(m+1));
@@ -403,6 +429,67 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 
 	c34->cd(2);
 	D_FluxDistAgl->Draw("Psame");
+
+
+
+	finalPlots.Add(c32);
+	finalPlots.Add(c33);
+	finalPlots.Add(c34);
+	finalPlots.writeObjsInFolder("D Fluxes");
+
+
+	c31->cd();
+	gPad->SetLogx();
+        gPad->SetLogy();
+        gPad->SetGridx();
+        gPad->SetGridy();
+
+	TGraphErrors * PFlux=new TGraphErrors();
+        TGraphErrors * PFluxTOF=new TGraphErrors();
+        TGraphErrors * PFluxNaF=new TGraphErrors();
+        TGraphErrors * PFluxAgl=new TGraphErrors();
+
+	for(int i=0; i<nbinsr; i++) {
+                PFlux->SetPoint(i,PRB.EkPerMassBinCent(i),ProtonsPrimaryFlux->GetBinContent(i+1)*pow(PRB.EkPerMassBinCent(i),potenza));
+                PFlux->SetPointError(i,0,ProtonsPrimaryFlux->GetBinError(i+1)*pow(PRB.EkPerMassBinCent(i),potenza));
+	}
+
+	for(int i=0; i<nbinsToF; i++) {
+		PFluxTOF->SetPoint(i,ToFPB.EkPerMassBinCent(i),ProtonsPrimaryFlux_TOF->GetBinContent(i+1)*pow(ToFPB.EkPerMassBinCent(i),potenza));
+		PFluxTOF->SetPointError(i,0,ProtonsPrimaryFlux_TOF->GetBinError(i+1)*pow(ToFPB.EkPerMassBinCent(i),potenza));
+	}
+
+	for(int i=0; i<nbinsNaF; i++) {
+		PFluxNaF->SetPoint(i,NaFPB.EkPerMassBinCent(i),ProtonsPrimaryFlux_NaF->GetBinContent(i+1)*pow(NaFPB.EkPerMassBinCent(i),potenza));
+		PFluxNaF->SetPointError(i,0,ProtonsPrimaryFlux_NaF->GetBinError(i+1)*pow(NaFPB.EkPerMassBinCent(i),potenza));
+	}
+	for(int i=0; i<nbinsAgl; i++) {
+		PFluxAgl->SetPoint(i,AglPB.EkPerMassBinCent(i),ProtonsPrimaryFlux_Agl->GetBinContent(i+1)*pow(AglPB.EkPerMassBinCent(i),potenza));
+		PFluxAgl->SetPointError(i,0,ProtonsPrimaryFlux_Agl->GetBinError(i+1)*pow(AglPB.EkPerMassBinCent(i),potenza));
+	}
+
+	PFlux->SetName("Protons Primary Flux");
+	PFlux->SetMarkerStyle(8);
+	PFlux->SetMarkerColor(2);
+	PFluxTOF->SetMarkerStyle(8);
+	PFluxTOF->SetMarkerColor(1);
+	PFluxNaF->SetMarkerStyle(4);
+	PFluxNaF->SetMarkerColor(1);
+	PFluxAgl->SetMarkerStyle(3);
+	PFluxAgl->SetMarkerColor(1);
+	
+	PFlux->SetTitle("Primary Protons Flux");
+        PFlux->GetXaxis()->SetTitle("Kin. En./nucl. [GeV/nucl.]");
+        PFlux->GetYaxis()->SetTitle("Flux [(m^2 sr GeV/nucl.)^-1]");
+        PFlux->GetXaxis()->SetTitleSize(0.045);
+        PFlux->GetYaxis()->SetTitleSize(0.045);
+        PFlux->GetYaxis()->SetRangeUser(1e-2,1e4);
+        PFlux->Draw("AP");
+	PFluxTOF->Draw("Psame");
+	PFluxNaF->Draw("Psame");
+	PFluxAgl->Draw("Psame");
+
+
 
 
 	c35->Divide(2,1);
@@ -458,23 +545,24 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	TGraphErrors * PD_ratioTOF=new TGraphErrors();
 	TGraphErrors * PD_ratioTOF_Dist=new TGraphErrors();
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		PD_ratioTOF->SetPoint(p,ToFDB.EkPerMassBinCent(m),DP_ratioTOF->GetBinContent(m+1));
 		PD_ratioTOF_Dist->SetPoint(p,ToFDB.EkPerMassBinCent(m),DP_ratioTOF_Dist->GetBinContent(m+1));
 		PD_ratioTOF->SetPointError(p,0,DP_ratioTOF->GetBinError(m+1));
 		PD_ratioTOF_Dist->SetPointError(p,0,DP_ratioTOF_Dist->GetBinError(m+1));
 		p++;
 	}
+	PD_ratioTOF->SetName("PD_ratioTOF");
 	PD_ratioTOF->SetMarkerStyle(8);
 	PD_ratioTOF->SetMarkerSize(1.5);
-	PD_ratioTOF->SetMarkerColor(4);
-	PD_ratioTOF->SetLineColor(4);
+	PD_ratioTOF->SetMarkerColor(2);
+	PD_ratioTOF->SetLineColor(2);
 	PD_ratioTOF->SetLineWidth(2);
 
 	PD_ratioTOF_Dist->SetMarkerStyle(8);
 	PD_ratioTOF_Dist->SetMarkerSize(1.5);
-	PD_ratioTOF_Dist->SetMarkerColor(4);
-	PD_ratioTOF_Dist->SetLineColor(4);
+	PD_ratioTOF_Dist->SetMarkerColor(2);
+	PD_ratioTOF_Dist->SetLineColor(2);
 	PD_ratioTOF_Dist->SetLineWidth(2);
 
 	c35->cd(1);
@@ -487,23 +575,24 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	TGraphErrors * PD_ratioNaF=new TGraphErrors();
 	TGraphErrors * PD_ratioNaF_Dist=new TGraphErrors();
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		PD_ratioNaF->SetPoint(p,NaFDB.EkPerMassBinCent(m),DP_ratioNaF->GetBinContent(m+1));
 		PD_ratioNaF_Dist->SetPoint(p,NaFDB.EkPerMassBinCent(m),DP_ratioNaF_Dist->GetBinContent(m+1));
 		PD_ratioNaF->SetPointError(p,0,DP_ratioNaF->GetBinError(m+1));
 		PD_ratioNaF_Dist->SetPointError(p,0,DP_ratioNaF_Dist->GetBinError(m+1));
 		p++;
 	}
+	PD_ratioNaF->SetName("PD_ratioNaF");
 	PD_ratioNaF->SetMarkerStyle(4);
 	PD_ratioNaF->SetMarkerSize(1.5);
-	PD_ratioNaF->SetMarkerColor(4);
-	PD_ratioNaF->SetLineColor(4);
+	PD_ratioNaF->SetMarkerColor(2);
+	PD_ratioNaF->SetLineColor(2);
 	PD_ratioNaF->SetLineWidth(2);
 
 	PD_ratioNaF_Dist->SetMarkerStyle(4);
 	PD_ratioNaF_Dist->SetMarkerSize(1.5);
-	PD_ratioNaF_Dist->SetMarkerColor(4);
-	PD_ratioNaF_Dist->SetLineColor(4);
+	PD_ratioNaF_Dist->SetMarkerColor(2);
+	PD_ratioNaF_Dist->SetLineColor(2);
 	PD_ratioNaF_Dist->SetLineWidth(2);
 
 	c35->cd(1);
@@ -515,23 +604,24 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	TGraphErrors * PD_ratioAgl=new TGraphErrors();
 	TGraphErrors * PD_ratioAgl_Dist=new TGraphErrors();
 	p=0;
-	for(int m=1;m<nbinsToF;m++){
+	for(int m=0;m<nbinsToF;m++){
 		PD_ratioAgl->SetPoint(p,AglDB.EkPerMassBinCent(m),DP_ratioAgl->GetBinContent(m+1));
 		PD_ratioAgl_Dist->SetPoint(p,AglDB.EkPerMassBinCent(m),DP_ratioAgl_Dist->GetBinContent(m+1));
 		PD_ratioAgl->SetPointError(p,0,DP_ratioAgl->GetBinError(m+1));
 		PD_ratioAgl_Dist->SetPointError(p,0,DP_ratioAgl_Dist->GetBinError(m+1));
 		p++;
 	}
+	PD_ratioAgl->SetName("PD_ratioAgl");
 	PD_ratioAgl->SetMarkerStyle(3);
 	PD_ratioAgl->SetMarkerSize(1.5);
-	PD_ratioAgl->SetMarkerColor(4);
-	PD_ratioAgl->SetLineColor(4);
+	PD_ratioAgl->SetMarkerColor(2);
+	PD_ratioAgl->SetLineColor(2);
 	PD_ratioAgl->SetLineWidth(2);
 
 	PD_ratioAgl_Dist->SetMarkerStyle(3);
 	PD_ratioAgl_Dist->SetMarkerSize(1.5);
-	PD_ratioAgl_Dist->SetMarkerColor(4);
-	PD_ratioAgl_Dist->SetLineColor(4);
+	PD_ratioAgl_Dist->SetMarkerColor(2);
+	PD_ratioAgl_Dist->SetLineColor(2);
 	PD_ratioAgl_Dist->SetLineWidth(2);
 
 	c35->cd(1);
@@ -541,18 +631,19 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	PD_ratioAgl_Dist->Draw("Psame");
 
 
+	finalPlots.Add(c31);
+	finalPlots.Add(c35);
+	finalPlots.writeObjsInFolder("D over P ratio");
 
-   finalPlots.Add(c32);
-   finalPlots.Add(c33);
-   finalPlots.Add(c34);
-   finalPlots.Add(c35);
-   finalPlots.writeObjsInFolder("D Fluxes");
-   
-   finalPlots.Add(D_FluxTOF);
-   finalPlots.Add(D_FluxNaF);
-   finalPlots.Add(D_FluxAgl);
-   finalPlots.writeObjsInFolder("Export/DFluxes");
-	
+	finalPlots.Add(D_FluxTOF);
+	finalPlots.Add(D_FluxNaF);
+	finalPlots.Add(D_FluxAgl);
+	finalPlots.writeObjsInFolder("Export/DFluxes");
+
+	finalPlots.Add(PD_ratioTOF);
+        finalPlots.Add(PD_ratioNaF);
+        finalPlots.Add(PD_ratioAgl);
+	finalPlots.writeObjsInFolder("Export/DP_ratios");
 
 	return;
-}
+	}

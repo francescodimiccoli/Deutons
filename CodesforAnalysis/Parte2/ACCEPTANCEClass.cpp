@@ -102,8 +102,7 @@ public:
 	void Apply_DvsMCcorrection_R  (TH1 * R_Correction  ,int n=1,int S=1){ if (LATcorrW_R   )  ApplyDvsMCcorrection(n,S,R_Correction  , CorrectedAcceptance_R   , Geomag_Acceptance_R   ); return;}
         void Apply_DvsMCcorrection_TOF(TH1 * TOF_Correction,int n=1,int S=1){ if (LATcorrW_TOF )  ApplyDvsMCcorrection(n,S,TOF_Correction, CorrectedAcceptance_TOF , Geomag_Acceptance_TOF ); return;}
         void Apply_DvsMCcorrection_NaF(TH1 * NaF_Correction,int n=1,int S=1){ if (LATcorrW_NaF )  ApplyDvsMCcorrection(n,S,NaF_Correction, CorrectedAcceptance_NaF , Geomag_Acceptance_NaF ); return;}
-        void Apply_DvsMCcorrection_Agl(TH1 * Agl_Correction,int n=1,int S=1){ if (LATcorrW_Agl )  ApplyDvsMCcorrection(n,S,Agl_Correction, CorrectedAcceptance_Agl , Geomag_Acceptance_Agl ); return;}
- 		
+        void Apply_DvsMCcorrection_Agl(TH1 * Agl_Correction,int n=1,int S=1){ if (LATcorrW_Agl )  ApplyDvsMCcorrection(n,S,Agl_Correction, CorrectedAcceptance_Agl , Geomag_Acceptance_Agl ); return;}	
 
 	void ApplyGlobalFactor(float factor, float error);
 };
@@ -174,15 +173,16 @@ TH1 * ACCEPTANCE::Triggerbin(int n , TH1 * after , float trigrate, float bins[])
 
 
 void ACCEPTANCE::Eval_Gen_Acceptance(int n){
-	before_R    = ACCEPTANCE::Triggerbin( n, after_R   ,trigrate , PRB.RigBins().data());	
+
+	before_R    	= ACCEPTANCE::Triggerbin( n, after_R   ,trigrate , PRB.RigBins().data());	
 	before_TOF 	= ACCEPTANCE::Triggerbin( n, after_TOF ,trigrate , binsBetaTOF);
 	before_NaF 	= ACCEPTANCE::Triggerbin( n, after_NaF ,trigrate , binsBetaNaF);	
 	before_Agl 	= ACCEPTANCE::Triggerbin( n, after_Agl ,trigrate , binsBetaAgl);
 
 	if(after_R)	 Gen_Acceptance_R     = (TH1 *)after_R		->Clone();
-	if(after_TOF)	 Gen_Acceptance_TOF   = (TH1 *)after_TOF	->Clone();
-	if(after_NaF)  	 Gen_Acceptance_NaF   = (TH1 *)after_NaF	->Clone();
-	if(after_Agl) 	 Gen_Acceptance_Agl   = (TH1 *)after_Agl	->Clone();
+	if(after_TOF)	 Gen_Acceptance_TOF   = (TH1 *)after_TOF 	->Clone();
+	if(after_NaF)  	 Gen_Acceptance_NaF   = (TH1 *)after_NaF 	->Clone();
+	if(after_Agl) 	 Gen_Acceptance_Agl   = (TH1 *)after_Agl 	->Clone();
 
 	Gen_Acceptance_R    -> Divide ( before_R	) ;
 	Gen_Acceptance_TOF  -> Divide ( before_TOF	) ;
@@ -194,22 +194,22 @@ void ACCEPTANCE::Eval_Gen_Acceptance(int n){
 	Gen_Acceptance_TOF  -> Scale ( 47.78 ) ;
 	Gen_Acceptance_NaF  -> Scale ( 47.78 ) ;
 	Gen_Acceptance_Agl  -> Scale ( 47.78 ) ;
-
+	
 } 
 
 
 void ACCEPTANCE::Eval_MC_Acceptance(){
 
-	if(Gen_Acceptance_R  )  MCAcceptance_R   =(TH1 *) Gen_Acceptance_R  ->Clone();
-	if(Gen_Acceptance_TOF)  MCAcceptance_TOF =(TH1 *) Gen_Acceptance_TOF->Clone();
-	if(Gen_Acceptance_NaF)  MCAcceptance_NaF =(TH1 *) Gen_Acceptance_NaF->Clone();
-	if(Gen_Acceptance_Agl)  MCAcceptance_Agl =(TH1 *) Gen_Acceptance_Agl->Clone();
+	if(Gen_Acceptance_R   )  MCAcceptance_R   =(TH1 *) Gen_Acceptance_R   ->Clone();
+	if(Gen_Acceptance_TOF )  MCAcceptance_TOF =(TH1 *) Gen_Acceptance_TOF ->Clone();
+	if(Gen_Acceptance_NaF )  MCAcceptance_NaF =(TH1 *) Gen_Acceptance_NaF ->Clone();
+	if(Gen_Acceptance_Agl )  MCAcceptance_Agl =(TH1 *) Gen_Acceptance_Agl ->Clone();
 
-	MCAcceptance_R  -> Multiply (	Efficiency_R  	);
-	MCAcceptance_TOF-> Multiply (	Efficiency_TOF	);
-	MCAcceptance_NaF-> Multiply (	Efficiency_NaF	);
-	MCAcceptance_Agl-> Multiply (	Efficiency_Agl	);
-
+	if(	Efficiency_R  	) MCAcceptance_R  -> Multiply (	Efficiency_R  	);
+	if(	Efficiency_TOF	) MCAcceptance_TOF-> Multiply (	Efficiency_TOF	);
+	if(	Efficiency_NaF	) MCAcceptance_NaF-> Multiply (	Efficiency_NaF	);
+	if(	Efficiency_Agl	) MCAcceptance_Agl-> Multiply (	Efficiency_Agl	);
+	
 }
 
 TH1 * ACCEPTANCE::Geomag_Acceptance(int n, TH1* MCAcceptance, TH1* LATcorr){
@@ -260,7 +260,7 @@ TH1 * ACCEPTANCE::Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW){
 	if(n>1){
 		for(int m=0;m<n;m++)
 			for(int iR=0;iR<MCAcceptance->GetNbinsX();iR++)
-				if(MCAcceptance->GetBinContent(iR+1,m+1)>0&&LATcorrW->GetBinContent(iR)>0){
+				if(MCAcceptance->GetBinContent(iR+1,m+1)>0&&LATcorrW->GetBinContent(iR+1)>0){
 					Corrected_Acceptance -> SetBinContent(iR+1,m+1,MCAcceptance->GetBinContent(iR+1,m+1)/LATcorrW->GetBinContent(iR+1));
 					error=pow(MCAcceptance->GetBinContent(iR+1,m+1)*LATcorrW->GetBinError(iR+1),2);
                                         error=pow(MCAcceptance->GetBinError(iR+1,m+1)*LATcorrW->GetBinContent(iR+1),2);
@@ -270,9 +270,9 @@ TH1 * ACCEPTANCE::Corrected_Acceptance(int n, TH1* MCAcceptance, TH1 *LATcorrW){
 	}	
 
 	else{
-		for(int iR=0;iR<MCAcceptance->GetNbinsX();iR++){
-			if(MCAcceptance->GetBinContent(iR+1)>0&&LATcorrW->GetBinContent(iR)>0){
-				Corrected_Acceptance -> SetBinContent(iR+1,MCAcceptance->GetBinContent(iR+1)/LATcorrW->GetBinContent(iR+1));}
+		for(int iR=0;iR<MCAcceptance->GetNbinsX();iR++)
+			if(MCAcceptance->GetBinContent(iR+1)>0&&LATcorrW->GetBinContent(iR+1)>0){
+				Corrected_Acceptance -> SetBinContent(iR+1,MCAcceptance->GetBinContent(iR+1)/LATcorrW->GetBinContent(iR+1));
 				error=pow(MCAcceptance->GetBinContent(iR+1)*LATcorrW->GetBinError(iR+1),2);
                                 error=pow(MCAcceptance->GetBinError(iR+1)*LATcorrW->GetBinContent(iR+1),2);
                                 error=pow(error,0.5);

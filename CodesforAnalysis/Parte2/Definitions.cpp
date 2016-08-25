@@ -30,6 +30,7 @@ TF1 *betaNaF;
 TF1 *betaAgl;
 TSpline3 *eL1;
 TSpline3 *etofu;
+TSpline3 *etofd;
 TSpline3 *etrack;
 TSpline3 *EdepL1beta;
 TSpline3 *EdepTOFbeta;
@@ -61,8 +62,10 @@ struct Tuplevar {
    float Rmin;
    float R_pre;
    float Trig_Num;
-   float Unbias;
-   float mcweight;	
+   float PhysBPatt;
+   float mcweight;
+   float U_time;
+   float Livetime;		
 };
 
 //// Global Variables
@@ -70,14 +73,13 @@ struct Tuplevar {
 
 
 
-
+int    ActualTime=0;
 float Massa_gen=0;
 
 float Rcut[11]= {18,18,16,14,12,10,8,6,4,2,1};
 double geomagC[11]= {0,0.05,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95,1.15}; // Only for drawing, but in various files
 
 
-TH1F* Tempi;
 float RUsed=0;
 
 //cuts
@@ -85,8 +87,8 @@ bool Likcut=false;
 bool Distcut=false;
 bool Herejcut=false;
 bool Betastrongcut=false;
-
-
+bool ProtonsMassWindow=false;
+bool ProtonsMassThres=false;
 
 Tuplevar Tup;
 
@@ -119,14 +121,14 @@ int ReturnMCGenType()
 void FillBinMGen (TH1* h, int bin)
 {
    int mass = ReturnMCGenType();
-   ((TH2*)h)->Fill (bin, mass,Tup.mcweight);
+   ((TH2*)h)->Fill (bin, mass);
    return;
 }
 
 void FillBinMGen (TH3* h, int bin, int S)
 {
    int mass = ReturnMCGenType();
-   ((TH3*)h)->Fill (bin, mass, S, Tup.mcweight);
+   ((TH3*)h)->Fill (bin, mass, S);
    return;
 }
 
@@ -187,7 +189,7 @@ Binning DRB(deuton);
 Binning PRB(proton);
 
 Cutmask cmask;
-
+TriggPatt trgpatt;
 
 
 void HistInfo(TH1* histo) {
@@ -197,18 +199,15 @@ void HistInfo(TH1* histo) {
    }
 
 TH1F* TH1DtoTH1F(TH1D* hd) {
-   //HistInfo(hd);
    TH1F*  hf=(TH1F*)hd->Clone();
-   //HistInfo(hf);
-   return hf;
+   hf->SetName(hd->GetTitle());
+    return hf;
 }
 
 
 
 TH1F* ProjectionXtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
-   TH1D* hd=h2->ProjectionX(title.data(), binmin, binmax);
-   //HistInfo(h2);
-   //HistInfo(hd);
+   TH1D* hd=h2->ProjectionX(title.data(),binmin, binmax);
    TH1F* hf=TH1DtoTH1F(hd);
    return hf;
    }
