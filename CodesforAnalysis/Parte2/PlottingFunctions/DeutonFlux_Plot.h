@@ -435,7 +435,6 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	finalPlots.Add(c32);
 	finalPlots.Add(c33);
 	finalPlots.Add(c34);
-	finalPlots.Add(c35);
 	finalPlots.writeObjsInFolder("D Fluxes");
 
 
@@ -553,16 +552,17 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 		PD_ratioTOF_Dist->SetPointError(p,0,DP_ratioTOF_Dist->GetBinError(m+1));
 		p++;
 	}
+	PD_ratioTOF->SetName("PD_ratioTOF");
 	PD_ratioTOF->SetMarkerStyle(8);
 	PD_ratioTOF->SetMarkerSize(1.5);
-	PD_ratioTOF->SetMarkerColor(4);
-	PD_ratioTOF->SetLineColor(4);
+	PD_ratioTOF->SetMarkerColor(2);
+	PD_ratioTOF->SetLineColor(2);
 	PD_ratioTOF->SetLineWidth(2);
 
 	PD_ratioTOF_Dist->SetMarkerStyle(8);
 	PD_ratioTOF_Dist->SetMarkerSize(1.5);
-	PD_ratioTOF_Dist->SetMarkerColor(4);
-	PD_ratioTOF_Dist->SetLineColor(4);
+	PD_ratioTOF_Dist->SetMarkerColor(2);
+	PD_ratioTOF_Dist->SetLineColor(2);
 	PD_ratioTOF_Dist->SetLineWidth(2);
 
 	c35->cd(1);
@@ -582,16 +582,17 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 		PD_ratioNaF_Dist->SetPointError(p,0,DP_ratioNaF_Dist->GetBinError(m+1));
 		p++;
 	}
+	PD_ratioNaF->SetName("PD_ratioNaF");
 	PD_ratioNaF->SetMarkerStyle(4);
 	PD_ratioNaF->SetMarkerSize(1.5);
-	PD_ratioNaF->SetMarkerColor(4);
-	PD_ratioNaF->SetLineColor(4);
+	PD_ratioNaF->SetMarkerColor(2);
+	PD_ratioNaF->SetLineColor(2);
 	PD_ratioNaF->SetLineWidth(2);
 
 	PD_ratioNaF_Dist->SetMarkerStyle(4);
 	PD_ratioNaF_Dist->SetMarkerSize(1.5);
-	PD_ratioNaF_Dist->SetMarkerColor(4);
-	PD_ratioNaF_Dist->SetLineColor(4);
+	PD_ratioNaF_Dist->SetMarkerColor(2);
+	PD_ratioNaF_Dist->SetLineColor(2);
 	PD_ratioNaF_Dist->SetLineWidth(2);
 
 	c35->cd(1);
@@ -610,16 +611,17 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 		PD_ratioAgl_Dist->SetPointError(p,0,DP_ratioAgl_Dist->GetBinError(m+1));
 		p++;
 	}
+	PD_ratioAgl->SetName("PD_ratioAgl");
 	PD_ratioAgl->SetMarkerStyle(3);
 	PD_ratioAgl->SetMarkerSize(1.5);
-	PD_ratioAgl->SetMarkerColor(4);
-	PD_ratioAgl->SetLineColor(4);
+	PD_ratioAgl->SetMarkerColor(2);
+	PD_ratioAgl->SetLineColor(2);
 	PD_ratioAgl->SetLineWidth(2);
 
 	PD_ratioAgl_Dist->SetMarkerStyle(3);
 	PD_ratioAgl_Dist->SetMarkerSize(1.5);
-	PD_ratioAgl_Dist->SetMarkerColor(4);
-	PD_ratioAgl_Dist->SetLineColor(4);
+	PD_ratioAgl_Dist->SetMarkerColor(2);
+	PD_ratioAgl_Dist->SetLineColor(2);
 	PD_ratioAgl_Dist->SetLineWidth(2);
 
 	c35->cd(1);
@@ -638,6 +640,10 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	finalPlots.Add(D_FluxAgl);
 	finalPlots.writeObjsInFolder("Export/DFluxes");
 
+	finalPlots.Add(PD_ratioTOF);
+        finalPlots.Add(PD_ratioNaF);
+        finalPlots.Add(PD_ratioAgl);
+	finalPlots.writeObjsInFolder("Export/DP_ratios");
 
 	return;
 	}

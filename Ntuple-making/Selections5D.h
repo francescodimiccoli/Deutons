@@ -302,8 +302,8 @@ bool Quality(TTree *albero,int i)
    else r++;
    TOF_Up_Down=fabs(((*Endep)[2]+(*Endep)[3])-((*Endep)[0]+(*Endep)[1]));
    DiffTrackEdep=0;
-   for(int layer=0; layer<9; layer++) DiffTrackEdep+=fabs((*trtot_edep)[layer]-(*trtrack_edep)[layer]);
-   Track_Up_Down=fabs((*trtot_edep)[7]-(*trtot_edep)[0]);
+   for(int layer=0; layer<9; layer++) DiffTrackEdep+=fabs((*trtrack_edep)[layer]-(*trtrack_edep)[layer]);
+   Track_Up_Down=fabs((*trtrack_edep)[7]-(*trtrack_edep)[0]);
 
    selection=true;
    ///////Matter or Antimatter
@@ -379,7 +379,7 @@ bool Quality(TTree *albero,int i)
    EdepTOFU=((*Endep)[0]+(*Endep)[1])/2;
    EdepTOFD=((*Endep)[2]+(*Endep)[3])/2;
 
-   for(int layer=1; layer<8; layer++) EdepTrack+=(*trtot_edep)[layer];
+   for(int layer=1; layer<8; layer++) EdepTrack+=(*trtrack_edep)[layer];
    EdepTrack=EdepTrack/7;
    if(EdepTrack<0) cout<<"ecco!"<<endl;
    E_depTRD=EdepTRD/NTRDclusters;

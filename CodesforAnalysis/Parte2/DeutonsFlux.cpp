@@ -135,7 +135,6 @@ void DeutonFlux(string filename) {
 	DP_ratioNaF_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_NaF                   );
 	DP_ratioAgl_Dist ->  Divide((TH1F *)P_Flux_Dist-> Flux_Agl                   );	
         
-	cout<<"quattro"<<endl;
 	DeutonsPrimaryFlux_TOF 	    	->SetName("DeutonsPrimaryFlux_TOF"); 
 	DeutonsPrimaryFlux_NaF 	  	->SetName("DeutonsPrimaryFlux_NaF");
 	DeutonsPrimaryFlux_Agl 	  	->SetName("DeutonsPrimaryFlux_Agl");
@@ -152,12 +151,10 @@ void DeutonFlux(string filename) {
 	DeutonsGeomagFlux_Dist_NaF 	->SetName("DeutonsGeomagFlux_Dist_NaF");
 	DeutonsGeomagFlux_Dist_Agl 	->SetName("DeutonsGeomagFlux_Dist_Agl");
 
-	cout<<"cinque"<<endl;
 
 	ProtonsPrimaryFlux_TOF 	  	->SetName("ProtonsPrimaryFlux_TOF");
 	ProtonsPrimaryFlux_NaF 	  	->SetName("ProtonsPrimaryFlux_NaF");
 	ProtonsPrimaryFlux_Agl 	  	->SetName("ProtonsPrimaryFlux_Agl");
- cout<<"cinque"<<endl;
 
 	ProtonsPrimaryFlux_Dist_TOF	->SetName("ProtonsPrimaryFlux_Dist_TOF");
 	ProtonsPrimaryFlux_Dist_NaF	->SetName("ProtonsPrimaryFlux_Dist_NaF");
@@ -200,7 +197,6 @@ void DeutonFlux(string filename) {
 
         finalHistos.writeObjsInFolder("Results");
 
-	cout<<"sei"<<endl;
 
         cout<<"*** Plotting ...  ****"<<endl;
 

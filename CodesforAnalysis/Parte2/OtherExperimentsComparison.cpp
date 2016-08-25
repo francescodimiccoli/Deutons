@@ -10,6 +10,9 @@ void OtherExperimentsComparison(){
 	string filename3="../database_D.root";
         TFile * file3 = TFile::Open(filename3.c_str(),"READ");
 
+	string filename4="../database_PD.root";
+        TFile * file4 = TFile::Open(filename4.c_str(),"READ");
+
 	cout<<"******************** OTHER EXPERIMENTS COMP. ********************"<<endl;
 
 	cout<<"*** Protons ***"<<endl;
@@ -40,6 +43,20 @@ void OtherExperimentsComparison(){
 		if(obj->InheritsFrom("TGraphAsymmErrors")) D_Graphs.push_back((TGraphAsymmErrors *)obj);
         }
 	
+
+	cout<<"*** D / P ratio ***"<<endl;
+
+        std::vector<TGraphAsymmErrors *> PD_Graphs;
+
+        TList *ExperimentsPD = file4->GetListOfKeys();
+        TIter nextPD(ExperimentsD);
+        TKey * keyPD;
+
+        while((keyPD = (TKey*)nextPD())){
+                obj = file4->Get(keyPD->GetName());
+                if(obj->InheritsFrom("TGraphAsymmErrors")) PD_Graphs.push_back((TGraphAsymmErrors *)obj);
+        }
+
 
 	TH1F * ThisWork_DTOF = (TH1F*) inputHistoFile -> Get("Results/Fluxes/DeutonsPrimaryFlux_TOF");
 	TH1F * ThisWork_DNaF = (TH1F*) inputHistoFile -> Get("Results/Fluxes/DeutonsPrimaryFlux_NaF"); 	

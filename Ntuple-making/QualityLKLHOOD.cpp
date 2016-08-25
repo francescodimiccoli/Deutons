@@ -207,6 +207,7 @@ int main()
 	TH1F *grafico1[9]; 
 	TH1F *grafico2[9]; 
 	TH1F *grafico3[9];
+	TH1F *graficoz[9][11];
 	TH1F *RisoluzioniBeta[30];
 	TH1F *RisoluzioniR[24];
 	TH2F *RvsRgen_bad =new TH2F("","",500,0,5,500,0,5);
@@ -295,6 +296,20 @@ int main()
 	grafico3[6]=new TH1F("TOF Up-Down-He",Variables[6].c_str(),200,0,100);
 	grafico3[7]=new TH1F("Track Up-Down-He",Variables[7].c_str(),300,0,30);
 	grafico3[8]=new TH1F("Track Edep: Tot - Track-good-He",Variables[8].c_str(),300,0,30);
+
+
+	for(int z=0;z<11;z++){
+		graficoz[0][z]=new TH1F("Anticl",Variables[0].c_str(),10,0,10);
+		graficoz[1][z]=new TH1F("Un. TOF",Variables[1].c_str(),20,0,20);
+		graficoz[2][z]=new TH1F("R Diff.",Variables[2].c_str(),50,0,1);
+		graficoz[3][z]=new TH1F("Un. layers",Variables[3].c_str(),10,0,10);
+		graficoz[4][z]=new TH1F("fuori X",Variables[4].c_str(),10,0,10);
+		graficoz[5][z]=new TH1F("Track Chi^2",Variables[5].c_str(),50,0,25);
+		graficoz[6][z]=new TH1F("TOF Up-Down",Variables[6].c_str(),200,0,100);
+		graficoz[7][z]=new TH1F("Track Up-Down",Variables[7].c_str(),300,0,30);	    
+		graficoz[8][z]=new TH1F("Track Edep: Tot - Track",Variables[8].c_str(),300,0,30);
+	}
+
 
 	cout<<"**************************** BETA BINS TOF***********************************"<<endl;
         float B=0.4;

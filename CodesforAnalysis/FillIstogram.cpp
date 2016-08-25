@@ -26,6 +26,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    Rig           = (TSpline3 *) calib->Get("Fit Results/Splines/Rig");
    beta          = (TSpline3 *) calib->Get("Fit Results/Splines/beta");
    etofu         = (TSpline3 *) calib->Get("Fit Results/Splines/etofu");
+   etofd         = (TSpline3 *) calib->Get("Fit Results/Splines/etofd");	
    etrack        = (TSpline3 *) calib->Get("Fit Results/Splines/etrack");
    EdepL1beta    = (TSpline3 *) calib->Get("Fit Results/Splines/EdepL1beta");
    EdepTOFbeta   = (TSpline3 *) calib->Get("Fit Results/Splines/EdepTOFbeta");
@@ -103,6 +104,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       FluxFactorizationtest_Write();
       Correlazione_Preselezioni_Write();
       HecutMC_Write();
+      DATAEdepLAT_Write();
       SlidesforPlot_Write();
       DistanceCut_Write();
       AntiDCutOptimization_Write();
@@ -158,6 +160,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATApreSeleff(filename);
       DATAQualeff(filename);
       DATARICHeff(filename);
+      DATAEdepLAT(filename);
       DeutonsTemplFits(filename);
       DeutonsTemplFits_Dist(filename);
 
@@ -301,7 +304,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
-     // Disable_MCreweighting();
+      Disable_MCreweighting();
 
       HecutMC_Fill();
       SlidesforPlot_Fill();
@@ -375,6 +378,7 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
       UpdateProgressBar(i, nentries);
 
       HecutD_Fill();
+      DATAEdepLAT_Fill(Zona);
       SlidesforPlot_D_Fill();
       DATAUnbiaseffQ_Fill ();
       DATAQualeff_Fill(Zona);

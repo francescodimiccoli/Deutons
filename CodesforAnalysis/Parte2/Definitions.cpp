@@ -30,6 +30,7 @@ TF1 *betaNaF;
 TF1 *betaAgl;
 TSpline3 *eL1;
 TSpline3 *etofu;
+TSpline3 *etofd;
 TSpline3 *etrack;
 TSpline3 *EdepL1beta;
 TSpline3 *EdepTOFbeta;
@@ -199,13 +200,14 @@ void HistInfo(TH1* histo) {
 
 TH1F* TH1DtoTH1F(TH1D* hd) {
    TH1F*  hf=(TH1F*)hd->Clone();
-   return hf;
+   hf->SetName(hd->GetTitle());
+    return hf;
 }
 
 
 
 TH1F* ProjectionXtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
-   TH1D* hd=h2->ProjectionX(title.data(), binmin, binmax);
+   TH1D* hd=h2->ProjectionX(title.data(),binmin, binmax);
    TH1F* hf=TH1DtoTH1F(hd);
    return hf;
    }

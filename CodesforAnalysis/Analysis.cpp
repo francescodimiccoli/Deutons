@@ -39,6 +39,7 @@
 #include "Parte2/MCpreeff.cpp"
 #include "Parte2/MCUnbiaseff.cpp"
 #include "Parte2/Hecont.cpp"
+#include "Parte2/DATAEdepLAT.cpp"
 #include "Parte2/SlidesforPlot.cpp"
 #include "Parte2/Qualcutoptimization.cpp"
 #include "Parte2/MCControlsamplecuteff.cpp"

@@ -99,6 +99,11 @@ void Acceptance(string filename){
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,1,3);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,1,3);
 	
+/*	AcceptanceD -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,6,3);
+	AcceptanceD -> Apply_DvsMCcorrection_TOF(PreSel_Correction_TOF,6,3);
+	AcceptanceD -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,6,3);
+	AcceptanceD -> Apply_DvsMCcorrection_Agl(PreSel_Correction_Agl,6,3); 	
+*/	
 	AcceptancePreP -> Apply_DvsMCcorrection_R  (PreSel_Correction_R  ,1,3);
         AcceptancePreP -> Apply_DvsMCcorrection_TOF(PreSel_Correction_TOF,1,3);
         AcceptancePreP -> Apply_DvsMCcorrection_NaF(PreSel_Correction_NaF,1,3);
@@ -117,13 +122,20 @@ void Acceptance(string filename){
         AcceptanceP -> Apply_DvsMCcorrection_NaF(LikP_Correction_NaF);
         AcceptanceP -> Apply_DvsMCcorrection_Agl(LikP_Correction_Agl);
 	
+/*	AcceptanceD -> Apply_DvsMCcorrection_TOF(DistP_Correction_TOF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_NaF(DistP_Correction_NaF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_Agl(DistP_Correction_Agl,6);
+
+        AcceptanceD -> Apply_DvsMCcorrection_TOF(LikP_Correction_TOF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_NaF(LikP_Correction_NaF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_Agl(LikP_Correction_Agl,6);
+*/
 	//rich
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(RICH_Correction_P_Agl);
 	
 	AcceptanceD -> Apply_DvsMCcorrection_NaF(RICH_Correction_D_NaF,6);
-        AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl,6);
-	
+        AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl,6);	
 	
 	
 	//Protons
