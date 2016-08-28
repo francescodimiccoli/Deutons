@@ -111,7 +111,7 @@ int main(int argc, char * argv[])
 
 	for(int qs=0; qs<9; qs++) cout<<Signal[qs]<<" ";
 	cout<<endl;
-	for(int qs=0; qs<9; qs++) cout<<BkgndNaF[qs]<<" ";
+	for(int qs=0; qs<9; qs++) cout<<SignalNaF[qs]<<" ";
 	cout<<endl;
 	for(int qs=0; qs<9; qs++) cout<<SignalAgl[qs]<<" ";
 	cout<<endl;
@@ -227,26 +227,26 @@ int main(int argc, char * argv[])
 			
 			if(scelta==1) aggiungiantupla(geo_stuff,i,pre);
 			//cout<<Beta<<" "<<BetanS<<endl;
-			if(control==1) continue;
-			//////////////////// CORR EDEP /////////////////////
-			EdepTOFU=((EdepTOFU)*Corr_TOFU->Eval(Beta));
-			EdepTOFD=((EdepTOFD)*Corr_TOFD->Eval(Beta));
-			EdepTrack=((EdepTrack)*Corr_Track->Eval(Beta));
-			/////////////////////////////////////////////////////
-			//////////////// MATRICE DI RISPOSTA ///////////////
-			if(Massa_gen<1&&Massa_gen>0.5) {
-				for(int I=0; I<44; I++)
-					if(fabs(Momento_gen)<PRB.RigBins()[I+1]&&fabs(Momento_gen)>PRB.RigBins()[I])
-						for(int J=0; J<44; J++)
-							if(fabs(R_corr)<PRB.RigBins()[J+1]&&fabs(R_corr)>PRB.RigBins()[J])  response[J][I]++;
-				for(int I=0; I<44; I++)
-					if(fabs(Momento_gen)<PRB.RigBins()[I+1]&&fabs(Momento_gen)>PRB.RigBins()[I]) norm[I]++;
+			if(control!=1) {
+				//////////////////// CORR EDEP /////////////////////
+				EdepTOFU=((EdepTOFU)*Corr_TOFU->Eval(Beta));
+				EdepTOFD=((EdepTOFD)*Corr_TOFD->Eval(Beta));
+				EdepTrack=((EdepTrack)*Corr_Track->Eval(Beta));
+				/////////////////////////////////////////////////////
+				//////////////// MATRICE DI RISPOSTA ///////////////
+				if(Massa_gen<1&&Massa_gen>0.5) {
+					for(int I=0; I<44; I++)
+						if(fabs(Momento_gen)<PRB.RigBins()[I+1]&&fabs(Momento_gen)>PRB.RigBins()[I])
+							for(int J=0; J<44; J++)
+								if(fabs(R_corr)<PRB.RigBins()[J+1]&&fabs(R_corr)>PRB.RigBins()[J])  response[J][I]++;
+					for(int I=0; I<44; I++)
+						if(fabs(Momento_gen)<PRB.RigBins()[I+1]&&fabs(Momento_gen)>PRB.RigBins()[I]) norm[I]++;
+				}
+				////////////////////////////////////////////////////
+				Protoni(geo_stuff,i);
+				if (Deutoni(geo_stuff,i)) if(scelta==1) Grandezzesepd(geo_stuff,i,grandezzesepd);
 			}
-			////////////////////////////////////////////////////
-			Protoni(geo_stuff,i);
-			if (Deutoni(geo_stuff,i)) if(scelta==1) Grandezzesepd(geo_stuff,i,grandezzesepd);
 		}
-		if(control==1) continue;
 		if(scelta==1) Grandezzequal(geo_stuff,i,grandezzequal);
 	}
 

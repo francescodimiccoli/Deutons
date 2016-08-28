@@ -34,7 +34,7 @@ void Cuts()
 
    //likelihood cut
    Likcut=false;
-   if(((cmask.isFromNaF()||cmask.isFromAgl())&&-log(1-Tup.LDiscriminant)>2.6)||((!(cmask.isFromNaF()||cmask.isFromAgl()))&&-log(1-Tup.LDiscriminant)>1.4)) Likcut=true;
+   if(((cmask.isFromNaF()||cmask.isFromAgl())&&-log(1-Tup.LDiscriminant)>2.3)||((!(cmask.isFromNaF()||cmask.isFromAgl()))&&-log(1-Tup.LDiscriminant)>1.4)) Likcut=true;
 
    //Distance cut
    Distcut=false;

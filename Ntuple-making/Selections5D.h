@@ -235,9 +235,9 @@ int seconds=0;
 TMVA::Reader *reader;
 Float_t BDT_response;
 TFile *_file0 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Final_Def.root");
-TFile *_file1 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables_Def.root");
-TFile *_file3 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables_NaF_Def.root");
-TFile *_file3b = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables_Agl_Def.root");
+TFile *_file1 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables.root");
+TFile *_file3 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables_NaF.root");
+TFile *_file3b = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables_Agl.root");
 TMatrixF *TOF_Phi;
 TMatrixF *Track_Phi;
 TMatrixF *TRD_Phi;
@@ -313,50 +313,50 @@ bool Quality(TTree *albero,int i)
    /////////////////////////// Calcolo LIKELIHOOD ////////////////////////////
 
    {
-      float var[9]= {0,0,0,0,0,0,0,0,0};
-      var[0]=NAnticluster;
-      var[1]=(NTofClusters-NTofClustersusati);
-      if(R!=0) var[2]=(fabs(Rup-Rdown)/R);
-      else var[2]=1;
-      var[3]=layernonusati;
-      var[4]=fuoriX;
-      var[5]=Chisquare;
-      var[6]=TOF_Up_Down;
-      var[7]=Track_Up_Down;
-      var[8]=DiffTrackEdep;
-      double Ltrue=1;
-      double Lfalse=1;
-      for(int m=0; m<6; m++) {
-         Lfalse=Lfalse*Bkgnd[m]->Eval(var[m]);
-         Ltrue=Ltrue*Signal[m]->Eval(var[m]);
-      }
-      LDiscriminant=Ltrue/(Ltrue+Lfalse);
+	   float var[9]= {0,0,0,0,0,0,0,0,0};
+	   var[0]=NAnticluster;
+	   var[1]=(NTofClusters-NTofClustersusati);
+	   if(R!=0) var[2]=(fabs(Rup-Rdown)/R);
+	   else var[2]=1;
+	   var[3]=layernonusati;
+	   var[4]=fuoriX;
+	   var[5]=Chisquare;
+	   var[6]=TOF_Up_Down;
+	   var[7]=Track_Up_Down;
+	   var[8]=DiffTrackEdep;
+	   double Ltrue=1;
+	   double Lfalse=1;
+	   for(int m=1; m<6; m++) {
+			   Lfalse=Lfalse*Bkgnd[m]->Eval(var[m]);
+			   Ltrue=Ltrue*Signal[m]->Eval(var[m]);
+	   }
+	   LDiscriminant=Ltrue/(Ltrue+Lfalse);
    }
    if((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0) {
-      float var[9]= {0,0,0,0,0,0,0,0,0};
-      var[0]=NAnticluster;
-      var[1]=(NTofClusters-NTofClustersusati);
-      if(R!=0) var[2]=(fabs(Rup-Rdown)/R);
-      else var[2]=1;
-      var[3]=layernonusati;
-      var[4]=fuoriX;
-      var[5]=Chisquare;
-      var[6]=Richtotused;
-      var[7]=RichPhEl;
-      var[8]=DiffTrackEdep;
-      double Ltrue=1;
-      double Lfalse=1;
-      for(int m=0; m<8; m++) {
-         if((((int)Cutmask)>>11)==512) {
-            Lfalse=Lfalse*BkgndNaF[m]->Eval(var[m]);
-            Ltrue=Ltrue*SignalNaF[m]->Eval(var[m]);
-         }
-         if((((int)Cutmask)>>11)==0) {
-            Lfalse=Lfalse*BkgndAgl[m]->Eval(var[m]);
-            Ltrue=Ltrue*SignalAgl[m]->Eval(var[m]);
-         }
-      }
-      LDiscriminant=Ltrue/(Ltrue+Lfalse);
+	   float var[9]= {0,0,0,0,0,0,0,0,0};
+	   var[0]=NAnticluster;
+	   var[1]=(NTofClusters-NTofClustersusati);
+	   if(R!=0) var[2]=(fabs(Rup-Rdown)/R);
+	   else var[2]=1;
+	   var[3]=layernonusati;
+	   var[4]=fuoriX;
+	   var[5]=Chisquare;
+	   var[6]=Richtotused;
+	   var[7]=RichPhEl;
+	   var[8]=DiffTrackEdep;
+	   double Ltrue=1;
+	   double Lfalse=1;
+	   for(int m=1; m<8; m++) {
+		   if((((int)Cutmask)>>11)==512) {
+				   Lfalse=Lfalse*BkgndNaF[m]->Eval(var[m]);
+				   Ltrue=Ltrue*SignalNaF[m]->Eval(var[m]);
+		   }
+		   if((((int)Cutmask)>>11)==0) {
+				   Lfalse=Lfalse*BkgndAgl[m]->Eval(var[m]);
+				   Ltrue=Ltrue*SignalAgl[m]->Eval(var[m]);
+		   }
+	   }
+	   LDiscriminant=Ltrue/(Ltrue+Lfalse);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -387,7 +387,7 @@ bool Quality(TTree *albero,int i)
    R_corr=R;
    Massa=pow(fabs(pow(fabs(R_corr)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
    IsCharge1=0;
-   if(fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta))<4||fabs(EdepTOFbeta->Eval(Beta)-EndepTOF)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta))<10) IsCharge1=1;
+   if(fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta))<3||fabs(EdepTOFbeta->Eval(Beta)-EndepTOF)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta))<10) IsCharge1=1;
    Velocity=0;
    Velocity=Beta;
    if((((int)Cutmask)>>11)==0||(((int)Cutmask)>>11)==512) Velocity=BetaRICH_new;
@@ -402,68 +402,68 @@ bool Quality(TTree *albero,int i)
 
 void Nuovasel(float RG,float M, TF1 *RBETA)
 {
-   RGDT=0;
-   BT=0;
-   distR=0;
-   distB=0;
-   distETOFU=0;
-   distETOFD=0;
-   distETrack=0;
-   distETRD=0;
-   DistTOFU=0;
-   DistTOFD=0;
-   DistTrack=0;
-   DistTRD=0;
-   DR1=0;
-   DR2=0;
-   DR3=0;
-   for(int P=0; P<3; P++) CooTOF[P]=0;
-   for(int P=0; P<3; P++) CooTrack[P]=0;
-   for(int P=0; P<3; P++) CooTRD[P]=0;
-   //////////////////// CALCOLO DISTANZA /////////////////////////
-   Dist1=1000000;
-   Dist2=1000000;
-   Dist3=1000000;
-   for(int z=0; z<1e6; z++) {
-      passo=0.075;
-      BT=RBETA->Eval(RGDT);
-      distR=(RGDT-RG)/(pow(RGDT,2)*Rig->Eval(RGDT));
-      distB=(BT-Beta)/(pow(BT,2)*beta->Eval(BT));
-      if((((int)Cutmask)>>11)==512) distB=(BT-BetaRICH_new)/(pow(BT,2)*betaNaF->Eval(BT));
-      if((((int)Cutmask)>>11)==0) distB=(BT-BetaRICH_new)/(pow(BT,2)*betaAgl->Eval(BT));
-      distETOFU=(EdepTOFbeta->Eval(BT)-EdepTOFU)/(pow(EdepTOFbeta->Eval(BT),2)*etofu->Eval(BT));
-      distETrack=(EdepTrackbeta->Eval(BT)-EdepTrack)/(pow(EdepTrackbeta->Eval(BT),2)*etrack->Eval(BT));
-      distETOFD=(EdepTOFbeta->Eval(BT)-EdepTOFD)/(pow(EdepTOFbeta->Eval(BT),2)*etofd->Eval(BT));
-      
-      //std::cout<<Dist<<" "<<z<<" : "<<R<<" "<<Rmin<<" "<<RGDT<<std::endl;
+	RGDT=0;
+	BT=0;
+	distR=0;
+	distB=0;
+	distETOFU=0;
+	distETOFD=0;
+	distETrack=0;
+	distETRD=0;
+	DistTOFU=0;
+	DistTOFD=0;
+	DistTrack=0;
+	DistTRD=0;
+	DR1=0;
+	DR2=0;
+	DR3=0;
+	for(int P=0; P<3; P++) CooTOF[P]=0;
+	for(int P=0; P<3; P++) CooTrack[P]=0;
+	for(int P=0; P<3; P++) CooTRD[P]=0;
+	//////////////////// CALCOLO DISTANZA /////////////////////////
+	Dist1=1000000;
+	Dist2=1000000;
+	Dist3=1000000;
+	for(int z=0; z<1e6; z++) {
+		passo=0.075;
+		BT=RBETA->Eval(RGDT);
+		distR=(RGDT-RG)/(pow(RGDT,2)*Rig->Eval(RGDT));
+		distB=(BT-Beta)/(pow(BT,2)*beta->Eval(BT));
+		if((((int)Cutmask)>>11)==512) distB=(BT-BetaRICH_new)/(pow(BT,2)*betaNaF->Eval(BT));
+		if((((int)Cutmask)>>11)==0) distB=(BT-BetaRICH_new)/(pow(BT,2)*betaAgl->Eval(BT));
+		distETOFU=(EdepTOFbeta->Eval(BT)-EdepTOFU)/(pow(EdepTOFbeta->Eval(BT),2)*etofu->Eval(BT));
+		distETrack=(EdepTrackbeta->Eval(BT)-EdepTrack)/(pow(EdepTrackbeta->Eval(BT),2)*etrack->Eval(BT));
+		distETOFD=(EdepTOFbeta->Eval(BT)-EdepTOFD)/(pow(EdepTOFbeta->Eval(BT),2)*etofd->Eval(BT));
 
-	Dist=pow(pow(distR,2)+pow(distB,2)+pow(distETrack,2)+pow(distETOFU,2)+pow(distETOFD,2),0.5);
-      if(Dist<Dist1) {
-         DR1=0;
-         Dist1=Dist;
-         CooTOF[0]=distETOFU;
-         CooTOF[1]=distB;
-         CooTOF[2]=distR;
-         CooTrack[0]=distETrack;
-         CooTrack[1]=distB;
-         CooTrack[2]=distR;
-         CooTRD[0]=distETOFD;
-         CooTRD[1]=distB;
-         CooTRD[2]=distR;
-         Rmin=RGDT;
-      } else DR1++;
-      if(!((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0)) {
-         if(DR1>25) break;
-         RGDT=RGDT+passo;
-      }
-      if(((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0)) {
-         if(fabs(Dist-Dist2)<0.0001) DR2++;
-         if(DR2>4||DR1>3000) {
-            //	if(R<20&&(((int)Cutmask)>>11)==0) cout<<" "<<Dist1<<" R "<<R<<" Rmin "<<Rmin<<" dR "<<CooTOF[2]<<" dB "<<CooTOF[1]<<" "<<distETOFU<<" "<<distETrack<<" "<<distETOFD<<endl;
-            break;
-         }
-         RGDT=RGDT+passo;
-      }
+		//std::cout<<Dist<<" "<<z<<" : "<<R<<" "<<Rmin<<" "<<RGDT<<std::endl;
+
+		Dist=pow(pow(distR,2)+pow(distB,2)+pow(distETrack,2)+pow(distETOFU,2)+pow(distETOFD,2),0.5);
+		if(Dist<Dist1) {
+			DR1=0;
+			Dist1=Dist;
+			CooTOF[0]=distETOFU;
+			CooTOF[1]=distB;
+			CooTOF[2]=distR;
+			CooTrack[0]=distETrack;
+			CooTrack[1]=distB;
+			CooTrack[2]=distR;
+			CooTRD[0]=distETOFD;
+			CooTRD[1]=distB;
+			CooTRD[2]=distR;
+			Rmin=RGDT;
+		} else DR1++;
+		if(!((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0)) {
+			if(DR1>25) break;
+			RGDT=RGDT+passo;
+		}
+		if(((((int)Cutmask)>>11)==512||(((int)Cutmask)>>11)==0)) {
+			if(fabs(Dist-Dist2)<0.0001) DR2++;
+			if(DR2>4||DR1>3000) {
+				//	if(R<20&&(((int)Cutmask)>>11)==0) cout<<" "<<Dist1<<" R "<<R<<" Rmin "<<Rmin<<" dR "<<CooTOF[2]<<" dB "<<CooTOF[1]<<" "<<distETOFU<<" "<<distETrack<<" "<<distETOFD<<endl;
+				break;
+			}
+			RGDT=RGDT+passo;
+		}
       Dist2=Dist;
       if(z>1e5) std::cout<<"cazzo"<<std::endl;
    }
