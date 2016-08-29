@@ -489,7 +489,7 @@ int main()
 		double L_false=1;
 		for(int m=0;m<6;m++)
 		{
-			if(m!=10){
+			if(m!=0){
 			L_false=L_false*Bkgnd[m]->Eval(var[m]);
 			L_true=L_true*Signal[m]->Eval(var[m]);
 			}
@@ -563,7 +563,7 @@ int main()
 		double L_false=1;
 		for(int m=0;m<6;m++)
 		{
-			if(m!=10){
+			if(m!=0){
 				L_false=L_false*Bkgnd[m]->Eval(var[m]);
 				L_true=L_true*Signal[m]->Eval(var[m]);
 			}
