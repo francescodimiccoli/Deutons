@@ -112,7 +112,7 @@ void OptimizationCut::OptimizationBin(int nbin){
 		else Opt->SetBinContent(x+1,0);
 	}
 	OptimizationCurves.push_back(Opt);
-	float cutvalue=Opt->GetBinCenter(Opt->GetMaximumBin());
+	float cutvalue=Opt->GetBinCenter(Opt->FindBin(0.6)/*Opt->GetMaximumBin()i*/);
 	if(cutvalue>0.35) cuts->SetBinContent(nbin+1,cutvalue);
 	else cuts->SetBinContent(nbin+1,cutvalue);
 	return;	

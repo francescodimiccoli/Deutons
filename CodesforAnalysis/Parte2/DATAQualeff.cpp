@@ -22,35 +22,36 @@ void DATAQualeff_Fill (int zona)
    if(!Herejcut) return;
    if(Tup.Beta<=0||Tup.R<=0) return; 
    if(!ProtonsMassWindow) return;   
+   if(!Tup.R>1.2*Tup.Rcutoff) return;
 	
    int Kbin=PRB.GetRBin (Tup.R);
 
 
    if (cmask.isFromNaF() ) { //NaF
       LATDistanceDATA_NaF  ->beforeR->Fill (Kbin,zona);
-      if (Tup.Dist5D_P<6) {
+      if (Tup.Dist5D_P<6) 
          LATDistanceDATA_NaF  ->afterR ->Fill (Kbin,zona);
          LATLikelihoodDATA_NaF->beforeR->Fill (Kbin,zona);
-      }
-      if (Tup.Dist5D_P<6 && Likcut)
+      
+     if (Tup.Dist5D_P<6 && Likcut)
          LATLikelihoodDATA_NaF->afterR ->Fill (Kbin,zona);
    }  
    if (cmask.isFromAgl() ) { // Agl
       LATDistanceDATA_Agl     ->beforeR->Fill (Kbin,zona);
-      if (Tup.Dist5D_P<6) {
+      if (Tup.Dist5D_P<6) 
          LATDistanceDATA_Agl  ->afterR ->Fill (Kbin,zona);
          LATLikelihoodDATA_Agl->beforeR->Fill (Kbin,zona);
-      }
+      
       if (Tup.Dist5D_P<6 && Likcut)
          LATLikelihoodDATA_Agl->afterR ->Fill (Kbin,zona);
    }
    // ToF
    
       LATDistanceDATA_TOF  ->beforeR->Fill (Kbin,zona);
-      if (Tup.Dist5D_P<6) {
+      if (Tup.Dist5D_P<6) 
          LATDistanceDATA_TOF  ->afterR ->Fill (Kbin,zona);
          LATLikelihoodDATA_TOF->beforeR->Fill (Kbin,zona);
-      }
+      
       if (Tup.Dist5D_P<6 && Likcut)
          LATLikelihoodDATA_TOF->afterR ->Fill (Kbin,zona);
    
