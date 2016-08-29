@@ -5,13 +5,21 @@ TH2F * Hecut_D=new TH2F("Hecut_D","Hecut_D",1000,0,40,1000,0,40);
 TH2F * HecutMC_P=new TH2F("HecutMC_P","HecutMC_P",1000,0,40,1000,0,40);
 TH2F * HecutMC_He=new TH2F("HecutMC_He","HecutMC_He",1000,0,40,1000,0,40);
 
+
+TH1F * L1vsDist_MC = new TH1F("L1vsDist_MC","L1vsDist_MC",1000,0,40);
+TH1F * L1vsDist_DATA = new TH1F("L1vsDist_DATA","L1vsDist_DATA",1000,0,40);
+TH1F * L1vsDist_DATAcutoff = new TH1F("L1vsDist_DATAcutoff","L1vsDist_DATAcutoff",1000,0,40);
+
 Efficiency * HecutMCP = new Efficiency("HecutMCP");
 Efficiency * HecutMCHe = new Efficiency("HecutMCHe");
 
 Efficiency * HeEff = new Efficiency("HeEff");
-
 Efficiency * DataHeCont = new Efficiency("DataHeCont");
 
+Efficiency * HeL1Cont = new Efficiency("HeL1Cont");
+
+Efficiency * HeTRDCont_MC = new Efficiency("HeTRDCont_MC");
+Efficiency * HeTRDCont_DATA = new Efficiency("HeTRDCont_DATA");
 
 
 void HecutMC_Fill() {
@@ -20,7 +28,14 @@ void HecutMC_Fill() {
          if(Tup.Beta<=0||Tup.R<=0) return;
 
 
+	TF1 *RBeta = new TF1("R(Beta)_for_protons","pow((pow(0.938,2)*(pow(x,2)/(1-pow(x,2)))),0.5)",0.1,0.999999999999999999999999999999);
+
+
 	float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
+	
+	if(Likcut && Tup.EdepL1>EdepL1beta->Eval(Tup.Beta) && Tup.R > RBeta->Eval(Tup.Beta) && Tup.Beta < 0.8 && Massa_gen>2)
+		L1vsDist_MC ->Fill(fabs(Tup.EdepL1-EdepL1beta->Eval(Tup.Beta))/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)));
+
 	int Kbin=PRB.GetRBin(Tup.R);
 	
 	if(Massa_gen<1) {
@@ -54,8 +69,17 @@ void HecutD_Fill() {
         if(Tup.Beta<=0||Tup.R<=0) return;
 	if(!Tup.R>1.2*Tup.Rcutoff) return;
 
+	TF1 *RBeta = new TF1("R(Beta)_for_protons","pow((pow(0.938,2)*(pow(x,2)/(1-pow(x,2)))),0.5)",0.1,0.999999999999999999999999999999);
+
 	float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
 	Hecut_D->Fill(fabs(EdepTOFbeta->Eval(Tup.Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta),2)*etofu->Eval(Tup.Beta)),fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)));
+	
+
+	if(Likcut && Tup.EdepL1>EdepL1beta->Eval(Tup.Beta) && Tup.R>1.2*Tup.Rcutoff && Tup.Beta < 0.8 )
+                 L1vsDist_DATA ->Fill(fabs(Tup.EdepL1-EdepL1beta->Eval(Tup.Beta))/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)));
+	if(Likcut && Tup.EdepL1>EdepL1beta->Eval(Tup.Beta) && Tup.R>1.2*Tup.Rcutoff && Tup.Rcutoff > RBeta->Eval(Tup.Beta) && Tup.Beta < 0.8 ) 
+		 L1vsDist_DATAcutoff ->Fill(fabs(Tup.EdepL1-EdepL1beta->Eval(Tup.Beta))/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta))); 
+
 	int Kbin=0;
 	
 	Kbin=ToFDB.GetBin(RUsed);
@@ -84,6 +108,9 @@ void HecutMC_Write() {
 	HecutMCHe->Write();
 	HeEff -> Write();
 	DataHeCont-> Write();	
+	L1vsDist_MC->Write();
+	L1vsDist_DATA->Write();
+	L1vsDist_DATAcutoff->Write();
 }
 
 
