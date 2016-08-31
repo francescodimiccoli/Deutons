@@ -161,8 +161,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATAQualeff(filename);
       DATARICHeff(filename);
       DATAEdepLAT(filename);
-      DeutonsTemplFits(filename);
-      DeutonsTemplFits_Dist(filename);
+      DeutonsTemplFits(filename,frac);
+      DeutonsTemplFits_Dist(filename,frac);	
 
       CorrLAT(filename);
       DVSMCPreSeleff(filename);

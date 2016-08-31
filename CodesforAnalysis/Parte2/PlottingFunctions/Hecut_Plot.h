@@ -1,10 +1,32 @@
 void Hecut_Plot(
 
+	TH1 * L1TOF_DATA 	, 
+        TH1 * L1TOF_DATAcutoff, 
+        TH1 * L1NaF_DATA 	 ,
+        TH1 * L1NaF_DATAcutoff ,
+        TH1 * L1Agl_DATA 	 ,
+        TH1 * L1Agl_DATAcutoff ,
+
+	TH1 * L1TOFs_DATA 	, 
+        TH1 * L1TOFs_DATAcutoff, 
+        TH1 * L1NaFs_DATA 	 ,
+        TH1 * L1NaFs_DATAcutoff ,
+        TH1 * L1Agls_DATA 	 ,
+        TH1 * L1Agls_DATAcutoff ,
+
 	TH1 * HecutMC_He	, 
         TH1 * Hecut_D	 ,
         TH1 * HecutMCP_TH1F, 
         TH1 * HecutMCHe_TH1F,
 	TH1 * HecutMC_P,
+
+	TH1 *fragmTRDTOF_MC,
+        TH1 *fragmTRDNaF_MC,
+	TH1 *fragmTRDAgl_MC,
+	TH1 *fragmTRDTOF_D,	
+	TH1 *fragmTRDNaF_D,
+        TH1 *fragmTRDAgl_D,
+
 	TH1 * fragmeffTOF,
 	TH1 * fragmeffNaF,
 	TH1 * fragmeffAgl, 
@@ -14,12 +36,112 @@ void Hecut_Plot(
 ){
 
 
+	
+	TCanvas * c35 	=new TCanvas("L1 E. dep.sigma");
+	TCanvas * c35_1=new TCanvas("L1 E. dep. TOF");
+	TCanvas * c35_2=new TCanvas("L1 E. dep. NaF");
+	TCanvas * c35_3=new TCanvas("L1 E. dep. Agl");
 	TCanvas * c36	=new TCanvas("Sigma E. dep. Track vs TOF");
 	TCanvas * c36_bis    =new TCanvas("Sigma E. dep. Track vs TOF (MC)");
 	TCanvas * c37	=new TCanvas("Eff. He Control sample cut");
-	TCanvas * c38   =new TCanvas("Helium fragmentation");
+	TCanvas * c38   =new TCanvas("Helium fragmentation above L1");
+	TCanvas * c38_bis    =new TCanvas("Helium fragmentation in TRD");
 	TCanvas * c39   =new TCanvas("Helium expected contamination");
 	
+
+	c35->Divide(3,1);
+	c35->cd(1);
+	gPad->SetLogy();
+        gPad->SetGridx();
+        gPad->SetGridy();
+
+	L1TOFs_DATA -> SetLineColor(4);
+	L1TOFs_DATAcutoff ->SetLineColor(1);
+	L1TOFs_DATA -> SetLineWidth(3);
+        L1TOFs_DATAcutoff ->SetLineWidth(3);
+	L1TOFs_DATA -> SetTitle("TOF range");
+	L1TOFs_DATA -> GetXaxis() -> SetTitle("L1 E. dep. - Q=1(teo.)");
+
+	L1TOFs_DATA -> Draw();
+	L1TOFs_DATAcutoff -> Draw("same");
+
+	c35->cd(2);
+        gPad->SetLogy();
+        gPad->SetGridx();
+        gPad->SetGridy();
+
+	L1NaFs_DATA -> SetLineColor(4);
+        L1NaFs_DATAcutoff ->SetLineColor(1);
+        L1NaFs_DATA -> SetLineWidth(3);
+        L1NaFs_DATAcutoff ->SetLineWidth(3);
+        L1NaFs_DATA -> SetTitle("TOF range");
+        L1NaFs_DATA -> GetXaxis() -> SetTitle("L1 E. dep. - Q=1(teo.)");
+
+	
+        L1NaFs_DATA -> Draw();
+        L1NaFs_DATAcutoff -> Draw("same");
+
+	c35->cd(3);
+        gPad->SetLogy();
+        gPad->SetGridx();
+        gPad->SetGridy();
+
+	L1Agls_DATA -> SetLineColor(4);
+        L1Agls_DATAcutoff ->SetLineColor(1);
+        L1Agls_DATA -> SetLineWidth(3);
+        L1Agls_DATAcutoff ->SetLineWidth(3);
+        L1Agls_DATA -> SetTitle("TOF range");
+        L1Agls_DATA -> GetXaxis() -> SetTitle("L1 E. dep. - Q=1(teo.)");
+
+        L1Agls_DATA -> Draw();
+        L1Agls_DATAcutoff -> Draw("same");
+
+	c35_1->Divide(6,3);
+	int binsTOF = 18;//L1TOF_DATA->GetNbinsY();
+	TH1F * Slices[binsTOF];
+	for(int i=0;i<binsTOF;i++){ 
+		c35_1->cd(i+1);
+		gPad->SetLogy();
+        	gPad->SetGridx();
+        	gPad->SetGridy();
+		Slices[i] = ProjectionXtoTH1F( (TH2F *)L1TOF_DATA,("SliceTOF"  + to_string(i)).c_str(),i+1,i+2);
+		Slices[i] -> SetLineColor(1);
+		Slices[i] -> SetLineWidth(2);
+		Slices[i] -> SetTitle(("Edep L1 TOF: bin" + to_string(i)).c_str());
+		Slices[i] ->  GetXaxis() -> SetTitle("L1 E. dep. [keV]");
+		Slices[i] -> Draw();	
+	}
+	c35_2->Divide(6,3);
+        int binsNaF = L1NaF_DATA->GetNbinsY();
+        for(int i=0;i<binsNaF;i++){
+                c35_1->cd(i+1);
+                gPad->SetLogy();
+                gPad->SetGridx();
+                gPad->SetGridy();
+                TH1F * Slice = ProjectionXtoTH1F( (TH2F *)L1NaF_DATA,("SliceNaF"  + to_string(i)).c_str(),i+1,i+2);
+                Slice -> SetLineColor(1);
+                Slice -> SetLineWidth(2);
+                Slice -> SetTitle(("Edep L1 NaF: bin" + to_string(i)).c_str());
+                Slice ->  GetXaxis() -> SetTitle("L1 E. dep. [keV]");
+                Slice -> Draw();
+        }
+	c35_3->Divide(6,3);
+        int binsAgl = L1Agl_DATA->GetNbinsY();
+        for(int i=0;i<binsAgl;i++){
+                c35_1->cd(i+1);
+                gPad->SetLogy();
+                gPad->SetGridx();
+                gPad->SetGridy();
+                TH1F * Slice = ProjectionXtoTH1F( (TH2F *)L1Agl_DATA,("SliceAgl"  + to_string(i)).c_str(),i+1,i+2);
+                Slice -> SetLineColor(1);
+                Slice -> SetLineWidth(2);
+                Slice -> SetTitle(("Edep L1 Agl: bin" + to_string(i)).c_str());
+                Slice ->  GetXaxis() -> SetTitle("L1 E. dep. [keV]");
+                Slice -> Draw();
+        }
+
+
+
 	c36->cd();
 	gPad->SetLogz();
 	gPad->SetGridx();
@@ -106,6 +228,72 @@ void Hecut_Plot(
 	efffragmNaF->Draw("cpsame");
 	efffragmAgl->Draw("cpsame");
 
+
+	c38_bis->cd();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        gPad->SetLogx();
+	TH2F * FrameTRD = new TH2F("Helium Fragmentation in TRD (He->D,P,T)","Helium Fragmentation in TRD (He->D,P,T)",1000,0.5,30,1000,0,1);
+        TGraphErrors *TRDfragmTOF=new TGraphErrors();
+        TGraphErrors *TRDfragmTOFMC=new TGraphErrors();
+	for(int K=0; K<nbinsToF; K++) {
+                TRDfragmTOF->SetPoint(K,ToFDB.RigBinCent(K),fragmTRDTOF_D->GetBinContent(K+1));
+                TRDfragmTOF->SetPointError(K,0,   fragmTRDTOF_D->GetBinError(K+1));
+		TRDfragmTOFMC->SetPoint(K,ToFDB.RigBinCent(K),fragmTRDTOF_MC->GetBinContent(K+1));
+                TRDfragmTOFMC->SetPointError(K,0,   fragmTRDTOF_MC->GetBinError(K+1));
+        }
+	TGraphErrors *TRDfragmNaF=new TGraphErrors();
+	TGraphErrors *TRDfragmNaFMC=new TGraphErrors();
+	for(int K=0; K<nbinsNaF; K++) {
+                TRDfragmNaF->SetPoint(K,NaFDB.RigBinCent(K),fragmTRDNaF_D->GetBinContent(K+1));
+                TRDfragmNaF->SetPointError(K,0,   fragmTRDNaF_D->GetBinError(K+1));
+		TRDfragmNaFMC->SetPoint(K,NaFDB.RigBinCent(K),fragmTRDNaF_MC->GetBinContent(K+1));
+                TRDfragmNaFMC->SetPointError(K,0,   fragmTRDNaF_MC->GetBinError(K+1));
+        }
+	TGraphErrors *TRDfragmAgl=new TGraphErrors();
+	TGraphErrors *TRDfragmAglMC=new TGraphErrors();
+	for(int K=0; K<nbinsAgl; K++) {
+                TRDfragmAgl->SetPoint(K,AglDB.RigBinCent(K),fragmTRDAgl_D->GetBinContent(K+1));
+                TRDfragmAgl->SetPointError(K,0,   fragmTRDAgl_D->GetBinError(K+1));
+        	TRDfragmAglMC->SetPoint(K,AglDB.RigBinCent(K),fragmTRDAgl_MC->GetBinContent(K+1));
+                TRDfragmAglMC->SetPointError(K,0,   fragmTRDAgl_MC->GetBinError(K+1));
+	}
+
+	TRDfragmTOF->SetMarkerStyle(8);
+	TRDfragmTOF->SetMarkerColor(3);
+	TRDfragmTOF->SetLineColor(3);
+	TRDfragmNaF->SetMarkerStyle(3);
+	TRDfragmNaF->SetMarkerColor(3);
+	TRDfragmNaF->SetLineColor(3);
+	TRDfragmAgl->SetMarkerStyle(4);
+	TRDfragmAgl->SetMarkerColor(3);
+	TRDfragmAgl->SetLineColor(3);
+
+	TRDfragmTOFMC->SetMarkerStyle(8);
+	TRDfragmTOFMC->SetMarkerColor(1);
+	TRDfragmTOFMC->SetLineColor(1);
+	TRDfragmNaFMC->SetMarkerStyle(3);
+	TRDfragmNaFMC->SetMarkerColor(1);
+	TRDfragmNaFMC->SetLineColor(1);
+	TRDfragmAglMC->SetMarkerStyle(4);
+	TRDfragmAglMC->SetMarkerColor(1);
+	TRDfragmAglMC->SetLineColor(1);
+
+	FrameTRD -> GetYaxis() -> SetRangeUser(0,0.3);	
+	FrameTRD -> GetYaxis() -> SetTitle("He -> D,P,T / He -> He");
+	FrameTRD -> GetXaxis() -> SetTitle("R [GV]"); 
+	FrameTRD->Draw();
+
+	TRDfragmTOF->Draw("cpsame");
+	TRDfragmNaF->Draw("cpsame");
+	TRDfragmAgl->Draw("cpsame");
+
+	TRDfragmTOFMC->Draw("cpsame");
+        TRDfragmNaFMC->Draw("cpsame");
+        TRDfragmAglMC->Draw("cpsame");
+
+
+
 	c39->cd();
         gPad->SetGridx();
         gPad->SetGridy();
@@ -151,13 +339,20 @@ void Hecut_Plot(
 
 	bool recreate = true;
 
+	finalPlots.Add(c35       );
+	finalPlots.Add(c35_1     );
+	finalPlots.Add(c35_2     );
+	finalPlots.Add(c35_3     );
+	finalPlots.writeObjsInFolder("MC Results/He related cuts/Layer1 E.dep",recreate);
+
 	finalPlots.Add(c36	 );
 	finalPlots.Add(c36_bis);
 	finalPlots.Add(c37	 );
 
-        finalPlots.writeObjsInFolder("MC Results/He related cuts/Control Sample cuts",recreate);
+        finalPlots.writeObjsInFolder("MC Results/He related cuts/Control Sample cuts");
 
 	finalPlots.Add(c38       );
+	finalPlots.Add(c38_bis   );
 	finalPlots.Add(c39       );
 	
 	finalPlots.writeObjsInFolder("MC Results/He related cuts/He fragm.");
