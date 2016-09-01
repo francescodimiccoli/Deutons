@@ -10,9 +10,9 @@ void Cuts_Pre()
 
    // L1 He cut
    IsHeL1=false;
-   if(	  (cmask.isOnlyFromToF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.Beta_pre))/(pow(EdepL1beta->Eval(Tup.Beta_pre),2)*etrack->Eval(Tup.Beta_pre)) > 15))
-	||(cmask.isFromNaF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 15))
-	||(cmask.isFromAgl()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 15)) 
+   if(	  (cmask.isOnlyFromToF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.Beta_pre))/(pow(EdepL1beta->Eval(Tup.Beta_pre),2)*etrack->Eval(Tup.Beta_pre)) > 14.5))
+	||(cmask.isFromNaF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 14.5))
+	||(cmask.isFromAgl()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 14.5)) 
 	)	IsHeL1=true; 	
 
 
@@ -60,9 +60,9 @@ void Cuts()
 	
 	// L1 He cut
 	IsHeL1=false;
-   if(	(cmask.isOnlyFromToF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.Beta))/(pow(EdepL1beta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)) > 15))
-        ||(cmask.isFromNaF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 15))
-        ||(cmask.isFromAgl()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 15))
+   if(	(cmask.isOnlyFromToF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.Beta))/(pow(EdepL1beta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)) > 14.5))
+        ||(cmask.isFromNaF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 14.5))
+        ||(cmask.isFromAgl()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 14.5))
         )       IsHeL1=true;
 
 
