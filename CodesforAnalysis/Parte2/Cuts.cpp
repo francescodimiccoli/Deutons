@@ -6,7 +6,15 @@ void Cuts_Pre()
    float EdepTOFud=(Tup.EdepTOFU+Tup.EdepTOFD)/2;
    Herejcut=false;
    if(fabs(EdepTrackbeta->Eval(Tup.Beta_pre)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta_pre),2)*etrack->Eval(Tup.Beta_pre))<3||fabs(EdepTOFbeta->Eval(Tup.Beta_pre)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta_pre),2)*etofu->Eval(Tup.Beta_pre))<10)
-      Herejcut=true;
+      Herejcut=true;	
+
+   // L1 He cut
+   IsHeL1=false;
+   if(	  (cmask.isOnlyFromToF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.Beta_pre))/(pow(EdepL1beta->Eval(Tup.Beta_pre),2)*etrack->Eval(Tup.Beta_pre)) > 15))
+	||(cmask.isFromNaF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 15))
+	||(cmask.isFromAgl()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 15)) 
+	)	IsHeL1=true; 	
+
 
    //Strong beta cut
    Betastrongcut = false;
@@ -48,6 +56,27 @@ void Cuts()
    Herejcut=false;
    if(fabs(EdepTrackbeta->Eval(Tup.Beta)-Tup.EdepTrack)/(pow(EdepTrackbeta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta))<3||fabs(EdepTOFbeta->Eval(Tup.Beta)-EdepTOFud)/(pow(EdepTOFbeta->Eval(Tup.Beta),2)*etofu->Eval(Tup.Beta))<10)
       Herejcut=true;
+
+	
+	// L1 He cut
+	IsHeL1=false;
+   if(	(cmask.isOnlyFromToF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.Beta))/(pow(EdepL1beta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)) > 15))
+        ||(cmask.isFromNaF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 15))
+        ||(cmask.isFromAgl()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) > 15))
+        )       IsHeL1=true;
+
+
+	//L1 He->P cut
+	
+	IsPfromHeL1=false;
+   if(((Tup.EdepL1-EdepL1beta->Eval(Tup.Beta))/(pow(EdepL1beta->Eval(Tup.Beta),2)*etrack->Eval(Tup.Beta)) < 6)
+        ||(cmask.isFromNaF()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) < 6))
+        ||(cmask.isFromAgl()&&((Tup.EdepL1-EdepL1beta->Eval(Tup.BetaRICH))/(pow(EdepL1beta->Eval(Tup.BetaRICH),2)*etrack->Eval(Tup.BetaRICH)) < 6))
+        )       IsPfromHeL1=true;
+
+	
+
+
 
    //Strong beta cut
    Betastrongcut = false;

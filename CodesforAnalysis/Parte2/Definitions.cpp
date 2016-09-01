@@ -88,6 +88,8 @@ bool Likcut=false;
 bool Distcut=false;
 bool Herejcut=false;
 bool Betastrongcut=false;
+bool IsHeL1=false;
+bool IsPfromHeL1=false;
 bool ProtonsMassWindow=false;
 bool ProtonsMassThres=false;
 
