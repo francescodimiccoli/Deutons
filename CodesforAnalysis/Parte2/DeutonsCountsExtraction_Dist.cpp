@@ -104,7 +104,7 @@ void DeutonsMC_Dist_Write()
 }
 
 
-void DeutonsTemplFits_Dist(string filename)
+void DeutonsTemplFits_Dist(string filename,string frac)
 {
 
 	cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;

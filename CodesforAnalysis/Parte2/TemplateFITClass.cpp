@@ -133,10 +133,11 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat)
    double w1,e1=0;
    double w2,e2=0;
    double w3,e3=0;
+ 
    fits[lat][bin]-> Tfit ->GetResult(0,w1,e1);
    fits[lat][bin]-> Tfit ->GetResult(1,w2,e2);
    fits[lat][bin]-> Tfit ->GetResult(2,w3,e3);
-
+   
    float Cov01=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
    float Cov02=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,2);
    float Cov12=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(1,2);
@@ -151,7 +152,8 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat)
    if(par == 0)	  ResultPlot = GetResult_P (bin,lat);
    if(par == 1)   ResultPlot = GetResult_D (bin,lat);
    if(par == 2)   ResultPlot = GetResult_He(bin,lat);
-
+   cout<<"ecco2"<<endl;	
+	
    return Err * ResultPlot->Integral(); //Fit absolute error
 
 }

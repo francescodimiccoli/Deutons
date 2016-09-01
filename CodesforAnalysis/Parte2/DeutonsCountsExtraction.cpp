@@ -153,7 +153,7 @@ TH1F * ExtractDCounts(TH3F * FitResults, string name, TemplateFIT * Template){
 	return DCounts; 
 }
 
-void DeutonsTemplFits(string filename)
+void DeutonsTemplFits(string filename, string frac)
 {
 
    cout<<"******************** DEUTONS TEMPlATE FITS ************************"<<endl;
@@ -204,13 +204,16 @@ void DeutonsTemplFits(string filename)
 		   FitNaF_Dbest->SetFitRange(1.1,3);
 		   FitAgl_Dbest->SetFitRange(1.1,3);
 
-		   //FitTOF_Dbest         -> DisableFit(); 
-		   //FitNaF_Dbest         -> DisableFit(); 
-		   //FitAgl_Dbest         -> DisableFit();
-
-		   FitTOF_Dbest       ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
-		   FitNaF_Dbest       ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
-		   FitAgl_Dbest       ->  SetFitConstraints(ContaminationAgl,0.8,1,0.0001,0.2);
+		   if(frac!="tot"){
+			   FitTOF_Dbest         -> DisableFit(); 
+			   FitNaF_Dbest         -> DisableFit(); 
+			   FitAgl_Dbest         -> DisableFit();
+		   }
+		   else{
+			   FitTOF_Dbest       ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
+			   FitNaF_Dbest       ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
+			   FitAgl_Dbest       ->  SetFitConstraints(ContaminationAgl,0.8,1,0.0001,0.2);
+		   }
 
 		   cout<<"TOF FITS"<<endl;
 		   FitTOF_Dbest    -> TemplateFits();
@@ -230,14 +233,16 @@ void DeutonsTemplFits(string filename)
 		   FitNaF_Dbins[i][j]->SetFitRange(0.8+0.1*i,3);
 		   FitAgl_Dbins[i][j]->SetFitRange(0.8+0.1*i,3);
 
-		   //FitTOF_Dbins[i][j]         -> DisableFit(); 
-		   //FitNaF_Dbins[i][j]         -> DisableFit(); 
-		   //FitAgl_Dbins[i][j]         -> DisableFit();
-
-		   FitTOF_Dbins[i][j]       ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
-		   FitNaF_Dbins[i][j]       ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
-		   FitAgl_Dbins[i][j]       ->  SetFitConstraints(ContaminationAgl,0.8,1,0.0001,0.2);
-
+		   if(frac!="tot"){
+			   FitTOF_Dbins[i][j]         -> DisableFit(); 
+			   FitNaF_Dbins[i][j]         -> DisableFit(); 
+			   FitAgl_Dbins[i][j]         -> DisableFit();
+		   }
+		   else{
+			   FitTOF_Dbins[i][j]       ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
+			   FitNaF_Dbins[i][j]       ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
+			   FitAgl_Dbins[i][j]       ->  SetFitConstraints(ContaminationAgl,0.8,1,0.0001,0.2);
+		   }
 		   FitTOF_Dbins[i][j]    -> TemplateFits();
 		   FitNaF_Dbins[i][j]    -> TemplateFits();
 		   FitAgl_Dbins[i][j]    -> TemplateFits();
