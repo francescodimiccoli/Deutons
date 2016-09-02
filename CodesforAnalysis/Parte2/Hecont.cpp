@@ -96,21 +96,21 @@ void HecutMC_Fill() {
 	
 	
 		//He->P before L1
-	if(Massa_gen>2){	
+	if(HeL1sample){	
 		if(cmask.isOnlyFromToF()){
 			Kbin=ToFDB.GetBin(RUsed);
-			if(Likcut && !Distcut)   HeEff->beforeTOF->Fill(Kbin);
-			if(Likcut && Distcut)    HeEff->afterTOF->Fill(Kbin);	
+			HeEff->beforeTOF->Fill(Kbin);
+			if(IsPfromHeL1)    HeEff->afterTOF->Fill(Kbin);	
 		}	
 		if(cmask.isFromNaF()) {
 			Kbin=NaFDB.GetBin(RUsed);
-			if(Likcut && !Distcut) HeEff->beforeNaF->Fill(Kbin);
-			if(Likcut && Distcut)    HeEff->afterNaF->Fill(Kbin);		
+			HeEff->beforeNaF->Fill(Kbin);
+			if(IsPfromHeL1)    HeEff->afterNaF->Fill(Kbin);		
 		}
 		if(cmask.isFromAgl()) {
 			Kbin=AglDB.GetBin(RUsed);
-			if(Likcut && !Distcut) HeEff->beforeAgl->Fill(Kbin);
-			if(Likcut && Distcut)    HeEff->afterAgl->Fill(Kbin);
+			 HeEff->beforeAgl->Fill(Kbin);
+			if(IsPfromHeL1)    HeEff->afterAgl->Fill(Kbin);
 		}
 	}
 	if(HeL1sample) {	
