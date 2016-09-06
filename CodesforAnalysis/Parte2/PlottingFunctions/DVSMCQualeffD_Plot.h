@@ -31,9 +31,10 @@ void DVSMCQualeffD_Plot (TH1 *   DistD_Correction_R  ,
 		LikDVSMC_D_GraphTOF[mc_type]=new TGraphErrors();
 		j=0;
 		for(int i=0;i<nbinsToF;i++) {
+				if(LikD_Correction_TOF -> GetBinContent(i+1,mc_type+1)>0){
 				LikDVSMC_D_GraphTOF[mc_type]->SetPoint(j,ToFPB.EkPerMassBinCent(i),LikD_Correction_TOF -> GetBinContent(i+1,mc_type+1));
 				LikDVSMC_D_GraphTOF[mc_type]->SetPointError(j,0,LikD_Correction_TOF -> GetBinError(i+1,mc_type+1));
-				j++;
+				j++;}
 		}
 		LikDVSMC_D_GraphTOF[mc_type]->SetLineColor(4);
 		LikDVSMC_D_GraphTOF[mc_type]->SetFillColor(4);
