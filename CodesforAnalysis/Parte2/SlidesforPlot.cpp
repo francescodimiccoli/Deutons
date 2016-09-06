@@ -52,12 +52,12 @@ TH1F *MassNaFQ=new TH1F ("MassNaFQ","MassNaFQ",500,0,4.5);
 TH1F *MassAglQ=new TH1F ("MassAglQ","MassAglQ",500,0,4.5);
 
 
-TH2F *LikvsDistTOF_P=new TH2F ("LikvsDistTOF_P","LikvsDistTOF_P",500,0,6,500,-1,1);
-TH2F *LikvsDistNaF_P=new TH2F ("LikvsDistNaF_P","LikvsDistNaF_P",500,0,6,500,-1,1);
-TH2F *LikvsDistAgl_P=new TH2F ("LikvsDistAgl_P","LikvsDistAgl_P",500,0,6,500,-1,1);
-TH2F *LikvsDistTOF_D=new TH2F ("LikvsDistTOF_D","LikvsDistTOF_D",500,0,6,500,-1,1);
-TH2F *LikvsDistNaF_D=new TH2F ("LikvsDistNaF_D","LikvsDistNaF_D",500,0,6,500,-1,1);
-TH2F *LikvsDistAgl_D=new TH2F ("LikvsDistAgl_D","LikvsDistAgl_D",500,0,6,500,-1,1);
+TH2F *LikvsDistTOF_P=new TH2F ("LikvsDistTOF_P","LikvsDistTOF_P",500,0,6,500,0,100);
+TH2F *LikvsDistNaF_P=new TH2F ("LikvsDistNaF_P","LikvsDistNaF_P",100,0,6,300,0,100);
+TH2F *LikvsDistAgl_P=new TH2F ("LikvsDistAgl_P","LikvsDistAgl_P",100,0,6,300,0,100);
+TH2F *LikvsDistTOF_D=new TH2F ("LikvsDistTOF_D","LikvsDistTOF_D",500,0,6,500,0,100);
+TH2F *LikvsDistNaF_D=new TH2F ("LikvsDistNaF_D","LikvsDistNaF_D",100,0,6,300,0,100);
+TH2F *LikvsDistAgl_D=new TH2F ("LikvsDistAgl_D","LikvsDistAgl_D",100,0,6,300,0,100);
 
 TH2F *RvsDistTOF_P=new TH2F ("RvsDistTOF_P","RvsDistTOF_P",500,0,6,500,-1,1);
 TH2F *RvsDistNaF_P=new TH2F ("RvsDistNaF_P","RvsDistNaF_P",500,1,10,500,-1,1);
@@ -130,17 +130,17 @@ void SlidesforPlot_Fill ()
       EdepUTOFvsR_P->Fill (Tup.R,Tup.EdepTOFU,Tup.mcweight);
       EdepLTOFvsR_P->Fill (Tup.R,Tup.EdepTOFD,Tup.mcweight);
       EdepTrackvsR_P->Fill (Tup.R,Tup.EdepTrack,Tup.mcweight);
-      if (Herejcut&&Betastrongcut&&Tup.BetaRICH<0) {
+      if (Herejcut&&Betastrongcut&&Tup.BetaRICH<0&& (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) >1.875) {
 							DistTOF_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-						        LikvsDistTOF_P->Fill(Tup.Dist5D,Tup.LDiscriminant);
+						        LikvsDistTOF_P->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 						   }	
-      if (Herejcut&&Betastrongcut&& cmask.isFromNaF() ) {
+      if (Herejcut&&Betastrongcut&& cmask.isFromNaF() && (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) >1.875 ) {
 							DistNaF_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      							LikvsDistNaF_P->Fill(Tup.Dist5D,Tup.LDiscriminant);
+      							LikvsDistNaF_P->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
       							}
-      if (Herejcut&&Betastrongcut&& cmask.isFromAgl() ) {
+      if (Herejcut&&Betastrongcut&& cmask.isFromAgl()  && (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) >1.875) {
 							DistAgl_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-							LikvsDistAgl_P->Fill(Tup.Dist5D,Tup.LDiscriminant);
+							LikvsDistAgl_P->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 							}
 
       if (Herejcut&&Tup.BetaRICH<0) RvsDistTOF_P->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
@@ -152,17 +152,17 @@ void SlidesforPlot_Fill ()
       EdepUTOFvsR_D->Fill (Tup.R,Tup.EdepTOFU,Tup.mcweight);
       EdepLTOFvsR_D->Fill (Tup.R,Tup.EdepTOFD,Tup.mcweight);
       EdepTrackvsR_D->Fill (Tup.R,Tup.EdepTrack,Tup.mcweight);
-      if (Herejcut&&Betastrongcut&&Tup.BetaRICH<0) {
+      if (Herejcut&&Betastrongcut&&Tup.BetaRICH<0 && (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) >1.875) {
 						DistTOF_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      						LikvsDistTOF_D->Fill(Tup.Dist5D,Tup.LDiscriminant);
+      						LikvsDistTOF_D->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 						}
-	if (Herejcut&&Betastrongcut&& cmask.isFromNaF() ) {
+	if (Herejcut&&Betastrongcut&& cmask.isFromNaF() && (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) >1.875)  {
 						DistNaF_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      						LikvsDistNaF_D->Fill(Tup.Dist5D,Tup.LDiscriminant); 
+      						LikvsDistNaF_D->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D); 
 						}									
-	if (Herejcut&&Betastrongcut&& cmask.isFromAgl() ) {
+	if (Herejcut&&Betastrongcut&& cmask.isFromAgl() && (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) >1.875 ) {
 						DistAgl_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
-						LikvsDistAgl_D->Fill(Tup.Dist5D,Tup.LDiscriminant);
+						LikvsDistAgl_D->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 						}
       if (Herejcut&&Tup.BetaRICH<0) RvsDistTOF_D->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
       if (Herejcut&& cmask.isFromNaF() ) RvsDistNaF_D->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
@@ -194,9 +194,9 @@ void SlidesforPlot_D_Fill ()
       RvsBetaTOF->Fill (Tup.R,Tup.Beta);
       if ( cmask.isFromNaF() ) RvsBetaNaF->Fill (Tup.R,Tup.BetaRICH);
       if ( cmask.isFromAgl() ) RvsBetaAgl->Fill (Tup.R,Tup.BetaRICH);
-      if (Betastrongcut&&Tup.BetaRICH<0) MassTOF->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) );
-      if (Betastrongcut&& cmask.isFromNaF() ) MassNaF->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
-      if (Betastrongcut&& cmask.isFromAgl() ) MassAgl->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
+      if (Betastrongcut&&Tup.BetaRICH<0 && Tup.Rcutoff > 1.5*RBeta->Eval(Tup.Beta) && Tup.R>1.2*Tup.Rcutoff ) MassTOF->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) );
+      if (Betastrongcut&& cmask.isFromNaF() && Tup.Rcutoff > 1.5*RBeta->Eval(Tup.BetaRICH)&& Tup.R>1.2*Tup.Rcutoff) MassNaF->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
+      if (Betastrongcut&& cmask.isFromAgl() && Tup.Rcutoff > 1.5*RBeta->Eval(Tup.BetaRICH)&& Tup.R>1.2*Tup.Rcutoff) MassAgl->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
       if (Likcut&&Distcut) {
          if (Betastrongcut&&Tup.BetaRICH<0) MassTOFQ->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) );
          if (Betastrongcut&& cmask.isFromNaF() ) MassNaFQ->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
@@ -263,12 +263,18 @@ void SlidesforPlot_Write()
    RvsDistTOF_P->Write();
    RvsDistNaF_P->Write();
    RvsDistAgl_P->Write();
-   RvsDistTOF_D->Write();
-   RvsDistNaF_D->Write();
-   RvsDistAgl_D->Write();
+   RvsDistTOF_D ->Write();
+   RvsDistNaF_D ->Write();
+   RvsDistAgl_D ->Write();
    RvsDistTOF_He->Write();
    RvsDistNaF_He->Write();
    RvsDistAgl_He->Write();
+   LikvsDistTOF_P->Write();
+   LikvsDistNaF_P->Write();
+   LikvsDistAgl_P->Write();
+   LikvsDistTOF_D->Write();
+   LikvsDistNaF_D->Write();
+   LikvsDistAgl_D->Write();
    sigmagen_bad->Write();
 }
 

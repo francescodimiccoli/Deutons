@@ -74,6 +74,16 @@ void Acceptance(string filename){
 	TH1F* LikP_Correction_NaF  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionNaF" 		);
 	TH1F* LikP_Correction_Agl  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_P_CorrectionAgl" 		);
 
+	TH1F* DistD_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_D_CorrectionR"  		); 
+	TH1F* DistD_Correction_TOF =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_D_CorrectionTOF"		);
+	TH1F* DistD_Correction_NaF =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_D_CorrectionNaF"		);
+	TH1F* DistD_Correction_Agl =(TH1F*) inputHistoFile -> Get ("Results/Dist_DvsMC_D_CorrectionAgl"		);
+                                                                                      
+	TH1F* LikD_Correction_R    =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_D_CorrectionR"   		);
+	TH1F* LikD_Correction_TOF  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_D_CorrectionTOF" 		);
+	TH1F* LikD_Correction_NaF  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_D_CorrectionNaF" 		);
+	TH1F* LikD_Correction_Agl  =(TH1F*) inputHistoFile -> Get ("Results/Lik_DvsMC_D_CorrectionAgl" 		);
+
 	TH1F* RICH_Correction_P_NaF =(TH1F*) inputHistoFile -> Get ("Results/RICH_DvsMC_P_CorrectionNaF"		);
 	TH1F* RICH_Correction_P_Agl =(TH1F*) inputHistoFile -> Get ("Results/RICH_DvsMC_P_CorrectionAgl"		);
 	
@@ -111,7 +121,7 @@ void Acceptance(string filename){
 	
 
 	//qual
-	AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);
+	/*AcceptanceP -> Apply_DvsMCcorrection_R(DistP_Correction_R);
 	AcceptanceP -> Apply_DvsMCcorrection_R(LikP_Correction_R );
 	
 	AcceptanceP -> Apply_DvsMCcorrection_TOF(DistP_Correction_TOF);
@@ -122,14 +132,14 @@ void Acceptance(string filename){
         AcceptanceP -> Apply_DvsMCcorrection_NaF(LikP_Correction_NaF);
         AcceptanceP -> Apply_DvsMCcorrection_Agl(LikP_Correction_Agl);
 	
-/*	AcceptanceD -> Apply_DvsMCcorrection_TOF(DistP_Correction_TOF,6);
-        AcceptanceD -> Apply_DvsMCcorrection_NaF(DistP_Correction_NaF,6);
-        AcceptanceD -> Apply_DvsMCcorrection_Agl(DistP_Correction_Agl,6);
+	AcceptanceD -> Apply_DvsMCcorrection_TOF(DistD_Correction_TOF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_NaF(DistD_Correction_NaF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_Agl(DistD_Correction_Agl,6);
 
-        AcceptanceD -> Apply_DvsMCcorrection_TOF(LikP_Correction_TOF,6);
-        AcceptanceD -> Apply_DvsMCcorrection_NaF(LikP_Correction_NaF,6);
-        AcceptanceD -> Apply_DvsMCcorrection_Agl(LikP_Correction_Agl,6);
-*/
+        AcceptanceD -> Apply_DvsMCcorrection_TOF(LikD_Correction_TOF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_NaF(LikD_Correction_NaF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_Agl(LikD_Correction_Agl,6);*/
+
 	//rich
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(RICH_Correction_P_Agl);

@@ -55,12 +55,12 @@ void SlidesforPlot (string filename)
    TH1F * DistTOF_He= (TH1F*) inputHistoFile->Get ("DistTOF_He");
    TH1F * DistNaF_He= (TH1F*) inputHistoFile->Get ("DistNaF_He");
    TH1F * DistAgl_He= (TH1F*) inputHistoFile->Get ("DistAgl_He");
-   TH2F * RvsDistTOF_P= (TH2F*) inputHistoFile->Get ("RvsDistTOF_P");
-   TH2F * RvsDistNaF_P= (TH2F*) inputHistoFile->Get ("RvsDistNaF_P");
-   TH2F * RvsDistAgl_P= (TH2F*) inputHistoFile->Get ("RvsDistAgl_P");
-   TH2F * RvsDistTOF_D= (TH2F*) inputHistoFile->Get ("RvsDistTOF_D");
-   TH2F * RvsDistNaF_D= (TH2F*) inputHistoFile->Get ("RvsDistNaF_D");
-   TH2F * RvsDistAgl_D= (TH2F*) inputHistoFile->Get ("RvsDistAgl_D");
+   TH2F * LikvsDistTOF_P= (TH2F*) inputHistoFile->Get ("LikvsDistTOF_P");
+   TH2F * LikvsDistNaF_P= (TH2F*) inputHistoFile->Get ("LikvsDistNaF_P");
+   TH2F * LikvsDistAgl_P= (TH2F*) inputHistoFile->Get ("LikvsDistAgl_P");
+   TH2F * LikvsDistTOF_D= (TH2F*) inputHistoFile->Get ("LikvsDistTOF_D");
+   TH2F * LikvsDistNaF_D= (TH2F*) inputHistoFile->Get ("LikvsDistNaF_D");
+   TH2F * LikvsDistAgl_D= (TH2F*) inputHistoFile->Get ("LikvsDistAgl_D");
 
    TCanvas *p1 =new TCanvas ("RvsBeta TOF MC");
    TCanvas *p2 =new TCanvas ("RvsBeta NaF MC");
@@ -86,9 +86,10 @@ void SlidesforPlot (string filename)
    TCanvas *p16=new TCanvas ("Distance discr. TOF MC");
    TCanvas *p17=new TCanvas ("Distance discr. NaF MC");
    TCanvas *p18=new TCanvas ("Distance discr. Agl MC");
-   TCanvas *p19=new TCanvas ("DistvsR  TOF MC");
-   TCanvas *p20=new TCanvas ("DistvsR  NaF MC");
-   TCanvas *p21=new TCanvas ("DistvsR  Agl MC");
+   
+   TCanvas *p19=new TCanvas ("LikvsDist  TOF MC");
+   TCanvas *p20=new TCanvas ("LikvsDist  NaF MC");
+   TCanvas *p21=new TCanvas ("LikvsDist  Agl MC");
 
 
 
@@ -536,7 +537,7 @@ void SlidesforPlot (string filename)
    DistAgl_P->Draw ("same");
 
    cout<<"******************* R vs Dist plots ******************"<<endl;
-   p19->cd();
+  /* p19->cd();
    gPad->SetGridx();
    gPad->SetGridy();
    RvsDistTOF_P->SetMarkerColor (2);
@@ -575,6 +576,63 @@ void SlidesforPlot (string filename)
    RvsDistAgl_D->GetZaxis()->SetRangeUser (1,400);
    RvsDistAgl_D->Draw();
    RvsDistAgl_P->Draw ("same");
+   */
+
+
+   p19->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   gPad->SetLogy();
+   LikvsDistTOF_P->SetMarkerColor (2);
+   LikvsDistTOF_D->SetMarkerColor (4);
+   LikvsDistTOF_P->SetTitle ("Likelihood vs Distance from D TOF (MC)");
+   LikvsDistTOF_P->GetXaxis()->SetTitle ("-log(1-Likelihood Discr.)");
+   LikvsDistTOF_P->GetYaxis()->SetTitle ("Distance from D TOF");
+   LikvsDistTOF_D -> SetContour(15);
+   LikvsDistTOF_P->SetMarkerStyle (8);
+   LikvsDistTOF_P->SetMarkerSize(0.15);
+   LikvsDistTOF_P->GetXaxis()->SetRangeUser(0,2.6);	
+   LikvsDistTOF_D -> SetLineWidth(3);
+   LikvsDistTOF_P->Draw ();
+   LikvsDistTOF_D->Draw("CONT3,same");
+
+   p20->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   gPad->SetLogy();
+   LikvsDistNaF_P->SetMarkerColor (2);
+   LikvsDistNaF_D->SetMarkerColor (4);
+   LikvsDistNaF_P->SetTitle ("Likelihood vs Distance from D NaF (MC)");
+   LikvsDistNaF_P->GetXaxis()->SetTitle ("-log(1-Likelihood Discr.)");
+   LikvsDistNaF_P->GetYaxis()->SetTitle ("Distance from D TOF");
+   LikvsDistNaF_P->SetMarkerStyle (8);
+   LikvsDistNaF_P->SetMarkerSize(0.15);	
+   LikvsDistNaF_D -> SetContour(15);
+   LikvsDistNaF_D -> SetLineWidth(3);
+   LikvsDistNaF_P->GetXaxis()->SetRangeUser(0,4);	
+   LikvsDistNaF_P->Draw ("same");
+   LikvsDistNaF_D->Draw("CONT3,same");
+
+
+   p21->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   gPad->SetLogy();
+   LikvsDistAgl_P->SetMarkerColor (2);
+   LikvsDistAgl_D->SetMarkerColor (4);
+   LikvsDistAgl_P->SetTitle ("Likelihood vs Distance from D Agl (MC)");
+   LikvsDistAgl_P->GetXaxis()->SetTitle ("-log(1-Likelihood Discr.)");
+   LikvsDistAgl_P->GetYaxis()->SetTitle ("Distance from D TOF");
+   LikvsDistAgl_P->SetMarkerStyle (8);
+   LikvsDistAgl_P->SetMarkerSize(0.15);
+   LikvsDistAgl_D -> SetContour(15);
+   LikvsDistAgl_D -> SetLineWidth(3);
+   LikvsDistAgl_P->GetXaxis()->SetRangeUser(0,5);	
+   LikvsDistAgl_P->Draw ();
+   LikvsDistAgl_D->Draw("CONT3,same");
+
+
+
 
 
    //fileFinalPlots->Flush();
