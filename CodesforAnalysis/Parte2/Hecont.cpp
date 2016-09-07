@@ -95,38 +95,35 @@ void HecutMC_Fill() {
 	}
 	
 	
-		//He->P before L1
-	if(HeL1sample){	
-		if(cmask.isOnlyFromToF()){
+	//total He->P 
+	if(Massa_gen>2){	
 			Kbin=ToFDB.GetBin(RUsed);
-			HeEff->beforeTOF->Fill(Kbin);
-			if(IsPfromHeL1)    HeEff->afterTOF->Fill(Kbin);	
-		}	
-		if(cmask.isFromNaF()) {
+			if(Likcut&&!(Distcut)) HeEff->beforeTOF->Fill(Kbin);
+			if(Likcut&&Distcut) HeEff->afterTOF->Fill(Kbin);	
+			
 			Kbin=NaFDB.GetBin(RUsed);
-			HeEff->beforeNaF->Fill(Kbin);
-			if(IsPfromHeL1)    HeEff->afterNaF->Fill(Kbin);		
-		}
-		if(cmask.isFromAgl()) {
+			if(Likcut&&!(Distcut)) HeEff->beforeNaF->Fill(Kbin);
+			if(cmask.isFromNaF()) if(Likcut&&Distcut)    HeEff->afterNaF->Fill(Kbin);		
+	
 			Kbin=AglDB.GetBin(RUsed);
-			 HeEff->beforeAgl->Fill(Kbin);
-			if(IsPfromHeL1)    HeEff->afterAgl->Fill(Kbin);
-		}
+			if(Likcut&&!(Distcut)) HeEff->beforeAgl->Fill(Kbin);
+			if(cmask.isFromAgl()) if(Likcut&&Distcut)    HeEff->afterAgl->Fill(Kbin);
 	}
+	
 	if(HeL1sample) {	
 		//He->P in TRD
 		if(cmask.isOnlyFromToF()){ 
 			Kbin=ToFDB.GetBin(RUsed);
 			if(IsHeL1 ) {
 				HeTRDCont_MC ->beforeTOF->Fill(Kbin);
-				if(Distcut) HeTRDCont_MC ->afterTOF->Fill(Kbin);
+				if(Distcut && Likcut) HeTRDCont_MC ->afterTOF->Fill(Kbin);
 			}
 		}
 		if(cmask.isFromNaF()) {
 			Kbin=NaFDB.GetBin(RUsed);
 			if(IsHeL1 ) {
 				HeTRDCont_MC ->beforeNaF->Fill(Kbin);
-				if(Distcut) HeTRDCont_MC ->afterNaF->Fill(Kbin);
+				if(Distcut && Likcut) HeTRDCont_MC ->afterNaF->Fill(Kbin);
 			}
 		}		
 
@@ -134,7 +131,7 @@ void HecutMC_Fill() {
 			Kbin=AglDB.GetBin(RUsed);
 			if(IsHeL1) {
 				HeTRDCont_MC ->beforeAgl->Fill(Kbin);
-				if(Distcut) HeTRDCont_MC ->afterAgl->Fill(Kbin);
+				if(Distcut && Likcut) HeTRDCont_MC ->afterAgl->Fill(Kbin);
 			}
 		}
 
@@ -210,20 +207,18 @@ void HecutD_Fill() {
 
 
 
-	Kbin=ToFDB.GetBin(RUsed);
-	if(Likcut&&!(Distcut)) DataHeCont->beforeTOF->Fill(Kbin);
-	if(Distcut && Likcut)    DataHeCont->afterTOF ->Fill(Kbin);	
+		Kbin=ToFDB.GetBin(RUsed);
+		if(Likcut&&!(Distcut))   DataHeCont->beforeTOF->Fill(Kbin);
+		if(Distcut && Likcut)    DataHeCont->afterTOF ->Fill(Kbin);	
 
-	if(cmask.isFromNaF()) {	
 		Kbin=NaFDB.GetBin(RUsed);
 		if(Likcut&&!(Distcut)) DataHeCont->beforeNaF->Fill(Kbin);
-		if(Distcut && Likcut)    DataHeCont->afterNaF ->Fill(Kbin);
-	}
-	if(cmask.isFromAgl()) {
+		if(cmask.isFromNaF()) if(Distcut && Likcut)    DataHeCont->afterNaF ->Fill(Kbin);
+	
 		Kbin=AglDB.GetBin(RUsed);
 		if(Likcut&&!(Distcut)) DataHeCont->beforeAgl->Fill(Kbin);
-		if(Distcut && Likcut)    DataHeCont->afterAgl ->Fill(Kbin);
-	}
+		if(cmask.isFromAgl()) if(Distcut && Likcut)    DataHeCont->afterAgl ->Fill(Kbin);
+
 
 	//He->P in TRD
 	if(HeL1sample) {
@@ -231,14 +226,14 @@ void HecutD_Fill() {
 			Kbin=ToFDB.GetBin(RUsed);
 			if(Tup.Rcutoff > 1.3*RBeta->Eval(Tup.Beta) &&  IsHeL1 ) {
 				HeTRDCont_DATA ->beforeTOF->Fill(Kbin);
-				if(Distcut) HeTRDCont_DATA ->afterTOF->Fill(Kbin);
+				if(Distcut && Likcut) HeTRDCont_DATA ->afterTOF->Fill(Kbin);
 			}
 		}
 		if(cmask.isFromNaF()) {
 			Kbin=NaFDB.GetBin(RUsed);
 			if(Tup.Rcutoff > 1.3*RBeta->Eval(Tup.BetaRICH) && IsHeL1 ) {
 				HeTRDCont_DATA ->beforeNaF->Fill(Kbin);
-				if(Distcut) HeTRDCont_DATA ->afterNaF->Fill(Kbin);
+				if(Distcut && Likcut) HeTRDCont_DATA ->afterNaF->Fill(Kbin);
 			}
 		}               
 
@@ -246,7 +241,7 @@ void HecutD_Fill() {
 			Kbin=AglDB.GetBin(RUsed);
 			if(Tup.Rcutoff > 1.3*RBeta->Eval(Tup.BetaRICH) && IsHeL1 ) {
 				HeTRDCont_DATA ->beforeAgl->Fill(Kbin);
-				if(Distcut) HeTRDCont_DATA ->afterAgl->Fill(Kbin);
+				if(Distcut && Likcut) HeTRDCont_DATA ->afterAgl->Fill(Kbin);
 			}
 		}
 
@@ -300,11 +295,11 @@ void HecutMC_Write() {
 
 TH1F * Eval_Contamination(TH1F * Q1Data, TH1F * Q2Data, TH1F * HefragmL1, TH1F * HefragmTRD){
 		TH1F * Contamination = (TH1F *) Q2Data -> Clone();
-		
-		for (int i = 0; i<Contamination ->GetNbinsX();i++){
+		Contamination -> Multiply ( HefragmL1 );
+		/*for (int i = 0; i<Contamination ->GetNbinsX();i++){
 			float Heliums = Contamination->GetBinContent(i+1)/(1 - HefragmL1->GetBinContent(i+1) - HefragmTRD->GetBinContent(i+1));
 			Contamination->SetBinContent(i+1,Heliums*(HefragmL1->GetBinContent(i+1) + HefragmTRD->GetBinContent(i+1)));
-		}
+		}*/
 		Contamination -> Divide (Q1Data );
 		return Contamination;
 }
@@ -383,10 +378,10 @@ void Hecut(string filename) {
         TH1F * efffragmL1_NaF = (TH1F *)HeEff->effNaF->Clone();
 	TH1F * efffragmL1_Agl = (TH1F *)HeEff->effAgl->Clone();
 
-	efffragmL1_TOF -> Add ((TH1F *)HeTRDCont_MC -> effTOF->Clone(),-1);
+/*	efffragmL1_TOF -> Add ((TH1F *)HeTRDCont_MC -> effTOF->Clone(),-1);
 	efffragmL1_NaF -> Add ((TH1F *)HeTRDCont_MC -> effNaF->Clone(),-1);
         efffragmL1_Agl -> Add ((TH1F *)HeTRDCont_MC -> effAgl->Clone(),-1);
-
+*/
 	TH1F * efffragmL1cut_TOF= new TH1F("efffragmL1cut_TOF","efffragmL1cut_TOF",nbinsToF,0,nbinsToF); 
         TH1F * efffragmL1cut_NaF= new TH1F("efffragmL1cut_NaF","efffragmL1cut_NaF",nbinsNaF,0,nbinsNaF);  
         TH1F * efffragmL1cut_Agl= new TH1F("efffragmL1cut_Agl","efffragmL1cut_Agl",nbinsAgl,0,nbinsAgl);  
