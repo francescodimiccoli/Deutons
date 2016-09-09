@@ -142,7 +142,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    if(INDX==READ) {
       if(frac=="tot") Hecut(filename);
       SlidesforPlot(filename);
-      //DistanceCut(filename);
+      DistanceCut(filename);
       Correlazione_Preselezioni(filename);
 
       MCpreeff(filename);
