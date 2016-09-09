@@ -40,9 +40,9 @@ void MCpreseff_Fill() {
 
 	if(Massa_gen>1&&Massa_gen<2) {
 		// R bins      
-		((TH2*)EffpreselMCD->beforeR) ->Fill( PRB.GetRBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight);
+		((TH2*)EffpreselMCD->beforeR) ->Fill( DRB.GetRBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight);
 		if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0)
-			((TH2*) EffpreselMCD->afterR) ->Fill( PRB.GetRBin(RUsed),ReturnMCGenType(),Tup.mcweight);
+			((TH2*) EffpreselMCD->afterR) ->Fill( DRB.GetRBin(RUsed),ReturnMCGenType(),Tup.mcweight);
 
 		// Beta bins
 

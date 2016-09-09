@@ -209,7 +209,7 @@ void Hecut_Plot(
         gPad->SetGridx();
         gPad->SetGridy();
         gPad->SetLogx();
-	TH2F * Frame = new TH2F("Helium Fragmentation above L1 (He->D,P,T)","Helium Fragmentation above L1(He->D,P,T)",1000,0.5,30,1000,0,1);
+	TH2F * Frame = new TH2F("Total Helium Fragmentation (MC) (He->D,P,T)","Total Helium Fragmentation (MC) (He->D,P,T)",10000,0.5,30,10000,0,0.3);
         TGraphErrors *efffragmTOF=new TGraphErrors();
         for(int K=0; K<nbinsToF; K++) {
                 efffragmTOF->SetPoint(K,ToFDB.RigBinCent(K),fragmeffTOF->GetBinContent(K+1));
@@ -250,7 +250,7 @@ void Hecut_Plot(
         gPad->SetGridx();
         gPad->SetGridy();
         gPad->SetLogx();
-	TH2F * FrameTRD = new TH2F("Helium Fragmentation in TRD (He->D,P,T)","Helium Fragmentation in TRD (He->D,P,T)",1000,0.5,30,1000,0,1);
+	TH2F * FrameTRD = new TH2F("Helium Fragmentation in TRD (He->D,P,T)","Helium Fragmentation in TRD (He->D,P,T)",10000,0.5,30,10000,0,0.3);
         TGraphErrors *TRDfragmTOF=new TGraphErrors();
         TGraphErrors *TRDfragmTOFMC=new TGraphErrors();
 	for(int K=0; K<nbinsToF; K++) {
@@ -315,7 +315,7 @@ void Hecut_Plot(
         gPad->SetGridx();
         gPad->SetGridy();
         gPad->SetLogx();
-        TH2F * Frame2 = new TH2F("He -> (D,P,T) Contamination estimation","He -> (D,P,T) Contamination estimation",1000,0.5,30,1000,0,1);
+        TH2F * Frame2 = new TH2F("He -> (D,P,T) Contamination estimation","He -> (D,P,T) Contamination estimation",10000,0.5,30,10000,0,0.3);
         TGraphErrors *contTOF=new TGraphErrors();
         for(int K=0; K<nbinsToF; K++) {
                 contTOF->SetPoint(K,ToFDB.RigBinCent(K),ContaminationTOF->GetBinContent(K+1));

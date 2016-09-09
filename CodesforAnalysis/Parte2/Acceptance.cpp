@@ -25,10 +25,10 @@ void Acceptance(string filename){
 	enum {protons, deutons};
 
  	AcceptanceP -> Set_MC_Par  (0.0308232619, 0.5, 100); 
- 	AcceptanceP -> Set_Binning (protons);
+ 	AcceptanceP -> Set_Binning (false);
 
-	AcceptanceD -> Set_MC_Par  (0.0242236931, 0.5, 20); 
-	AcceptanceD -> Set_Binning (deutons);
+	AcceptanceD -> Set_MC_Par  (0.0242236931, 1, 20); 
+	AcceptanceD -> Set_Binning (true);
 	
 	AcceptanceP-> Eval_Gen_Acceptance(1);
 	AcceptanceP-> Eval_MC_Acceptance();
