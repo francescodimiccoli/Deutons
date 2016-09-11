@@ -106,6 +106,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       HecutMC_Write();
       DATAEdepLAT_Write();
       SlidesforPlot_Write();
+      MCdeutonsDistr_Write();
       DistanceCut_Write();
       AntiDCutOptimization_Write();
       DATAUnbiaseff_Write();
@@ -155,6 +156,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       AntiDEfficiencies(filename);
       MCFullseteff(filename);
       MigrationMatrix(filename);
+      MCdeutonsDistr(filename);
       DVSMCTrackeff(filename);
       DATAUnbiaseff(filename);
       DATApreSeleff(filename);
@@ -312,6 +314,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       DistanceCut_Fill();
       AntiDCutOptimization_Fill();
       MCControlsamplecuteff_Fill();
+      MCdeutonsDistr_Fill();
       MCQualeff_Fill();
       DVSMCQualeff2_Fill();
       DVSMCQualeffD_Fill();

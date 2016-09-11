@@ -131,15 +131,15 @@ void Acceptance(string filename){
 	AcceptanceP -> Apply_DvsMCcorrection_TOF(LikP_Correction_TOF);
         AcceptanceP -> Apply_DvsMCcorrection_NaF(LikP_Correction_NaF);
         AcceptanceP -> Apply_DvsMCcorrection_Agl(LikP_Correction_Agl);
-	
-	/*AcceptanceD -> Apply_DvsMCcorrection_TOF(DistD_Correction_TOF,6);
+/*	
+	AcceptanceD -> Apply_DvsMCcorrection_TOF(DistD_Correction_TOF,6);
         AcceptanceD -> Apply_DvsMCcorrection_NaF(DistD_Correction_NaF,6);
         AcceptanceD -> Apply_DvsMCcorrection_Agl(DistD_Correction_Agl,6);
 
         AcceptanceD -> Apply_DvsMCcorrection_TOF(LikD_Correction_TOF,6);
         AcceptanceD -> Apply_DvsMCcorrection_NaF(LikD_Correction_NaF,6);
         AcceptanceD -> Apply_DvsMCcorrection_Agl(LikD_Correction_Agl,6);
-	*/
+*/	
 	//rich
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(RICH_Correction_P_Agl);

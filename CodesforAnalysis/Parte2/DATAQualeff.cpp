@@ -29,30 +29,30 @@ void DATAQualeff_Fill (int zona)
 
    if (cmask.isFromNaF() ) { //NaF
       LATDistanceDATA_NaF  ->beforeR->Fill (Kbin,zona);
-      if (Tup.Dist5D_P<6) 
+      if (Distcut) 
          LATDistanceDATA_NaF  ->afterR ->Fill (Kbin,zona);
          LATLikelihoodDATA_NaF->beforeR->Fill (Kbin,zona);
       
-     if (Tup.Dist5D_P<6 && Likcut)
+     if (Distcut && Likcut)
          LATLikelihoodDATA_NaF->afterR ->Fill (Kbin,zona);
    }  
    if (cmask.isFromAgl() ) { // Agl
       LATDistanceDATA_Agl     ->beforeR->Fill (Kbin,zona);
-      if (Tup.Dist5D_P<6) 
+      if (Distcut) 
          LATDistanceDATA_Agl  ->afterR ->Fill (Kbin,zona);
          LATLikelihoodDATA_Agl->beforeR->Fill (Kbin,zona);
       
-      if (Tup.Dist5D_P<6 && Likcut)
+      if (Distcut && Likcut)
          LATLikelihoodDATA_Agl->afterR ->Fill (Kbin,zona);
    }
    // ToF
    
       LATDistanceDATA_TOF  ->beforeR->Fill (Kbin,zona);
-      if (Tup.Dist5D_P<6) 
+      if (Distcut) 
          LATDistanceDATA_TOF  ->afterR ->Fill (Kbin,zona);
          LATLikelihoodDATA_TOF->beforeR->Fill (Kbin,zona);
       
-      if (Tup.Dist5D_P<6 && Likcut)
+      if (Distcut && Likcut)
          LATLikelihoodDATA_TOF->afterR ->Fill (Kbin,zona);
    
 

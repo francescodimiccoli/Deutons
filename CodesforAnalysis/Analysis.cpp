@@ -49,6 +49,7 @@
 #include "Parte2/Eff_Factorizationtest.cpp"
 #include "Parte2/MigrationMatrix.cpp"
 #include "Parte2/MCFullSeteff.cpp"
+#include "Parte2/MCdeutonsDistr.cpp"
 #include "Parte2/AntiDCutOptimization.h"
 #include "Parte2/AntiDPredictions.h"
 #include "Parte2/DATAUnbiaseff.cpp"

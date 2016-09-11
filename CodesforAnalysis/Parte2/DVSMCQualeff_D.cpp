@@ -12,6 +12,9 @@ void DVSMCQualeffD_D_Fill(int zona){
         if(!trgpatt.IsPhysical()) return;
         if(!Herejcut) return;
 	if(!Betastrongcut) return;
+	if(fabs(Tup.EdepTOFU-Tup.EdepTOFD)>1) return;
+
+
 
 	//
 	int Kbin;
@@ -19,34 +22,37 @@ void DVSMCQualeffD_D_Fill(int zona){
 
 	//Beta bins
 	Kbin=ToFDB.GetBin(RUsed);
-	mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));	
-	if(mass>1.85&&mass<2.5)	{
+	mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));
+
+	float Lik = -log(1-Tup.LDiscriminant);
 	
-		if(-log(1-Tup.LDiscriminant)>1.3 && (Tup.Dist5D_P<20||Tup.Dist5D<20) ) {
+	if(mass>2&&mass<4)	{
+	
+		if(Lik > 1.7 && (Tup.Dist5D_P<3.5||Tup.Dist5D<3.5) ) {
 			Dist_DvsMC_D -> DataEff -> beforeTOF -> Fill(Kbin,zona);
 			if(Distcut) Dist_DvsMC_D -> DataEff -> afterTOF -> Fill(Kbin,zona);
 		}
 
-		if(Distcut){
+		if(Tup.Dist5D<2){
 			Lik_DvsMC_D  -> DataEff -> beforeTOF -> Fill(Kbin,zona);
 			if(Likcut) Lik_DvsMC_D  -> DataEff -> afterTOF -> Fill(Kbin,zona);
 		}
 
 	}
 	//NaF
-	if(cmask.isFromNaF()) {	
+	if(cmask.isFromNaF() ) {	
 		Kbin=NaFDB.GetBin(RUsed);
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
-		if(mass>1.85&&mass<2.5) {
+		if(mass>2&&mass<4 ) {
 
-			if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D<20||Tup.Dist5D<20) ) {
+			if(Lik>2.85 && (Tup.Dist5D<2.5||Tup.Dist5D<2.5) ) {
 				Dist_DvsMC_D -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 				if(Distcut) Dist_DvsMC_D -> DataEff -> afterNaF -> Fill(Kbin,zona);
 			}
 
-			if(Distcut){
+			if(Tup.Dist5D<1.5 && Lik > 2 ){
 				Lik_DvsMC_D  -> DataEff -> beforeNaF -> Fill(Kbin,zona);
-				if(Likcut) Lik_DvsMC_D  -> DataEff -> afterNaF -> Fill(Kbin,zona);
+				if(Lik > 2.4) Lik_DvsMC_D  -> DataEff -> afterNaF -> Fill(Kbin,zona);
 			}
 
 		}
@@ -55,16 +61,16 @@ void DVSMCQualeffD_D_Fill(int zona){
 	if(cmask.isFromAgl()) {
 		Kbin=AglDB.GetBin(RUsed);
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
-		if(mass>1.85&&mass<2.5) {
+		if(mass>2&&mass<4) {
 
-			if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D<20||Tup.Dist5D<20)  ) {
+			if(Lik>3 && (Tup.Dist5D<4||Tup.Dist5D<4)  ) {
 				Dist_DvsMC_D -> DataEff -> beforeAgl -> Fill(Kbin,zona);
 				if(Distcut) Dist_DvsMC_D -> DataEff -> afterAgl -> Fill(Kbin,zona);
 			}
 
-			if(Distcut){
+			if(Tup.Dist5D<2 && Lik > 2){
 				Lik_DvsMC_D  -> DataEff -> beforeAgl -> Fill(Kbin,zona);
-				if(Likcut) Lik_DvsMC_D  -> DataEff -> afterAgl -> Fill(Kbin,zona);
+				if(Lik > 2.4) Lik_DvsMC_D  -> DataEff -> afterAgl -> Fill(Kbin,zona);
 			}
 
 		}	
@@ -84,27 +90,29 @@ void DVSMCQualeffD_Fill(){
 	if(!trgpatt.IsPhysical()) return;
 	if(!Herejcut) return;
 	if(!Betastrongcut) return;
-		
+	if(fabs(Tup.EdepTOFU-Tup.EdepTOFD)>1) return;
+ 		
 
 	if(!(Massa_gen>1&&Massa_gen<2)) return;
 
 	int Kbin;
 	float mass=0;	
 
+	float Lik = -log(1-Tup.LDiscriminant);	
 	//Beta bins
 
 	//ToF
 	Kbin=ToFDB.GetBin(RUsed);	
 	mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));
 
-	if(mass>1.85&&mass<2.5) {
+	if(mass>2&&mass<4) {
 
-		if(-log(1-Tup.LDiscriminant)>1.3 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) {
+		if(Lik> 1.7 && (Tup.Dist5D_P<3.5||Tup.Dist5D<3.5)) {
 			((TH2*)Dist_DvsMC_D -> MCEff -> beforeTOF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 			if(Distcut)  ((TH2*)Dist_DvsMC_D -> MCEff -> afterTOF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 		}
 
-		if(Distcut){
+		if(Tup.Dist5D<2){
 			((TH2*)Lik_DvsMC_D  -> MCEff -> beforeTOF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 			if(Likcut)  ((TH2*)Lik_DvsMC_D  -> MCEff -> afterTOF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 		}
@@ -114,16 +122,16 @@ void DVSMCQualeffD_Fill(){
 	if(cmask.isFromNaF()) {	
 		Kbin=NaFDB.GetBin(RUsed);	
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
-		if(mass>1.85&&mass<2.5) {
+		if(mass>2&&mass<4) {
 
-			if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) {
+			if(Lik>2.85  && (Tup.Dist5D_P<2.5||Tup.Dist5D<2.5)) {
 				((TH2*)Dist_DvsMC_D -> MCEff -> beforeNaF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 				if(Distcut)  ((TH2*)Dist_DvsMC_D -> MCEff -> afterNaF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 			}
 
-			if(Distcut){
+			if(Tup.Dist5D<1.5 && Lik>2 ){
 				((TH2*)Lik_DvsMC_D  -> MCEff -> beforeNaF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
-				if(Likcut)  ((TH2*)Lik_DvsMC_D  -> MCEff -> afterNaF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
+				if(Lik > 2.4)  ((TH2*)Lik_DvsMC_D  -> MCEff -> afterNaF) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 			}
 		}
 	}
@@ -133,16 +141,16 @@ void DVSMCQualeffD_Fill(){
 	if(cmask.isFromAgl()) {
 		Kbin=AglDB.GetBin(RUsed);
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
-		if(mass>1.85&&mass<2.5) {
+		if(mass>2&&mass<4) {
 
-			if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) {
+			if(Lik>3 && (Tup.Dist5D_P<4||Tup.Dist5D<4)) {
 				((TH2*)Dist_DvsMC_D -> MCEff -> beforeAgl) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 				if(Distcut)  ((TH2*)Dist_DvsMC_D -> MCEff -> afterAgl) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 			}
 
-			if(Distcut){
+			if(Tup.Dist5D<2 &&Lik>2 ){
 				((TH2*)Lik_DvsMC_D  -> MCEff -> beforeAgl) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
-				if(Likcut)  ((TH2*)Lik_DvsMC_D  -> MCEff -> afterAgl) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
+				if(Lik>2.4)  ((TH2*)Lik_DvsMC_D  -> MCEff -> afterAgl) -> Fill(Kbin,ReturnMCGenType(),Tup.mcweight);
 			}
 
 		}
