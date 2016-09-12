@@ -71,6 +71,22 @@ void MCFullseteff(string filename){
 	EffFullsetMCDAgl_TH2F-> Multiply( EffPreMCDAgl_TH2F 	); 
 
 
+	//fitting
+
+	FitFunction * FitDTOF = new FitFunction( EffFullsetMCD_TH2F   ,4);	
+	FitFunction * FitDNaF = new FitFunction( EffFullsetMCDNaF_TH2F,4);	
+	FitFunction * FitDAgl = new FitFunction( EffFullsetMCDAgl_TH2F,4);	
+
+	FitDTOF->FitValues(); 
+        FitDNaF->FitValues();
+        FitDAgl->FitValues();
+
+	EffFullsetMCD_TH2F   =(TH2F*)FitDTOF->ReturnFittedValues();
+        EffFullsetMCDNaF_TH2F=(TH2F*)FitDNaF->ReturnFittedValues();
+        EffFullsetMCDAgl_TH2F=(TH2F*)FitDAgl->ReturnFittedValues();
+
+	//
+
 	EffFullsetMCP_R_TH1F	->SetName("EffFullsetMCP_EffR");
 	EffFullsetMCP_TH1F 	->SetName("EffFullsetMCP_EffTOF");
 	EffFullsetMCPNaF_TH1F	->SetName("EffFullsetMCP_EffNaF");

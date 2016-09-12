@@ -82,13 +82,13 @@ void OptimizationCut::NormalizeDistributions(){
 
 TH1*  OptimizationCut::GetBinP(int nbin) {
 	string nome = "D_" + to_string(nbin);
-	TH1F * Slice =  ProjectionXtoTH1F( (TH2F* )Distrib_P,nome,nbin,nbin+1);
+	TH1F * Slice =  ProjectionXtoTH1F( (TH2F* )Distrib_P,nome,nbin+1,nbin+1);
 	return Slice;
 }	
 
 TH1*  OptimizationCut::GetBinD(int nbin) {
 	string nome = "P_" + to_string(nbin);
-        TH1F * Slice =  ProjectionXtoTH1F( (TH2F *)Distrib_D,nome,nbin,nbin+1);
+        TH1F * Slice =  ProjectionXtoTH1F( (TH2F *)Distrib_D,nome,nbin+1,nbin+1);
         return Slice;
 }
 

@@ -177,7 +177,7 @@ void DatavsMC::DivideHisto(TH1 *Histo1, TH1 *Histo2,TH1 * Correction){
             for(int mc_type=0;mc_type<mc_types;mc_type++){
 		    for(int iR=0;iR<Histo2->GetNbinsX();iR++){
 			    if(Histo2 -> GetBinContent(iR+1,mc_type+1)<1&&Histo2 -> GetBinContent(iR+1,mc_type+1)>0){
-				    Correction -> SetBinContent (iR+1,mc_type+1,Histo1 -> GetBinContent(iR+1));//(float)Histo2 -> GetBinContent(iR+1,mc_type+1));
+				    Correction -> SetBinContent (iR+1,mc_type+1,Histo1 -> GetBinContent(iR+1)/(float)Histo2 -> GetBinContent(iR+1,mc_type+1));
 				    Correction -> SetBinError(iR+1,mc_type+1,Histo1 -> GetBinError(iR+1,mc_type+1)); }
 			    else{
 				    Correction -> SetBinContent (iR+1,mc_type+1,0);

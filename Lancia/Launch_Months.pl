@@ -20,7 +20,7 @@ if($mode==2) { print "************************ ANALYSIS MODE *******************
 while($n<=$fine){
 	$jobs = `bjobs|wc -l`;
 	$jobsrun = `bjobs|grep RUN|wc -l`;
-	if($jobs==0){
+	if($jobs<=2){
 		if($mode==0||$mode==1){
 			$time = `date`;
 			print $jobs." ".$time;

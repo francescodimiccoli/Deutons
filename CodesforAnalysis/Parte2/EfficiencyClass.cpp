@@ -14,7 +14,12 @@ public:
     TH1 * effTOF;
     TH1 * effNaF;
     TH1 * effAgl;
-    
+   
+    //eff_fit	
+    TH1 * effTOF_fit; 	
+    TH1 * effNaF_fit;
+    TH1 * effAgl_fit;
+ 
     //name
     std::string name;				 
     //  Creation constructors:
@@ -72,7 +77,9 @@ public:
 
     void Write();
     void UpdateErrorbars();	
-    void Eval_Efficiency();		
+    void Eval_Efficiency();	
+    void Eval_FittedEfficiency();		
+		
 };
 
 
@@ -120,3 +127,36 @@ void Efficiency::Eval_Efficiency(){
         if(effNaF)	effNaF ->SetName((name	+ "_EffNaF").c_str());
         if(effAgl)	effAgl ->SetName((name	+ "_EffAgl").c_str());
 }
+
+
+void Efficiency::Eval_FittedEfficiency(){
+
+	if(effTOF) {
+		FitFunction * FitTOF = new FitFunction( effTOF,1);	
+		FitTOF->FitValues(); 
+		effTOF_fit =FitTOF-> ReturnFittedValues(); 
+	}
+
+	if(effNaF) {
+		FitFunction * FitNaF = new FitFunction( effNaF,1);	
+		FitNaF->FitValues(); 
+		effNaF_fit =FitNaF-> ReturnFittedValues(); 
+	}
+	
+	if(effAgl) {
+		FitFunction * FitAgl = new FitFunction( effAgl,1);	
+		FitAgl->FitValues(); 
+		effAgl_fit =FitAgl-> ReturnFittedValues(); 
+	}
+	
+	if(effTOF_fit)	effTOF_fit ->SetName((name	+ "_EffTOF").c_str());
+        if(effNaF_fit)	effNaF_fit ->SetName((name	+ "_EffNaF").c_str());
+        if(effAgl_fit)	effAgl_fit ->SetName((name	+ "_EffAgl").c_str());
+
+}
+
+
+
+
+
+

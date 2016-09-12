@@ -58,9 +58,9 @@ void AntiDEfficiencies(string filename){
         EffFullSetD_T_Agl-> Multiply( EffPreMCDAgl_TH2F ); 
 	
 	// select only one MC_Type for deuterons	
-	TH1F * EffFullSetD_TOF =  ProjectionXtoTH1F( (TH2F *)EffFullSetD_T_TOF,"EffFullSetD_TOF",2,3);
-	TH1F * EffFullSetD_NaF =  ProjectionXtoTH1F( (TH2F *)EffFullSetD_T_NaF,"EffFullSetD_NaF",2,3);
-	TH1F * EffFullSetD_Agl =  ProjectionXtoTH1F( (TH2F *)EffFullSetD_T_Agl,"EffFullSetD_Agl",2,3);
+	TH1F * EffFullSetD_TOF =  ProjectionXtoTH1F( (TH2F *)EffFullSetD_T_TOF,"EffFullSetD_TOF",2,2);
+	TH1F * EffFullSetD_NaF =  ProjectionXtoTH1F( (TH2F *)EffFullSetD_T_NaF,"EffFullSetD_NaF",2,2);
+	TH1F * EffFullSetD_Agl =  ProjectionXtoTH1F( (TH2F *)EffFullSetD_T_Agl,"EffFullSetD_Agl",2,2);
 	
 	// Final Distance cut
 	DiscriminantCutTOF->Eval_Efficiencies();	

@@ -149,7 +149,7 @@ void DATAQualeff (string filename)
    TH1F *LikLATcorr_Agl_fit   	= (TH1F *) LATLikelihoodDATA_Agl   -> LATcorrR_fit-> Clone();
    TH1F *DistLATcorr_Agl_fit  	= (TH1F *) LATDistanceDATA_Agl     -> LATcorrR_fit-> Clone();
 
-
+	for(int i=0;i<11;i++) cout<<LikLATcorr_TOF_fit->GetBinContent(i+1)<<endl;
 
 
 	finalHistos.Add( LATDistDATATOF      );

@@ -105,8 +105,8 @@ void Hecut_Plot(
 		gPad->SetLogy();
         	gPad->SetGridx();
         	gPad->SetGridy();
-		SlicesTOF[i]       = ProjectionXtoTH1F( (TH2F *)L1TOF_DATA,("SliceTOF"  + to_string(i)).c_str(),i+1,i+2);
-		SlicesTOFcutoff[i] = ProjectionXtoTH1F( (TH2F *)L1TOF_DATAcutoff,("SliceTOFc"  + to_string(i)).c_str(),i+1,i+2);
+		SlicesTOF[i]       = ProjectionXtoTH1F( (TH2F *)L1TOF_DATA,("SliceTOF"  + to_string(i)).c_str(),i+1,i+1);
+		SlicesTOFcutoff[i] = ProjectionXtoTH1F( (TH2F *)L1TOF_DATAcutoff,("SliceTOFc"  + to_string(i)).c_str(),i+1,i+1);
 		SlicesTOF[i] -> SetLineColor(4);
 		SlicesTOFcutoff[i] -> SetLineWidth(2);
 		SlicesTOFcutoff[i] -> SetLineColor(1);
@@ -125,8 +125,8 @@ void Hecut_Plot(
                 gPad->SetLogy();
                 gPad->SetGridx();
                 gPad->SetGridy();
-                SlicesNaF[i] = ProjectionXtoTH1F( (TH2F *)L1NaF_DATA,("SliceNaF"  + to_string(i)).c_str(),i+1,i+2);
-                SlicesNaFcutoff[i] = ProjectionXtoTH1F( (TH2F *)L1NaF_DATAcutoff,("SliceNaFc"  + to_string(i)).c_str(),i+1,i+2);
+                SlicesNaF[i] = ProjectionXtoTH1F( (TH2F *)L1NaF_DATA,("SliceNaF"  + to_string(i)).c_str(),i+1,i+1);
+                SlicesNaFcutoff[i] = ProjectionXtoTH1F( (TH2F *)L1NaF_DATAcutoff,("SliceNaFc"  + to_string(i)).c_str(),i+1,i+1);
 		SlicesNaF[i] -> SetLineColor(4);
                 SlicesNaF[i] -> SetLineWidth(2);
 		SlicesNaFcutoff[i] -> SetLineColor(1);
@@ -145,8 +145,8 @@ void Hecut_Plot(
                 gPad->SetLogy();
                 gPad->SetGridx();
                 gPad->SetGridy();
-                SlicesAgl[i]   = ProjectionXtoTH1F( (TH2F *)L1Agl_DATA,("SliceAgl"  + to_string(i)).c_str(),i+1,i+2);
-                SlicesAglcutoff[i]   = ProjectionXtoTH1F( (TH2F *)L1Agl_DATAcutoff,("SliceAglc"  + to_string(i)).c_str(),i+1,i+2);
+                SlicesAgl[i]   = ProjectionXtoTH1F( (TH2F *)L1Agl_DATA,("SliceAgl"  + to_string(i)).c_str(),i+1,i+1);
+                SlicesAglcutoff[i]   = ProjectionXtoTH1F( (TH2F *)L1Agl_DATAcutoff,("SliceAglc"  + to_string(i)).c_str(),i+1,i+1);
 		SlicesAgl[i]  -> SetLineColor(4);
                 SlicesAgl[i]  -> SetLineWidth(2);
                 SlicesAglcutoff[i]  -> SetLineColor(1);

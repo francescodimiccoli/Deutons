@@ -54,9 +54,9 @@ void DATAEdepLAT(string filename){
 
 
 	for(int i=1;i<11;i++){
-		EdepUTOF_coll[i]=  ProjectionXtoTH1F(EdepUTOF_lat,  ("Geo. Zone" + to_string(i)).c_str(), i, i+1);	
-		EdepLTOF_coll[i]=  ProjectionXtoTH1F(EdepLTOF_lat,  ("Geo. Zone" + to_string(i)).c_str(), i, i+1);	
-		EdepTrack_coll[i]= ProjectionXtoTH1F(EdepTrack_lat, ("Geo. Zone" + to_string(i)).c_str(), i, i+1);	
+		EdepUTOF_coll[i]=  ProjectionXtoTH1F(EdepUTOF_lat,  ("Geo. Zone" + to_string(i)).c_str(), i, i);	
+		EdepLTOF_coll[i]=  ProjectionXtoTH1F(EdepLTOF_lat,  ("Geo. Zone" + to_string(i)).c_str(), i, i);	
+		EdepTrack_coll[i]= ProjectionXtoTH1F(EdepTrack_lat, ("Geo. Zone" + to_string(i)).c_str(), i, i);	
 		
 	}
 

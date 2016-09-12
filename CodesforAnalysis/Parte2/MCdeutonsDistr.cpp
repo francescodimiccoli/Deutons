@@ -102,17 +102,17 @@ void MCdeutonsDistr(string filename){
 
 	for (int mc_type=0;mc_type<6;mc_type++){
 			
-		SliceMassDMCTOF[mc_type] = ProjectionXtoTH1F(MassDMCTOF , ("SliceMassDMCTOF"+to_string(mc_type)).c_str(),mc_type+1,mc_type+2);	
-                SliceMassDMCNaF[mc_type] = ProjectionXtoTH1F(MassDMCNaF , ("SliceMassDMCNaF"+to_string(mc_type)).c_str(),mc_type+1,mc_type+2);
-                SliceMassDMCAgl[mc_type] = ProjectionXtoTH1F(MassDMCAgl , ("SliceMassDMCAgl"+to_string(mc_type)).c_str(),mc_type+1,mc_type+2);
+		SliceMassDMCTOF[mc_type] = ProjectionXtoTH1F(MassDMCTOF , ("SliceMassDMCTOF"+to_string(mc_type)).c_str(),mc_type+1,mc_type+1);	
+                SliceMassDMCNaF[mc_type] = ProjectionXtoTH1F(MassDMCNaF , ("SliceMassDMCNaF"+to_string(mc_type)).c_str(),mc_type+1,mc_type+1);
+                SliceMassDMCAgl[mc_type] = ProjectionXtoTH1F(MassDMCAgl , ("SliceMassDMCAgl"+to_string(mc_type)).c_str(),mc_type+1,mc_type+1);
 	                                                                             
-		SliceLikDMCTOF[mc_type]  = ProjectionXtoTH1F(LikDMCTOF , ("SliceLikDMCTOF" +to_string(mc_type)).c_str(),mc_type+1,mc_type+2);
-                SliceLikDMCNaF[mc_type]  = ProjectionXtoTH1F(LikDMCNaF , ("SliceLikDMCNaF" +to_string(mc_type)).c_str(),mc_type+1,mc_type+2);
-                SliceLikDMCAgl[mc_type]  = ProjectionXtoTH1F(LikDMCAgl , ("SliceLikDMCAgl" +to_string(mc_type)).c_str(),mc_type+1,mc_type+2); 
+		SliceLikDMCTOF[mc_type]  = ProjectionXtoTH1F(LikDMCTOF , ("SliceLikDMCTOF" +to_string(mc_type)).c_str(),mc_type+1,mc_type+1);
+                SliceLikDMCNaF[mc_type]  = ProjectionXtoTH1F(LikDMCNaF , ("SliceLikDMCNaF" +to_string(mc_type)).c_str(),mc_type+1,mc_type+1);
+                SliceLikDMCAgl[mc_type]  = ProjectionXtoTH1F(LikDMCAgl , ("SliceLikDMCAgl" +to_string(mc_type)).c_str(),mc_type+1,mc_type+1); 
                                                                                      
-		SliceDistDMCTOF[mc_type] = ProjectionXtoTH1F(DistDMCTOF , ("SliceDistDMCTOF"+to_string(mc_type)).c_str(),mc_type+1,mc_type+2);
-                SliceDistDMCNaF[mc_type] = ProjectionXtoTH1F(DistDMCNaF , ("SliceDistDMCNaF"+to_string(mc_type)).c_str(),mc_type+1,mc_type+2);
-                SliceDistDMCAgl[mc_type] = ProjectionXtoTH1F(DistDMCAgl , ("SliceDistDMCAgl"+to_string(mc_type)).c_str(),mc_type+1,mc_type+2);
+		SliceDistDMCTOF[mc_type] = ProjectionXtoTH1F(DistDMCTOF , ("SliceDistDMCTOF"+to_string(mc_type)).c_str(),mc_type+1,mc_type+1);
+                SliceDistDMCNaF[mc_type] = ProjectionXtoTH1F(DistDMCNaF , ("SliceDistDMCNaF"+to_string(mc_type)).c_str(),mc_type+1,mc_type+1);
+                SliceDistDMCAgl[mc_type] = ProjectionXtoTH1F(DistDMCAgl , ("SliceDistDMCAgl"+to_string(mc_type)).c_str(),mc_type+1,mc_type+1);
 
 	}
 	
