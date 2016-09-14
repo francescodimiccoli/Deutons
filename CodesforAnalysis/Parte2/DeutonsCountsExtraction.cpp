@@ -210,9 +210,9 @@ void DeutonsTemplFits(string filename, string frac)
 			   FitAgl_Dbest         -> DisableFit();
 		   }
 		   else{
-			   FitTOF_Dbest       ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
-			   FitNaF_Dbest       ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
-			   FitAgl_Dbest       ->  SetFitConstraints(ContaminationAgl,0.8,1,0.0001,0.2);
+			   FitTOF_Dbest       ->  SetFitConstraints(ContaminationTOF,0.6,1,0.0001,0.25);
+			   FitNaF_Dbest       ->  SetFitConstraints(ContaminationNaF,0.6,1,0.0001,0.25);
+			   FitAgl_Dbest       ->  SetFitConstraints(ContaminationAgl,0.6,1,0.0001,0.25);
 		   }
 
 		   cout<<"TOF FITS"<<endl;
@@ -239,9 +239,9 @@ void DeutonsTemplFits(string filename, string frac)
 			   FitAgl_Dbins[i][j]         -> DisableFit();
 		   }
 		   else{
-			   FitTOF_Dbins[i][j]       ->  SetFitConstraints(ContaminationTOF,0.8,1,0.0001,0.2);
-			   FitNaF_Dbins[i][j]       ->  SetFitConstraints(ContaminationNaF,0.8,1,0.0001,0.2);
-			   FitAgl_Dbins[i][j]       ->  SetFitConstraints(ContaminationAgl,0.8,1,0.0001,0.2);
+			   FitTOF_Dbins[i][j]       ->  SetFitConstraints(ContaminationTOF,0.6,1,0.0001,0.2);
+			   FitNaF_Dbins[i][j]       ->  SetFitConstraints(ContaminationNaF,0.6,1,0.0001,0.2);
+			   FitAgl_Dbins[i][j]       ->  SetFitConstraints(ContaminationAgl,0.6,1,0.0001,0.2);
 		   }
 		   FitTOF_Dbins[i][j]    -> TemplateFits();
 		   FitNaF_Dbins[i][j]    -> TemplateFits();
