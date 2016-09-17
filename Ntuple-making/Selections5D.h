@@ -232,6 +232,10 @@ int noR=33;
 int notpassed[10]= {0,1021,955,33,1007,799,959,799,187,187};
 float Velocity=0;
 int seconds=0;
+float qL1,qInner,qLtof,qUtof=0;
+
+
+
 TMVA::Reader *reader;
 Float_t BDT_response;
 TFile *_file0 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Final_Def.root");
@@ -326,7 +330,7 @@ bool Quality(TTree *albero,int i)
 	   var[8]=DiffTrackEdep;
 	   double Ltrue=1;
 	   double Lfalse=1;
-	   for(int m=1; m<6; m++) {
+	   for(int m=0; m<6; m++) {
 			   Lfalse=Lfalse*Bkgnd[m]->Eval(var[m]);
 			   Ltrue=Ltrue*Signal[m]->Eval(var[m]);
 	   }
@@ -346,7 +350,7 @@ bool Quality(TTree *albero,int i)
 	   var[8]=DiffTrackEdep;
 	   double Ltrue=1;
 	   double Lfalse=1;
-	   for(int m=1; m<8; m++) {
+	   for(int m=0; m<8; m++) {
 		   if((((int)Cutmask)>>11)==512) {
 				   Lfalse=Lfalse*BkgndNaF[m]->Eval(var[m]);
 				   Ltrue=Ltrue*SignalNaF[m]->Eval(var[m]);

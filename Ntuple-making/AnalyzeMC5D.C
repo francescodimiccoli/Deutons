@@ -10,6 +10,7 @@
 
 using namespace std;
 void Trigg (TTree *albero,int i,TNtuple *ntupla);
+void Qfill (TTree *albero,int i,TNtuple *ntupla);
 int Trig_Num;
 double Trig;
 double TotalTrig=0;
@@ -137,6 +138,7 @@ int main(int argc, char * argv[])
 	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
 	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:MC_type:Momentogen:mcweight:BetaRICH_new:Cutmask:BetanS:BetaR");
 	TNtuple * trig = new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:mcweight");
+	TNtuple * Q = new TNtuple("Q","Q","R:Beta:MC_type:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof:Momentogen");
 
 	BDTreader();
 	geo_stuff->SetBranchAddress("Momento_gen",&Momento_gen);
@@ -181,7 +183,11 @@ int main(int argc, char * argv[])
 	geo_stuff->SetBranchAddress("Massa",&Massa);
 	geo_stuff->SetBranchAddress("Richtotused",&Richtotused);
 	geo_stuff->SetBranchAddress("RichPhEl",&RichPhEl);
-
+	geo_stuff->SetBranchAddress("qL1",&qL1);
+        geo_stuff->SetBranchAddress("qInner",&qInner);
+        geo_stuff->SetBranchAddress("qUtof",&qUtof);
+	geo_stuff->SetBranchAddress("qLtof",&qLtof); 
+		
 	int giov=0;
 	int nprotoni=0;
 	int events =geo_stuff->GetEntries();
@@ -244,7 +250,8 @@ int main(int argc, char * argv[])
 				}
 				////////////////////////////////////////////////////
 				Protoni(geo_stuff,i);
-				if (Deutoni(geo_stuff,i)) if(scelta==1) Grandezzesepd(geo_stuff,i,grandezzesepd);
+				if (Deutoni(geo_stuff,i)) if(scelta==1){ Grandezzesepd(geo_stuff,i,grandezzesepd);
+									 Qfill(geo_stuff,i,Q);}
 			}
 		}
 		if(scelta==1) Grandezzequal(geo_stuff,i,grandezzequal);
@@ -330,6 +337,12 @@ void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
 	ntupla->Fill(R,Beta,(*trtrack_edep)[0],MC_type,Cutmask,PhysBPatt,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
+}
+
+void Qfill (TTree *albero,int i,TNtuple *ntupla)
+{
+        albero->GetEvent(i);
+	ntupla->Fill(R,Beta,MC_type,Cutmask,BetaRICH_new,Dist5D,Dist5D_P,LDiscriminant,Rmin,qL1,qInner,qUtof,qLtof,Momento_gen);
 }
 
 int AssignMC_type(float Massa_gen)
