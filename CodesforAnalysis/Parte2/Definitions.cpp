@@ -60,13 +60,17 @@ struct Tuplevar {
    float Momento_gen;
    float R;
    float Rcutoff;
-   float Rmin;
    float R_pre;
    float Trig_Num;
    float PhysBPatt;
    float mcweight;
    float U_time;
-   float Livetime;		
+   float Livetime;	
+   float qL1;
+   float qInner;
+   float qUtof;
+   float qLtof;
+   float Rmin; 	
 };
 
 //// Global Variables

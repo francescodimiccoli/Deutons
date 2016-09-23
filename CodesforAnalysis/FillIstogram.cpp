@@ -1,9 +1,10 @@
 using namespace std;
 
 
-void SetRisultatiBranchAddresses (TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtuple* ntupDataSepD, TNtuple* ntupDataTrig);
+void SetRisultatiBranchAddresses (TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtuple * ntupMCQcheck, TNtuple* ntupDataSepD, TNtuple* ntupDataTrig);
 void LoopOnMCTrig(TNtuple*  ntupMCTrig);
 void LoopOnMCSepD(TNtuple* ntupMCSepD);
+void LoopOnMCQcheck(TNtuple* ntupMCQcheck);
 void LoopOnDataTrig(TNtuple* ntupDataTrig);
 void LoopOnDataSepD(TNtuple* ntupDataSepD);
 void UpdateProgressBar(int currentevent, int totalentries);
@@ -41,6 +42,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    TFile *fileMC;
    TNtuple *ntupMCSepD;
    TNtuple *ntupMCTrig;
+   TNtuple *ntupMCQcheck;
    TFile *fileData;
    TNtuple *ntupDataSepD;
    TNtuple *ntupDataTrig;
@@ -61,9 +63,10 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       fileData =TFile::Open(nomefile.c_str(), "READ");
       ntupMCSepD=(TNtuple*)fileMC->Get("grandezzesepd");
       ntupMCTrig=(TNtuple*)fileMC->Get("trig");
+      ntupMCQcheck=(TNtuple*)fileMC->Get("Q");
       ntupDataSepD=(TNtuple*)fileData->Get("grandezzesepd");
       ntupDataTrig=(TNtuple*)fileData->Get("trig");
-      SetRisultatiBranchAddresses(ntupMCSepD, ntupMCTrig, ntupDataSepD, ntupDataTrig);
+      SetRisultatiBranchAddresses(ntupMCSepD, ntupMCTrig, ntupMCQcheck, ntupDataSepD, ntupDataTrig);
    }
 
    cout<<"*********************** MC READING *********************"<<endl;
@@ -74,7 +77,10 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    if(INDX==BUILDALL||INDX==BUILDSEPD) {
       LoopOnMCSepD(ntupMCSepD);
    }
-
+   if(INDX==BUILDALL||INDX==BUILDSEPD) {
+      LoopOnMCQcheck(ntupMCQcheck);
+   }
+	
    cout<<endl<<"*********************** DATA READING *********************"<<endl;
    TFile *usedfile=(INDX==READ?inputHistoFile:fileData);
 
@@ -86,13 +92,11 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       LoopOnDataSepD(ntupDataSepD);
    }
 
-   
-
-    cout<<endl<<"************************ SAVING DATA ************************"<<endl;
+   cout<<endl<<"************************ SAVING DATA ************************"<<endl;
   
 
 
-    if(INDX==BUILDALL||INDX==BUILDSEPD) {
+   if(INDX==BUILDALL||INDX==BUILDSEPD) {
 
       TFile * outputHistoFile=TFile::Open(filename.c_str(),"RECREATE");
 	
@@ -107,6 +111,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATAEdepLAT_Write();
       SlidesforPlot_Write();
       MCdeutonsDistr_Write();
+      MCQcheck_Write();
       DistanceCut_Write();
       AntiDCutOptimization_Write();
       DATAUnbiaseff_Write();
@@ -154,6 +159,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       MCTrackeff(filename);
       AntiDCutOptimization(filename);	
       AntiDEfficiencies(filename);
+      MCQcheck(filename);
       MCFullseteff(filename);
       MigrationMatrix(filename);
       MCdeutonsDistr(filename);
@@ -187,7 +193,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
 
 
-void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtuple* ntupDataSepD, TNtuple* ntupDataTrig)
+void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtuple* ntupMCQcheck, TNtuple* ntupDataSepD, TNtuple* ntupDataTrig)
 {
 
    ntupMCTrig->SetBranchAddress("Momento_gen",&Tup.Momento_gen);
@@ -223,6 +229,20 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCSepD->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
    ntupMCSepD->SetBranchAddress("mcweight",&Tup.mcweight);
    
+   ntupMCQcheck->SetBranchAddress("Momentogen",&Tup.Momento_gen); 	
+   ntupMCQcheck->SetBranchAddress("R",&Tup.R);
+   ntupMCQcheck->SetBranchAddress("Beta",&Tup.Beta);	  	
+   ntupMCQcheck->SetBranchAddress("MC_type",&Tup.MC_type);
+   ntupMCQcheck->SetBranchAddress("Cutmask",&Tup.Cutmask);	
+   ntupMCQcheck->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
+   ntupMCQcheck->SetBranchAddress("Dist5D",&Tup.Dist5D);
+   ntupMCQcheck->SetBranchAddress("Dist5D_P",&Tup.Dist5D_P);
+   ntupMCQcheck->SetBranchAddress("LDiscriminant",&Tup.LDiscriminant);
+   ntupMCQcheck->SetBranchAddress("Rmin",&Tup.Rmin);
+   ntupMCQcheck->SetBranchAddress("qL1",&Tup.qL1);
+   ntupMCQcheck->SetBranchAddress("qInner",&Tup.qInner);
+   ntupMCQcheck->SetBranchAddress("qUtof",&Tup.qUtof);
+   ntupMCQcheck->SetBranchAddress("qLtof",&Tup.qLtof);
 
    ntupDataTrig->SetBranchAddress("Rcutoff",&Tup.Rcutoff);
    ntupDataTrig->SetBranchAddress("R_pre",&Tup.R_pre);
@@ -327,6 +347,31 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
    cout << endl;
    return;
 }
+
+
+void LoopOnMCQcheck(TNtuple* ntupMCQcheck){
+
+	int nentries=ntupMCQcheck->GetEntries();
+	for(int i=0; i<ntupMCQcheck->GetEntries(); i++) {
+	ntupMCQcheck->GetEvent(i);
+	if(Tup.Beta<=0 || Tup.R<=0) continue;
+	cmask.setMask(Tup.Cutmask);
+        trgpatt.SetTriggPatt(Tup.PhysBPatt);
+        if(!cmask.isPreselected()) continue;
+        Massa_gen = ReturnMass_Gen();
+        UpdateProgressBar(i, nentries);
+        Cuts();
+        RUsed=Tup.R;
+        Disable_MCreweighting();
+	
+	MCQcheck_Fill();
+	}
+	cout << endl;
+   	return;
+
+}
+
+
 
 
 void LoopOnDataTrig(TNtuple* ntupDataTrig)

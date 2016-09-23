@@ -1,4 +1,4 @@
-export GCCDIR=/opt/rh/devtoolset-3/root/usr/bin/
+#export GCCDIR=/opt/rh/devtoolset-3/root/usr/bin/
 
 export AMSBASE=/storage/gpfs_ams/ams/users/basara/AMSSoft/
 export AMSSYS=linux_slc6_gcc64
