@@ -75,6 +75,8 @@ int NTofClustersusati=0;
 double Rup=0;
 double Rdown=0;
 double R=0;
+double R_L1=0;
+double Chisquare_L1=0;
 std::vector<float> chiq(6);
 std::vector<float> R_(6);
 float Beta=0;
@@ -154,6 +156,20 @@ float RichPhEl=0;
 int Run=0;
 bool MinTOF[2];
 bool GolTOF[2];
+
+////////////// CHARGE ////////////////////////////////
+float qL1 =0;
+float qInner=0;
+float qUtof =0;
+float qLtof =0;
+//////////////////////////////////////////////////////
+
+int clusterusati;
+int NTRDClusters;
+
+void InitializeEvent();
+
+
 int main(int argc, char * argv[]){
 	for(int indice=4;indice<5;indice++){
 
@@ -184,8 +200,10 @@ int main(int argc, char * argv[]){
 		ch= new AMSChain;
 		string ARGV(argv[1]);
 		int INDX=atoi(argv[1]);
-		string istog="/afs/cern.ch/user/f/fdimicco/Work/Dimiccoli/Compiled/istogrammiMC/"+ARGV+".root";
+		string istog="/afs/cern.ch/user/f/fdimicco/Work/Dimiccoli/Compiled/eos/ams/user/f/fdimicco/istogrammiMC/"+ARGV+".root";
 		string *file=&istog;	
+		string filelist  ="/afs/cern.ch/user/f/fdimicco/Work/Dimiccoli/Compiled/eos/ams/user/f/fdimicco/filelistsMC/"+ARGV+".root";
+		string filelistL1="/afs/cern.ch/user/f/fdimicco/Work/Dimiccoli/Compiled/eos/ams/user/f/fdimicco/filelistsMC/"+ARGV+"_L1.root";
 		int lim0=0;
 		int lim1=numroot2;	
 		int lim2=lim1+numroot3;
@@ -198,6 +216,10 @@ int main(int argc, char * argv[]){
 		int lim9=lim8+numroot8;
 		cout<<lim9<<endl;
 		string indirizzo;	
+
+		AMSEventList * ListFragmHe = new AMSEventList();
+		AMSEventList * ListFragmHeqL1 = new AMSEventList();
+
 		File = new TFile(istog.c_str(), "RECREATE");
 		cout<<"inizio.."<<endl;	
 		if(INDX>=lim0&&INDX<lim1) {indirizzo="root://eosams.cern.ch///eos/ams/MC/AMS02/2014/"+tipo2+"/"+energia2+"/"+rootpla2[INDX-lim0];Massa_gen=1.8570;}
@@ -209,7 +231,7 @@ int main(int argc, char * argv[]){
 		if(INDX>=lim6&&INDX<lim7) {indirizzo="root://eosams.cern.ch///eos/ams/MC/AMS02/2014/"+tipo1+"/"+energia1+"/"+rootpla1[INDX-lim6]; Massa_gen=0.938;}
 		if(INDX>=lim7&&INDX<lim8) {indirizzo="root://eosams.cern.ch///eos/ams/MC/AMS02/2014/"+tipo1_b+"/"+energia1_b+"/"+rootpla1_b[INDX-lim7];Massa_gen=0.9381;}
 		if(INDX>=lim8&&INDX<lim9) {indirizzo="root://eosams.cern.ch///eos/ams/MC/AMS02/2014/"+tipo8+"/"+energia8+"/"+rootpla8[INDX-lim8];Massa_gen=3.725;}
-		
+
 		std::cout<<"Processing : "<<indirizzo<<endl;
 		ch->Add(indirizzo.c_str());
 
@@ -217,62 +239,73 @@ int main(int argc, char * argv[]){
 		int entries =ch->GetEntries();
 		cout<<entries<<endl;
 		TTree *measure_stuff= new TTree("parametri_geo","parametri_geo");
-		measure_stuff->Branch("Momento_gen",&Momento_gen);
-		measure_stuff->Branch("Beta_gen",&Beta_gen);
-		measure_stuff->Branch("Massa_gen",&Massa_gen);
-		measure_stuff->Branch("R_pre",&R_pre);
-		measure_stuff->Branch("Beta_pre",&Beta_pre);
-		measure_stuff->Branch("BetaR",&BetaR);
-		measure_stuff->Branch("Ev_Num",&Ev_Num);
-		measure_stuff->Branch("Trig_Num",&Trig_Num);
-		measure_stuff->Branch("Run",&Run);
-		measure_stuff->Branch("Unbias",&Unbias);
-		measure_stuff->Branch("Pres_Unbias",&Pres_Unbias);
-		measure_stuff->Branch("Preselected",&Preselected);
-		measure_stuff->Branch("CUTMASK",&CUTMASK);
-		measure_stuff->Branch("IsPrescaled",&IsPrescaled);
-		measure_stuff->Branch("Endep",&Endep);
-		measure_stuff->Branch("EndepR",&EndepR);
-		measure_stuff->Branch("trtrack_edep",&trtrack_edep);
-		measure_stuff->Branch("trtot_edep",&trtot_edep);
-		measure_stuff->Branch("BetaRICH",&BetaRICH);
-		measure_stuff->Branch("BetaRICH_new",&BetaRICH_new);
-		measure_stuff->Branch("RICHmask",&RICHmask);
-		measure_stuff->Branch("RICHmask_new",&RICHmask_new);
-		measure_stuff->Branch("EdepECAL",&EdepECAL);	
-		measure_stuff->Branch("PhysBPatt",&PhysBPatt);
-		measure_stuff->Branch("layernonusati",&layernonusati);
-		measure_stuff->Branch("NAnticluster",&NAnticluster);
-		measure_stuff->Branch("NTofClusters",&NTofClusters);
-		measure_stuff->Branch("NTofClustersusati",&NTofClustersusati);
-		measure_stuff->Branch("Rup",&Rup);
-		measure_stuff->Branch("Rdown",&Rdown);
-		measure_stuff->Branch("R",&R);
-		measure_stuff->Branch("Chisquare",&Chisquare);
-		measure_stuff->Branch("ResiduiX",&ResiduiX);
-		measure_stuff->Branch("ResiduiY",&ResiduiY);
-		measure_stuff->Branch("Beta",&Beta);
-		measure_stuff->Branch("BetanS",&BetanS);
-		measure_stuff->Branch("BetaR",&BetaR);
-		measure_stuff->Branch("BetaRICH",&BetaRICH);
-		measure_stuff->Branch("BetaRICH_new",&BetaRICH_new);
-		measure_stuff->Branch("RICHmask",&RICHmask);
-		measure_stuff->Branch("RICHmask_new",&RICHmask_new);
-		measure_stuff->Branch("Massa",&Massa);
-		measure_stuff->Branch("NTrackHits",&NTrackHits);
-		measure_stuff->Branch("clustertrack",&clustertrack);
+		measure_stuff->Branch("Momento_gen",	&Momento_gen);
+		measure_stuff->Branch("Beta_gen",	&Beta_gen);
+		measure_stuff->Branch("Massa_gen",	&Massa_gen);
+		measure_stuff->Branch("R_pre",		&R_pre);
+		measure_stuff->Branch("Beta_pre",	&Beta_pre);
+		measure_stuff->Branch("BetaR",		&BetaR);
+		measure_stuff->Branch("Ev_Num",		&Ev_Num);
+		measure_stuff->Branch("Trig_Num",	&Trig_Num);
+		measure_stuff->Branch("Run",		&Run);
+		measure_stuff->Branch("Unbias",		&Unbias);
+		measure_stuff->Branch("Pres_Unbias",	&Pres_Unbias);
+		measure_stuff->Branch("Preselected",	&Preselected);
+		measure_stuff->Branch("CUTMASK",	&CUTMASK);
+		measure_stuff->Branch("IsPrescaled",	&IsPrescaled);
+		measure_stuff->Branch("Endep",		&Endep);
+		measure_stuff->Branch("EndepR",		&EndepR);
+		measure_stuff->Branch("trtrack_edep",	&trtrack_edep);
+		measure_stuff->Branch("trtot_edep",	&trtot_edep);
+		measure_stuff->Branch("BetaRICH",	&BetaRICH);
+		measure_stuff->Branch("BetaRICH_new",	&BetaRICH_new);
+		measure_stuff->Branch("RICHmask",	&RICHmask);
+		measure_stuff->Branch("RICHmask_new",	&RICHmask_new);
+		measure_stuff->Branch("EdepECAL",	&EdepECAL);	
+		measure_stuff->Branch("PhysBPatt",	&PhysBPatt);
+		measure_stuff->Branch("layernonusati",	&layernonusati);
+		measure_stuff->Branch("NAnticluster",	&NAnticluster);
+		measure_stuff->Branch("NTofClusters",	&NTofClusters);
+		measure_stuff->Branch("NTofClustersusati",	&NTofClustersusati);
+		measure_stuff->Branch("Rup",		&Rup);
+		measure_stuff->Branch("Rdown",		&Rdown);
+		measure_stuff->Branch("R",		&R);
+		measure_stuff->Branch("Chisquare",	&Chisquare);
+		measure_stuff->Branch("R_L1",		&R_L1);
+		measure_stuff->Branch("Chisquare_L1",	&Chisquare_L1);
+		measure_stuff->Branch("ResiduiX",	&ResiduiX);
+		measure_stuff->Branch("ResiduiY",	&ResiduiY);
+		measure_stuff->Branch("Beta",		&Beta);
+		measure_stuff->Branch("BetanS",		&BetanS);
+		measure_stuff->Branch("BetaR",		&BetaR);
+		measure_stuff->Branch("BetaRICH",	&BetaRICH);
+		measure_stuff->Branch("BetaRICH_new",	&BetaRICH_new);
+		measure_stuff->Branch("RICHmask",	&RICHmask);
+		measure_stuff->Branch("RICHmask_new",	&RICHmask_new);
+		measure_stuff->Branch("Massa",		&Massa);
+		measure_stuff->Branch("NTrackHits",	&NTrackHits);
+		measure_stuff->Branch("clustertrack",	&clustertrack);
 		measure_stuff->Branch("clustertottrack",&clustertottrack);
-		measure_stuff->Branch("Unbias",&Unbias);
-		measure_stuff->Branch("Richtotused",&Richtotused);
-                measure_stuff->Branch("RichPhEl",&RichPhEl);
+		measure_stuff->Branch("Unbias",		&Unbias);
+		measure_stuff->Branch("Richtotused",	&Richtotused);
+		measure_stuff->Branch("RichPhEl",	&RichPhEl);
+		measure_stuff->Branch("EdepTRD",&EdepTRD);
+		measure_stuff->Branch("qL1",	&qL1);
+		measure_stuff->Branch("qUtof",	&qUtof);
+		measure_stuff->Branch("qLtof",	&qLtof);
+		measure_stuff->Branch("qInner",&qInner);
 		
+
+		
+
 		AMSSetupR::RTI::UseLatest();
 		TkDBc::UseFinal();
 		//Beta TOF smearing
 		TofMCPar::MCtuneDT=-87.0;
-       		TofMCPar::MCtuneST=10.0;	
+		TofMCPar::MCtuneST=10.0;	
 		for(int ii=0;ii<entries;ii++)
 		{ 
+			InitializeEvent();
 			if(ii%10000==0) {
 				printf("Processed %7d out of %7d\n",ii,entries);
 				printf("Evento numero: %7d\n",contaeventi);
@@ -281,13 +314,11 @@ int main(int argc, char * argv[]){
 			Level1R * trig=ev->pLevel1(0);
 			ev->SetDefaultMCTuningParameters();
 			if(ev&&trig){
-                                        PhysBPatt=trig->PhysBPatt;
-					if((trig->PhysBPatt&1)==1&&(((trig->PhysBPatt>>1)&31)==0)) Unbias =1;
-                                        else Unbias=0;
-                                }
-			//{for(int k=0;k<8;k++) cout<<((trig->PhysBPatt>>k)&1)<<" "; cout<<endl;cout<<"Unbias "<<Unbias<<endl;cout<<endl;}
+				PhysBPatt=trig->PhysBPatt;
+				if((trig->PhysBPatt&1)==1&&(((trig->PhysBPatt>>1)&31)==0)) Unbias =1;
+				else Unbias=0;
+			}
 			Momento_gen=ev->pMCEventg(0)->Momentum;	
-			//Massa_gen=0.938;//3.725;//1.857;//+5.11e-6;//3.725;//0.938;
 			Massa_gen=Massa_gen;
 			Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));
 			Trig_Num=ev->Event();
@@ -297,7 +328,7 @@ int main(int argc, char * argv[]){
 			nPart=ev->nParticle();
 			nTrTracks=ev->nTrTrack();
 			CUTMASK=0;
-			
+
 			minimumbiasTOF(ev,MinTOF);
 			goldenTOF(ev,severity,3,GolTOF);
 			if(minimumbiasTRIGG(ev)) CUTMASK=CUTMASK|(1<<0);
@@ -305,12 +336,17 @@ int main(int argc, char * argv[]){
 			if(minimumbiasTRD(ev)) CUTMASK=CUTMASK|(1<<2); 
 			if(minimumbiasTRACKER(ev,3)) CUTMASK=CUTMASK|(1<<3);
 			if(goldenTRACKER(ev,severity,3)) CUTMASK=CUTMASK|(1<<4);
-			if(GolTOF[0]) CUTMASK=CUTMASK|(1<<5);
+			if(goldenTOF_new(ev)) CUTMASK=CUTMASK|(1<<5);
 			if(goldenTRD(ev,severity,3)) CUTMASK=CUTMASK|(1<<6);
-			if(nTrTracks==1) CUTMASK=CUTMASK|(1<<7);
+			if(OneParticle(ev)) CUTMASK=CUTMASK|(1<<7);
 			if(MinTOF[1]) CUTMASK=CUTMASK|(1<<8);
-                        if(GolTOF[1]) CUTMASK=CUTMASK|(1<<9);
+			CUTMASK=CUTMASK|(0<<9);
+
+			//for (int i=0;i<10;i++) cout<<((CUTMASK>>i)&1)<<" ";
+			//cout<<endl;
+
 			for(int i=0;i<9;i++){trtot_edep[i]=0;trtrack_edep[i]=0;}
+			R_pre = 0;
 			if(minimumbiasTRACKER(ev,3)){
 
 				clustertrack=0;
@@ -334,21 +370,44 @@ int main(int argc, char * argv[]){
 
 			for(int j=0; j<4; j++)
 				EndepR[j]=0;
-			for(int j=0; j<ev->NTofCluster(); j++)
-				EndepR[(ev->pTofCluster(j)->Layer)-1]+=ev->pTofCluster(j)->Edep;
-			
+			if(ev->pBetaH(0)){
+				for(int j=0; j<ev->pBetaH(0)->NTofClusterH(); j++)
+					EndepR[(ev->pBetaH(0)->pTofClusterH(j)->Layer)]+=ev->pBetaH(0)->pTofClusterH(j)->GetEdep();
+			}
 			for(int j=0; j<4; j++)
-                                Endep[j]=0;
-                        for(int j=0; j<ev->NTofClusterH(); j++)
-                                Endep[(ev->pTofClusterH(j)->Layer)]+=ev->pTofClusterH(j)->GetEdep();
+				Endep[j]=0;
+			for(int j=0; j<ev->NTofClusterH(); j++)
+				Endep[(ev->pTofClusterH(j)->Layer)]+=ev->pTofClusterH(j)->GetEdep();
 
-			Beta_pre=0; BetaR=0;
+			//edep TRD			
+			EdepTRD=0;
+			NTRDclusters=0;
+			TRDclusters[1000];
+			for(int u=0;u<ev->NTrdTrack();u++){
+				if(u==0)
+					for(int j=0;j<ev->pTrdTrack(u)->NTrdSegment();j++) {
+						for(int i=0;i<ev->pTrdTrack(u)->pTrdSegment(j)->NTrdCluster();i++) {
+
+							EdepTRD=EdepTRD+ev->pTrdTrack(u)->pTrdSegment(j)->pTrdCluster(i)->EDep;
+							TRDclusters[NTRDclusters]=ev->pTrdTrack(u)->pTrdSegment(j)->pTrdCluster(i)->EDep;
+							NTRDclusters++;
+						}
+					}
+				for(int j=0;j<ev->pTrdTrack(u)->NTrdSegment();j++) {
+					if(u==0) for(int i=0;i<ev->pTrdTrack(u)->pTrdSegment(j)->NTrdCluster();i++) {
+						clusterusati++;
+					}
+
+				}
+			}
+
+			 Beta_pre=0; BetaR=0;
 			if(ev->pBetaH(0)) Beta_pre=ev->pBetaH(0)->GetBeta();
 			if(ev->pBeta(0)) BetaR=ev->pBeta(0)->Beta;
 			int NhitECAL = ev->NEcalHit();
-                        EdepECAL=-100;
-                        if(ev->NEcalShower()==1) {EcalShowerR* show = ev->pEcalShower(0); EdepECAL=show->EnergyE;}
-			
+			EdepECAL=-100;
+			if(ev->NEcalShower()==1) {EcalShowerR* show = ev->pEcalShower(0); EdepECAL=show->EnergyE;}
+
 			BetaRICH=-1;
 			BetaRICH_new=-1;
 			RICHmask=1;RICHmask_new=1;
@@ -357,25 +416,36 @@ int main(int argc, char * argv[]){
 				RICHmask_new=RichQual_new(ev->pRichRing(0));
 				if(RICHmask==0) BetaRICH=ev->pRichRing(0)->getBeta();
 				if(RICHmask_new==0||RICHmask_new==512) { 
-									BetaRICH_new=ev->pRichRing(0)->getBeta();
-									int totali= ev->NRichHit();
-    									int hotspots=0;
-    									int usate=ev->pRichRing(0)->Used;
-    									for(int i=0;i<ev->NRichHit();i++)
-        								{
-            									RichHitR* Hit= ev->pRichHit(i);
-            									if(Hit->IsCrossed()) hotspots++;
-        								}
-									Richtotused=totali-usate-hotspots;
-									RichPhEl=ev->pRichRing(0)->getExpectedPhotoelectrons()/ev->pRichRing(0)->getPhotoElectrons();							
-								}
+					BetaRICH_new=ev->pRichRing(0)->getBeta();
+					int totali= ev->NRichHit();
+					int hotspots=0;
+					int usate=ev->pRichRing(0)->Used;
+					for(int i=0;i<ev->NRichHit();i++)
+					{
+						RichHitR* Hit= ev->pRichHit(i);
+						if(Hit->IsCrossed()) hotspots++;
+					}
+					Richtotused=totali-usate-hotspots;
+					RichPhEl=ev->pRichRing(0)->getExpectedPhotoelectrons()/ev->pRichRing(0)->getPhotoElectrons();							
+				}
 			}
-			////////////////////////////////////////////////////////////////////////////////	
+			if(RICHmask_new==0||RICHmask_new==512) if(BetaRICH_new<0) cout<<"error!"<<endl;
+			/////////////////////// CHARGE //////////////////////////////////////////////////	
+			if(minimumbiasTRACKER(ev,3)){
+				int fitID3=Tr->iTrTrackPar(1,3,1);
+				qL1   = Tr->GetLayerJQ(1,Beta_pre,fitID3); 
+				qInner= Tr->GetInnerQ(Beta_pre,fitID3);
+			}
+			int utoflay,ltoflay=0;
+                        float utofrms,ltofrms=0;
+			if(ev->pBetaH(0)) qUtof = ev->pBetaH(0) -> GetQ(utoflay,utofrms,2,TofClusterHR::DefaultQOptIonW,1100,0,R_pre);
+			if(ev->pBetaH(0)) qLtof = ev->pBetaH(0) -> GetQ(ltoflay,ltofrms,2,TofClusterHR::DefaultQOptIonW,11,0,R_pre);
+			////////////////////////////////////////////////////////////////////////////////
 			bool isPreselected=false;
 			if(((int)CUTMASK&187)==187) isPreselected=true;
 			if(isPreselected){		
 				TofRecH::BuildOpt=0;
-                        	TofRecH::ReBuild();
+				TofRecH::ReBuild();
 				BetanS=ev->pBetaH(0)->GetBeta();
 				int f=ev->pBetaH(0)->DoMCtune();
 				Beta=ev->pBetaH(0)->GetBeta();				
@@ -386,6 +456,7 @@ int main(int argc, char * argv[]){
 				int fitID1=Tr->iTrTrackPar(1,1,1);
 				int fitID2=Tr->iTrTrackPar(1,2,1);
 				int fitID3=Tr->iTrTrackPar(1,3,1);
+				int fitID4=Tr->iTrTrackPar(1,5,1);
 				Momento_gen=ev->pMCEventg(0)->Momentum;
 				Beta_gen=(pow(pow(Momento_gen/Massa_gen,2)/(1+pow(Momento_gen/Massa_gen,2)),0.5));
 				Trig_Num=ev->Event();
@@ -394,7 +465,7 @@ int main(int argc, char * argv[]){
 				if(Tr->ParExists(fitID3)) parametri=Tr->gTrTrackPar(fitID3);
 				layernonusati=0;
 				for(int layer=2;layer<9;layer++)
-					if(!parametri.TestHitLayerJ(layer)) layernonusati++;
+					if(!parametri.TestHitLayerJ(layer)) layernonusati++;	
 				NAnticluster=ev->NAntiCluster();
 				NTRDSegments=ev->NTrdSegment();
 				NTofClusters=ev->NTofClusterH();
@@ -405,6 +476,12 @@ int main(int argc, char * argv[]){
 				if(Tr->ParExists(fitID3)) R=Tr->GetRigidity(fitID3); else R=0;
 				if(Tr->ParExists(fitID3)) Chisquare=Tr->GetChisq(fitID3); 
 				else Chisquare=1e7;
+				
+				if(Tr->ParExists(fitID4)) R_L1=Tr->GetRigidity(fitID4); else R_L1=0;
+				if(Tr->ParExists(fitID4)) Chisquare_L1=Tr->GetChisq(fitID4); 
+				else Chisquare_L1=1e7;
+				
+
 				for (int layer=2;layer<9;layer++) {
 					ResiduiX[layer-2]=-999999;
 					ResiduiY[layer-2]=-999999;
@@ -418,16 +495,28 @@ int main(int argc, char * argv[]){
 				}
 
 				int clusterusati=0;
-				Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Betacorr,2)),0.5)/Betacorr,2)),0.5);
-			//cout<<Beta<<" "<<BetanS<<endl;
+				//cout<<Beta<<" "<<BetanS<<endl;
+			}
+			if(Massa_gen>2){
+				//preselctions
+				if((CUTMASK&187)==187)
+					//charge == Dist
+					if(qInner>0.9&&qInner<1.1&&qUtof>0.9&&qUtof<1.1&&qLtof>0.9&&qLtof<1.1) 
+						//Likelihood quality cuts
+						if(NAnticluster<=1&&(NTofClusters-NTofClustersusati)<=1 && fabs(Rup-Rdown)/R<0.3){ 
+							if(qL1>0.1&&qL1<1.5 && R>0 && R<2 )	ListFragmHeqL1 -> Add(ev);
+							if(R>0 && R<2)     ListFragmHe    -> Add(ev);
+						}
 			}
 			measure_stuff->Fill();
-                        if(ii%1000==0) measure_stuff->AutoSave();
+			if(ii%1000==0) measure_stuff->AutoSave();
 		}
 
 		File->Write();
 		File->Close();
-
+		ListFragmHe   ->Write(ch,filelist.c_str());
+		ListFragmHeqL1->Write(ch,filelistL1.c_str());
+		
 
 	}
 
@@ -483,3 +572,52 @@ bool saa(float phi,float theta) {
 }
 
 
+void InitializeEvent(){
+
+	Momento_gen=0;
+	Beta_gen=0;
+	R_pre=0;
+	Beta_pre=0;
+	BetaR=0;
+	Ev_Num=0;
+	Trig_Num=0;
+	Run=0;
+	Unbias=0;
+	Pres_Unbias=0;
+	Preselected=0;
+	CUTMASK=0;
+	IsPrescaled=0;
+	BetaRICH=-1;
+	BetaRICH_new=-1;
+	RICHmask=1;
+	RICHmask_new=1;
+	EdepECAL=-100;
+	PhysBPatt=0;
+	layernonusati=0;
+	NAnticluster=0;
+	NTofClusters=0;
+	NTofClustersusati=0;
+	Rup=0;
+	Rdown=0;
+	R=0;
+	Chisquare=0;
+	Beta=0;
+	BetanS=0;
+	BetaR=0;
+	RICHmask=0;
+	RICHmask_new=0;
+	Massa=0;
+	NTrackHits=0;
+	clustertrack=0;
+	clustertottrack=0;
+	Unbias=0;
+	Richtotused=0;
+	RichPhEl=0;
+	EdepTRD=0;
+	qL1 =0;
+        qInner=0;
+        qUtof =0;
+        qLtof =0;
+	R_L1=0;
+        Chisquare_L1=0;
+}

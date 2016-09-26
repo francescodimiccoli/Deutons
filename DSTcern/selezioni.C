@@ -110,7 +110,7 @@ void minimumbiasTOF(AMSEventR *ev, bool n[]){
     int c=0;
     n[0]=false;
     n[1]=false;	
-    TofRecH::BuildOpt=10;
+    TofRecH::BuildOpt=0;
     TofRecH::ReBuild();	
     TofClusterHR* cluster;
     bool goodlayer[4]={false,false,false,false};
@@ -135,7 +135,7 @@ void minimumbiasTOF(AMSEventR *ev, bool n[]){
     if(c>=3) {n[0]=true;}
     if(c>3) {n[1]=true;}
     if(!(ev->pBeta(0))||!(ev->pBeta(0)->Pattern<5)||!(ev->pBeta(0)->Beta>0.3)||!(ev->pBetaH(0))) {n[0]=false;n[1]=false;}
-    return ;
+     return ;
 }
 
 bool minimumbiasTRIGG(AMSEventR *ev){
@@ -201,50 +201,69 @@ bool goldenTRACKER(AMSEventR *ev,int s,int fit)
 
 void goldenTOF(AMSEventR *ev,int s,int fit,bool m[])
 {	//chiedo che i cluster del TOF abbiano un buon match con la traccia
-    int c=0;
-    m[0]=false;
-    m[1]=false;	
-    if (ev->nParticle()==0||!ev->pTrTrack(0)) return;
-    TrTrackR* track=ev->pTrTrack(0);
-    int fitID=track->iTrTrackPar(1,fit,1);
-    float LONGCUT[4][10]={9.,8.,8.,8.,8.,8.,8.,9.,0.,0.,
-                  12.,8.,8.,8.,8.,8.,8.,12.,0.,0.,
-                  12.,8.,8.,8.,8.,8.,8.,8.,8.,12.,
-                  10.,8.,8.,8.,8.,8.,8.,10.,0.,0.,};
-    float TRANCUT[4][10]={13.,6.,6.,6.,6.,6.,6.,13.,0.,0.,
-                  14.,6.,6.,6.,6.,6.,6.,14.,0.,0.,
-                  10.,6.,6.,6.,6.,6.,6.,6.,6.,10.,
-                  14.,6.,6.,6.,6.,6.,6.,14.,0.,0.};	
-    TofClusterHR* cluster;
-    bool good_match=false;
-    double tlen;
-    AMSPoint pnt;
-    AMSDir dir;
-    int longit[4]={0,1,1,0};
-    int tranit[4]={1,0,0,1};
-    double dlong,dtran;
-    bool goodlayer[4]={false,false,false,false};
-    for(int i=0; i<ev->nTofClusterH();i++) 
-    {
-        cluster=ev->pTofClusterH(i);
-        if(cluster>0)
-        {
-            int layer=cluster->Layer-1;
-            int bar=cluster->Bar-1;
-            tlen=track->Interpolate(cluster->Coo[2],pnt,dir,fitID);
-            dlong=cluster->Coo[longit[layer]]-pnt[longit[layer]];
-            dtran=cluster->Coo[tranit[layer]]-pnt[tranit[layer]];
-            if(fabs(dlong)<(LONGCUT[layer][bar])-(s*10*LONGCUT[layer][bar]/100) && fabs(dtran)<TRANCUT[layer][bar]-s*10*TRANCUT[layer][bar]/100)
-                goodlayer[layer]=true;
-        }
-    }
-    
-    for(int i=0; i<4; i++)
-        if(goodlayer[i]) c++;
-    if(c>=3) {m[0]=true;}
-    if(c>3) {m[1]=true;}	
-    return;
+	int c=0;
+	m[0]=false;
+	m[1]=false;	
+//	if (/*ev->nParticle()==0||*/!ev->pTrTrack(0)) return;
+	TrTrackR* track=ev->pTrTrack(0);
+	if (track){
+		int fitID=track->iTrTrackPar(1,fit,1);
+		float LONGCUT[4][10]={9.,8.,8.,8.,8.,8.,8.,9.,0.,0.,
+			12.,8.,8.,8.,8.,8.,8.,12.,0.,0.,
+			12.,8.,8.,8.,8.,8.,8.,8.,8.,12.,
+			10.,8.,8.,8.,8.,8.,8.,10.,0.,0.,};
+		float TRANCUT[4][10]={13.,6.,6.,6.,6.,6.,6.,13.,0.,0.,
+			14.,6.,6.,6.,6.,6.,6.,14.,0.,0.,
+			10.,6.,6.,6.,6.,6.,6.,6.,6.,10.,
+			14.,6.,6.,6.,6.,6.,6.,14.,0.,0.};	
+		TofClusterR* cluster;
+		bool good_match=false;
+		double tlen;
+		AMSPoint pnt;
+		AMSDir dir;
+		int longit[4]={0,1,1,0};
+		int tranit[4]={1,0,0,1};
+		double dlong,dtran;
+		bool goodlayer[4]={false,false,false,false};
+		for(int i=0; i<ev->nTofCluster();i++) 
+		{
+			cluster=ev->pTofCluster(i);
+			if(cluster>0)
+			{
+				int layer=cluster->Layer-1;
+				int bar=cluster->Bar-1;
+				tlen=track->Interpolate(cluster->Coo[2],pnt,dir,fitID);
+				dlong=cluster->Coo[longit[layer]]-pnt[longit[layer]];
+				dtran=cluster->Coo[tranit[layer]]-pnt[tranit[layer]];
+				if(fabs(dlong)<(LONGCUT[layer][bar])-(s*10*LONGCUT[layer][bar]/100) && fabs(dtran)<TRANCUT[layer][bar]-s*10*TRANCUT[layer][bar]/100)
+					goodlayer[layer]=true;
+			}
+		}
+
+		for(int i=0; i<4; i++)
+			if(goodlayer[i]) c++;
+		if(c>=3) {m[0]=true;}
+		if(c>3) {m[1]=true;}	
+	}
+	return;
 }
+
+
+bool goldenTOF_new(AMSEventR *ev){
+	bool IsGood=true;
+	TrTrackR* track=ev->pTrTrack(0);
+	if(track){
+		BetaHR * Beta = ev -> pBetaH(0);
+		if(Beta){
+			if(!(Beta->IsTkTofMatch ())) IsGood=false;
+			if(!(Beta->GetBuildType	()==1)) IsGood=false;	  	
+			if(!(Beta->GetChi2T ()<10)) IsGood=false;
+			if(!(Beta->GetChi2C ()<10)) IsGood=false;
+		}
+	}
+	return IsGood;	
+}
+
 
 bool goldenTRD(AMSEventR* ev, int s,int fit) {
     //chiedo che la traccia del TRD sia compatibile con quella del TRACKER
@@ -325,22 +344,10 @@ bool InTrdAcceptance(AMSEventR* ev, int s,int fit){
 }
 
 
-AMSEventR* preselect ( AMSEventR* ev) {
-    //chiedo eventi con una particella,una traccia, un beta e carica =1
-    if(ev->nParticle()==1)
-    {
-        ParticleR* particella = ev->pParticle(0);
-        //double Beta=particella->pBetaH()->GetBeta();
-        // solo per elettroni
-        double Beta=particella->pBeta()->Beta; 
-	//
-	if(ev->nTrTrack()==1 &&  ev->NTrdTrack()>=1 && Beta>0)
-        {	
-            preselezionate++;
-            return ev;
-        }
-         else return NULL;
-    }
+AMSEventR* OneParticle ( AMSEventR* ev) {
+	if(ev->nParticle()==1&&ev->nTrTrack()==1){
+		return ev;   
+	}
     else  return NULL;	
 }
 
