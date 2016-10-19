@@ -72,6 +72,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    cout<<"*********************** MC READING *********************"<<endl;
 
    if(INDX==BUILDALL) {
+      InizializeEff();
       LoopOnMCTrig(ntupMCTrig);
    }
    if(INDX==BUILDALL||INDX==BUILDSEPD) {
@@ -110,6 +111,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       HecutMC_Write();
       DATAEdepLAT_Write();
       SlidesforPlot_Write();
+      BadEventStudy_Write();
       MCdeutonsDistr_Write();
       MCQcheck_Write();
       DistanceCut_Write();
@@ -148,7 +150,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    if(INDX==READ) {
       if(frac=="tot") Hecut(filename);
       SlidesforPlot(filename);
-      DistanceCut(filename);
+      //DistanceCut(filename);
       Correlazione_Preselezioni(filename);
 
       MCpreeff(filename);
@@ -160,6 +162,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       AntiDCutOptimization(filename);	
       AntiDEfficiencies(filename);
       MCQcheck(filename);
+      BadEventStudy(filename);
       MCFullseteff(filename);
       MigrationMatrix(filename);
       MCdeutonsDistr(filename);
@@ -169,8 +172,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATAQualeff(filename);
       DATARICHeff(filename);
       DATAEdepLAT(filename);
-      DeutonsTemplFits(filename,frac);
-      DeutonsTemplFits_Dist(filename,frac);	
+      if(frac=="tot") DeutonsTemplFits(filename,frac);
+      if(frac=="tot") DeutonsTemplFits_Dist(filename,frac);	
 
       CorrLAT(filename);
       DVSMCPreSeleff(filename);
@@ -181,8 +184,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       Acceptance(filename);
       AntiDpredictions(filename);
       ProtonFlux(filename);
-      DeutonFlux(filename);
-      OtherExperimentsComparison(filename);
+      if(frac=="tot")DeutonFlux(filename);
+      if(frac=="tot")OtherExperimentsComparison(filename);
    }
 
 
@@ -211,6 +214,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
    ntupMCTrig->SetBranchAddress("PhysBPatt",&Tup.PhysBPatt);
    ntupMCTrig->SetBranchAddress("mcweight",&Tup.mcweight);
+   ntupMCTrig->SetBranchAddress("R_L1",&Tup.R_L1);
 
    ntupMCSepD->SetBranchAddress("Momentogen",&Tup.Momento_gen);
    ntupMCSepD->SetBranchAddress("R",&Tup.R);
@@ -330,6 +334,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
 
       HecutMC_Fill();
       SlidesforPlot_Fill();
+      BadEventStudy_Fill();
       FluxFactorizationtest_Qual_Fill();
       DistanceCut_Fill();
       AntiDCutOptimization_Fill();

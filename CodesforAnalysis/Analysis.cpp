@@ -45,6 +45,7 @@
 #include "Parte2/MCControlsamplecuteff.cpp"
 #include "Parte2/MCQualeff.cpp"
 #include "Parte2/Cuts.cpp"
+#include "Parte2/BadEventstudy.cpp"
 #include "Parte2/MCTrackeff.cpp"
 #include "Parte2/Eff_Factorizationtest.cpp"
 #include "Parte2/MigrationMatrix.cpp"
