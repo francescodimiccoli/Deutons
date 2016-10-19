@@ -57,7 +57,6 @@ void Cuts()
    Distcut=false;
    if(Qualitycut(Tup.Dist5D_P,3,2,3)||Qualitycut(Tup.Dist5D,3,2,3)) Distcut=true;
 
-
    /////////////////////Control sample cuts//////////////////////
 
    //Helium rej. cut
