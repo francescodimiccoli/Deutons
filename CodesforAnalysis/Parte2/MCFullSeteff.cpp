@@ -15,6 +15,9 @@ void MCFullseteff(string filename){
 	Efficiency * EffpreselMCP = new Efficiency(inputHistoFile, "EffpreselMCP");
 	Efficiency * EffpreselMCD = new Efficiency(inputHistoFile, "EffpreselMCD");
 
+	Efficiency * EffLikMCP = new Efficiency (inputHistoFile,"EffLikMCP");
+	Efficiency * EffLikMCD = new Efficiency (inputHistoFile,"EffLikMCD");
+	
 	Efficiency * EffDistMCP = new Efficiency (inputHistoFile,"EffDistMCP");
 	Efficiency * EffDistMCD = new Efficiency (inputHistoFile,"EffDistMCD");
 	
@@ -22,6 +25,9 @@ void MCFullseteff(string filename){
 	
 	EffpreselMCP -> Eval_Efficiency();
 	EffpreselMCD -> Eval_Efficiency();
+
+	EffLikMCP   -> Eval_Efficiency();
+	EffLikMCD   -> Eval_Efficiency();
 
 	EffDistMCP   -> Eval_Efficiency();
 	EffDistMCD   -> Eval_Efficiency();
@@ -45,7 +51,16 @@ void MCFullseteff(string filename){
 	TH2F * EffFullsetMCDNaF_TH2F =  (TH2F *)EffDistMCD->effNaF->Clone();
 	TH2F * EffFullsetMCDAgl_TH2F =  (TH2F *)EffDistMCD->effAgl->Clone();
 
-	
+	EffFullsetMCP_R_TH1F -> Multiply( (TH1F *)EffLikMCP->effR  ->Clone()	); 
+	EffFullsetMCP_TH1F   -> Multiply( (TH1F *)EffLikMCP->effTOF->Clone()	); 
+	EffFullsetMCPNaF_TH1F-> Multiply( (TH1F *)EffLikMCP->effNaF->Clone()	); 
+	EffFullsetMCPAgl_TH1F-> Multiply( (TH1F *)EffLikMCP->effAgl->Clone()	); 
+	EffFullsetMCD_R_TH2F -> Multiply( (TH2F *)EffLikMCD->effR  ->Clone()	); 
+	EffFullsetMCD_TH2F   -> Multiply( (TH2F *)EffLikMCD->effTOF->Clone()	); 
+	EffFullsetMCDNaF_TH2F-> Multiply( (TH2F *)EffLikMCD->effNaF->Clone()	); 
+	EffFullsetMCDAgl_TH2F-> Multiply( (TH2F *)EffLikMCD->effAgl->Clone()	); 
+
+
 	EffFullsetMCP_R_TH1F -> Multiply( EffPreMCP_R_TH1F  	); 
 	EffFullsetMCP_TH1F   -> Multiply( EffPreMCP_TH1F    	); 
 	EffFullsetMCPNaF_TH1F-> Multiply( EffPreMCPNaF_TH1F 	); 
@@ -55,6 +70,22 @@ void MCFullseteff(string filename){
 	EffFullsetMCDNaF_TH2F-> Multiply( EffPreMCDNaF_TH2F 	); 
 	EffFullsetMCDAgl_TH2F-> Multiply( EffPreMCDAgl_TH2F 	); 
 
+
+	//fitting
+
+	FitFunction * FitDTOF = new FitFunction( EffFullsetMCD_TH2F   ,4);	
+	FitFunction * FitDNaF = new FitFunction( EffFullsetMCDNaF_TH2F,4);	
+	FitFunction * FitDAgl = new FitFunction( EffFullsetMCDAgl_TH2F,4);	
+
+	FitDTOF->FitValues(); 
+        FitDNaF->FitValues();
+        FitDAgl->FitValues();
+
+	EffFullsetMCD_TH2F   =(TH2F*)FitDTOF->ReturnFittedValues();
+        EffFullsetMCDNaF_TH2F=(TH2F*)FitDNaF->ReturnFittedValues();
+        EffFullsetMCDAgl_TH2F=(TH2F*)FitDAgl->ReturnFittedValues();
+
+	//
 
 	EffFullsetMCP_R_TH1F	->SetName("EffFullsetMCP_EffR");
 	EffFullsetMCP_TH1F 	->SetName("EffFullsetMCP_EffTOF");

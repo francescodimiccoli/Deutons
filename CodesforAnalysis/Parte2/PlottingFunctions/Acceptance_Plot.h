@@ -51,9 +51,9 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 					
 	
 	EffgenbetaD[h]->SetMarkerStyle(8);
-        EffgenbetaD[h]->SetMarkerColor(0);
+        EffgenbetaD[h]->SetMarkerColor(1);
         EffgenbetaD[h]->SetMarkerSize(1);
-        EffgenbetaD[h]->SetLineColor(0);
+        EffgenbetaD[h]->SetLineColor(1);
         EffgenbetaD[h]->SetLineWidth(1);
         EffgenbetaD[h]->SetMarkerStyle(h+3);
         EffgenbetaD[h]->SetTitle("");

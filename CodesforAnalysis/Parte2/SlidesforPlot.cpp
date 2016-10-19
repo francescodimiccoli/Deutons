@@ -26,6 +26,12 @@ TH1F *MassNaF_DQ=new TH1F ("MassNaF_DQ","MassNaF_DQ",500,0,4.5);
 TH1F *MassAgl_PQ=new TH1F ("MassAgl_PQ","MassAgl_PQ",500,0,4.5);
 TH1F *MassAgl_DQ=new TH1F ("MassAgl_DQ","MassAgl_DQ",500,0,4.5);
 
+TH2F *MassTOFvsB_P=new TH2F ("MassTOFvsB_P","MassTOFvsB_P",500,0,4.5,100,0.3,1);
+TH2F *MassTOFvsB_D=new TH2F ("MassTOFvsB_D","MassTOFvsB_D",500,0,4.5,100,0.3,1);
+TH2F *MassNaFvsB_P=new TH2F ("MassNaFvsB_P","MassNaFvsB_P",500,0,4.5,100,0.75,1);
+TH2F *MassNaFvsB_D=new TH2F ("MassNaFvsB_D","MassNaFvsB_D",500,0,4.5,100,0.75,1);
+TH2F *MassAglvsB_P=new TH2F ("MassAglvsB_P","MassAglvsB_P",500,0,4.5,100,0.95,1);
+TH2F *MassAglvsB_D=new TH2F ("MassAglvsB_D","MassAglvsB_D",500,0,4.5,100,0.95,1);
 
 TH2F *EdepUTOFvsR_P=new TH2F ("EdepUTOFvsR_P","EdepUTOFvsR_P",500,0,10,500,0,40);
 TH2F *EdepUTOFvsR_D=new TH2F ("EdepUTOFvsR_D","EdepUTOFvsR_D",500,0,10,500,0,40);
@@ -36,6 +42,21 @@ TH2F *EdepLTOFvsR_He=new TH2F ("EdepLTOFvsR_He","EdepLTOFvsR_He",500,0,10,500,0,
 TH2F *EdepTrackvsR_P=new TH2F ("EdepTrackvsR_P","EdepTrackvsR_P",500,0,10,500,0,4);
 TH2F *EdepTrackvsR_D=new TH2F ("EdepTrackvsR_D","EdepTrackvsR_D",500,0,10,500,0,4);
 TH2F *EdepTrackvsR_He=new TH2F ("EdepTrackvsR_He","EdepTrackvsR_He",500,0,10,500,0,4);
+
+TH2F *EdepUTOFvsB_P=new TH2F ("EdepUTOFvsB_P","EdepUTOFvsB_P",500,0,1,500,0,40);
+TH2F *EdepUTOFvsB_D=new TH2F ("EdepUTOFvsB_D","EdepUTOFvsB_D",500,0,1,500,0,40);
+TH2F *EdepUTOFvsB_He=new TH2F ("EdepUTOFvsB_He","EdepUTOFvsB_He",500,0,1,500,0,40);
+TH2F *EdepLTOFvsB_P=new TH2F ("EdepLTOFvsB_P","EdepLTOFvsB_P",500,0,1,500,0,40);
+TH2F *EdepLTOFvsB_D=new TH2F ("EdepLTOFvsB_D","EdepLTOFvsB_D",500,0,1,500,0,40);
+TH2F *EdepLTOFvsB_He=new TH2F ("EdepLTOFvsB_He","EdepLTOFvsB_He",500,0,1,500,0,40);
+TH2F *EdepTrackvsB_P=new TH2F ("EdepTrackvsB_P","EdepTrackvsB_P",500,0,1,500,0,4);
+TH2F *EdepTrackvsB_D=new TH2F ("EdepTrackvsB_D","EdepTrackvsB_D",500,0,1,500,0,4);
+TH2F *EdepTrackvsB_He=new TH2F ("EdepTrackvsB_He","EdepTrackvsB_He",500,0,1,500,0,4);
+
+
+TH2F *EdepUTOFvsB  =new TH2F ("EdepUTOFvsB","EdepUTOFvsB",500,0,1,500,0,40);
+TH2F *EdepLTOFvsB  =new TH2F ("EdepLTOFvsB","EdepLTOFvsB",500,0,1,500,0,40);
+TH2F *EdepTrackvsB =new TH2F ("EdepTrackvsB","EdepTrackvsB",500,0,1,500,0,4);
 
 
 TH2F *RvsBetaTOF=new TH2F ("RvsBetaTOF","RvsBetaTOF",500,0,6,500,0.4,1);
@@ -52,12 +73,13 @@ TH1F *MassNaFQ=new TH1F ("MassNaFQ","MassNaFQ",500,0,4.5);
 TH1F *MassAglQ=new TH1F ("MassAglQ","MassAglQ",500,0,4.5);
 
 
-TH2F *LikvsDistTOF_P=new TH2F ("LikvsDistTOF_P","LikvsDistTOF_P",500,0,6,500,-1,1);
-TH2F *LikvsDistNaF_P=new TH2F ("LikvsDistNaF_P","LikvsDistNaF_P",500,0,6,500,-1,1);
-TH2F *LikvsDistAgl_P=new TH2F ("LikvsDistAgl_P","LikvsDistAgl_P",500,0,6,500,-1,1);
-TH2F *LikvsDistTOF_D=new TH2F ("LikvsDistTOF_D","LikvsDistTOF_D",500,0,6,500,-1,1);
-TH2F *LikvsDistNaF_D=new TH2F ("LikvsDistNaF_D","LikvsDistNaF_D",500,0,6,500,-1,1);
-TH2F *LikvsDistAgl_D=new TH2F ("LikvsDistAgl_D","LikvsDistAgl_D",500,0,6,500,-1,1);
+
+TH2F *LikvsDistTOF_P=new TH2F ("LikvsDistTOF_P","LikvsDistTOF_P",500,0,6,500,0,100);
+TH2F *LikvsDistNaF_P=new TH2F ("LikvsDistNaF_P","LikvsDistNaF_P",100,0,6,300,0,100);
+TH2F *LikvsDistAgl_P=new TH2F ("LikvsDistAgl_P","LikvsDistAgl_P",100,0,6,300,0,100);
+TH2F *LikvsDistTOF_D=new TH2F ("LikvsDistTOF_D","LikvsDistTOF_D",500,0,6,500,0,100);
+TH2F *LikvsDistNaF_D=new TH2F ("LikvsDistNaF_D","LikvsDistNaF_D",100,0,6,300,0,100);
+TH2F *LikvsDistAgl_D=new TH2F ("LikvsDistAgl_D","LikvsDistAgl_D",100,0,6,300,0,100);
 
 TH2F *RvsDistTOF_P=new TH2F ("RvsDistTOF_P","RvsDistTOF_P",500,0,6,500,-1,1);
 TH2F *RvsDistNaF_P=new TH2F ("RvsDistNaF_P","RvsDistNaF_P",500,1,10,500,-1,1);
@@ -93,6 +115,12 @@ void SlidesforPlot_Fill ()
    if (Herejcut) {
       if (Massa_gen<1&&Massa_gen>0.5) {
          RvsBetaTOF_P->Fill (Tup.R,Tup.Beta,Tup.mcweight);
+
+         MassTOFvsB_P->Fill((Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5),Tup.Beta,Tup.mcweight);
+         if ( cmask.isFromNaF() ) MassNaFvsB_P->Fill((Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5),Tup.BetaRICH,Tup.mcweight);
+	 if ( cmask.isFromAgl() ) MassAglvsB_P->Fill((Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5),Tup.BetaRICH,Tup.mcweight);
+
+	
          if ( cmask.isFromNaF() ) RvsBetaNaF_P->Fill (Tup.R,Tup.BetaRICH,Tup.mcweight);
          if ( cmask.isFromAgl() ) RvsBetaAgl_P->Fill (Tup.R,Tup.BetaRICH,Tup.mcweight);
          if (Betastrongcut&&Tup.BetaRICH<0) MassTOF_P->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5),Tup.mcweight );
@@ -108,6 +136,11 @@ void SlidesforPlot_Fill ()
       }
       if (Massa_gen<2&&Massa_gen>1.5) {
          RvsBetaTOF_D->Fill (Tup.R,Tup.Beta,Tup.mcweight);
+
+ 	 MassTOFvsB_D->Fill((Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5),Tup.Beta,Tup.mcweight);
+         if ( cmask.isFromNaF() ) MassNaFvsB_D->Fill((Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5),Tup.BetaRICH,Tup.mcweight);
+         if ( cmask.isFromAgl() ) MassAglvsB_D->Fill((Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5),Tup.BetaRICH,Tup.mcweight);        
+ 
          if ( cmask.isFromNaF() ) RvsBetaNaF_D->Fill (Tup.R,Tup.BetaRICH,Tup.mcweight);
          if ( cmask.isFromAgl() ) RvsBetaAgl_D->Fill (Tup.R,Tup.BetaRICH,Tup.mcweight);
          if (Betastrongcut&&Tup.BetaRICH<0) MassTOF_D->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5),Tup.mcweight );
@@ -130,17 +163,23 @@ void SlidesforPlot_Fill ()
       EdepUTOFvsR_P->Fill (Tup.R,Tup.EdepTOFU,Tup.mcweight);
       EdepLTOFvsR_P->Fill (Tup.R,Tup.EdepTOFD,Tup.mcweight);
       EdepTrackvsR_P->Fill (Tup.R,Tup.EdepTrack,Tup.mcweight);
-      if (Herejcut&&Betastrongcut&&Tup.BetaRICH<0) {
+
+      EdepUTOFvsB_P->Fill (Tup.Beta,Tup.EdepTOFU,Tup.mcweight);
+      EdepLTOFvsB_P->Fill (Tup.Beta,Tup.EdepTOFD,Tup.mcweight);
+      EdepTrackvsB_P->Fill (Tup.Beta,Tup.EdepTrack,Tup.mcweight);
+
+
+      if (Herejcut&&Betastrongcut&&Tup.BetaRICH<0&& (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) >1.875) {
 							DistTOF_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-						        LikvsDistTOF_P->Fill(Tup.Dist5D,Tup.LDiscriminant);
+						        LikvsDistTOF_P->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 						   }	
-      if (Herejcut&&Betastrongcut&& cmask.isFromNaF() ) {
+      if (Herejcut&&Betastrongcut&& cmask.isFromNaF() && (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) >1.875 ) {
 							DistNaF_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      							LikvsDistNaF_P->Fill(Tup.Dist5D,Tup.LDiscriminant);
+      							LikvsDistNaF_P->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
       							}
-      if (Herejcut&&Betastrongcut&& cmask.isFromAgl() ) {
+      if (Herejcut&&Betastrongcut&& cmask.isFromAgl()  && (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) >1.875) {
 							DistAgl_P->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-							LikvsDistAgl_P->Fill(Tup.Dist5D,Tup.LDiscriminant);
+							LikvsDistAgl_P->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 							}
 
       if (Herejcut&&Tup.BetaRICH<0) RvsDistTOF_P->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
@@ -152,17 +191,22 @@ void SlidesforPlot_Fill ()
       EdepUTOFvsR_D->Fill (Tup.R,Tup.EdepTOFU,Tup.mcweight);
       EdepLTOFvsR_D->Fill (Tup.R,Tup.EdepTOFD,Tup.mcweight);
       EdepTrackvsR_D->Fill (Tup.R,Tup.EdepTrack,Tup.mcweight);
-      if (Herejcut&&Betastrongcut&&Tup.BetaRICH<0) {
+   
+      EdepUTOFvsB_D->Fill (Tup.Beta,Tup.EdepTOFU,Tup.mcweight);
+      EdepLTOFvsB_D->Fill (Tup.Beta,Tup.EdepTOFD,Tup.mcweight);
+      EdepTrackvsB_D->Fill (Tup.Beta,Tup.EdepTrack,Tup.mcweight);
+
+       if (Herejcut&&Betastrongcut&&Tup.BetaRICH<0 && (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) >1.875) {
 						DistTOF_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      						LikvsDistTOF_D->Fill(Tup.Dist5D,Tup.LDiscriminant);
+      						LikvsDistTOF_D->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 						}
-	if (Herejcut&&Betastrongcut&& cmask.isFromNaF() ) {
+	if (Herejcut&&Betastrongcut&& cmask.isFromNaF() && (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) >1.875)  {
 						DistNaF_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
-      						LikvsDistNaF_D->Fill(Tup.Dist5D,Tup.LDiscriminant); 
+      						LikvsDistNaF_D->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D); 
 						}									
-	if (Herejcut&&Betastrongcut&& cmask.isFromAgl() ) {
+	if (Herejcut&&Betastrongcut&& cmask.isFromAgl() && (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) >1.875 ) {
 						DistAgl_D->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
-						LikvsDistAgl_D->Fill(Tup.Dist5D,Tup.LDiscriminant);
+						LikvsDistAgl_D->Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 						}
       if (Herejcut&&Tup.BetaRICH<0) RvsDistTOF_D->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D) ,Tup.mcweight);
       if (Herejcut&& cmask.isFromNaF() ) RvsDistNaF_D->Fill (Tup.R, (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
@@ -170,9 +214,19 @@ void SlidesforPlot_Fill ()
 
    }
    if (Massa_gen<4.5&&Massa_gen>2.5) {
+    
+    if(Likcut){	
       EdepUTOFvsR_He->Fill (Tup.R,Tup.EdepTOFU,Tup.mcweight);
       EdepLTOFvsR_He->Fill (Tup.R,Tup.EdepTOFD,Tup.mcweight);
       EdepTrackvsR_He->Fill (Tup.R,Tup.EdepTrack,Tup.mcweight);
+   
+      EdepUTOFvsB_He->Fill (Tup.Beta,Tup.EdepTOFU,Tup.mcweight);
+      EdepLTOFvsB_He->Fill (Tup.Beta,Tup.EdepTOFD,Tup.mcweight);
+      EdepTrackvsB_He->Fill (Tup.Beta,Tup.EdepTrack,Tup.mcweight);
+	}
+
+
+
       if (Betastrongcut&&Tup.BetaRICH<0&&Tup.R>1) DistTOF_He->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
       if (Betastrongcut&& cmask.isFromNaF()&&Tup.R>1) DistNaF_He->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
       if (Betastrongcut&& cmask.isFromAgl()&&Tup.R>1) DistAgl_He->Fill ( (Tup.Dist5D_P-Tup.Dist5D) / (Tup.Dist5D_P+Tup.Dist5D),Tup.mcweight );
@@ -188,15 +242,20 @@ void SlidesforPlot_Fill ()
 
 void SlidesforPlot_D_Fill ()
 {
-
-
-   if (Herejcut&&Tup.Latitude>0.8) {
       RvsBetaTOF->Fill (Tup.R,Tup.Beta);
       if ( cmask.isFromNaF() ) RvsBetaNaF->Fill (Tup.R,Tup.BetaRICH);
       if ( cmask.isFromAgl() ) RvsBetaAgl->Fill (Tup.R,Tup.BetaRICH);
-      if (Betastrongcut&&Tup.BetaRICH<0) MassTOF->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) );
-      if (Betastrongcut&& cmask.isFromNaF() ) MassNaF->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
-      if (Betastrongcut&& cmask.isFromAgl() ) MassAgl->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
+
+      EdepUTOFvsB->Fill (Tup.Beta,Tup.EdepTOFU);
+      EdepLTOFvsB->Fill (Tup.Beta,Tup.EdepTOFD);
+      EdepTrackvsB->Fill (Tup.Beta,Tup.EdepTrack);
+	    
+
+
+   if (Herejcut&&Tup.Latitude>0.8) {
+      if (Betastrongcut&&Tup.BetaRICH<0 && Tup.Rcutoff > 1.5*RBeta->Eval(Tup.Beta) && Tup.R>1.2*Tup.Rcutoff ) MassTOF->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) );
+      if (Betastrongcut&& cmask.isFromNaF() && Tup.Rcutoff > 1.5*RBeta->Eval(Tup.BetaRICH)&& Tup.R>1.2*Tup.Rcutoff) MassNaF->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
+      if (Betastrongcut&& cmask.isFromAgl() && Tup.Rcutoff > 1.5*RBeta->Eval(Tup.BetaRICH)&& Tup.R>1.2*Tup.Rcutoff) MassAgl->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
       if (Likcut&&Distcut) {
          if (Betastrongcut&&Tup.BetaRICH<0) MassTOFQ->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) );
          if (Betastrongcut&& cmask.isFromNaF() ) MassNaFQ->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
@@ -263,12 +322,37 @@ void SlidesforPlot_Write()
    RvsDistTOF_P->Write();
    RvsDistNaF_P->Write();
    RvsDistAgl_P->Write();
-   RvsDistTOF_D->Write();
-   RvsDistNaF_D->Write();
-   RvsDistAgl_D->Write();
+   RvsDistTOF_D ->Write();
+   RvsDistNaF_D ->Write();
+   RvsDistAgl_D ->Write();
    RvsDistTOF_He->Write();
    RvsDistNaF_He->Write();
    RvsDistAgl_He->Write();
+   LikvsDistTOF_P->Write();
+   LikvsDistNaF_P->Write();
+   LikvsDistAgl_P->Write();
+   LikvsDistTOF_D->Write();
+   LikvsDistNaF_D->Write();
+   LikvsDistAgl_D->Write();
    sigmagen_bad->Write();
-}
 
+   EdepUTOFvsB_P	->Write();
+   EdepUTOFvsB_D	->Write();
+   EdepUTOFvsB_He	->Write();
+   EdepLTOFvsB_P	->Write();
+   EdepLTOFvsB_D	->Write();
+   EdepLTOFvsB_He	->Write();
+   EdepTrackvsB_P	->Write();
+   EdepTrackvsB_D	->Write();
+   EdepTrackvsB_He	->Write();
+   EdepUTOFvsB  	->Write(); 
+   EdepLTOFvsB  	->Write();
+   EdepTrackvsB 	->Write();
+   
+   MassTOFvsB_P		->Write();
+   MassTOFvsB_D		->Write(); 
+   MassNaFvsB_P		->Write();
+   MassNaFvsB_D		->Write();
+   MassAglvsB_P		->Write();
+   MassAglvsB_D		->Write();
+}              

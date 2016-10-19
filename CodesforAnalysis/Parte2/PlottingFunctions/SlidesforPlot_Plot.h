@@ -55,12 +55,34 @@ void SlidesforPlot (string filename)
    TH1F * DistTOF_He= (TH1F*) inputHistoFile->Get ("DistTOF_He");
    TH1F * DistNaF_He= (TH1F*) inputHistoFile->Get ("DistNaF_He");
    TH1F * DistAgl_He= (TH1F*) inputHistoFile->Get ("DistAgl_He");
-   TH2F * RvsDistTOF_P= (TH2F*) inputHistoFile->Get ("RvsDistTOF_P");
-   TH2F * RvsDistNaF_P= (TH2F*) inputHistoFile->Get ("RvsDistNaF_P");
-   TH2F * RvsDistAgl_P= (TH2F*) inputHistoFile->Get ("RvsDistAgl_P");
-   TH2F * RvsDistTOF_D= (TH2F*) inputHistoFile->Get ("RvsDistTOF_D");
-   TH2F * RvsDistNaF_D= (TH2F*) inputHistoFile->Get ("RvsDistNaF_D");
-   TH2F * RvsDistAgl_D= (TH2F*) inputHistoFile->Get ("RvsDistAgl_D");
+   TH2F * LikvsDistTOF_P= (TH2F*) inputHistoFile->Get ("LikvsDistTOF_P");
+   TH2F * LikvsDistNaF_P= (TH2F*) inputHistoFile->Get ("LikvsDistNaF_P");
+   TH2F * LikvsDistAgl_P= (TH2F*) inputHistoFile->Get ("LikvsDistAgl_P");
+   TH2F * LikvsDistTOF_D= (TH2F*) inputHistoFile->Get ("LikvsDistTOF_D");
+   TH2F * LikvsDistNaF_D= (TH2F*) inputHistoFile->Get ("LikvsDistNaF_D");
+   TH2F * LikvsDistAgl_D= (TH2F*) inputHistoFile->Get ("LikvsDistAgl_D");
+
+   TH2F * EdepUTOFvsB_P   = (TH2F*) inputHistoFile->Get ("EdepUTOFvsB_P");			
+   TH2F * EdepUTOFvsB_D	  = (TH2F*) inputHistoFile->Get ("EdepUTOFvsB_D");	
+   TH2F * EdepUTOFvsB_He  = (TH2F*) inputHistoFile->Get ("EdepUTOFvsB_He");	      
+   TH2F * EdepLTOFvsB_P	  = (TH2F*) inputHistoFile->Get ("EdepLTOFvsB_P");	
+   TH2F * EdepLTOFvsB_D	  = (TH2F*) inputHistoFile->Get ("EdepLTOFvsB_D");	
+   TH2F * EdepLTOFvsB_He  = (TH2F*) inputHistoFile->Get ("EdepLTOFvsB_He");	      
+   TH2F * EdepTrackvsB_P  = (TH2F*) inputHistoFile->Get ("EdepTrackvsB_P");		
+   TH2F * EdepTrackvsB_D  = (TH2F*) inputHistoFile->Get ("EdepTrackvsB_D");	      
+   TH2F * EdepTrackvsB_He = (TH2F*) inputHistoFile->Get ("EdepTrackvsB_He");	      
+   TH2F * EdepUTOFvsB  	  = (TH2F*) inputHistoFile->Get ("EdepUTOFvsB");	
+   TH2F * EdepLTOFvsB  	  = (TH2F*) inputHistoFile->Get ("EdepLTOFvsB");	
+   TH2F * EdepTrackvsB 	  = (TH2F*) inputHistoFile->Get ("EdepTrackvsB");	
+                                                                         
+   TH2F * MassTOFvsB_P	  = (TH2F*) inputHistoFile->Get ("MassTOFvsB_P");	      
+   TH2F * MassTOFvsB_D	  = (TH2F*) inputHistoFile->Get ("MassTOFvsB_D");	      
+   TH2F * MassNaFvsB_P    = (TH2F*) inputHistoFile->Get ("MassNaFvsB_P");	 		
+   TH2F * MassNaFvsB_D	  = (TH2F*) inputHistoFile->Get ("MassNaFvsB_D");	       
+   TH2F * MassAglvsB_P	  = (TH2F*) inputHistoFile->Get ("MassAglvsB_P");	       
+   TH2F * MassAglvsB_D	  = (TH2F*) inputHistoFile->Get ("MassAglvsB_D");	       
+
+
 
    TCanvas *p1 =new TCanvas ("RvsBeta TOF MC");
    TCanvas *p2 =new TCanvas ("RvsBeta NaF MC");
@@ -68,15 +90,32 @@ void SlidesforPlot (string filename)
    TCanvas *p4 =new TCanvas ("RvsBeta TOF H.L. data");
    TCanvas *p5 =new TCanvas ("RvsBeta NaF H.L. data");
    TCanvas *p6 =new TCanvas ("RvsBeta Agl H.L. data");
+   TCanvas *p4_bis =new TCanvas ("EdepvsBeta TOF H.L. data");
+   TCanvas *p5_bis =new TCanvas ("EdepvsBeta NaF H.L. data");
+   TCanvas *p6_bis =new TCanvas ("EdepvsBeta Agl H.L. data");
    TCanvas *p7 =new TCanvas ("RvsEdep Upper TOF MC");
    TCanvas *p8 =new TCanvas ("RvsEdep Lower TOF MC");
    TCanvas *p9 =new TCanvas ("RvsEdep Tracker MC");
+   TCanvas *p7_bis =new TCanvas ("BetavsEdep Upper TOF MC");
+   TCanvas *p8_bis =new TCanvas ("BetavsEdep Lower TOF MC");
+   TCanvas *p9_bis =new TCanvas ("BetavsEdep Tracker MC");
+
    TCanvas *p10=new TCanvas ("Mass TOF H.L. data");
    TCanvas *p11=new TCanvas ("Mass NaF H.L. data");
    TCanvas *p12=new TCanvas ("Mass Agl H.L. data");
+   
    TCanvas *p13=new TCanvas ("Mass TOF MC");
    TCanvas *p14=new TCanvas ("Mass NaF MC");
    TCanvas *p15=new TCanvas ("Mass Agl MC");
+   
+   TCanvas *p13_bis=new TCanvas ("Mass TOF MC vs Beta");
+   TCanvas *p14_bis=new TCanvas ("Mass NaF MC vs Beta");
+   TCanvas *p15_bis=new TCanvas ("Mass Agl MC vs Beta");
+   
+  TCanvas *p=new TCanvas ("Beta for D_like Mass");
+
+
+
    TCanvas *p10Q=new TCanvas ("Qual. Mass TOF H.L. data");
    TCanvas *p11Q=new TCanvas ("Qual. Mass NaF H.L. data");
    TCanvas *p12Q=new TCanvas ("Qual. Mass Agl H.L. data");
@@ -86,9 +125,10 @@ void SlidesforPlot (string filename)
    TCanvas *p16=new TCanvas ("Distance discr. TOF MC");
    TCanvas *p17=new TCanvas ("Distance discr. NaF MC");
    TCanvas *p18=new TCanvas ("Distance discr. Agl MC");
-   TCanvas *p19=new TCanvas ("DistvsR  TOF MC");
-   TCanvas *p20=new TCanvas ("DistvsR  NaF MC");
-   TCanvas *p21=new TCanvas ("DistvsR  Agl MC");
+   
+   TCanvas *p19=new TCanvas ("LikvsDist  TOF MC");
+   TCanvas *p20=new TCanvas ("LikvsDist  NaF MC");
+   TCanvas *p21=new TCanvas ("LikvsDist  Agl MC");
 
 
 
@@ -111,11 +151,11 @@ void SlidesforPlot (string filename)
       RvsBetaTOF_He->GetZaxis()->SetRangeUser (1,100);
       RvsBetaTOF_D->Draw();
       RvsBetaTOF_P->Draw ("same");
-      RvsBetaTOF_He->Draw ("same");
+     // RvsBetaTOF_He->Draw ("same");
       TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
-      leg->AddEntry (RvsBetaTOF_P,"Protons MC", "ep");
-      leg->AddEntry (RvsBetaTOF_D,"Deutons MC", "ep");
-      leg->AddEntry (RvsBetaTOF_He,"Q=1 from He fragm.", "ep");
+      leg->AddEntry (RvsBetaTOF_P,"Protons MC", "f");
+      leg->AddEntry (RvsBetaTOF_D,"Deuterons MC", "f");
+     // leg->AddEntry (RvsBetaTOF_He,"Q=1 from He fragm.", "ep");
       leg->Draw ("same");
    }
 
@@ -134,11 +174,11 @@ void SlidesforPlot (string filename)
       RvsBetaNaF_D->GetYaxis()->SetTitle ("Beta NaF");
       RvsBetaNaF_D->Draw();
       RvsBetaNaF_P->Draw ("same");
-      RvsBetaNaF_He->Draw ("same");
+     // RvsBetaNaF_He->Draw ("same");
       TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
-      leg->AddEntry (RvsBetaTOF_P,"Protons MC", "ep");
-      leg->AddEntry (RvsBetaTOF_D,"Deutons MC", "ep");
-      leg->AddEntry (RvsBetaTOF_He,"Q=1 from He fragm.", "ep");
+      leg->AddEntry (RvsBetaTOF_P,"Protons MC", "f");
+      leg->AddEntry (RvsBetaTOF_D,"Deuterons MC", "f");
+    //  leg->AddEntry (RvsBetaTOF_He,"Q=1 from He fragm.", "ep");
       leg->Draw ("same");
    }
 
@@ -157,11 +197,11 @@ void SlidesforPlot (string filename)
       RvsBetaAgl_D->GetYaxis()->SetTitle ("Beta Agl");
       RvsBetaAgl_D->Draw();
       RvsBetaAgl_P->Draw ("same");
-      RvsBetaAgl_He->Draw ("same");
+    //  RvsBetaAgl_He->Draw ("same");
       TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
-      leg->AddEntry (RvsBetaTOF_P,"Protons MC", "ep");
-      leg->AddEntry (RvsBetaTOF_D,"Deutons MC", "ep");
-      leg->AddEntry (RvsBetaTOF_He,"Q=1 from He fragm.", "ep");
+      leg->AddEntry (RvsBetaTOF_P,"Protons MC", "f");
+      leg->AddEntry (RvsBetaTOF_D,"Deuterons MC", "f");
+    //  leg->AddEntry (RvsBetaTOF_He,"Q=1 from He fragm.", "ep");
       leg->Draw ("same");
    }
 
@@ -182,7 +222,7 @@ void SlidesforPlot (string filename)
       deutons->Draw ("same");
       TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
       leg->AddEntry (protons,"Protons Mass curve", "ep");
-      leg->AddEntry (deutons,"Deutons Mass curve", "ep");
+      leg->AddEntry (deutons,"Deuterons Mass curve", "ep");
       leg->Draw ("same");
    }
 
@@ -203,7 +243,7 @@ void SlidesforPlot (string filename)
       deutons->Draw ("same");
       TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
       leg->AddEntry (protons,"Protons Mass curve", "ep");
-      leg->AddEntry (deutons,"Deutons Mass curve", "ep");
+      leg->AddEntry (deutons,"Deuterons Mass curve", "ep");
       leg->Draw ("same");
    }
 
@@ -224,17 +264,58 @@ void SlidesforPlot (string filename)
       deutons->Draw ("same");
       TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
       leg->AddEntry (protons,"Protons Mass curve", "ep");
-      leg->AddEntry (deutons,"Deutons Mass curve", "ep");
+      leg->AddEntry (deutons,"Deuterons Mass curve", "ep");
       leg->Draw ("same");
    }
 
-   cout<<"******************* R vs Edep plots ******************"<<endl;
+   cout<<"******************* Edep plots ******************"<<endl;
+   
+  {
+      p4_bis->cd();
+      gPad->SetGridx();
+      gPad->SetGridy();
+      gPad->SetLogz();
+      EdepUTOFvsB->SetTitle ("#beta vs E. dep. Upper TOF (H.L. ISS data)");
+      EdepUTOFvsB->GetXaxis()->SetTitle ("#beta");
+      EdepUTOFvsB->GetYaxis()->SetTitle ("E. dep. Upper TOF [MeV]");
+      EdepUTOFvsB->Draw ("col");
+   }
+
+   {
+      p5_bis->cd();
+      gPad->SetGridx();
+      gPad->SetGridy();
+      gPad->SetLogz();
+      EdepLTOFvsB->SetTitle ("#beta vs E. dep. Lower TOF (H.L. ISS data)");
+      EdepLTOFvsB->GetXaxis()->SetTitle ("#beta");
+      EdepLTOFvsB->GetYaxis()->SetTitle ("E. dep. Lower TOF [MeV]");
+      EdepLTOFvsB->Draw ("col");
+   }
+
+   {
+      p6_bis->cd();
+      gPad->SetGridx();
+      gPad->SetGridy();
+      gPad->SetLogz();
+      EdepTrackvsB->SetTitle ("#beta vs E. dep. Inner Tracker (H.L. ISS data)");
+      EdepTrackvsB->GetXaxis()->SetTitle ("#beta");
+      EdepTrackvsB->GetYaxis()->SetTitle ("E. dep. Inner Tracker [keV]");
+      EdepTrackvsB->Draw ("col");
+   }
+ 
+
+
+
+
    p7->cd();
    gPad->SetGridx();
    gPad->SetGridy();
    EdepUTOFvsR_P->SetMarkerColor (2);
    EdepUTOFvsR_D->SetMarkerColor (4);
    EdepUTOFvsR_He->SetMarkerColor (3);
+   EdepUTOFvsR_P->SetFillColor (2);
+   EdepUTOFvsR_D->SetFillColor (4);  
+
    EdepUTOFvsR_D->SetTitle ("R vs E.dep. Upper TOF (MC)");
    EdepUTOFvsR_D->GetXaxis()->SetTitle ("R [GV]");
    EdepUTOFvsR_D->GetYaxis()->SetTitle ("E. dep. Upper TOF [MeV]");
@@ -246,13 +327,54 @@ void SlidesforPlot (string filename)
    EdepUTOFvsR_D->Draw();
    EdepUTOFvsR_P->Draw ("same");
    EdepUTOFvsR_He->Draw ("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry (EdepUTOFvsR_P ,"Protons MC", "f");
+      leg->AddEntry (EdepUTOFvsR_D,"Deuterons MC", "f");
+      leg->AddEntry (EdepUTOFvsR_He,"Helium MC", "f");	
+      leg->Draw ("same");
+   }
 
+   
+   p7_bis->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   EdepUTOFvsB_P->SetMarkerColor (2);
+   EdepUTOFvsB_D->SetMarkerColor (4);
+   EdepUTOFvsB_He->SetMarkerColor (3);
+   EdepUTOFvsB_P->SetFillColor (2);
+   EdepUTOFvsB_D->SetFillColor (4);  
+   EdepUTOFvsB_He->SetFillColor (3);
+
+   EdepUTOFvsB_D->SetTitle ("#beta vs E.dep. Upper TOF (MC)");
+   EdepUTOFvsB_D->GetXaxis()->SetTitle ("#beta");
+   EdepUTOFvsB_D->GetYaxis()->SetTitle ("E. dep. Upper TOF [MeV]");
+   EdepUTOFvsB_He->GetZaxis()->SetRangeUser (100,10000);
+   EdepUTOFvsB_D->GetZaxis()->SetRangeUser (10,1000);
+   EdepUTOFvsB_P->GetZaxis()->SetRangeUser (150,10000);
+   EdepUTOFvsB_D->GetXaxis()->SetRangeUser (0.3,1);
+   EdepUTOFvsB_D->GetYaxis()->SetRangeUser (0,20);
+   EdepUTOFvsB_D->Draw();
+   EdepUTOFvsB_P->Draw ("same");
+   EdepUTOFvsB_He->Draw ("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry (EdepUTOFvsB_P ,"Protons MC", "f");
+      leg->AddEntry (EdepUTOFvsB_D,"Deuterons MC", "f");
+      leg->AddEntry (EdepUTOFvsB_He,"Helium MC", "f");	
+      leg->Draw ("same");
+   }
+
+   
    p8->cd();
    gPad->SetGridx();
    gPad->SetGridy();
    EdepLTOFvsR_P->SetMarkerColor (2);
    EdepLTOFvsR_D->SetMarkerColor (4);
    EdepLTOFvsR_He->SetMarkerColor (3);
+   EdepLTOFvsR_P->SetFillColor (2);
+   EdepLTOFvsR_D->SetFillColor (4);
+   
    EdepLTOFvsR_D->SetTitle ("R vs E.dep. Lower TOF (MC)");
    EdepLTOFvsR_D->GetXaxis()->SetTitle ("R [GV]");
    EdepLTOFvsR_D->GetYaxis()->SetTitle ("E. dep. Upper TOF [MeV]");
@@ -264,6 +386,43 @@ void SlidesforPlot (string filename)
    EdepLTOFvsR_D->Draw();
    EdepLTOFvsR_P->Draw ("same");
    EdepLTOFvsR_He->Draw ("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry (EdepLTOFvsR_P ,"Protons MC", "f");
+      leg->AddEntry (EdepLTOFvsR_D,"Deuterons MC", "f");
+      leg->AddEntry (EdepLTOFvsR_He,"Helium MC", "f");           
+      leg->Draw ("same");
+   }
+	
+   p8_bis->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   EdepLTOFvsB_P->SetMarkerColor (2);
+   EdepLTOFvsB_D->SetMarkerColor (4);
+   EdepLTOFvsB_He->SetMarkerColor (3);
+   EdepLTOFvsB_P->SetFillColor (2);
+   EdepLTOFvsB_D->SetFillColor (4);
+   EdepLTOFvsB_He->SetFillColor (3); 
+   
+   EdepLTOFvsB_D->SetTitle ("#beta vs E.dep. Lower TOF (MC)");
+   EdepLTOFvsB_D->GetXaxis()->SetTitle ("#beta");
+   EdepLTOFvsB_D->GetYaxis()->SetTitle ("E. dep. Upper TOF [MeV]");
+   EdepLTOFvsB_He->GetZaxis()->SetRangeUser (100,10000);
+   EdepLTOFvsB_D->GetZaxis()->SetRangeUser (10,1000);
+   EdepLTOFvsB_P->GetZaxis()->SetRangeUser (150,10000);
+   EdepLTOFvsB_D->GetXaxis()->SetRangeUser (0.3,1);
+   EdepLTOFvsB_D->GetYaxis()->SetRangeUser (0,20);
+   EdepLTOFvsB_D->Draw();
+   EdepLTOFvsB_P->Draw ("same");
+   EdepLTOFvsB_He->Draw ("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry (EdepLTOFvsB_P ,"Protons MC", "f");
+      leg->AddEntry (EdepLTOFvsB_D,"Deuterons MC", "f");
+      leg->AddEntry (EdepLTOFvsB_He,"Helium MC", "f");           
+      leg->Draw ("same");
+   }
+	
 
    p9->cd();
    gPad->SetGridx();
@@ -271,6 +430,9 @@ void SlidesforPlot (string filename)
    EdepTrackvsR_P->SetMarkerColor (2);
    EdepTrackvsR_D->SetMarkerColor (4);
    EdepTrackvsR_He->SetMarkerColor (3);
+   EdepTrackvsR_P->SetFillColor (2);
+   EdepTrackvsR_D->SetFillColor (4);
+   EdepTrackvsR_He->SetFillColor (3);
    EdepTrackvsR_D->SetTitle ("R vs E.dep. Tracker (MC)");
    EdepTrackvsR_D->GetXaxis()->SetTitle ("R [GV]");
    EdepTrackvsR_D->GetYaxis()->SetTitle ("E. dep. Upper TOF [MeV]");
@@ -282,6 +444,42 @@ void SlidesforPlot (string filename)
    EdepTrackvsR_D->Draw();
    EdepTrackvsR_P->Draw ("same");
    EdepTrackvsR_He->Draw ("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry (EdepTrackvsR_P ,"Protons MC", "f");
+      leg->AddEntry (EdepTrackvsR_D,"Deuterons MC", "f");
+      leg->AddEntry (EdepTrackvsR_He,"Helium MC", "f");           
+      leg->Draw ("same");
+   }
+
+   p9_bis->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   EdepTrackvsB_P->SetMarkerColor (2);
+   EdepTrackvsB_D->SetMarkerColor (4);
+   EdepTrackvsB_He->SetMarkerColor (3);
+   EdepTrackvsB_P->SetFillColor (2);
+   EdepTrackvsB_D->SetFillColor (4);
+   EdepTrackvsB_He->SetFillColor (3);
+   EdepTrackvsB_D->SetTitle ("#beta vs E.dep. Tracker (MC)");
+   EdepTrackvsB_D->GetXaxis()->SetTitle ("#beta");
+   EdepTrackvsB_D->GetYaxis()->SetTitle ("E. dep. Upper TOF [MeV]");
+   EdepTrackvsB_He->GetZaxis()->SetRangeUser (100,10000);
+   EdepTrackvsB_D->GetZaxis()->SetRangeUser (10,1000);
+   EdepTrackvsB_P->GetZaxis()->SetRangeUser (150,10000);
+   EdepTrackvsB_D->GetXaxis()->SetRangeUser (0.3,1);
+   EdepTrackvsB_D->GetYaxis()->SetRangeUser (0,1.22);
+   EdepTrackvsB_D->Draw();
+   EdepTrackvsB_P->Draw ("same");
+   EdepTrackvsB_He->Draw ("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry (EdepTrackvsB_P ,"Protons MC", "f");
+      leg->AddEntry (EdepTrackvsB_D,"Deuterons MC", "f");
+      leg->AddEntry (EdepTrackvsB_He,"Helium MC", "f");           
+      leg->Draw ("same");
+   }
+
 
 
    cout<<"******************* Mass plots ******************"<<endl;
@@ -337,6 +535,30 @@ void SlidesforPlot (string filename)
    MassTOF_P->Draw();
    MassTOF_D->Draw ("same");
 
+   p13_bis->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   MassTOFvsB_P->SetMarkerColor (2);
+   MassTOFvsB_P->SetLineWidth (2);
+   MassTOFvsB_D->SetMarkerColor (4);
+   MassTOFvsB_D->SetLineWidth (2);
+   MassTOFvsB_D->SetFillColor (4);
+   MassTOFvsB_P->SetFillColor (2);
+   MassTOFvsB_D->GetYaxis()->SetTitle ("#beta");
+   MassTOFvsB_D->GetXaxis()->SetTitle ("Mass [GeV/c^2]");
+   MassTOFvsB_D->GetXaxis()->SetTitleSize (0.045);
+   MassTOFvsB_D->SetTitle ("Mass TOF MC");
+   MassTOFvsB_D->Draw();
+   MassTOFvsB_P->Draw ("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry ( MassTOFvsB_P,"Protons MC ", "f");
+      leg->AddEntry ( MassTOFvsB_D,"Deuterons MC ", "f");
+      leg->Draw ("same");
+   }	
+
+   
+
    p14->cd();
    gPad->SetGridx();
    gPad->SetGridy();
@@ -355,6 +577,31 @@ void SlidesforPlot (string filename)
    MassNaF_P->Draw();
    MassNaF_D->Draw ("same");
 
+   p14_bis->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   MassNaFvsB_P->SetMarkerColor (2);
+   MassNaFvsB_P->SetLineWidth (2);
+   MassNaFvsB_D->SetMarkerColor (4);
+   MassNaFvsB_D->SetLineWidth (2);
+   MassNaFvsB_D->SetFillColor (4);
+   MassNaFvsB_P->SetFillColor (2);
+   MassNaFvsB_D->GetYaxis()->SetTitle ("#beta");
+   MassNaFvsB_D->GetXaxis()->SetTitle ("Mass [GeV/c^2]");
+   MassNaFvsB_D->GetXaxis()->SetTitleSize (0.045);
+   MassNaFvsB_D->SetTitle ("Mass TOF MC");
+   MassNaFvsB_D->Draw();
+   MassNaFvsB_P->Draw ("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry ( MassNaFvsB_P,"Protons MC ", "f");
+      leg->AddEntry ( MassNaFvsB_D,"Deuterons MC ", "f");
+      leg->Draw ("same");
+   }
+
+
+
+
    p15->cd();
    gPad->SetGridx();
    gPad->SetGridy();
@@ -372,6 +619,114 @@ void SlidesforPlot (string filename)
    MassAgl_P->GetXaxis()->SetTitleSize (0.045);
    MassAgl_P->Draw();
    MassAgl_D->Draw ("same");
+
+   p15_bis->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   MassAglvsB_P->SetMarkerColor (2);
+   MassAglvsB_P->SetLineWidth (2);
+   MassAglvsB_D->SetMarkerColor (4);
+   MassAglvsB_D->SetLineWidth (2);
+   MassAglvsB_D->SetFillColor (4);
+   MassAglvsB_P->SetFillColor (2);
+   MassAglvsB_D->GetYaxis()->SetTitle ("#beta");
+   MassAglvsB_D->GetXaxis()->SetTitle ("Mass [GeV/c^2]");
+   MassAglvsB_D->GetXaxis()->SetTitleSize (0.045);
+   MassAglvsB_D->SetTitle ("Mass TOF MC");
+   MassAglvsB_D->Draw();
+   MassAglvsB_P->Draw ("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry ( MassAglvsB_P,"Protons MC ", "f");
+      leg->AddEntry ( MassAglvsB_D,"Deuterons MC ", "f");
+      leg->Draw ("same");
+   }
+  
+
+
+
+   p->Divide(3,1);
+   p->cd(1);
+   gPad->SetGridx();
+   gPad->SetGridy();
+   TH1F * BetaTOF_P = ProjectionYtoTH1F(MassTOFvsB_P    , "temp2",207,500);    	
+   TH1F * BetaTOF_D = ProjectionYtoTH1F(MassTOFvsB_D    , "temp2",207,500);
+   BetaTOF_P -> Scale(1/BetaTOF_P->GetEntries() );  
+   BetaTOF_D -> Scale(1/BetaTOF_D->GetEntries() );
+   BetaTOF_P -> SetLineColor(2);
+   BetaTOF_D -> SetLineColor(4);
+   BetaTOF_P -> SetLineWidth(2);
+   BetaTOF_D -> SetLineWidth(2);
+   BetaTOF_P -> SetFillStyle(3001);
+   BetaTOF_D -> SetFillStyle(3001); 
+   BetaTOF_P -> SetFillColor(2);
+   BetaTOF_D -> SetFillColor(4);
+   BetaTOF_P -> GetXaxis()->SetTitle ("#beta");
+   BetaTOF_P -> SetTitleSize (0.045);
+   BetaTOF_P ->	Draw();
+   BetaTOF_D -> Draw("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry (BetaTOF_P ,"Protons MC (rec. mass > 1.875)", "f");
+      leg->AddEntry (BetaTOF_D ,"Deuterons MC (rec. mass > 1.875)", "f");
+      leg->Draw ("same");
+   }
+   
+    p->cd(2);
+   gPad->SetGridx();
+   gPad->SetGridy();
+   TH1F * BetaNaF_P = ProjectionYtoTH1F(MassNaFvsB_P    , "temp2",207,500);    	
+   TH1F * BetaNaF_D = ProjectionYtoTH1F(MassNaFvsB_D    , "temp2",207,500);
+   BetaNaF_P -> Scale(1/BetaTOF_P->GetEntries() );  
+   BetaNaF_D -> Scale(1/BetaTOF_D->GetEntries() );
+   BetaNaF_P -> SetLineColor(2);
+   BetaNaF_D -> SetLineColor(4);
+   BetaNaF_P -> SetLineWidth(2);
+   BetaNaF_D -> SetLineWidth(2);
+   BetaNaF_P -> SetFillStyle(3001);
+   BetaNaF_D -> SetFillStyle(3001); 
+   BetaNaF_P -> SetFillColor(2);
+   BetaNaF_D -> SetFillColor(4);
+   BetaNaF_P -> GetXaxis()->SetTitle ("#beta");
+   BetaNaF_P -> SetTitleSize (0.045);
+   BetaNaF_P ->	Draw();
+   BetaNaF_D -> Draw("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry (BetaNaF_P ,"Protons MC (rec. mass > 1.875)", "f");
+      leg->AddEntry (BetaNaF_D ,"Deuterons MC (rec. mass > 1.875)", "f");
+      leg->Draw ("same");
+   }
+
+    p->cd(3);
+   gPad->SetGridx();
+   gPad->SetGridy();
+   TH1F * BetaAgl_P = ProjectionYtoTH1F(MassAglvsB_P    , "temp2",207,500);    	
+   TH1F * BetaAgl_D = ProjectionYtoTH1F(MassAglvsB_D    , "temp2",207,500);
+   BetaAgl_P -> Scale(1/BetaTOF_P->GetEntries() );  
+   BetaAgl_D -> Scale(1/BetaTOF_D->GetEntries() );
+   BetaAgl_P -> SetLineColor(2);
+   BetaAgl_D -> SetLineColor(4);
+   BetaAgl_P -> SetLineWidth(2);
+   BetaAgl_D -> SetLineWidth(2);
+   BetaAgl_P -> SetFillStyle(3001);
+   BetaAgl_D -> SetFillStyle(3001); 
+   BetaAgl_P -> SetFillColor(2);
+   BetaAgl_D -> SetFillColor(4);
+   BetaAgl_P -> GetXaxis()->SetTitle ("#beta");
+   BetaAgl_P -> SetTitleSize (0.045);
+   BetaAgl_P ->	Draw();
+   BetaAgl_D -> Draw("same");
+   {
+   TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+      leg->AddEntry (BetaAgl_P ,"Protons MC (rec. mass > 1.875)", "f");
+      leg->AddEntry (BetaAgl_D ,"Deuterons MC (rec. mass > 1.875)", "f");
+      leg->Draw ("same");
+   }
+
+
+
+
 
 
    cout<<"******************* Quality Mass plots ******************"<<endl;
@@ -536,7 +891,7 @@ void SlidesforPlot (string filename)
    DistAgl_P->Draw ("same");
 
    cout<<"******************* R vs Dist plots ******************"<<endl;
-   p19->cd();
+  /* p19->cd();
    gPad->SetGridx();
    gPad->SetGridy();
    RvsDistTOF_P->SetMarkerColor (2);
@@ -575,24 +930,91 @@ void SlidesforPlot (string filename)
    RvsDistAgl_D->GetZaxis()->SetRangeUser (1,400);
    RvsDistAgl_D->Draw();
    RvsDistAgl_P->Draw ("same");
+   */
+
+
+   p19->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   gPad->SetLogy();
+   LikvsDistTOF_P->SetMarkerColor (2);
+   LikvsDistTOF_D->SetMarkerColor (4);
+   LikvsDistTOF_P->SetTitle ("Likelihood vs Distance from D TOF (MC)");
+   LikvsDistTOF_P->GetXaxis()->SetTitle ("-log(1-Likelihood Discr.)");
+   LikvsDistTOF_P->GetYaxis()->SetTitle ("Distance from D TOF");
+   LikvsDistTOF_D -> SetContour(15);
+   LikvsDistTOF_P->SetMarkerStyle (8);
+   LikvsDistTOF_P->SetMarkerSize(0.15);
+   LikvsDistTOF_P->GetXaxis()->SetRangeUser(0,2.6);	
+   LikvsDistTOF_D -> SetLineWidth(3);
+   LikvsDistTOF_P->Draw ();
+   LikvsDistTOF_D->Draw("CONT3,same");
+
+   p20->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   gPad->SetLogy();
+   LikvsDistNaF_P->SetMarkerColor (2);
+   LikvsDistNaF_D->SetMarkerColor (4);
+   LikvsDistNaF_P->SetTitle ("Likelihood vs Distance from D NaF (MC)");
+   LikvsDistNaF_P->GetXaxis()->SetTitle ("-log(1-Likelihood Discr.)");
+   LikvsDistNaF_P->GetYaxis()->SetTitle ("Distance from D TOF");
+   LikvsDistNaF_P->SetMarkerStyle (8);
+   LikvsDistNaF_P->SetMarkerSize(0.15);	
+   LikvsDistNaF_D -> SetContour(15);
+   LikvsDistNaF_D -> SetLineWidth(3);
+   LikvsDistNaF_P->GetXaxis()->SetRangeUser(0,4);	
+   LikvsDistNaF_P->Draw ("same");
+   LikvsDistNaF_D->Draw("CONT3,same");
+
+
+   p21->cd();
+   gPad->SetGridx();
+   gPad->SetGridy();
+   gPad->SetLogy();
+   LikvsDistAgl_P->SetMarkerColor (2);
+   LikvsDistAgl_D->SetMarkerColor (4);
+   LikvsDistAgl_P->SetTitle ("Likelihood vs Distance from D Agl (MC)");
+   LikvsDistAgl_P->GetXaxis()->SetTitle ("-log(1-Likelihood Discr.)");
+   LikvsDistAgl_P->GetYaxis()->SetTitle ("Distance from D TOF");
+   LikvsDistAgl_P->SetMarkerStyle (8);
+   LikvsDistAgl_P->SetMarkerSize(0.15);
+   LikvsDistAgl_D -> SetContour(15);
+   LikvsDistAgl_D -> SetLineWidth(3);
+   LikvsDistAgl_P->GetXaxis()->SetRangeUser(0,5);	
+   LikvsDistAgl_P->Draw ();
+   LikvsDistAgl_D->Draw("CONT3,same");
+
+
+
 
 
    //fileFinalPlots->Flush();
    //fileFinalPlots->Close();
    
    
+   finalPlots.Add(p  );
    finalPlots.Add(p1  );
    finalPlots.Add(p2  );
    finalPlots.Add(p3  );
    finalPlots.Add(p4  );
    finalPlots.Add(p5  );
    finalPlots.Add(p6  );
+   finalPlots.Add(p4_bis);
+   finalPlots.Add(p5_bis);
+   finalPlots.Add(p6_bis);
    finalPlots.Add(p7  );
    finalPlots.Add(p8  );
    finalPlots.Add(p9  );
+   finalPlots.Add(p7_bis);
+   finalPlots.Add(p8_bis);
+   finalPlots.Add(p9_bis);
    finalPlots.Add(p10 );
    finalPlots.Add(p11 );
    finalPlots.Add(p12 );
+   finalPlots.Add(p13_bis );
+   finalPlots.Add(p14_bis );
+   finalPlots.Add(p15_bis );
    finalPlots.Add(p13 );
    finalPlots.Add(p14 );
    finalPlots.Add(p15 );

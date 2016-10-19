@@ -1,20 +1,94 @@
 using namespace std;
 
+class FitFunction {
+
+	private: 
+	TH1 * RoughValues;
+	TH1 * FittedValues;
+	int n_smooth=0;
+	int mc_types=0;
+
+	public:
+	FitFunction( TH1 * values, int nsmooth=1){
+		RoughValues = (TH1 *) values -> Clone();
+		FittedValues= (TH1 *) values -> Clone(); 	
+	
+		n_smooth = nsmooth;
+		mc_types = RoughValues -> GetNbinsY();	
+	}	
+		
+
+	void FitValues();
+	TH1 * ReturnRoughValues() {return RoughValues;}
+	TH1 * ReturnFittedValues() {return FittedValues;}
+
+
+};
+
+
 float FitError(TH1F * fit,TH1F * values,float bins,int param){
 
-	float fitX2=0;
+        float fitX2=0;
         for(int i=1;i<bins;i++) {
-		fitX2+=pow((fit->GetBinContent(i+1)-values->GetBinContent(i+1))/values->GetBinError(i+1),2);
-		}
-	fitX2=(fitX2)/(bins-param);
-        
-	float sigmamean=0;
-        for(int i=1;i<bins;i++) 
-		sigmamean+=pow(values->GetBinError(i+1),2);
+                fitX2+=pow((fit->GetBinContent(i+1)-values->GetBinContent(i+1))/values->GetBinError(i+1),2);
+                }
+        fitX2=(fitX2)/(bins-param);
+
+        float sigmamean=0;
+        for(int i=1;i<bins;i++)
+                sigmamean+=pow(values->GetBinError(i+1),2);
         sigmamean=pow(sigmamean,0.5)/(bins-param);
-        
-	float errorefit=fitX2*sigmamean;
-	return errorefit;
+
+        float errorefit=fitX2*sigmamean;
+        return errorefit;
 }
+
+
+
+
+void FitFunction::FitValues(){
+
+	if(mc_types==1){
+
+		FittedValues -> Smooth(n_smooth);
+
+		float fiterror = FitError((TH1F*)FittedValues,(TH1F*)RoughValues,FittedValues ->GetNbinsX(),0);	
+
+		for(int nbins = 0; nbins < FittedValues ->GetNbinsX(); nbins ++){
+			FittedValues -> SetBinError(nbins +1, fiterror);
+		}
+	}
+	
+	if(mc_types>1){
+
+		for(int n=0;n<mc_types;n++){
+			cout<<"**********************************************"<<endl;
+			cout<< FittedValues->ClassName()<<" "<<RoughValues->ClassName() <<endl;
+			TH1F * SliceFit   = (TH1F*) ProjectionXtoTH1F((TH2F*) FittedValues,"SliceFit",n+1,n+1);
+			TH1F * SliceRough = (TH1F*) ProjectionXtoTH1F((TH2F*) RoughValues,"SliceRough",n+1,n+1);
+			
+			SliceFit -> Smooth(n_smooth);
+			
+			float fiterror = FitError((TH1F*) SliceFit,(TH1F*)SliceRough,FittedValues ->GetNbinsX(),0); 	
+			
+			for(int nbins = 0; nbins < FittedValues ->GetNbinsX(); nbins ++){
+                        	FittedValues -> SetBinContent(nbins +1,n+1, SliceFit -> GetBinContent(nbins +1));
+				FittedValues -> SetBinError(nbins +1,n+1, fiterror);			
+                	}
+		
+		}		
+
+	}
+	return;
+
+}
+
+
+
+
+
+
+
+
 
 

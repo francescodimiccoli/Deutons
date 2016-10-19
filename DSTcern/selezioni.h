@@ -1,5 +1,6 @@
 #include <root.h>
 
+
 void selezioni();
 
 
@@ -15,6 +16,8 @@ AMSEventR* golden(AMSEventR * ev, int s, int fit);
 bool goldenTRACKER(AMSEventR *ev,int s,int fit);
 void goldenTOF(AMSEventR *ev,int s,int fit,bool m[]);
 bool goldenTRD(AMSEventR* ev, int s,int fit);
+bool goldenTOF_new(AMSEventR *ev);
+AMSEventR* OneParticle ( AMSEventR* ev);
 
 
 

@@ -19,8 +19,8 @@ void Cuts_Pre()
    //Strong beta cut
    Betastrongcut = false;
    if(     ((cmask.isFromNaF())&&Tup.BetaRICH<0.97 )
-           ||(cmask.isFromAgl()&&Tup.BetaRICH<0.985)
-           ||((!(cmask.isFromNaF()||cmask.isFromAgl()))&& Tup.Beta_pre < 0.8)
+           ||(cmask.isFromAgl()&&Tup.BetaRICH<0.985 )
+           ||((!(cmask.isFromNaF()||cmask.isFromAgl()))&& Tup.Beta_pre < 0.77)
      )
       Betastrongcut = true;
 
@@ -33,7 +33,15 @@ void Cuts_Pre()
 }
 
 
+bool Qualitycut(float cutvariable, float cutTOF, float cutNaF, float cutAgl){
 
+	bool IsQual=false;	
+	if(cmask.isOnlyFromToF() && cutvariable<cutTOF)  IsQual=true;
+   	if(cmask.isFromNaF()	 && cutvariable<cutNaF)  IsQual=true;
+   	if(cmask.isFromAgl()     && cutvariable<cutAgl)  IsQual=true;
+
+	return IsQual;
+}
 
 
 void Cuts()
@@ -42,12 +50,12 @@ void Cuts()
 
    //likelihood cut
    Likcut=false;
-   if(((cmask.isFromNaF()||cmask.isFromAgl())&&-log(1-Tup.LDiscriminant)>2.3)||((!(cmask.isFromNaF()||cmask.isFromAgl()))&&-log(1-Tup.LDiscriminant)>1.4)) Likcut=true;
+   Likcut=Qualitycut(log(1-Tup.LDiscriminant),-1,-2,-2.4);
 
-   //Distance cut
+   //Distance cut protons
+
    Distcut=false;
-   if((Tup.Dist5D<4||Tup.Dist5D_P<4)) Distcut=true;
-
+   if(Qualitycut(Tup.Dist5D_P,3,2,3)||Qualitycut(Tup.Dist5D,3,2,3)) Distcut=true;
 
    /////////////////////Control sample cuts//////////////////////
 
@@ -82,7 +90,7 @@ void Cuts()
    Betastrongcut = false;
    if(	((cmask.isFromNaF())&&Tup.BetaRICH<0.97 )
          ||(cmask.isFromAgl()&&Tup.BetaRICH<0.985)
-         ||((!(cmask.isFromNaF()||cmask.isFromAgl()))&& Tup.Beta < 0.8)
+         ||((!(cmask.isFromNaF()||cmask.isFromAgl()))&& Tup.Beta < 0.77)
      )
       Betastrongcut = true;
 

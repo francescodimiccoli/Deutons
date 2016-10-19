@@ -56,6 +56,10 @@ int clustertottrack=0;
 double Rup=0;
 double Rdown=0;
 double R=0;
+
+double R_L1=0;
+double Chisquare_L1=0;
+
 int PhysBPatt=0;
 /////////// ANALISI PRESELEZIONI ///////
 int nclusterTOFbuoni=0;
@@ -134,312 +138,372 @@ int Trig_Num=0;
 float Richtotused=0;
 float RichPhEl=0;
 
+///////////// CHARGE //////////////////
+float qL1 =0;
+float qInner=0;
+float qUtof =0;
+float qLtof =0;
+///////////////////////////////////////
+
+
+
+int clusterusati;
+int NTRDClusters;
+
+void InitializeEvent();
+
+
+
 int main(int argc, char * argv[])
 {
-	for(int indice=4;indice<5;indice++)
-	{
-		cout<<"Inserisci parametri simulazione: massa part (GeV),energia min,energia max"<<endl;
-		cout<<"Errore?"<<endl;
-		float E=-1.203972804;
-		float EM=6.66722056;
-		float a=(EM-E)/23;
-		for(int i=0;i<11;i++) Time[i]=0;
-		for(int i=0;i<24;i++)
-		{ 
-			float temp=i+7;
-			bin[i]=0.1*pow(10,temp/9.5);
-			//************** bin DAV
-			/*        bin[i]=exp(E);
-				  E=E+a;*/
-			cout<<bin[i]<<endl;	
 
-		}
+	cout<<"Inserisci parametri simulazione: massa part (GeV),energia min,energia max"<<endl;
+	cout<<"Errore?"<<endl;
+	float E=-1.203972804;
+	float EM=6.66722056;
+	float a=(EM-E)/23;
+	for(int i=0;i<11;i++) Time[i]=0;
+	for(int i=0;i<24;i++)
+	{ 
+		float temp=i+7;
+		bin[i]=0.1*pow(10,temp/9.5);
+		//************** bin DAV
+		/*        bin[i]=exp(E);
+			  E=E+a;*/
+		cout<<bin[i]<<endl;	
 
-		TFile * File;
-		for(int giro=1;giro<2;giro++){
-
-			AMSChain* ch;
-			AMSEventList lista;
-
-			cout<<"inizio...."<<endl;
-
-
-			ch= new AMSChain;
-			string ARGV(argv[1]);
-			int INDX=atoi(argv[1]);
-			for(int i=(int)2*INDX;i<(int)2*(INDX+1);i++){	
-				string indirizzo="root://eosams.cern.ch///eos/ams/Data/AMS02/2014/"+tipo+"/"+energia+"/"+rootpla[i];
-				std::cout<<"Processing : "<<indirizzo<<endl;
-				ch->Add(indirizzo.c_str());
-			}
-
-
-			string istog= "/afs/cern.ch/user/f/fdimicco/Work/Dimiccoli/Compiled/istogrammidati/"+rootpla[(int)(2*INDX)];
-			string *file=&istog;
-
-			File = new TFile(istog.c_str(), "RECREATE");
-
-			int entries =ch->GetEntries();
-			cout<<entries<<endl;
-
-
-			TTree *measure_stuff= new TTree("parametri_geo","parametri_geo");
-			measure_stuff->Branch("U_time",&U_time);
-			measure_stuff->Branch("Latitude",&Latitude);
-			measure_stuff->Branch("zonageo",&zonageo);
-			measure_stuff->Branch("Rcutoff",&Rcutoff);
-			measure_stuff->Branch("Livetime",&Livetime);
-			measure_stuff->Branch("ThetaS",&ThetaS);
-			measure_stuff->Branch("PhiS",&PhiS);
-			measure_stuff->Branch("Unbias",&Unbias);
-			measure_stuff->Branch("R_pre",&R_pre);
-			measure_stuff->Branch("Beta_pre",&Beta_pre);
-			measure_stuff->Branch("BetaR",&BetaR);
-			measure_stuff->Branch("Pres_Unbias",&Pres_Unbias);
-			measure_stuff->Branch("Preselected",&Preselected);		
-			measure_stuff->Branch("CUTMASK",&CUTMASK);
-			measure_stuff->Branch("IsPrescaled",&IsPrescaled);
-			measure_stuff->Branch("Trig_Num",&Trig_Num);
-			measure_stuff->Branch("Run",&Run);
-			measure_stuff->Branch("trtrack_edep",&trtrack_edep);
-			measure_stuff->Branch("trtot_edep",&trtot_edep);
-			measure_stuff->Branch("Endep",&Endep);
-			measure_stuff->Branch("EndepR",&EndepR);
-			measure_stuff->Branch("BetaRICH",&BetaRICH);
-			measure_stuff->Branch("BetaRICH_new",&BetaRICH_new);
-			measure_stuff->Branch("RICHmask",&RICHmask);
-			measure_stuff->Branch("RICHmask_new",&RICHmask_new);			
-			measure_stuff->Branch("EdepECAL",&EdepECAL);
-			measure_stuff->Branch("PhysBPatt",&PhysBPatt);
-
-			measure_stuff->Branch("layernonusati",&layernonusati);
-	                measure_stuff->Branch("NAnticluster",&NAnticluster);
-        	        measure_stuff->Branch("NTofClusters",&NTofClusters);
-               		measure_stuff->Branch("NTofClustersusati",&NTofClustersusati);
-                	measure_stuff->Branch("Rup",&Rup);
-                	measure_stuff->Branch("Rdown",&Rdown);
-                	measure_stuff->Branch("R",&R);
-                	measure_stuff->Branch("Chisquare",&Chisquare);
-                	measure_stuff->Branch("ResiduiX",&ResiduiX);
-                	measure_stuff->Branch("ResiduiY",&ResiduiY);
-                	measure_stuff->Branch("Beta",&Beta);
-                	measure_stuff->Branch("BetaR",&BetaR);
-                	measure_stuff->Branch("BetaRICH",&BetaRICH);
-                	measure_stuff->Branch("BetaRICH_new",&BetaRICH_new);
-                	measure_stuff->Branch("RICHmask",&RICHmask);
-                	measure_stuff->Branch("RICHmask_new",&RICHmask_new);
-                	measure_stuff->Branch("Massa",&Massa);
-                	measure_stuff->Branch("NTrackHits",&NTrackHits);
-                	measure_stuff->Branch("clustertrack",&clustertrack);
-                	measure_stuff->Branch("clustertottrack",&clustertottrack);
-                	measure_stuff->Branch("Unbias",&Unbias);
-			measure_stuff->Branch("Richtotused",&Richtotused);
-			measure_stuff->Branch("RichPhEl",&RichPhEl);
-	
-			AMSSetupR::RTI::UseLatest();
-			TkDBc::UseFinal();
-
-
-			for(int ii=0;ii<entries;ii++)
-			{ 
-				if (contaeventi>entries) break;
-				AMSEventR* ev=ch->GetEvent();
-				ev->SetDefaultMCTuningParameters();
-				if(ii%10000==0){
-					printf("Processed %7d out of %7d\n",ii,entries);
-					printf("Evento numero: %7d\n",contaeventi);
-					if(contaeventi==0) {std::cout<<"RunType(>61442): "<<ev->fHeader.RunType<<" Zenith: "<<ev->fHeader.Zenith()<<std::endl;
-						if(ev->IsInSAA()) std::cout<<"SAA!!"<<std::endl; }	
-				}		
-				Trig_Num=ev->Event();
-				Run=ev->Run();
-				Level1R* trig=ev->pLevel1(0);
-				if(ev->pRichRing(0)&&controlloRICH!=1) {ev->pRichRing(0)->switchDynCalibration(); controlloRICH=1;}
-				if(ev&&trig){
-					PhysBPatt=trig->PhysBPatt;
-					if(trig->PhysBPatt == 0) Unbias =1;
-					else Unbias=0;
-				}
-				//selezione delle run
-				if(ii%10000==0) {cout<<"Latitudine geomagnetica: "<<ev->fHeader.ThetaM<<" rad"<<endl;
-					cout<<ev->UTime()<<endl;}
-				if(ev->IsInSAA()) continue;
-				if(ev->UTime()==ev->fHeader.Run||ev->UTime()==ev->fHeader.Run+1) continue;
-				if(ev->fHeader.RunType<=61442) continue;
-				if(ev->fHeader.Zenith()>25) continue;		//scelta zona geomagnetica
-				for(int i=0;i<12;i++){
-					double geo= geomag[i]  ;
-					double geo2=/*(i+1)/(double)10*/geomag[i+1];
-					if(fabs(ev->fHeader.ThetaM)>geo && fabs(ev->fHeader.ThetaM)<geo2) //cout<<"yes "<< 14.9*pow((cos(ev->fHeader->ThetaM)),4)<<endl;
-					zona=i;
-
-					else tempozona[i]=ev->UTime();
-				}
-				int controllo=0;
-				if(ii%10000==0) cout<<"Zona: "<<zona<<endl;	
-				if(zona>=0)	controllo=1;
-				if(controllo!=1) continue; 
-				contaeventi++;
-				if(ev->UTime()!=tempozona[zona]){
-					tempozona[zona]=ev->UTime();
-					Time[zona]=Time[zona]+ev->LiveTime()/*trig->LiveTime*/;
-					contasecondi[zona]++;
-				}
-				if(ev->pParticle(0)){
-					double dirTheta_ams= ev->pParticle(0)->Theta;
-					double dirPhi_ams= ev->pParticle(0)->Phi;
-					AMSDir amsdir(dirTheta_ams, dirPhi_ams);
-					double cutoff =0;
-					int momOrR = 1; //==0 GeV/c  ; ==1 GV
-					int positive = 1; //==0 particle.mon == 1 (+) , == 2 (-)
-					int ss = ev->pParticle(0)->GetStoermerCutoff(cutoff,momOrR,positive ,amsdir);
-					Rcutoff=cutoff;
-				}
-				U_time=ev->UTime();
-				Livetime=ev->LiveTime();
-				Latitude=fabs(ev->fHeader.ThetaM);
-				ThetaS=ev->fHeader.ThetaS;
-				PhiS=ev->fHeader.PhiS;
-				zonageo=zona;
-				TrTrackR* Tr = ev->pTrTrack(0);
-				nPart=ev->nParticle();
-				nTrTracks=ev->nTrTrack();
-				CUTMASK=0;
-
-				minimumbiasTOF(ev,MinTOF);
-				goldenTOF(ev,severity,3,GolTOF);
-				if(minimumbiasTRIGG(ev)) CUTMASK=CUTMASK|(1<<0);
-				if(MinTOF[0]) CUTMASK=CUTMASK|(1<<1);
-				if(minimumbiasTRD(ev)) CUTMASK=CUTMASK|(1<<2);
-				if(minimumbiasTRACKER(ev,3)) CUTMASK=CUTMASK|(1<<3);
-				if(goldenTRACKER(ev,severity,3)) CUTMASK=CUTMASK|(1<<4);
-				if(GolTOF[0]) CUTMASK=CUTMASK|(1<<5);
-				if(goldenTRD(ev,severity,3)) CUTMASK=CUTMASK|(1<<6);
-				if(nTrTracks==1) CUTMASK=CUTMASK|(1<<7);
-				if(MinTOF[1]) CUTMASK=CUTMASK|(1<<8);
-				if(GolTOF[1]) CUTMASK=CUTMASK|(1<<9);
-
-
-				for(int i=0;i<9;i++){trtot_edep[i]=0;trtrack_edep[i]=0;}
-				if(minimumbiasTRACKER(ev,3)){
-					// Edep Track
-					clustertrack=0;
-					clustertottrack=0;
-					NTrackHits=Tr->NTrRecHit();
-					int fitID3=Tr->iTrTrackPar(1,3,1);
-					if(Tr->ParExists(fitID3)) R_pre=Tr->GetRigidity(fitID3); else R_pre=0;
-					for(int i=0;i<9;i++){trtot_edep[i]=0;trtrack_edep[i]=0;}
-					for(int i=0; i<Tr->NTrRecHit();i++){
-						TrRecHitR *hit=ev->pTrTrack(0)->pTrRecHit (i);
-						int ilay = hit->GetLayerJ()-1;
-						TrClusterR* cluster = hit->GetYCluster();
-						trtrack_edep[ilay] = cluster->GetEdep();
-						clustertrack++;
-					}
-				}	
-				for (int i=0; i<ev->NTrCluster(); i++) {
-					TrClusterR* cluster = ev->pTrCluster(i);
-					int ilay = cluster->GetLayerJ()-1;
-					if(cluster->GetSide()==1) {trtot_edep[ilay] += cluster->GetEdep(); clustertottrack++;}
-				}
-				for(int j=0; j<4; j++)
-					EndepR[j]=0;
-				for(int j=0; j<ev->NTofCluster(); j++)
-					EndepR[(ev->pTofCluster(j)->Layer)-1]+=ev->pTofCluster(j)->Edep;
-
-				for(int j=0; j<4; j++)
-					Endep[j]=0;
-				for(int j=0; j<ev->NTofClusterH(); j++)
-					Endep[(ev->pTofClusterH(j)->Layer)]+=ev->pTofClusterH(j)->GetEdep();
-
-				Beta_pre=0; BetaR=0;
-				if(ev->pBetaH(0)) Beta_pre=ev->pBetaH(0)->GetBeta();
-				if(ev->pBeta(0)) BetaR=ev->pBeta(0)->Beta;
-
-
-				int NhitECAL = ev->NEcalHit();
-				EdepECAL=-100;
-				if(ev->NEcalShower()==1) {EcalShowerR* show = ev->pEcalShower(0); EdepECAL=show->EnergyE;}
-
-				BetaRICH=-1;
-				BetaRICH_new=-1;
-				RICHmask=1;RICHmask_new=1;
-				if(ev->NRichRing()>0){
-                                RICHmask=RichQual(ev);
-                                RICHmask_new=RichQual_new(ev->pRichRing(0));
-                                if(RICHmask==0) BetaRICH=ev->pRichRing(0)->getBeta();
-                                if(RICHmask_new==0||RICHmask_new==512) {
-                                                                        BetaRICH_new=ev->pRichRing(0)->getBeta();
-                                                                        int totali= ev->NRichHit();
-                                                                        int hotspots=0;
-                                                                        int usate=ev->pRichRing(0)->Used;
-                                                                        for(int i=0;i<ev->NRichHit();i++)
-                                                                        {
-                                                                                RichHitR* Hit= ev->pRichHit(i);
-                                                                                if(Hit->IsCrossed()) hotspots++;
-                                                                        }
-                                                                        Richtotused=totali-usate-hotspots;
-                                                                        RichPhEl=ev->pRichRing(0)->getExpectedPhotoelectrons()/ev->pRichRing(0)->getPhotoElectrons();
-                                                                }
-	                        }
-				if(RICHmask_new==0||RICHmask_new==512) if(BetaRICH_new<0) cout<<"vre"<<endl;
-				//////////////////////////////////////////////////////////////////////////////
-				bool isPreselected=false;
-				if(((int)CUTMASK&187)==187) isPreselected=true; 
-				if(isPreselected){
-					TofRecH::BuildOpt=0;
-					TofRecH::ReBuild(); 
-					ThetaS=ev->fHeader.ThetaS;
-					PhiS=ev->fHeader.PhiS;
-					int fitID=ev->pTrTrack(0)->iTrTrackPar(1,3,1);
-					ParticleR* particella = ev->pParticle(0) ;
-					int fitID1=Tr->iTrTrackPar(1,1,1);
-					int fitID2=Tr->iTrTrackPar(1,2,1);
-					int fitID3=Tr->iTrTrackPar(1,3,1);
-					U_time=ev->UTime();
-					Latitude=fabs(ev->fHeader.ThetaM);
-					zonageo=zona;
-					Livetime=ev->LiveTime();
-					TrTrackPar parametri;
-					if(Tr->ParExists(fitID3)) parametri=Tr->gTrTrackPar(fitID3);
-
-					layernonusati=0;
-					for(int layer=2;layer<9;layer++)
-						if(!parametri.TestHitLayerJ(layer)) layernonusati++;
-					NAnticluster=ev->NAntiCluster();
-					NTRDSegments=ev->NTrdSegment();
-					NTofClusters=ev->NTofClusterH();
-					NTofClustersusati=ev->pBetaH(0)->NTofClusterH();
-					if(Tr->ParExists(fitID1)) Rup=Tr->GetRigidity(fitID1); else Rup=0;
-					if(Tr->ParExists(fitID2)) Rdown=Tr->GetRigidity(fitID2); else Rdown=0;
-					if(Tr->ParExists(fitID3)) R=Tr->GetRigidity(fitID3); else R=0;
-					if(Tr->ParExists(fitID3)) Chisquare=Tr->GetChisq(fitID3); 
-					else Chisquare=1e7;
-					for (int layer=2;layer<9;layer++) {
-						ResiduiX[layer-2]=-999999;
-						ResiduiY[layer-2]=-999999;
-					}
-					for(int layer=2;layer<9;layer++)  {
-						if( ! Tr->TestHitLayerJ(layer)) continue;
-						AMSPoint Residual_point=Tr->GetResidualJ(layer,fitID3);
-						if(Tr->TestHitLayerJHasXY(layer) )
-							ResiduiX[layer-2]=Residual_point.x();
-						ResiduiY[layer-2]=Residual_point.y();
-					}
-					Beta=ev->pBetaH(0)->GetBeta();
-					//cout<<Beta<<" "<<Beta_pre<<" "<<ev->pParticle(0)->pBeta()->Beta<<endl;
-
-					int clusterusati=0;
-					Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Betacorr,2)),0.5)/Betacorr,2)),0.5);
-				}
-			measure_stuff->Fill();
-                       if(ii%10000==0) measure_stuff->AutoSave();	
-			}
-
-			File->Write();
-			File->Close();
-		}
 	}
+
+	TFile * File;
+
+	AMSChain* ch;
+	AMSEventList lista;
+
+	cout<<"inizio...."<<endl;
+
+
+	ch= new AMSChain;
+	int n = argc -1;
+	string istog;		
+
+	for(int i = 0; i<n;i++){
+		string ARGV(argv[i+1]);
+		if (i==0) istog= "/storage/gpfs_ams/ams/users/fdimicco/MAIN/istogrammidatiCNAF/"+ARGV;
+		//for(int i=(int)2*INDX;i<(int)2*(INDX+1);i++){	
+		string indirizzo="/storage/gpfs_ams/ams/Rec/2014/"+tipo+"/"+energia+"/"+ARGV;
+		std::cout<<"Processing : "<<indirizzo<<endl;
+		ch->Add(indirizzo.c_str());
+		//}
+	}
+
+	//string istog= "./"+rootpla[(int)(2*INDX)];
+
+	string *file=&istog;
+
+	File = new TFile(istog.c_str(), "RECREATE");
+
+	int entries =ch->GetEntries();
+	cout<<entries<<endl;
+
+
+	TTree *measure_stuff= new TTree("parametri_geo","parametri_geo");
+	measure_stuff->Branch("U_time",		&U_time);
+	measure_stuff->Branch("Latitude",	&Latitude);
+	measure_stuff->Branch("zonageo",	&zonageo);
+	measure_stuff->Branch("Rcutoff",	&Rcutoff);
+	measure_stuff->Branch("Livetime",	&Livetime);
+	measure_stuff->Branch("ThetaS",		&ThetaS);
+	measure_stuff->Branch("PhiS",		&PhiS);
+	measure_stuff->Branch("Unbias",		&Unbias);
+	measure_stuff->Branch("R_pre",		&R_pre);
+	measure_stuff->Branch("Beta_pre",	&Beta_pre);
+	measure_stuff->Branch("BetaR",		&BetaR);
+	measure_stuff->Branch("Pres_Unbias",	&Pres_Unbias);
+	measure_stuff->Branch("Preselected",	&Preselected);		
+	measure_stuff->Branch("CUTMASK",	&CUTMASK);
+	measure_stuff->Branch("IsPrescaled",	&IsPrescaled);
+	measure_stuff->Branch("Trig_Num",	&Trig_Num);
+	measure_stuff->Branch("Run",		&Run);
+	measure_stuff->Branch("trtrack_edep",	&trtrack_edep);
+	measure_stuff->Branch("trtot_edep",	&trtot_edep);
+	measure_stuff->Branch("Endep",		&Endep);
+	measure_stuff->Branch("EndepR",		&EndepR);
+	measure_stuff->Branch("BetaRICH",	&BetaRICH);
+	measure_stuff->Branch("BetaRICH_new",	&BetaRICH_new);
+	measure_stuff->Branch("RICHmask",	&RICHmask);
+	measure_stuff->Branch("RICHmask_new",	&RICHmask_new);			
+	measure_stuff->Branch("EdepECAL",	&EdepECAL);
+	measure_stuff->Branch("PhysBPatt",	&PhysBPatt);
+	measure_stuff->Branch("R_L1",           &R_L1);
+	measure_stuff->Branch("Chisquare_L1",   &Chisquare_L1);
+	measure_stuff->Branch("layernonusati",	&layernonusati);
+	measure_stuff->Branch("NAnticluster",	&NAnticluster);
+	measure_stuff->Branch("NTofClusters",	&NTofClusters);
+	measure_stuff->Branch("NTofClustersusati",&NTofClustersusati);
+	measure_stuff->Branch("Rup",		&Rup);
+	measure_stuff->Branch("Rdown",		&Rdown);
+	measure_stuff->Branch("R",		&R);
+	measure_stuff->Branch("Chisquare",	&Chisquare);
+	measure_stuff->Branch("ResiduiX",	&ResiduiX);
+	measure_stuff->Branch("ResiduiY",	&ResiduiY);
+	measure_stuff->Branch("Beta",		&Beta);
+	measure_stuff->Branch("BetaR",		&BetaR);
+	measure_stuff->Branch("BetaRICH",	&BetaRICH);
+	measure_stuff->Branch("BetaRICH_new",	&BetaRICH_new);
+	measure_stuff->Branch("RICHmask",	&RICHmask);
+	measure_stuff->Branch("RICHmask_new",	&RICHmask_new);
+	measure_stuff->Branch("Massa",		&Massa);
+	measure_stuff->Branch("NTrackHits",	&NTrackHits);
+	measure_stuff->Branch("clustertrack",	&clustertrack);
+	measure_stuff->Branch("clustertottrack",&clustertottrack);
+	measure_stuff->Branch("Unbias",		&Unbias);
+	measure_stuff->Branch("Richtotused",	&Richtotused);
+	measure_stuff->Branch("RichPhEl",	&RichPhEl);
+	measure_stuff->Branch("EdepTRD",&EdepTRD);
+	measure_stuff->Branch("NTRDclusters",NTRDclusters);
+	measure_stuff->Branch("qL1",    &qL1);
+	measure_stuff->Branch("qUtof",  &qUtof);
+	measure_stuff->Branch("qLtof",  &qLtof);
+	measure_stuff->Branch("qInner",&qInner);
+
+	AMSSetupR::RTI::UseLatest();
+	TkDBc::UseFinal();
+
+
+	for(int ii=0;ii<entries;ii++)
+	{ 
+		InitializeEvent();
+		if (contaeventi>entries) break;
+		AMSEventR* ev=ch->GetEvent();
+		ev->SetDefaultMCTuningParameters();
+		if(ii%10000==0){
+			printf("Processed %7d out of %7d\n",ii,entries);
+			printf("Evento numero: %7d\n",contaeventi);
+			if(contaeventi==0) {std::cout<<"RunType(>61442): "<<ev->fHeader.RunType<<" Zenith: "<<ev->fHeader.Zenith()<<std::endl;
+				if(ev->IsInSAA()) std::cout<<"SAA!!"<<std::endl; }	
+		}		
+		Trig_Num=ev->Event();
+		Run=ev->Run();
+		Level1R* trig=ev->pLevel1(0);
+		if(ev->pRichRing(0)&&controlloRICH!=1) {ev->pRichRing(0)->switchDynCalibration(); controlloRICH=1;}
+		if(ev&&trig){
+			PhysBPatt=trig->PhysBPatt;
+			if(trig->PhysBPatt == 0) Unbias =1;
+			else Unbias=0;
+		}
+		//selezione delle run
+		if(ii%10000==0) {cout<<"Latitudine geomagnetica: "<<ev->fHeader.ThetaM<<" rad"<<endl;
+			cout<<ev->UTime()<<endl;}
+		if(ev->IsInSAA()) continue;
+		if(ev->UTime()==ev->fHeader.Run||ev->UTime()==ev->fHeader.Run+1) continue;
+		if(ev->fHeader.RunType<=61442) continue;
+		if(ev->fHeader.Zenith()>25) continue;		//scelta zona geomagnetica
+		for(int i=0;i<12;i++){
+			double geo= geomag[i]  ;
+			double geo2=/*(i+1)/(double)10*/geomag[i+1];
+			if(fabs(ev->fHeader.ThetaM)>geo && fabs(ev->fHeader.ThetaM)<geo2) //cout<<"yes "<< 14.9*pow((cos(ev->fHeader->ThetaM)),4)<<endl;
+			zona=i;
+
+			else tempozona[i]=ev->UTime();
+		}
+		int controllo=0;
+		if(ii%10000==0) cout<<"Zona: "<<zona<<endl;	
+		if(zona>=0)	controllo=1;
+		if(controllo!=1) continue; 
+		contaeventi++;
+		if(ev->UTime()!=tempozona[zona]){
+			tempozona[zona]=ev->UTime();
+			Time[zona]=Time[zona]+ev->LiveTime()/*trig->LiveTime*/;
+			contasecondi[zona]++;
+		}
+		if(ev->pParticle(0)){
+			double dirTheta_ams= ev->pParticle(0)->Theta;
+			double dirPhi_ams= ev->pParticle(0)->Phi;
+			AMSDir amsdir(dirTheta_ams, dirPhi_ams);
+			double cutoff =0;
+			int momOrR = 1; //==0 GeV/c  ; ==1 GV
+			int positive = 1; //==0 particle.mon == 1 (+) , == 2 (-)
+			int ss = ev->pParticle(0)->GetStoermerCutoff(cutoff,momOrR,positive ,amsdir);
+			Rcutoff=cutoff;
+		}
+		U_time=ev->UTime();
+		Livetime=ev->LiveTime();
+		Latitude=fabs(ev->fHeader.ThetaM);
+		ThetaS=ev->fHeader.ThetaS;
+		PhiS=ev->fHeader.PhiS;
+		zonageo=zona;
+		TrTrackR* Tr = ev->pTrTrack(0);
+		nPart=ev->nParticle();
+		nTrTracks=ev->nTrTrack();
+		CUTMASK=0;
+
+		minimumbiasTOF(ev,MinTOF);
+
+		if(minimumbiasTRIGG(ev)) CUTMASK=CUTMASK|(1<<0);
+		if(MinTOF[0]) CUTMASK=CUTMASK|(1<<1);
+		if(minimumbiasTRD(ev)) CUTMASK=CUTMASK|(1<<2);
+		if(minimumbiasTRACKER(ev,3)) CUTMASK=CUTMASK|(1<<3);
+		if(goldenTRACKER(ev,severity,3)) CUTMASK=CUTMASK|(1<<4);
+		if(goldenTOF_new(ev)) CUTMASK=CUTMASK|(1<<5);
+		if(goldenTRD(ev,severity,3)) CUTMASK=CUTMASK|(1<<6);
+		if(OneParticle(ev)) CUTMASK=CUTMASK|(1<<7);
+		if(minimumbiasTRACKER(ev,5)) CUTMASK=CUTMASK|(1<<8);
+		if(goldenTRACKER(ev,severity,5)) CUTMASK=CUTMASK|(1<<9);
+
+
+		for(int i=0;i<9;i++){trtot_edep[i]=0;trtrack_edep[i]=0;}
+		R_pre = 0;
+		if(minimumbiasTRACKER(ev,3)){
+			// Edep Track
+			clustertrack=0;
+			clustertottrack=0;
+			NTrackHits=Tr->NTrRecHit();
+			for(int i=0; i<Tr->NTrRecHit();i++){
+				TrRecHitR *hit=ev->pTrTrack(0)->pTrRecHit (i);
+				int ilay = hit->GetLayerJ()-1;
+				TrClusterR* cluster = hit->GetYCluster();
+				trtrack_edep[ilay] = cluster->GetEdep();
+				clustertrack++;
+			}
+			int fitID3=Tr->iTrTrackPar(1,3,1);
+                        if(Tr->ParExists(fitID3)) R_pre=Tr->GetRigidity(fitID3); else R_pre=0;
+			int fitID5=Tr->iTrTrackPar(1,5,1);
+                        if(Tr->ParExists(fitID5)) R_L1=Tr->GetRigidity(fitID5); else R_L1=0;	
+		}	
+		for (int i=0; i<ev->NTrCluster(); i++) {
+			TrClusterR* cluster = ev->pTrCluster(i);
+			int ilay = cluster->GetLayerJ()-1;
+			if(cluster->GetSide()==1) {trtot_edep[ilay] += cluster->GetEdep(); clustertottrack++;}
+		}
+		for(int j=0; j<4; j++)
+			EndepR[j]=0;
+		for(int j=0; j<ev->NTofCluster(); j++)
+			EndepR[(ev->pTofCluster(j)->Layer)-1]+=ev->pTofCluster(j)->Edep;
+
+		for(int j=0; j<4; j++)
+			Endep[j]=0;
+		for(int j=0; j<ev->NTofClusterH(); j++)
+			Endep[(ev->pTofClusterH(j)->Layer)]+=ev->pTofClusterH(j)->GetEdep();
+
+		EdepTRD=0;
+		NTRDclusters=0;
+		TRDclusters[1000];
+		for(int u=0;u<ev->NTrdTrack();u++){
+			if(u==0)
+				for(int j=0;j<ev->pTrdTrack(u)->NTrdSegment();j++) {
+					for(int i=0;i<ev->pTrdTrack(u)->pTrdSegment(j)->NTrdCluster();i++) {
+
+						EdepTRD=EdepTRD+ev->pTrdTrack(u)->pTrdSegment(j)->pTrdCluster(i)->EDep;
+						TRDclusters[NTRDclusters]=ev->pTrdTrack(u)->pTrdSegment(j)->pTrdCluster(i)->EDep;
+						NTRDclusters++;
+					}
+				}
+
+		}
+
+
+
+		Beta_pre=0; BetaR=0;
+		if(ev->pBetaH(0)) Beta_pre=ev->pBetaH(0)->GetBeta();
+		if(ev->pBeta(0)) BetaR=ev->pBeta(0)->Beta;
+
+
+		int NhitECAL = ev->NEcalHit();
+		EdepECAL=-100;
+		if(ev->NEcalShower()==1) {EcalShowerR* show = ev->pEcalShower(0); EdepECAL=show->EnergyE;}
+
+		BetaRICH=-1;
+		BetaRICH_new=-1;
+		RICHmask=1;RICHmask_new=1;
+		if(ev->NRichRing()>0){
+			RICHmask=RichQual(ev);
+			RICHmask_new=RichQual_new(ev->pRichRing(0));
+			if(RICHmask==0) BetaRICH=ev->pRichRing(0)->getBeta();
+			if(RICHmask_new==0||RICHmask_new==512) {
+				BetaRICH_new=ev->pRichRing(0)->getBeta();
+				int totali= ev->NRichHit();
+				int hotspots=0;
+				int usate=ev->pRichRing(0)->Used;
+				for(int i=0;i<ev->NRichHit();i++)
+				{
+					RichHitR* Hit= ev->pRichHit(i);
+					if(Hit->IsCrossed()) hotspots++;
+				}
+				Richtotused=totali-usate-hotspots;
+				RichPhEl=ev->pRichRing(0)->getExpectedPhotoelectrons()/ev->pRichRing(0)->getPhotoElectrons();
+			}
+		}
+		if(RICHmask_new==0||RICHmask_new==512) if(BetaRICH_new<0) cout<<"error!"<<endl;
+		////////////////////////////// CHARGE /////////////////////////////////////
+		if(minimumbiasTRACKER(ev,3)){
+			int fitID3=Tr->iTrTrackPar(1,3,1);
+			qL1   = Tr->GetLayerJQ(1,Beta_pre,fitID3);
+			qInner= Tr->GetInnerQ(Beta_pre,fitID3);
+		}
+		int utoflay,ltoflay=0;
+		float utofrms,ltofrms=0;
+		if(ev->pBetaH(0)) qUtof = ev->pBetaH(0) -> GetQ(utoflay,utofrms,2,TofClusterHR::DefaultQOptIonW,1100,0,R_pre);
+		if(ev->pBetaH(0)) qLtof = ev->pBetaH(0) -> GetQ(ltoflay,ltofrms,2,TofClusterHR::DefaultQOptIonW,11,0,R_pre);
+		//////////////////////////////////////////////////////////////////////////
+
+		bool isPreselected=false;
+		if(((int)CUTMASK&187)==187) isPreselected=true; 
+		if(isPreselected){
+			TofRecH::BuildOpt=0;
+			TofRecH::ReBuild(); 
+			ThetaS=ev->fHeader.ThetaS;
+			PhiS=ev->fHeader.PhiS;
+			int fitID=ev->pTrTrack(0)->iTrTrackPar(1,3,1);
+			int fitID1=Tr->iTrTrackPar(1,1,1);
+			int fitID2=Tr->iTrTrackPar(1,2,1);
+			int fitID3=Tr->iTrTrackPar(1,3,1);
+			int fitID4=Tr->iTrTrackPar(1,5,1);
+			U_time=ev->UTime();
+			Latitude=fabs(ev->fHeader.ThetaM);
+			zonageo=zona;
+			Livetime=ev->LiveTime();
+			TrTrackPar parametri;
+			if(Tr->ParExists(fitID3)) parametri=Tr->gTrTrackPar(fitID3);
+
+			layernonusati=0;
+			for(int layer=2;layer<9;layer++)
+				if(!parametri.TestHitLayerJ(layer)) layernonusati++;
+			NAnticluster=ev->NAntiCluster();
+			NTRDSegments=ev->NTrdSegment();
+			NTofClusters=ev->NTofCluster();
+			NTofClustersusati=ev->pBetaH(0)->NTofClusterH();
+			if(Tr->ParExists(fitID1)) Rup=Tr->GetRigidity(fitID1); else Rup=0;
+			if(Tr->ParExists(fitID2)) Rdown=Tr->GetRigidity(fitID2); else Rdown=0;
+			if(Tr->ParExists(fitID3)) R=Tr->GetRigidity(fitID3); else R=0;
+			if(Tr->ParExists(fitID3)) Chisquare=Tr->GetChisq(fitID3); 
+			else Chisquare=1e7;
+
+			if(Tr->ParExists(fitID4)) R_L1=Tr->GetRigidity(fitID4); else R_L1=0;
+			if(Tr->ParExists(fitID4)) Chisquare_L1=Tr->GetChisq(fitID4);
+			else Chisquare_L1=1e7;
+
+
+			for (int layer=2;layer<9;layer++) {
+				ResiduiX[layer-2]=-999999;
+				ResiduiY[layer-2]=-999999;
+			}
+			for(int layer=2;layer<9;layer++)  {
+				if( ! Tr->TestHitLayerJ(layer)) continue;
+				AMSPoint Residual_point=Tr->GetResidualJ(layer,fitID3);
+				if(Tr->TestHitLayerJHasXY(layer) )
+					ResiduiX[layer-2]=Residual_point.x();
+				ResiduiY[layer-2]=Residual_point.y();
+			}
+			Beta=ev->pBetaH(0)->GetBeta();
+
+			int clusterusati=0;
+		}
+		measure_stuff->Fill();
+		//if(ii%10000==0) measure_stuff->AutoSave();	
+	}
+
+	File->Write();
+	File->Close();
 
 	return 1;
 }
@@ -487,4 +551,59 @@ bool saa(float phi,float theta) {
 	if(phi>=-10 && phi<-8 && theta>=-28 && theta<-27) ssa_good=false;
 	return ssa_good;
 }
+
+
+void InitializeEvent(){
+
+	U_time=         0;
+	Latitude=0;
+	zonageo=0;
+	Rcutoff=0;
+	Livetime=0;
+	ThetaS=0;
+	PhiS=0;
+	Unbias=0;
+	R_pre=0;
+	Beta_pre=0;
+	BetaR=0;
+	Pres_Unbias=0;
+	Preselected=    0;
+	CUTMASK=0;
+	IsPrescaled=0;
+	Trig_Num=0;
+	Run=0;
+	BetaRICH=-1;
+	BetaRICH_new=-1;
+	RICHmask=1;
+	RICHmask_new=1;
+	EdepECAL=-100;
+	PhysBPatt=0;
+	layernonusati=0;
+	NAnticluster=0;
+	NTofClusters=0;
+	NTofClustersusati=0;
+	Rup=0;
+	Rdown=0;
+	R=0;
+	Chisquare=0;
+	Beta=0;
+	BetaR=0;
+	Massa=0;
+	NTrackHits=0;
+	clustertrack=0;
+	clustertottrack=0;
+	Unbias=0;
+	Richtotused=0;
+	RichPhEl=0;
+	EdepTRD=0;
+	qL1 =0;
+	qInner=0;
+	qUtof =0;
+	qLtof =0;
+	R_L1=0;
+	Chisquare_L1=0;
+
+};
+
+
 

@@ -152,7 +152,6 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat)
    if(par == 0)	  ResultPlot = GetResult_P (bin,lat);
    if(par == 1)   ResultPlot = GetResult_D (bin,lat);
    if(par == 2)   ResultPlot = GetResult_He(bin,lat);
-   cout<<"ecco2"<<endl;	
 	
    return Err * ResultPlot->Integral(); //Fit absolute error
 
@@ -178,15 +177,15 @@ void TemplateFIT::TemplateFits(int mc_type)
          if(!Geomag) {
             PCounts -> SetBinContent(bin+1,Data->Integral()/*GetFitFraction(0,bin)*/);
             DCounts -> SetBinContent(bin+1,GetResult_D(bin)->Integral());
-            PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
-            DCounts -> SetBinError(bin+1,GetFitErrors(1,bin));
+           // PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
+           // DCounts -> SetBinError(bin+1,GetFitErrors(1,bin));
          }
 
          if(Geomag) {
             PCounts -> SetBinContent(bin+1,lat+1,Data->Integral()/*GetFitFraction(0,bin,lat)*/);
             DCounts -> SetBinContent(bin+1,lat+1,GetResult_D(bin,lat)->Integral());
-            PCounts -> SetBinError(bin+1,lat+1,GetFitErrors(0,bin,lat));
-            DCounts -> SetBinError(bin+1,lat+1,GetFitErrors(1,bin,lat));
+           // PCounts -> SetBinError(bin+1,lat+1,GetFitErrors(0,bin,lat));
+           // DCounts -> SetBinError(bin+1,lat+1,GetFitErrors(1,bin,lat));
          }
       }
    return;

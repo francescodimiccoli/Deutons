@@ -45,10 +45,13 @@
 #include "Parte2/MCControlsamplecuteff.cpp"
 #include "Parte2/MCQualeff.cpp"
 #include "Parte2/Cuts.cpp"
+#include "Parte2/BadEventstudy.cpp"
 #include "Parte2/MCTrackeff.cpp"
 #include "Parte2/Eff_Factorizationtest.cpp"
 #include "Parte2/MigrationMatrix.cpp"
 #include "Parte2/MCFullSeteff.cpp"
+#include "Parte2/MCQcheck.cpp"
+#include "Parte2/MCdeutonsDistr.cpp"
 #include "Parte2/AntiDCutOptimization.h"
 #include "Parte2/AntiDPredictions.h"
 #include "Parte2/DATAUnbiaseff.cpp"
@@ -136,25 +139,30 @@ int main(int argc, char * argv[])
    
    cout<<"****************************** BINS ***************************************"<<endl;
 
-   DRB.setBinsFromEkPerMass(nbinsr, 0.15, 100); // RB did not have Ek
-   PRB.setBinsFromEkPerMass(nbinsr, 0.15, 100); 
+   DRB.setBinsFromRigidity(nbinsr, 0.5, 100); // RB did not have Ek
+   PRB.setBinsFromRigidity(nbinsr, 0.5, 100); 
 
-   float ekmin=0.1, ekmax=1;
+   PRB.Print();
+   DRB.Print();
+
+   float ekmin=0.15, ekmax=1;
    ToFDB.setBinsFromEkPerMass (nbinsToF, ekmin, ekmax);
    ToFPB.setBinsFromEkPerMass(nbinsToF, ekmin, ekmax);
+   cout<<"**TOF**"<<endl;
    ToFDB.Print();
    ToFPB.Print();		
 
    ekmin=0.666, ekmax=4.025;
    NaFDB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
    NaFPB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
+   cout<<"**NaF**"<<endl;
    NaFDB.Print();
    NaFPB.Print();		
    
    ekmin=2.57, ekmax=9.01;
    AglDB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
    AglPB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
-
+   cout<<"**Agl**"<<endl;
    AglDB.Print();
    AglPB.Print();		
 

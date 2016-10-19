@@ -232,6 +232,10 @@ int noR=33;
 int notpassed[10]= {0,1021,955,33,1007,799,959,799,187,187};
 float Velocity=0;
 int seconds=0;
+float qL1,qInner,qLtof,qUtof=0;
+
+
+
 TMVA::Reader *reader;
 Float_t BDT_response;
 TFile *_file0 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Final_Def.root");
@@ -275,18 +279,6 @@ bool Quality(TTree *albero,int i)
 {
    albero->GetEvent(i);
    bool selection = true;
-   if(Beta<0) selection=false;
-   //QUALITY
-   if(NAnticluster>0)  selection = false;
-   else f++;
-   if(NTRDSegments<1)  selection = false;
-   else g++;
-   if((NTofClusters-NTofClustersusati)>0)  selection = false;
-   else h++;
-   if(fabs(Rup-Rdown)/R>0.2)  selection = false;
-   else l++;
-   if(ProbQ<0.43) selection = false;
-   else m++;
    //CONTROLLOFIT
    fuoriX=0;
    fuoriY=0;
@@ -294,21 +286,14 @@ bool Quality(TTree *albero,int i)
       if((*ResiduiY)[layer]<-200) fuoriY++;
       if((*ResiduiX)[layer]<-200&&(*ResiduiY)[layer]>-200) fuoriX++;
    }
-   if(layernonusati>0) selection = false;
-   else s++;
-   if(fuoriX>2) selection = false;
-   else o++;
-   if(Chisquare>3) selection = false;
-   else r++;
    TOF_Up_Down=fabs(((*Endep)[2]+(*Endep)[3])-((*Endep)[0]+(*Endep)[1]));
    DiffTrackEdep=0;
-   for(int layer=0; layer<9; layer++) DiffTrackEdep+=fabs((*trtrack_edep)[layer]-(*trtrack_edep)[layer]);
-   Track_Up_Down=fabs((*trtrack_edep)[7]-(*trtrack_edep)[0]);
+   for(int layer=0; layer<1; layer++) DiffTrackEdep+=fabs((*trtot_edep)[layer]-(*trtrack_edep)[layer]);
 
-   selection=true;
    ///////Matter or Antimatter
-   if (R<0) selection=false;
+   if (R<0) return false;
    ////////////////////////////
+   
    R=fabs(R);
    /////////////////////////// Calcolo LIKELIHOOD ////////////////////////////
 
@@ -326,7 +311,7 @@ bool Quality(TTree *albero,int i)
 	   var[8]=DiffTrackEdep;
 	   double Ltrue=1;
 	   double Lfalse=1;
-	   for(int m=1; m<6; m++) {
+	   for(int m=0; m<6; m++) {
 			   Lfalse=Lfalse*Bkgnd[m]->Eval(var[m]);
 			   Ltrue=Ltrue*Signal[m]->Eval(var[m]);
 	   }
@@ -346,7 +331,7 @@ bool Quality(TTree *albero,int i)
 	   var[8]=DiffTrackEdep;
 	   double Ltrue=1;
 	   double Lfalse=1;
-	   for(int m=1; m<8; m++) {
+	   for(int m=0; m<8; m++) {
 		   if((((int)Cutmask)>>11)==512) {
 				   Lfalse=Lfalse*BkgndNaF[m]->Eval(var[m]);
 				   Ltrue=Ltrue*SignalNaF[m]->Eval(var[m]);
@@ -381,22 +366,19 @@ bool Quality(TTree *albero,int i)
 
    for(int layer=1; layer<8; layer++) EdepTrack+=(*trtrack_edep)[layer];
    EdepTrack=EdepTrack/7;
-   if(EdepTrack<0) cout<<"ecco!"<<endl;
-   E_depTRD=EdepTRD/NTRDclusters;
    EndepTOF=((*Endep)[0]+(*Endep)[1]+(*Endep)[2]+(*Endep)[3])/4;
    R_corr=R;
    Massa=pow(fabs(pow(fabs(R_corr)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
    IsCharge1=0;
-   if(fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta))<3||fabs(EdepTOFbeta->Eval(Beta)-EndepTOF)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta))<10) IsCharge1=1;
+   //if(fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta))<3||fabs(EdepTOFbeta->Eval(Beta)-EndepTOF)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta))<10) IsCharge1=1;
+   if(qInner<1.5&&qUtof<1.5&&qLtof<1.5) IsCharge1=1;
+   cout<<E_depTRD<<endl;
    Velocity=0;
    Velocity=Beta;
    if((((int)Cutmask)>>11)==0||(((int)Cutmask)>>11)==512) Velocity=BetaRICH_new;
    //////////////////////////////////////////////////////////////////////
 
-   //=true: Disattiva selezione/////
-   selection=selection;
-   ////////////////////////////////
-   return selection;
+   return true;
 
 }
 

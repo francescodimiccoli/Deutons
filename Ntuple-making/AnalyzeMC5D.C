@@ -10,6 +10,7 @@
 
 using namespace std;
 void Trigg (TTree *albero,int i,TNtuple *ntupla);
+void Qfill (TTree *albero,int i,TNtuple *ntupla);
 int Trig_Num;
 double Trig;
 double TotalTrig=0;
@@ -128,15 +129,16 @@ int main(int argc, char * argv[])
 	PRB.Print();
 
 	string ARGV(argv[1]);
-	string indirizzo_in = "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/B800/sommaMC"+ARGV+ ".root";
+	string indirizzo_in = "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/B800Q_new/sommaMC"+ARGV+ ".root";
 	TFile *file =TFile::Open(indirizzo_in.c_str());
 	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/"+calib+"/RisultatiMC_"+ARGV+".root";
 	TFile * File = new TFile(indirizzo_out.c_str(), "RECREATE");
-	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:MC_type:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:DistD:IsCharge1");
+	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:MC_type:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:EdepTRD:IsCharge1");
 	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
 	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:MC_type:Momentogen:mcweight:BetaRICH_new:Cutmask:BetanS:BetaR");
 	TNtuple * trig = new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:mcweight");
+	TNtuple * Q = new TNtuple("Q","Q","R:Beta:MC_type:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof:Momentogen");
 
 	BDTreader();
 	geo_stuff->SetBranchAddress("Momento_gen",&Momento_gen);
@@ -181,7 +183,11 @@ int main(int argc, char * argv[])
 	geo_stuff->SetBranchAddress("Massa",&Massa);
 	geo_stuff->SetBranchAddress("Richtotused",&Richtotused);
 	geo_stuff->SetBranchAddress("RichPhEl",&RichPhEl);
-
+	geo_stuff->SetBranchAddress("qL1",&qL1);
+        geo_stuff->SetBranchAddress("qInner",&qInner);
+        geo_stuff->SetBranchAddress("qUtof",&qUtof);
+	geo_stuff->SetBranchAddress("qLtof",&qLtof); 
+		
 	int giov=0;
 	int nprotoni=0;
 	int events =geo_stuff->GetEntries();
@@ -244,7 +250,8 @@ int main(int argc, char * argv[])
 				}
 				////////////////////////////////////////////////////
 				Protoni(geo_stuff,i);
-				if (Deutoni(geo_stuff,i)) if(scelta==1) Grandezzesepd(geo_stuff,i,grandezzesepd);
+				if (Deutoni(geo_stuff,i)) if(scelta==1){ Grandezzesepd(geo_stuff,i,grandezzesepd);
+									 Qfill(geo_stuff,i,Q);}
 			}
 		}
 		if(scelta==1) Grandezzequal(geo_stuff,i,grandezzequal);
@@ -323,13 +330,19 @@ void aggiungiantupla (TTree *albero,int i,TNtuple *ntupla)
 void Grandezzequal (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
-	ntupla->Fill(Velocity,MC_type,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,layernonusati,Chisquare,Richtotused,RichPhEl,Cutmask,Momento_gen,(Dist5D_P-Dist5D)/(Dist5D_P+Dist5D),IsCharge1);
+	ntupla->Fill(Velocity,MC_type,R,NAnticluster,NTofClusters-NTofClustersusati,fabs(Rup-Rdown)/R,fuoriX,layernonusati,Chisquare,Richtotused,RichPhEl,Cutmask,Momento_gen,E_depTRD,IsCharge1);
 }
 
 void Grandezzesepd (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
 	ntupla->Fill(R,Beta,(*trtrack_edep)[0],MC_type,Cutmask,PhysBPatt,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,LDiscriminant,mcweight,Dist5D,Dist5D_P);
+}
+
+void Qfill (TTree *albero,int i,TNtuple *ntupla)
+{
+        albero->GetEvent(i);
+	ntupla->Fill(R,Beta,MC_type,Cutmask,BetaRICH_new,Dist5D,Dist5D_P,LDiscriminant,Rmin,qL1,qInner,qUtof,qLtof,Momento_gen);
 }
 
 int AssignMC_type(float Massa_gen)

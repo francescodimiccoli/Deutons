@@ -122,7 +122,9 @@ void ACCEPTANCE::Set_Binning(bool deutons){
 
 	if (deutons) {
 
-		for(int i=0;i<nbins_beta; i++) {
+		for(int i=0;i<nbinsr; i++) binsR[i] = PRB.RigBins()[i];
+
+	  	for(int i=0;i<nbins_beta; i++) {
 			binsBetaTOF[i] = ToFDB.MomBin(i); 
 			binsBetaNaF[i] = NaFDB.MomBin(i); 
 			binsBetaAgl[i] = AglDB.MomBin(i); 	
@@ -130,6 +132,8 @@ void ACCEPTANCE::Set_Binning(bool deutons){
 
 	} else { // protons
 
+		for(int i=0;i<nbinsr; i++) binsR[i] = PRB.RigBins()[i];
+		
 		for(int i=0;i<nbins_beta; i++) {
 			binsBetaTOF[i] = ToFPB.MomBin(i); 
 			binsBetaNaF[i] = NaFPB.MomBin(i); 
@@ -174,15 +178,15 @@ TH1 * ACCEPTANCE::Triggerbin(int n , TH1 * after , float trigrate, float bins[])
 
 void ACCEPTANCE::Eval_Gen_Acceptance(int n){
 
-	before_R    	= ACCEPTANCE::Triggerbin( n, after_R   ,trigrate , PRB.RigBins().data());	
+	before_R    	= ACCEPTANCE::Triggerbin( n, after_R   ,trigrate , binsR      );	
 	before_TOF 	= ACCEPTANCE::Triggerbin( n, after_TOF ,trigrate , binsBetaTOF);
 	before_NaF 	= ACCEPTANCE::Triggerbin( n, after_NaF ,trigrate , binsBetaNaF);	
 	before_Agl 	= ACCEPTANCE::Triggerbin( n, after_Agl ,trigrate , binsBetaAgl);
 
-	if(after_R)	 Gen_Acceptance_R     = (TH1 *)after_R		->Clone();
-	if(after_TOF)	 Gen_Acceptance_TOF   = (TH1 *)after_TOF 	->Clone();
-	if(after_NaF)  	 Gen_Acceptance_NaF   = (TH1 *)after_NaF 	->Clone();
-	if(after_Agl) 	 Gen_Acceptance_Agl   = (TH1 *)after_Agl 	->Clone();
+	if(after_R  )	 Gen_Acceptance_R     = (TH1 *) after_R        ->Clone();
+	if(after_TOF)	 Gen_Acceptance_TOF   = (TH1 *) after_TOF		->Clone();
+	if(after_NaF)  	 Gen_Acceptance_NaF   = (TH1 *) after_NaF		->Clone();
+	if(after_Agl) 	 Gen_Acceptance_Agl   = (TH1 *) after_Agl		->Clone();
 
 	Gen_Acceptance_R    -> Divide ( before_R	) ;
 	Gen_Acceptance_TOF  -> Divide ( before_TOF	) ;

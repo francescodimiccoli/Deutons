@@ -122,6 +122,7 @@ void OtherExperimentsComparison(string filename){
 	ThisWorkDTOF->SetName("Protons Primary Flux");
         ThisWorkDTOF->SetMarkerStyle(8);
         ThisWorkDTOF->SetMarkerColor(4);
+        ThisWorkDTOF->SetLineColor(4);
         ThisWorkDTOF->SetMarkerSize(1.4);
         ThisWorkDTOF->SetTitle("Primary Deutons Flux");
         ThisWorkDTOF->SetName(("This Work (" + mese + ")").c_str());
@@ -140,7 +141,8 @@ void OtherExperimentsComparison(string filename){
         ThisWorkDNaF->SetName("Protons Primary Flux");
         ThisWorkDNaF->SetMarkerStyle(4);
         ThisWorkDNaF->SetMarkerColor(4);
-        ThisWorkDNaF->SetMarkerSize(1.4);
+        ThisWorkDNaF->SetLineColor(4);
+	ThisWorkDNaF->SetMarkerSize(1.4);
 	
 	TGraphErrors * ThisWorkDAgl = new TGraphErrors;
         for(int i=0; i<nbinsAgl; i++) {
@@ -150,7 +152,8 @@ void OtherExperimentsComparison(string filename){
         ThisWorkDAgl->SetName("Protons Primary Flux");
         ThisWorkDAgl->SetMarkerStyle(3);
         ThisWorkDAgl->SetMarkerColor(4);
-        ThisWorkDAgl->SetMarkerSize(1.4);
+        ThisWorkDAgl->SetLineColor(4);
+	ThisWorkDAgl->SetMarkerSize(1.4);
 
 	TLegend * legD =new TLegend(0.4, 0.7,0.95,0.95);
         legD->AddEntry(ThisWorkDTOF,("This Work (" + mese + ") - TOF").c_str(), "ep");
