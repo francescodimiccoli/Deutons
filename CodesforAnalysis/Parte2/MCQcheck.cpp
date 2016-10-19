@@ -15,8 +15,8 @@ class QDist_check{
 
 	//creation constructor	
 	QDist_check(std::string basename){
-		effQ    = new TH3F((basename+"_effQ" ).c_str(),(basename+"_effQ" ).c_str(),400,0,4,400,0,4,400,0,4);
-		bkgndQ  = new TH3F((basename+"_bkndQ").c_str(),(basename+"_bkndQ").c_str(),400,0,4,400,0,4,400,0,4);
+		effQ    = new TH3F((basename+"_effQ" ).c_str(),(basename+"_effQ" ).c_str(),200,0,3,200,0,3,200,0,3);
+		bkgndQ  = new TH3F((basename+"_bkndQ").c_str(),(basename+"_bkndQ").c_str(),200,0,3,200,0,3,200,0,3);
 		
 		effDist  = new TH1F((basename+"_effDist"  ).c_str(),(basename+"_effDist"  ).c_str(),500,0,100);
 		bkgndDist = new TH1F((basename+"_bkndDist" ).c_str(),(basename+"_bkndDist" ).c_str(),500,0,100);
@@ -59,13 +59,10 @@ TGraph * QDist_check::PlotROC_Q(){
 	for(int i=0;i<nbins/2;i++){
 		
 		eff=effQ->Integral(bin_a+i,bin_b-i,bin_a+i,bin_b-i,bin_a+i,bin_b-i);
-		//for(int bin=bin_a+i;bin<bin_b-i;bin++) eff+=effQ->GetBinContent(bin+1,bin+1,bin+1);
 		eff/=effQ->Integral();
 		
 		bk=bkgndQ->Integral(bin_a+i,bin_b-i,bin_a+i,bin_b-i,bin_a+i,bin_b-i);
-        //        for(int bin=bin_a+i;bin<bin_b-i;bin++) bk+=bkgndQ->GetBinContent(bin+1,bin+1,bin+1);
 		bk/=bkgndQ->Integral();		
-		cout<<bin_a+i<<" "<<bin_b-i<<eff<<" "<<1-bk<<endl;
 		ROC_Q->SetPoint(i,eff,1-bk);
 	}
 	return ROC_Q;
@@ -83,9 +80,9 @@ TGraph * QDist_check::PlotROC_Dist(){
         for(int i=effDist->GetNbinsX();i>0;i--){
 
                 eff = effDist-> Integral(0,i);
-		eff/= effDist-> Integral();
+		eff/= effDist-> GetEntries();
 		bk = bkgndDist-> Integral(0,i);
-		bk/= bkgndDist-> Integral();
+		bk/= bkgndDist-> GetEntries();
 		ROC_Dist->SetPoint(i,eff,1-bk);
         }
         return ROC_Dist;
@@ -114,7 +111,7 @@ void MCQcheck_Fill() {
 
 	if(cmask.isOnlyFromToF()){	
 		mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));	
-		if(mass>1.9){
+		if(mass>1.875&&mass<2.4){
 			if(Massa_gen>1&&Massa_gen<2) PrejcheckTOF->effQ  ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
 			if(Massa_gen<1) 	     PrejcheckTOF->bkgndQ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
 			if(Massa_gen>1&&Massa_gen<2) PrejcheckTOF->effDist  ->Fill(Tup.Dist5D);
@@ -122,14 +119,14 @@ void MCQcheck_Fill() {
 		}
 			if(Massa_gen<1) 	     HeFragcheckTOF->effQ  ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
 			if(Massa_gen>2) 	     HeFragcheckTOF->bkgndQ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
-			if(Massa_gen<1) 	     HeFragcheckTOF->effDist  ->Fill(Tup.Dist5D);
-			if(Massa_gen>2) 	     HeFragcheckTOF->bkgndDist->Fill(Tup.Dist5D);
+			if(Massa_gen<1) 	     HeFragcheckTOF->effDist  ->Fill(Tup.Dist5D_P);
+			if(Massa_gen>2) 	     HeFragcheckTOF->bkgndDist->Fill(Tup.Dist5D_P);
 
 	}
 
 	if(cmask.isFromNaF()){
                 mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
-                if(mass>1.9){
+                if(mass>1.875&&mass<2.4){
                         if(Massa_gen>1&&Massa_gen<2) PrejcheckNaF->effQ  ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
                         if(Massa_gen<1)              PrejcheckNaF->bkgndQ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
 			if(Massa_gen>1&&Massa_gen<2) PrejcheckNaF->effDist  ->Fill(Tup.Dist5D);
@@ -139,15 +136,15 @@ void MCQcheck_Fill() {
 			
 			if(Massa_gen<1) 	     HeFragcheckNaF->effQ  ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
 			if(Massa_gen>2) 	     HeFragcheckNaF->bkgndQ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
-			if(Massa_gen<1) 	     HeFragcheckNaF->effDist  ->Fill(Tup.Dist5D);
-			if(Massa_gen>2) 	     HeFragcheckNaF->bkgndDist->Fill(Tup.Dist5D);
+			if(Massa_gen<1) 	     HeFragcheckNaF->effDist  ->Fill(Tup.Dist5D_P);
+			if(Massa_gen>2) 	     HeFragcheckNaF->bkgndDist->Fill(Tup.Dist5D_P);
 
 			
         }
 
 	if(cmask.isFromAgl()){
                 mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
-                if(mass>1.9){
+                if(mass>1.875&&mass<2.4){
                         if(Massa_gen>1&&Massa_gen<2) PrejcheckAgl->effQ  ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
                         if(Massa_gen<1)              PrejcheckAgl->bkgndQ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
 			if(Massa_gen>1&&Massa_gen<2) PrejcheckAgl->effDist  ->Fill(Tup.Dist5D);
@@ -156,8 +153,8 @@ void MCQcheck_Fill() {
 	  	}
 			if(Massa_gen<1) 	     HeFragcheckAgl->effQ  ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
 			if(Massa_gen>2) 	     HeFragcheckAgl->bkgndQ->Fill(Tup.qUtof,Tup.qInner,Tup.qLtof);
-			if(Massa_gen<1) 	     HeFragcheckAgl->effDist  ->Fill(Tup.Dist5D);
-			if(Massa_gen>2) 	     HeFragcheckAgl->bkgndDist->Fill(Tup.Dist5D);
+			if(Massa_gen<1) 	     HeFragcheckAgl->effDist  ->Fill(Tup.Dist5D_P);
+			if(Massa_gen>2) 	     HeFragcheckAgl->bkgndDist->Fill(Tup.Dist5D_P);
 
         }
 
@@ -218,6 +215,7 @@ void MCQcheck(std::string filename){
 
 	TGraph * Hebckgnd_ROC_QAgl = HeFragcheckAgl ->  PlotROC_Q();
 	TGraph * Hebckgnd_ROC_DistAgl = HeFragcheckAgl ->  PlotROC_Dist();
+
 	
 	cout<<"**** Plotting ********"<<endl;
 	
@@ -233,8 +231,18 @@ void MCQcheck(std::string filename){
 			Hebckgnd_ROC_QAgl,
 			Hebckgnd_ROC_DistTOF,
                         Hebckgnd_ROC_DistNaF,
-                        Hebckgnd_ROC_DistAgl 
-		      
+                        Hebckgnd_ROC_DistAgl,
+			(TH3F*)PrejcheckTOF -> bkgndQ, 
+ 			(TH3F*)PrejcheckNaF -> bkgndQ,
+		      	(TH3F*)PrejcheckAgl -> bkgndQ,
+			(TH3F*)PrejcheckTOF -> effQ,	
+		        (TH3F*)PrejcheckNaF -> effQ,
+                        (TH3F*)PrejcheckAgl -> effQ,
+			(TH3F*)HeFragcheckTOF -> bkgndQ, 
+ 			(TH3F*)HeFragcheckNaF -> bkgndQ,
+		      	(TH3F*)HeFragcheckAgl -> bkgndQ
+			
+	
 		     );	
 
 
