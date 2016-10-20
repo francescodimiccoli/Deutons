@@ -177,10 +177,10 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
       CorrLAT(filename);
       DVSMCPreSeleff(filename);
-      DVSMCPreSeleffD(filename);
+      //DVSMCPreSeleffD(filename);
       DVSMCRICHeff(filename);
       DVSMCQualeff2(filename);
-      DVSMCQualeffD(filename);
+      //DVSMCQualeffD(filename);
       Acceptance(filename);
       AntiDpredictions(filename);
       ProtonFlux(filename);
