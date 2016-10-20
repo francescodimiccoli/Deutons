@@ -71,6 +71,7 @@ struct Tuplevar {
    float qUtof;
    float qLtof;
    float Rmin; 	
+   float R_L1;
 };
 
 //// Global Variables

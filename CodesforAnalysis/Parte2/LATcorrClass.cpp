@@ -159,23 +159,6 @@ void  CalcLATcorr(TH1 * before,TH1 * after, TH1 * LATcorr,int n){
 void FitLATcorr( TH1 * LATcorr,TH1 * LATcorr_fit,int n){
 	if(n>1){
 		for(int m=0;m<n;m++){
-			/*TH1F * latcorr     = new TH1F("","",11,0,11);
-			TH1F * latcorr_fit = new TH1F("","",11,0,11);
-
-			for(int i=1;i<11;i++) {
-				latcorr -> SetBinContent(i+1,((TH2 *)LATcorr)->GetBinContent(i+1,m+1));
-				latcorr -> SetBinError  (i+1,((TH2 *)LATcorr)->GetBinError(i+1,m+1));
-			}
-			string fitname = LATcorr->GetName() ;
-			TF1 * Fitcorr = new TF1(fitname.c_str(),"pol4");
-			latcorr -> Fit (fitname.c_str());
-			for(int i=1;i<11;i++)
-				 latcorr_fit ->  SetBinContent(i+1,Fitcorr->Eval(i+0.5));
-			
-			for(int i=1;i<11;i++)  { 
-				LATcorr_fit -> SetBinContent(i+1,m+1,Fitcorr->Eval(i+0.5));
-				LATcorr_fit -> SetBinError(i+1,m+1,FitError(latcorr_fit,latcorr,11,3));			
-			}*/
 			for(int i=1;i<11;i++){
 					LATcorr_fit -> SetBinContent(i+1,m+1,LATcorr -> GetBinContent(i+1,m+1));
                          		LATcorr_fit -> SetBinError(i+1,m+1,LATcorr -> GetBinError(i+1,m+1));   
@@ -196,16 +179,6 @@ void FitLATcorr( TH1 * LATcorr,TH1 * LATcorr_fit,int n){
 
 	}
 	else{
-		/*TH1F * latcorr = ((TH1F *)LATcorr);
-		string fitname = LATcorr->GetName() ;
-		TF1 * Fitcorr = new TF1(fitname.c_str(),"pol4");
-		latcorr -> Fit (fitname.c_str());i
-		for(int i=1;i<11;i++) {
-			cout<<Fitcorr->Eval(i+0.5)<<endl;
-			LATcorr_fit -> SetBinContent(i+1,Fitcorr->Eval(i+0.5));}
-                for(int i=1;i<11;i++)	
-			LATcorr_fit -> SetBinError(i+1,FitError(((TH1F *)LATcorr_fit),latcorr,11,3));
-		*/
 		for(int i=1;i<11;i++) {
 			 LATcorr_fit -> SetBinContent(i+1,LATcorr -> GetBinContent(i+1));
 			 LATcorr_fit -> SetBinError(i+1,LATcorr -> GetBinError(i+1));		
