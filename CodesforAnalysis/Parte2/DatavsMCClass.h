@@ -98,6 +98,7 @@ public:
 	void Eval_DandMC_Eff();
 	void DivideHisto(TH1 *Histo1, TH1 *Histo2, TH1 * Correction);
 	void Eval_Corrections();	
+	void Eval_FittedCorrections();
 	
 	TH1 * GetCorrection_R()  { return Correction_R  ;};
 	TH1 * GetCorrection_TOF(){ return Correction_TOF;};
@@ -152,6 +153,9 @@ void DatavsMC::Eval_DandMC_Eff(){
 }
 
 
+
+
+
 void DatavsMC::Eval_Corrections(){
 
 	DivideHisto( DataEff_corr -> effR   , MCEff -> effR  , Correction_R   );	
@@ -161,6 +165,34 @@ void DatavsMC::Eval_Corrections(){
 
 	return;
 }
+
+
+void DatavsMC::Eval_FittedCorrections(){
+
+        DivideHisto( DataEff_corr -> effR   , MCEff -> effR  , Correction_R   );
+        DivideHisto( DataEff_corr -> effTOF , MCEff -> effTOF, Correction_TOF );
+        DivideHisto( DataEff_corr -> effNaF , MCEff -> effNaF, Correction_NaF );
+        DivideHisto( DataEff_corr -> effAgl , MCEff -> effAgl, Correction_Agl );
+
+	FitFunction * FitR   = new FitFunction( Correction_R   ,4);
+	FitFunction * FitTOF = new FitFunction( Correction_TOF ,4);
+        FitFunction * FitNaF = new FitFunction( Correction_NaF ,4);
+        FitFunction * FitAgl = new FitFunction( Correction_Agl ,4);
+
+	FitR  ->FitValues();
+        FitTOF->FitValues();
+        FitNaF->FitValues();
+        FitAgl->FitValues();
+
+	Correction_R   =(TH1*)FitR  ->ReturnFittedValues();
+        Correction_TOF =(TH1*)FitTOF->ReturnFittedValues();
+        Correction_NaF =(TH1*)FitNaF->ReturnFittedValues();
+        Correction_Agl =(TH1*)FitAgl->ReturnFittedValues();
+	
+
+        return;
+}
+
 
 
 

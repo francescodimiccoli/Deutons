@@ -131,12 +131,14 @@ void Efficiency::Eval_Efficiency(){
 
 void Efficiency::Eval_FittedEfficiency(){
 
+	
+	Efficiency::Eval_Efficiency();
+	
 	if(effTOF) {
 		FitFunction * FitTOF = new FitFunction( effTOF,1);	
 		FitTOF->FitValues(); 
 		effTOF_fit =FitTOF-> ReturnFittedValues(); 
 	}
-
 	if(effNaF) {
 		FitFunction * FitNaF = new FitFunction( effNaF,1);	
 		FitNaF->FitValues(); 
