@@ -11,14 +11,18 @@ void DVSMCQualeff2_D_Fill(int zona){
 	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
 	if(!trgpatt.IsPhysical()) return;
         if(!Herejcut) return;
-        //if(!ProtonsMassThres) return;
+	if(Tup.EdepL1<=0.01) return;
 	
 	int Kbin;
 	float mass = 0;
 	
 	//R bins
+
+	mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));
+	
+
 	Kbin = PRB.GetRBin(Tup.R);
-	if(-log(1-Tup.LDiscriminant)>1.3 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) {
+	if(-log(1-Tup.LDiscriminant)>1.3 && (Tup.Dist5D_P<5||Tup.Dist5D<5)) {
 		Dist_DvsMC_P -> DataEff -> beforeR -> Fill(Kbin,zona);
 		if(Distcut) Dist_DvsMC_P -> DataEff -> afterR -> Fill(Kbin,zona);
 	}
@@ -33,7 +37,7 @@ void DVSMCQualeff2_D_Fill(int zona){
 	Kbin=ToFPB.GetBin(RUsed);
 	mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));	
 	
-	if(-log(1-Tup.LDiscriminant)>1.3 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) {
+	if(-log(1-Tup.LDiscriminant)>1.3 && (Tup.Dist5D_P<5||Tup.Dist5D<5)) {
                 Dist_DvsMC_P -> DataEff -> beforeTOF -> Fill(Kbin,zona);
                 if(Distcut) Dist_DvsMC_P -> DataEff -> afterTOF -> Fill(Kbin,zona);
         }
@@ -49,7 +53,7 @@ void DVSMCQualeff2_D_Fill(int zona){
 		Kbin=NaFPB.GetBin(RUsed);
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 
-		if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) {
+		if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D_P<5||Tup.Dist5D<5)) {
 			Dist_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);
 			if(Distcut) Dist_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
 		}
@@ -66,7 +70,7 @@ void DVSMCQualeff2_D_Fill(int zona){
 		Kbin=AglPB.GetBin(RUsed);
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 		
-		if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) {
+		if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D_P<5||Tup.Dist5D<5)) {
                         Dist_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);
                         if(Distcut) Dist_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona);
                 }
@@ -87,7 +91,7 @@ void DVSMCQualeff2_Fill(){
         if(Tup.Beta<=0||Tup.R<=0) return;
 	if(!Herejcut) return;
  	if(!trgpatt.IsPhysical()) return;       
-	//if(!ProtonsMassThres) return;
+	if(Tup.EdepL1<=0.01) return;	
 	
 	//
 	int Kbin;
@@ -99,7 +103,7 @@ void DVSMCQualeff2_Fill(){
 	if(Massa_gen<1) {
 		//R bins
 		Kbin = PRB.GetRBin(Tup.R);	
-		if(-log(1-Tup.LDiscriminant)>1.3 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) { 
+		if(-log(1-Tup.LDiscriminant)>1.3 && (Tup.Dist5D_P<5||Tup.Dist5D<5)) { 
 				Dist_DvsMC_P -> MCEff -> beforeR -> Fill(Kbin,Tup.mcweight);
 				if(Distcut) Dist_DvsMC_P -> MCEff -> afterR -> Fill(Kbin,Tup.mcweight);
 		}
@@ -114,7 +118,7 @@ void DVSMCQualeff2_Fill(){
 		Kbin=ToFPB.GetBin(RUsed);	
 		mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));
 		
-		if(-log(1-Tup.LDiscriminant)>1.3 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) {
+		if(-log(1-Tup.LDiscriminant)>1.3 && (Tup.Dist5D_P<5||Tup.Dist5D<5)) {
                                 Dist_DvsMC_P -> MCEff -> beforeTOF -> Fill(Kbin,Tup.mcweight);
                                 if(Distcut) Dist_DvsMC_P -> MCEff -> afterTOF -> Fill(Kbin,Tup.mcweight);
                 }
@@ -129,7 +133,7 @@ void DVSMCQualeff2_Fill(){
 			Kbin=NaFPB.GetBin(RUsed);	
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 
-			if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) {
+			if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D_P<5||Tup.Dist5D<5)) {
 				Dist_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin,Tup.mcweight);
 				if(Distcut) Dist_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin,Tup.mcweight);
 			}
@@ -145,7 +149,7 @@ void DVSMCQualeff2_Fill(){
 			Kbin=AglPB.GetBin(RUsed);
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			
-			if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D_P<20||Tup.Dist5D<20)) {
+			if(-log(1-Tup.LDiscriminant)>2.4 && (Tup.Dist5D_P<5||Tup.Dist5D<5)) {
                                 Dist_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin,Tup.mcweight);
                                 if(Distcut) Dist_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin,Tup.mcweight);
                         }
