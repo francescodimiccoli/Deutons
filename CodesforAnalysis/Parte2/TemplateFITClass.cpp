@@ -3,8 +3,8 @@
 void TemplateFIT::Write()
 {
 
-   if(TemplateP  -> GetEntries() > 0)  TemplateP  -> Write();
-   if(TemplateD  -> GetEntries() > 0)  TemplateD  -> Write();
+   TemplateP  -> Write();
+   TemplateD  -> Write();
    TemplateHe -> Write();
 
    if(DATA  -> GetEntries() > 0)  DATA  -> Write();
@@ -165,15 +165,14 @@ void TemplateFIT::TemplateFits(int mc_type)
       for(int bin=0; bin<nbins ; bin++) {
          TFit * Fit = new TFit;
          Fit->Templ_P =  (TH1F *)TemplateFIT::Extract_Bin  (TemplateP, bin);
-         Fit->Templ_D =  (TH1F *)TemplateFIT::Extract_Bin  (TemplateD, bin,mc_type);
-         Fit->Templ_He=  (TH1F *)TemplateFIT::Extract_Bin  (TemplateHe,bin);
-         if(Geomag) Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin, lat);
+	 Fit->Templ_D =  (TH1F *)TemplateFIT::Extract_Bin  (TemplateD, bin,mc_type);
+	 Fit->Templ_He=  (TH1F *)TemplateFIT::Extract_Bin  (TemplateHe,bin);
+	 if(Geomag) Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin, lat);
          else 	   Fit->Data    =  (TH1F *)TemplateFIT::Extract_Bin(DATA      ,bin);
-
+         
          TemplateFIT::Do_TemplateFIT(Fit,bin,lat);
          if(TemplateFITenabled) PrintResults(bin,lat); 
 	 TH1F * Data          = GetResult_Data(bin,lat);
-
          if(!Geomag) {
             PCounts -> SetBinContent(bin+1,Data->Integral()/*GetFitFraction(0,bin)*/);
             DCounts -> SetBinContent(bin+1,GetResult_D(bin)->Integral());

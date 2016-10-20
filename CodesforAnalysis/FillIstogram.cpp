@@ -156,12 +156,12 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       MCpreeff(filename);
       MCUnbiaseff(filename);
       MCControlsamplecuteff(filename);
-      MCQualeff(filename);
+      if(frac=="tot") MCQualeff(filename);
       FluxFactorizationtest(filename);
       MCTrackeff(filename);
       AntiDCutOptimization(filename);	
       AntiDEfficiencies(filename);
-      MCQcheck(filename);
+      if(frac=="tot") MCQcheck(filename);
       BadEventStudy(filename);
       MCFullseteff(filename);
       MigrationMatrix(filename);
@@ -172,8 +172,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATAQualeff(filename);
       DATARICHeff(filename);
       DATAEdepLAT(filename);
-      if(frac=="tot") DeutonsTemplFits(filename,frac);
-      if(frac=="tot") DeutonsTemplFits_Dist(filename,frac);	
+      DeutonsTemplFits(filename,frac);
+      DeutonsTemplFits_Dist(filename,frac);	
 
       CorrLAT(filename);
       DVSMCPreSeleff(filename);
@@ -184,8 +184,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       Acceptance(filename);
       AntiDpredictions(filename);
       ProtonFlux(filename);
-      if(frac=="tot")DeutonFlux(filename);
-      if(frac=="tot")OtherExperimentsComparison(filename);
+      DeutonFlux(filename);
+      OtherExperimentsComparison(filename);
    }
 
 
