@@ -4,7 +4,7 @@
 using namespace std;
 
 DatavsMC * RICH_DvsMC_P = new DatavsMC("RICH_DvsMC_P",11);
-DatavsMC * RICH_DvsMC_D = new DatavsMC("RICH_DvsMC_D",11,1,6);
+DatavsMC * RICH_DvsMC_D = new DatavsMC("RICH_DvsMC_D",11,6);
 
 
 void DVSMCRICHeff_D_Fill(int zona){
@@ -22,20 +22,20 @@ void DVSMCRICHeff_D_Fill(int zona){
 	//Beta bins
 	//NaF
 	Kbin=NaFPB.GetBin(RUsed);
-	RICH_DvsMC_P -> DataEff -> beforeNaF -> Fill(Kbin,zona);	
-	RICH_DvsMC_D -> DataEff -> beforeNaF -> Fill(Kbin,zona);
+	RICH_DvsMC_P -> DataEff[0] -> beforeNaF -> Fill(Kbin,zona);	
+	RICH_DvsMC_D -> DataEff[0] -> beforeNaF -> Fill(Kbin,zona);
 	mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 	if(cmask.isFromNaF()) {
-		RICH_DvsMC_P -> DataEff -> afterNaF -> Fill(Kbin,zona);
-		RICH_DvsMC_D -> DataEff -> afterNaF -> Fill(Kbin,zona);
+		RICH_DvsMC_P -> DataEff[0] -> afterNaF -> Fill(Kbin,zona);
+		RICH_DvsMC_D -> DataEff[0] -> afterNaF -> Fill(Kbin,zona);
 	}
 	//Agl
 	Kbin=AglPB.GetBin(RUsed);
-        RICH_DvsMC_P -> DataEff -> beforeAgl -> Fill(Kbin,zona);	
-	RICH_DvsMC_D -> DataEff -> beforeAgl -> Fill(Kbin,zona);
+        RICH_DvsMC_P -> DataEff[0] -> beforeAgl -> Fill(Kbin,zona);	
+	RICH_DvsMC_D -> DataEff[0] -> beforeAgl -> Fill(Kbin,zona);
 	if(cmask.isFromAgl()) { 
-		RICH_DvsMC_P -> DataEff -> afterAgl -> Fill(Kbin,zona); 
-		RICH_DvsMC_D -> DataEff -> afterAgl -> Fill(Kbin,zona); 
+		RICH_DvsMC_P -> DataEff[0] -> afterAgl -> Fill(Kbin,zona); 
+		RICH_DvsMC_D -> DataEff[0] -> afterAgl -> Fill(Kbin,zona); 
 	}
 	return;
 }
@@ -54,21 +54,21 @@ void DVSMCRICHeff_Fill(){
 		//Beta bins
 		//NaF
 		Kbin=NaFPB.GetBin(RUsed);
-		RICH_DvsMC_P -> MCEff -> beforeNaF -> Fill(Kbin,Tup.mcweight);
-		for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff -> beforeNaF) -> Fill(Kbin,mc_type,Tup.mcweight);
+		RICH_DvsMC_P -> MCEff[0] -> beforeNaF -> Fill(Kbin,Tup.mcweight);
+		for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff[0] -> beforeNaF) -> Fill(Kbin,mc_type,Tup.mcweight);
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 		if(cmask.isFromNaF() ){	
-			RICH_DvsMC_P -> MCEff -> afterNaF -> Fill(Kbin,Tup.mcweight);
-			for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff -> afterNaF) -> Fill(Kbin,mc_type,Tup.mcweight);
+			RICH_DvsMC_P -> MCEff[0] -> afterNaF -> Fill(Kbin,Tup.mcweight);
+			for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff[0] -> afterNaF) -> Fill(Kbin,mc_type,Tup.mcweight);
 		}
 		//Agl
     		Kbin=AglPB.GetBin(RUsed);
-		RICH_DvsMC_P -> MCEff -> beforeAgl -> Fill(Kbin,Tup.mcweight);
-		for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff -> beforeAgl) -> Fill(Kbin,mc_type,Tup.mcweight);	
+		RICH_DvsMC_P -> MCEff[0] -> beforeAgl -> Fill(Kbin,Tup.mcweight);
+		for(int mc_type=0;mc_type<6;mc_type++) ((TH2*)RICH_DvsMC_D -> MCEff[0] -> beforeAgl) -> Fill(Kbin,mc_type,Tup.mcweight);	
 
 		if(cmask.isFromAgl()) {
-			RICH_DvsMC_P -> MCEff -> afterAgl -> Fill(Kbin,Tup.mcweight); 	
-			for(int mc_type=0;mc_type<6;mc_type++) 	((TH2*)RICH_DvsMC_D -> MCEff -> afterAgl) -> Fill(Kbin,mc_type,Tup.mcweight);
+			RICH_DvsMC_P -> MCEff[0] -> afterAgl -> Fill(Kbin,Tup.mcweight); 	
+			for(int mc_type=0;mc_type<6;mc_type++) 	((TH2*)RICH_DvsMC_D -> MCEff[0] -> afterAgl) -> Fill(Kbin,mc_type,Tup.mcweight);
 		}
 	}
 }                        
@@ -118,11 +118,31 @@ void DVSMCRICHeff(string filename){
 	RICH_DvsMC_D ->Eval_Corrections();
 
 
+	cout<<"*************SYST ERR**************"<<endl;
+        RICH_DvsMC_P ->Initialize_SystError();
+        RICH_DvsMC_D ->Initialize_SystError();
+
+        RICH_DvsMC_P ->Eval_SystError();
+        RICH_DvsMC_D ->Eval_SystError();
+
+
 	TH1F* RICH_Correction_P_NaF =(TH1F*) RICH_DvsMC_P -> GetCorrection_NaF();
 	TH1F* RICH_Correction_P_Agl =(TH1F*) RICH_DvsMC_P -> GetCorrection_Agl();
 
 	TH2F* RICH_Correction_D_NaF =(TH2F*) RICH_DvsMC_D -> GetCorrection_NaF();
 	TH2F* RICH_Correction_D_Agl =(TH2F*) RICH_DvsMC_D -> GetCorrection_Agl();
+
+
+	cout<<"************* FIT **************"<<endl;
+	
+	RICH_DvsMC_P -> Eval_FittedCorrections();
+        RICH_DvsMC_D -> Eval_FittedCorrections();
+
+	TH1F* RICH_CorrectionFit_P_NaF =(TH1F*) RICH_DvsMC_P -> GetCorrection_NaF();
+	TH1F* RICH_CorrectionFit_P_Agl =(TH1F*) RICH_DvsMC_P -> GetCorrection_Agl();
+
+	TH2F* RICH_CorrectionFit_D_NaF =(TH2F*) RICH_DvsMC_D -> GetCorrection_NaF();
+	TH2F* RICH_CorrectionFit_D_Agl =(TH2F*) RICH_DvsMC_D -> GetCorrection_Agl();
 
 
 	RICH_Correction_P_NaF  -> SetName("RICH_DvsMC_P_CorrectionNaF");
@@ -131,11 +151,42 @@ void DVSMCRICHeff(string filename){
 	RICH_Correction_D_NaF  -> SetName("RICH_DvsMC_D_CorrectionNaF");
 	RICH_Correction_D_Agl  -> SetName("RICH_DvsMC_D_CorrectionAgl");
 
+	
+	TH1F* RICH_P_StatFit_NaF  =(TH1F*) RICH_DvsMC_P -> GetStatErr_NaF();
+        TH1F* RICH_P_StatFit_Agl  =(TH1F*) RICH_DvsMC_P -> GetStatErr_Agl();
+
+	TH1F* RICH_D_StatFit_NaF  =(TH1F*) RICH_DvsMC_D -> GetStatErr_NaF();
+        TH1F* RICH_D_StatFit_Agl  =(TH1F*) RICH_DvsMC_D -> GetStatErr_Agl();
+
+
+	TH1F* RICH_P_SystFit_NaF  =(TH1F*) RICH_DvsMC_P -> GetSystErr_NaF();
+        TH1F* RICH_P_SystFit_Agl  =(TH1F*) RICH_DvsMC_P -> GetSystErr_Agl();
+
+	TH1F* RICH_D_SystFit_NaF  =(TH1F*) RICH_DvsMC_D -> GetSystErr_NaF();
+        TH1F* RICH_D_SystFit_Agl  =(TH1F*) RICH_DvsMC_D -> GetSystErr_Agl();
+
+
+
+
+
+	finalHistos.Add( RICH_P_StatFit_NaF);
+        finalHistos.Add( RICH_P_StatFit_Agl);
+	                                   
+	finalHistos.Add( RICH_D_StatFit_NaF);
+        finalHistos.Add( RICH_D_StatFit_Agl);
+
+	finalHistos.Add( RICH_P_SystFit_NaF);
+        finalHistos.Add( RICH_P_SystFit_Agl);
+	                                   
+	finalHistos.Add( RICH_D_SystFit_NaF);
+        finalHistos.Add( RICH_D_SystFit_Agl);
+
+
 	finalHistos.Add(RICH_Correction_P_NaF);
-       finalHistos.Add( RICH_Correction_P_Agl);
+        finalHistos.Add( RICH_Correction_P_Agl);
                              
-       finalHistos.Add( RICH_Correction_D_NaF);
-       finalHistos.Add( RICH_Correction_D_Agl);
+        finalHistos.Add( RICH_Correction_D_NaF);
+        finalHistos.Add( RICH_Correction_D_Agl);
 
 	finalHistos.writeObjsInFolder("Results");
 
@@ -145,7 +196,15 @@ void DVSMCRICHeff(string filename){
                            RICH_Correction_P_Agl,
                                 
                            RICH_Correction_D_NaF,
-                           RICH_Correction_D_Agl
+                           RICH_Correction_D_Agl,
+				
+			   RICH_CorrectionFit_P_NaF,	  			  
+                           RICH_CorrectionFit_P_Agl,
+                                                   
+                           RICH_CorrectionFit_D_NaF,
+                           RICH_CorrectionFit_D_Agl
+
+ 
 	);
 	
 	return;

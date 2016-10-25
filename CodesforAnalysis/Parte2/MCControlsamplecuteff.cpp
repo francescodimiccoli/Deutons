@@ -52,23 +52,23 @@ void MCControlsamplecuteff(string filename) {
    EffCSCMCP ->Eval_Efficiency();
    EffpreselMCP ->Eval_Efficiency();
 
-   TH1F * EffCSCMCP_TH1F 		=(TH1F *)EffCSCMCP ->effR  ->Clone();
-   TH1F * EffCSCFullsetMCP_TH1F         =(TH1F *)EffpreselMCP ->effR  ->Clone();
+   
+   Efficiency * EffCSCFullsetMCP = new Efficiency(EffpreselMCP,"EffCSCFullsetMCP"); 
 
-   EffCSCFullsetMCP_TH1F -> Multiply(EffCSCMCP_TH1F);
+   EffCSCFullsetMCP->Compose_Efficiency(EffCSCMCP);	
 
-   EffCSCFullsetMCP_TH1F -> SetName("EffCSCFullsetMCP_EffR");
+   EffCSCFullsetMCP->Eval_FittedEfficiency();
 
-   finalHistos.Add(EffCSCMCP_TH1F 	    );
-   finalHistos.Add(EffCSCFullsetMCP_TH1F    ); 
+   
+   finalHistos.Add(EffCSCFullsetMCP->effR  ); 
+   finalHistos.Add(EffCSCFullsetMCP->effR_fit);
    finalHistos.writeObjsInFolder("Results");
 
    cout<<"*** Plotting ...  ****"<<endl; 
 
    MCControlsamplecuteff_Plot(	
 
-	EffCSCMCP_TH1F 	  	
-	);
+	EffCSCMCP ->effR);
 	
    return;
 }

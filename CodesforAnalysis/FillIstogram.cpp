@@ -120,8 +120,6 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATAUnbiaseffQ_Write();
       DeutonsMC_Write();
       DeutonsMC_Dist_Write();
-      DVSMCPreSeleff_Write();
-      DVSMCPreSeleffD_Write();
       DVSMCQualeff2_Write();
       DVSMCRICHeff_Write();
       DVSMCQualeffD_Write();
@@ -156,12 +154,12 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       MCpreeff(filename);
       MCUnbiaseff(filename);
       MCControlsamplecuteff(filename);
-      if(frac=="tot") MCQualeff(filename);
+      MCQualeff(filename);
       FluxFactorizationtest(filename);
       MCTrackeff(filename);
       AntiDCutOptimization(filename);	
       AntiDEfficiencies(filename);
-      if(frac=="tot") MCQcheck(filename);
+      //if(frac=="tot") MCQcheck(filename);
       BadEventStudy(filename);
       MCFullseteff(filename);
       MigrationMatrix(filename);
@@ -176,11 +174,10 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DeutonsTemplFits_Dist(filename,frac);	
 
       CorrLAT(filename);
-      DVSMCPreSeleff(filename);
-      //DVSMCPreSeleffD(filename);
       DVSMCRICHeff(filename);
       DVSMCQualeff2(filename);
       //DVSMCQualeffD(filename);
+      DVSMCFullset(filename);
       Acceptance(filename);
       AntiDpredictions(filename);
       ProtonFlux(filename);
@@ -307,8 +304,6 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       Correlazione_Preselezioni();
       FluxFactorizationtest_Pre_Fill();
       DVSMCTrackeff_Fill();
-      DVSMCPreSeleff_Fill();
-      DVSMCPreSeleffD_Fill();
    }
    cout << endl;
    return;
@@ -404,8 +399,6 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 
 		DATApreSeleff_Fill(Zona);
 		DVSMCTrackeff_D_Fill(); // < Check if needs the ones before
-		DVSMCPreSeleff_D_Fill(Zona);
-		DVSMCPreSeleffD_D_Fill(Zona);
 	}
 	cout << endl;
 	return;

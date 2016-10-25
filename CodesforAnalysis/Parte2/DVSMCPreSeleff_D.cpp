@@ -18,19 +18,19 @@ void DVSMCPreSeleffD_D_Fill(int zona){
 		//Beta bins
 		//ToF
 		Kbin=ToFDB.GetBin(RUsed);	
-		if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeTOF) -> Fill(Kbin,zona,S);
-		if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterTOF ) -> Fill(Kbin,zona,S);
+		if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> DataEff[0] -> beforeTOF) -> Fill(Kbin,zona,S);
+		if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> DataEff[0] -> afterTOF ) -> Fill(Kbin,zona,S);
 		//NaF
 		if(cmask.isFromNaF()) {	
 			Kbin=NaFDB.GetBin(RUsed);
-			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeNaF) -> Fill(Kbin,zona,S);
-			if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterNaF ) -> Fill(Kbin,zona,S);
+			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> DataEff[0] -> beforeNaF) -> Fill(Kbin,zona,S);
+			if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> DataEff[0] -> afterNaF ) -> Fill(Kbin,zona,S);
 		}
 		//Agl
 		if(cmask.isFromAgl()) {
 			Kbin=AglDB.GetBin(RUsed);
-			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> DataEff -> beforeAgl) -> Fill(Kbin,zona,S);
-			if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> DataEff -> afterAgl ) -> Fill(Kbin,zona,S);
+			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> DataEff[0] -> beforeAgl) -> Fill(Kbin,zona,S);
+			if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> DataEff[0] -> afterAgl ) -> Fill(Kbin,zona,S);
 		}
 	}
 	return;
@@ -48,20 +48,20 @@ void DVSMCPreSeleffD_Fill(){
 			//Beta bins
 			//ToF
 			Kbin=ToFDB.GetBin(RUsed);	
-			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> MCEff -> beforeTOF) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
-			if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> MCEff -> afterTOF ) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
+			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> MCEff[0] -> beforeTOF) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
+			if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> MCEff[0] -> afterTOF ) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
 
 			//NaF
 			if(cmask.isFromNaF()) {	
 				Kbin=NaFDB.GetBin(RUsed);	
-				if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> MCEff -> beforeNaF) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
-				if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> MCEff -> afterNaF ) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
+				if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> MCEff[0] -> beforeNaF) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
+				if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> MCEff[0] -> afterNaF ) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
 			}
 			//Agl
 			if(cmask.isFromAgl()) {	
 				Kbin=AglDB.GetBin(RUsed);
-				if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> MCEff -> beforeAgl) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
-				if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> MCEff -> afterAgl ) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
+				if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_D -> MCEff[0] -> beforeAgl) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
+				if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_D -> MCEff[0] -> afterAgl ) -> Fill(Kbin,ReturnMCGenType(),S,Tup.mcweight);
 			}
 
 		}

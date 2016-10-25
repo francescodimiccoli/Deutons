@@ -31,7 +31,42 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
                         TH1 * DCorrectedAcceptance_R  ,	
                         TH1 * DCorrectedAcceptance_TOF,	
                         TH1 * DCorrectedAcceptance_NaF,	
-                        TH1 * DCorrectedAcceptance_Agl){
+	                TH1 * DCorrectedAcceptance_Agl,
+
+			TH1F * LatCorrErrR_P   	,	
+                        TH1F * LatCorrErrTOF_P ,
+                        TH1F * LatCorrErrNaF_P, 
+                        TH1F * LatCorrErrAgl_P, 
+                        
+                        TH1F * EffStatErrR_P   ,
+                        TH1F * EffStatErrTOF_P, 
+                        TH1F * EffStatErrNaF_P, 
+                        TH1F * EffStatErrAgl_P, 
+                                               
+                        TH1F * EffSystErrR_P   ,
+                        TH1F * EffSystErrTOF_P, 
+                        TH1F * EffSystErrNaF_P, 
+                        TH1F * EffSystErrAgl_P, 
+                                               
+                        TH1F * CorrStatErrR_P  ,
+                        TH1F * CorrStatErrTOF_P,
+                        TH1F * CorrStatErrNaF_P,
+                        TH1F * CorrStatErrAgl_P,
+                                               
+                        TH1F * CorrSystErrR_P  ,
+                        TH1F * CorrSystErrTOF_P,
+                        TH1F * CorrSystErrNaF_P,
+                        TH1F * CorrSystErrAgl_P,
+			
+			TH1F * RICHStatErrNaF_P,
+                        TH1F * RICHStatErrAgl_P,
+                                               
+                        TH1F * RICHSystErrNaF_P,
+                        TH1F * RICHSystErrAgl_P
+
+
+
+){
 
 
 	TCanvas * c31_tris = new TCanvas("Gen. Efficiency");
@@ -422,10 +457,238 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
                 AccSelMCDbetaAgl[h]->Draw("Psame");
         }
 
+	TCanvas *e = new TCanvas("Errors Breakdown (P)");
+	e-> Divide(2,2);
+
+	e->cd(1);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	gPad->SetLogy();
+	TH1F * ErrTOTP_R=(TH1F *)EffStatErrR_P->Clone();
+	for(int iR=0;iR<ErrTOTP_R->GetNbinsX();iR++) 
+		ErrTOTP_R->SetBinContent(iR+1,PCorrectedAcceptance_R ->GetBinError(iR+1)/PCorrectedAcceptance_R ->GetBinContent(iR+1));
+		
+	ErrTOTP_R->GetXaxis()->SetTitle("Bin nr.");
+	ErrTOTP_R->GetYaxis()->SetTitle("Relative Error");
+	ErrTOTP_R->GetXaxis()->SetTitleSize(0.045);
+	ErrTOTP_R->GetYaxis()->SetTitleSize(0.045);
+	ErrTOTP_R->SetTitle("Acceptance TOTAL Error breakdown (R bins)");
+	ErrTOTP_R->GetYaxis()->SetRangeUser(1e-4,1);
+
+	ErrTOTP_R->SetLineColor(1);
+	ErrTOTP_R->SetLineWidth(4);	
+	LatCorrErrR_P->SetLineColor(2);
+	LatCorrErrR_P->SetLineWidth(4);
+	EffStatErrR_P->SetLineColor(3);   	
+	EffStatErrR_P->SetLineWidth(4);  
+	EffSystErrR_P->SetLineColor(4);   	
+	EffSystErrR_P->SetLineWidth(4);  
+	CorrStatErrR_P->SetLineColor(5);   	
+	CorrStatErrR_P->SetLineWidth(4);  
+	CorrSystErrR_P->SetLineColor(6);   	
+	CorrSystErrR_P->SetLineWidth(4);  
+	
+	
+	ErrTOTP_R->Draw("hist");	
+	LatCorrErrR_P  ->Draw("hist same"); 
+	EffStatErrR_P  ->Draw("hist same"); 
+	EffSystErrR_P  ->Draw("hist same"); 
+	CorrStatErrR_P ->Draw("hist same"); 
+	CorrSystErrR_P ->Draw("hist same"); 
+	{       TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                leg->AddEntry(  ErrTOTP_R       ,"TOTAL Error", "l");
+                leg->AddEntry(  LatCorrErrR_P   ,"LAT. dep.  syst. Error", "l");
+                leg->AddEntry(  EffStatErrR_P   ,"Efficiency stat. Error", "l");
+                leg->AddEntry(  EffSystErrR_P   ,"Efficiency Fit   Error", "l");
+                leg->AddEntry(  CorrStatErrR_P  ,"Eff. Corr. Fit   Error", "l");
+                leg->AddEntry(  CorrSystErrR_P  ,"Eff. Corr. syst. Error", "l");
+		leg->Draw("same");
+
+        }
+
+
+	e->cd(2);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	gPad->SetLogy();
+	TH1F * ErrTOTP_TOF=(TH1F *)EffStatErrTOF_P->Clone();
+	for(int iR=0;iR<ErrTOTP_TOF->GetNbinsX();iR++) 
+		ErrTOTP_TOF->SetBinContent(iR+1,PCorrectedAcceptance_TOF ->GetBinError(iR+1)/PCorrectedAcceptance_TOF ->GetBinContent(iR+1));
+	ErrTOTP_TOF->GetXaxis()->SetTitle("Bin nr.");
+        ErrTOTP_TOF->GetYaxis()->SetTitle("Relative Error");
+        ErrTOTP_TOF->GetXaxis()->SetTitleSize(0.045);
+        ErrTOTP_TOF->GetYaxis()->SetTitleSize(0.045);
+        ErrTOTP_TOF->SetTitle("Acceptance TOTAL Error breakdown (TOF range)");
+	ErrTOTP_TOF->GetYaxis()->SetRangeUser(1e-4,1);
+
+
+	ErrTOTP_TOF->SetLineColor(1);
+	ErrTOTP_TOF->SetLineWidth(4);	
+	LatCorrErrTOF_P->SetLineColor(2);
+	LatCorrErrTOF_P->SetLineWidth(4);
+	EffStatErrTOF_P->SetLineColor(3);   	
+	EffStatErrTOF_P->SetLineWidth(4);  
+	EffSystErrTOF_P->SetLineColor(4);   	
+	EffSystErrTOF_P->SetLineWidth(4);  
+	CorrStatErrTOF_P->SetLineColor(5);   	
+	CorrStatErrTOF_P->SetLineWidth(4);  
+	CorrSystErrTOF_P->SetLineColor(6);   	
+	CorrSystErrTOF_P->SetLineWidth(4);  
+	
+
+	ErrTOTP_TOF->Draw("hist");	
+	LatCorrErrTOF_P->Draw("hist same"); 
+	EffStatErrTOF_P->Draw("hist same"); 
+	EffSystErrTOF_P->Draw("hist same"); 
+	CorrStatErrTOF_P->Draw("hist same"); 
+	CorrSystErrTOF_P->Draw("hist same"); 
+	{       TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                leg->AddEntry(  ErrTOTP_TOF       ,"TOTAL Error", "l");
+                leg->AddEntry(  LatCorrErrTOF_P   ,"LAT. dep.  syst. Error", "l");
+                leg->AddEntry(  EffStatErrTOF_P   ,"Efficiency stat. Error", "l");
+                leg->AddEntry(  EffSystErrTOF_P   ,"Efficiency Fit   Error", "l");
+                leg->AddEntry(  CorrStatErrTOF_P  ,"Eff. Corr. Fit   Error", "l");
+                leg->AddEntry(  CorrSystErrTOF_P  ,"Eff. Corr. syst. Error", "l");
+		leg->Draw("same");
+
+        }
+
+
+	
+	e->cd(3);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	gPad->SetLogy();
+	TH1F * ErrTOTP_NaF=(TH1F *)EffStatErrNaF_P->Clone();
+	for(int iR=0;iR<ErrTOTP_NaF->GetNbinsX();iR++) 
+		ErrTOTP_NaF->SetBinContent(iR+1,PCorrectedAcceptance_NaF ->GetBinError(iR+1)/PCorrectedAcceptance_NaF ->GetBinContent(iR+1));
+
+	ErrTOTP_NaF->GetXaxis()->SetTitle("Bin nr.");
+        ErrTOTP_NaF->GetYaxis()->SetTitle("Relative Error");
+        ErrTOTP_NaF->GetXaxis()->SetTitleSize(0.045);
+        ErrTOTP_NaF->GetYaxis()->SetTitleSize(0.045);
+        ErrTOTP_NaF->SetTitle("Acceptance TOTAL Error breakdown (NaF range)");
+	ErrTOTP_NaF->GetYaxis()->SetRangeUser(1e-4,1);
+
+
+
+	ErrTOTP_NaF->SetLineColor(1);
+	ErrTOTP_NaF->SetLineWidth(4);	
+	LatCorrErrNaF_P->SetLineColor(2);
+	LatCorrErrNaF_P->SetLineWidth(4);
+	EffStatErrNaF_P->SetLineColor(3);   	
+	EffStatErrNaF_P->SetLineWidth(4);  
+	EffSystErrNaF_P->SetLineColor(4);   	
+	EffSystErrNaF_P->SetLineWidth(4);  
+	CorrStatErrNaF_P->SetLineColor(5);   	
+	CorrStatErrNaF_P->SetLineWidth(4);  
+	CorrSystErrNaF_P->SetLineColor(6);   	
+	CorrSystErrNaF_P->SetLineWidth(4);  
+
+	RICHStatErrNaF_P->SetLineColor(7);   	
+	RICHStatErrNaF_P->SetLineWidth(4);  
+	RICHSystErrNaF_P->SetLineColor(8);   	
+	RICHSystErrNaF_P->SetLineWidth(4);  
+	
+
+	ErrTOTP_NaF->Draw("hist");	
+	LatCorrErrNaF_P->Draw("hist same"); 
+	EffStatErrNaF_P->Draw("hist same"); 
+	EffSystErrNaF_P->Draw("hist same"); 
+	CorrStatErrNaF_P->Draw("hist same"); 
+	CorrSystErrNaF_P->Draw("hist same"); 
+	RICHStatErrNaF_P->Draw("hist same"); 
+	RICHSystErrNaF_P->Draw("hist same"); 
+	{       TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                leg->AddEntry(  ErrTOTP_NaF       ,"TOTAL Error", "l");
+                leg->AddEntry(  LatCorrErrNaF_P   ,"LAT. dep.  syst. Error", "l");
+                leg->AddEntry(  EffStatErrNaF_P   ,"Efficiency stat. Error", "l");
+                leg->AddEntry(  EffSystErrNaF_P   ,"Efficiency Fit   Error", "l");
+                leg->AddEntry(  CorrStatErrNaF_P  ,"Eff. Corr. Fit   Error", "l");
+                leg->AddEntry(  CorrSystErrNaF_P  ,"Eff. Corr. syst. Error", "l");
+		leg->AddEntry(  RICHStatErrNaF_P  ,"RICH eff.  Fit   Error", "l");
+                leg->AddEntry(  CorrSystErrNaF_P  ,"RICH eff.  syst. Error", "l");
+        
+
+
+	leg->Draw("same");
+        }
+
+
+
+
+
+
+	e->cd(4);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	gPad->SetLogy();
+	TH1F * ErrTOTP_Agl=(TH1F *)EffStatErrAgl_P->Clone();
+	for(int iR=0;iR<ErrTOTP_Agl->GetNbinsX();iR++) 
+		ErrTOTP_Agl->SetBinContent(iR+1,PCorrectedAcceptance_Agl ->GetBinError(iR+1)/PCorrectedAcceptance_Agl ->GetBinContent(iR+1));
+	
+	ErrTOTP_Agl->GetXaxis()->SetTitle("Bin nr.");
+        ErrTOTP_Agl->GetYaxis()->SetTitle("Relative Error");
+        ErrTOTP_Agl->GetXaxis()->SetTitleSize(0.045);
+        ErrTOTP_Agl->GetYaxis()->SetTitleSize(0.045);
+        ErrTOTP_Agl->SetTitle("Acceptance TOTAL Error breakdown (Agl range)");
+	ErrTOTP_NaF->GetYaxis()->SetRangeUser(1e-4,1);
+
+	ErrTOTP_Agl->SetLineColor(1);
+	ErrTOTP_Agl->SetLineWidth(4);	
+	LatCorrErrAgl_P->SetLineColor(2);
+	LatCorrErrAgl_P->SetLineWidth(4);
+	EffStatErrAgl_P->SetLineColor(3);   	
+	EffStatErrAgl_P->SetLineWidth(4);  
+	EffSystErrAgl_P->SetLineColor(4);   	
+	EffSystErrAgl_P->SetLineWidth(4);  
+	CorrStatErrAgl_P->SetLineColor(5);   	
+	CorrStatErrAgl_P->SetLineWidth(4);  
+	CorrSystErrAgl_P->SetLineColor(6);   	
+	CorrSystErrAgl_P->SetLineWidth(4);  
+	RICHStatErrAgl_P->SetLineColor(7);   	
+	RICHStatErrAgl_P->SetLineWidth(4);  
+	RICHSystErrAgl_P->SetLineColor(8);   	
+	RICHSystErrAgl_P->SetLineWidth(4);  
+	
+
+	ErrTOTP_Agl->Draw("hist");	
+	LatCorrErrAgl_P->Draw("hist same"); 
+	EffStatErrAgl_P->Draw("hist same"); 
+	EffSystErrAgl_P->Draw("hist same"); 
+	CorrStatErrAgl_P->Draw("hist same"); 
+	CorrSystErrAgl_P->Draw("hist same"); 
+	RICHStatErrAgl_P->Draw("hist same"); 
+	RICHSystErrAgl_P->Draw("hist same"); 
+
+
+
+	{       TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                leg->AddEntry(  ErrTOTP_Agl       ,"TOTAL Error", "l");
+                leg->AddEntry(  LatCorrErrAgl_P   ,"LAT. dep.  syst. Error", "l");
+                leg->AddEntry(  EffStatErrAgl_P   ,"Efficiency stat. Error", "l");
+                leg->AddEntry(  EffSystErrAgl_P   ,"Efficiency Fit   Error", "l");
+                leg->AddEntry(  CorrStatErrAgl_P  ,"Eff. Corr. Fit   Error", "l");
+                leg->AddEntry(  CorrSystErrAgl_P  ,"Eff. Corr. syst. Error", "l");
+        	leg->AddEntry(  RICHStatErrAgl_P  ,"RICH eff.  Fit   Error", "l");
+                leg->AddEntry(  CorrSystErrAgl_P  ,"RICH eff.  syst. Error", "l");
+        
+
+
+	        leg->Draw("same");
+
+        }
+
+
+
+
+
+
 	
 	finalPlots.Add(c31_tris );
 	finalPlots.Add(c22 );
 	finalPlots.Add(c31_bis  );
+	finalPlots.Add(e  );
 	finalPlots.writeObjsInFolder("Acceptance");
 
 	return;

@@ -2,8 +2,8 @@
 
 using namespace std;
 
-DatavsMC * Dist_DvsMC_P = new DatavsMC("Dist_DvsMC_P",11,1,1,20);
-DatavsMC * Lik_DvsMC_P  = new DatavsMC("Lik_DvsMC_P" ,11,1,1,20);
+DatavsMC * Dist_DvsMC_P = new DatavsMC("Dist_DvsMC_P",11,1,20);
+DatavsMC * Lik_DvsMC_P  = new DatavsMC("Lik_DvsMC_P" ,11,1,20);
 
 void DVSMCQualeff2_D_Fill(int zona){
 
@@ -13,7 +13,6 @@ void DVSMCQualeff2_D_Fill(int zona){
 	if(!Herejcut) return;
 	//if(Tup.EdepL1<=0.01) return;
 
-	bool Likcutloose = Qualitycut(log(1-Tup.LDiscriminant),-0.3,-1.3,-1.3); 
 
 	int Kbin;
 	float mass = 0;
@@ -26,7 +25,7 @@ void DVSMCQualeff2_D_Fill(int zona){
 	Kbin = PRB.GetRBin(Tup.R);
 
 	for(int s=0;s<20;s++) {
-		if(Qualitycut(log(1-Tup.LDiscriminant),-0.1+s*0.02,-0.9+s*0.02,-0.9+s*0.02)) {
+		if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {
 			Dist_DvsMC_P -> DataEff[s] -> beforeR -> Fill(Kbin,zona);
 			if(Distcut) Dist_DvsMC_P -> DataEff[s] -> afterR -> Fill(Kbin,zona);
 		}
@@ -42,11 +41,11 @@ void DVSMCQualeff2_D_Fill(int zona){
 	mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));	
 
 	for(int s=0;s<20;s++) {
-		if(Qualitycut(log(1-Tup.LDiscriminant),-0.1+s*0.02,-0.9+s*0.02,-0.9+s*0.02)) {	
+		if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {	
 			Dist_DvsMC_P -> DataEff[s] -> beforeTOF -> Fill(Kbin,zona);
 			if(Distcut) Dist_DvsMC_P -> DataEff[s] -> afterTOF -> Fill(Kbin,zona);
 		}
-		float cut = 2+0.1*2;
+		float cut = 2+0.1*s;
 		if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 			Lik_DvsMC_P  -> DataEff[s] -> beforeTOF -> Fill(Kbin,zona);
 			if(Likcut) Lik_DvsMC_P  -> DataEff[s] -> afterTOF -> Fill(Kbin,zona);
@@ -59,11 +58,11 @@ void DVSMCQualeff2_D_Fill(int zona){
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 		for(int s=0;s<20;s++) {
 
-			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1+s*0.02,-0.9+s*0.02,-0.9+s*0.02)) {
+			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {
 				Dist_DvsMC_P -> DataEff[s] -> beforeNaF -> Fill(Kbin,zona);
 				if(Distcut) Dist_DvsMC_P -> DataEff[s] -> afterNaF -> Fill(Kbin,zona);
 			}
-			float cut = 2+0.1*2;
+			float cut = 2+0.1*s;
 			if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 
 				Lik_DvsMC_P  -> DataEff[s] -> beforeNaF -> Fill(Kbin,zona);
@@ -78,12 +77,12 @@ void DVSMCQualeff2_D_Fill(int zona){
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 		for(int s=0;s<20;s++) {
 
-			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1+s*0.02,-0.9+s*0.02,-0.9+s*0.02)) {
+			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {
 				Dist_DvsMC_P -> DataEff[s] -> beforeAgl -> Fill(Kbin,zona);
 				if(Distcut) Dist_DvsMC_P -> DataEff[s] -> afterAgl -> Fill(Kbin,zona);
 			}
 
-			float cut = 2+0.1*2;
+			float cut = 2+0.1*s;
 			if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 				Lik_DvsMC_P  -> DataEff[s] -> beforeAgl -> Fill(Kbin,zona);
 				if(Likcut) Lik_DvsMC_P  -> DataEff[s] -> afterAgl -> Fill(Kbin,zona);
@@ -110,7 +109,6 @@ void DVSMCQualeff2_Fill(){
 	//R bins
 	Kbin = PRB.GetRBin(Tup.R);
 
-	bool Likcutloose = Qualitycut(log(1-Tup.LDiscriminant),-0.3,-1.3,-1.3);
 
 
 	if(Massa_gen<1) {
@@ -118,12 +116,12 @@ void DVSMCQualeff2_Fill(){
 		Kbin = PRB.GetRBin(Tup.R);
 		for(int s=0;s<20;s++) {
 
-			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1+s*0.02,-0.9+s*0.02,-0.9+s*0.02)) { 
+			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) { 
 				Dist_DvsMC_P -> MCEff[s] -> beforeR -> Fill(Kbin,Tup.mcweight);
 				if(Distcut) Dist_DvsMC_P -> MCEff[s]-> afterR -> Fill(Kbin,Tup.mcweight);
 			}
 
-			float cut = 2+0.1*2;
+			float cut = 2+0.1*s;
 			if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 				Lik_DvsMC_P  -> MCEff[s] -> beforeR -> Fill(Kbin,Tup.mcweight);
 				if(Likcut) Lik_DvsMC_P  -> MCEff[s] -> afterR -> Fill(Kbin,Tup.mcweight);
@@ -136,12 +134,12 @@ void DVSMCQualeff2_Fill(){
 		mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));
 		for(int s=0;s<20;s++) {
 
-			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1+s*0.02,-0.9+s*0.02,-0.9+s*0.02)) {                
+			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {                
 				Dist_DvsMC_P -> MCEff[s] -> beforeTOF -> Fill(Kbin,Tup.mcweight);
 				if(Distcut) Dist_DvsMC_P -> MCEff[s] -> afterTOF -> Fill(Kbin,Tup.mcweight);
 			}
 
-			float cut = 2+0.1*2;
+			float cut = 2+0.1*s;
 			if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 				Lik_DvsMC_P  -> MCEff[s] -> beforeTOF -> Fill(Kbin,Tup.mcweight);
 				if(Likcut) Lik_DvsMC_P  -> MCEff[s] -> afterTOF -> Fill(Kbin,Tup.mcweight);
@@ -153,11 +151,11 @@ void DVSMCQualeff2_Fill(){
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			for(int s=0;s<20;s++) {
 
-				if(Qualitycut(log(1-Tup.LDiscriminant),-0.1+s*0.02,-0.9+s*0.02,-0.9+s*0.02)) {
+				if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {
 					Dist_DvsMC_P -> MCEff[s] -> beforeNaF -> Fill(Kbin,Tup.mcweight);
 					if(Distcut) Dist_DvsMC_P -> MCEff[s] -> afterNaF -> Fill(Kbin,Tup.mcweight);
 				}
-				float cut = 2+0.1*2;
+				float cut = 2+0.1*s;
 				if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 					Lik_DvsMC_P  -> MCEff[s] -> beforeNaF -> Fill(Kbin,Tup.mcweight);
 					if(Likcut) Lik_DvsMC_P  -> MCEff[s] -> afterNaF -> Fill(Kbin,Tup.mcweight);
@@ -170,11 +168,11 @@ void DVSMCQualeff2_Fill(){
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			for(int s=0;s<20;s++) {
 
-				if(Qualitycut(log(1-Tup.LDiscriminant),-0.1+s*0.02,-0.9+s*0.02,-0.9+s*0.02)) {
+				if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {
 					Dist_DvsMC_P -> MCEff[s] -> beforeAgl -> Fill(Kbin,Tup.mcweight);
 					if(Distcut) Dist_DvsMC_P -> MCEff[s] -> afterAgl -> Fill(Kbin,Tup.mcweight);
 				}
-				float cut = 2+0.1*2;
+				float cut = 2+0.1*s;
 				if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 					Lik_DvsMC_P  -> MCEff[s] -> beforeAgl -> Fill(Kbin,Tup.mcweight);
 					if(Likcut) Lik_DvsMC_P  -> MCEff[s] -> afterAgl -> Fill(Kbin,Tup.mcweight);
@@ -206,7 +204,7 @@ void DVSMCQualeff2(string filename){
 	DatavsMC * Dist_DvsMC_P = new DatavsMC(inputHistoFile,"Dist_DvsMC_P",1,20);
 	DatavsMC * Lik_DvsMC_P  = new DatavsMC(inputHistoFile,"Lik_DvsMC_P" ,1,20);
 
-	LATcorr * LATLikelihoodDATA_TOF = new LATcorr(inputHistoFile,"LATLikDATA_TOF"   	 ,"Results");
+	LATcorr * LATLikelihoodDATA_TOF = new LATcorr(inputHistoFile,"LATLikDATA_TOF"  	 ,"Results");
 	LATcorr * LATDistanceDATA_TOF   = new LATcorr(inputHistoFile,"LATDistDATA_TOF" 	 ,"Results");
 
 	LATcorr * LATLikelihoodDATA_NaF = new LATcorr(inputHistoFile,"LATLikDATA_NaF"  	 ,"Results");
@@ -250,6 +248,29 @@ void DVSMCQualeff2(string filename){
 	TH1F* LikP_Correction_Agl  =(TH1F*) Lik_DvsMC_P -> GetCorrection_Agl(10);
 
 
+	cout<<"*************SYST ERR**************"<<endl;
+        Dist_DvsMC_P ->Initialize_SystError();
+        Lik_DvsMC_P  ->Initialize_SystError();
+
+	Dist_DvsMC_P ->Eval_SystError();
+        Lik_DvsMC_P  ->Eval_SystError();
+
+        Dist_DvsMC_P ->Eval_FittedCorrections();
+        Lik_DvsMC_P  ->Eval_FittedCorrections();
+
+        TH2F* SystDist_R   =(TH2F*) Dist_DvsMC_P -> GetSystPlot_R()  ;
+        TH2F* SystDist_TOF =(TH2F*) Dist_DvsMC_P -> GetSystPlot_TOF();
+        TH2F* SystDist_NaF =(TH2F*) Dist_DvsMC_P -> GetSystPlot_NaF();
+        TH2F* SystDist_Agl =(TH2F*) Dist_DvsMC_P -> GetSystPlot_Agl();
+
+        TH2F* SystLik_R   =(TH2F*) Lik_DvsMC_P -> GetSystPlot_R()  ;
+        TH2F* SystLik_TOF =(TH2F*) Lik_DvsMC_P -> GetSystPlot_TOF();
+        TH2F* SystLik_NaF =(TH2F*) Lik_DvsMC_P -> GetSystPlot_NaF();
+        TH2F* SystLik_Agl =(TH2F*) Lik_DvsMC_P -> GetSystPlot_Agl();
+
+
+
+	cout<<"************* FIT **************"<<endl;
 	Dist_DvsMC_P ->Eval_FittedCorrections();
 	Lik_DvsMC_P  ->Eval_FittedCorrections();
 
@@ -274,6 +295,15 @@ void DVSMCQualeff2(string filename){
 	LikP_CorrectionFit_NaF   -> SetName("Lik_DvsMC_P_CorrectionNaF"  );
 	LikP_CorrectionFit_Agl   -> SetName("Lik_DvsMC_P_CorrectionAgl"  );
 
+        finalHistos.Add(SystDist_R  );
+        finalHistos.Add(SystDist_TOF);
+        finalHistos.Add(SystDist_NaF);
+        finalHistos.Add(SystDist_Agl);
+
+        finalHistos.Add(SystLik_R   );
+        finalHistos.Add(SystLik_TOF );
+        finalHistos.Add(SystLik_NaF );
+        finalHistos.Add(SystLik_Agl );
 
 
 	finalHistos.Add(DistP_CorrectionFit_R  );

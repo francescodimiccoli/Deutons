@@ -17,25 +17,25 @@ void DVSMCPreSeleff_D_Fill(int zona){
 	for(int S=0;S<3;S++){
 		//R bins
 		Kbin = PRB.GetRBin(RUsed);
-		if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeR) -> Fill(Kbin,zona,S);	
-		if(cmask.passed(S))	      ((TH3*)PreSel_DvsMC_P -> DataEff -> afterR ) -> Fill(Kbin,zona,S);     
+		if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> beforeR) -> Fill(Kbin,zona,S);	
+		if(cmask.passed(S))	      ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> afterR ) -> Fill(Kbin,zona,S);     
 
 		//Beta bins
 		//ToF
 		Kbin=ToFDB.GetBin(RUsed);	
-		if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeTOF) -> Fill(Kbin,zona,S);
-                if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff -> afterTOF ) -> Fill(Kbin,zona,S);
+		if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> beforeTOF) -> Fill(Kbin,zona,S);
+                if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> afterTOF ) -> Fill(Kbin,zona,S);
 		//NaF
 		if(cmask.isFromNaF()) {	
 			Kbin=NaFDB.GetBin(RUsed);
-			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeNaF) -> Fill(Kbin,zona,S);
-                	if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff -> afterNaF ) -> Fill(Kbin,zona,S);
+			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> beforeNaF) -> Fill(Kbin,zona,S);
+                	if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> afterNaF ) -> Fill(Kbin,zona,S);
 		}
 		//Agl
 		if(cmask.isFromAgl()) {
 			Kbin=AglDB.GetBin(RUsed);
-			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff -> beforeAgl) -> Fill(Kbin,zona,S);
-                	if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff -> afterAgl ) -> Fill(Kbin,zona,S);
+			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> beforeAgl) -> Fill(Kbin,zona,S);
+                	if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> afterAgl ) -> Fill(Kbin,zona,S);
 		}
 	}
 	return;
@@ -53,26 +53,26 @@ void DVSMCPreSeleff_Fill(){
 		if(Massa_gen<1) {
 			//R bins
 			Kbin = PRB.GetRBin(RUsed);	
-			 if(cmask.notPassed(S))		  ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeR) -> Fill(Kbin,S,Tup.mcweight);
-			 if(cmask.passed(S))                  ((TH2*)PreSel_DvsMC_P -> MCEff -> afterR ) -> Fill(Kbin,S,Tup.mcweight);
+			 if(cmask.notPassed(S))		  ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> beforeR) -> Fill(Kbin,S,Tup.mcweight);
+			 if(cmask.passed(S))                  ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> afterR ) -> Fill(Kbin,S,Tup.mcweight);
 			//Beta bins
 
 			//ToF
 			Kbin=ToFDB.GetBin(RUsed);	
-			if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeTOF) -> Fill(Kbin,S,Tup.mcweight);
-			if(cmask.passed(S))   ((TH2*)PreSel_DvsMC_P -> MCEff -> afterTOF ) -> Fill(Kbin,S,Tup.mcweight);
+			if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> beforeTOF) -> Fill(Kbin,S,Tup.mcweight);
+			if(cmask.passed(S))   ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> afterTOF ) -> Fill(Kbin,S,Tup.mcweight);
 
 			//NaF
 			if(cmask.isFromNaF()) {	
 				Kbin=NaFDB.GetBin(RUsed);	
-				if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeNaF) -> Fill(Kbin,S,Tup.mcweight);
-				if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterNaF ) -> Fill(Kbin,S,Tup.mcweight);
+				if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> beforeNaF) -> Fill(Kbin,S,Tup.mcweight);
+				if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> afterNaF ) -> Fill(Kbin,S,Tup.mcweight);
 			}
 			//Agl
 			if(cmask.isFromAgl()) {	
 				Kbin=AglDB.GetBin(RUsed);
-				if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff -> beforeAgl) -> Fill(Kbin,S,Tup.mcweight);
-				if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff -> afterAgl ) -> Fill(Kbin,S,Tup.mcweight);
+				if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> beforeAgl) -> Fill(Kbin,S,Tup.mcweight);
+				if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> afterAgl ) -> Fill(Kbin,S,Tup.mcweight);
 			}
 
 		}
@@ -108,19 +108,16 @@ void DVSMCPreSeleff(string filename){
 					  LATpreSelDATA   ->  LATcorrR_fit ,
 					  LATpreSelDATA   ->  LATcorrR_fit );
 
-
 	PreSel_DvsMC_P ->Eval_DandMC_Eff();  
-
 	PreSel_DvsMC_P ->Eval_Corrections();
-
 
 	TH2F* PreSel_Correction_R   =(TH2F*) PreSel_DvsMC_P -> GetCorrection_R()  ;
 	TH2F* PreSel_Correction_TOF =(TH2F*) PreSel_DvsMC_P -> GetCorrection_TOF();
 	TH2F* PreSel_Correction_NaF =(TH2F*) PreSel_DvsMC_P -> GetCorrection_NaF();
 	TH2F* PreSel_Correction_Agl =(TH2F*) PreSel_DvsMC_P -> GetCorrection_Agl();
 
-	TH2F* EffData_R   =(TH2F*) PreSel_DvsMC_P -> DataEff_corr -> effR -> Clone();
-	TH2F* EffMC_R     =(TH2F*) PreSel_DvsMC_P -> MCEff 	  -> effR -> Clone();
+	TH2F* EffData_R   =(TH2F*) PreSel_DvsMC_P -> DataEff_corr[0] -> effR -> Clone();
+	TH2F* EffMC_R     =(TH2F*) PreSel_DvsMC_P -> MCEff[0] 	  -> effR -> Clone();
 
 
 	PreSel_Correction_R    -> SetName("PreSel_DvsMC_P_CorrectionR"  );

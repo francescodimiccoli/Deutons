@@ -16,20 +16,11 @@ void TemplateFIT::DisableFit()
    TemplateFITenabled=false;
 }
 
-TH1F * TemplateFIT::Extract_Bin(TH1 * Histo, int bin,int third_dim,bool reverse)
+TH1F * TemplateFIT::Extract_Bin(TH1 * Histo, int bin,int third_dim)
 {
-   TH1F* Slice;
-   if(!reverse){	
-   Slice = new TH1F("","",Histo->GetNbinsX(),Histo->GetXaxis()->GetBinLowEdge(1),Histo->GetXaxis()->GetBinLowEdge(Histo->GetNbinsX()+1));
+   TH1F * Slice = new TH1F("","",Histo->GetNbinsX(),Histo->GetXaxis()->GetBinLowEdge(1),Histo->GetXaxis()->GetBinLowEdge(Histo->GetNbinsX()+1));
    for(int i = 0; i< Histo->GetNbinsX(); i++)
       Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1,third_dim+1));
-   }
-   else{
-   Slice = new TH1F("","",Histo->GetNbinsY(),Histo->GetYaxis()->GetBinLowEdge(1),Histo->GetYaxis()->GetBinLowEdge(Histo->GetNbinsY()+1));
-   for(int i = 0; i< Histo->GetNbinsY(); i++)
-	Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,bin+1,third_dim+1));
-   }	
-		
    return Slice;
 }
 

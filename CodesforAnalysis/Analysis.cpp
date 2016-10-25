@@ -66,8 +66,8 @@
 #include "Parte2/DVSMCQualeff.cpp"
 #include "Parte2/DVSMCRICHeff.cpp"
 #include "Parte2/DVSMCQualeff_D.cpp"
-#include "Parte2/DVSMCPreSeleff.cpp"
-#include "Parte2/DVSMCPreSeleff_D.cpp"
+#include "Parte2/DVSMCFullset.cpp"
+
 #include "Parte2/Acceptance.cpp"
 
 //#include "Parte2/FluxImplementation.cpp"
