@@ -2,14 +2,16 @@ using namespace std;
 
 TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr);
 TH1 * DivideHisto(TH1 *Histo1, TH1 *Histo2);
-
+void ScanCombinations(std::vector<std::vector<TH1 *>> SystError , int i, std::vector<int> comb,TH1 * SystCorr );
+TH1 * ExtractError( TH1 * SystCorr, TH1 * Correction) ;
+	
 class DatavsMC
 {
 
-	private:
+	public:
 		//LAT corr.
-		std::vector<TH1 *> LATcorr_R  ; 	
-		std::vector<TH1 *> LATcorr_TOF;
+		std::vector<TH1 *>  LATcorr_R  ; 	
+		std::vector<TH1 *>  LATcorr_TOF;
 		std::vector<TH1 *>  LATcorr_NaF;
 		std::vector<TH1 *>  LATcorr_Agl; 	
 
@@ -18,33 +20,43 @@ class DatavsMC
 		std::vector<TH1 *> Correction_NaF;
 		std::vector<TH1 *> Correction_Agl;
 
-		TH1 * Syst_R  ;	
-		TH1 * Syst_TOF;
-		TH1 * Syst_NaF;
-		TH1 * Syst_Agl;
+		std::vector<std::vector<TH1 *>> SystError_R	; 
+		std::vector<std::vector<TH1 *>> SystError_TOF	;	 
+		std::vector<std::vector<TH1 *>> SystError_NaF	; 
+		std::vector<std::vector<TH1 *>> SystError_Agl	; 
+		
 
-		TH1 * Abs_R  ;	
-		TH1 * Abs_TOF;
-		TH1 * Abs_NaF;
-		TH1 * Abs_Agl;
+		TH1 * SystCorr_R  ;
+		TH1 * SystCorr_TOF; 
+		TH1 * SystCorr_NaF; 
+		TH1 * SystCorr_Agl; 	
+
+		TH1 * SystErr_R  =NULL;
+                TH1 * SystErr_TOF=NULL;
+                TH1 * SystErr_NaF=NULL;
+                TH1 * SystErr_Agl=NULL;
+
+		TH1 * StatErr_R  =NULL;
+                TH1 * StatErr_TOF=NULL;
+                TH1 * StatErr_NaF=NULL;
+                TH1 * StatErr_Agl=NULL;
 
 
 		std::string Basename;
 
 		int latzones  = 0;
-		int selections= 0;
 		int mc_types  = 0;
-	public:
+		
 		std::vector<Efficiency *> MCEff;
 		std::vector<Efficiency *> DataEff;
 
 		std::vector<Efficiency *> DataEff_corr;
 
+
 		//creation constructor
 
-		DatavsMC(std::string basename, int n=1, int S=1, int mcs=1,int systerr=1){
+		DatavsMC(std::string basename, int n=1, int mcs=1,int systerr=1){
 			for(int l=0;l<systerr;l++){
-				if(S==1){	
 					if(mcs == 1){ 
 						MCEff  .push_back(new Efficiency((basename + to_string(l) + "_MC"  ).c_str()));
 						DataEff.push_back(new Efficiency((basename + to_string(l) + "_Data").c_str(),n));
@@ -54,22 +66,9 @@ class DatavsMC
 						DataEff.push_back(new Efficiency((basename + to_string(l) +"_Data").c_str(),n));
 					}
 
-				}
-				else{	
-					if(mcs == 1){ 
-						MCEff  .push_back(new Efficiency((basename + to_string(l) +"_MC"  ).c_str(),S));
-						DataEff.push_back(new Efficiency((basename + to_string(l) +"_Data").c_str(),n,S));
-					}
-					else{
-						MCEff  .push_back(new Efficiency((basename + to_string(l) +"_MC"  ).c_str(),mcs,S));  	
-						DataEff.push_back(new Efficiency((basename + to_string(l) +"_Data").c_str(),n,S));
-					}
-
-				}
 			}
 
 			latzones   = n;
-			selections = S;
 			mc_types   = mcs;	
 
 			Basename = basename;
@@ -92,12 +91,40 @@ class DatavsMC
 
 			}
 			latzones   = DataEff[0] -> beforeR -> GetNbinsY();
-			selections = DataEff[0] -> beforeR -> GetNbinsZ();
 			mc_types   = mcs;
 
 			Basename = basename;
 
 		}	
+
+		
+		//cloning constructor
+		DatavsMC(DatavsMC * Cloned,std::string basename){
+			MCEff .insert(MCEff.end(),Cloned->MCEff.begin(),Cloned->MCEff.end());
+			DataEff .insert(DataEff.end(),Cloned->DataEff.begin(),Cloned->DataEff.end());
+			
+			DataEff_corr .insert(DataEff_corr.end(),Cloned->DataEff_corr.begin(),Cloned->DataEff_corr.end());
+			
+			Correction_R   .insert(Correction_R  .end(),Cloned-> Correction_R  .begin(),Cloned->Correction_R  .end());  	
+			Correction_TOF .insert(Correction_TOF.end(),Cloned-> Correction_TOF.begin(),Cloned->Correction_TOF.end());  	
+			Correction_NaF .insert(Correction_NaF.end(),Cloned-> Correction_NaF.begin(),Cloned->Correction_NaF.end());  	
+			Correction_Agl .insert(Correction_Agl.end(),Cloned-> Correction_Agl.begin(),Cloned->Correction_Agl.end());  	
+			
+			
+			SystError_R.  insert( SystError_R  .end(), Cloned->SystError_R  .begin(), Cloned->SystError_R  .end() );
+        		SystError_TOF.insert( SystError_TOF.end(), Cloned->SystError_TOF.begin(), Cloned->SystError_TOF.end() );
+        		SystError_NaF.insert( SystError_NaF.end(), Cloned->SystError_NaF.begin(), Cloned->SystError_NaF.end() );
+        		SystError_Agl.insert( SystError_Agl.end(), Cloned->SystError_Agl.begin(), Cloned->SystError_Agl.end() );	
+
+			Basename = basename;
+			
+			latzones = Cloned -> latzones;
+			mc_types = Cloned -> mc_types;
+				
+		}
+
+
+
 
 		void Write();
 		void Assign_LatCorr(TH1 * LatcorrR, TH1 * LatcorrTOF, TH1 * LatcorrNaF, TH1 * LatcorrAgl)
@@ -112,16 +139,41 @@ class DatavsMC
 
 		};
 
+		void Extract_SystError() ;
 		void Eval_Corrected_DataEff();
 		void Eval_DandMC_Eff();
 		void DivideHisto(TH1 *Histo1, TH1 *Histo2, TH1 * Correction);
 		void Eval_Corrections();	
 		void Eval_FittedCorrections();
+		void Eval_SystError();
+		void Initialize_SystError();
 
-		TH1 * GetCorrection_R(int l=0)  { return Correction_R[l]  ;};
-		TH1 * GetCorrection_TOF(int l=0){ return Correction_TOF[l];};
-		TH1 * GetCorrection_NaF(int l=0){ return Correction_NaF[l];};
-		TH1 * GetCorrection_Agl(int l=0){ return Correction_Agl[l];}; 
+		//method for multiplication of different corrections
+		void ComposeCorrection(DatavsMC * Factor,int i=10,int j=10);
+
+		TH1 * GetCorrection_R(int l=0)  {EvalError(Correction_R[l]  ,SystErr_R  ,StatErr_R  );return Correction_R[l]  ;};
+		TH1 * GetCorrection_TOF(int l=0){EvalError(Correction_TOF[l],SystErr_TOF,StatErr_TOF);return Correction_TOF[l];};
+		TH1 * GetCorrection_NaF(int l=0){EvalError(Correction_NaF[l],SystErr_NaF,StatErr_NaF);return Correction_NaF[l];};
+		TH1 * GetCorrection_Agl(int l=0){EvalError(Correction_Agl[l],SystErr_Agl,StatErr_Agl);return Correction_Agl[l];}; 
+
+		TH1 * GetSystPlot_R()   {return SystCorr_R    ;};
+		TH1 * GetSystPlot_TOF() {return SystCorr_TOF  ;};
+		TH1 * GetSystPlot_NaF() {return SystCorr_NaF  ;};
+		TH1 * GetSystPlot_Agl() {return SystCorr_Agl  ;};
+		
+		TH1 * GetSystErr_R()   {return SystErr_R    ;};
+		TH1 * GetSystErr_TOF() {return SystErr_TOF  ;};
+		TH1 * GetSystErr_NaF() {return SystErr_NaF  ;};
+		TH1 * GetSystErr_Agl() {return SystErr_Agl  ;};
+		
+		TH1 * GetStatErr_R()   {return StatErr_R    ;};
+		TH1 * GetStatErr_TOF() {return StatErr_TOF  ;};
+		TH1 * GetStatErr_NaF() {return StatErr_NaF  ;};
+		TH1 * GetStatErr_Agl() {return StatErr_Agl  ;};
+		
+
+
+
 };
 
 
@@ -129,7 +181,6 @@ void DatavsMC::Write(){
 	if(MCEff.size()>1) cout<<"Write "<<MCEff.size()<<endl;
 
 	for(int l=0; l< MCEff.size();l++) {
-		cout<<l<<endl;
 		MCEff[l] 	-> Write();
 		DataEff[l]      -> Write();
 		}	
@@ -137,33 +188,52 @@ void DatavsMC::Write(){
 	
 }
 
+void DatavsMC::ComposeCorrection(DatavsMC * Factor,int i,int j){
+
+	
+	SystError_R.  insert( SystError_R  .end(), Factor->SystError_R  .begin(), Factor->SystError_R  .end() );
+        SystError_TOF.insert( SystError_TOF.end(), Factor->SystError_TOF.begin(), Factor->SystError_TOF.end() );
+        SystError_NaF.insert( SystError_NaF.end(), Factor->SystError_NaF.begin(), Factor->SystError_NaF.end() );
+        SystError_Agl.insert( SystError_Agl.end(), Factor->SystError_Agl.begin(), Factor->SystError_Agl.end() );
+
+
+	TH1 * C_R   = (TH1 *) Correction_R  [i]   -> Clone();
+	TH1 * C_TOF = (TH1 *) Correction_TOF[i]   -> Clone();
+	TH1 * C_NaF = (TH1 *) Correction_NaF[i]   -> Clone();
+	TH1 * C_Agl = (TH1 *) Correction_Agl[i]   -> Clone();
+
+	C_R   -> Multiply(Factor->Correction_R[j]   );
+	C_TOF -> Multiply(Factor->Correction_TOF[j] );
+        C_NaF -> Multiply(Factor->Correction_NaF[j] );
+        C_Agl -> Multiply(Factor->Correction_Agl[j] );
+
+	Correction_R  [i] = (TH1 *)C_R  -> Clone();
+        Correction_TOF[i] = (TH1 *)C_TOF-> Clone();
+        Correction_NaF[i] = (TH1 *)C_NaF-> Clone();
+        Correction_Agl[i] = (TH1 *)C_Agl-> Clone();
+
+	return;
+}
+
+
+
 void DatavsMC::Eval_Corrected_DataEff(){
 
 	for(int l=0;l<DataEff.size();l++){
-		cout<<DataEff.size()<<endl;
-		if(selections == 1) {
-			DataEff_corr[l] -> beforeR   = ProjectionXtoTH1F((TH2F*)DataEff[l] -> beforeR  , (Basename + to_string(l) + "1_R" ),0,latzones);
-			DataEff_corr[l] -> beforeTOF = ProjectionXtoTH1F((TH2F*)DataEff[l] -> beforeTOF, (Basename + to_string(l) + "1"   ),0,latzones);
-			DataEff_corr[l] -> beforeNaF = ProjectionXtoTH1F((TH2F*)DataEff[l] -> beforeNaF, (Basename + to_string(l) +"1NaF"),0,latzones);
-			DataEff_corr[l] -> beforeAgl = ProjectionXtoTH1F((TH2F*)DataEff[l] -> beforeAgl, (Basename + to_string(l) +"1Agl"),0,latzones);
-		}
-		else {
-			DataEff_corr[l] -> beforeR   = (TH2F*)((TH2F *)((TH3F*)DataEff[l] -> beforeR  ) -> Project3D("zx")) -> Clone();
-			DataEff_corr[l] -> beforeTOF = (TH2F*)((TH2F *)((TH3F*)DataEff[l] -> beforeTOF) -> Project3D("zx")) -> Clone();
-			DataEff_corr[l] -> beforeNaF = (TH2F*)((TH2F *)((TH3F*)DataEff[l] -> beforeNaF) -> Project3D("zx")) -> Clone();
-			DataEff_corr[l] -> beforeAgl = (TH2F*)((TH2F *)((TH3F*)DataEff[l] -> beforeAgl) -> Project3D("zx")) -> Clone();
-		}
-		cout<<LATcorr_R.size() <<endl;
+		DataEff_corr[l] -> beforeR   = ProjectionXtoTH1F((TH2F*)DataEff[l] -> beforeR  , (Basename + to_string(l) + "1_R" ),0,latzones);
+		DataEff_corr[l] -> beforeTOF = ProjectionXtoTH1F((TH2F*)DataEff[l] -> beforeTOF, (Basename + to_string(l) + "1"   ),0,latzones);
+		DataEff_corr[l] -> beforeNaF = ProjectionXtoTH1F((TH2F*)DataEff[l] -> beforeNaF, (Basename + to_string(l) +"1NaF"),0,latzones);
+		DataEff_corr[l] -> beforeAgl = ProjectionXtoTH1F((TH2F*)DataEff[l] -> beforeAgl, (Basename + to_string(l) +"1Agl"),0,latzones);
+
 		if(!LATcorr_R[l]   ) cout<<"ERROR: Lat. corr for R   histos not assigned"<<endl;
 		if(!LATcorr_TOF[l] ) cout<<"ERROR: Lat. corr for TOF histos not assigned"<<endl;
 		if(!LATcorr_NaF[l] ) cout<<"ERROR: Lat. corr for NaF histos not assigned"<<endl;
 		if(!LATcorr_Agl[l] ) cout<<"ERROR: Lat. corr for Agl histos not assigned"<<endl;
-		cout<<DataEff.size()<<endl;
+
 		DataEff_corr[l] -> afterR   =  Correct_DataEff( (Basename + to_string(l) +"2_R" ),	DataEff[l] -> afterR  ,	LATcorr_R[l]   		);
 		DataEff_corr[l] -> afterTOF =  Correct_DataEff( (Basename + to_string(l) +"2"   ),	DataEff[l] -> afterTOF,	LATcorr_TOF[l] 		);
 		DataEff_corr[l] -> afterNaF =  Correct_DataEff( (Basename + to_string(l) +"2NaF"),	DataEff[l] -> afterNaF,	LATcorr_NaF[l] 		);
 		DataEff_corr[l] -> afterAgl =  Correct_DataEff( (Basename + to_string(l) +"2Agl"),	DataEff[l] -> afterAgl,	LATcorr_Agl[l] 		);
-		cout<<DataEff.size()<<endl;
 	}
 	return;
 }
@@ -190,6 +260,20 @@ void DatavsMC::Eval_Corrections(){
 		DivideHisto( DataEff_corr[l] -> effNaF , MCEff[l] -> effNaF, Correction_NaF[l] );
 		DivideHisto( DataEff_corr[l] -> effAgl , MCEff[l] -> effAgl, Correction_Agl[l] );
 	}
+
+		StatErr_R  =SetErrors(Correction_R[0]);
+                StatErr_TOF=SetErrors(Correction_TOF[0]);
+                StatErr_NaF=SetErrors(Correction_NaF[0]);
+                StatErr_Agl=SetErrors(Correction_Agl[0]);
+
+                StatErr_R  ->SetName((Basename + "_statR"             ).c_str());
+                StatErr_TOF->SetName((Basename + "_statTOF"           ).c_str());
+                StatErr_NaF->SetName((Basename + "_statNaF"           ).c_str());
+                StatErr_Agl->SetName((Basename + "_statAgl"           ).c_str());	
+
+
+
+
 	return;
 }
 
@@ -198,11 +282,6 @@ void DatavsMC::Eval_FittedCorrections(){
 
 	for(int l=0;l<DataEff.size();l++){
 
-
-		DivideHisto( DataEff_corr[l] -> effR   , MCEff[l] -> effR  , Correction_R[l]   );
-		DivideHisto( DataEff_corr[l] -> effTOF , MCEff[l] -> effTOF, Correction_TOF[l] );
-		DivideHisto( DataEff_corr[l] -> effNaF , MCEff[l] -> effNaF, Correction_NaF[l] );
-		DivideHisto( DataEff_corr[l] -> effAgl , MCEff[l] -> effAgl, Correction_Agl[l] );
 
 		FitFunction * FitR   = new FitFunction( Correction_R[l]   ,4);
 		FitFunction * FitTOF = new FitFunction( Correction_TOF[l] ,4);
@@ -218,7 +297,21 @@ void DatavsMC::Eval_FittedCorrections(){
 		Correction_TOF[l] =(TH1*)FitTOF->ReturnFittedValues();
 		Correction_NaF[l] =(TH1*)FitNaF->ReturnFittedValues();
 		Correction_Agl[l] =(TH1*)FitAgl->ReturnFittedValues();
+
+
 	}	
+
+
+		StatErr_R  =SetErrors(Correction_R[0]); 
+                StatErr_TOF=SetErrors(Correction_TOF[0]);
+		StatErr_NaF=SetErrors(Correction_NaF[0]);
+                StatErr_Agl=SetErrors(Correction_Agl[0]);
+
+		StatErr_R  ->SetName((Basename + "_statR"             ).c_str());
+	        StatErr_TOF->SetName((Basename + "_statTOF"           ).c_str());
+        	StatErr_NaF->SetName((Basename + "_statNaF"           ).c_str());
+        	StatErr_Agl->SetName((Basename + "_statAgl"           ).c_str());
+
 
 	return;
 }
@@ -227,12 +320,11 @@ void DatavsMC::Eval_FittedCorrections(){
 
 
 void DatavsMC::DivideHisto(TH1 *Histo1, TH1 *Histo2,TH1 * Correction){
-	if(selections==1){
 		if(mc_types ==1) {
 			for(int iR=0;iR<Histo2->GetNbinsX();iR++){ 
 				if(Histo2 -> GetBinContent(iR+1)<1&&Histo2 -> GetBinContent(iR+1)>0)
 					Correction -> SetBinContent (iR+1,Histo1 -> GetBinContent(iR+1)/(float)Histo2 -> GetBinContent(iR+1));
-				Correction -> SetBinError(iR+1,Histo1 -> GetBinError(iR+1));
+				Correction -> SetBinError(iR+1,pow(pow(Histo1 -> GetBinError(iR+1),2)+pow(Histo2 -> GetBinError(iR+1),2),0.5)*Correction->GetBinContent(iR+1));
 			}
 		}
 		else{
@@ -240,7 +332,7 @@ void DatavsMC::DivideHisto(TH1 *Histo1, TH1 *Histo2,TH1 * Correction){
 				for(int iR=0;iR<Histo2->GetNbinsX();iR++){
 					if(Histo2 -> GetBinContent(iR+1,mc_type+1)<1&&Histo2 -> GetBinContent(iR+1,mc_type+1)>0){
 						Correction -> SetBinContent (iR+1,mc_type+1,Histo1 -> GetBinContent(iR+1)/(float)Histo2 -> GetBinContent(iR+1,mc_type+1));
-						Correction -> SetBinError(iR+1,mc_type+1,Histo1 -> GetBinError(iR+1,mc_type+1)); }
+						Correction -> SetBinError(iR+1,mc_type+1,pow(pow(Histo1 -> GetBinError(iR+1),2)+pow(Histo2 -> GetBinError(iR+1,mc_type+1),2),0.5)*Correction->GetBinContent(iR+1,mc_type+1)); }
 					else{
 						Correction -> SetBinContent (iR+1,mc_type+1,0);
 						Correction -> SetBinError(iR+1,mc_type+1,0); 
@@ -250,53 +342,145 @@ void DatavsMC::DivideHisto(TH1 *Histo1, TH1 *Histo2,TH1 * Correction){
 			}
 		}
 
-	}
-	else{
-		if(mc_types == 1) {
-			for(int iS=0;iS<selections;iS++)
-				for(int iR=0;iR<Histo2->GetNbinsX();iR++){
-					Correction -> SetBinContent (iR+1,iS+1,Histo1 -> GetBinContent(iR+1,iS+1)/(float)Histo2 -> GetBinContent(iR+1,iS+1));
-					Correction -> SetBinError(iR+1,iS+1,Histo1 -> GetBinError(iR+1,iS+1));
-				}
-		}
-		else{
-			for(int iS=0;iS<selections;iS++)
-				for(int mc_type=0;mc_type<mc_types;mc_type++){
-					for(int iR=0;iR<Histo1->GetNbinsX();iR++){
-						Correction -> SetBinContent (iR+1,mc_type+1,iS+1,Histo1 -> GetBinContent(iR+1,iS+1)/(float)Histo2 -> GetBinContent(iR+1,iS+1,mc_type+1));
-						Correction -> SetBinError(iR+1,mc_type+1,Histo1 -> GetBinError(iR+1,iS+1));
-					}
-				}
-		}
-
-	}
 	return; 
 }
 
 
+void DatavsMC::Initialize_SystError(){
+
+	if(SystError_R  .size()==0) SystError_R  .push_back(Correction_R  );	
+	if(SystError_TOF.size()==0) SystError_TOF.push_back(Correction_TOF);	
+	if(SystError_NaF.size()==0) SystError_NaF.push_back(Correction_NaF);	
+	if(SystError_Agl.size()==0) SystError_Agl.push_back(Correction_Agl);	
 
 
-float SystErrorBin(int iR,std::vector<TH1 *> Correction,int Y=1,int Z=1){
+	return;
+}
 
-	float syserr=0;
-	for(int l=0;l<Correction.size();l++){
-		syserr+=pow(Correction[10]->GetBinContent(iR+1,Y+1,Z+1)-Correction[l]->GetBinContent(iR+1,Y+1,Z+1) ,2)	
+
+
+void DatavsMC::Eval_SystError(){
+
+
+	if(mc_types==1){
+		SystCorr_R   = new TH2F((Basename + "SystCorr_R").c_str()  ,(Basename + "SystCorr_R").c_str()  ,Correction_R[0]    ->GetNbinsX(),0,Correction_R[0]    ->GetNbinsX(),400,0.8,1.6);
+		SystCorr_TOF = new TH2F((Basename + "SystCorr_TOF").c_str(),(Basename + "SystCorr_TOF").c_str(),Correction_TOF[0]  ->GetNbinsX(),0,Correction_TOF[0]  ->GetNbinsX(),400,0.8,1.6);
+		SystCorr_NaF = new TH2F((Basename + "SystCorr_NaF").c_str(),(Basename + "SystCorr_NaF").c_str(),Correction_NaF[0]  ->GetNbinsX(),0,Correction_NaF[0]  ->GetNbinsX(),400,0.8,1.6);
+		SystCorr_Agl = new TH2F((Basename + "SystCorr_Agl").c_str(),(Basename + "SystCorr_Agl").c_str(),Correction_Agl[0]  ->GetNbinsX(),0,Correction_Agl[0]  ->GetNbinsX(),400,0.8,1.6);
 	}
-	syserr/=Correction.size();
-	syserr=pow(syserr,0.5);
-
-	return syserr;
-} 
 
 
+	else{
+		SystCorr_R   = new TH3F((Basename + "SystCorr_R").c_str()  ,(Basename + "SystCorr_R").c_str()  ,Correction_R[0] ->GetNbinsX(),0,Correction_R[0]   ->GetNbinsX(),400,0.8,1.6,mc_types,0,mc_types);
+		SystCorr_TOF = new TH3F((Basename + "SystCorr_TOF").c_str(),(Basename + "SystCorr_TOF").c_str(),Correction_TOF[0]->GetNbinsX(),0,Correction_TOF[0]->GetNbinsX(),400,0.8,1.6,mc_types,0,mc_types);
+		SystCorr_NaF = new TH3F((Basename + "SystCorr_NaF").c_str(),(Basename + "SystCorr_NaF").c_str(),Correction_NaF[0]->GetNbinsX(),0,Correction_NaF[0]->GetNbinsX(),400,0.8,1.6,mc_types,0,mc_types);
+		SystCorr_Agl = new TH3F((Basename + "SystCorr_Agl").c_str(),(Basename + "SystCorr_Agl").c_str(),Correction_Agl[0]->GetNbinsX(),0,Correction_Agl[0]->GetNbinsX(),400,0.8,1.6,mc_types,0,mc_types);
 
-float AbsErrorBin(int iR,std::vector<TH1 *> Correction,int Y=1,int Z=1){
+	}
 
-	float abserr=0;
-	abserr = abs(Correction[10]->GetBinContent(iR+1,Y+1,Z+1) - 1)/2;
-	return abserr;
+
+	std::vector<int> comb_R;
+	std::vector<int> comb_TOF;
+	std::vector<int> comb_NaF;
+	std::vector<int> comb_Agl;
+
+	for(int i=0;i<SystError_R.size();i++) {
+		 comb_R.push_back(0);
+		 comb_TOF.push_back(0);
+	 	 comb_NaF.push_back(0);
+		 comb_Agl.push_back(0);
+	}
+	
+	ScanCombinations(SystError_R  ,0,comb_R  ,SystCorr_R);
+	ScanCombinations(SystError_TOF,0,comb_TOF,SystCorr_TOF);
+	ScanCombinations(SystError_NaF,0,comb_NaF,SystCorr_NaF);
+	ScanCombinations(SystError_Agl,0,comb_Agl,SystCorr_Agl);
+
+	
+	Extract_SystError();
+	
+
+	return;
+
 
 }
+
+
+void ScanCombinations(std::vector<std::vector<TH1 *>> SystError , int i, std::vector<int> comb,TH1 * SystCorr ){
+		
+		TH1 * TotalCorr;
+		for(int c=0;c<SystError[i].size();c++){
+			comb[i]=c;
+			
+			for (int z=0;z<comb.size();z++)
+				cout<<comb[z]<<" ";
+		
+			TotalCorr = (TH1*)SystError[0][comb[0]]->Clone();
+			for(int z=1;z<comb.size();z++) TotalCorr->Multiply(SystError[z][comb[z]]);
+	
+			if(SystCorr->GetNbinsZ()>1){		
+				for(int l=0;l<SystCorr->GetNbinsX();l++)
+					for(int mc_type=0;mc_type<SystCorr->GetNbinsZ();mc_type++)
+						((TH3*)SystCorr)->Fill(l,TotalCorr->GetBinContent(l+1,mc_type),mc_type);	
+
+			}
+			else{
+				for(int l=0;l<SystCorr->GetNbinsX();l++){
+					((TH2*)SystCorr)->Fill(l,TotalCorr->GetBinContent(l+1));
+					if(TotalCorr->GetBinContent(l+1)>1.4) cout<<"ecco"<<endl;
+				}
+
+			} 
+			cout<<endl;
+
+			if(i+1<SystError.size()) ScanCombinations(SystError,i+1,comb,SystCorr);			
+		}
+		return;
+}
+
+
+
+
+
+void DatavsMC::Extract_SystError(){
+
+	SystErr_R   = ExtractError(SystCorr_R   , Correction_R[0]  );
+	SystErr_TOF = ExtractError(SystCorr_TOF , Correction_TOF[0]);
+	SystErr_NaF = ExtractError(SystCorr_NaF , Correction_NaF[0]);
+	SystErr_Agl = ExtractError(SystCorr_Agl , Correction_Agl[0]);
+
+	SystErr_R  ->SetName((Basename + "_systR"             ).c_str());
+	SystErr_TOF->SetName((Basename + "_systTOF"           ).c_str());
+        SystErr_NaF->SetName((Basename + "_systNaF"           ).c_str());
+        SystErr_Agl->SetName((Basename + "_systAgl"           ).c_str());
+
+
+
+			
+	return;
+
+}
+
+
+TH1 * ExtractError( TH1 * SystCorr, TH1* Correction) {
+
+        TH1* SystError =(TH1 *) Correction -> Clone();
+
+	int mc_types=Correction->GetNbinsY();
+
+        for (int iR=0;iR<SystCorr->GetNbinsX();iR++)    {
+                for(int m=0;m<mc_types;m++){
+			bool reverse=true;
+                        TH1F* Slice = Extract_Bin(SystCorr, iR , m,reverse);
+                        SystError->SetBinContent(iR+1,m+1, Slice->GetStdDev());
+			cout<<Slice->GetEntries()<<" "<<Slice->GetStdDev()<<endl;
+		}
+        }
+
+        return SystError;
+
+}
+
 
 
 
@@ -315,15 +499,10 @@ TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
 			}
 		Histo_corr = (TH1F*) ProjectionXtoTH1F( temp, histoname,0,latzones );
 	}
-	else {
-		TH3* temp = (TH3 *)Histo -> Clone();
-		for(int iS = 0; iS < selections; iS++)	
-			for(int iR = 0;iR < Histo ->GetNbinsX();iR++) 
-				for(int lat =0; lat < latzones; lat++){	
-					temp -> SetBinContent(iR+1,lat+1,iS+1,Histo->GetBinContent(iR+1,lat+1,iS+1)*LATcorr->GetBinContent(lat+1,iS+1));
-				}
-		Histo_corr = (TH2F*)((TH3*)temp) -> Project3D("zx") -> Clone();	
-	}
 
 	return Histo_corr;
 }
+
+
+
+

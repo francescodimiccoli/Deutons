@@ -125,7 +125,7 @@ class TemplateFIT {
 
       void Write();
 
-      TH1F * Extract_Bin(TH1 * Histo, int bin,int third_dim=0);
+      TH1F * Extract_Bin(TH1 * Histo, int bin,int third_dim=0,bool reverse=false);
       void SetFitConstraints(float LowP=0,float HighP=1, float LowD=0,float HighD=1, float LowHe=0,float HighHe=1);
       void SetFitConstraints(TH1F * ContHe, float LowP=0,float HighP=1, float LowD=0,float HighD=1);
       void SetTolerance(float tol);
