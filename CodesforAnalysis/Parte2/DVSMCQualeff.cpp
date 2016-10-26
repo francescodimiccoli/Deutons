@@ -255,9 +255,6 @@ void DVSMCQualeff2(string filename){
 	Dist_DvsMC_P ->Eval_SystError();
         Lik_DvsMC_P  ->Eval_SystError();
 
-        Dist_DvsMC_P ->Eval_FittedCorrections();
-        Lik_DvsMC_P  ->Eval_FittedCorrections();
-
         TH2F* SystDist_R   =(TH2F*) Dist_DvsMC_P -> GetSystPlot_R()  ;
         TH2F* SystDist_TOF =(TH2F*) Dist_DvsMC_P -> GetSystPlot_TOF();
         TH2F* SystDist_NaF =(TH2F*) Dist_DvsMC_P -> GetSystPlot_NaF();

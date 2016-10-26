@@ -142,18 +142,27 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat)
    double w1,e1=0;
    double w2,e2=0;
    double w3,e3=0;
- 
+
    fits[lat][bin]-> Tfit ->GetResult(0,w1,e1);
    fits[lat][bin]-> Tfit ->GetResult(1,w2,e2);
    fits[lat][bin]-> Tfit ->GetResult(2,w3,e3);
-   
-   float Cov01=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
-   float Cov02=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,2);
-   float Cov12=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(1,2);
 
+   float Cov01=0;
+   float Cov02=0;
+   float Cov12=0;
+	
+   /*if(fits[lat][bin]){ 
+	  cout<<fits[lat][bin]<<" "<<fits[lat][bin]-> Tfit->GetFitter()<<" "<<endl;
+	   Cov01=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
+	cout<<"cxew"<<endl;
+	   Cov02=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(0,2);
+	 cout<<"cew"<<endl;
+           Cov12=fits[lat][bin]-> Tfit->GetFitter()->GetCovarianceMatrixElement(1,2);
+   }*/
+   
    float Sigma=pow((pow(w2*e2,2)+pow(w1*e1,2)+pow(w3*e3,2)
-                    -2*Cov01*w1*w2-2*Cov02*w1*w3
-                    -2*Cov12*w2*w3)/2,0.5);
+			   -2*Cov01*w1*w2-2*Cov02*w1*w3
+			   -2*Cov12*w2*w3)/2,0.5);
 
    double Err = Sigma;//pow((Sigma/w2,2) + pow(Sigma/w1,2),0.5); //Fit relative error
 
@@ -161,7 +170,7 @@ double TemplateFIT::GetFitErrors(int par,int bin,int lat)
    if(par == 0)	  ResultPlot = GetResult_P (bin,lat);
    if(par == 1)   ResultPlot = GetResult_D (bin,lat);
    if(par == 2)   ResultPlot = GetResult_He(bin,lat);
-	
+
    return Err * ResultPlot->Integral(); //Fit absolute error
 
 }
@@ -185,15 +194,17 @@ void TemplateFIT::TemplateFits(int mc_type)
          if(!Geomag) {
             PCounts -> SetBinContent(bin+1,Data->Integral()/*GetFitFraction(0,bin)*/);
             DCounts -> SetBinContent(bin+1,GetResult_D(bin)->Integral());
-           // PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
-           // DCounts -> SetBinError(bin+1,GetFitErrors(1,bin));
+		cout<<"sgracchio"<<endl;
+   		cout<<DCounts->GetBinContent(bin+1)<<" "<<DCounts->GetBinError(bin+1)<<endl;
+        //       PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
+          //     DCounts -> SetBinError(bin+1,GetFitErrors(1,bin));
          }
 
          if(Geomag) {
             PCounts -> SetBinContent(bin+1,lat+1,Data->Integral()/*GetFitFraction(0,bin,lat)*/);
             DCounts -> SetBinContent(bin+1,lat+1,GetResult_D(bin,lat)->Integral());
-           // PCounts -> SetBinError(bin+1,lat+1,GetFitErrors(0,bin,lat));
-           // DCounts -> SetBinError(bin+1,lat+1,GetFitErrors(1,bin,lat));
+          //     PCounts -> SetBinError(bin+1,lat+1,GetFitErrors(0,bin,lat));
+          //    DCounts -> SetBinError(bin+1,lat+1,GetFitErrors(1,bin,lat));
          }
       }
    return;

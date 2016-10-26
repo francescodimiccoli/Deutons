@@ -3,7 +3,15 @@
 
 using namespace std;
 
-DatavsMC * PreSel_DvsMC_P = new DatavsMC("PreSel_DvsMC_P",11,3);
+DatavsMC * PreSel_DvsMC_P[3];
+
+
+void Initialize_DVSMCpre(){ 
+
+	for(int i=0;i<3;i++)
+		PreSel_DvsMC_P[i]= new DatavsMC(("PreSel_DvsMC_P"+to_string(i)+"_").c_str(),11,1,3);
+	return;
+}
 
 void DVSMCPreSeleff_D_Fill(int zona){
 
@@ -11,70 +19,77 @@ void DVSMCPreSeleff_D_Fill(int zona){
 	if(!trgpatt.IsPhysical()||Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff||!ProtonsMassWindow) return;
 	if(!((Tup.R_pre>Rcut[zona]&&zona<10)||(zona==10)))  return;
 	if(!Herejcut) return;
-	if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
 	//
 	int Kbin;
 	for(int S=0;S<3;S++){
-		//R bins
-		Kbin = PRB.GetRBin(RUsed);
-		if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> beforeR) -> Fill(Kbin,zona,S);	
-		if(cmask.passed(S))	      ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> afterR ) -> Fill(Kbin,zona,S);     
+		for(int cut=0;cut<3;cut++){
+			if((Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+0.5*(cut+1)&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-0.5*(cut+1))) 
+			{	
+				//R bins
+				Kbin = PRB.GetRBin(RUsed);
+				if(cmask.notPassed(S)) (PreSel_DvsMC_P[S] -> DataEff[cut] -> beforeR) -> Fill(Kbin,zona);	
+				if(cmask.passed(S))	      (PreSel_DvsMC_P[S] -> DataEff[cut] -> afterR ) -> Fill(Kbin,zona);     
 
-		//Beta bins
-		//ToF
-		Kbin=ToFDB.GetBin(RUsed);	
-		if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> beforeTOF) -> Fill(Kbin,zona,S);
-                if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> afterTOF ) -> Fill(Kbin,zona,S);
-		//NaF
-		if(cmask.isFromNaF()) {	
-			Kbin=NaFDB.GetBin(RUsed);
-			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> beforeNaF) -> Fill(Kbin,zona,S);
-                	if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> afterNaF ) -> Fill(Kbin,zona,S);
-		}
-		//Agl
-		if(cmask.isFromAgl()) {
-			Kbin=AglDB.GetBin(RUsed);
-			if(cmask.notPassed(S)) ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> beforeAgl) -> Fill(Kbin,zona,S);
-                	if(cmask.passed(S))       ((TH3*)PreSel_DvsMC_P -> DataEff[0] -> afterAgl ) -> Fill(Kbin,zona,S);
+				//Beta bins
+				//ToF
+				Kbin=ToFDB.GetBin(RUsed);	
+				if(cmask.notPassed(S)) (PreSel_DvsMC_P[S] -> DataEff[cut] -> beforeTOF) -> Fill(Kbin,zona);
+				if(cmask.passed(S))       (PreSel_DvsMC_P[S] -> DataEff[cut] -> afterTOF ) -> Fill(Kbin,zona);
+				//NaF
+				if(cmask.isFromNaF()) {	
+					Kbin=NaFDB.GetBin(RUsed);
+					if(cmask.notPassed(S)) (PreSel_DvsMC_P[S] -> DataEff[cut] -> beforeNaF) -> Fill(Kbin,zona);
+					if(cmask.passed(S))       (PreSel_DvsMC_P[S] -> DataEff[cut] -> afterNaF ) -> Fill(Kbin,zona);
+				}
+				//Agl
+				if(cmask.isFromAgl()) {
+					Kbin=AglDB.GetBin(RUsed);
+					if(cmask.notPassed(S)) (PreSel_DvsMC_P[S] -> DataEff[cut] -> beforeAgl) -> Fill(Kbin,zona);
+					if(cmask.passed(S))       (PreSel_DvsMC_P[S] -> DataEff[cut] -> afterAgl ) -> Fill(Kbin,zona);
+				}
+			}
 		}
 	}
 	return;
-	
+
 }
 void DVSMCPreSeleff_Fill(){
 
 	if(!trgpatt.IsPhysical()||Tup.R_pre<=0||!ProtonsMassWindow) return;
 	if(!Herejcut) return;
-	if(!(Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+1&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-1)) return;
 	//cuts
 	//
 	int Kbin;
 	for(int S=0;S<3;S++){
 		if(Massa_gen<1) {
-			//R bins
-			Kbin = PRB.GetRBin(RUsed);	
-			 if(cmask.notPassed(S))		  ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> beforeR) -> Fill(Kbin,S,Tup.mcweight);
-			 if(cmask.passed(S))                  ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> afterR ) -> Fill(Kbin,S,Tup.mcweight);
-			//Beta bins
+			for(int cut=0;cut<3;cut++)
+				if((Tup.EdepTOFU<EdepTOFbeta->Eval(Tup.Beta_pre)+0.5*(cut+1)&&Tup.EdepTOFU>EdepTOFbeta->Eval(Tup.Beta_pre)-0.5*(cut+1)))  
+				{
 
-			//ToF
-			Kbin=ToFDB.GetBin(RUsed);	
-			if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> beforeTOF) -> Fill(Kbin,S,Tup.mcweight);
-			if(cmask.passed(S))   ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> afterTOF ) -> Fill(Kbin,S,Tup.mcweight);
+					//R bins
+					Kbin = PRB.GetRBin(RUsed);	
+					if(cmask.notPassed(S))		  (PreSel_DvsMC_P[S] -> MCEff[cut] -> beforeR) -> Fill(Kbin,Tup.mcweight);
+					if(cmask.passed(S))                  (PreSel_DvsMC_P[S] -> MCEff[cut] -> afterR ) -> Fill(Kbin,Tup.mcweight);
+					//Beta bins
 
-			//NaF
-			if(cmask.isFromNaF()) {	
-				Kbin=NaFDB.GetBin(RUsed);	
-				if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> beforeNaF) -> Fill(Kbin,S,Tup.mcweight);
-				if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> afterNaF ) -> Fill(Kbin,S,Tup.mcweight);
-			}
-			//Agl
-			if(cmask.isFromAgl()) {	
-				Kbin=AglDB.GetBin(RUsed);
-				if(cmask.notPassed(S)) ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> beforeAgl) -> Fill(Kbin,S,Tup.mcweight);
-				if(cmask.passed(S))       ((TH2*)PreSel_DvsMC_P -> MCEff[0] -> afterAgl ) -> Fill(Kbin,S,Tup.mcweight);
-			}
+					//ToF
+					Kbin=ToFDB.GetBin(RUsed);	
+					if(cmask.notPassed(S)) (PreSel_DvsMC_P[S] -> MCEff[cut] -> beforeTOF) -> Fill(Kbin,Tup.mcweight);
+					if(cmask.passed(S))   (PreSel_DvsMC_P[S] -> MCEff[cut] -> afterTOF ) -> Fill(Kbin,Tup.mcweight);
 
+					//NaF
+					if(cmask.isFromNaF()) {	
+						Kbin=NaFDB.GetBin(RUsed);	
+						if(cmask.notPassed(S)) (PreSel_DvsMC_P[S] -> MCEff[cut] -> beforeNaF) -> Fill(Kbin,Tup.mcweight);
+						if(cmask.passed(S))       (PreSel_DvsMC_P[S] -> MCEff[cut] -> afterNaF ) -> Fill(Kbin,Tup.mcweight);
+					}
+					//Agl
+					if(cmask.isFromAgl()) {	
+						Kbin=AglDB.GetBin(RUsed);
+						if(cmask.notPassed(S)) (PreSel_DvsMC_P[S] -> MCEff[cut] -> beforeAgl) -> Fill(Kbin,Tup.mcweight);
+						if(cmask.passed(S))       (PreSel_DvsMC_P[S] -> MCEff[cut] -> afterAgl ) -> Fill(Kbin,Tup.mcweight);
+					}
+				}
 		}
 
 	}
@@ -84,66 +99,105 @@ void DVSMCPreSeleff_Fill(){
 
 void DVSMCPreSeleff_Write(){
 
-	PreSel_DvsMC_P -> Write();
+	for(int i=0;i<3;i++)
+		PreSel_DvsMC_P[i] -> Write();
 	return;
 }
 
 
 void DVSMCPreSeleff(string filename){
+	
+	   cout<<"******* Data vs MC:  PRESELECTIONS ********"<<endl;
 
-	cout<<"******* Data vs MC:  PRESELECTIONS ********"<<endl;
+	   cout<<"*** Reading  P1 file ****"<<endl;
+	   TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");	
 
-	cout<<"*** Reading  P1 file ****"<<endl;
-        TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");	
+	   DatavsMC * PreSel_DvsMC_P[3]; 
+	  
+	   PreSel_DvsMC_P[0]= new DatavsMC(inputHistoFile,"PreSel_DvsMC_P0_",1,3);
+	   PreSel_DvsMC_P[1]= new DatavsMC(inputHistoFile,"PreSel_DvsMC_P1_",1,3);
+	   PreSel_DvsMC_P[2]= new DatavsMC(inputHistoFile,"PreSel_DvsMC_P2_",1,3);
+	    
 
-	DatavsMC * PreSel_DvsMC_P = new DatavsMC(inputHistoFile,"PreSel_DvsMC_P");
-
-	LATcorr * LATpreSelDATA = new LATcorr(inputHistoFile,"LATpreSelDATA"      ,"Results");
-
-
-	cout<<"******* Data vs MC:  PRESELECTIONS ********"<<endl;
-
-	PreSel_DvsMC_P -> Assign_LatCorr( LATpreSelDATA   ->  LATcorrR_fit , 
-					  LATpreSelDATA   ->  LATcorrR_fit ,
-					  LATpreSelDATA   ->  LATcorrR_fit ,
-					  LATpreSelDATA   ->  LATcorrR_fit );
-
-	PreSel_DvsMC_P ->Eval_DandMC_Eff();  
-	PreSel_DvsMC_P ->Eval_Corrections();
-
-	TH2F* PreSel_Correction_R   =(TH2F*) PreSel_DvsMC_P -> GetCorrection_R()  ;
-	TH2F* PreSel_Correction_TOF =(TH2F*) PreSel_DvsMC_P -> GetCorrection_TOF();
-	TH2F* PreSel_Correction_NaF =(TH2F*) PreSel_DvsMC_P -> GetCorrection_NaF();
-	TH2F* PreSel_Correction_Agl =(TH2F*) PreSel_DvsMC_P -> GetCorrection_Agl();
-
-	TH2F* EffData_R   =(TH2F*) PreSel_DvsMC_P -> DataEff_corr[0] -> effR -> Clone();
-	TH2F* EffMC_R     =(TH2F*) PreSel_DvsMC_P -> MCEff[0] 	  -> effR -> Clone();
+	   LATcorr * LATpreSelDATA = new LATcorr(inputHistoFile,"LATpreSelDATA"      ,"Results");
 
 
-	PreSel_Correction_R    -> SetName("PreSel_DvsMC_P_CorrectionR"  );
-	PreSel_Correction_TOF  -> SetName("PreSel_DvsMC_P_CorrectionTOF");
-	PreSel_Correction_NaF  -> SetName("PreSel_DvsMC_P_CorrectionNaF");
-	PreSel_Correction_Agl  -> SetName("PreSel_DvsMC_P_CorrectionAgl");
+	   cout<<"******* Data vs MC:  PRESELECTIONS ********"<<endl;
+
+	   TH1F* PreSel_Correction_R[3]  ; 
+           TH1F* PreSel_Correction_TOF[3];
+           TH1F* PreSel_Correction_NaF[3];
+	   TH1F* PreSel_Correction_Agl[3];
+
+           TH1F* PreSel_CorrectionFit_R[3]  ; 
+           TH1F* PreSel_CorrectionFit_TOF[3];
+           TH1F* PreSel_CorrectionFit_NaF[3];
+	   TH1F* PreSel_CorrectionFit_Agl[3];
+
+
+	   TH1F* EffData_R[3];  		
+	   TH1F* EffMC_R[3];
+
+	   for(int sel=0;sel<3;sel++){
+		   PreSel_DvsMC_P[sel] -> Assign_LatCorr( LATpreSelDATA   ->  LATcorrR_fit , 
+				   LATpreSelDATA   ->  LATcorrR_fit ,
+				   LATpreSelDATA   ->  LATcorrR_fit ,
+				   LATpreSelDATA   ->  LATcorrR_fit );
+
+		   PreSel_DvsMC_P[sel] ->Eval_DandMC_Eff(sel);  
+		   PreSel_DvsMC_P[sel] ->Eval_Corrections();
+
+		  cout<<"******* Data vs MC ********"<<endl;		  
+   	
+		   PreSel_Correction_R[sel]   =(TH1F*) PreSel_DvsMC_P[sel] -> GetCorrection_R()  ;
+		   PreSel_Correction_TOF[sel] =(TH1F*) PreSel_DvsMC_P[sel] -> GetCorrection_TOF();
+		   PreSel_Correction_NaF[sel] =(TH1F*) PreSel_DvsMC_P[sel] -> GetCorrection_NaF();
+		   PreSel_Correction_Agl[sel] =(TH1F*) PreSel_DvsMC_P[sel] -> GetCorrection_Agl();
+
+		   EffData_R[sel]   =(TH1F*) PreSel_DvsMC_P[sel] -> DataEff_corr[0] -> effR -> Clone();
+		   EffMC_R[sel]     =(TH1F*) PreSel_DvsMC_P[sel] -> MCEff[0] 	  -> effR -> Clone();
+	   
+		   cout<<"******* SYST ERROR ********"<<endl;
+
+		   PreSel_DvsMC_P[sel] ->Initialize_SystError();					   
+		   PreSel_DvsMC_P[sel] ->Eval_SystError(); 
+
+		   cout<<"******* FIT ********"<<endl;	
+		   
+		   PreSel_DvsMC_P[sel]->Eval_FittedCorrections();
+
+		   PreSel_CorrectionFit_R[sel]   =(TH1F*) PreSel_DvsMC_P[sel] -> GetCorrection_R()  ;
+		   PreSel_CorrectionFit_TOF[sel] =(TH1F*) PreSel_DvsMC_P[sel] -> GetCorrection_TOF();
+		   PreSel_CorrectionFit_NaF[sel] =(TH1F*) PreSel_DvsMC_P[sel] -> GetCorrection_NaF();
+		   PreSel_CorrectionFit_Agl[sel] =(TH1F*) PreSel_DvsMC_P[sel] -> GetCorrection_Agl();
 
 	
-	finalHistos.Add(PreSel_Correction_R   );
-        finalHistos.Add(PreSel_Correction_TOF );
-        finalHistos.Add( PreSel_Correction_NaF );
-        finalHistos.Add( PreSel_Correction_Agl );
-
-	finalHistos.writeObjsInFolder("Results");
-
-        cout<<"*** Plotting ...  ****"<<endl;
+	
+	   PreSel_CorrectionFit_R[sel]    -> SetName(("PreSel_DvsMC_P"+to_string(sel)+ "_CorrectionR").c_str()  );
+	   PreSel_CorrectionFit_TOF[sel]  -> SetName(("PreSel_DvsMC_P" +to_string(sel)+ "_CorrectionTOF").c_str() );
+	   PreSel_CorrectionFit_NaF[sel]  -> SetName(("PreSel_DvsMC_P" +to_string(sel)+ "_CorrectionNaF").c_str() );
+	   PreSel_CorrectionFit_Agl[sel]  -> SetName(("PreSel_DvsMC_P" +to_string(sel)+ "_CorrectionAgl").c_str() );
 
 
-	DVSMCPreSeleff_Plot(PreSel_Correction_R  ,
-	                    PreSel_Correction_TOF,
-                            PreSel_Correction_NaF,
-                            PreSel_Correction_Agl,
-				EffData_R, 
-                                EffMC_R   
-	);
+	   finalHistos.Add( PreSel_Correction_R[sel]   );
+	   finalHistos.Add(PreSel_Correction_TOF[sel] );
+	   finalHistos.Add( PreSel_Correction_NaF[sel] );
+	   finalHistos.Add( PreSel_Correction_Agl[sel] );
+	   }	
+	   
+	   finalHistos.writeObjsInFolder("Results");
+	
+	   cout<<"*** Plotting ...  ****"<<endl;
 
+
+	   DVSMCPreSeleff_Plot(PreSel_CorrectionFit_R  ,
+	   PreSel_CorrectionFit_TOF,
+	   PreSel_CorrectionFit_NaF,
+	   PreSel_CorrectionFit_Agl,
+	   EffData_R, 
+	   EffMC_R   
+	   );
+	   
 	return;
 }
 

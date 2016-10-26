@@ -63,6 +63,7 @@
 #include "Parte2/DeutonsCountsExtraction.cpp"
 #include "Parte2/DeutonsCountsExtraction_Dist.cpp"
 #include "Parte2/MCMC.cpp"
+#include "Parte2/DVSMCPreSeleff.cpp"
 #include "Parte2/DVSMCQualeff.cpp"
 #include "Parte2/DVSMCRICHeff.cpp"
 #include "Parte2/DVSMCQualeff_D.cpp"

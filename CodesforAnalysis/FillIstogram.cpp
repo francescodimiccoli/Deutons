@@ -73,6 +73,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
    if(INDX==BUILDALL) {
       InizializeEff();
+      Initialize_DVSMCpre();
       LoopOnMCTrig(ntupMCTrig);
    }
    if(INDX==BUILDALL||INDX==BUILDSEPD) {
@@ -120,6 +121,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATAUnbiaseffQ_Write();
       DeutonsMC_Write();
       DeutonsMC_Dist_Write();
+      DVSMCPreSeleff_Write();
       DVSMCQualeff2_Write();
       DVSMCRICHeff_Write();
       DVSMCQualeffD_Write();
@@ -140,7 +142,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    cout<<"************************* ANALYSIS **********************************************************************"<<endl;
    
 
-   string finalfilename="./Final_plots/"+mese+".root";
+   //string finalfilename="./Final_plots/"+mese+".root";
+   string finalfilename ="/home/AMS/fdimicco/"+mese+".root";
    finalPlots.setName(finalfilename);
    finalHistos.setName(filename);  
    INDX = READ; 	
@@ -174,6 +177,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DeutonsTemplFits_Dist(filename,frac);	
 
       CorrLAT(filename);
+      DVSMCPreSeleff(filename);
       DVSMCRICHeff(filename);
       DVSMCQualeff2(filename);
       //DVSMCQualeffD(filename);
@@ -304,6 +308,7 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       Correlazione_Preselezioni();
       FluxFactorizationtest_Pre_Fill();
       DVSMCTrackeff_Fill();
+      DVSMCPreSeleff_Fill();
    }
    cout << endl;
    return;
@@ -399,6 +404,7 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 
 		DATApreSeleff_Fill(Zona);
 		DVSMCTrackeff_D_Fill(); // < Check if needs the ones before
+		DVSMCPreSeleff_D_Fill(Zona);
 	}
 	cout << endl;
 	return;

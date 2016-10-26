@@ -129,7 +129,7 @@ TH1 * Flux::ExtractParticularMC_cs(TH1 * Histo, int lat_zones, int mc_type){
 		for(int i = 0; i< Histo->GetNbinsX();i++){
 			Slice->SetBinContent(i+1,Histo->GetBinContent(i+1,mc_type+1));
 			Slice->SetBinError(i+1,Histo->GetBinError(i+1,mc_type+1));
-			}
+			}cout<<endl;
 		return Slice;
 	}
 	else{

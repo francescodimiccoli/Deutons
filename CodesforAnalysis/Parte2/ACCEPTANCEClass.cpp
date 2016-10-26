@@ -331,64 +331,34 @@ void ACCEPTANCE::ApplyGlobalFactor(float factor, float error){
 void ACCEPTANCE::ApplyDvsMCcorrection(int n, int S, TH1* Correction, TH1* Corrected_Acc, TH1* Geom_Acc){
 	float error=0;
 	//correct Geom. acceptance
-	if(n>1){
-		for(int m=0;m<n;m++)
-			for(int R=0;R<Geom_Acc->GetNbinsX();R++)
-				for(int lat=1;lat<Geom_Acc->GetNbinsY();lat++){
-					for(int sel =0; sel < S;sel++){
-						Geom_Acc->SetBinContent(R+1,lat+1,m+1,Geom_Acc->GetBinContent(R+1,lat+1,m+1)*Correction->GetBinContent(R+1,m+1,sel+1));
-						error=pow(Geom_Acc->GetBinContent(R+1,lat+1,m+1)*Correction->GetBinError(R+1,m+1,sel+1),2);
-						error+=pow(Geom_Acc->GetBinError(R+1,lat+1,m+1)*Correction->GetBinContent(R+1,m+1,sel+1),2);
-						error=pow(error,0.5);
-						Geom_Acc->SetBinError(R+1,lat+1,m+1,error);
-					}
-				}
-	}
-	else {
+	for(int m=0;m<n;m++)
 		for(int R=0;R<Geom_Acc->GetNbinsX();R++)
 			for(int lat=1;lat<Geom_Acc->GetNbinsY();lat++){
 				for(int sel =0; sel < S;sel++){
-					Geom_Acc->SetBinContent(R+1,lat+1,Geom_Acc->GetBinContent(R+1,lat+1)*Correction->GetBinContent(R+1,sel+1));
-					error=pow(Geom_Acc->GetBinContent(R+1,lat+1)*Correction->GetBinError(R+1,sel+1),2);
-					error+=pow(Geom_Acc->GetBinError(R+1,lat+1)*Correction->GetBinContent(R+1,sel+1),2);
+					Geom_Acc->SetBinContent(R+1,lat+1,m+1,Geom_Acc->GetBinContent(R+1,lat+1,m+1)*Correction->GetBinContent(R+1,m+1));
+					error=pow(Geom_Acc->GetBinContent(R+1,lat+1,m+1)*Correction->GetBinError(R+1,m+1),2);
+					error+=pow(Geom_Acc->GetBinError(R+1,lat+1,m+1)*Correction->GetBinContent(R+1,m+1),2);
 					error=pow(error,0.5);
-					Geom_Acc->SetBinError(R+1,lat+1,error);
+					Geom_Acc->SetBinError(R+1,lat+1,m+1,error);
 				}
 			}
 
-	}
-
 	//correct total acceptance
-	if(S == 1) {
-		Corrected_Acc    -> Multiply( Correction   );	
-	}
 
-	else {
-		if(n>1){
-			for(int m=0;m<n;m++)
-				for(int R=0;R<Corrected_Acc->GetNbinsX();R++)
-					for(int sel =0; sel < S; sel++){
-						Corrected_Acc -> SetBinContent(R+1,m+1, Corrected_Acc -> GetBinContent(R+1,m+1)*Correction -> GetBinContent(R+1,m+1,sel+1) );
-						error=pow(Corrected_Acc -> GetBinContent(R+1,m+1)*Correction->GetBinError(R+1,m+1,sel+1),2);
-						error+=pow(Corrected_Acc -> GetBinError(R+1,m+1)*Correction->GetBinContent(R+1,m+1,sel+1),2);
-						error=pow(error,0.5);
-						Corrected_Acc -> SetBinError(R+1,m+1,sel+1,error);
+	for(int m=0;m<n;m++)
+		for(int R=0;R<Corrected_Acc->GetNbinsX();R++)
+			for(int sel =0; sel < S; sel++){
+				Corrected_Acc -> SetBinContent(R+1,m+1, Corrected_Acc -> GetBinContent(R+1,m+1)*Correction -> GetBinContent(R+1,m+1) );
+				error=pow(Corrected_Acc -> GetBinContent(R+1,m+1)*Correction->GetBinError(R+1,m+1),2);
+				error+=pow(Corrected_Acc -> GetBinError(R+1,m+1)*Correction->GetBinContent(R+1,m+1),2);
+				error=pow(error,0.5);
+				Corrected_Acc -> SetBinError(R+1,m+1,sel+1,error);
 
-					}			
-		}
-		else{
-			cout<<Corrected_Acc -> ClassName()<<endl;
-			for(int R=0;R<Corrected_Acc->GetNbinsX();R++)
-				for(int sel =0; sel < S; sel++){
-					Corrected_Acc -> SetBinContent(R+1,Corrected_Acc -> GetBinContent(R+1)*Correction -> GetBinContent(R+1,sel+1) );
-					error=pow(Corrected_Acc -> GetBinContent(R+1)*Correction->GetBinError(R+1,sel+1),2);
-					error+=pow(Corrected_Acc -> GetBinError(R+1)*Correction->GetBinContent(R+1,sel+1),2);
-					error=pow(error,0.5);
-					Corrected_Acc -> SetBinError(R+1,error);
-				}
-
-		}
-	}
+			}			
 
 }
 #endif
+
+
+
+

@@ -62,6 +62,13 @@ void Acceptance(string filename){
 	AcceptancePreD-> Eval_Corrected_Acceptance(6);	
 
 	cout<<"****** DVSMC APPLICATION *********"<<endl;
+
+	TH1F* PreSel_Correction_R[3];  
+        TH1F* PreSel_Correction_TOF[3];
+        TH1F* PreSel_Correction_NaF[3];
+	TH1F* PreSel_Correction_Agl[3];
+
+
 	
 	TH1F* FullsetP_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Fullset_DvsMC_P_CorrectionR"  		); 
 	TH1F* FullsetP_Correction_TOF =(TH1F*) inputHistoFile -> Get ("Results/Fullset_DvsMC_P_CorrectionTOF"		);
@@ -85,13 +92,19 @@ void Acceptance(string filename){
 	AcceptanceD    -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
 	AcceptancePreP -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
 	
-
+/*
 	//qual
 	AcceptanceP -> Apply_DvsMCcorrection_R  (FullsetP_Correction_R);
 	AcceptanceP -> Apply_DvsMCcorrection_TOF(FullsetP_Correction_TOF);
         AcceptanceP -> Apply_DvsMCcorrection_NaF(FullsetP_Correction_NaF);
         AcceptanceP -> Apply_DvsMCcorrection_Agl(FullsetP_Correction_Agl);
+	
+	AcceptanceD -> Apply_DvsMCcorrection_R  (FullsetP_Correction_R);
+	AcceptanceD -> Apply_DvsMCcorrection_TOF(FullsetP_Correction_TOF);
+        AcceptanceD -> Apply_DvsMCcorrection_NaF(FullsetP_Correction_NaF);
+        AcceptanceD -> Apply_DvsMCcorrection_Agl(FullsetP_Correction_Agl);
 		
+
 	//rich
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
 	AcceptanceP -> Apply_DvsMCcorrection_Agl(RICH_Correction_P_Agl);
@@ -99,7 +112,7 @@ void Acceptance(string filename){
 
 	AcceptanceD -> Apply_DvsMCcorrection_NaF(RICH_Correction_D_NaF,6);
         AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl,6);	
-	
+*/	
 	//Protons
 	AcceptanceP   ->Gen_Acceptance_R  ->SetName("Gen_AcceptanceP_R"  ); 
 	AcceptanceP   ->Gen_Acceptance_TOF->SetName("Gen_AcceptanceP_TOF");
@@ -181,6 +194,33 @@ void Acceptance(string filename){
 
 	TH1F * RICHSystErrNaF_P= (TH1F*)inputHistoFile -> Get ("Results/RICH_DvsMC_P_systNaF"		);;
 	TH1F * RICHSystErrAgl_P= (TH1F*)inputHistoFile -> Get ("Results/RICH_DvsMC_P_systAgl"		);;
+
+
+
+	TH2F * EffStatErrR_D2   = (TH2F*)inputHistoFile -> Get ("Results/EffFullsetMCD_statR"  		);;
+	TH2F * EffStatErrTOF_D2 = (TH2F*)inputHistoFile -> Get ("Results/EffFullsetMCD_statTOF"		);;
+	TH2F * EffStatErrNaF_D2 = (TH2F*)inputHistoFile -> Get ("Results/EffFullsetMCD_statNaF"		);;
+	TH2F * EffStatErrAgl_D2 = (TH2F*)inputHistoFile -> Get ("Results/EffFullsetMCD_statAgl"		);;
+
+	TH2F * EffSystErrR_D2   = (TH2F*)inputHistoFile -> Get ("Results/EffFullsetMCD_systR"  		);
+	TH2F * EffSystErrTOF_D2 = (TH2F*)inputHistoFile -> Get ("Results/EffFullsetMCD_systTOF"		);
+	TH2F * EffSystErrNaF_D2 = (TH2F*)inputHistoFile -> Get ("Results/EffFullsetMCD_systNaF"		);
+	TH2F * EffSystErrAgl_D2 = (TH2F*)inputHistoFile -> Get ("Results/EffFullsetMCD_systAgl"		);
+
+
+
+
+	TH1F * EffStatErrR_D   =ProjectionXtoTH1F(EffStatErrR_D2,  "EffFullsetMCD_statR",1,1);
+        TH1F * EffStatErrTOF_D =ProjectionXtoTH1F(EffStatErrTOF_D2,"EffFullsetMCD_statTOF",1,1);
+        TH1F * EffStatErrNaF_D =ProjectionXtoTH1F(EffStatErrNaF_D2,"EffFullsetMCD_statNaF",1,1);
+        TH1F * EffStatErrAgl_D =ProjectionXtoTH1F(EffStatErrAgl_D2,"EffFullsetMCD_statAgl",1,1);
+                                 
+        TH1F * EffSystErrR_D   =ProjectionXtoTH1F(EffSystErrR_D2,  "EffFullsetMCD_systR",1,1);
+        TH1F * EffSystErrTOF_D =ProjectionXtoTH1F(EffSystErrTOF_D2,"EffFullsetMCD_systTOF",1,1);
+        TH1F * EffSystErrNaF_D =ProjectionXtoTH1F(EffSystErrNaF_D2,"EffFullsetMCD_systNaF",1,1);
+        TH1F * EffSystErrAgl_D =ProjectionXtoTH1F(EffSystErrAgl_D2,"EffFullsetMCD_systAgl",1,1);
+
+
 
 
 	cout<<RICHStatErrNaF_P<<endl;
@@ -293,12 +333,19 @@ void Acceptance(string filename){
                         RICHStatErrAgl_P,
                                         
                         RICHSystErrNaF_P,
-                        RICHSystErrAgl_P
+                        RICHSystErrAgl_P,
 
 
+			EffStatErrR_D  , 
+                        EffStatErrTOF_D,
+                        EffStatErrNaF_D, 
+                        EffStatErrAgl_D, 
+                                        
+                        EffSystErrR_D  , 
+                        EffSystErrTOF_D, 
+                        EffSystErrNaF_D, 
+                        EffSystErrAgl_D 
 
-
-	
 
 );	
 	return;

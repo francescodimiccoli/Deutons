@@ -26,7 +26,17 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
                         TH1 *DP_ratioAgl_Dist,
 			Flux * D_Flux,
 			Flux * P_Flux,
-			TH1 *ProtonsPrimaryFlux
+			TH1 *ProtonsPrimaryFlux,
+			TH2F * Corr_AcceptanceD_TOF,	
+			TH2F * Corr_AcceptanceD_NaF,
+			TH2F * Corr_AcceptanceD_Agl,
+			TH1F *DStatTOF,
+			TH1F *DStatNaF,
+                        TH1F *DStatAgl,
+                                
+                        TH1F *DSystTOF,
+                        TH1F *DSystNaF,
+	                TH1F *DSystAgl
 
 
 	){
@@ -431,13 +441,6 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	D_FluxDistAgl->Draw("Psame");
 
 
-
-	finalPlots.Add(c32);
-	finalPlots.Add(c33);
-	finalPlots.Add(c34);
-	finalPlots.writeObjsInFolder("D Fluxes");
-
-
 	c31->cd();
 	gPad->SetLogx();
         gPad->SetLogy();
@@ -629,6 +632,176 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 
 	c35->cd(2);
 	PD_ratioAgl_Dist->Draw("Psame");
+
+
+
+
+
+	TCanvas *e1 = new TCanvas("Flux Errors Breakdown");
+	e1-> Divide(3,1);
+
+	e1->cd(1);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	gPad->SetLogy();
+
+	TH1F * ErrTOTD_TOF=(TH1F *)DStatTOF->Clone();
+	for(int iR=0;iR<ErrTOTD_TOF->GetNbinsX();iR++) 
+		ErrTOTD_TOF->SetBinContent(iR+1, DeutonsPrimaryFlux_TOF->GetBinError(iR+1)/DeutonsPrimaryFlux_TOF->GetBinContent(iR+1));
+
+	TH1F * ErrAccD_TOF=(TH1F *)DStatTOF->Clone();
+	for(int iR=0;iR<ErrAccD_TOF->GetNbinsX();iR++) 
+		ErrAccD_TOF->SetBinContent(iR+1, Corr_AcceptanceD_TOF->GetBinError(iR+1,1)/Corr_AcceptanceD_TOF->GetBinContent(iR+1,1));
+
+	ErrTOTD_TOF->GetXaxis()->SetTitle("Bin nr.");
+        ErrTOTD_TOF->GetYaxis()->SetTitle("Relative Error");
+        ErrTOTD_TOF->GetXaxis()->SetTitleSize(0.045);
+        ErrTOTD_TOF->GetYaxis()->SetTitleSize(0.045);
+        ErrTOTD_TOF->SetTitle("Flux TOTAL Error breakdown (TOF bins)");
+        ErrTOTD_TOF->GetYaxis()->SetRangeUser(1e-4,1);
+	ErrTOTD_TOF->SetLineColor(1);
+	ErrTOTD_TOF->SetLineWidth(7);
+
+	ErrAccD_TOF->SetLineColor(2);
+        ErrAccD_TOF->SetLineWidth(4);
+        DStatTOF->SetLineColor(3);
+        DStatTOF->SetLineWidth(4);
+        DSystTOF->SetLineColor(4);
+        DSystTOF->SetLineWidth(4);
+
+	DSystTOF->Smooth(2);
+	ErrTOTD_TOF->Smooth(2);
+
+
+
+	ErrTOTD_TOF->Draw("hist");
+        ErrAccD_TOF->Draw("hist same");
+        DStatTOF   ->Draw("hist same");
+        DSystTOF   ->Draw("hist same");
+
+	{       TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                leg->AddEntry(  ErrTOTD_TOF  ,"TOTAL Error", "l");
+                leg->AddEntry(  ErrAccD_TOF  ,"Acceptance Error", "l");
+                leg->AddEntry(  DStatTOF     ,"T. Fit Stat. Error", "l");
+                leg->AddEntry(  DSystTOF     ,"T. Fit Syst. Error", "l");
+                
+		leg->Draw("same");
+
+        }
+
+
+	e1->cd(2);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	gPad->SetLogy();
+
+	TH1F * ErrTOTD_NaF=(TH1F *)DStatNaF->Clone();
+	for(int iR=0;iR<ErrTOTD_NaF->GetNbinsX();iR++) 
+		ErrTOTD_NaF->SetBinContent(iR+1, DeutonsPrimaryFlux_NaF->GetBinError(iR+1)/DeutonsPrimaryFlux_NaF->GetBinContent(iR+1));
+
+	TH1F * ErrAccD_NaF=(TH1F *)DStatNaF->Clone();
+	for(int iR=0;iR<ErrAccD_NaF->GetNbinsX();iR++) 
+		ErrAccD_NaF->SetBinContent(iR+1, Corr_AcceptanceD_NaF->GetBinError(iR+1,1)/Corr_AcceptanceD_NaF->GetBinContent(iR+1,1));
+
+	ErrTOTD_NaF->GetXaxis()->SetTitle("Bin nr.");
+        ErrTOTD_NaF->GetYaxis()->SetTitle("Relative Error");
+        ErrTOTD_NaF->GetXaxis()->SetTitleSize(0.045);
+        ErrTOTD_NaF->GetYaxis()->SetTitleSize(0.045);
+        ErrTOTD_NaF->SetTitle("Flux TOTAL Error breakdown (NaF bins)");
+        ErrTOTD_NaF->GetYaxis()->SetRangeUser(1e-4,1);
+	ErrTOTD_NaF->SetLineColor(1);
+	ErrTOTD_NaF->SetLineWidth(7);
+
+	ErrAccD_NaF->SetLineColor(2);
+        ErrAccD_NaF->SetLineWidth(4);
+        DStatNaF->SetLineColor(3);
+        DStatNaF->SetLineWidth(4);
+        DSystNaF->SetLineColor(4);
+        DSystNaF->SetLineWidth(4);
+
+	DSystNaF->Smooth(2);
+	ErrTOTD_NaF->Smooth(2);
+
+	ErrTOTD_NaF->Draw("hist");
+        ErrAccD_NaF->Draw("hist same");
+        DStatNaF   ->Draw("hist same");
+        DSystNaF   ->Draw("hist same");
+
+	{       TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                leg->AddEntry(  ErrTOTD_NaF  ,"TOTAL Error", "l");
+                leg->AddEntry(  ErrAccD_NaF  ,"Acceptance Error", "l");
+                leg->AddEntry(  DStatNaF     ,"T. Fit Stat. Error", "l");
+                leg->AddEntry(  DSystNaF     ,"T. Fit Syst. Error", "l");
+                
+		leg->Draw("same");
+
+        }
+
+
+	e1->cd(3);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	gPad->SetLogy();
+
+	TH1F * ErrTOTD_Agl=(TH1F *)DStatAgl->Clone();
+	for(int iR=0;iR<ErrTOTD_Agl->GetNbinsX();iR++) 
+		ErrTOTD_Agl->SetBinContent(iR+1, DeutonsPrimaryFlux_Agl->GetBinError(iR+1)/DeutonsPrimaryFlux_Agl->GetBinContent(iR+1));
+
+	TH1F * ErrAccD_Agl=(TH1F *)DStatAgl->Clone();
+	for(int iR=0;iR<ErrAccD_Agl->GetNbinsX();iR++) 
+		ErrAccD_Agl->SetBinContent(iR+1, Corr_AcceptanceD_Agl->GetBinError(iR+1,1)/Corr_AcceptanceD_Agl->GetBinContent(iR+1,1));
+
+	ErrTOTD_Agl->GetXaxis()->SetTitle("Bin nr.");
+        ErrTOTD_Agl->GetYaxis()->SetTitle("Relative Error");
+        ErrTOTD_Agl->GetXaxis()->SetTitleSize(0.045);
+        ErrTOTD_Agl->GetYaxis()->SetTitleSize(0.045);
+        ErrTOTD_Agl->SetTitle("Flux TOTAL Error breakdown (Agl bins)");
+        ErrTOTD_Agl->GetYaxis()->SetRangeUser(1e-4,1);
+	ErrTOTD_Agl->SetLineColor(1);
+	ErrTOTD_Agl->SetLineWidth(7);
+
+	ErrAccD_Agl->SetLineColor(2);
+        ErrAccD_Agl->SetLineWidth(4);
+        DStatAgl->SetLineColor(3);
+        DStatAgl->SetLineWidth(4);
+        DSystAgl->SetLineColor(4);
+        DSystAgl->SetLineWidth(4);
+	
+	DSystAgl->Smooth(1);
+	ErrAccD_Agl->Smooth(4);
+	ErrTOTD_Agl->Smooth(2);
+
+	ErrTOTD_Agl->Draw("hist");
+        ErrAccD_Agl->Draw("hist same");
+        DStatAgl   ->Draw("hist same");
+        DSystAgl   ->Draw("hist same");
+
+	{       TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                leg->AddEntry(  ErrTOTD_Agl  ,"TOTAL Error", "l");
+                leg->AddEntry(  ErrAccD_Agl  ,"Acceptance Error", "l");
+                leg->AddEntry(  DStatAgl     ,"T. Fit Stat. Error", "l");
+                leg->AddEntry(  DSystAgl     ,"T. Fit Syst. Error", "l");
+                
+		leg->Draw("same");
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+	finalPlots.Add(c32);
+        finalPlots.Add(c33);
+        finalPlots.Add(c34);
+	finalPlots.Add(e1);
+        finalPlots.writeObjsInFolder("D Fluxes");
 
 
 	finalPlots.Add(c31);

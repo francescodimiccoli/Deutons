@@ -1,6 +1,6 @@
 using namespace std;
 
-TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr);
+TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr,int s=0);
 TH1 * DivideHisto(TH1 *Histo1, TH1 *Histo2);
 void ScanCombinations(std::vector<std::vector<TH1 *>> SystError , int i, std::vector<int> comb,TH1 * SystCorr );
 TH1 * ExtractError( TH1 * SystCorr, TH1 * Correction) ;
@@ -140,8 +140,8 @@ class DatavsMC
 		};
 
 		void Extract_SystError() ;
-		void Eval_Corrected_DataEff();
-		void Eval_DandMC_Eff();
+		void Eval_Corrected_DataEff(int sel=0);
+		void Eval_DandMC_Eff(int s=0);
 		void DivideHisto(TH1 *Histo1, TH1 *Histo2, TH1 * Correction);
 		void Eval_Corrections();	
 		void Eval_FittedCorrections();
@@ -217,7 +217,7 @@ void DatavsMC::ComposeCorrection(DatavsMC * Factor,int i,int j){
 
 
 
-void DatavsMC::Eval_Corrected_DataEff(){
+void DatavsMC::Eval_Corrected_DataEff(int sel){
 
 	for(int l=0;l<DataEff.size();l++){
 		DataEff_corr[l] -> beforeR   = ProjectionXtoTH1F((TH2F*)DataEff[l] -> beforeR  , (Basename + to_string(l) + "1_R" ),0,latzones);
@@ -230,18 +230,18 @@ void DatavsMC::Eval_Corrected_DataEff(){
 		if(!LATcorr_NaF[l] ) cout<<"ERROR: Lat. corr for NaF histos not assigned"<<endl;
 		if(!LATcorr_Agl[l] ) cout<<"ERROR: Lat. corr for Agl histos not assigned"<<endl;
 
-		DataEff_corr[l] -> afterR   =  Correct_DataEff( (Basename + to_string(l) +"2_R" ),	DataEff[l] -> afterR  ,	LATcorr_R[l]   		);
-		DataEff_corr[l] -> afterTOF =  Correct_DataEff( (Basename + to_string(l) +"2"   ),	DataEff[l] -> afterTOF,	LATcorr_TOF[l] 		);
-		DataEff_corr[l] -> afterNaF =  Correct_DataEff( (Basename + to_string(l) +"2NaF"),	DataEff[l] -> afterNaF,	LATcorr_NaF[l] 		);
-		DataEff_corr[l] -> afterAgl =  Correct_DataEff( (Basename + to_string(l) +"2Agl"),	DataEff[l] -> afterAgl,	LATcorr_Agl[l] 		);
+		DataEff_corr[l] -> afterR   =  Correct_DataEff( (Basename + to_string(l) +"2_R" ),	DataEff[l] -> afterR  ,	LATcorr_R[l]  ,sel 		);
+		DataEff_corr[l] -> afterTOF =  Correct_DataEff( (Basename + to_string(l) +"2"   ),	DataEff[l] -> afterTOF,	LATcorr_TOF[l],sel 		);
+		DataEff_corr[l] -> afterNaF =  Correct_DataEff( (Basename + to_string(l) +"2NaF"),	DataEff[l] -> afterNaF,	LATcorr_NaF[l],sel 		);
+		DataEff_corr[l] -> afterAgl =  Correct_DataEff( (Basename + to_string(l) +"2Agl"),	DataEff[l] -> afterAgl,	LATcorr_Agl[l],sel 		);
 	}
 	return;
 }
 
 
-void DatavsMC::Eval_DandMC_Eff(){
+void DatavsMC::Eval_DandMC_Eff(int sel){
 
-	DatavsMC::Eval_Corrected_DataEff();	
+	DatavsMC::Eval_Corrected_DataEff(sel);	
 
 	for(int l=0; l< MCEff.size();l++) {
 		DataEff_corr[l] -> Eval_Efficiency();
@@ -484,7 +484,7 @@ TH1 * ExtractError( TH1 * SystCorr, TH1* Correction) {
 
 
 
-TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
+TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr,int sel){
 	TH1 * Histo_corr;
 
 	int selections = Histo ->GetNbinsZ();
@@ -495,7 +495,7 @@ TH1 * Correct_DataEff(std::string histoname,TH1 * Histo, TH1 * LATcorr){
 		//Histo_corr = new TH1F("","",Histo-> GetNbinsX(),0,Histo-> GetNbinsX());
 		for(int iR = 0;iR < Histo ->GetNbinsX();iR++) 
 			for(int lat =0; lat < latzones; lat++){	
-				temp -> SetBinContent(iR+1,lat+1,Histo->GetBinContent(iR+1,lat+1)*LATcorr->GetBinContent(lat+1));
+				temp -> SetBinContent(iR+1,lat+1,Histo->GetBinContent(iR+1,lat+1)*LATcorr->GetBinContent(lat+1,sel+1));
 			}
 		Histo_corr = (TH1F*) ProjectionXtoTH1F( temp, histoname,0,latzones );
 	}

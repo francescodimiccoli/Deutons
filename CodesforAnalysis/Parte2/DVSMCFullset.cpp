@@ -1,3 +1,7 @@
+#include "PlottingFunctions/DVSMCFullset.h"
+
+
+
 void DVSMCFullset(string filename){
 
         cout<<"******* Data vs MC: Efficiency Corrections Calculation********"<<endl;
@@ -19,6 +23,28 @@ void DVSMCFullset(string filename){
         LATcorr * LATLikelihoodDATA_Agl = new LATcorr(inputHistoFile,"LATLikDATA_Agl"    ,"Results");
         LATcorr * LATDistanceDATA_Agl   = new LATcorr(inputHistoFile,"LATDistDATA_Agl"   ,"Results");
 
+
+	DatavsMC * PreSel_DvsMC_P[3];
+
+        PreSel_DvsMC_P[0]= new DatavsMC(inputHistoFile,"PreSel_DvsMC_P0_",1,3);
+        PreSel_DvsMC_P[1]= new DatavsMC(inputHistoFile,"PreSel_DvsMC_P1_",1,3);
+        PreSel_DvsMC_P[2]= new DatavsMC(inputHistoFile,"PreSel_DvsMC_P2_",1,3);
+
+	LATcorr * LATpreSelDATA = new LATcorr(inputHistoFile,"LATpreSelDATA"      ,"Results");
+		
+	cout<<"****PRESELECTIONS****"<<endl;
+
+	for(int sel=0;sel<3;sel++){
+                   PreSel_DvsMC_P[sel] -> Assign_LatCorr( LATpreSelDATA   ->  LATcorrR_fit ,
+                                   LATpreSelDATA   ->  LATcorrR_fit ,
+                                   LATpreSelDATA   ->  LATcorrR_fit ,
+                                   LATpreSelDATA   ->  LATcorrR_fit );
+
+                   PreSel_DvsMC_P[sel] ->Initialize_SystError();
+		   PreSel_DvsMC_P[sel] ->Eval_DandMC_Eff(sel);
+                   PreSel_DvsMC_P[sel] ->Eval_Corrections();
+			
+	}
 
 
 
@@ -51,6 +77,9 @@ void DVSMCFullset(string filename){
 	DatavsMC * Fullset_DvsMC_P = new DatavsMC(Dist_DvsMC_P,"Fullset_DvsMC_P");
 
 	Fullset_DvsMC_P -> ComposeCorrection(Lik_DvsMC_P,10,10);
+		
+	for(int sel=0;sel<3;sel++) Fullset_DvsMC_P -> ComposeCorrection(PreSel_DvsMC_P[sel],10,1);
+
 
 	TH1F* Fullset_Correction_R    =(TH1F*) Fullset_DvsMC_P -> GetCorrection_R(10)  ;
 	TH1F* Fullset_Correction_TOF  =(TH1F*) Fullset_DvsMC_P -> GetCorrection_TOF(10);
@@ -93,9 +122,14 @@ void DVSMCFullset(string filename){
 	Fullset_CorrectionFit_NaF  -> SetName("Fullset_DvsMC_P_CorrectionNaF");
 	Fullset_CorrectionFit_Agl  -> SetName("Fullset_DvsMC_P_CorrectionAgl");
 
+
+	TH2F * SystPlot_R   = (TH2F *)Fullset_DvsMC_P -> GetSystPlot_R();
+	TH2F * SystPlot_TOF = (TH2F *)Fullset_DvsMC_P -> GetSystPlot_TOF();
+	TH2F * SystPlot_NaF = (TH2F *)Fullset_DvsMC_P -> GetSystPlot_NaF();
+	TH2F * SystPlot_Agl = (TH2F *)Fullset_DvsMC_P -> GetSystPlot_Agl();
+	
 	
 
-	
 	finalHistos.Add(Fullset_CorrectionFit_R   );
 	finalHistos.Add(Fullset_CorrectionFit_TOF );
 	finalHistos.Add(Fullset_CorrectionFit_NaF );
@@ -122,7 +156,14 @@ void DVSMCFullset(string filename){
 
 	finalHistos.writeObjsInFolder("Results");
 
+	cout<<"*** Plotting ...  ****"<<endl;
 
+       /* DVSMCFullset_Plot(
+		SystPlot_R,  	
+                SystPlot_TOF,
+                SystPlot_NaF,
+		SystPlot_Agl	);
+	*/
 
 
 
