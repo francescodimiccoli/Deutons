@@ -142,8 +142,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    cout<<"************************* ANALYSIS **********************************************************************"<<endl;
    
 
-   //string finalfilename="./Final_plots/"+mese+".root";
-   string finalfilename ="/home/AMS/fdimicco/"+mese+".root";
+   string finalfilename="./Final_plots/"+mese+".root";
+   //string finalfilename ="/home/AMS/fdimicco/"+mese+".root";
    finalPlots.setName(finalfilename);
    finalHistos.setName(filename);  
    INDX = READ; 	

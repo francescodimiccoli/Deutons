@@ -158,12 +158,12 @@ void DVSMCFullset(string filename){
 
 	cout<<"*** Plotting ...  ****"<<endl;
 
-       /* DVSMCFullset_Plot(
+        DVSMCFullset_Plot(
 		SystPlot_R,  	
                 SystPlot_TOF,
                 SystPlot_NaF,
 		SystPlot_Agl	);
-	*/
+	
 
 
 

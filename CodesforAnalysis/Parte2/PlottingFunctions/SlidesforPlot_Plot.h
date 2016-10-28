@@ -939,16 +939,18 @@ void SlidesforPlot (string filename)
    gPad->SetLogy();
    LikvsDistTOF_P->SetMarkerColor (2);
    LikvsDistTOF_D->SetMarkerColor (4);
-   LikvsDistTOF_P->SetTitle ("Likelihood vs Distance from D TOF (MC)");
-   LikvsDistTOF_P->GetXaxis()->SetTitle ("-log(1-Likelihood Discr.)");
-   LikvsDistTOF_P->GetYaxis()->SetTitle ("Distance from D TOF");
+   LikvsDistTOF_D->GetXaxis()->SetTitle ("Likelihood Discriminant (-log(1-L))");
+   LikvsDistTOF_D->GetYaxis()->SetTitle ("Distance from D TOF");
    LikvsDistTOF_D -> SetContour(15);
    LikvsDistTOF_P->SetMarkerStyle (8);
    LikvsDistTOF_P->SetMarkerSize(0.15);
    LikvsDistTOF_P->GetXaxis()->SetRangeUser(0,2.6);	
    LikvsDistTOF_D -> SetLineWidth(3);
-   LikvsDistTOF_P->Draw ();
-   LikvsDistTOF_D->Draw("CONT3,same");
+   LikvsDistTOF_D->Smooth(4);
+   LikvsDistTOF_D->SetTitle("Distance vs Likelihood (TOF range)");
+   	
+   LikvsDistTOF_D->Draw ("CONT6");
+   LikvsDistTOF_P->Draw("same");
 
    p20->cd();
    gPad->SetGridx();
@@ -956,16 +958,17 @@ void SlidesforPlot (string filename)
    gPad->SetLogy();
    LikvsDistNaF_P->SetMarkerColor (2);
    LikvsDistNaF_D->SetMarkerColor (4);
-   LikvsDistNaF_P->SetTitle ("Likelihood vs Distance from D NaF (MC)");
-   LikvsDistNaF_P->GetXaxis()->SetTitle ("-log(1-Likelihood Discr.)");
-   LikvsDistNaF_P->GetYaxis()->SetTitle ("Distance from D TOF");
+   LikvsDistNaF_D->SetTitle ("Distance vs Likelihood (NaF range)");
+   LikvsDistNaF_D->GetXaxis()->SetTitle ("Likelihood Discriminant (-log(1-L))");
+   LikvsDistNaF_D->GetYaxis()->SetTitle ("Distance from D NaF");
    LikvsDistNaF_P->SetMarkerStyle (8);
    LikvsDistNaF_P->SetMarkerSize(0.15);	
    LikvsDistNaF_D -> SetContour(15);
    LikvsDistNaF_D -> SetLineWidth(3);
    LikvsDistNaF_P->GetXaxis()->SetRangeUser(0,4);	
-   LikvsDistNaF_P->Draw ("same");
-   LikvsDistNaF_D->Draw("CONT3,same");
+   LikvsDistNaF_D->Smooth(4);
+   LikvsDistNaF_D->Draw ("CONT6");
+   LikvsDistNaF_P->Draw("same");
 
 
    p21->cd();
@@ -974,16 +977,17 @@ void SlidesforPlot (string filename)
    gPad->SetLogy();
    LikvsDistAgl_P->SetMarkerColor (2);
    LikvsDistAgl_D->SetMarkerColor (4);
-   LikvsDistAgl_P->SetTitle ("Likelihood vs Distance from D Agl (MC)");
-   LikvsDistAgl_P->GetXaxis()->SetTitle ("-log(1-Likelihood Discr.)");
-   LikvsDistAgl_P->GetYaxis()->SetTitle ("Distance from D TOF");
+   LikvsDistAgl_D->SetTitle ("Distance vs Likelihood (Agl range)");
+   LikvsDistAgl_D->GetXaxis()->SetTitle ("Likelihood Discriminat (-log(1-L))");
+   LikvsDistAgl_D->GetYaxis()->SetTitle ("Distance from D Agl");
    LikvsDistAgl_P->SetMarkerStyle (8);
    LikvsDistAgl_P->SetMarkerSize(0.15);
    LikvsDistAgl_D -> SetContour(15);
    LikvsDistAgl_D -> SetLineWidth(3);
    LikvsDistAgl_P->GetXaxis()->SetRangeUser(0,5);	
-   LikvsDistAgl_P->Draw ();
-   LikvsDistAgl_D->Draw("CONT3,same");
+   LikvsDistAgl_D->Smooth(4);
+   LikvsDistAgl_D->Draw ("CONT6");
+   LikvsDistAgl_P->Draw("same");
 
 
 
