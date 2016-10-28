@@ -116,8 +116,10 @@ void DeutonsMC_Write()
    return;
 }
 
-TH1F * ExtractDCounts(TH3F * FitResults, string name, TemplateFIT * Template){
+TH1F * ExtractDCounts(TH3F * FitResults, string name, TemplateFIT * Template, TH1F *StatError, TH1F *SystError ){
+
 	TH1F * DCounts = new TH1F(name.c_str(),name.c_str(),FitResults->GetNbinsX(),0,FitResults->GetNbinsX());
+
 	int successfulfits[FitResults->GetNbinsX()]   = {0};
 	float meancounts[FitResults->GetNbinsX()]   = {0};
 	float stddevcounts[FitResults->GetNbinsX()] = {0};
@@ -143,11 +145,15 @@ TH1F * ExtractDCounts(TH3F * FitResults, string name, TemplateFIT * Template){
 	for(int x=0;x<FitResults->GetNbinsX();x++) {
 		if(Template  -> GetFitOutcome(x)==0){
 			DCounts -> SetBinContent(x+1, Template  -> DCounts -> GetBinContent(x+1));
-			DCounts -> SetBinError(x+1,Template -> DCounts -> GetBinError(x+1) + pow(stddevcounts[x]/successfulfits[x],0.5));
+			DCounts -> SetBinError(x+1,pow((pow(Template -> DCounts -> GetBinError(x+1),2) + stddevcounts[x]/successfulfits[x]),0.5));
+			StatError -> SetBinContent(x+1,Template -> DCounts -> GetBinError(x+1)/Template -> DCounts -> GetBinContent(x+1));
+			SystError -> SetBinContent(x+1,pow(stddevcounts[x]/successfulfits[x],0.5)/Template -> DCounts -> GetBinContent(x+1));
 			}
 		else {
 			DCounts -> SetBinContent(x+1, meancounts[x]/successfulfits[x]);
                         DCounts -> SetBinError(x+1, pow(stddevcounts[x]/successfulfits[x],0.5));
+			StatError -> SetBinContent(x+1,0);
+                        SystError -> SetBinContent(x+1,0);
 		}
 		}
 	return DCounts; 
@@ -233,7 +239,7 @@ void DeutonsTemplFits(string filename, string frac)
 		   FitNaF_Dbins[i][j]->SetFitRange(0.8+0.1*i,3);
 		   FitAgl_Dbins[i][j]->SetFitRange(0.8+0.1*i,3);
 
-		   if(frac!="ctot"){
+		   if(frac!="tot"){
 			   FitTOF_Dbins[i][j]         -> DisableFit(); 
 			   FitNaF_Dbins[i][j]         -> DisableFit(); 
 			   FitAgl_Dbins[i][j]         -> DisableFit();
@@ -329,57 +335,73 @@ void DeutonsTemplFits(string filename, string frac)
    FitAgl_Pbins -> PCounts 	-> SetName ("P_FluxCounts_Agl");
 
 
-	
-	TH1F * DCountsTOF 	=(TH1F*)  ExtractDCounts(FitResultsTOF,"D_FluxCounts_TOF",FitTOF_Dbest); 
-	TH1F * DCountsNaF 	=(TH1F*)  ExtractDCounts(FitResultsNaF,"D_FluxCounts_NaF",FitNaF_Dbest); 
-	TH1F * DCountsAgl 	=(TH1F*)  ExtractDCounts(FitResultsAgl,"D_FluxCounts_Agl",FitAgl_Dbest); 
+   TH1F * DStatTOF = new TH1F("D_FluxCounts_TOF_stat_err","D_FluxCounts_TOF_stat_err",FitResultsTOF->GetNbinsX(),0,FitResultsTOF->GetNbinsX());	
+   TH1F * DStatNaF = new TH1F("D_FluxCounts_NaF_stat_err","D_FluxCounts_NaF_stat_err",FitResultsNaF->GetNbinsX(),0,FitResultsNaF->GetNbinsX());		
+   TH1F * DStatAgl = new TH1F("D_FluxCounts_Agl_stat_err","D_FluxCounts_Agl_stat_err",FitResultsAgl->GetNbinsX(),0,FitResultsAgl->GetNbinsX());	
 
-	TH1F * DCountsgeoTOF 	=(TH1F*)  FitTOFgeo_Dbins -> DCounts ; 
-	TH1F * DCountsgeoNaF	=(TH1F*)  FitNaFgeo_Dbins -> DCounts ; 
-	TH1F * DCountsgeoAgl 	=(TH1F*)  FitAglgeo_Dbins -> DCounts ; 
+   TH1F * DSystTOF = new TH1F("D_FluxCounts_TOF_syst_err","D_FluxCounts_TOF_syst_err",FitResultsTOF->GetNbinsX(),0,FitResultsTOF->GetNbinsX());	
+   TH1F * DSystNaF = new TH1F("D_FluxCounts_NaF_syst_err","D_FluxCounts_NaF_syst_err",FitResultsNaF->GetNbinsX(),0,FitResultsNaF->GetNbinsX());	
+   TH1F * DSystAgl = new TH1F("D_FluxCounts_Agl_syst_err","D_FluxCounts_Agl_syst_err",FitResultsAgl->GetNbinsX(),0,FitResultsAgl->GetNbinsX());	
 
-	TH1F * PCountsTOF 	=(TH1F*)  FitTOF_Pbins -> PCounts ; 
-	TH1F * PCountsNaF 	=(TH1F*)  FitNaF_Pbins -> PCounts ; 
-	TH1F * PCountsAgl 	=(TH1F*)  FitAgl_Pbins -> PCounts ; 
+   TH1F * DCountsTOF 	=(TH1F*)  ExtractDCounts(FitResultsTOF,"D_FluxCounts_TOF",FitTOF_Dbest,DStatTOF,DSystTOF); 
+   TH1F * DCountsNaF 	=(TH1F*)  ExtractDCounts(FitResultsNaF,"D_FluxCounts_NaF",FitNaF_Dbest,DStatNaF,DSystNaF); 
+   TH1F * DCountsAgl 	=(TH1F*)  ExtractDCounts(FitResultsAgl,"D_FluxCounts_Agl",FitAgl_Dbest,DStatAgl,DSystAgl); 
 
+   TH1F * DCountsgeoTOF =(TH1F*)  FitTOFgeo_Dbins -> DCounts ; 
+   TH1F * DCountsgeoNaF	=(TH1F*)  FitNaFgeo_Dbins -> DCounts ; 
+   TH1F * DCountsgeoAgl =(TH1F*)  FitAglgeo_Dbins -> DCounts ; 
 
-
-	finalHistos.Add( FitResultsTOF 		);	
-        finalHistos.Add( FitResultsNaF 	       );
-        finalHistos.Add( FitResultsAgl 		);
-
-	finalHistos.Add( DCountsTOF 		);	
-        finalHistos.Add( DCountsNaF 	       );
-        finalHistos.Add( DCountsAgl 		);
-                                                                      
-        finalHistos.Add( DCountsgeoTOF 	    	);
-        finalHistos.Add( DCountsgeoNaF	          );
-        finalHistos.Add( DCountsgeoAgl 	 	 );
-                                                                      
-        finalHistos.Add( PCountsTOF 		);
-        finalHistos.Add( PCountsNaF 		);
-        finalHistos.Add( PCountsAgl 		);
-	finalHistos.writeObjsInFolder("Results");
-
-        cout<<"*** Plotting ...  ****"<<endl;
-
-	string varname = " Mass ";
-	DeutonsTemplateFits_Plot(FitTOF_Dbest, 
-	                         FitNaF_Dbest,
-				 FitAgl_Dbest,       
-                                                
-                                 FitTOFgeo_Dbins,
-                                 FitNaFgeo_Dbins,
-                                 FitAglgeo_Dbins,
-                                                
-                                 FitTOF_Pbins,
-                                 FitNaF_Pbins,
-                                 FitAgl_Pbins,
-				 varname 
-	);	
+   TH1F * PCountsTOF 	=(TH1F*)  FitTOF_Pbins -> PCounts ; 
+   TH1F * PCountsNaF 	=(TH1F*)  FitNaF_Pbins -> PCounts ; 
+   TH1F * PCountsAgl 	=(TH1F*)  FitAgl_Pbins -> PCounts ; 
 
 
-	return;
+   finalHistos.Add( FitResultsTOF 		);	
+   finalHistos.Add( FitResultsNaF 	       );
+   finalHistos.Add( FitResultsAgl 		);
+
+   finalHistos.Add( DCountsTOF 		);	
+   finalHistos.Add( DCountsNaF 	       );
+   finalHistos.Add( DCountsAgl 		);
+
+   finalHistos.Add( DCountsgeoTOF 	    	);
+   finalHistos.Add( DCountsgeoNaF	          );
+   finalHistos.Add( DCountsgeoAgl 	 	 );
+
+   finalHistos.Add( PCountsTOF 		);
+   finalHistos.Add( PCountsNaF 		);
+   finalHistos.Add( PCountsAgl 		);
+
+   finalHistos.Add( DStatTOF 		);
+   finalHistos.Add( DStatNaF 		);
+   finalHistos.Add( DStatAgl 		);
+   	
+   finalHistos.Add( DSystTOF 		);
+   finalHistos.Add( DSystNaF 		);
+   finalHistos.Add( DSystAgl 		);
+  
+
+   finalHistos.writeObjsInFolder("Results");
+
+   cout<<"*** Plotting ...  ****"<<endl;
+
+   string varname = " Mass ";
+   DeutonsTemplateFits_Plot(FitTOF_Dbest, 
+		   FitNaF_Dbest,
+		   FitAgl_Dbest,       
+
+		   FitTOFgeo_Dbins,
+		   FitNaFgeo_Dbins,
+		   FitAglgeo_Dbins,
+
+		   FitTOF_Pbins,
+		   FitNaF_Pbins,
+		   FitAgl_Pbins,
+		   varname 
+		   );	
+
+
+   return;
 }
 
 

@@ -1,5 +1,32 @@
 using namespace std;
 
+TH1 * SetErrors ( TH1 * Eff){
+        TH1 * Errors = (TH1 *)Eff->Clone();
+        for(int iR=0;iR<Eff->GetNbinsX();iR++)
+                for(int mc_types=0;mc_types<Eff->GetNbinsY();mc_types++)
+                        for(int S=0;S<Eff->GetNbinsZ();S++)
+                         Errors->SetBinContent(iR+1,mc_types+1,S+1,Eff->GetBinError(iR+1,mc_types+1,S+1)/Eff->GetBinContent(iR+1,mc_types+1,S+1));
+        return Errors;
+
+}
+
+void EvalError( TH1 * Eff, TH1 * stat, TH1 * syst){
+	cout<<Eff<<" "<<stat<<" "<<syst<<endl;
+        for(int iR=0;iR<Eff->GetNbinsX();iR++)
+                for(int mc_types=0;mc_types<Eff->GetNbinsY();mc_types++)
+                        for(int S=0;S<Eff->GetNbinsZ();S++){
+                                float Stat=0;
+				float Syst=0;
+				if(stat&&syst){ 
+				 Stat = stat->GetBinContent(iR+1,mc_types+1,S+1);
+                                 Syst = syst->GetBinContent(iR+1,mc_types+1,S+1);
+                                 Eff->SetBinError(iR+1,mc_types+1,S+1,pow(pow(Stat,2)+pow(Syst,2),0.5)*Eff->GetBinContent(iR+1,mc_types+1,S+1));
+				}
+                        }
+                return;
+}
+
+
 class Efficiency
 {
 public:
@@ -16,9 +43,26 @@ public:
     TH1 * effAgl;
    
     //eff_fit	
+    TH1 * effR_fit;
     TH1 * effTOF_fit; 	
     TH1 * effNaF_fit;
     TH1 * effAgl_fit;
+
+
+    //stat. errors	 	
+    TH1 * err_statR  ;   
+    TH1 * err_statTOF;
+    TH1 * err_statNaF;
+    TH1 * err_statAgl;
+  
+    //syst errors	 	
+    TH1 * err_systR;   
+    TH1 * err_systTOF;
+    TH1 * err_systNaF;
+    TH1 * err_systAgl;
+   
+ 
+	
  
     //name
     std::string name;				 
@@ -45,10 +89,10 @@ public:
         afterAgl  = new TH2F((basename + "2Agl").c_str(),(basename + "2Agl").c_str(),nbinsAgl,0,nbinsAgl, n, 0 ,n);
         beforeR   = new TH2F((basename + "1_R" ).c_str(),(basename + "1_R" ).c_str(),nbinsr,  0,nbinsr, n, 0 ,n);
         afterR    = new TH2F((basename + "2_R" ).c_str(),(basename + "2_R" ).c_str(),nbinsr,  0,nbinsr, n, 0 ,n);
-   	 name = basename; 
+   	name = basename; 
    }
 
-    Efficiency(std::string basename, int n, int m){
+   Efficiency(std::string basename, int n, int m){
         beforeTOF = new TH3F((basename + "1"   ).c_str(),(basename + "1"   ).c_str(),nbinsToF,0,nbinsToF, n, 0 ,n, m, 0,m);
         afterTOF  = new TH3F((basename + "2"   ).c_str(),(basename + "2"   ).c_str(),nbinsToF,0,nbinsToF, n, 0 ,n, m, 0,m);
         beforeNaF = new TH3F((basename + "1NaF").c_str(),(basename + "1NaF").c_str(),nbinsNaF,0,nbinsNaF, n, 0 ,n, m, 0,m);
@@ -75,11 +119,80 @@ public:
     	name = basename;   
     }
 
+
+   Efficiency(TFile * file, std::string basename,std::string dirname){
+        if (!file->IsOpen()) file->Open("READ");
+        beforeTOF = (TH1 *)file->Get((basename + "1"   ).c_str());
+        afterTOF  = (TH1 *)file->Get((basename + "2"   ).c_str());
+        beforeNaF = (TH1 *)file->Get((basename + "1NaF").c_str());
+        afterNaF  = (TH1 *)file->Get((basename + "2NaF").c_str());
+        beforeAgl = (TH1 *)file->Get((basename + "1Agl").c_str());
+        afterAgl  = (TH1 *)file->Get((basename + "2Agl").c_str());
+        beforeR   = (TH1 *)file->Get((basename + "1_R" ).c_str());
+        afterR    = (TH1 *)file->Get((basename + "2_R" ).c_str());
+
+	effR	  = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_EffR"             ).c_str());
+        effTOF    = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_EffTOF"           ).c_str());
+        effNaF    = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_EffNaF"           ).c_str());
+        effAgl    = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_EffAgl"           ).c_str());
+
+	effR_fit      = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_EffFitR"             ).c_str());
+        effTOF_fit    = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_EffFitTOF"           ).c_str());
+        effNaF_fit    = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_EffFitNaF"           ).c_str());
+        effAgl_fit    = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_EffFitAgl"           ).c_str());
+
+	err_statR     = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_statR"             ).c_str());
+        err_statTOF   = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_statTOF"           ).c_str());
+        err_statNaF   = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_statNaF"           ).c_str());
+        err_statAgl   = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_statAgl"           ).c_str());
+
+	err_systR     = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_systR"             ).c_str());
+        err_systTOF   = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_systTOF"           ).c_str());
+        err_systNaF   = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_systNaF"           ).c_str());
+        err_systAgl   = (TH1 *)file->Get(("/" + dirname +"/" +basename + "_systAgl"           ).c_str());
+
+	
+	
+        name = basename;
+    }
+	
+
+    //  Cloning constructor
+    
+    Efficiency( Efficiency * Clone, std::string basename){
+		   
+	beforeTOF = (TH1 *) Clone -> beforeTOF ->Clone(); 
+        afterTOF  = (TH1 *) Clone -> afterTOF  ->Clone(); 
+        beforeNaF = (TH1 *) Clone -> beforeNaF ->Clone(); 
+        afterNaF  = (TH1 *) Clone -> afterNaF  ->Clone(); 
+        beforeAgl = (TH1 *) Clone -> beforeAgl ->Clone(); 
+        afterAgl  = (TH1 *) Clone -> afterAgl  ->Clone(); 
+        beforeR   = (TH1 *) Clone -> beforeR   ->Clone(); 
+        afterR    = (TH1 *) Clone -> afterR    ->Clone(); 
+                                               
+        effR	  = (TH1 *) Clone -> effR      ->Clone();		  
+        effTOF    = (TH1 *) Clone -> effTOF    ->Clone(); 
+        effNaF    = (TH1 *) Clone -> effNaF    ->Clone(); 
+        effAgl    = (TH1 *) Clone -> effAgl    ->Clone(); 
+
+	effR	  ->SetName((basename + "_EffR"             ).c_str());		  
+        effTOF    ->SetName((basename + "_EffTOF"           ).c_str());	
+        effNaF    ->SetName((basename + "_EffNaF"           ).c_str());
+        effAgl    ->SetName((basename + "_EffAgl"           ).c_str());
+
+
+	name = basename;
+ 
+    }		    
+   
+
     void Write();
     void UpdateErrorbars();	
     void Eval_Efficiency();	
     void Eval_FittedEfficiency();		
-		
+
+    void Compose_Efficiency(Efficiency * Factor);
+   			
 };
 
 
@@ -108,6 +221,7 @@ void Efficiency::UpdateErrorbars()
    if(afterAgl)	 afterAgl->Sumw2();
 
 }
+
  
 void Efficiency::Eval_Efficiency(){
 	
@@ -123,20 +237,59 @@ void Efficiency::Eval_Efficiency(){
         if(effAgl) 	effAgl ->Divide( beforeAgl );
 
 	if(effR)  	effR   ->SetName((name	+ "_EffR"  ).c_str()); 
-        if(effTOF)	effTOF ->SetName((name	+ "_EffTOF").c_str());
-        if(effNaF)	effNaF ->SetName((name	+ "_EffNaF").c_str());
-        if(effAgl)	effAgl ->SetName((name	+ "_EffAgl").c_str());
+	if(effTOF)	effTOF ->SetName((name	+ "_EffTOF").c_str());
+	if(effNaF)	effNaF ->SetName((name	+ "_EffNaF").c_str());
+	if(effAgl)	effAgl ->SetName((name	+ "_EffAgl").c_str());
+
+	if(effR)    err_statR  =SetErrors(effR   ); 
+	if(effTOF)  err_statTOF=SetErrors(effTOF );
+	if(effNaF)  err_statNaF=SetErrors(effNaF );
+	if(effAgl)  err_statAgl=SetErrors(effAgl );
+
+	if(effR)    err_statR  ->SetName((name + "_statR"             ).c_str()); 
+	if(effTOF)  err_statTOF->SetName((name + "_statTOF"           ).c_str());
+	if(effNaF)  err_statNaF->SetName((name + "_statNaF"           ).c_str());
+	if(effAgl)  err_statAgl->SetName((name + "_statAgl"           ).c_str());
+
+	return;
 }
 
 
+void Efficiency::Compose_Efficiency(Efficiency * Factor){
+	
+	 effR  ->Multiply((TH1*)Factor->effR  ->Clone() );
+         effTOF->Multiply((TH1*)Factor->effTOF->Clone() );
+         effNaF->Multiply((TH1*)Factor->effNaF->Clone() );
+         effAgl->Multiply((TH1*)Factor->effAgl->Clone() );
+
+	if(effR)    err_statR  =SetErrors(effR   ); 
+	if(effTOF)  err_statTOF=SetErrors(effTOF );
+	if(effNaF)  err_statNaF=SetErrors(effNaF );
+	if(effAgl)  err_statAgl=SetErrors(effAgl );
+
+	if(effR)    err_statR  ->SetName((name + "_statR"             ).c_str()); 
+	if(effTOF)  err_statTOF->SetName((name + "_statTOF"           ).c_str());
+	if(effNaF)  err_statNaF->SetName((name + "_statNaF"           ).c_str());
+	if(effAgl)  err_statAgl->SetName((name + "_statAgl"           ).c_str());
+
+	return;
+}
+
 void Efficiency::Eval_FittedEfficiency(){
+
+	cout<<effR<<" "<<effTOF<<" "<<effNaF<<" "<<effAgl<<endl;	
+	
+	if(effR) {
+		FitFunction * FitR = new FitFunction( effR,1);	
+		FitR->FitValues(); 
+		effR_fit =FitR-> ReturnFittedValues(); 
+	}
 
 	if(effTOF) {
 		FitFunction * FitTOF = new FitFunction( effTOF,1);	
 		FitTOF->FitValues(); 
 		effTOF_fit =FitTOF-> ReturnFittedValues(); 
 	}
-
 	if(effNaF) {
 		FitFunction * FitNaF = new FitFunction( effNaF,1);	
 		FitNaF->FitValues(); 
@@ -148,15 +301,30 @@ void Efficiency::Eval_FittedEfficiency(){
 		FitAgl->FitValues(); 
 		effAgl_fit =FitAgl-> ReturnFittedValues(); 
 	}
-	
-	if(effTOF_fit)	effTOF_fit ->SetName((name	+ "_EffTOF").c_str());
-        if(effNaF_fit)	effNaF_fit ->SetName((name	+ "_EffNaF").c_str());
-        if(effAgl_fit)	effAgl_fit ->SetName((name	+ "_EffAgl").c_str());
+
+	if(effR_fit)	effR_fit   ->SetName((name	+ "_EffFitR"  ).c_str());
+	if(effTOF_fit)	effTOF_fit ->SetName((name	+ "_EffFitTOF").c_str());
+        if(effNaF_fit)	effNaF_fit ->SetName((name	+ "_EffFitNaF").c_str());
+        if(effAgl_fit)	effAgl_fit ->SetName((name	+ "_EffFitAgl").c_str());
+
+	if(effR)   err_systR  = SetErrors(effR_fit   );
+        if(effTOF) err_systTOF= SetErrors(effTOF_fit );
+        if(effNaF) err_systNaF= SetErrors(effNaF_fit );
+        if(effAgl) err_systAgl= SetErrors(effAgl_fit );
+
+	if(effR)    err_systR  ->SetName((name + "_systR"             ).c_str()); 
+	if(effTOF)  err_systTOF->SetName((name + "_systTOF"           ).c_str());
+	if(effNaF)  err_systNaF->SetName((name + "_systNaF"           ).c_str());
+	if(effAgl)  err_systAgl->SetName((name + "_systAgl"           ).c_str());
+
+	if(effR)   EvalError(effR_fit   ,err_statR   ,err_systR   );
+        if(effTOF) EvalError(effTOF_fit ,err_statTOF ,err_systTOF );
+        if(effNaF) EvalError(effNaF_fit ,err_statNaF ,err_systNaF );
+        if(effAgl) EvalError(effAgl_fit ,err_statAgl ,err_systAgl );
+
+
 
 }
-
-
-
 
 
 

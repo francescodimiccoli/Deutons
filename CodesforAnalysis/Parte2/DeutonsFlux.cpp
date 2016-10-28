@@ -20,6 +20,10 @@ void DeutonFlux(string filename) {
 	TH2F * esposizionepgeoAgl  = (TH2F*)inputHistoFile->Get(      "esposizionepgeoAgl"    );
 
 
+	TH2F * Corr_AcceptanceD_TOF = (TH2F*)inputHistoFile->Get("Results/Corr_AcceptanceD_TOF");
+	TH2F * Corr_AcceptanceD_NaF = (TH2F*)inputHistoFile->Get("Results/Corr_AcceptanceD_NaF");
+	TH2F * Corr_AcceptanceD_Agl = (TH2F*)inputHistoFile->Get("Results/Corr_AcceptanceD_Agl");
+
 
 	Flux * D_Flux         = new Flux(inputHistoFile, "D_Flux"         ,"Results","Corr_AcceptanceD",1);
 	Flux * D_Flux_geo     = new Flux(inputHistoFile, "D_Flux_geo"     ,"Results","Geomag_AcceptanceD",11);
@@ -32,7 +36,14 @@ void DeutonFlux(string filename) {
 
 	TH1F * ProtonsPrimaryFlux = (TH1F*)inputHistoFile->Get("Results/ProtonsPrimaryFlux");
 
-	cout<<ProtonsPrimaryFlux<<endl;
+	TH1F * DStatTOF= (TH1F*)inputHistoFile->Get("Results/D_FluxCounts_TOF_stat_err");
+        TH1F * DStatNaF= (TH1F*)inputHistoFile->Get("Results/D_FluxCounts_NaF_stat_err");
+        TH1F * DStatAgl= (TH1F*)inputHistoFile->Get("Results/D_FluxCounts_Agl_stat_err");
+                       
+        TH1F * DSystTOF= (TH1F*)inputHistoFile->Get("Results/D_FluxCounts_TOF_syst_err");
+        TH1F * DSystNaF= (TH1F*)inputHistoFile->Get("Results/D_FluxCounts_NaF_syst_err");
+	TH1F * DSystAgl= (TH1F*)inputHistoFile->Get("Results/D_FluxCounts_Agl_syst_err");
+
 
 	cout<<"*************** DEUTONS FLUXES CALCULATION *******************"<<endl;
 	
@@ -80,7 +91,6 @@ void DeutonFlux(string filename) {
 	P_Flux_Dist    -> Eval_Flux(1 , protons );
 
 
-	cout<<"uno"<<endl;
 
 	//Fit on Mass
 	TH1F * DeutonsPrimaryFlux_TOF 		= (TH1F *)D_Flux     -> Flux_TOF ;
@@ -102,7 +112,6 @@ void DeutonFlux(string filename) {
 	TH2F * DeutonsGeomagFlux_Dist_NaF 	= (TH2F *)D_Flux_geo_Dist-> Flux_NaF ;
 	TH2F * DeutonsGeomagFlux_Dist_Agl  	= (TH2F *)D_Flux_geo_Dist-> Flux_Agl ;
 
-	cout<<"due"<<endl;
 
 	//for D/P ratio: P Flux
 	//Fit on Mass
@@ -121,7 +130,6 @@ void DeutonFlux(string filename) {
 	TH1F * DP_ratioNaF = (TH1F *)D_Flux     -> Flux_NaF -> Clone();
 	TH1F * DP_ratioAgl = (TH1F *)D_Flux     -> Flux_Agl -> Clone();
 
-	cout<<"tre"<<endl;
 	DP_ratioTOF ->  Divide((TH1F *)P_Flux     -> Flux_TOF			);
 	DP_ratioNaF ->  Divide((TH1F *)P_Flux     -> Flux_NaF			);
 	DP_ratioAgl ->  Divide((TH1F *)P_Flux     -> Flux_Agl			);
@@ -227,7 +235,17 @@ void DeutonFlux(string filename) {
                         DP_ratioAgl_Dist,
 			D_Flux,
 			P_Flux,
-			ProtonsPrimaryFlux
+			ProtonsPrimaryFlux,
+			Corr_AcceptanceD_TOF,	
+			Corr_AcceptanceD_NaF,
+			Corr_AcceptanceD_Agl,
+			DStatTOF,
+			DStatNaF,
+                        DStatAgl,
+                                
+                        DSystTOF,
+                        DSystNaF,
+	                DSystAgl
 
 	
 	);

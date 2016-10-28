@@ -26,10 +26,10 @@ public:
 	float Rmax;	
 
 	//sel. eff.
-	TH1 * Efficiency_R  ;
-	TH1 * Efficiency_TOF;
-	TH1 * Efficiency_NaF;
-	TH1 * Efficiency_Agl;
+	Efficiency * Efficiency_R  ;
+	Efficiency * Efficiency_TOF;
+	Efficiency * Efficiency_NaF;
+	Efficiency * Efficiency_Agl;
 
 	//gen. events
 	TH1 * before_R   ,  * after_R  ; 
@@ -70,10 +70,10 @@ public:
 		before_Agl  = new TH2F((basename + "TrigAgl").c_str(),(basename + "TrigAgl").c_str(),nbinsAgl, 0, nbinsAgl,  n, 0, n);
 		before_R    = new TH2F((basename + "Trig_R" ).c_str(),(basename + "Trig_R" ).c_str(),nbinsr,   0, nbinsr,    n, 0, n);
 
-		Efficiency_R  = (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffR"           ).c_str());
-		Efficiency_TOF= (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffTOF"         ).c_str());
-		Efficiency_NaF= (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffNaF"         ).c_str());
-		Efficiency_Agl= (TH1 *)file->Get(("/" + dirname +"/" +effname + "_EffAgl"         ).c_str());
+		Efficiency_R  = new  Efficiency(file,effname,dirname);
+		Efficiency_TOF= new  Efficiency(file,effname,dirname);
+		Efficiency_NaF= new  Efficiency(file,effname,dirname);
+		Efficiency_Agl= new  Efficiency(file,effname,dirname);
 
 		LATcorr_R  = (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "_LATcorrR_fit"   ).c_str());
 		LATcorr_TOF= (TH1 *)file->Get(("/" + dirname +"/" +latcorrname + "_LATcorrTOF_fit" ).c_str());
@@ -209,12 +209,13 @@ void ACCEPTANCE::Eval_MC_Acceptance(){
 	if(Gen_Acceptance_NaF )  MCAcceptance_NaF =(TH1 *) Gen_Acceptance_NaF ->Clone();
 	if(Gen_Acceptance_Agl )  MCAcceptance_Agl =(TH1 *) Gen_Acceptance_Agl ->Clone();
 
-	if(	Efficiency_R  	) MCAcceptance_R  -> Multiply (	Efficiency_R  	);
-	if(	Efficiency_TOF	) MCAcceptance_TOF-> Multiply (	Efficiency_TOF	);
-	if(	Efficiency_NaF	) MCAcceptance_NaF-> Multiply (	Efficiency_NaF	);
-	if(	Efficiency_Agl	) MCAcceptance_Agl-> Multiply (	Efficiency_Agl	);
+	if(	Efficiency_R  ->effR_fit  	) MCAcceptance_R  -> Multiply (	Efficiency_R  ->effR_fit 	);
+	if(	Efficiency_TOF->effTOF_fit	) MCAcceptance_TOF-> Multiply (	Efficiency_TOF->effTOF_fit	);
+	if(	Efficiency_NaF->effNaF_fit	) MCAcceptance_NaF-> Multiply (	Efficiency_NaF->effNaF_fit  	);
+	if(	Efficiency_Agl->effAgl_fit	) MCAcceptance_Agl-> Multiply (	Efficiency_Agl->effAgl_fit	);
 	
 }
+
 
 TH1 * ACCEPTANCE::Geomag_Acceptance(int n, TH1* MCAcceptance, TH1* LATcorr){
 	TH1 * Geomag_Acceptance;
@@ -330,64 +331,34 @@ void ACCEPTANCE::ApplyGlobalFactor(float factor, float error){
 void ACCEPTANCE::ApplyDvsMCcorrection(int n, int S, TH1* Correction, TH1* Corrected_Acc, TH1* Geom_Acc){
 	float error=0;
 	//correct Geom. acceptance
-	if(n>1){
-		for(int m=0;m<n;m++)
-			for(int R=0;R<Geom_Acc->GetNbinsX();R++)
-				for(int lat=1;lat<Geom_Acc->GetNbinsY();lat++){
-					for(int sel =0; sel < S;sel++){
-						Geom_Acc->SetBinContent(R+1,lat+1,m+1,Geom_Acc->GetBinContent(R+1,lat+1,m+1)*Correction->GetBinContent(R+1,m+1,sel+1));
-						error=pow(Geom_Acc->GetBinContent(R+1,lat+1,m+1)*Correction->GetBinError(R+1,m+1,sel+1),2);
-						error+=pow(Geom_Acc->GetBinError(R+1,lat+1,m+1)*Correction->GetBinContent(R+1,m+1,sel+1),2);
-						error=pow(error,0.5);
-						Geom_Acc->SetBinError(R+1,lat+1,m+1,error);
-					}
-				}
-	}
-	else {
+	for(int m=0;m<n;m++)
 		for(int R=0;R<Geom_Acc->GetNbinsX();R++)
 			for(int lat=1;lat<Geom_Acc->GetNbinsY();lat++){
 				for(int sel =0; sel < S;sel++){
-					Geom_Acc->SetBinContent(R+1,lat+1,Geom_Acc->GetBinContent(R+1,lat+1)*Correction->GetBinContent(R+1,sel+1));
-					error=pow(Geom_Acc->GetBinContent(R+1,lat+1)*Correction->GetBinError(R+1,sel+1),2);
-					error+=pow(Geom_Acc->GetBinError(R+1,lat+1)*Correction->GetBinContent(R+1,sel+1),2);
+					Geom_Acc->SetBinContent(R+1,lat+1,m+1,Geom_Acc->GetBinContent(R+1,lat+1,m+1)*Correction->GetBinContent(R+1,m+1));
+					error=pow(Geom_Acc->GetBinContent(R+1,lat+1,m+1)*Correction->GetBinError(R+1,m+1),2);
+					error+=pow(Geom_Acc->GetBinError(R+1,lat+1,m+1)*Correction->GetBinContent(R+1,m+1),2);
 					error=pow(error,0.5);
-					Geom_Acc->SetBinError(R+1,lat+1,error);
+					Geom_Acc->SetBinError(R+1,lat+1,m+1,error);
 				}
 			}
 
-	}
-
 	//correct total acceptance
-	if(S == 1) {
-		Corrected_Acc    -> Multiply( Correction   );	
-	}
 
-	else {
-		if(n>1){
-			for(int m=0;m<n;m++)
-				for(int R=0;R<Corrected_Acc->GetNbinsX();R++)
-					for(int sel =0; sel < S; sel++){
-						Corrected_Acc -> SetBinContent(R+1,m+1, Corrected_Acc -> GetBinContent(R+1,m+1)*Correction -> GetBinContent(R+1,m+1,sel+1) );
-						error=pow(Corrected_Acc -> GetBinContent(R+1,m+1)*Correction->GetBinError(R+1,m+1,sel+1),2);
-						error+=pow(Corrected_Acc -> GetBinError(R+1,m+1)*Correction->GetBinContent(R+1,m+1,sel+1),2);
-						error=pow(error,0.5);
-						Corrected_Acc -> SetBinError(R+1,m+1,sel+1,error);
+	for(int m=0;m<n;m++)
+		for(int R=0;R<Corrected_Acc->GetNbinsX();R++)
+			for(int sel =0; sel < S; sel++){
+				Corrected_Acc -> SetBinContent(R+1,m+1, Corrected_Acc -> GetBinContent(R+1,m+1)*Correction -> GetBinContent(R+1,m+1) );
+				error=pow(Corrected_Acc -> GetBinContent(R+1,m+1)*Correction->GetBinError(R+1,m+1),2);
+				error+=pow(Corrected_Acc -> GetBinError(R+1,m+1)*Correction->GetBinContent(R+1,m+1),2);
+				error=pow(error,0.5);
+				Corrected_Acc -> SetBinError(R+1,m+1,sel+1,error);
 
-					}			
-		}
-		else{
-			cout<<Corrected_Acc -> ClassName()<<endl;
-			for(int R=0;R<Corrected_Acc->GetNbinsX();R++)
-				for(int sel =0; sel < S; sel++){
-					Corrected_Acc -> SetBinContent(R+1,Corrected_Acc -> GetBinContent(R+1)*Correction -> GetBinContent(R+1,sel+1) );
-					error=pow(Corrected_Acc -> GetBinContent(R+1)*Correction->GetBinError(R+1,sel+1),2);
-					error+=pow(Corrected_Acc -> GetBinError(R+1)*Correction->GetBinContent(R+1,sel+1),2);
-					error=pow(error,0.5);
-					Corrected_Acc -> SetBinError(R+1,error);
-				}
-
-		}
-	}
+			}			
 
 }
 #endif
+
+
+
+

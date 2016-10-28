@@ -73,6 +73,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
    if(INDX==BUILDALL) {
       InizializeEff();
+      Initialize_DVSMCpre();
       LoopOnMCTrig(ntupMCTrig);
    }
    if(INDX==BUILDALL||INDX==BUILDSEPD) {
@@ -121,7 +122,6 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DeutonsMC_Write();
       DeutonsMC_Dist_Write();
       DVSMCPreSeleff_Write();
-      DVSMCPreSeleffD_Write();
       DVSMCQualeff2_Write();
       DVSMCRICHeff_Write();
       DVSMCQualeffD_Write();
@@ -143,6 +143,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    
 
    string finalfilename="./Final_plots/"+mese+".root";
+   //string finalfilename ="/home/AMS/fdimicco/"+mese+".root";
    finalPlots.setName(finalfilename);
    finalHistos.setName(filename);  
    INDX = READ; 	
@@ -161,7 +162,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       MCTrackeff(filename);
       AntiDCutOptimization(filename);	
       AntiDEfficiencies(filename);
-      MCQcheck(filename);
+      //if(frac=="tot") MCQcheck(filename);
       BadEventStudy(filename);
       MCFullseteff(filename);
       MigrationMatrix(filename);
@@ -172,20 +173,20 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATAQualeff(filename);
       DATARICHeff(filename);
       DATAEdepLAT(filename);
-      if(frac=="tot") DeutonsTemplFits(filename,frac);
-      if(frac=="tot") DeutonsTemplFits_Dist(filename,frac);	
+      DeutonsTemplFits(filename,frac);
+      DeutonsTemplFits_Dist(filename,frac);	
 
       CorrLAT(filename);
       DVSMCPreSeleff(filename);
-      DVSMCPreSeleffD(filename);
       DVSMCRICHeff(filename);
       DVSMCQualeff2(filename);
-      DVSMCQualeffD(filename);
+      //DVSMCQualeffD(filename);
+      DVSMCFullset(filename);
       Acceptance(filename);
       AntiDpredictions(filename);
       ProtonFlux(filename);
-      if(frac=="tot")DeutonFlux(filename);
-      if(frac=="tot")OtherExperimentsComparison(filename);
+      DeutonFlux(filename);
+      OtherExperimentsComparison(filename);
    }
 
 
@@ -308,7 +309,6 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
       FluxFactorizationtest_Pre_Fill();
       DVSMCTrackeff_Fill();
       DVSMCPreSeleff_Fill();
-      DVSMCPreSeleffD_Fill();
    }
    cout << endl;
    return;
@@ -405,7 +405,6 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 		DATApreSeleff_Fill(Zona);
 		DVSMCTrackeff_D_Fill(); // < Check if needs the ones before
 		DVSMCPreSeleff_D_Fill(Zona);
-		DVSMCPreSeleffD_D_Fill(Zona);
 	}
 	cout << endl;
 	return;

@@ -1,9 +1,9 @@
-void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
-		TH1 *PreSel_Correction_TOF,
-		TH1 *PreSel_Correction_NaF,
-		TH1 *PreSel_Correction_Agl,
-		TH1 *	EffData_R 	,		
-		TH1 *       EffMC_R   
+void 	DVSMCPreSeleff_Plot(TH1F *PreSel_Correction_R[]  ,
+		TH1F *PreSel_Correction_TOF[],
+		TH1F *PreSel_Correction_NaF[],
+		TH1F *PreSel_Correction_Agl[],
+		TH1F *	EffData_R[] 	,		
+		TH1F *  EffMC_R[]   
 
 		){
 
@@ -35,9 +35,9 @@ void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
 		PreSel_Correction_R_Graph[S]->SetName(("Data vs MC: "+tagli[S] +"_R").c_str());
 		int j=0;
 		for(int i=0;i<nbinsr;i++) {
-			if(PreSel_Correction_R -> GetBinContent(i+1,S+1)>0){
-				PreSel_Correction_R_Graph[S]->SetPoint(j,PRB.RigBinCent(i),PreSel_Correction_R -> GetBinContent(i+1,S+1));
-				PreSel_Correction_R_Graph[S]->SetPointError(j,0,PreSel_Correction_R -> GetBinError(i+1,S+1));
+			if(PreSel_Correction_R[S] -> GetBinContent(i+1)>0){
+				PreSel_Correction_R_Graph[S]->SetPoint(j,PRB.RigBinCent(i),PreSel_Correction_R[S] -> GetBinContent(i+1));
+				PreSel_Correction_R_Graph[S]->SetPointError(j,0,PreSel_Correction_R[S] -> GetBinError(i+1));
 				j++;
 			}
 		}
@@ -56,9 +56,9 @@ void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
 		MCEff_Graph[S]->SetName(("Data vs MC: "+tagli[S] +"_R").c_str());
 		j=0;
 		for(int i=0;i<nbinsr;i++) {
-			if(EffMC_R  -> GetBinContent(i+1,S+1)>0){
-				MCEff_Graph[S]->SetPoint(j,PRB.RigBinCent(i),EffMC_R   -> GetBinContent(i+1,S+1));
-				MCEff_Graph[S]->SetPointError(j,0,EffMC_R   -> GetBinError(i+1,S+1));
+			if(EffMC_R[S]  -> GetBinContent(i+1)>0){
+				MCEff_Graph[S]->SetPoint(j,PRB.RigBinCent(i),EffMC_R[S]   -> GetBinContent(i+1));
+				MCEff_Graph[S]->SetPointError(j,0,EffMC_R[S]   -> GetBinError(i+1));
 				j++;
 			}
 		}
@@ -71,9 +71,9 @@ void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
 		DATAEff_Graph[S] = new TGraphErrors(); DATAEff_Graph[S]->SetName(("Data vs MC: "+tagli[S] +"_R").c_str());
 		j=0;
 		for(int i=1;i<nbinsr;i++) {
-			if(EffData_R  -> GetBinContent(i+1,S+1)>0){
-				DATAEff_Graph[S]->SetPoint(j,PRB.RigBinCent(i),EffData_R   -> GetBinContent(i+1,S+1));
-				DATAEff_Graph[S]->SetPointError(j,0,EffData_R   -> GetBinError(i+1,S+1));
+			if(EffData_R[S]  -> GetBinContent(i+1)>0){
+				DATAEff_Graph[S]->SetPoint(j,PRB.RigBinCent(i),EffData_R[S]   -> GetBinContent(i+1));
+				DATAEff_Graph[S]->SetPointError(j,0,EffData_R[S]   -> GetBinError(i+1));
 				j++;
 			}
 		}
@@ -98,9 +98,9 @@ void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
 
 		j=0;
 		for(int i=1;i<nbinsToF;i++) {
-			if(PreSel_Correction_TOF -> GetBinContent(i+1,S+1)>0){
-				PreSel_Correction_TOF_Graph[S]->SetPoint(j,ToFPB.EkPerMassBinCent(i),PreSel_Correction_TOF -> GetBinContent(i+1,S+1));
-				PreSel_Correction_TOF_Graph[S]->SetPointError(j,0,PreSel_Correction_TOF -> GetBinError(i+1,S+1));
+			if(PreSel_Correction_TOF[S] -> GetBinContent(i+1)>0){
+				PreSel_Correction_TOF_Graph[S]->SetPoint(j,ToFPB.EkPerMassBinCent(i),PreSel_Correction_TOF[S] -> GetBinContent(i+1));
+				PreSel_Correction_TOF_Graph[S]->SetPointError(j,0,PreSel_Correction_TOF[S] -> GetBinError(i+1));
 				j++;
 			}
 		}
@@ -117,9 +117,9 @@ void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
 		PreSel_Correction_NaF_Graph[S] = new TGraphErrors();
 		j=0;
 		for(int i=1;i<nbinsNaF;i++) {
-			if(PreSel_Correction_NaF -> GetBinContent(i+1,S+1)>0){
-				PreSel_Correction_NaF_Graph[S]->SetPoint(j,ToFPB.EkPerMassBinCent(i),PreSel_Correction_NaF -> GetBinContent(i+1,S+1));
-				PreSel_Correction_NaF_Graph[S]->SetPointError(j,0,PreSel_Correction_NaF -> GetBinError(i+1,S+1));
+			if(PreSel_Correction_NaF[S] -> GetBinContent(i+1)>0){
+				PreSel_Correction_NaF_Graph[S]->SetPoint(j,ToFPB.EkPerMassBinCent(i),PreSel_Correction_NaF[S] -> GetBinContent(i+1));
+				PreSel_Correction_NaF_Graph[S]->SetPointError(j,0,PreSel_Correction_NaF[S] -> GetBinError(i+1));
 				j++;
 			}
 		}
@@ -136,9 +136,9 @@ void 	DVSMCPreSeleff_Plot(TH1 *PreSel_Correction_R  ,
 		PreSel_Correction_Agl_Graph[S] = new TGraphErrors();
 		j=0;
 		for(int i=1;i<nbinsToF;i++) {
-			if(PreSel_Correction_Agl -> GetBinContent(i+1,S+1)>0){
-				PreSel_Correction_Agl_Graph[S]->SetPoint(j,ToFPB.EkPerMassBinCent(i),PreSel_Correction_Agl -> GetBinContent(i+1,S+1));
-				PreSel_Correction_Agl_Graph[S]->SetPointError(j,0,PreSel_Correction_Agl -> GetBinError(i+1,S+1));
+			if(PreSel_Correction_Agl[S] -> GetBinContent(i+1)>0){
+				PreSel_Correction_Agl_Graph[S]->SetPoint(j,ToFPB.EkPerMassBinCent(i),PreSel_Correction_Agl[S] -> GetBinContent(i+1));
+				PreSel_Correction_Agl_Graph[S]->SetPointError(j,0,PreSel_Correction_Agl[S] -> GetBinError(i+1));
 				j++;
 			}
 		}
