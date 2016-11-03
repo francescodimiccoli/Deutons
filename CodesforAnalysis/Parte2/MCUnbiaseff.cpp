@@ -31,13 +31,13 @@ void MCUnbiaseff_Fill() {
    if(Massa_gen>1&&Massa_gen<2) {
       //R bins
       Kbin=PRB.GetRBin(fabs(Tup.Momento_gen));
-      FillBinMGen(EffUnbiasMCD->beforeR, Kbin);
-      if(trgpatt.IsPhysical()) FillBinMGen(EffUnbiasMCD->afterR , Kbin);
+      FillBinMGen(EffUnbiasMCD->beforeR, Kbin,Tup.mcweight);
+      if(trgpatt.IsPhysical()) FillBinMGen(EffUnbiasMCD->afterR , Kbin,Tup.mcweight);
       
       //Beta bins
       Kbin=ToFDB.GetBin(Tup.Momento_gen);
-      FillBinMGen(EffUnbiasMCD->beforeTOF, Kbin);
-      if(trgpatt.IsPhysical()) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin);
+      FillBinMGen(EffUnbiasMCD->beforeTOF, Kbin,Tup.mcweight);
+      if(trgpatt.IsPhysical()) FillBinMGen(EffUnbiasMCD->afterTOF , Kbin,Tup.mcweight);
       
    }
 

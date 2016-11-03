@@ -54,9 +54,9 @@ void DATAEdepLAT(string filename){
 
 
 	for(int i=1;i<11;i++){
-		EdepUTOF_coll[i]=  ProjectionXtoTH1F(EdepUTOF_lat,  ("Geo. Zone" + to_string(i)).c_str(), i, i);	
-		EdepLTOF_coll[i]=  ProjectionXtoTH1F(EdepLTOF_lat,  ("Geo. Zone" + to_string(i)).c_str(), i, i);	
-		EdepTrack_coll[i]= ProjectionXtoTH1F(EdepTrack_lat, ("Geo. Zone" + to_string(i)).c_str(), i, i);	
+		EdepUTOF_coll[i]=  ProjectionXtoTH1F(EdepUTOF_lat,  ("Geo. Zone" + to_string(i)).c_str(), i+1, i+1);	
+		EdepLTOF_coll[i]=  ProjectionXtoTH1F(EdepLTOF_lat,  ("Geo. Zone" + to_string(i)).c_str(), i+1, i+1);	
+		EdepTrack_coll[i]= ProjectionXtoTH1F(EdepTrack_lat, ("Geo. Zone" + to_string(i)).c_str(), i+1, i+1);	
 		
 	}
 
@@ -65,9 +65,9 @@ void DATAEdepLAT(string filename){
 	
 	for(int i=1;i<11;i++){
 	
-		EdepUTOF_coll[i] -> Scale(1/EdepUTOF_coll[i]->GetEntries());
-                EdepLTOF_coll[i] -> Scale(1/EdepLTOF_coll[i]->GetEntries());
-                EdepTrack_coll[i]-> Scale(1/EdepTrack_coll[i]->GetEntries());
+		if(EdepUTOF_coll[i]->GetEntries()>0)  EdepUTOF_coll[i] -> Scale(1/EdepUTOF_coll[i]->GetEntries());
+                if(EdepLTOF_coll[i]->GetEntries()>0)  EdepLTOF_coll[i] -> Scale(1/EdepLTOF_coll[i]->GetEntries());
+                if(EdepTrack_coll[i]->GetEntries()>0) EdepTrack_coll[i]-> Scale(1/EdepTrack_coll[i]->GetEntries());
 	}
 
 

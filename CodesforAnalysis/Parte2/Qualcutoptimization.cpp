@@ -163,19 +163,23 @@ void DistanceCut(string filename){
         TH2F * DistvsLikAgl_P = (TH2F*)inputHistoFile->Get( "DistvsLikAgl_P" );
         TH2F * DistvsLikAgl_D = (TH2F*)inputHistoFile->Get( "DistvsLikAgl_D" );
 
-	TH1F * Distance_goodD_TOF = ProjectionYtoTH1F(DistvsLikTOF_D , "Distance_goodD_TOF",0,DistvsLikTOF_D->GetNbinsY());
-	TH1F * Distance_badP_TOF =  ProjectionYtoTH1F(DistvsLikTOF_P , "Distance_badP_TOF ",0,DistvsLikTOF_P->GetNbinsY());
-	TH1F * Distance_goodD_NaF = ProjectionYtoTH1F(DistvsLikNaF_D , "Distance_goodD_NaF",0,DistvsLikNaF_D->GetNbinsY());
-        TH1F * Distance_badP_NaF =  ProjectionYtoTH1F(DistvsLikNaF_P , "Distance_badP_NaF ",0,DistvsLikNaF_P->GetNbinsY());
-	TH1F * Distance_goodD_Agl = ProjectionYtoTH1F(DistvsLikAgl_D , "Distance_goodD_Agl",0,DistvsLikAgl_D->GetNbinsY());
-        TH1F * Distance_badP_Agl =  ProjectionYtoTH1F(DistvsLikAgl_P , "Distance_badP_Agl ",0,DistvsLikAgl_P->GetNbinsY());
+	TH1F * Lik_goodD_TOF = ProjectionXtoTH1F(DistvsLikTOF_D , "Lik_goodD_TOF",0,DistvsLikTOF_D->GetNbinsY());
+        TH1F * Lik_badP_TOF = ProjectionXtoTH1F(DistvsLikTOF_P ,  "Lik_badP_TOF ",0,DistvsLikTOF_P->GetNbinsY());
+        TH1F * Lik_goodD_NaF = ProjectionXtoTH1F(DistvsLikNaF_D , "Lik_goodD_NaF",0,DistvsLikNaF_D->GetNbinsY());
+        TH1F * Lik_badP_NaF = ProjectionXtoTH1F(DistvsLikNaF_P ,  "Lik_badP_NaF ",0,DistvsLikNaF_P->GetNbinsY());
+        TH1F * Lik_goodD_Agl = ProjectionXtoTH1F(DistvsLikAgl_D , "Lik_goodD_Agl",0,DistvsLikAgl_D->GetNbinsY());
+        TH1F * Lik_badP_Agl = ProjectionXtoTH1F(DistvsLikAgl_P ,  "Lik_badP_Agl ",0,DistvsLikAgl_P->GetNbinsY());
 
-	TH1F * Lik_goodD_TOF = ProjectionXtoTH1F(DistvsLikTOF_D , "Lik_goodD_TOF",0,DistvsLikTOF_D->GetNbinsX());
-        TH1F * Lik_badP_TOF = ProjectionXtoTH1F(DistvsLikTOF_P ,  "Lik_badP_TOF ",0,DistvsLikTOF_P->GetNbinsX());
-        TH1F * Lik_goodD_NaF = ProjectionXtoTH1F(DistvsLikNaF_D , "Lik_goodD_NaF",0,DistvsLikNaF_D->GetNbinsX());
-        TH1F * Lik_badP_NaF = ProjectionXtoTH1F(DistvsLikNaF_P ,  "Lik_badP_NaF ",0,DistvsLikNaF_P->GetNbinsX());
-        TH1F * Lik_goodD_Agl = ProjectionXtoTH1F(DistvsLikAgl_D , "Lik_goodD_Agl",0,DistvsLikAgl_D->GetNbinsX());
-        TH1F * Lik_badP_Agl = ProjectionXtoTH1F(DistvsLikAgl_P ,  "Lik_badP_Agl ",0,DistvsLikAgl_P->GetNbinsX());
+	
+	TH1F * Distance_goodD_TOF = ProjectionYtoTH1F(DistvsLikTOF_D , "Distance_goodD_TOF",40,DistvsLikTOF_D->GetNbinsX());
+        TH1F * Distance_badP_TOF =  ProjectionYtoTH1F(DistvsLikTOF_P , "Distance_badP_TOF ",40,DistvsLikTOF_P->GetNbinsX());
+        TH1F * Distance_goodD_NaF = ProjectionYtoTH1F(DistvsLikNaF_D , "Distance_goodD_NaF",55,DistvsLikNaF_D->GetNbinsX());
+        TH1F * Distance_badP_NaF =  ProjectionYtoTH1F(DistvsLikNaF_P , "Distance_badP_NaF ",55,DistvsLikNaF_P->GetNbinsX());
+        TH1F * Distance_goodD_Agl = ProjectionYtoTH1F(DistvsLikAgl_D , "Distance_goodD_Agl",55,DistvsLikAgl_D->GetNbinsX());
+        TH1F * Distance_badP_Agl =  ProjectionYtoTH1F(DistvsLikAgl_P , "Distance_badP_Agl ",55,DistvsLikAgl_P->GetNbinsX());
+
+
+
 
 	TH2F * Sum_TOF = (TH2F *) Dist5D_PdistrP_TOF -> Clone();
 	Sum_TOF -> Add((TH2F *)Dist5D_PdistrD_TOF,10);

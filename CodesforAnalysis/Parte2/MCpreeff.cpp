@@ -6,6 +6,14 @@ using namespace std;
 
 Efficiency * EffpreselMCP = new Efficiency("EffpreselMCP");
 Efficiency * EffpreselMCD = new Efficiency("EffpreselMCD", 6);
+
+Efficiency * EffpreselMCP_Now = new Efficiency("EffpreselMCP_Now");
+Efficiency * EffpreselMCD_Now = new Efficiency("EffpreselMCD_Now", 6);
+
+
+
+
+
 Efficiency * EffCascadeMCP[5];
 Efficiency * EffCascadeRICHMCP[4];
 
@@ -27,6 +35,7 @@ void MCpreseff_Fill() {
 	if(Massa_gen<1&&Massa_gen>0.5) {
 		//R bins
 		EffpreselMCP->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
+		EffpreselMCP_Now->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),1);
 
 		if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0) 
 			EffpreselMCP->afterR->Fill(PRB.GetRBin(RUsed),Tup.mcweight);
@@ -36,6 +45,12 @@ void MCpreseff_Fill() {
 		EffpreselMCP->beforeTOF->Fill(ToFPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
 		EffpreselMCP->beforeNaF->Fill(NaFPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
 		EffpreselMCP->beforeAgl->Fill(AglPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
+
+		EffpreselMCP_Now->beforeTOF->Fill(ToFPB.GetBin(Tup.Momento_gen),1);	
+		EffpreselMCP_Now->beforeNaF->Fill(NaFPB.GetBin(Tup.Momento_gen),1);	
+		EffpreselMCP_Now->beforeAgl->Fill(AglPB.GetBin(Tup.Momento_gen),1);	
+
+
 
 		if(cmask.isPreselected() && Tup.Beta_pre>0 && Tup.R_pre>0)
 		{
@@ -113,7 +128,7 @@ void MCpreseff_Fill() {
 	if(Massa_gen<1&&Massa_gen>0.5&&trgpatt.IsPhysical()){
 		RInner->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
                 R_L1->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
-		if(Tup.R_pre>0) RInner->afterR->Fill(PRB.GetRBin(Tup.Momento_gen));
+		if(Tup.R_pre>0) RInner->afterR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 		if(Tup.R_L1>0) R_L1->afterR->Fill(PRB.GetRBin(Tup.Momento_gen));
 	}
 
@@ -121,6 +136,8 @@ void MCpreseff_Fill() {
 	if(Massa_gen>1&&Massa_gen<2) {
 		// R bins      
 		((TH2*)EffpreselMCD->beforeR) ->Fill( DRB.GetRBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight);
+		((TH2*)EffpreselMCD_Now->beforeR) ->Fill( DRB.GetRBin(Tup.Momento_gen),ReturnMCGenType(),1);
+	
 		if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0)
 			((TH2*) EffpreselMCD->afterR) ->Fill( DRB.GetRBin(RUsed),ReturnMCGenType(),Tup.mcweight);
 
@@ -129,6 +146,11 @@ void MCpreseff_Fill() {
 		((TH2*)EffpreselMCD->beforeTOF)->Fill( ToFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
 		((TH2*)EffpreselMCD->beforeNaF)->Fill( NaFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
 		((TH2*)EffpreselMCD->beforeAgl)->Fill( AglDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
+
+		((TH2*)EffpreselMCD_Now->beforeTOF)->Fill( ToFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),1); 
+		((TH2*)EffpreselMCD_Now->beforeNaF)->Fill( NaFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),1); 
+		((TH2*)EffpreselMCD_Now->beforeAgl)->Fill( AglDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),1); 
+
 
 		if(cmask.isPreselected() && Tup.Beta_pre>0 && Tup.R_pre>0)
 		{
@@ -152,6 +174,9 @@ void MCpreseff_Fill() {
 void MCpreeff_Write() {
 	EffpreselMCP->Write();
 	EffpreselMCD->Write();
+	EffpreselMCP_Now->Write();
+	EffpreselMCD_Now->Write();
+	
 	for(int i=0;i<5;i++) EffCascadeMCP[i]->Write();
 	for(int i=0;i<4;i++) EffCascadeRICHMCP[i]->Write();
 	

@@ -74,6 +74,12 @@ void DVSMCFullset(string filename){
 
 	cout<<"******* Data vs MC: FULL SET ********"<<endl;
 	
+	DatavsMC * Presel_DvsMC_P = new DatavsMC(PreSel_DvsMC_P[0],"Presel_DvsMC_P");	
+	
+	for(int sel=1;sel<3;sel++) Presel_DvsMC_P -> ComposeCorrection(PreSel_DvsMC_P[sel],1,1);
+	
+
+
 	DatavsMC * Fullset_DvsMC_P = new DatavsMC(Dist_DvsMC_P,"Fullset_DvsMC_P");
 
 	Fullset_DvsMC_P -> ComposeCorrection(Lik_DvsMC_P,10,10);
@@ -88,6 +94,7 @@ void DVSMCFullset(string filename){
 
 	cout<<"*************SYST ERR**************"<<endl;
 
+	Presel_DvsMC_P -> Eval_SystError();
 	Fullset_DvsMC_P -> Eval_SystError();
 
 	TH2F* SystFullset_R   =(TH2F*) Fullset_DvsMC_P -> GetSystPlot_R()  ;
@@ -98,8 +105,29 @@ void DVSMCFullset(string filename){
 
 	cout<<"************* FIT **************"<<endl;
 
-	Fullset_DvsMC_P -> Eval_FittedCorrections();
+	Presel_DvsMC_P -> Eval_FittedCorrections();	
+	
+	TH1F* Presel_CorrectionFit_R    =(TH1F*) Presel_DvsMC_P -> GetCorrection_R(1)  ;
+	TH1F* Presel_CorrectionFit_TOF  =(TH1F*) Presel_DvsMC_P -> GetCorrection_TOF(1);
+	TH1F* Presel_CorrectionFit_NaF  =(TH1F*) Presel_DvsMC_P -> GetCorrection_NaF(1);
+	TH1F* Presel_CorrectionFit_Agl  =(TH1F*) Presel_DvsMC_P -> GetCorrection_Agl(1);
 
+	TH1F* Presel_StatFit_R    =(TH1F*) Presel_DvsMC_P -> GetStatErr_R()  ; 
+	TH1F* Presel_StatFit_TOF  =(TH1F*) Presel_DvsMC_P -> GetStatErr_TOF(); 
+	TH1F* Presel_StatFit_NaF  =(TH1F*) Presel_DvsMC_P -> GetStatErr_NaF(); 
+	TH1F* Presel_StatFit_Agl  =(TH1F*) Presel_DvsMC_P -> GetStatErr_Agl(); 
+
+	TH1F* Presel_SystFit_R    =(TH1F*) Presel_DvsMC_P -> GetSystErr_R()  ; 
+	TH1F* Presel_SystFit_TOF  =(TH1F*) Presel_DvsMC_P -> GetSystErr_TOF(); 
+	TH1F* Presel_SystFit_NaF  =(TH1F*) Presel_DvsMC_P -> GetSystErr_NaF(); 
+	TH1F* Presel_SystFit_Agl  =(TH1F*) Presel_DvsMC_P -> GetSystErr_Agl(); 
+
+	Presel_CorrectionFit_R    -> SetName("Presel_DvsMC_P_CorrectionR"  );
+	Presel_CorrectionFit_TOF  -> SetName("Presel_DvsMC_P_CorrectionTOF");
+	Presel_CorrectionFit_NaF  -> SetName("Presel_DvsMC_P_CorrectionNaF");
+	Presel_CorrectionFit_Agl  -> SetName("Presel_DvsMC_P_CorrectionAgl");
+
+	Fullset_DvsMC_P -> Eval_FittedCorrections();
 
 	TH1F* Fullset_CorrectionFit_R    =(TH1F*) Fullset_DvsMC_P -> GetCorrection_R(10)  ;
 	TH1F* Fullset_CorrectionFit_TOF  =(TH1F*) Fullset_DvsMC_P -> GetCorrection_TOF(10);
@@ -116,12 +144,10 @@ void DVSMCFullset(string filename){
 	TH1F* Fullset_SystFit_NaF  =(TH1F*) Fullset_DvsMC_P -> GetSystErr_NaF(); 
 	TH1F* Fullset_SystFit_Agl  =(TH1F*) Fullset_DvsMC_P -> GetSystErr_Agl(); 
 
-
 	Fullset_CorrectionFit_R    -> SetName("Fullset_DvsMC_P_CorrectionR"  );
 	Fullset_CorrectionFit_TOF  -> SetName("Fullset_DvsMC_P_CorrectionTOF");
 	Fullset_CorrectionFit_NaF  -> SetName("Fullset_DvsMC_P_CorrectionNaF");
 	Fullset_CorrectionFit_Agl  -> SetName("Fullset_DvsMC_P_CorrectionAgl");
-
 
 	TH2F * SystPlot_R   = (TH2F *)Fullset_DvsMC_P -> GetSystPlot_R();
 	TH2F * SystPlot_TOF = (TH2F *)Fullset_DvsMC_P -> GetSystPlot_TOF();
@@ -130,6 +156,21 @@ void DVSMCFullset(string filename){
 	
 	
 
+	finalHistos.Add(Presel_CorrectionFit_R   );
+	finalHistos.Add(Presel_CorrectionFit_TOF );
+	finalHistos.Add(Presel_CorrectionFit_NaF );
+	finalHistos.Add(Presel_CorrectionFit_Agl );
+
+	finalHistos.Add(Presel_StatFit_R   );
+	finalHistos.Add(Presel_StatFit_TOF );
+	finalHistos.Add(Presel_StatFit_NaF );
+	finalHistos.Add(Presel_StatFit_Agl );
+	
+	finalHistos.Add(Presel_SystFit_R   );
+	finalHistos.Add(Presel_SystFit_TOF );
+	finalHistos.Add(Presel_SystFit_NaF );
+	finalHistos.Add(Presel_SystFit_Agl );
+	
 	finalHistos.Add(Fullset_CorrectionFit_R   );
 	finalHistos.Add(Fullset_CorrectionFit_TOF );
 	finalHistos.Add(Fullset_CorrectionFit_NaF );
@@ -144,8 +185,6 @@ void DVSMCFullset(string filename){
 	finalHistos.Add(Fullset_SystFit_TOF );
 	finalHistos.Add(Fullset_SystFit_NaF );
 	finalHistos.Add(Fullset_SystFit_Agl );
-	
-
 	
 	finalHistos.Add(SystFullset_R   );
         finalHistos.Add(SystFullset_TOF );

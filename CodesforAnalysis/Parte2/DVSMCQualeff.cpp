@@ -12,7 +12,7 @@ void DVSMCQualeff2_D_Fill(int zona){
 	if(!trgpatt.IsPhysical()) return;
 	if(!Herejcut) return;
 	//if(Tup.EdepL1<=0.01) return;
-
+	if(!ProtonsMassWindow) return;
 
 	int Kbin;
 	float mass = 0;
@@ -25,11 +25,11 @@ void DVSMCQualeff2_D_Fill(int zona){
 	Kbin = PRB.GetRBin(Tup.R);
 
 	for(int s=0;s<20;s++) {
-		if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {
+		if(Qualitycut(log(1-Tup.LDiscriminant),-0.5-0.05*s,-1.5-0.05*s,-1.8-0.05*s)) {
 			Dist_DvsMC_P -> DataEff[s] -> beforeR -> Fill(Kbin,zona);
 			if(Distcut) Dist_DvsMC_P -> DataEff[s] -> afterR -> Fill(Kbin,zona);
 		}
-		float cut = 2+0.1*2;
+		float cut = 43 -s;
 		if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 			Lik_DvsMC_P  -> DataEff[s] -> beforeR -> Fill(Kbin,zona);
 			if(Likcut) Lik_DvsMC_P  -> DataEff[s] -> afterR -> Fill(Kbin,zona);
@@ -41,11 +41,11 @@ void DVSMCQualeff2_D_Fill(int zona){
 	mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));	
 
 	for(int s=0;s<20;s++) {
-		if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {	
+		if(Qualitycut(log(1-Tup.LDiscriminant),-0.5-0.05*s,-1.5-0.05*s,-1.8-0.05*s)) {	
 			Dist_DvsMC_P -> DataEff[s] -> beforeTOF -> Fill(Kbin,zona);
 			if(Distcut) Dist_DvsMC_P -> DataEff[s] -> afterTOF -> Fill(Kbin,zona);
 		}
-		float cut = 2+0.1*s;
+		float cut = 43 -s;
 		if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 			Lik_DvsMC_P  -> DataEff[s] -> beforeTOF -> Fill(Kbin,zona);
 			if(Likcut) Lik_DvsMC_P  -> DataEff[s] -> afterTOF -> Fill(Kbin,zona);
@@ -58,11 +58,11 @@ void DVSMCQualeff2_D_Fill(int zona){
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 		for(int s=0;s<20;s++) {
 
-			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {
+			if(Qualitycut(log(1-Tup.LDiscriminant),-0.5-0.05*s,-1.5-0.05*s,-1.8-0.05*s)) {
 				Dist_DvsMC_P -> DataEff[s] -> beforeNaF -> Fill(Kbin,zona);
 				if(Distcut) Dist_DvsMC_P -> DataEff[s] -> afterNaF -> Fill(Kbin,zona);
 			}
-			float cut = 2+0.1*s;
+			float cut = 43 -s;
 			if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 
 				Lik_DvsMC_P  -> DataEff[s] -> beforeNaF -> Fill(Kbin,zona);
@@ -77,12 +77,12 @@ void DVSMCQualeff2_D_Fill(int zona){
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 		for(int s=0;s<20;s++) {
 
-			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {
+			if(Qualitycut(log(1-Tup.LDiscriminant),-0.5-0.05*s,-1.5-0.05*s,-1.8-0.05*s)) {
 				Dist_DvsMC_P -> DataEff[s] -> beforeAgl -> Fill(Kbin,zona);
 				if(Distcut) Dist_DvsMC_P -> DataEff[s] -> afterAgl -> Fill(Kbin,zona);
 			}
 
-			float cut = 2+0.1*s;
+			float cut = 43 -s;
 			if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 				Lik_DvsMC_P  -> DataEff[s] -> beforeAgl -> Fill(Kbin,zona);
 				if(Likcut) Lik_DvsMC_P  -> DataEff[s] -> afterAgl -> Fill(Kbin,zona);
@@ -99,8 +99,9 @@ void DVSMCQualeff2_Fill(){
 	//cuts
 	if(Tup.Beta<=0||Tup.R<=0) return;
 	if(!Herejcut) return;
-	if(!trgpatt.IsPhysical()) return;       
+	//if(!trgpatt.IsPhysical()) return;       
 	//if(Tup.EdepL1<=0.01) return;	
+	if(!ProtonsMassWindow) return;
 
 	//
 	int Kbin;
@@ -116,12 +117,12 @@ void DVSMCQualeff2_Fill(){
 		Kbin = PRB.GetRBin(Tup.R);
 		for(int s=0;s<20;s++) {
 
-			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) { 
+			if(Qualitycut(log(1-Tup.LDiscriminant),-0.5-0.05*s,-1.5-0.05*s,-1.8-0.05*s)) { 
 				Dist_DvsMC_P -> MCEff[s] -> beforeR -> Fill(Kbin,Tup.mcweight);
 				if(Distcut) Dist_DvsMC_P -> MCEff[s]-> afterR -> Fill(Kbin,Tup.mcweight);
 			}
 
-			float cut = 2+0.1*s;
+			float cut = 43 -s;
 			if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 				Lik_DvsMC_P  -> MCEff[s] -> beforeR -> Fill(Kbin,Tup.mcweight);
 				if(Likcut) Lik_DvsMC_P  -> MCEff[s] -> afterR -> Fill(Kbin,Tup.mcweight);
@@ -134,12 +135,12 @@ void DVSMCQualeff2_Fill(){
 		mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));
 		for(int s=0;s<20;s++) {
 
-			if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {                
+			if(Qualitycut(log(1-Tup.LDiscriminant),-0.5-0.05*s,-1.5-0.05*s,-1.8-0.05*s)) {                
 				Dist_DvsMC_P -> MCEff[s] -> beforeTOF -> Fill(Kbin,Tup.mcweight);
 				if(Distcut) Dist_DvsMC_P -> MCEff[s] -> afterTOF -> Fill(Kbin,Tup.mcweight);
 			}
 
-			float cut = 2+0.1*s;
+			float cut = 43 -s;
 			if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 				Lik_DvsMC_P  -> MCEff[s] -> beforeTOF -> Fill(Kbin,Tup.mcweight);
 				if(Likcut) Lik_DvsMC_P  -> MCEff[s] -> afterTOF -> Fill(Kbin,Tup.mcweight);
@@ -151,11 +152,11 @@ void DVSMCQualeff2_Fill(){
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			for(int s=0;s<20;s++) {
 
-				if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {
+				if(Qualitycut(log(1-Tup.LDiscriminant),-0.5-0.05*s,-1.5-0.05*s,-1.8-0.05*s)) {
 					Dist_DvsMC_P -> MCEff[s] -> beforeNaF -> Fill(Kbin,Tup.mcweight);
 					if(Distcut) Dist_DvsMC_P -> MCEff[s] -> afterNaF -> Fill(Kbin,Tup.mcweight);
 				}
-				float cut = 2+0.1*s;
+				float cut = 43 -s;
 				if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 					Lik_DvsMC_P  -> MCEff[s] -> beforeNaF -> Fill(Kbin,Tup.mcweight);
 					if(Likcut) Lik_DvsMC_P  -> MCEff[s] -> afterNaF -> Fill(Kbin,Tup.mcweight);
@@ -168,11 +169,11 @@ void DVSMCQualeff2_Fill(){
 			mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
 			for(int s=0;s<20;s++) {
 
-				if(Qualitycut(log(1-Tup.LDiscriminant),-0.1-s*0.04,-0.9-s*0.04,-0.9-s*0.04)) {
+				if(Qualitycut(log(1-Tup.LDiscriminant),-0.5-0.05*s,-1.5-0.05*s,-1.8-0.05*s)) {
 					Dist_DvsMC_P -> MCEff[s] -> beforeAgl -> Fill(Kbin,Tup.mcweight);
 					if(Distcut) Dist_DvsMC_P -> MCEff[s] -> afterAgl -> Fill(Kbin,Tup.mcweight);
 				}
-				float cut = 2+0.1*s;
+				float cut = 43 -s;
 				if(Tup.Dist5D<cut||Tup.Dist5D_P<cut){
 					Lik_DvsMC_P  -> MCEff[s] -> beforeAgl -> Fill(Kbin,Tup.mcweight);
 					if(Likcut) Lik_DvsMC_P  -> MCEff[s] -> afterAgl -> Fill(Kbin,Tup.mcweight);
@@ -236,6 +237,26 @@ void DVSMCQualeff2(string filename){
 	Dist_DvsMC_P ->Eval_Corrections();
 	Lik_DvsMC_P  ->Eval_Corrections();
 
+
+	TH1F* DistP_MCEff_R   =(TH1F*) Dist_DvsMC_P -> GetMCEff_R(10)  ;
+	TH1F* DistP_MCEff_TOF =(TH1F*) Dist_DvsMC_P -> GetMCEff_TOF(10);
+	TH1F* DistP_MCEff_NaF =(TH1F*) Dist_DvsMC_P -> GetMCEff_NaF(10);
+	TH1F* DistP_MCEff_Agl =(TH1F*) Dist_DvsMC_P -> GetMCEff_Agl(10);
+
+	TH1F* DistP_DataEff_R   =(TH1F*) Dist_DvsMC_P -> GetDataEff_R(10)  ;
+	TH1F* DistP_DataEff_TOF =(TH1F*) Dist_DvsMC_P -> GetDataEff_TOF(10);
+	TH1F* DistP_DataEff_NaF =(TH1F*) Dist_DvsMC_P -> GetDataEff_NaF(10);
+	TH1F* DistP_DataEff_Agl =(TH1F*) Dist_DvsMC_P -> GetDataEff_Agl(10);
+
+	TH1F* LikP_MCEff_R   =(TH1F*) Lik_DvsMC_P -> GetMCEff_R(10)  ;
+	TH1F* LikP_MCEff_TOF =(TH1F*) Lik_DvsMC_P -> GetMCEff_TOF(10);
+	TH1F* LikP_MCEff_NaF =(TH1F*) Lik_DvsMC_P -> GetMCEff_NaF(10);
+	TH1F* LikP_MCEff_Agl =(TH1F*) Lik_DvsMC_P -> GetMCEff_Agl(10);
+
+	TH1F* LikP_DataEff_R   =(TH1F*) Lik_DvsMC_P -> GetDataEff_R(10)  ;
+	TH1F* LikP_DataEff_TOF =(TH1F*) Lik_DvsMC_P -> GetDataEff_TOF(10);
+	TH1F* LikP_DataEff_NaF =(TH1F*) Lik_DvsMC_P -> GetDataEff_NaF(10);
+	TH1F* LikP_DataEff_Agl =(TH1F*) Lik_DvsMC_P -> GetDataEff_Agl(10);
 
 	TH1F* DistP_Correction_R   =(TH1F*) Dist_DvsMC_P -> GetCorrection_R(10)  ;
 	TH1F* DistP_Correction_TOF =(TH1F*) Dist_DvsMC_P -> GetCorrection_TOF(10);
@@ -335,8 +356,31 @@ void DVSMCQualeff2(string filename){
 			LikP_Correction_R   ,
 			LikP_Correction_TOF ,
 			LikP_Correction_NaF ,
-			LikP_Correction_Agl 
-			);
+			LikP_Correction_Agl , 
+			
+
+			DistP_MCEff_R  ,
+                        DistP_MCEff_TOF,
+                        DistP_MCEff_NaF,
+                        DistP_MCEff_Agl,
+                                                 
+                        LikP_MCEff_R   ,
+                        LikP_MCEff_TOF ,
+                        LikP_MCEff_NaF ,
+                        LikP_MCEff_Agl, 
+
+			DistP_DataEff_R  ,
+			DistP_DataEff_TOF,
+                        DistP_DataEff_NaF,
+                        DistP_DataEff_Agl,
+                                                
+                        LikP_DataEff_R   ,
+                        LikP_DataEff_TOF ,
+                        LikP_DataEff_NaF ,
+                        LikP_DataEff_Agl 
+
+
+);
 
 
 	return;

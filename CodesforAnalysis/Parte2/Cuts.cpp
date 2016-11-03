@@ -50,12 +50,12 @@ void Cuts()
 
    //likelihood cut
    Likcut=false;
-   Likcut=Qualitycut(log(1-Tup.LDiscriminant),-1,-2,-2.4);
+   Likcut=Qualitycut(log(1-Tup.LDiscriminant),-1,-3,-3);
 
    //Distance cut protons
 
    Distcut=false;
-   if(Qualitycut(Tup.Dist5D_P,3,2,3)||Qualitycut(Tup.Dist5D,3,2,3)) Distcut=true;
+   if(Qualitycut(Tup.Dist5D_P,3,3,3)||Qualitycut(Tup.Dist5D,3,3,3)) Distcut=true;
 
    /////////////////////Control sample cuts//////////////////////
 
@@ -98,6 +98,6 @@ void Cuts()
         if(Tup.Beta<protons->Eval(Tup.R)+0.1 && Tup.Beta>protons->Eval(Tup.R)-0.1) ProtonsMassWindow = true;
 
    ProtonsMassThres = false;
-        if(Tup.Beta>protons->Eval(Tup.R)) ProtonsMassThres = true;	
+        if((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5)>0.6) ProtonsMassThres = true;	
    return;
 }

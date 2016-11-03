@@ -2,6 +2,7 @@ using namespace std;
 
 
 void SetRisultatiBranchAddresses (TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtuple * ntupMCQcheck, TNtuple* ntupDataSepD, TNtuple* ntupDataTrig);
+void LowEnergyWeight();
 void LoopOnMCTrig(TNtuple*  ntupMCTrig);
 void LoopOnMCSepD(TNtuple* ntupMCSepD);
 void LoopOnMCQcheck(TNtuple* ntupMCQcheck);
@@ -151,7 +152,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    if(INDX==READ) {
       if(frac=="tot") Hecut(filename);
       SlidesforPlot(filename);
-      //DistanceCut(filename);
+      DistanceCut(filename);
       Correlazione_Preselezioni(filename);
 
       MCpreeff(filename);
@@ -292,14 +293,15 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
    EffUnbiasMCP = new Efficiency("EffUnbiasMCP");
    EffUnbiasMCD = new Efficiency("EffUnbiasMCD");
    for(int i=0; i<ntupMCTrig->GetEntries(); i++) {
-      ntupMCTrig->GetEvent(i);
+      ntupMCTrig->GetEvent(i);	
+      LowEnergyWeight();	
       cmask.setMask(Tup.Cutmask);
       trgpatt.SetTriggPatt(Tup.PhysBPatt); 
       Cuts_Pre();
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
-      Disable_MCreweighting();
+      //Disable_MCreweighting();
 
       MCpreseff_Fill();
       MCUnbiaseff_Fill();
@@ -322,6 +324,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
    int nentries=ntupMCSepD->GetEntries();
    for(int i=0; i<ntupMCSepD->GetEntries(); i++) {
       ntupMCSepD->GetEvent(i);
+      LowEnergyWeight();
       if(Tup.Beta<=0 || Tup.R<=0) continue;
       cmask.setMask(Tup.Cutmask);
       trgpatt.SetTriggPatt(Tup.PhysBPatt);
@@ -330,7 +333,7 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
-      Disable_MCreweighting();
+      //Disable_MCreweighting();
 
       HecutMC_Fill();
       SlidesforPlot_Fill();
@@ -359,6 +362,7 @@ void LoopOnMCQcheck(TNtuple* ntupMCQcheck){
 	int nentries=ntupMCQcheck->GetEntries();
 	for(int i=0; i<ntupMCQcheck->GetEntries(); i++) {
 	ntupMCQcheck->GetEvent(i);
+	LowEnergyWeight();
 	if(Tup.Beta<=0 || Tup.R<=0) continue;
 	cmask.setMask(Tup.Cutmask);
         trgpatt.SetTriggPatt(Tup.PhysBPatt);
@@ -467,7 +471,10 @@ float getGeoZone(float latitude)
 }
 
 
-
+void LowEnergyWeight(){
+	if(Tup.Momento_gen<=1)
+		Tup.mcweight=1;
+}
 
 
 

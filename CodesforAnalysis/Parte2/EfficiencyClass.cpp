@@ -1,31 +1,5 @@
 using namespace std;
 
-TH1 * SetErrors ( TH1 * Eff){
-        TH1 * Errors = (TH1 *)Eff->Clone();
-        for(int iR=0;iR<Eff->GetNbinsX();iR++)
-                for(int mc_types=0;mc_types<Eff->GetNbinsY();mc_types++)
-                        for(int S=0;S<Eff->GetNbinsZ();S++)
-                         Errors->SetBinContent(iR+1,mc_types+1,S+1,Eff->GetBinError(iR+1,mc_types+1,S+1)/Eff->GetBinContent(iR+1,mc_types+1,S+1));
-        return Errors;
-
-}
-
-void EvalError( TH1 * Eff, TH1 * stat, TH1 * syst){
-	cout<<Eff<<" "<<stat<<" "<<syst<<endl;
-        for(int iR=0;iR<Eff->GetNbinsX();iR++)
-                for(int mc_types=0;mc_types<Eff->GetNbinsY();mc_types++)
-                        for(int S=0;S<Eff->GetNbinsZ();S++){
-                                float Stat=0;
-				float Syst=0;
-				if(stat&&syst){ 
-				 Stat = stat->GetBinContent(iR+1,mc_types+1,S+1);
-                                 Syst = syst->GetBinContent(iR+1,mc_types+1,S+1);
-                                 Eff->SetBinError(iR+1,mc_types+1,S+1,pow(pow(Stat,2)+pow(Syst,2),0.5)*Eff->GetBinContent(iR+1,mc_types+1,S+1));
-				}
-                        }
-                return;
-}
-
 
 class Efficiency
 {
