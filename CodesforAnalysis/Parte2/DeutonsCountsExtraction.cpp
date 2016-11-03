@@ -276,20 +276,20 @@ void DeutonsTemplFits(string filename, string frac)
    FitTOFgeo_Dbins 	-> DisableFit();// 
    FitNaFgeo_Dbins 	-> DisableFit();// 
    FitAglgeo_Dbins 	-> DisableFit();// 
-
+/*
    FitTOF_Pbins 	-> DisableFit();// 
    FitNaF_Pbins 	-> DisableFit();// 
    FitAgl_Pbins 	-> DisableFit();// 
-
+*/
 
    /*FitTOFgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0025);
    FitNaFgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0015);
    FitAglgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0005);
-
-   FitTOF_Pbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.02,0.00,0.0025);
-   FitNaF_Pbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.02,0.00,0.0015);
-   FitAgl_Pbins 	->  SetFitConstraints(0.8,1,0.0001,0.02,0.00,0.0005);
-*/	
+   */
+   FitTOF_Pbins 	 ->  SetFitConstraints(ContaminationTOF,0.6,1,0.0001,0.05);
+   FitNaF_Pbins 	 ->  SetFitConstraints(ContaminationNaF,0.6,1,0.0001,0.05);
+   FitAgl_Pbins 	 ->  SetFitConstraints(ContaminationAgl,0.6,1,0.0001,0.05);
+	
    cout<<"** TOF **"<<endl;
    FitTOFgeo_Dbins -> TemplateFits();
    FitTOF_Pbins    -> TemplateFits();

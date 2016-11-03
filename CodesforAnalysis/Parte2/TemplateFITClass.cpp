@@ -192,7 +192,7 @@ void TemplateFIT::TemplateFits(int mc_type)
          if(TemplateFITenabled) PrintResults(bin,lat); 
 	 TH1F * Data          = GetResult_Data(bin,lat);
          if(!Geomag) {
-            PCounts -> SetBinContent(bin+1,Data->Integral()/*GetFitFraction(0,bin)*/);
+            PCounts -> SetBinContent(bin+1,GetResult_P(bin)->Integral());//Data->Integral()/*GetFitFraction(0,bin)*/);
             DCounts -> SetBinContent(bin+1,GetResult_D(bin)->Integral());
         //       PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
           //     DCounts -> SetBinError(bin+1,GetFitErrors(1,bin));
