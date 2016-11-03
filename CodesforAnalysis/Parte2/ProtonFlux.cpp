@@ -28,9 +28,10 @@ void ProtonFlux_Fill(int zona) {
 	
 	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
 
-	if(Herejcut && ProtonsMassWindow) P_Flux_pre -> Counts_R -> Fill(Kbin);
-	if(Distcut  && Likcut           ) P_Flux_sel -> Counts_R -> Fill(Kbin);
-	
+	if(Herejcut && ProtonsMassWindow ) P_Flux_pre -> Counts_R -> Fill(Kbin);
+	if(Distcut  && Likcut )  P_Flux_sel -> Counts_R -> Fill(Kbin);
+		
+
 	return;
 }
 

@@ -194,8 +194,6 @@ void TemplateFIT::TemplateFits(int mc_type)
          if(!Geomag) {
             PCounts -> SetBinContent(bin+1,Data->Integral()/*GetFitFraction(0,bin)*/);
             DCounts -> SetBinContent(bin+1,GetResult_D(bin)->Integral());
-		cout<<"sgracchio"<<endl;
-   		cout<<DCounts->GetBinContent(bin+1)<<" "<<DCounts->GetBinError(bin+1)<<endl;
         //       PCounts -> SetBinError(bin+1,GetFitErrors(0,bin));
           //     DCounts -> SetBinError(bin+1,GetFitErrors(1,bin));
          }

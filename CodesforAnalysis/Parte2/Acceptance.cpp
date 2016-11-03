@@ -10,11 +10,11 @@ void Acceptance(string filename){
         TFile * inputHistoFile =TFile::Open(filename.c_str(),"READ");
 
 
-	ACCEPTANCE * AcceptanceP = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCP","EffFullsetMCP","TOTLATCorr","CorrezioneLATp",1);
-	ACCEPTANCE * AcceptanceD = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCD","EffFullsetMCD","TOTLATCorr","CorrezioneLATd",6);
+	ACCEPTANCE * AcceptanceP = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCP_Now","EffFullsetMCP","TOTLATCorr","CorrezioneLATp",1);
+	ACCEPTANCE * AcceptanceD = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCD_Now","EffFullsetMCD","TOTLATCorr","CorrezioneLATd",6);
 	
-	ACCEPTANCE * AcceptancePreP = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCP","EffCSCFullsetMCP","PreLATCorr","CorrezioneLATPrep",1);
-	ACCEPTANCE * AcceptancePreD = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCD","EffpreselMCD","PreLATCorr","CorrezioneLATPred",6);
+	ACCEPTANCE * AcceptancePreP = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCP_Now","EffCSCFullsetMCP","PreLATCorr","CorrezioneLATPrep",1);
+	ACCEPTANCE * AcceptancePreD = new ACCEPTANCE (inputHistoFile,"Results","EffpreselMCD_Now","EffpreselMCD","PreLATCorr","CorrezioneLATPred",6);
        
 	TH1F * TrackerGlobalFactor =  (TH1F *) inputHistoFile -> Get("Results/TrackerGlobalFactor");	
 	TH1F * TriggerGlobalFactor =  (TH1F *) inputHistoFile -> Get("Results/TriggerGlobalFactor"); 
@@ -69,7 +69,8 @@ void Acceptance(string filename){
 	TH1F* PreSel_Correction_Agl[3];
 
 
-	
+	TH1F* PreselP_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Presel_DvsMC_P_CorrectionR"             );	
+
 	TH1F* FullsetP_Correction_R   =(TH1F*) inputHistoFile -> Get ("Results/Fullset_DvsMC_P_CorrectionR"  		); 
 	TH1F* FullsetP_Correction_TOF =(TH1F*) inputHistoFile -> Get ("Results/Fullset_DvsMC_P_CorrectionTOF"		);
 	TH1F* FullsetP_Correction_NaF =(TH1F*) inputHistoFile -> Get ("Results/Fullset_DvsMC_P_CorrectionNaF"		);
@@ -86,13 +87,16 @@ void Acceptance(string filename){
 	
 	AcceptanceP    -> ApplyGlobalFactor(TriggerGlobalFactorQ -> GetBinContent(1), TriggerGlobalFactorQ -> GetBinError(1));
 	AcceptanceD    -> ApplyGlobalFactor(TriggerGlobalFactorQ -> GetBinContent(1), TriggerGlobalFactorQ -> GetBinError(1));
-	AcceptancePreP -> ApplyGlobalFactor(TriggerGlobalFactorQ -> GetBinContent(1),  TriggerGlobalFactorQ -> GetBinError(1));
+	AcceptancePreP -> ApplyGlobalFactor(TriggerGlobalFactorQ -> GetBinContent(1), TriggerGlobalFactorQ  -> GetBinError(1));
  
 	AcceptanceP    -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
 	AcceptanceD    -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
 	AcceptancePreP -> ApplyGlobalFactor(TrackerGlobalFactor -> GetBinContent(1), TrackerGlobalFactor -> GetBinError(1));
+
+
+	//pre
+	AcceptancePreP -> Apply_DvsMCcorrection_R  (PreselP_Correction_R);	
 	
-/*
 	//qual
 	AcceptanceP -> Apply_DvsMCcorrection_R  (FullsetP_Correction_R);
 	AcceptanceP -> Apply_DvsMCcorrection_TOF(FullsetP_Correction_TOF);
@@ -103,7 +107,7 @@ void Acceptance(string filename){
 	AcceptanceD -> Apply_DvsMCcorrection_TOF(FullsetP_Correction_TOF);
         AcceptanceD -> Apply_DvsMCcorrection_NaF(FullsetP_Correction_NaF);
         AcceptanceD -> Apply_DvsMCcorrection_Agl(FullsetP_Correction_Agl);
-		
+			
 
 	//rich
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);
@@ -112,7 +116,7 @@ void Acceptance(string filename){
 
 	AcceptanceD -> Apply_DvsMCcorrection_NaF(RICH_Correction_D_NaF,6);
         AcceptanceD -> Apply_DvsMCcorrection_Agl(RICH_Correction_D_Agl,6);	
-*/	
+	
 	//Protons
 	AcceptanceP   ->Gen_Acceptance_R  ->SetName("Gen_AcceptanceP_R"  ); 
 	AcceptanceP   ->Gen_Acceptance_TOF->SetName("Gen_AcceptanceP_TOF");

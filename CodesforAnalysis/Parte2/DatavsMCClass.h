@@ -171,6 +171,16 @@ class DatavsMC
 		TH1 * GetStatErr_NaF() {return StatErr_NaF  ;};
 		TH1 * GetStatErr_Agl() {return StatErr_Agl  ;};
 		
+		TH1 * GetMCEff_R(int l=0)   {return (TH1*)MCEff[l]->effR  ->Clone()     ;};
+		TH1 * GetMCEff_TOF(int l=0) {return (TH1*)MCEff[l]->effTOF->Clone()     ;};
+		TH1 * GetMCEff_NaF(int l=0) {return (TH1*)MCEff[l]->effNaF->Clone()     ;};
+		TH1 * GetMCEff_Agl(int l=0) {return (TH1*)MCEff[l]->effAgl->Clone()     ;};
+		
+		TH1 * GetDataEff_R(int l=0)   {return (TH1*)DataEff_corr[l]->effR  ->Clone()   ;};
+		TH1 * GetDataEff_TOF(int l=0) {return (TH1*)DataEff_corr[l]->effTOF->Clone()   ;};
+		TH1 * GetDataEff_NaF(int l=0) {return (TH1*)DataEff_corr[l]->effNaF->Clone()   ;};
+		TH1 * GetDataEff_Agl(int l=0) {return (TH1*)DataEff_corr[l]->effAgl->Clone()   ;};
+		
 
 
 

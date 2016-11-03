@@ -136,7 +136,15 @@ void DVSMCPreSeleff(string filename){
 
 
 	   TH1F* EffData_R[3];  		
-	   TH1F* EffMC_R[3];
+	   TH1F* EffData_TOF[3];  
+	   TH1F* EffData_NaF[3];  
+	   TH1F* EffData_Agl[3];  
+
+	   TH1F* EffMC_R[3];  		
+	   TH1F* EffMC_TOF[3];  
+	   TH1F* EffMC_NaF[3];  
+	   TH1F* EffMC_Agl[3];  
+
 
 	   for(int sel=0;sel<3;sel++){
 		   PreSel_DvsMC_P[sel] -> Assign_LatCorr( LATpreSelDATA   ->  LATcorrR_fit , 
@@ -154,9 +162,18 @@ void DVSMCPreSeleff(string filename){
 		   PreSel_Correction_NaF[sel] =(TH1F*) PreSel_DvsMC_P[sel] -> GetCorrection_NaF();
 		   PreSel_Correction_Agl[sel] =(TH1F*) PreSel_DvsMC_P[sel] -> GetCorrection_Agl();
 
-		   EffData_R[sel]   =(TH1F*) PreSel_DvsMC_P[sel] -> DataEff_corr[0] -> effR -> Clone();
-		   EffMC_R[sel]     =(TH1F*) PreSel_DvsMC_P[sel] -> MCEff[0] 	  -> effR -> Clone();
-	   
+		   EffData_R[sel]     =(TH1F*) PreSel_DvsMC_P[sel] -> GetDataEff_R(0);
+		   EffData_TOF[sel]   =(TH1F*) PreSel_DvsMC_P[sel] -> GetDataEff_TOF(0);
+		   EffData_NaF[sel]   =(TH1F*) PreSel_DvsMC_P[sel] -> GetDataEff_NaF(0);
+		   EffData_Agl[sel]   =(TH1F*) PreSel_DvsMC_P[sel] -> GetDataEff_Agl(0);
+
+
+		   EffMC_R[sel]     =(TH1F*) PreSel_DvsMC_P[sel] -> GetMCEff_R(0);
+		   EffMC_TOF[sel]   =(TH1F*) PreSel_DvsMC_P[sel] -> GetMCEff_TOF(0);
+		   EffMC_NaF[sel]   =(TH1F*) PreSel_DvsMC_P[sel] -> GetMCEff_NaF(0);
+		   EffMC_Agl[sel]   =(TH1F*) PreSel_DvsMC_P[sel] -> GetMCEff_Agl(0);
+
+
 		   cout<<"******* SYST ERROR ********"<<endl;
 
 		   PreSel_DvsMC_P[sel] ->Initialize_SystError();					   
@@ -190,15 +207,31 @@ void DVSMCPreSeleff(string filename){
 	   cout<<"*** Plotting ...  ****"<<endl;
 
 
-	   DVSMCPreSeleff_Plot(PreSel_CorrectionFit_R  ,
-	   PreSel_CorrectionFit_TOF,
-	   PreSel_CorrectionFit_NaF,
-	   PreSel_CorrectionFit_Agl,
-	   EffData_R, 
-	   EffMC_R   
-	   );
-	   
-	return;
+	   DVSMCPreSeleff_Plot(PreSel_Correction_R  ,
+			   PreSel_Correction_TOF,
+			   PreSel_Correction_NaF,
+			   PreSel_Correction_Agl,
+
+			   PreSel_CorrectionFit_R  , 	
+			   PreSel_CorrectionFit_TOF, 	
+			   PreSel_CorrectionFit_NaF, 
+			   PreSel_CorrectionFit_Agl, 
+
+			   EffData_R,  
+			   EffData_TOF,
+			   EffData_NaF,
+			   EffData_Agl,
+
+			   EffMC_R    ,
+			   EffMC_TOF  ,
+			   EffMC_NaF  ,
+			   EffMC_Agl  
+
+
+
+				   );
+
+	   return;
 }
 
 

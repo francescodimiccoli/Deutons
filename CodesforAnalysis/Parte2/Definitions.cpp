@@ -126,10 +126,10 @@ int ReturnMCGenType()
 }
 
 
-void FillBinMGen (TH1* h, int bin)
+void FillBinMGen (TH1* h, int bin,float weight)
 {
    int mass = ReturnMCGenType();
-   ((TH2*)h)->Fill (bin, mass);
+   ((TH2*)h)->Fill (bin, mass,weight);
    return;
 }
 
@@ -246,6 +246,34 @@ TH1F * Extract_Bin(TH1 * Histo, int bin,int third_dim,bool reverse=false)
    return Slice;
 
 }
+
+
+TH1 * SetErrors ( TH1 * Eff){
+        TH1 * Errors = (TH1 *)Eff->Clone();
+        for(int iR=0;iR<Eff->GetNbinsX();iR++)
+                for(int mc_types=0;mc_types<Eff->GetNbinsY();mc_types++)
+                        for(int S=0;S<Eff->GetNbinsZ();S++)
+                         Errors->SetBinContent(iR+1,mc_types+1,S+1,Eff->GetBinError(iR+1,mc_types+1,S+1)/Eff->GetBinContent(iR+1,mc_types+1,S+1));
+        return Errors;
+
+}
+
+void EvalError( TH1 * Eff, TH1 * stat, TH1 * syst){
+        cout<<Eff<<" "<<stat<<" "<<syst<<endl;
+        for(int iR=0;iR<Eff->GetNbinsX();iR++)
+                for(int mc_types=0;mc_types<Eff->GetNbinsY();mc_types++)
+                        for(int S=0;S<Eff->GetNbinsZ();S++){
+                                float Stat=0;
+                                float Syst=0;
+                                if(stat&&syst){
+                                 Stat = stat->GetBinContent(iR+1,mc_types+1,S+1);
+                                 Syst = syst->GetBinContent(iR+1,mc_types+1,S+1);
+                                 Eff->SetBinError(iR+1,mc_types+1,S+1,pow(pow(Stat,2)+pow(Syst,2),0.5)*Eff->GetBinContent(iR+1,mc_types+1,S+1));
+                                }
+                        }
+                return;
+}
+
 
 
 

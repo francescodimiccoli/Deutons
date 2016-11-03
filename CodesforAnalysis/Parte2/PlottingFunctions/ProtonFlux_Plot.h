@@ -11,7 +11,7 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 
 	TCanvas * c23 = new TCanvas("Protons Flux: Geo. Zones");
 	TCanvas * c24 = new TCanvas("Primary Protons Flux");
-	TCanvas * c25 = new TCanvas("Protons Flux: Pre vs Qual");
+	TCanvas * c25 = new TCanvas("Protons Flux: Eff. corr. Test");
 
 
 	TGraphErrors * P_Fluxgeo[11];
@@ -129,19 +129,26 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 	}
 	PFluxpre->SetMarkerStyle(8);
 	PFluxpre->SetMarkerColor(2);
+	PFlux_->SetMarkerSize(3);
+        PFluxpre->SetMarkerSize(3);
 	PFlux_->SetMarkerStyle(4);
 	PFlux_->SetFillStyle(3002);
 	PFlux_->SetFillColor(4);
 	PFlux_->SetMarkerColor(2);
 	PFluxpre->SetTitle("Primary Protons Flux");
 	PFluxpre->GetXaxis()->SetTitle("R [GV]");
-	PFluxpre->GetYaxis()->SetTitle("Flux [(m^2 sr GeV/nucl.)^-1]");
+	PFluxpre->GetYaxis()->SetTitle("Fluxes ratio (Fullset / Clean Event)");
 	PFluxpre->GetXaxis()->SetTitleSize(0.045);
 	PFluxpre->GetYaxis()->SetTitleSize(0.045);
 	PFluxpre->GetYaxis()->SetRangeUser(0.8,1.2);
+	PFluxpre->SetTitle("Efficiency Corrections test");
 	PFluxpre->Draw("AP");
 	PFlux_->Draw("P4same");
-
+	TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+        leg->AddEntry(PFluxpre,"Protons Flux (Clean Event + Likelihood + Distance)", "p");
+	leg->AddEntry(PFlux_,"Protons Flux (Clean Event + Control Sample cuts + mass)", "p");
+	leg->AddEntry(PFlux_,"Fluxes Uncertainty (Stat. + Syst.)", "f");
+	leg->Draw("same");
 
 
 	finalPlots.Add(c23);

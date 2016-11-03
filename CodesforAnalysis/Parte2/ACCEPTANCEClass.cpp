@@ -122,7 +122,7 @@ void ACCEPTANCE::Set_Binning(bool deutons){
 
 	if (deutons) {
 
-		for(int i=0;i<nbinsr; i++) binsR[i] = PRB.RigBins()[i];
+		for(int i=0;i<=nbinsr; i++) binsR[i] = PRB.RigBins()[i];
 
 	  	for(int i=0;i<nbins_beta; i++) {
 			binsBetaTOF[i] = ToFDB.MomBin(i); 
@@ -132,7 +132,7 @@ void ACCEPTANCE::Set_Binning(bool deutons){
 
 	} else { // protons
 
-		for(int i=0;i<nbinsr; i++) binsR[i] = PRB.RigBins()[i];
+		for(int i=0;i<=nbinsr; i++) binsR[i] = PRB.RigBins()[i];
 		
 		for(int i=0;i<nbins_beta; i++) {
 			binsBetaTOF[i] = ToFPB.MomBin(i); 
@@ -165,7 +165,7 @@ TH1 * ACCEPTANCE::Triggerbin(int n , TH1 * after , float trigrate, float bins[])
 	else
 		for(int m=0;m<n;m++){
 			eventiprova[m]   = ((TH1 *) after_R  ) -> Integral(0,(int)after_R   ->GetNbinsX());
-			for(int i=0; i<(int)after ->GetNbinsX();i++ ){
+			for(int i=0; i<=(int)after ->GetNbinsX();i++ ){
 				gen_bin = eventiprova[m]*(pow(trigrate,-1))*(log(bins[i+1])-log(bins[i]))/(log(Rmax)-log(Rmin));
 				triggerbin -> SetBinContent(i+1,gen_bin);
 				triggerbin -> SetBinError(i+1,pow(gen_bin,0.5));
@@ -187,6 +187,10 @@ void ACCEPTANCE::Eval_Gen_Acceptance(int n){
 	if(after_TOF)	 Gen_Acceptance_TOF   = (TH1 *) after_TOF		->Clone();
 	if(after_NaF)  	 Gen_Acceptance_NaF   = (TH1 *) after_NaF		->Clone();
 	if(after_Agl) 	 Gen_Acceptance_Agl   = (TH1 *) after_Agl		->Clone();
+
+	cout<<"sgracchio "<<endl;
+	for(int i=0;i<before_R->GetNbinsX();i++)
+		cout<<before_R->GetBinContent(i+1)<<" "<<after_R->GetBinContent(i+1)<<endl;
 
 	Gen_Acceptance_R    -> Divide ( before_R	) ;
 	Gen_Acceptance_TOF  -> Divide ( before_TOF	) ;
