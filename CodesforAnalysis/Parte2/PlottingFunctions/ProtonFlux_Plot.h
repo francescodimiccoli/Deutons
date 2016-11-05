@@ -4,8 +4,8 @@
 void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
                          TH1 * ProtonsGeomagFlux ,
                          TH1 * P_pre_PrimaryFlux ,
-                         TH1 * P_sel_PrimaryFlux 
-
+                         TH1 * P_sel_PrimaryFlux ,
+			TH1F * Tempi
 	){
 
 
@@ -157,6 +157,7 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 	finalPlots.writeObjsInFolder("P Fluxes");
 
 	finalPlots.Add(PFlux);
+	finalPlots.Add(Tempi);
 	finalPlots.writeObjsInFolder("Export/PFluxes");
 
 

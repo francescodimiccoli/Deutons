@@ -30,6 +30,11 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 			TH2F * Corr_AcceptanceD_TOF,	
 			TH2F * Corr_AcceptanceD_NaF,
 			TH2F * Corr_AcceptanceD_Agl,
+			
+			TH1F * CountsTOF,
+                        TH1F * CountsNaF,
+                        TH1F * CountsAgl,
+			
 			TH1F *DStatTOF,
 			TH1F *DStatNaF,
                         TH1F *DStatAgl,
@@ -43,7 +48,8 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 
 	TCanvas * c32 = new TCanvas("Deutons Flux: Geo. Zones");
 	TCanvas * c33 = new TCanvas("Exposure Time");
-	TCanvas * c34 = new TCanvas("Deutons Flux: Primaries");
+	TCanvas * c36 = new TCanvas("Deuterons Primaries counts");
+	TCanvas * c34 = new TCanvas("Deuterons Flux: Primaries");
 	TCanvas * c31 = new TCanvas("Protons Flux (analysis vs R bins)");
 	TCanvas * c35 = new TCanvas("D/P ratio");
 
@@ -787,9 +793,52 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
         }
 
 
+	c36->Divide(3,1);
+	c36->cd(1);
+	
+	gPad->SetGridx();
+	gPad->SetGridy();
+
+	CountsTOF->SetLineColor(4);
+	CountsTOF->SetLineWidth(4);
+	CountsTOF->SetMarkerStyle(8);
+        CountsTOF->SetMarkerColor(4);
+	CountsTOF->SetMarkerSize(2);
+	CountsTOF->GetXaxis()->SetTitle("Nr. bin");
+	CountsTOF->GetYaxis()->SetTitle("Extracted Counts");
+	CountsTOF->Draw();
+
+	c36->cd(2);
+
+        gPad->SetGridx();
+        gPad->SetGridy();
+
+        CountsNaF->SetLineColor(4);
+        CountsNaF->SetLineWidth(4);
+	CountsNaF->SetMarkerStyle(8);
+        CountsNaF->SetMarkerColor(4);
+        CountsNaF->SetMarkerSize(2);
+	CountsNaF->GetXaxis()->SetTitle("Nr. bin");
+        CountsNaF->GetYaxis()->SetTitle("Extracted Counts");
+
+        CountsNaF->Draw();
 
 
+	c36->cd(3);
 
+        gPad->SetGridx();
+        gPad->SetGridy();
+
+        CountsAgl->SetLineColor(4);
+        CountsAgl->SetLineWidth(4);
+	CountsAgl->SetMarkerStyle(8);
+        CountsAgl->SetMarkerColor(4);
+        CountsAgl->SetMarkerSize(2);
+	CountsAgl->GetXaxis()->SetTitle("Nr. bin");
+        CountsAgl->GetYaxis()->SetTitle("Extracted Counts");
+
+
+        CountsAgl->Draw();
 
 
 
@@ -799,7 +848,8 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 
 	finalPlots.Add(c32);
         finalPlots.Add(c33);
-        finalPlots.Add(c34);
+        finalPlots.Add(c36);
+	finalPlots.Add(c34);
 	finalPlots.Add(e1);
         finalPlots.writeObjsInFolder("D Fluxes");
 

@@ -104,6 +104,24 @@ TH1F *DistNaF_He=new TH1F ("DistNaF_He","DistNaF_He",500,-1,1);
 TH1F *DistAgl_He=new TH1F ("DistAgl_He","DistAgl_He",500,-1,1);
 
 
+TH1F * LikData       = new TH1F("LikData","LikData",200,0,1);
+TH1F * LikMC         = new TH1F("LikMC","LikMC",200,0,1);
+TH1F * LikMC_rew     = new TH1F("LikMC_rew","LikMC_rew",200,0,1);
+
+TH1F * DistData      = new TH1F("DistData","DistData",200,0,20);
+TH1F * DistMC        = new TH1F("DistMC","DistMC",200,0,20);
+TH1F * DistMC_rew    = new TH1F("DistMC_rew","DistMC_rew",200,0,20);
+
+TH1F * LikData_bin     = new TH1F("LikData_bin","LikData_bin",200,0,1);
+TH1F * LikMC_bin       = new TH1F("LikMC_bin","LikMC_bin",200,0,1);
+TH1F * LikMC_bin_rew   = new TH1F("LikMC_bin_rew","LikMC_bin_rew",200,0,1);
+
+TH1F * DistData_bin     = new TH1F("DistData_bin","DistData_bin",200,0,20);
+TH1F * DistMC_bin       = new TH1F("DistMC_bin","DistMC_bin",200,0,20);
+TH1F * DistMC_bin_rew   = new TH1F("DistMC_bin_rew","DistMC_bin_rew",200,0,20);
+
+
+
 TH2F *sigmagen_bad =new TH2F ("sigmagen_bad","sigmagen_bad",500,0,30,500,0,30);
 
 
@@ -115,6 +133,22 @@ void SlidesforPlot_Fill ()
    if (Herejcut) {
       if (Massa_gen<1&&Massa_gen>0.5) {
          RvsBetaTOF_P->Fill (Tup.R,Tup.Beta,Tup.mcweight);
+	
+	 if(cmask.isOnlyFromToF()&&Tup.LDiscriminant>0.1&&Tup.LDiscriminant<0.99){
+		 LikMC->Fill(Tup.LDiscriminant);
+		 LikMC_rew->Fill(Tup.LDiscriminant,Tup.mcweight);
+		 DistMC->Fill(Tup.Dist5D_P);
+		 DistMC_rew->Fill(Tup.Dist5D_P,Tup.mcweight);
+	
+		 if(Tup.R>1&&Tup.R<2) {
+		 	LikMC_bin->Fill(Tup.LDiscriminant);
+                 	LikMC_bin_rew->Fill(Tup.LDiscriminant,Tup.mcweight);
+			DistMC_bin->Fill(Tup.Dist5D_P);
+		 	DistMC_bin_rew->Fill(Tup.Dist5D_P,Tup.mcweight);
+
+		}
+	 }		
+
 
          MassTOFvsB_P->Fill((Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5),Tup.Beta,Tup.mcweight);
          if ( cmask.isFromNaF() ) MassNaFvsB_P->Fill((Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5),Tup.BetaRICH,Tup.mcweight);
@@ -252,8 +286,22 @@ void SlidesforPlot_D_Fill ()
 	    
 
 
-   if (Herejcut&&Tup.Latitude>0.8) {
-      if (Betastrongcut&&Tup.BetaRICH<0 && Tup.Rcutoff > 1.5*RBeta->Eval(Tup.Beta) && Tup.R>1.2*Tup.Rcutoff ) MassTOF->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) );
+   if (Herejcut&&Tup.LDiscriminant>0.1&&Tup.LDiscriminant<0.99) {
+	
+
+	   if(cmask.isOnlyFromToF()){
+		   LikData->Fill(Tup.LDiscriminant);
+		   DistData->Fill(Tup.Dist5D_P);
+		   if(Tup.R>1&&Tup.R<2) {
+			   LikData_bin->Fill(Tup.LDiscriminant);
+			   DistData_bin->Fill(Tup.Dist5D_P);
+		   }
+	   }
+    }      
+
+    if (Herejcut&&Tup.Latitude>0.8){
+
+     if (Betastrongcut&&Tup.BetaRICH<0 && Tup.Rcutoff > 1.5*RBeta->Eval(Tup.Beta) && Tup.R>1.2*Tup.Rcutoff ) MassTOF->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) );
       if (Betastrongcut&& cmask.isFromNaF() && Tup.Rcutoff > 1.5*RBeta->Eval(Tup.BetaRICH)&& Tup.R>1.2*Tup.Rcutoff) MassNaF->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
       if (Betastrongcut&& cmask.isFromAgl() && Tup.Rcutoff > 1.5*RBeta->Eval(Tup.BetaRICH)&& Tup.R>1.2*Tup.Rcutoff) MassAgl->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );
       if (Likcut&&Distcut) {
@@ -355,4 +403,24 @@ void SlidesforPlot_Write()
    MassNaFvsB_D		->Write();
    MassAglvsB_P		->Write();
    MassAglvsB_D		->Write();
+
+  LikData     	 ->Write();
+  LikMC          ->Write();
+  LikMC_rew      ->Write();
+  DistData       ->Write();
+  DistMC         ->Write();
+  DistMC_rew     ->Write();
+  LikData_bin    ->Write();
+  LikMC_bin      ->Write(); 
+  LikMC_bin_rew  ->Write();
+  DistData_bin  ->Write();
+  DistMC_bin    ->Write();
+  DistMC_bin_rew->Write();
+
+
+
+
+
+
+
 }              

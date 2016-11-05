@@ -222,7 +222,7 @@ void BadEventStudy_plot(
 
 		for(int mc_type=0;mc_type<6;mc_type++){	
 			EdepMCDTOF_Utof[mc_type]->SetLineColor(mc_type+2);
-			EdepMCDTOF_Utof[mc_type]->Scale(1/EdepMCDTOF_Utof[mc_type]->GetEntries());
+			EdepMCDTOF_Utof[mc_type]->Scale(1/EdepMCDTOF_Utof[mc_type]->Integral());
 			if(mc_type==0){ 
 				EdepMCDTOF_Utof[mc_type]->Draw();
 				EdepMCDTOF_Utof[mc_type]->SetTitle("Energy deposition (Upper TOF) TOF range");
@@ -237,7 +237,7 @@ void BadEventStudy_plot(
 
                 for(int mc_type=0;mc_type<6;mc_type++){ 
                         EdepMCDNaF_Utof[mc_type]->SetLineColor(mc_type+2);
-                        EdepMCDNaF_Utof[mc_type]->Scale(1/EdepMCDNaF_Utof[mc_type]->GetEntries());
+                        EdepMCDNaF_Utof[mc_type]->Scale(1/EdepMCDNaF_Utof[mc_type]->Integral());
                         if(mc_type==0){
                                 EdepMCDNaF_Utof[mc_type]->Draw();
                                 EdepMCDNaF_Utof[mc_type]->SetTitle("Energy deposition (Upper TOF) NaF range");
@@ -253,7 +253,7 @@ void BadEventStudy_plot(
 	
                 for(int mc_type=0;mc_type<6;mc_type++){
                         EdepMCDAgl_Utof[mc_type]->SetLineColor(mc_type+2);
-                        EdepMCDAgl_Utof[mc_type]->Scale(1/EdepMCDAgl_Utof[mc_type]->GetEntries());
+                        EdepMCDAgl_Utof[mc_type]->Scale(1/EdepMCDAgl_Utof[mc_type]->Integral());
                         if(mc_type==0){
                                 EdepMCDAgl_Utof[mc_type]->Draw();
                                 EdepMCDAgl_Utof[mc_type]->SetTitle("Energy deposition (Upper TOF) Agl range");
@@ -272,7 +272,7 @@ void BadEventStudy_plot(
 
                 for(int mc_type=0;mc_type<6;mc_type++){
                         EdepMCDTOF_Ltof[mc_type]->SetLineColor(mc_type+2);
-                        EdepMCDTOF_Ltof[mc_type]->Scale(1/EdepMCDTOF_Utof[mc_type]->GetEntries());
+                        EdepMCDTOF_Ltof[mc_type]->Scale(1/EdepMCDTOF_Utof[mc_type]->Integral());
                         if(mc_type==0){
                                 EdepMCDTOF_Ltof[mc_type]->Draw();
                                 EdepMCDTOF_Ltof[mc_type]->SetTitle("Energy deposition (Lower TOF) TOF range");
@@ -287,7 +287,7 @@ void BadEventStudy_plot(
 
                 for(int mc_type=0;mc_type<6;mc_type++){
                         EdepMCDNaF_Ltof[mc_type]->SetLineColor(mc_type+2);
-                        EdepMCDNaF_Ltof[mc_type]->Scale(1/EdepMCDNaF_Utof[mc_type]->GetEntries());
+                        EdepMCDNaF_Ltof[mc_type]->Scale(1/EdepMCDNaF_Utof[mc_type]->Integral());
                         if(mc_type==0){
                                 EdepMCDNaF_Ltof[mc_type]->Draw();
                                 EdepMCDNaF_Ltof[mc_type]->SetTitle("Energy deposition (Lower TOF) NaF range");
@@ -303,7 +303,7 @@ void BadEventStudy_plot(
 
                 for(int mc_type=0;mc_type<6;mc_type++){
                         EdepMCDAgl_Ltof[mc_type]->SetLineColor(mc_type+2);
-                        EdepMCDAgl_Ltof[mc_type]->Scale(1/EdepMCDAgl_Utof[mc_type]->GetEntries());
+                        EdepMCDAgl_Ltof[mc_type]->Scale(1/EdepMCDAgl_Utof[mc_type]->Integral());
                         if(mc_type==0){
                                 EdepMCDAgl_Ltof[mc_type]->Draw();
                                 EdepMCDAgl_Ltof[mc_type]->SetTitle("Energy deposition (Lower TOF) Agl range");
@@ -322,7 +322,7 @@ void BadEventStudy_plot(
 
                 for(int mc_type=0;mc_type<6;mc_type++){
                         EdepMCDTOF_Track[mc_type]->SetLineColor(mc_type+2);
-                        EdepMCDTOF_Track[mc_type]->Scale(1/EdepMCDTOF_Utof[mc_type]->GetEntries());
+                        EdepMCDTOF_Track[mc_type]->Scale(1/EdepMCDTOF_Utof[mc_type]->Integral());
                         if(mc_type==0){
                                 EdepMCDTOF_Track[mc_type]->Draw();
                                 EdepMCDTOF_Track[mc_type]->SetTitle("Energy deposition (Inner Tracker) TOF range");
@@ -337,7 +337,7 @@ void BadEventStudy_plot(
 
                 for(int mc_type=0;mc_type<6;mc_type++){
                         EdepMCDNaF_Track[mc_type]->SetLineColor(mc_type+2);
-                        EdepMCDNaF_Track[mc_type]->Scale(1/EdepMCDNaF_Utof[mc_type]->GetEntries());
+                        EdepMCDNaF_Track[mc_type]->Scale(1/EdepMCDNaF_Utof[mc_type]->Integral());
                         if(mc_type==0){
                                 EdepMCDNaF_Track[mc_type]->Draw();
                                 EdepMCDNaF_Track[mc_type]->SetTitle("Energy deposition (Inner Tracker) NaF range");
@@ -353,7 +353,7 @@ void BadEventStudy_plot(
 
                 for(int mc_type=0;mc_type<6;mc_type++){
                         EdepMCDAgl_Track[mc_type]->SetLineColor(mc_type+2);
-                        EdepMCDAgl_Track[mc_type]->Scale(1/EdepMCDAgl_Utof[mc_type]->GetEntries());
+                        EdepMCDAgl_Track[mc_type]->Scale(1/EdepMCDAgl_Utof[mc_type]->Integral());
                         if(mc_type==0){
                                 EdepMCDAgl_Track[mc_type]->Draw();
                                 EdepMCDAgl_Track[mc_type]->SetTitle("Energy deposition (Inner Tracker) Agl range");
@@ -368,9 +368,9 @@ void BadEventStudy_plot(
                 gPad->SetGridy();
                 gPad->SetGridx();
 
-		EdepUtof_TOF->Scale(1/EdepUtof_TOF->GetEntries());
-		EdepUtofS_TOF->Scale(1/EdepUtofS_TOF->GetEntries());
-                EdepUtofHe_TOF->Scale(1/EdepUtofHe_TOF->GetEntries());
+		EdepUtof_TOF->Scale(1/EdepUtof_TOF->Integral());
+		EdepUtofS_TOF->Scale(1/EdepUtofS_TOF->Integral());
+                EdepUtofHe_TOF->Scale(1/EdepUtofHe_TOF->Integral());
 		EdepUtof_TOF->SetLineColor(2);
                 EdepUtof_TOF->SetLineWidth(2);
                 EdepUtofS_TOF->SetLineColor(4);
@@ -387,9 +387,9 @@ void BadEventStudy_plot(
                 gPad->SetGridy();
                 gPad->SetGridx();
 
-		EdepUtof_NaF->Scale(1/EdepUtof_NaF->GetEntries());
-                EdepUtofS_NaF->Scale(1/EdepUtofS_NaF->GetEntries());
-                EdepUtofHe_NaF->Scale(1/EdepUtofHe_NaF->GetEntries());
+		EdepUtof_NaF->Scale(1/EdepUtof_NaF->Integral());
+                EdepUtofS_NaF->Scale(1/EdepUtofS_NaF->Integral());
+                EdepUtofHe_NaF->Scale(1/EdepUtofHe_NaF->Integral());
 		EdepUtof_NaF->SetLineColor(2);
                 EdepUtof_NaF->SetLineWidth(2);
 		EdepUtofS_NaF->SetLineColor(4);
@@ -406,9 +406,9 @@ void BadEventStudy_plot(
                 gPad->SetGridy();
                 gPad->SetGridx();
 
-		EdepUtof_Agl->Scale(1/EdepUtof_Agl->GetEntries());
-                EdepUtofS_Agl->Scale(1/EdepUtofS_Agl->GetEntries());
-                EdepUtofHe_Agl->Scale(1/EdepUtofHe_Agl->GetEntries());
+		EdepUtof_Agl->Scale(1/EdepUtof_Agl->Integral());
+                EdepUtofS_Agl->Scale(1/EdepUtofS_Agl->Integral());
+                EdepUtofHe_Agl->Scale(1/EdepUtofHe_Agl->Integral());
 		EdepUtof_Agl->SetLineColor(2);
                 EdepUtof_Agl->SetLineWidth(2);
                 EdepUtofS_Agl->SetLineColor(4);
@@ -428,9 +428,9 @@ void BadEventStudy_plot(
                 gPad->SetGridy();
                 gPad->SetGridx();
 
-		EdepLtof_TOF->Scale(1/EdepLtof_TOF->GetEntries());
-		EdepLtofS_TOF->Scale(1/EdepLtofS_TOF->GetEntries());
-                EdepLtofHe_TOF->Scale(1/EdepLtofHe_TOF->GetEntries());
+		EdepLtof_TOF->Scale(1/EdepLtof_TOF->Integral());
+		EdepLtofS_TOF->Scale(1/EdepLtofS_TOF->Integral());
+                EdepLtofHe_TOF->Scale(1/EdepLtofHe_TOF->Integral());
 		EdepLtof_TOF->SetLineColor(2);
                 EdepLtof_TOF->SetLineWidth(2);
                 EdepLtofS_TOF->SetLineColor(4);
@@ -447,9 +447,9 @@ void BadEventStudy_plot(
                 gPad->SetGridy();
                 gPad->SetGridx();
 
-		EdepLtof_NaF->Scale(1/EdepLtof_NaF->GetEntries());
-                EdepLtofS_NaF->Scale(1/EdepLtofS_NaF->GetEntries());
-                EdepLtofHe_NaF->Scale(1/EdepLtofHe_NaF->GetEntries());
+		EdepLtof_NaF->Scale(1/EdepLtof_NaF->Integral());
+                EdepLtofS_NaF->Scale(1/EdepLtofS_NaF->Integral());
+                EdepLtofHe_NaF->Scale(1/EdepLtofHe_NaF->Integral());
 		EdepLtof_NaF->SetLineColor(2);
                 EdepLtof_NaF->SetLineWidth(2);
 		EdepLtofS_NaF->SetLineColor(4);
@@ -466,9 +466,9 @@ void BadEventStudy_plot(
                 gPad->SetGridy();
                 gPad->SetGridx();
 
-		EdepLtof_Agl->Scale(1/EdepLtof_Agl->GetEntries());
-                EdepLtofS_Agl->Scale(1/EdepLtofS_Agl->GetEntries());
-                EdepLtofHe_Agl->Scale(1/EdepLtofHe_Agl->GetEntries());
+		EdepLtof_Agl->Scale(1/EdepLtof_Agl->Integral());
+                EdepLtofS_Agl->Scale(1/EdepLtofS_Agl->Integral());
+                EdepLtofHe_Agl->Scale(1/EdepLtofHe_Agl->Integral());
 		EdepLtof_Agl->SetLineColor(2);
                 EdepLtof_Agl->SetLineWidth(2);
                 EdepLtofS_Agl->SetLineColor(4);
@@ -486,9 +486,9 @@ void BadEventStudy_plot(
                 gPad->SetGridy();
                 gPad->SetGridx();
 
-		EdepTrack_TOF->Scale(1/EdepTrack_TOF->GetEntries());
-		EdepTrackS_TOF->Scale(1/EdepTrackS_TOF->GetEntries());
-                EdepTrackHe_TOF->Scale(1/EdepTrackHe_TOF->GetEntries());
+		EdepTrack_TOF->Scale(1/EdepTrack_TOF->Integral());
+		EdepTrackS_TOF->Scale(1/EdepTrackS_TOF->Integral());
+                EdepTrackHe_TOF->Scale(1/EdepTrackHe_TOF->Integral());
 		EdepTrack_TOF->SetLineColor(2);
                 EdepTrack_TOF->SetLineWidth(2);
                 EdepTrackS_TOF->SetLineColor(4);
@@ -505,9 +505,9 @@ void BadEventStudy_plot(
                 gPad->SetGridy();
                 gPad->SetGridx();
 
-		EdepTrack_NaF->Scale(1/EdepTrack_NaF->GetEntries());
-                EdepTrackS_NaF->Scale(1/EdepTrackS_NaF->GetEntries());
-                EdepTrackHe_NaF->Scale(1/EdepTrackHe_NaF->GetEntries());
+		EdepTrack_NaF->Scale(1/EdepTrack_NaF->Integral());
+                EdepTrackS_NaF->Scale(1/EdepTrackS_NaF->Integral());
+                EdepTrackHe_NaF->Scale(1/EdepTrackHe_NaF->Integral());
 		EdepTrack_NaF->SetLineColor(2);
                 EdepTrack_NaF->SetLineWidth(2);
 		EdepTrackS_NaF->SetLineColor(4);
@@ -524,9 +524,9 @@ void BadEventStudy_plot(
                 gPad->SetGridy();
                 gPad->SetGridx();
 
-		EdepTrack_Agl->Scale(1/EdepTrack_Agl->GetEntries());
-                EdepTrackS_Agl->Scale(1/EdepTrackS_Agl->GetEntries());
-                EdepTrackHe_Agl->Scale(1/EdepTrackHe_Agl->GetEntries());
+		EdepTrack_Agl->Scale(1/EdepTrack_Agl->Integral());
+                EdepTrackS_Agl->Scale(1/EdepTrackS_Agl->Integral());
+                EdepTrackHe_Agl->Scale(1/EdepTrackHe_Agl->Integral());
 		EdepTrack_Agl->SetLineColor(2);
                 EdepTrack_Agl->SetLineWidth(2);
                 EdepTrackS_Agl->SetLineColor(4);

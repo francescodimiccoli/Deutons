@@ -113,8 +113,8 @@ void ProtonFlux(string filename) {
 	ProtonFlux_Plot( ProtonsPrimaryFlux,
                          ProtonsGeomagFlux ,
                          P_pre_PrimaryFlux ,
-                         P_sel_PrimaryFlux 
-
+                         P_sel_PrimaryFlux ,
+			 Tempi		
 	);
 
 

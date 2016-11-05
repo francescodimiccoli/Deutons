@@ -129,7 +129,7 @@ void MCpreseff_Fill() {
 		RInner->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
                 R_L1->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 		if(Tup.R_pre>0) RInner->afterR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
-		if(Tup.R_L1>0) R_L1->afterR->Fill(PRB.GetRBin(Tup.Momento_gen));
+		if(Tup.R_L1>0) R_L1->afterR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 	}
 
 

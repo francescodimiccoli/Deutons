@@ -80,9 +80,9 @@ TGraph * QDist_check::PlotROC_Dist(){
         for(int i=effDist->GetNbinsX();i>0;i--){
 
                 eff = effDist-> Integral(0,i);
-		eff/= effDist-> GetEntries();
-		bk = bkgndDist-> Integral(0,i);
-		bk/= bkgndDist-> GetEntries();
+		eff/= effDist-> Integral();
+		bk = bkgndDist->Integral(0,i);
+		bk/= bkgndDist->Integral();
 		ROC_Dist->SetPoint(i,eff,1-bk);
         }
         return ROC_Dist;

@@ -75,8 +75,8 @@ void  OptimizationCut::Write()
 }
 
 void OptimizationCut::NormalizeDistributions(){
-	Distrib_P -> Scale(1/Distrib_P->GetEntries());
-	Distrib_D -> Scale(1/Distrib_D->GetEntries());
+	Distrib_P -> Scale(1/Distrib_P->Integral());
+	Distrib_D -> Scale(1/Distrib_D->Integral());
 }
 
 

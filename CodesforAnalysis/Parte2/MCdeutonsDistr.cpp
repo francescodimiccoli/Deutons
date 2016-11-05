@@ -120,17 +120,17 @@ void MCdeutonsDistr(string filename){
 
 	for (int mc_type=0;mc_type<6;mc_type++){
 	
-		SliceMassDMCTOF[mc_type] ->Scale(1/ SliceMassDMCTOF[mc_type]->GetEntries());
-                SliceMassDMCNaF[mc_type] ->Scale(1/ SliceMassDMCNaF[mc_type]->GetEntries());
-                SliceMassDMCAgl[mc_type] ->Scale(1/ SliceMassDMCAgl[mc_type]->GetEntries());
+		SliceMassDMCTOF[mc_type] ->Scale(1/ SliceMassDMCTOF[mc_type]->Integral());
+                SliceMassDMCNaF[mc_type] ->Scale(1/ SliceMassDMCNaF[mc_type]->Integral());
+                SliceMassDMCAgl[mc_type] ->Scale(1/ SliceMassDMCAgl[mc_type]->Integral());
                                                                 
-	        SliceLikDMCTOF[mc_type]  ->Scale(1/ SliceLikDMCTOF[mc_type] ->GetEntries());
-                SliceLikDMCNaF[mc_type]  ->Scale(1/ SliceLikDMCNaF[mc_type] ->GetEntries());
-                SliceLikDMCAgl[mc_type]  ->Scale(1/ SliceLikDMCAgl[mc_type] ->GetEntries());
+	        SliceLikDMCTOF[mc_type]  ->Scale(1/ SliceLikDMCTOF[mc_type] ->Integral());
+                SliceLikDMCNaF[mc_type]  ->Scale(1/ SliceLikDMCNaF[mc_type] ->Integral());
+                SliceLikDMCAgl[mc_type]  ->Scale(1/ SliceLikDMCAgl[mc_type] ->Integral());
                                                                 
-                SliceDistDMCTOF[mc_type] ->Scale(1/ SliceDistDMCTOF[mc_type]->GetEntries());
-                SliceDistDMCNaF[mc_type] ->Scale(1/ SliceDistDMCNaF[mc_type]->GetEntries());
-                SliceDistDMCAgl[mc_type] ->Scale(1/ SliceDistDMCAgl[mc_type]->GetEntries());
+                SliceDistDMCTOF[mc_type] ->Scale(1/ SliceDistDMCTOF[mc_type]->Integral());
+                SliceDistDMCNaF[mc_type] ->Scale(1/ SliceDistDMCNaF[mc_type]->Integral());
+                SliceDistDMCAgl[mc_type] ->Scale(1/ SliceDistDMCAgl[mc_type]->Integral());
 
 	}
 

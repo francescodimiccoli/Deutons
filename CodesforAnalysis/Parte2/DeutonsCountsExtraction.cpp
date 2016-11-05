@@ -208,7 +208,7 @@ void DeutonsTemplFits(string filename, string frac)
 
 		   FitTOF_Dbest->SetFitRange(1.1,3);
 		   FitNaF_Dbest->SetFitRange(1.1,3);
-		   FitAgl_Dbest->SetFitRange(1.1,3);
+		   FitAgl_Dbest->SetFitRange(1.0,3);
 
 		   if(frac!="tot"){
 			   FitTOF_Dbest         -> DisableFit(); 
@@ -236,8 +236,8 @@ void DeutonsTemplFits(string filename, string frac)
 		   FitAgl_Dbins[i][j]->SetTolerance(0.1+0.2*j);
 
 		   FitTOF_Dbins[i][j]->SetFitRange(0.9+0.07*i,3);
-		   FitNaF_Dbins[i][j]->SetFitRange(0.8+0.1*i,3);
-		   FitAgl_Dbins[i][j]->SetFitRange(0.8+0.1*i,3);
+		   FitNaF_Dbins[i][j]->SetFitRange(0.9+0.1*i,3);
+		   FitAgl_Dbins[i][j]->SetFitRange(0.9+0.1*i,3);
 
 		   if(frac!="tot"){
 			   FitTOF_Dbins[i][j]         -> DisableFit(); 
