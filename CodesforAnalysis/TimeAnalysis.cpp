@@ -27,10 +27,13 @@
 #include "TGraphErrors.h"
 #include <cstring>
 #include "Mesi.h"
+#include "TimePlots.h"
 
 using namespace std;
 
 int colorbase=1;
+
+void CheckFileIntegrity(int i,std::string mesi[]);
 
 void DrawCalibration(TVirtualPad * c, TSpline3 * Corr[],const string &name,const string &xaxisname,const string &yaxisname){
 	c -> cd();
@@ -129,7 +132,7 @@ void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[],const string &name,c
                 for(int i=0;i<num_mesi;i++) {
                 Fluxesratio[i]=new TGraphErrors();
                 for(int p=1;p<43;p++){
-                        u=Fluxes[i]->GetPoint(p,x,y);
+			u=Fluxes[i]->GetPoint(p,x,y);
                         v=Fluxes[0]->GetPoint(p,x0,y0);
                         ey=Fluxes[i]->GetErrorY(p);
                         Fluxesratio[i]->SetPoint(p,x,y/y0);
@@ -218,93 +221,58 @@ int main()
 
 	cout<<" ************** RISULTATI  ******************** "<<endl;
 
-	TSpline3 *Corr_L1[40];
-	TSpline3 *Corr_TOFU[40];
-	TSpline3 *Corr_Track[40];
-	TSpline3 *Corr_TOFD[40];
-	TGraphErrors *CorrLATpre_Spl[3][40];
-	TGraphErrors *CorrLAT_DistTOF_Spl[40];
-	TGraphErrors *CorrLAT_LikTOF_Spl[40];	
-	TGraphErrors *CorrLAT_DistNaF_Spl[40];
-        TGraphErrors *CorrLAT_LikNaF_Spl[40];
-	TGraphErrors *CorrLAT_DistAgl_Spl[40];
-        TGraphErrors *CorrLAT_LikAgl_Spl[40];
-	TGraphErrors *preDVSMC_P[3][40];
-	TGraphErrors *LikDVSMC_P[40];
-        TGraphErrors *DistDVSMC_P[40];
-
-	TGraphErrors *preDVSMC_PTOF[3][40];
-	TGraphErrors *LikDVSMC_PTOF[40];
-        TGraphErrors *DistDVSMC_PTOF[40];
-		
-	TGraphErrors *preDVSMC_PNaF[3][40];
-	TGraphErrors *LikDVSMC_PNaF[40];
-        TGraphErrors *DistDVSMC_PNaF[40];
-		
-	TGraphErrors *preDVSMC_PAgl[3][40];
-	TGraphErrors *LikDVSMC_PAgl[40];
-        TGraphErrors *DistDVSMC_PAgl[40];
-	
-	TH1F * TrackerEff[40];
-	TH1F * TriggerEff[40];
-	TGraphErrors *P_Fluxes[40];
-	TGraphErrors *P_Fluxesratio[40];
-	TGraphErrors *D_FluxesTOF[40];
-        TGraphErrors *D_FluxesratioTOF[40];
-	TGraphErrors *D_FluxesNaF[40];
-        TGraphErrors *D_FluxesratioNaF[40];
-	TGraphErrors *D_FluxesAgl[40];
-        TGraphErrors *D_FluxesratioAgl[40];	
 	for(int i=0;i<num_mesi;i++){
-		Corr_L1[i] =  (TSpline3 *) calib[i]->Get("Fit Results/Splines/Corr_L1");
-		Corr_TOFU[i] =  (TSpline3 *) calib[i]->Get("Fit Results/Splines/Corr_TOFU");
-		Corr_Track[i] =  (TSpline3 *) calib[i]->Get("Fit Results/Splines/Corr_Track");
-		Corr_TOFD[i] =  (TSpline3 *) calib[i]->Get("Fit Results/Splines/Corr_TOFD");	
+		Corr_L1[i] 		=  (TSpline3 *) 	calib[i]->Get("Fit Results/Splines/Corr_L1");
+		Corr_TOFU[i] 		=  (TSpline3 *) 	calib[i]->Get("Fit Results/Splines/Corr_TOFU");
+		Corr_Track[i] 		=  (TSpline3 *) 	calib[i]->Get("Fit Results/Splines/Corr_Track");
+		Corr_TOFD[i] 		=  (TSpline3 *) 	calib[i]->Get("Fit Results/Splines/Corr_TOFD");	
 		
-		CorrLATpre_Spl[0][i] =  (TGraphErrors *) result[i]->Get("Export/Matching TOF");
-		CorrLATpre_Spl[1][i] =  (TGraphErrors *) result[i]->Get("Export/Chi^2 R");
-		CorrLATpre_Spl[2][i] =  (TGraphErrors *) result[i]->Get("Export/1 Tr. Track");
-		CorrLAT_LikTOF_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_Lik_Spl");
-		CorrLAT_LikNaF_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikNaF_Spl");
-		CorrLAT_LikAgl_Spl[i] =    (TGraphErrors *) result[i]->Get("Export/CorrLAT_LikAgl_Spl");
-		CorrLAT_DistTOF_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_Dist_Spl");
-		CorrLAT_DistNaF_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_DistNaF_Spl");
-		CorrLAT_DistAgl_Spl[i] =   (TGraphErrors *) result[i]->Get("Export/CorrLAT_DistAgl_Spl");
+		CorrLATpre_Spl[0][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/Matching TOF");
+		CorrLATpre_Spl[1][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/Chi^2 R");
+		CorrLATpre_Spl[2][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/1 Tr. Track");
+		CorrLAT_LikTOF_Spl[i] 	=    (TGraphErrors *) 	result[i]->Get("Export/CorrLAT_Lik_Spl");
+		CorrLAT_LikNaF_Spl[i] 	=    (TGraphErrors *) 	result[i]->Get("Export/CorrLAT_LikNaF_Spl");
+		CorrLAT_LikAgl_Spl[i] 	=    (TGraphErrors *) 	result[i]->Get("Export/CorrLAT_LikAgl_Spl");
+		CorrLAT_DistTOF_Spl[i] 	=   (TGraphErrors *) 	result[i]->Get("Export/CorrLAT_Dist_Spl");
+		CorrLAT_DistNaF_Spl[i] 	=   (TGraphErrors *) 	result[i]->Get("Export/CorrLAT_DistNaF_Spl");
+		CorrLAT_DistAgl_Spl[i] 	=   (TGraphErrors *) 	result[i]->Get("Export/CorrLAT_DistAgl_Spl");
 
-		preDVSMC_P[0][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: Matching TOF_R");
-                preDVSMC_P[1][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: Chi^2 R_R");
-                preDVSMC_P[2][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: 1 Tr. Track_R");
-		LikDVSMC_P[i]    =  (TGraphErrors *) result[i]->Get("Export/DvsMC/LikDVSMCFit_P_Graph");
-                DistDVSMC_P[i]   =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DistDVSMCFit_P_Graph");
+		preDVSMC_P[0][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: Matching TOF_R");
+                preDVSMC_P[1][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: Chi^2 R_R");
+                preDVSMC_P[2][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: 1 Tr. Track_R");
+		LikDVSMC_P[i]    	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/LikDVSMCFit_P_Graph");
+                DistDVSMC_P[i]   	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DistDVSMCFit_P_Graph");
 		
-		preDVSMC_PTOF[0][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: Matching TOF_TOF");
-                preDVSMC_PTOF[1][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: Chi^2 R_TOF");
-                preDVSMC_PTOF[2][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: 1 Tr. Track_TOF");
-		LikDVSMC_PTOF[i]    =  (TGraphErrors *) result[i]->Get("Export/DvsMC/LikDVSMCFit_P_GraphTOF");
-                DistDVSMC_PTOF[i]   =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DistDVSMCFit_P_GraphTOF");
+		preDVSMC_PTOF[0][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: Matching TOF_TOF");
+                preDVSMC_PTOF[1][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: Chi^2 R_TOF");
+                preDVSMC_PTOF[2][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: 1 Tr. Track_TOF");
+		LikDVSMC_PTOF[i]    	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/LikDVSMCFit_P_GraphTOF");
+                DistDVSMC_PTOF[i]   	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DistDVSMCFit_P_GraphTOF");
 		
-		preDVSMC_PNaF[0][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: Matching TOF_NaF");
-                preDVSMC_PNaF[1][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: Chi^2 R_NaF");
-                preDVSMC_PNaF[2][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: 1 Tr. Track_NaF");
-		LikDVSMC_PNaF[i]    =  (TGraphErrors *) result[i]->Get("Export/DvsMC/LikDVSMCFit_P_GraphNaF");
-                DistDVSMC_PNaF[i]   =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DistDVSMCFit_P_GraphNaF");
+		preDVSMC_PNaF[0][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: Matching TOF_NaF");
+                preDVSMC_PNaF[1][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: Chi^2 R_NaF");
+                preDVSMC_PNaF[2][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: 1 Tr. Track_NaF");
+		LikDVSMC_PNaF[i]    	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/LikDVSMCFit_P_GraphNaF");
+                DistDVSMC_PNaF[i]   	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DistDVSMCFit_P_GraphNaF");
 		
-		preDVSMC_PAgl[0][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: Matching TOF_Agl");
-                preDVSMC_PAgl[1][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: Chi^2 R_Agl");
-                preDVSMC_PAgl[2][i] =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DvsMC: 1 Tr. Track_Agl");
-		LikDVSMC_PAgl[i]    =  (TGraphErrors *) result[i]->Get("Export/DvsMC/LikDVSMCFit_P_GraphAgl");
-                DistDVSMC_PAgl[i]   =  (TGraphErrors *) result[i]->Get("Export/DvsMC/DistDVSMCFit_P_GraphAgl");
+		preDVSMC_PAgl[0][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: Matching TOF_Agl");
+                preDVSMC_PAgl[1][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: Chi^2 R_Agl");
+                preDVSMC_PAgl[2][i] 	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DvsMC: 1 Tr. Track_Agl");
+		LikDVSMC_PAgl[i]    	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/LikDVSMCFit_P_GraphAgl");
+                DistDVSMC_PAgl[i]   	=  (TGraphErrors *) 	result[i]->Get("Export/DvsMC/DistDVSMCFit_P_GraphAgl");
 		
 
-		TrackerEff[i]  =  (TH1F *) 	   result[i]->Get("Export/TrackerEfficiencyData");	
-		TriggerEff[i]  =  (TH1F *) 	   result[i]->Get("Export/TriggerGlobalFactor");
-		P_Fluxes[i]    =  (TGraphErrors *) result[i]->Get("Export/PFluxes/Protons Primary Flux");
-		D_FluxesTOF[i] =  (TGraphErrors *) result[i]->Get("Export/DFluxes/Deutons Flux: Primaries TOF");
-		D_FluxesNaF[i] =  (TGraphErrors *) result[i]->Get("Export/DFluxes/Deutons Flux: Primaries NaF");
-		D_FluxesAgl[i] =  (TGraphErrors *) result[i]->Get("Export/DFluxes/Deutons Flux: Primaries Agl");
+		TrackerEff[i] 		 =  (TH1F *) 	   	result[i]->Get("Export/TrackerEfficiencyData");	
+		TriggerEff[i]  		=  (TH1F *) 	   	result[i]->Get("Export/TriggerGlobalFactor");
+		P_Fluxes[i]    		=  (TGraphErrors *) 	result[i]->Get("Export/PFluxes/Protons Primary Flux");
+		D_FluxesTOF[i] 		=  (TGraphErrors *) 	result[i]->Get("Export/DFluxes/Deutons Flux: Primaries TOF");
+		D_FluxesNaF[i] 		=  (TGraphErrors *) 	result[i]->Get("Export/DFluxes/Deutons Flux: Primaries NaF");
+		D_FluxesAgl[i] 		=  (TGraphErrors *) 	result[i]->Get("Export/DFluxes/Deutons Flux: Primaries Agl");
 
 
-	}	
+	}
+	cout<<" *************** FILES CHECK  ************************ "<<endl;	
+	for(int i=0;i<num_mesi;i++) CheckFileIntegrity(i,mesi);
 	cout<<endl;
         cout<<" *************** DRAW  ************************ "<<endl;
 	TCanvas *c1=new TCanvas("L1 Energy Deposition");
@@ -811,4 +779,52 @@ int main()
 }
 
 
-
+void CheckFileIntegrity(int i,std::string mesi[]){
+	if(Corr_L1[i] 			&&	
+           Corr_TOFU[i] 		&&
+           Corr_Track[i] 		&&
+           Corr_TOFD[i] 		&&
+          
+           CorrLATpre_Spl[0][i] 	&& 
+           CorrLATpre_Spl[1][i] 	&&
+           CorrLATpre_Spl[2][i] 	&&
+           CorrLAT_LikTOF_Spl[i] 	&&
+           CorrLAT_LikNaF_Spl[i] 	&& 
+           CorrLAT_LikAgl_Spl[i] 	&&
+           CorrLAT_DistTOF_Spl[i] 	&&
+           CorrLAT_DistNaF_Spl[i] 	&&
+           CorrLAT_DistAgl_Spl[i] 	&&	
+                                   
+           preDVSMC_P[0][i] 	&& 
+           preDVSMC_P[1][i] 	&&
+           preDVSMC_P[2][i] 	&&
+           LikDVSMC_P[i]    	&&
+           DistDVSMC_P[i]   	&&	
+           
+           preDVSMC_PTOF[0][i] 	&& 
+           preDVSMC_PTOF[1][i] 	&&
+           preDVSMC_PTOF[2][i] 	&&
+           LikDVSMC_PTOF[i]    	&&
+           DistDVSMC_PTOF[i]   &&	
+           
+           preDVSMC_PNaF[0][i] 	&& 
+           preDVSMC_PNaF[1][i] 	&&
+           preDVSMC_PNaF[2][i] 	&&
+           LikDVSMC_PNaF[i]    	&&
+           DistDVSMC_PNaF[i]   &&	
+           
+           preDVSMC_PAgl[0][i] 	&& 
+           preDVSMC_PAgl[1][i] 	&&
+           preDVSMC_PAgl[2][i] 	&&
+           LikDVSMC_PAgl[i]    	&&
+           DistDVSMC_PAgl[i]    &&	
+           
+                                   
+           TrackerEff[i] 	&& 	
+           TriggerEff[i]  	&& 	
+           P_Fluxes[i]    	&& 	
+           D_FluxesTOF[i] 	&& 	
+           D_FluxesNaF[i] 	&&	
+           D_FluxesAgl[i] 	)  cout<<"file "<<mesi[i].c_str()<<"( "<<i<<") is complete"<<endl;
+		else cout<<"file "<<mesi[i].c_str()<<"( "<<i<<") is broken"<<endl;	
+}
