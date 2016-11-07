@@ -31,9 +31,11 @@
 
 using namespace std;
 
-int colorbase=1;
+int colorbase=30;
 
 void CheckFileIntegrity(int i,std::string mesi[]);
+
+std::string ConvertString(std::string mese);
 
 void DrawCalibration(TVirtualPad * c, TSpline3 * Corr[],const string &name,const string &xaxisname,const string &yaxisname){
 	c -> cd();
@@ -53,7 +55,7 @@ void DrawCalibration(TVirtualPad * c, TSpline3 * Corr[],const string &name,const
 		Corr[i]->SetLineColor(colorbase+i);
 		Corr[i]->SetMarkerColor(colorbase+i);
 		Corr[i]->SetMarkerStyle(8);
-		leg->AddEntry(Corr[i],mesi[i].c_str(), "ep");
+		leg->AddEntry(Corr[i],ConvertString(mesi[i]).c_str(), "ep");
 		Corr[i]->Draw("same");
 	}
 	leg->Draw("same");
@@ -72,7 +74,7 @@ void DrawCorrection(TVirtualPad * c, TGraphErrors * Corr[],const string &name,co
 	Corr[0]->SetLineColor(1);
 	Corr[0]->SetMarkerStyle(8);
 	Corr[0]->SetMarkerColor(1);
-	leg->AddEntry(Corr[0],mesi[0].c_str(), "ep");
+	leg->AddEntry(Corr[0],ConvertString(mesi[0]).c_str(), "ep");
 	Corr[0]->Draw("AC");
 	Corr[0]->GetXaxis()->SetTitle(xaxisname.c_str());
 	Corr[0]->GetYaxis()->SetTitle(yaxisname.c_str());
@@ -82,7 +84,7 @@ void DrawCorrection(TVirtualPad * c, TGraphErrors * Corr[],const string &name,co
 		Corr[i]->SetLineColor(colorbase+i);
 		Corr[i]->SetMarkerStyle(8);
 		Corr[i]->SetMarkerColor(colorbase+i);
-		leg->AddEntry(Corr[i],mesi[i].c_str(), "ep");
+		leg->AddEntry(Corr[i],ConvertString(mesi[i]).c_str(), "ep");
 		Corr[i]->Draw("Csame");
 	}
 	leg->Draw("same");
@@ -118,7 +120,7 @@ TGraphErrors * FluxesMean(TGraphErrors * Fluxes[],int bins){
 	return FluxMean;
 }
 
-void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[],const string &name,const string &xaxisname,const string &yaxisname){
+void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[], TGraphErrors * FluxMean, const string &name,const string &xaxisname,const string &yaxisname, bool same = false){
 
 	gStyle->SetPalette(0);
         double x,y,ey=0;
@@ -133,7 +135,7 @@ void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[],const string &name,c
                 Fluxesratio[i]=new TGraphErrors();
                 for(int p=1;p<43;p++){
 			u=Fluxes[i]->GetPoint(p,x,y);
-                        v=Fluxes[0]->GetPoint(p,x0,y0);
+                        v=FluxMean->GetPoint(p,x0,y0);
                         ey=Fluxes[i]->GetErrorY(p);
                         Fluxesratio[i]->SetPoint(p,x,y/y0);
                         Fluxesratio[i]->SetPointError(p,0,ey/y0);
@@ -142,20 +144,23 @@ void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[],const string &name,c
                 Fluxesratio[0]->SetLineWidth(2);
                 Fluxesratio[0]->SetLineColor(1);
                 Fluxesratio[0]->SetMarkerStyle(8);
+		Fluxesratio[0]->SetMarkerSize(1.5);
                 Fluxesratio[0]->SetMarkerColor(1);
                 Fluxesratio[0]->SetFillStyle(3002);
-                leg->AddEntry(Fluxesratio[0],mesi[0].c_str(), "ep");
+                leg->AddEntry(Fluxesratio[0],ConvertString(mesi[0]).c_str(), "ep");
                 Fluxesratio[0]->GetYaxis()->SetRangeUser(0.2,1.3);
-                Fluxesratio[0]->Draw("AP");
+                if(!same) Fluxesratio[0]->Draw("AP");
+		else Fluxesratio[0]->Draw("Psame");
                 Fluxesratio[0]->GetXaxis()->SetTitle(xaxisname.c_str());
                 Fluxesratio[0]->GetYaxis()->SetTitle(yaxisname.c_str());
                 for(int i=0;i<num_mesi;i++) {
                         Fluxesratio[i]->SetLineWidth(2);
                         Fluxesratio[i]->SetLineColor(colorbase+i);
                         Fluxesratio[i]->SetMarkerStyle(8);
-                        Fluxesratio[i]->SetMarkerColor(colorbase+i);
+                        Fluxesratio[i]->SetMarkerSize(1.5);
+			Fluxesratio[i]->SetMarkerColor(colorbase+i);
                         Fluxesratio[i]->SetFillStyle(3002);
-                        leg->AddEntry(Fluxesratio[i],mesi[i].c_str(), "ep");
+                        leg->AddEntry(Fluxesratio[i],ConvertString(mesi[i]).c_str(), "ep");
                         Fluxesratio[i]->Draw("Psame");
                 }
                 leg->Draw("same");
@@ -165,7 +170,7 @@ void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[],const string &name,c
 
 int main()
 {
-	int colorbase = 1;
+	int colorbase = 15;
 
 	cout<<"Analyzed Months: "<<endl;
 	for(int i=0;i<num_mesi;i++){
@@ -396,12 +401,12 @@ int main()
 		Trackeff_time -> SetBinContent(i+1,effy);
                 effey = TrackerEff[i]-> GetBinError(33);
                 Trackeff_time -> SetBinError(i+1,effey);
-                Trackeff_time -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+                Trackeff_time -> GetXaxis() -> SetBinLabel(i+1,ConvertString(mesi[i]).c_str());
         	effy = TriggerEff[i]-> GetBinContent(1);                
                 Triggeff_time -> SetBinContent(i+1,effy);
                 effey = TriggerEff[i]-> GetBinError(1);
                 Triggeff_time -> SetBinError(i+1,effey);
-		Trackeff_time -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+		Trackeff_time -> GetXaxis() -> SetBinLabel(i+1,ConvertString(mesi[i]).c_str());
 	}
 	Trackeff_time -> SetMarkerStyle(8);
 	Trackeff_time -> LabelsOption("v");
@@ -416,10 +421,6 @@ int main()
 	Triggeff_time -> Draw("same");
 	Trackeff_time -> Draw();
 
-
-	c15-> Divide(1,2);
-	c15->cd(1);
-	DrawFluxRatio(c15,P_Fluxes,"R [GV]","Proton Flux","Proton Flux (norm. to mean flux)");
 
 	c15_bis-> Divide(2,1);
 	c15_bis->cd(1);
@@ -439,7 +440,7 @@ int main()
 	}
 	{
 		TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
-		for(int i=0;i<num_mesi;i++) leg->AddEntry(P_Fluxes[i],mesi[i].c_str(),"ep");
+		for(int i=0;i<num_mesi;i++) leg->AddEntry(P_Fluxes[i],ConvertString(mesi[i]).c_str(),"ep");
 		leg->Draw("same");
 	}
 
@@ -473,11 +474,9 @@ int main()
 	leg->Draw("same");
 	}
 
-
-	c16->cd();
-        DrawFluxRatio(c16,D_FluxesTOF,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)");	
-	DrawFluxRatio(c16,D_FluxesNaF,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)");
-	DrawFluxRatio(c16,D_FluxesAgl,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)");
+	c15-> Divide(1,2);
+        c15->cd(1);
+        DrawFluxRatio(c15,P_Fluxes,P_Mean,"R [GV]","Proton Flux","Proton Flux (norm. to mean flux)");
 
 	c16_bis-> Divide(1,2);
 	c16_bis->cd(1);
@@ -503,7 +502,7 @@ int main()
         }
         {
                 TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
-                for(int i=0;i<num_mesi;i++) leg->AddEntry(D_FluxesTOF[i],mesi[i].c_str(),"ep");
+                for(int i=0;i<num_mesi;i++) leg->AddEntry(D_FluxesTOF[i],ConvertString(mesi[i]).c_str(),"ep");
                 leg->Draw("same");
         }
 
@@ -572,6 +571,12 @@ int main()
         leg->Draw("same");
         }
 
+	c16->cd();
+        bool same = true;
+	DrawFluxRatio(c16,D_FluxesAgl,D_MeanAgl,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)");
+	DrawFluxRatio(c16,D_FluxesTOF,D_MeanTOF,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)",same);	
+	DrawFluxRatio(c16,D_FluxesNaF,D_MeanNaF,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)",same);
+
 
 
 	
@@ -585,7 +590,7 @@ int main()
         TH1F * Time_depP3 = new TH1F("","",num_mesi,0,num_mesi);
 	
 	TH1F * Time_depP4 = new TH1F("","",num_mesi,0,num_mesi);
-	TH1F * errorP4 = new TH1F("","",num_mesi,0,num_mesi);
+	TH1F * errorP4    = new TH1F("","",num_mesi,0,num_mesi);
 	
 
 	double x01,x02,x03,x04;
@@ -595,14 +600,14 @@ int main()
 	double ey1,ey2,ey3,ey4;
 
 	for(int i=0;i<num_mesi;i++) {
-		D_FluxesTOF[i]->GetPoint(4,x1,y1);
-		D_FluxesTOF[0]->GetPoint(4,x01,y01);
+		D_FluxesTOF[i]->GetPoint(6,x1,y1);
+		D_MeanTOF->GetPoint(6,x01,y01);
 		
 		D_FluxesTOF[i]->GetPoint(12,x2,y2);
-                D_FluxesTOF[0]->GetPoint(12,x02,y02);
+                D_MeanTOF->GetPoint(12,x02,y02);
 		
 		D_FluxesAgl[i]->GetPoint(9,x3,y3);
-                D_FluxesAgl[0]->GetPoint(9,x03,y03);
+                D_MeanAgl->GetPoint(9,x03,y03);
 
 		Time_depD1 -> SetBinContent(i+1,y1/y01);
 		Time_depD2 -> SetBinContent(i+1,y2/y02);		
@@ -616,22 +621,22 @@ int main()
 		Time_depD2 -> SetBinError(i+1,ey2/y02);
 		Time_depD3 -> SetBinError(i+1,ey3/y03);
 
-		Time_depD1 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
-		Time_depD2 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
-		Time_depD3 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+		Time_depD1 -> GetXaxis() -> SetBinLabel(i+1,ConvertString(mesi[i]).c_str());
+		Time_depD2 -> GetXaxis() -> SetBinLabel(i+1,ConvertString(mesi[i]).c_str());
+		Time_depD3 -> GetXaxis() -> SetBinLabel(i+1,ConvertString(mesi[i]).c_str());
 	}
 	for(int i=0;i<num_mesi;i++) {
-                P_Fluxes[i]->GetPoint(6,x1,y1);
-                P_Fluxes[0]->GetPoint(6,x01,y01);
+                P_Fluxes[i]->GetPoint(4,x1,y1);
+                P_Mean->GetPoint(4,x01,y01);
                 
 		P_Fluxes[i]->GetPoint(11,x2,y2);
-                P_Fluxes[0]->GetPoint(11,x02,y02);
+                P_Mean->GetPoint(11,x02,y02);
        
 		P_Fluxes[i]->GetPoint(25,x3,y3);
-                P_Fluxes[0]->GetPoint(25,x03,y03);
+                P_Mean->GetPoint(25,x03,y03);
                   
 		P_Fluxes[i]->GetPoint(40,x4,y4);
-                P_Fluxes[0]->GetPoint(40,x04,y04);
+                P_Mean->GetPoint(40,x04,y04);
                 
 		Time_depP1 -> SetBinContent(i+1,y1/y01);
 		Time_depP2 -> SetBinContent(i+1,y2/y02);         
@@ -649,7 +654,7 @@ int main()
         	Time_depP2 -> SetBinError(i+1,ey2/y02);
 		Time_depP3 -> SetBinError(i+1,ey3/y03);
 		errorP4    -> SetBinError(i+1,ey4/y04);
-		Time_depP4 -> GetXaxis() -> SetBinLabel(i+1,mesi[i].c_str());
+		Time_depP4 -> GetXaxis() -> SetBinLabel(i+1,ConvertString(mesi[i]).c_str());
 
 		
 	}
@@ -657,16 +662,22 @@ int main()
 	Time_depP1 -> SetMarkerStyle(8);
 	Time_depD1 -> SetMarkerColor(4);
         Time_depP1 -> SetMarkerColor(2);
+	Time_depD1 -> SetLineColor(4);
+        Time_depP1 -> SetLineColor(2);
 
 	Time_depD2 -> SetMarkerStyle(8);
         Time_depP2 -> SetMarkerStyle(8);
         Time_depD2 -> SetMarkerColor(4);
         Time_depP2 -> SetMarkerColor(2);
+	Time_depD2 -> SetLineColor(4);
+        Time_depP2 -> SetLineColor(2);
 
 	Time_depD3 -> SetMarkerStyle(8);
         Time_depP3 -> SetMarkerStyle(8);
         Time_depD3 -> SetMarkerColor(4);
         Time_depP3 -> SetMarkerColor(2);
+	Time_depD3 -> SetLineColor(4);
+        Time_depP3 -> SetLineColor(2);
 
 	Time_depP4 -> SetMarkerStyle(8);
         Time_depP4 -> SetMarkerColor(2);
@@ -678,55 +689,62 @@ int main()
 	c17->cd(1);
         gPad->SetGridx();
         gPad->SetGridy();
-	Time_depD1 -> GetYaxis() -> SetRangeUser(0.65,1.2);
+	Time_depD1 -> GetYaxis() -> SetRangeUser(0.6,1.3);
 	Time_depD1 -> LabelsOption("h");
 	Time_depD1 -> SetTitle("R = 1 GV");
 	Time_depD1 -> GetYaxis() -> SetLabelSize(0.085);
 	Time_depD1 -> GetXaxis() -> SetLabelSize(0.085);
 	Time_depD1 -> GetYaxis() -> SetTitle("Flux / Mean");
 	Time_depD1 -> GetYaxis() -> SetTitleSize(0.085);
+	Time_depD1 -> SetMarkerSize(2);
+	Time_depP1 -> SetMarkerSize(2);
 	Time_depD1 -> Draw();
 	Time_depP1 -> Draw("same");	
 	 TLegend* leg =new TLegend(0.7,0.1,0.9,0.3);
          leg->AddEntry(Time_depD1,"Deuterons", "ep");
-	leg->AddEntry(Time_depP1,"Proons", "ep");
+	leg->AddEntry(Time_depP1,"Protons", "ep");
 	leg ->Draw("same");
 
 	c17->cd(2);
         gPad->SetGridx();
         gPad->SetGridy();
-        Time_depD2 -> GetYaxis() -> SetRangeUser(0.65,1.2);
+        Time_depD2 -> GetYaxis() -> SetRangeUser(0.6,1.3);
 	Time_depD2 -> SetTitle("R = 2 GV");
 	Time_depD2 -> LabelsOption("h");
 	Time_depD2 -> GetYaxis() -> SetLabelSize(0.085);
 	Time_depD2 -> GetXaxis() -> SetLabelSize(0.085);
 	Time_depD2 -> GetYaxis() -> SetTitle("Flux / Mean");
 	Time_depD2 -> GetYaxis() -> SetTitleSize(0.085);
-	Time_depD2 -> Draw();
+	Time_depD2 -> SetMarkerSize(2);
+	Time_depP2 -> SetMarkerSize(2); 
+	Time_depD2-> Draw();
         Time_depP2 -> Draw("same");
 
 	c17->cd(3);
         gPad->SetGridx();
         gPad->SetGridy();
-        Time_depD3 -> GetYaxis() -> SetRangeUser(0.65,1.2);
+        Time_depD3 -> GetYaxis() -> SetRangeUser(0.6,1.3);
 	Time_depD3 -> SetTitle("R = 10 GV");
 	Time_depD3 -> LabelsOption("h");
 	Time_depD3 -> GetYaxis() -> SetLabelSize(0.085);
 	Time_depD3 -> GetXaxis() -> SetLabelSize(0.085);
 	Time_depD3 -> GetYaxis() -> SetTitle("Flux / Mean");
 	Time_depD3 -> GetYaxis() -> SetTitleSize(0.085);
+	Time_depD3 -> SetMarkerSize(2);
+	Time_depP3 -> SetMarkerSize(2);
 	Time_depD3 -> Draw();
         Time_depP3 -> Draw("same");
 
 	c15->cd(2);
         gPad->SetGridx();
         gPad->SetGridy();
-        Time_depP4 -> GetYaxis() -> SetRangeUser(0.9,1.1);
+        Time_depP4 -> GetYaxis() -> SetRangeUser(0.8,1.2);
 	Time_depP4 -> SetTitle("High Energy Flux stability (R=80 GV)");
 	Time_depP4 -> GetYaxis() -> SetLabelSize(0.085);
 	Time_depP4 -> GetXaxis() -> SetLabelSize(0.085);
 	Time_depP4 -> GetYaxis() -> SetTitle("Flux / Mean");
 	Time_depP4 -> GetYaxis() -> SetTitleSize(0.085);
+	Time_depP4 -> SetMarkerSize(2);
 	Time_depP4 -> Draw("P");
 	errorP4 -> SetFillStyle(3001);
 	errorP4 -> Draw("E4same");
@@ -825,6 +843,59 @@ void CheckFileIntegrity(int i,std::string mesi[]){
            P_Fluxes[i]    	&& 	
            D_FluxesTOF[i] 	&& 	
            D_FluxesNaF[i] 	&&	
-           D_FluxesAgl[i] 	)  cout<<"file "<<mesi[i].c_str()<<"( "<<i<<") is complete"<<endl;
-		else cout<<"file "<<mesi[i].c_str()<<"( "<<i<<") is broken"<<endl;	
+           D_FluxesAgl[i] 	)  cout<<"file "<<ConvertString(mesi[i]).c_str()<<"( "<<i<<") is complete"<<endl;
+		else cout<<"file "<<ConvertString(mesi[i]).c_str()<<"( "<<i<<") is broken"<<endl;	
 }
+
+std::string ConvertString(std::string mese){
+	string Mese;
+	if(mese=="2011_01") Mese="Jan '11";
+	if(mese=="2011_02") Mese="Feb '11";
+	if(mese=="2011_03") Mese="Mar '11";
+	if(mese=="2011_04") Mese="Apr '11";
+	if(mese=="2011_05") Mese="May '11";
+	if(mese=="2011_06") Mese="Jun '11";
+	if(mese=="2011_07") Mese="Jul '11";
+	if(mese=="2011_08") Mese="Aug '11";
+	if(mese=="2011_09") Mese="Sep '11";
+	if(mese=="2011_10") Mese="Oct '11";
+	if(mese=="2011_11") Mese="Nov '11";
+	if(mese=="2011_12") Mese="Dec '11";
+	if(mese=="2012_01") Mese="Jan '12";
+	if(mese=="2012_02") Mese="Feb '12";
+	if(mese=="2012_03") Mese="Mar '12";
+	if(mese=="2012_04") Mese="Apr '12";
+	if(mese=="2012_05") Mese="May '12";
+	if(mese=="2012_06") Mese="Jun '12";
+	if(mese=="2012_07") Mese="Jul '12";
+	if(mese=="2012_08") Mese="Aug '12";
+	if(mese=="2012_09") Mese="Sep '12";
+	if(mese=="2012_10") Mese="Oct '12";
+	if(mese=="2012_11") Mese="Nov '12";
+	if(mese=="2012_12") Mese="Dec '12";
+	if(mese=="2013_01") Mese="Jan '13";
+	if(mese=="2013_02") Mese="Feb '13";
+	if(mese=="2013_03") Mese="Mar '13";
+	if(mese=="2013_04") Mese="Apr '13";
+	if(mese=="2013_05") Mese="May '13";
+	if(mese=="2013_06") Mese="Jun '13";
+	if(mese=="2013_07") Mese="Jul '13";
+	if(mese=="2013_08") Mese="Aug '13";
+	if(mese=="2013_09") Mese="Sep '13";
+	if(mese=="2013_10") Mese="Oct '13";
+	if(mese=="2013_11") Mese="Nov '13";
+	if(mese=="2013_12") Mese="Dec '13";
+	return Mese;
+}
+
+
+
+
+
+
+
+
+
+
+
+
