@@ -31,7 +31,7 @@
 
 using namespace std;
 
-int colorbase=30;
+int colorbase=55;
 
 void CheckFileIntegrity(int i,std::string mesi[]);
 
@@ -52,8 +52,8 @@ void DrawCalibration(TVirtualPad * c, TSpline3 * Corr[],const string &name,const
 	frame->GetYaxis()->SetTitle(yaxisname.c_str());
 	for(int i=1;i<num_mesi;i++) {
 		Corr[i]->SetLineWidth(2);
-		Corr[i]->SetLineColor(colorbase+i);
-		Corr[i]->SetMarkerColor(colorbase+i);
+		Corr[i]->SetLineColor(colorbase+2*i);
+		Corr[i]->SetMarkerColor(colorbase+2*i);
 		Corr[i]->SetMarkerStyle(8);
 		leg->AddEntry(Corr[i],ConvertString(mesi[i]).c_str(), "ep");
 		Corr[i]->Draw("same");
@@ -81,9 +81,9 @@ void DrawCorrection(TVirtualPad * c, TGraphErrors * Corr[],const string &name,co
 	Corr[0]->GetYaxis()->SetRangeUser(0.7,1.3);
 	for(int i=1;i<num_mesi;i++) {
 		Corr[i]->SetLineWidth(2);
-		Corr[i]->SetLineColor(colorbase+i);
+		Corr[i]->SetLineColor(colorbase+2*i);
 		Corr[i]->SetMarkerStyle(8);
-		Corr[i]->SetMarkerColor(colorbase+i);
+		Corr[i]->SetMarkerColor(colorbase+2*i);
 		leg->AddEntry(Corr[i],ConvertString(mesi[i]).c_str(), "ep");
 		Corr[i]->Draw("Csame");
 	}
@@ -122,7 +122,6 @@ TGraphErrors * FluxesMean(TGraphErrors * Fluxes[],int bins){
 
 void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[], TGraphErrors * FluxMean, const string &name,const string &xaxisname,const string &yaxisname, bool same = false){
 
-	gStyle->SetPalette(0);
         double x,y,ey=0;
         double x0,y0=0;
 	int u,v=0;
@@ -137,8 +136,8 @@ void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[], TGraphErrors * Flux
 			u=Fluxes[i]->GetPoint(p,x,y);
                         v=FluxMean->GetPoint(p,x0,y0);
                         ey=Fluxes[i]->GetErrorY(p);
-                        Fluxesratio[i]->SetPoint(p,x,y/y0);
-                        Fluxesratio[i]->SetPointError(p,0,ey/y0);
+                        Fluxesratio[i]->SetPoint(p-1,x,y/y0);
+                        Fluxesratio[i]->SetPointError(p-1,0,ey/y0);
                         }
                 }
                 Fluxesratio[0]->SetLineWidth(2);
@@ -155,10 +154,10 @@ void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[], TGraphErrors * Flux
                 Fluxesratio[0]->GetYaxis()->SetTitle(yaxisname.c_str());
                 for(int i=0;i<num_mesi;i++) {
                         Fluxesratio[i]->SetLineWidth(2);
-                        Fluxesratio[i]->SetLineColor(colorbase+i);
+                        Fluxesratio[i]->SetLineColor(colorbase+2*i);
                         Fluxesratio[i]->SetMarkerStyle(8);
                         Fluxesratio[i]->SetMarkerSize(1.5);
-			Fluxesratio[i]->SetMarkerColor(colorbase+i);
+			Fluxesratio[i]->SetMarkerColor(colorbase+2*i);
                         Fluxesratio[i]->SetFillStyle(3002);
                         leg->AddEntry(Fluxesratio[i],ConvertString(mesi[i]).c_str(), "ep");
                         Fluxesratio[i]->Draw("Psame");
@@ -170,8 +169,8 @@ void DrawFluxRatio(TVirtualPad * c, TGraphErrors * Fluxes[], TGraphErrors * Flux
 
 int main()
 {
-	int colorbase = 15;
-
+	int colorbase = 55;
+	gStyle->SetPalette(1);
 	cout<<"Analyzed Months: "<<endl;
 	for(int i=0;i<num_mesi;i++){
 		cout<<mesi[i].c_str()<<endl;
@@ -432,8 +431,8 @@ int main()
 	P_Fluxes[0]->SetMarkerColor(colorbase);
 	P_Fluxes[0]->SetLineColor(colorbase);
 	for(int i=1;i<num_mesi;i++){
-		P_Fluxes[i]->SetMarkerColor(colorbase+i);
-		P_Fluxes[i]->SetLineColor(colorbase+i);
+		P_Fluxes[i]->SetMarkerColor(colorbase+2*i);
+		P_Fluxes[i]->SetLineColor(colorbase+2*i);
 		P_Fluxes[i]->SetMarkerStyle(8);
 		P_Fluxes[i]->SetMarkerSize(1);
 		P_Fluxes[i]->Draw("Psame");
@@ -496,8 +495,8 @@ int main()
         D_FluxesTOF[0]->SetMarkerColor(colorbase);
         D_FluxesTOF[0]->SetLineColor(colorbase);
         for(int i=1;i<num_mesi;i++){
-                D_FluxesTOF[i]->SetMarkerColor(colorbase+i);
-                D_FluxesTOF[i]->SetLineColor(colorbase+i);
+                D_FluxesTOF[i]->SetMarkerColor(colorbase+2*i);
+                D_FluxesTOF[i]->SetLineColor(colorbase+2*i);
                 D_FluxesTOF[i]->Draw("Psame");
         }
         {
@@ -510,16 +509,16 @@ int main()
         D_FluxesNaF[0]->SetMarkerColor(colorbase);
         D_FluxesNaF[0]->SetLineColor(colorbase);
         for(int i=1;i<num_mesi;i++){
-                D_FluxesNaF[i]->SetMarkerColor(colorbase+i);
-                D_FluxesNaF[i]->SetLineColor(colorbase+i);
+                D_FluxesNaF[i]->SetMarkerColor(colorbase+2*i);
+                D_FluxesNaF[i]->SetLineColor(colorbase+2*i);
                 D_FluxesNaF[i]->Draw("Psame");
         }
         D_FluxesAgl[0]->Draw("Psame");
         D_FluxesAgl[0]->SetMarkerColor(colorbase);
         D_FluxesAgl[0]->SetLineColor(colorbase);
         for(int i=1;i<num_mesi;i++){
-                D_FluxesAgl[i]->SetMarkerColor(colorbase+i);
-                D_FluxesAgl[i]->SetLineColor(colorbase+i);
+                D_FluxesAgl[i]->SetMarkerColor(colorbase+2*i);
+                D_FluxesAgl[i]->SetLineColor(colorbase+2*i);
                 D_FluxesAgl[i]->Draw("Psame");
         }	
 		
@@ -573,7 +572,9 @@ int main()
 
 	c16->cd();
         bool same = true;
-	DrawFluxRatio(c16,D_FluxesAgl,D_MeanAgl,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)");
+	TH2F * Frame3 = new TH2F("Frame3","Frame3",1000,0,30,1000,0.4,1.4);
+	Frame3->Draw();
+	DrawFluxRatio(c16,D_FluxesAgl,D_MeanAgl,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)",same);
 	DrawFluxRatio(c16,D_FluxesTOF,D_MeanTOF,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)",same);	
 	DrawFluxRatio(c16,D_FluxesNaF,D_MeanNaF,"Kin. En./nucl.","Deuton Flux","Deutons Flux (norm. to mean flux)",same);
 
