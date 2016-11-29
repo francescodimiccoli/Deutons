@@ -199,7 +199,7 @@ int main(int argc, char * argv[])
 	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:Rcutoff:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Latitude:EdepTRD:IsCharge1");
 	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:PhysBPatt:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P");
 	TNtuple * pre = new TNtuple("Pre","distr for qual","R:Beta:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:EdepECAL:Rcutoff:Latitude:BetaRICH_new:Cutmask:BetanS:BetaR");
-	TNtuple * trig = new TNtuple("trig","trig","Seconds:Latitude:Rcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:Livetime");
+	TNtuple * trig = new TNtuple("trig","trig","Seconds:Latitude:Rcutoff:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:Livetime");
 
 
 	BDTreader();
@@ -240,6 +240,7 @@ int main(int argc, char * argv[])
 		geo_stuff->SetBranchAddress("Massa",&Massa);
 		geo_stuff->SetBranchAddress("Richtotused",&Richtotused);
 		geo_stuff->SetBranchAddress("RichPhEl",&RichPhEl);
+		geo_stuff->SetBranchAddress("R_L1",&R_L1);	
 	}
 
 	giov=0;
@@ -346,7 +347,7 @@ int main(int argc, char * argv[])
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
-	ntupla->Fill(seconds,Latitude,Rcutoff,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,Livetime);
+	ntupla->Fill(seconds,Latitude,Rcutoff,R_L1,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,Livetime);
 }
 
 
