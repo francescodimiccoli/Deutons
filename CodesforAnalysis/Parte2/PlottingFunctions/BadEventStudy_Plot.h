@@ -372,16 +372,26 @@ void BadEventStudy_plot(
 		EdepUtofS_TOF->Scale(1/EdepUtofS_TOF->Integral());
                 EdepUtofHe_TOF->Scale(1/EdepUtofHe_TOF->Integral());
 		EdepUtof_TOF->SetLineColor(2);
-                EdepUtof_TOF->SetLineWidth(2);
+                EdepUtof_TOF->SetLineWidth(5);
+		EdepUtof_TOF->SetFillColor(2);
+                EdepUtof_TOF->SetFillStyle(3002);
                 EdepUtofS_TOF->SetLineColor(4);
-                EdepUtofS_TOF->SetLineWidth(2);
-		EdepUtofHe_TOF->SetLineColor(3);
-                EdepUtofHe_TOF->SetLineWidth(2);
+                EdepUtofS_TOF->SetLineWidth(5);
+		EdepUtofS_TOF->SetFillColor(4);
+		EdepUtofS_TOF->SetFillStyle(3002);
 		EdepUtofS_TOF->SetTitle("TOF Range");
 		EdepUtofS_TOF->GetXaxis()->SetTitle("E. dep. (meas. - teo.) [# of sigmas] (Upper TOF)");
 		EdepUtofS_TOF->Draw();
 		EdepUtof_TOF->Draw("same");
-		EdepUtofHe_TOF->Draw("same");
+		//EdepUtofHe_TOF->Draw("same");
+		{
+                TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (EdepUtof_TOF,"Protons MC (mass>1.857)", "lf");
+                leg->AddEntry (EdepUtofS_TOF,"Deuterons MC (mass>1.857)", "lf");
+                leg->Draw("same");
+		}
+
+
 
                 e->cd(2);
                 gPad->SetGridy();
@@ -391,16 +401,25 @@ void BadEventStudy_plot(
                 EdepUtofS_NaF->Scale(1/EdepUtofS_NaF->Integral());
                 EdepUtofHe_NaF->Scale(1/EdepUtofHe_NaF->Integral());
 		EdepUtof_NaF->SetLineColor(2);
-                EdepUtof_NaF->SetLineWidth(2);
-		EdepUtofS_NaF->SetLineColor(4);
-                EdepUtofS_NaF->SetLineWidth(2);
-                EdepUtofHe_NaF->SetLineColor(3);
-                EdepUtofHe_NaF->SetLineWidth(2);
+                EdepUtof_NaF->SetLineWidth(5);
+                EdepUtof_NaF->SetFillColor(2);
+                EdepUtof_NaF->SetFillStyle(3002);
+                EdepUtofS_NaF->SetLineColor(4);
+                EdepUtofS_NaF->SetLineWidth(5);
+                EdepUtofS_NaF->SetFillColor(4);
+                EdepUtofS_NaF->SetFillStyle(3002);
+
 		EdepUtofS_NaF->SetTitle("NaF Range");
 		EdepUtofS_NaF->GetXaxis()->SetTitle("E. dep. (meas. - teo.) [# of sigmas] (Upper TOF)");
 		EdepUtofS_NaF->Draw();
 		EdepUtof_NaF->Draw("same");
-		EdepUtofHe_NaF->Draw("same");
+		//EdepUtofHe_NaF->Draw("same");
+		{
+                TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (EdepUtof_NaF,"Protons MC (mass>1.857)", "lf");
+                leg->AddEntry (EdepUtofS_NaF,"Deuterons MC (mass>1.857)", "lf");
+                leg->Draw("same");
+		}
 
                 e->cd(3);
                 gPad->SetGridy();
@@ -410,18 +429,25 @@ void BadEventStudy_plot(
                 EdepUtofS_Agl->Scale(1/EdepUtofS_Agl->Integral());
                 EdepUtofHe_Agl->Scale(1/EdepUtofHe_Agl->Integral());
 		EdepUtof_Agl->SetLineColor(2);
-                EdepUtof_Agl->SetLineWidth(2);
+                EdepUtof_Agl->SetLineWidth(5);
+                EdepUtof_Agl->SetFillColor(2);
+                EdepUtof_Agl->SetFillStyle(3002);
                 EdepUtofS_Agl->SetLineColor(4);
-                EdepUtofS_Agl->SetLineWidth(2);
-		EdepUtofHe_Agl->SetLineColor(3);
-                EdepUtofHe_Agl->SetLineWidth(2);
+                EdepUtofS_Agl->SetLineWidth(5);
+                EdepUtofS_Agl->SetFillColor(4);
+                EdepUtofS_Agl->SetFillStyle(3002);
+
 		EdepUtofS_Agl->SetTitle("Agl Range");
 		EdepUtofS_Agl->GetXaxis()->SetTitle("E. dep. (meas. - teo.) [# of sigmas] (Upper TOF)");
 		EdepUtofS_Agl->Draw();
 		EdepUtof_Agl->Draw("same");
-		EdepUtofHe_Agl->Draw("same");
-
-
+		//EdepUtofHe_Agl->Draw("same");
+		{
+		TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (EdepUtof_Agl,"Protons MC (mass>1.857)", "lf");
+		leg->AddEntry (EdepUtofS_Agl,"Deuterons MC (mass>1.857)", "lf");
+		leg->Draw("same");
+		}
 
 		e1->Divide(3,1);
                 e1->cd(1);
@@ -432,16 +458,25 @@ void BadEventStudy_plot(
 		EdepLtofS_TOF->Scale(1/EdepLtofS_TOF->Integral());
                 EdepLtofHe_TOF->Scale(1/EdepLtofHe_TOF->Integral());
 		EdepLtof_TOF->SetLineColor(2);
-                EdepLtof_TOF->SetLineWidth(2);
+                EdepLtof_TOF->SetLineWidth(5);
+                EdepLtof_TOF->SetFillColor(2);
+                EdepLtof_TOF->SetFillStyle(3002);
                 EdepLtofS_TOF->SetLineColor(4);
-                EdepLtofS_TOF->SetLineWidth(2);
-		EdepLtofHe_TOF->SetLineColor(3);
-                EdepLtofHe_TOF->SetLineWidth(2);
+                EdepLtofS_TOF->SetLineWidth(5);
+                EdepLtofS_TOF->SetFillColor(4);
+                EdepLtofS_TOF->SetFillStyle(3002);
 		EdepLtofS_TOF->SetTitle("TOF Range");
 		EdepLtofS_TOF->GetXaxis()->SetTitle("E. dep. (meas. - teo.) [# of sigmas] (Lower TOF)");
 		EdepLtofS_TOF->Draw();
 		EdepLtof_TOF->Draw("same");
-		EdepLtofHe_TOF->Draw("same");
+		//EdepLtofHe_TOF->Draw("same");
+		{
+                TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (EdepLtof_TOF,"Protons MC (mass>1.857)", "lf");
+                leg->AddEntry (EdepLtofS_TOF,"Deuterons MC (mass>1.857)", "lf");
+                leg->Draw("same");
+		}
+
 
                 e1->cd(2);
                 gPad->SetGridy();
@@ -451,16 +486,25 @@ void BadEventStudy_plot(
                 EdepLtofS_NaF->Scale(1/EdepLtofS_NaF->Integral());
                 EdepLtofHe_NaF->Scale(1/EdepLtofHe_NaF->Integral());
 		EdepLtof_NaF->SetLineColor(2);
-                EdepLtof_NaF->SetLineWidth(2);
-		EdepLtofS_NaF->SetLineColor(4);
-                EdepLtofS_NaF->SetLineWidth(2);
-                EdepLtofHe_NaF->SetLineColor(3);
-                EdepLtofHe_NaF->SetLineWidth(2);
+                EdepLtof_NaF->SetLineWidth(5);
+                EdepLtof_NaF->SetFillColor(2);
+                EdepLtof_NaF->SetFillStyle(3002);
+                EdepLtofS_NaF->SetLineColor(4);
+                EdepLtofS_NaF->SetLineWidth(5);
+                EdepLtofS_NaF->SetFillColor(4);
+                EdepLtofS_NaF->SetFillStyle(3002);
+
 		EdepLtofS_NaF->SetTitle("NaF Range");
 		EdepLtofS_NaF->GetXaxis()->SetTitle("E. dep. (meas. - teo.) [# of sigmas] (Lower TOF)");
 		EdepLtofS_NaF->Draw();
 		EdepLtof_NaF->Draw("same");
-		EdepLtofHe_NaF->Draw("same");
+		//EdepLtofHe_NaF->Draw("same");
+		{
+		TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (EdepLtof_TOF,"Protons MC (mass>1.857)", "lf");
+                leg->AddEntry (EdepLtofS_TOF,"Deuterons MC (mass>1.857)", "lf");
+                leg->Draw("same");
+		}
 
                 e1->cd(3);
                 gPad->SetGridy();
@@ -470,17 +514,25 @@ void BadEventStudy_plot(
                 EdepLtofS_Agl->Scale(1/EdepLtofS_Agl->Integral());
                 EdepLtofHe_Agl->Scale(1/EdepLtofHe_Agl->Integral());
 		EdepLtof_Agl->SetLineColor(2);
-                EdepLtof_Agl->SetLineWidth(2);
+                EdepLtof_Agl->SetLineWidth(5);
+                EdepLtof_Agl->SetFillColor(2);
+                EdepLtof_Agl->SetFillStyle(3002);
                 EdepLtofS_Agl->SetLineColor(4);
-                EdepLtofS_Agl->SetLineWidth(2);
-		EdepLtofHe_Agl->SetLineColor(3);
-                EdepLtofHe_Agl->SetLineWidth(2);
+                EdepLtofS_Agl->SetLineWidth(5);
+                EdepLtofS_Agl->SetFillColor(4);
+                EdepLtofS_Agl->SetFillStyle(3002);
 		EdepLtofS_Agl->SetTitle("Agl Range"); 
 		EdepLtofS_Agl->GetXaxis()->SetTitle("E. dep. (meas. - teo.) [# of sigmas] (Inner Tracker)");
 		EdepLtofS_Agl->Draw();
 		EdepLtof_Agl->Draw("same");
-		EdepLtofHe_Agl->Draw("same");
-		
+		//EdepLtofHe_Agl->Draw("same");
+		{
+                TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (EdepLtof_Agl,"Protons MC (mass>1.857)", "lf");
+                leg->AddEntry (EdepLtofS_Agl,"Deuterons MC (mass>1.857)", "lf");
+                leg->Draw("same");
+		}
+
 		e2->Divide(3,1);
                 e2->cd(1);
                 gPad->SetGridy();
@@ -490,16 +542,25 @@ void BadEventStudy_plot(
 		EdepTrackS_TOF->Scale(1/EdepTrackS_TOF->Integral());
                 EdepTrackHe_TOF->Scale(1/EdepTrackHe_TOF->Integral());
 		EdepTrack_TOF->SetLineColor(2);
-                EdepTrack_TOF->SetLineWidth(2);
+                EdepTrack_TOF->SetLineWidth(5);
+                EdepTrack_TOF->SetFillColor(2);
+                EdepTrack_TOF->SetFillStyle(3002);
                 EdepTrackS_TOF->SetLineColor(4);
-                EdepTrackS_TOF->SetLineWidth(2);
-		EdepTrackHe_TOF->SetLineColor(3);
-                EdepTrackHe_TOF->SetLineWidth(2);
+                EdepTrackS_TOF->SetLineWidth(5);
+                EdepTrackS_TOF->SetFillColor(4);
+                EdepTrackS_TOF->SetFillStyle(3002);
 		EdepTrackS_TOF->SetTitle("TOF Range"); 
 		EdepTrackS_TOF->GetXaxis()->SetTitle("E. dep. (meas. - teo.) [# of sigmas] (Inner Tracker)");
 		EdepTrackS_TOF->Draw();
 		EdepTrack_TOF->Draw("same");
-		EdepTrackHe_TOF->Draw("same");
+		//EdepTrackHe_TOF->Draw("same");
+		{
+                TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (EdepTrack_TOF,"Protons MC (mass>1.857)", "lf");
+                leg->AddEntry (EdepTrackS_TOF,"Deuterons MC (mass>1.857)", "lf");
+                leg->Draw("same");
+		}
+
 
                 e2->cd(2);
                 gPad->SetGridy();
@@ -509,16 +570,25 @@ void BadEventStudy_plot(
                 EdepTrackS_NaF->Scale(1/EdepTrackS_NaF->Integral());
                 EdepTrackHe_NaF->Scale(1/EdepTrackHe_NaF->Integral());
 		EdepTrack_NaF->SetLineColor(2);
-                EdepTrack_NaF->SetLineWidth(2);
-		EdepTrackS_NaF->SetLineColor(4);
-                EdepTrackS_NaF->SetLineWidth(2);
-                EdepTrackHe_NaF->SetLineColor(3);
-                EdepTrackHe_NaF->SetLineWidth(2);
+                EdepTrack_NaF->SetLineWidth(5);
+                EdepTrack_NaF->SetFillColor(2);
+                EdepTrack_NaF->SetFillStyle(3002);
+                EdepTrackS_NaF->SetLineColor(4);
+                EdepTrackS_NaF->SetLineWidth(5);
+                EdepTrackS_NaF->SetFillColor(4);
+                EdepTrackS_NaF->SetFillStyle(3002);
+
 		EdepTrackS_NaF->SetTitle("NaF Range"); 
 		EdepTrackS_NaF->GetXaxis()->SetTitle("E. dep. (meas. - teo.) [# of sigmas] (Inner Tracker)");
 		EdepTrackS_NaF->Draw();
 		EdepTrack_NaF->Draw("same");
-		EdepTrackHe_NaF->Draw("same");
+		//EdepTrackHe_NaF->Draw("same");
+		{
+                TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (EdepTrack_NaF,"Protons MC (mass>1.857)", "lf");
+                leg->AddEntry (EdepTrackS_NaF,"Deuterons MC (mass>1.857)", "lf");
+                leg->Draw("same");
+		}
 
                 e2->cd(3);
                 gPad->SetGridy();
@@ -527,18 +597,26 @@ void BadEventStudy_plot(
 		EdepTrack_Agl->Scale(1/EdepTrack_Agl->Integral());
                 EdepTrackS_Agl->Scale(1/EdepTrackS_Agl->Integral());
                 EdepTrackHe_Agl->Scale(1/EdepTrackHe_Agl->Integral());
-		EdepTrack_Agl->SetLineColor(2);
-                EdepTrack_Agl->SetLineWidth(2);
+	 	EdepTrack_Agl->SetLineColor(2);
+                EdepTrack_Agl->SetLineWidth(5);
+                EdepTrack_Agl->SetFillColor(2);
+                EdepTrack_Agl->SetFillStyle(3002);
                 EdepTrackS_Agl->SetLineColor(4);
-                EdepTrackS_Agl->SetLineWidth(2);
-		EdepTrackHe_Agl->SetLineColor(3);
-                EdepTrackHe_Agl->SetLineWidth(2);
-	 	EdepTrackS_Agl->SetTitle("Agl Range");		
+                EdepTrackS_Agl->SetLineWidth(5);
+                EdepTrackS_Agl->SetFillColor(4);
+                EdepTrackS_Agl->SetFillStyle(3002);
+		EdepTrackS_Agl->SetTitle("Agl Range");		
 		EdepTrackS_Agl->GetXaxis()->SetTitle("E.. dep (meas. - teo.) [# of sigmas] (Inner Tracker)");
 		EdepTrackS_Agl->Draw();
 		EdepTrack_Agl->Draw("same");
-		EdepTrackHe_Agl->Draw("same");
-		
+		//EdepTrackHe_Agl->Draw("same");
+		{
+                TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (EdepTrack_Agl,"Protons MC (mass>1.857)", "lf");
+                leg->AddEntry (EdepTrackS_Agl,"Deuterons MC (mass>1.857)", "lf");
+                leg->Draw("same");
+		}
+	
 
 
 

@@ -78,15 +78,19 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 ){
 
 
+	int plottingstyles[6]={3,4,20,25,29,26};
+
 	TCanvas * c31_tris = new TCanvas("Gen. Efficiency");
 
-	c31_tris->Divide(2,1);
-	c31_tris->cd(1);
+	string MCLegend[7]= {"Protons MC B800","Deuteorons MC \"GG_Blic\"","Deuterons MC \"GG_BlicDPMJet\"","Deuterons MC \"GG_QMD\"","Deuterons MC \"Shen_Blic\"","Deuterons MC \"Shen_BlicDPMJet\"","Deuterons MC \"Shen_QMD\""};
+
+	//c31_tris->Divide(2,1);
+	c31_tris->cd();
 	gPad->SetLogx();
         gPad->SetLogy();
         gPad->SetGridx();
         gPad->SetGridy();
-        TGraphErrors * EffgenbetaD[6];
+	TGraphErrors * EffgenbetaD[6];
 	int p =0;
 	for(int h=0;h<6;h++){
 		EffgenbetaD[h]=new TGraphErrors();
@@ -95,18 +99,21 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 					
 	
 	EffgenbetaD[h]->SetMarkerStyle(8);
-        EffgenbetaD[h]->SetMarkerColor(1);
+        EffgenbetaD[h]->SetMarkerColor(0);
         EffgenbetaD[h]->SetMarkerSize(1);
-        EffgenbetaD[h]->SetLineColor(1);
-        EffgenbetaD[h]->SetLineWidth(1);
-        EffgenbetaD[h]->SetMarkerStyle(h+3);
+        EffgenbetaD[h]->SetLineColor(0);
+        EffgenbetaD[h]->SetLineWidth(0);
+        EffgenbetaD[h]->SetMarkerStyle(8);
         EffgenbetaD[h]->SetTitle("");
-        EffgenbetaD[h]->GetXaxis()->SetTitle("R [GV]");
-        EffgenbetaD[h]->GetYaxis()->SetTitle("Gen. Eff.");
+        EffgenbetaD[h]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+        EffgenbetaD[h]->GetYaxis()->SetTitle("Efficiency");
         EffgenbetaD[h]->GetXaxis()->SetTitleSize(0.045);
         EffgenbetaD[h]->GetYaxis()->SetTitleSize(0.045);
 	}
 	EffgenbetaD[0]->Draw("ACP");
+	
+
+
 	
 	TGraphErrors * EffgenbetaDTOF[6];
         p=0;
@@ -116,13 +123,13 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
                 for(int i=0;i<nbinsToF;i++) {EffgenbetaDTOF[h]->SetPoint(p,ToFDB.EkPerMassBinCent(i),DGen_Acceptance_TOF  ->GetBinContent(i+1,h+1));p++;}
         EffgenbetaDTOF[h]->SetMarkerStyle(8);
         EffgenbetaDTOF[h]->SetMarkerColor(4);
-        EffgenbetaDTOF[h]->SetMarkerSize(1.4);
+        EffgenbetaDTOF[h]->SetMarkerSize(2);
         EffgenbetaDTOF[h]->SetLineColor(4);
         EffgenbetaDTOF[h]->SetLineWidth(1);
-        EffgenbetaDTOF[h]->SetMarkerStyle(h+3);
+        EffgenbetaDTOF[h]->SetMarkerStyle(plottingstyles[h]);
         EffgenbetaDTOF[h]->SetTitle("");
-        EffgenbetaDTOF[h]->GetXaxis()->SetTitle("R [GV]");
-        EffgenbetaDTOF[h]->GetYaxis()->SetTitle("Gen. Eff.");
+        EffgenbetaDTOF[h]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+        EffgenbetaDTOF[h]->GetYaxis()->SetTitle("Efficiency");
         EffgenbetaDTOF[h]->GetXaxis()->SetTitleSize(0.045);
         EffgenbetaDTOF[h]->GetYaxis()->SetTitleSize(0.045);
         }
@@ -130,6 +137,8 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
         for(int h=1;h<6;h++){
                 EffgenbetaDTOF[h]->Draw("CPsame");
         }
+
+
 	
 	TGraphErrors * EffgenbetaDNaF[6];
         p=0;
@@ -140,13 +149,13 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 
         EffgenbetaDNaF[h]->SetMarkerStyle(8);
         EffgenbetaDNaF[h]->SetMarkerColor(4);
-        EffgenbetaDNaF[h]->SetMarkerSize(1.4);
+        EffgenbetaDNaF[h]->SetMarkerSize(2);
         EffgenbetaDNaF[h]->SetLineColor(4);
         EffgenbetaDNaF[h]->SetLineWidth(1);
-        EffgenbetaDNaF[h]->SetMarkerStyle(h+3);
+        EffgenbetaDNaF[h]->SetMarkerStyle(plottingstyles[h]);
         EffgenbetaDNaF[h]->SetTitle("");
-        EffgenbetaDNaF[h]->GetXaxis()->SetTitle("R [GV]");
-        EffgenbetaDNaF[h]->GetYaxis()->SetTitle("Gen. Eff.");
+        EffgenbetaDNaF[h]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+        EffgenbetaDNaF[h]->GetYaxis()->SetTitle("Efficiency");
         EffgenbetaDNaF[h]->GetXaxis()->SetTitleSize(0.045);
         EffgenbetaDNaF[h]->GetYaxis()->SetTitleSize(0.045);
         }
@@ -164,13 +173,13 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 
         EffgenbetaDAgl[h]->SetMarkerStyle(8);
         EffgenbetaDAgl[h]->SetMarkerColor(4);
-        EffgenbetaDAgl[h]->SetMarkerSize(1.4);
+        EffgenbetaDAgl[h]->SetMarkerSize(2);
         EffgenbetaDAgl[h]->SetLineColor(4);
         EffgenbetaDAgl[h]->SetLineWidth(1);
-        EffgenbetaDAgl[h]->SetMarkerStyle(h+3);
+        EffgenbetaDAgl[h]->SetMarkerStyle(plottingstyles[h]);
         EffgenbetaDAgl[h]->SetTitle("");
-        EffgenbetaDAgl[h]->GetXaxis()->SetTitle("R [GV]");
-        EffgenbetaDAgl[h]->GetYaxis()->SetTitle("Gen. Eff.");
+        EffgenbetaDAgl[h]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+        EffgenbetaDAgl[h]->GetYaxis()->SetTitle("Efficiency");
         EffgenbetaDAgl[h]->GetXaxis()->SetTitleSize(0.045);
         EffgenbetaDAgl[h]->GetYaxis()->SetTitleSize(0.045);
         }
@@ -179,11 +188,6 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
                 EffgenbetaDAgl[h]->Draw("CPsame");
         }
 	
-	c31_tris->cd(2);
-	gPad->SetLogx();
-	gPad->SetLogy();
-	gPad->SetGridx();
-	gPad->SetGridy();
 	TGraphErrors * EffgenbetaP;
 	p =0;
 	EffgenbetaP=new TGraphErrors();
@@ -191,16 +195,17 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	for(int i=0;i<nbinsr;i++) {EffgenbetaP->SetPoint(p,PRB.EkPerMassBinCent(i),PGen_Acceptance_R  ->GetBinContent(i+1));p++;}
 
 	EffgenbetaP->SetMarkerStyle(8);
-	EffgenbetaP->SetMarkerColor(2);
+	EffgenbetaP->SetMarkerColor(0);
 	EffgenbetaP->SetMarkerSize(1);
-	EffgenbetaP->SetLineColor(2);
+	EffgenbetaP->SetLineColor(0);
 	EffgenbetaP->SetLineWidth(1);
 	EffgenbetaP->SetTitle("");
-	EffgenbetaP->GetXaxis()->SetTitle("R [GV]");
-	EffgenbetaP->GetYaxis()->SetTitle("Gen. Eff.");
+	EffgenbetaP->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+	EffgenbetaP->GetYaxis()->SetTitle("Efficiency");
+	EffgenbetaP->GetXaxis()->SetRangeUser(0.1,20);
 	EffgenbetaP->GetXaxis()->SetTitleSize(0.045);
 	EffgenbetaP->GetYaxis()->SetTitleSize(0.045);
-	EffgenbetaP->Draw("ACP");
+	//EffgenbetaP->Draw("ACP");
 
 	TGraphErrors * EffgenbetaPTOF;
 	p=0;
@@ -209,15 +214,29 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	for(int i=0;i<nbinsToF;i++) {EffgenbetaPTOF->SetPoint(p,ToFPB.EkPerMassBinCent(i),PGen_Acceptance_TOF  ->GetBinContent(i+1));p++;}
 	EffgenbetaPTOF->SetMarkerStyle(8);
 	EffgenbetaPTOF->SetMarkerColor(2);
-	EffgenbetaPTOF->SetMarkerSize(1.4);
+	EffgenbetaPTOF->SetMarkerSize(2);
 	EffgenbetaPTOF->SetLineColor(2);
 	EffgenbetaPTOF->SetLineWidth(1);
 	EffgenbetaPTOF->SetTitle("");
-	EffgenbetaPTOF->GetXaxis()->SetTitle("R [GV]");
-	EffgenbetaPTOF->GetYaxis()->SetTitle("Gen. Eff.");
+	EffgenbetaPTOF->GetXaxis()->SetTitle("Kin. En. / nucl.  [GeV/nucl.]");
+	EffgenbetaPTOF->GetYaxis()->SetTitle("Efficiency");
 	EffgenbetaPTOF->GetXaxis()->SetTitleSize(0.045);
 	EffgenbetaPTOF->GetYaxis()->SetTitleSize(0.045);
+	EffgenbetaPTOF->GetXaxis()->SetRangeUser(0.1,20);
+
 	EffgenbetaPTOF->Draw("CPsame");
+	{ TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                leg->AddEntry(EffgenbetaDTOF[0],MCLegend[1].c_str(), "p");
+        for(int h=1;h<6;h++){
+                leg->AddEntry(EffgenbetaDTOF[h],MCLegend[h+1].c_str(), "p");
+        }
+               leg->AddEntry(EffgenbetaPTOF,MCLegend[0].c_str(), "p");	       
+               leg->SetLineWidth(2);
+                leg->Draw("same");
+        }	
+
+
+
 
 	TGraphErrors * EffgenbetaPNaF;
 	p=0;
@@ -226,12 +245,12 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	for(int i=0;i<nbinsNaF;i++) {EffgenbetaPNaF->SetPoint(p,NaFPB.EkPerMassBinCent(i),PGen_Acceptance_NaF  ->GetBinContent(i+1));p++;}
 	EffgenbetaPNaF->SetMarkerStyle(8);
 	EffgenbetaPNaF->SetMarkerColor(2);
-	EffgenbetaPNaF->SetMarkerSize(1.4);
+	EffgenbetaPNaF->SetMarkerSize(2);
 	EffgenbetaPNaF->SetLineColor(2);
 	EffgenbetaPNaF->SetLineWidth(1);
 	EffgenbetaPNaF->SetTitle("");
-	EffgenbetaPNaF->GetXaxis()->SetTitle("R [GV]");
-	EffgenbetaPNaF->GetYaxis()->SetTitle("Gen. Eff.");
+	EffgenbetaPNaF->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+	EffgenbetaPNaF->GetYaxis()->SetTitle("Efficiency");
 	EffgenbetaPNaF->GetXaxis()->SetTitleSize(0.045);
 	EffgenbetaPNaF->GetYaxis()->SetTitleSize(0.045);
 	EffgenbetaPNaF->Draw("CPsame");
@@ -243,12 +262,12 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	for(int i=0;i<nbinsAgl;i++) {EffgenbetaPAgl->SetPoint(p,AglPB.EkPerMassBinCent(i),PGen_Acceptance_Agl  ->GetBinContent(i+1));p++;}
 	EffgenbetaPAgl->SetMarkerStyle(8);
 	EffgenbetaPAgl->SetMarkerColor(2);
-	EffgenbetaPAgl->SetMarkerSize(1.4);
+	EffgenbetaPAgl->SetMarkerSize(2);
 	EffgenbetaPAgl->SetLineColor(2);
 	EffgenbetaPAgl->SetLineWidth(1);
 	EffgenbetaPAgl->SetTitle("");
-	EffgenbetaPAgl->GetXaxis()->SetTitle("R [GV]");
-	EffgenbetaPAgl->GetYaxis()->SetTitle("Gen. Eff.");
+	EffgenbetaPAgl->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+	EffgenbetaPAgl->GetYaxis()->SetTitle("Efficiency");
 	EffgenbetaPAgl->GetXaxis()->SetTitleSize(0.045);
 	EffgenbetaPAgl->GetYaxis()->SetTitleSize(0.045);
 	EffgenbetaPAgl->Draw("CPsame");
@@ -313,7 +332,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
         AccSelMCP->SetMarkerColor(1);
         AccSelMCP->SetLineColor(2);
 	AccgeoP->SetTitle("Protons Acceptance");
-        AccgeoP->GetXaxis()->SetTitle("R [GV]");
+        AccgeoP->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
         AccgeoP->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
         AccgeoP->GetXaxis()->SetTitleSize(0.045);
         AccgeoP->GetYaxis()->SetTitleSize(0.045);
@@ -327,13 +346,24 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 
 
 	TCanvas * c31_bis = new TCanvas("MC Final Acceptance (Beta bins) (Beta bins)");
-	string MCLegend[7]={"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
 	
 	c31_bis->cd();
+
         gPad->SetLogx();
         gPad->SetLogy();
         gPad->SetGridx();
         gPad->SetGridy();
+	TH2F * Frame = new TH2F("Frame","Frame",1000,0,50,1000,0.0001,1);
+      Frame->SetTitle("Final effective Acceptance");
+       Frame->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+      Frame->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
+       Frame->GetXaxis()->SetTitleSize(0.045);
+       Frame->GetYaxis()->SetTitleSize(0.045);
+       Frame->GetYaxis()->SetRangeUser(1e-3,1.3);
+        	
+
+	  Frame->Draw();
+
         TGraphErrors * AccSelMCDbeta[6];
         TGraphErrors * AccSelMCPbeta=new TGraphErrors();
 	for(int h=0;h<6;h++){
@@ -342,43 +372,42 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
                 for(int m=0;m<nbinsToF;m++) {AccSelMCDbeta[h]->SetPoint(p,ToFDB.EkPerMassBinCent(m),DMCAcceptance_TOF -> GetBinContent(m+1,h+1));
 					    AccSelMCDbeta[h]->SetPointError(p,0,DMCAcceptance_TOF -> GetBinError(m+1,h+1));
 					     p++;}
-		if(h==0) 
+		if(h==1) 
 		{
 			p=0;
 			for(int m=0;m<nbinsToF;m++) {AccSelMCPbeta->SetPoint(p,ToFPB.EkPerMassBinCent(m),PMCAcceptance_TOF -> GetBinContent(m+1));
 						     AccSelMCPbeta->SetPointError(p,0,PMCAcceptance_TOF -> GetBinError(m+1));
 						     p++;}
-			AccSelMCDbeta[0]->SetPoint(p,50,0.001);
 			AccSelMCPbeta->SetMarkerStyle(8);
-                	AccSelMCPbeta->SetMarkerColor(2);
-                	AccSelMCPbeta->SetMarkerSize(1.4);
+                	AccSelMCPbeta->SetFillColor(2);
+                	AccSelMCPbeta->SetMarkerSize(2);
                 	AccSelMCPbeta->SetLineColor(2);
-                	AccSelMCPbeta->SetLineWidth(1);
-		}
+                	AccSelMCPbeta->SetLineWidth(4);
+			AccSelMCPbeta->SetFillStyle(3001);		
+
 		AccSelMCDbeta[h]->SetMarkerStyle(8);
-                AccSelMCDbeta[h]->SetMarkerColor(4);
-                AccSelMCDbeta[h]->SetMarkerSize(1.4);
+                AccSelMCDbeta[h]->SetFillColor(4);
+                AccSelMCDbeta[h]->SetMarkerSize(2);
                 AccSelMCDbeta[h]->SetLineColor(4);
-		AccSelMCDbeta[h]->SetLineStyle(2);
-                AccSelMCDbeta[h]->SetLineWidth(1);
+		AccSelMCDbeta[h]->SetLineStyle(1);
+		AccSelMCDbeta[h]->SetFillStyle(3001);
+                AccSelMCDbeta[h]->SetLineWidth(4);
                 AccSelMCDbeta[h]->SetMarkerStyle(h+3);
-                AccSelMCDbeta[0]->SetTitle("Final effective Acceptance");
-                AccSelMCDbeta[0]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
-                AccSelMCDbeta[0]->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
-                AccSelMCDbeta[0]->GetXaxis()->SetTitleSize(0.045);
-                AccSelMCDbeta[0]->GetYaxis()->SetTitleSize(0.045);
-                AccSelMCDbeta[0]->GetYaxis()->SetRangeUser(1e-2,1.3);
-        }
+                AccSelMCDbeta[1]->SetTitle("Final effective Acceptance");
+                AccSelMCDbeta[1]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+                AccSelMCDbeta[1]->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
+                AccSelMCDbeta[1]->GetXaxis()->SetTitleSize(0.045);
+                AccSelMCDbeta[1]->GetYaxis()->SetTitleSize(0.045);
+                AccSelMCDbeta[1]->GetYaxis()->SetRangeUser(1e-2,1.3);
+        	}
+	}
 	{	TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-                leg->AddEntry(AccSelMCDbeta[0],MCLegend[1].c_str(), "ep");
-		AccSelMCDbeta[0]->Draw("AP");
-		AccSelMCPbeta->SetLineStyle(2);
-		AccSelMCPbeta->Draw("Psame");
-        for(int h=1;h<6;h++){
-                leg->AddEntry(AccSelMCDbeta[h],MCLegend[h+1].c_str(), "ep");
-		AccSelMCDbeta[h]->Draw("Psame");
-        }
-        	leg->AddEntry(AccSelMCPbeta,"Protons B800","ep");		
+		AccSelMCDbeta[1]->Draw("C4same");
+		AccSelMCPbeta->SetLineStyle(1);
+		AccSelMCPbeta->Draw("C4same");
+        	leg->AddEntry(AccSelMCPbeta,"Proton Acceptance","fl");		
+		leg->AddEntry(AccSelMCDbeta[1],"Deuteron Acceptance","fl");
+		leg->SetLineWidth(2);
 		leg->Draw("same");
 	}
 
@@ -398,31 +427,23 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 					 	     AccSelMCPbetaNaF->SetPointError(p,0,PMCAcceptance_NaF -> GetBinError(m+1));
 						     p++;}
                         AccSelMCPbetaNaF->SetMarkerStyle(8);
-                        AccSelMCPbetaNaF->SetMarkerColor(2);
+                        AccSelMCPbetaNaF->SetFillColor(2);
                         AccSelMCPbetaNaF->SetMarkerSize(2);
                         AccSelMCPbetaNaF->SetLineColor(2);
-                        AccSelMCPbetaNaF->SetLineWidth(1);
+                        AccSelMCPbetaNaF->SetLineWidth(4);
+			AccSelMCPbetaNaF->SetFillStyle(3001);
                 }
                 AccSelMCDbetaNaF[h]->SetMarkerStyle(8);
-                AccSelMCDbetaNaF[h]->SetMarkerColor(4);
-                AccSelMCDbetaNaF[h]->SetMarkerSize(2);
+                AccSelMCDbetaNaF[h]->SetFillColor(4);
+               AccSelMCDbetaNaF[h]->SetFillStyle(3001);
+		 AccSelMCDbetaNaF[h]->SetMarkerSize(2);
                 AccSelMCDbetaNaF[h]->SetLineColor(4);
-                AccSelMCDbetaNaF[h]->SetLineStyle(2);
-		AccSelMCDbetaNaF[h]->SetLineWidth(1);
+                AccSelMCDbetaNaF[h]->SetLineStyle(1);
+		AccSelMCDbetaNaF[h]->SetLineWidth(4);
                 AccSelMCDbetaNaF[h]->SetMarkerStyle(h+3);
-                AccSelMCDbetaNaF[h]->SetTitle("Deutons Acceptance");
-                AccSelMCDbetaNaF[h]->GetXaxis()->SetTitle("R [GV]");
-                AccSelMCDbetaNaF[h]->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
-                AccSelMCDbetaNaF[h]->GetXaxis()->SetTitleSize(0.045);
-                AccSelMCDbetaNaF[h]->GetYaxis()->SetTitleSize(0.045);
-                AccSelMCDbetaNaF[h]->GetYaxis()->SetRangeUser(1e-2,1.3);
         }
-                AccSelMCDbetaNaF[0]->Draw("Psame");
-		AccSelMCPbetaNaF->SetLineStyle(2);
-		AccSelMCPbetaNaF->Draw("Psame");
-        for(int h=1;h<6;h++){
-                AccSelMCDbetaNaF[h]->Draw("Psame");
-        }
+                AccSelMCDbetaNaF[1]->Draw("C4same");
+		AccSelMCPbetaNaF->Draw("C4same");
 	
 
         TGraphErrors * AccSelMCDbetaAgl[6];
@@ -440,31 +461,24 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 						     AccSelMCPbetaAgl->SetPointError(p,0,PMCAcceptance_Agl -> GetBinError(m+1));
 						     p++;}
                         AccSelMCPbetaAgl->SetMarkerStyle(8);
-                        AccSelMCPbetaAgl->SetMarkerColor(2);
+                        AccSelMCPbetaAgl->SetFillColor(2);
                         AccSelMCPbetaAgl->SetMarkerSize(2);
                         AccSelMCPbetaAgl->SetLineColor(2);
-                        AccSelMCPbetaAgl->SetLineWidth(1);
+                        AccSelMCPbetaAgl->SetLineWidth(4);
+			AccSelMCPbetaAgl->SetFillStyle(3001);
                 }
                 AccSelMCDbetaAgl[h]->SetMarkerStyle(8);
-                AccSelMCDbetaAgl[h]->SetMarkerColor(4);
-                AccSelMCDbetaAgl[h]->SetMarkerSize(2);
+                AccSelMCDbetaAgl[h]->SetFillColor(4);
+                AccSelMCDbetaAgl[h]->SetFillStyle(3001);
+		AccSelMCDbetaAgl[h]->SetMarkerSize(2);
                 AccSelMCDbetaAgl[h]->SetLineColor(4);
-                AccSelMCDbetaAgl[h]->SetLineStyle(2);
-		AccSelMCDbetaAgl[h]->SetLineWidth(1);
+                AccSelMCDbetaAgl[h]->SetLineStyle(1);
+		AccSelMCDbetaAgl[h]->SetLineWidth(4);
                 AccSelMCDbetaAgl[h]->SetMarkerStyle(h+3);
-                AccSelMCDbetaAgl[h]->SetTitle("Deutons Acceptance");
-                AccSelMCDbetaAgl[h]->GetXaxis()->SetTitle("R [GV]");
-                AccSelMCDbetaAgl[h]->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
-                AccSelMCDbetaAgl[h]->GetXaxis()->SetTitleSize(0.045);
-                AccSelMCDbetaAgl[h]->GetYaxis()->SetTitleSize(0.045);
-                AccSelMCDbetaAgl[h]->GetYaxis()->SetRangeUser(1e-2,1.3);
         }
-                AccSelMCDbetaAgl[0]->Draw("Psame");
-		AccSelMCPbetaAgl->SetLineStyle(2);
-		AccSelMCPbetaAgl->Draw("Psame");
-        for(int h=1;h<6;h++){
-                AccSelMCDbetaAgl[h]->Draw("Psame");
-        }
+                AccSelMCDbetaAgl[1]->Draw("C4same");
+		AccSelMCPbetaAgl->SetLineStyle(1);
+		AccSelMCPbetaAgl->Draw("C4same");
 
 	TCanvas *e = new TCanvas("Errors Breakdown (P)");
 	e-> Divide(2,2);

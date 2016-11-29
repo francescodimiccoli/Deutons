@@ -13,6 +13,7 @@ void DATApreSeleff_Fill(int zona)
 	if(!Herejcut) return;
   	if(Tup.Beta_pre<=0||Tup.R_pre<=0) return;
   	if(!ProtonsMassWindow) return;
+	if(!(Tup.R>Rcut[zona])) return;
 
 	for(int S=0; S<3; S++) {
 		int Kbin=PRB.GetRBin(fabs(Tup.R_pre));

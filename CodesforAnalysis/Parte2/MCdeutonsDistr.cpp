@@ -14,25 +14,39 @@ TH2F * DistDMCTOF = new TH2F("DistDMCTOF","DistDMCTOF",50,0,6,6,0,6);
 TH2F * DistDMCNaF = new TH2F("DistDMCNaF","DistDMCNaF",50,0,6,6,0,6);
 TH2F * DistDMCAgl = new TH2F("DistDMCAgl","DistDMCAgl",50,0,6,6,0,6);
 
+Efficiency * EffFragmMCD = new Efficiency ("EffFragmMCD",6);
 
 void MCdeutonsDistr_Fill(){
 	float mass=0;
 	//cuts
 	if(Tup.Beta<=0||Tup.R<=0) return;
-	if(!Betastrongcut) return;
 	if(!(Massa_gen<2 && Massa_gen>1)) return;
 
+	int Kbin;
 	if(cmask.isOnlyFromToF()){
 		mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));	
 		MassDMCTOF -> Fill (mass,ReturnMCGenType());	
 		LikDMCTOF -> Fill (-log(1-Tup.LDiscriminant),ReturnMCGenType());
 		DistDMCTOF-> Fill (Tup.Dist5D,ReturnMCGenType());
+		if(Likcut&&Distcut) {
+			Kbin=ToFDB.GetBin(RUsed);
+        	         FillBinMGen(EffFragmMCD ->beforeTOF, Kbin,Tup.mcweight);
+			 if(mass<1.5) FillBinMGen(EffFragmMCD ->afterTOF, Kbin,Tup.mcweight);
+		}
+		
+	
 	}	
  	if(cmask.isFromNaF()){
 		mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));	
 		MassDMCNaF -> Fill (mass,ReturnMCGenType());	
 		LikDMCNaF -> Fill (-log(1-Tup.LDiscriminant),ReturnMCGenType());
                 DistDMCNaF-> Fill (Tup.Dist5D,ReturnMCGenType());
+		if(Likcut&&Distcut) {
+                        Kbin=NaFDB.GetBin(RUsed);
+                         FillBinMGen(EffFragmMCD ->beforeNaF, Kbin,Tup.mcweight);
+                         if(mass<1.5) FillBinMGen(EffFragmMCD ->afterNaF, Kbin,Tup.mcweight);
+                }
+
 
 	}			
 	if(cmask.isFromAgl()){
@@ -40,6 +54,13 @@ void MCdeutonsDistr_Fill(){
 		MassDMCAgl -> Fill (mass,ReturnMCGenType());	
 		LikDMCAgl -> Fill (-log(1-Tup.LDiscriminant),ReturnMCGenType());
                 DistDMCAgl-> Fill (Tup.Dist5D,ReturnMCGenType());
+		if(Likcut&&Distcut) {
+                        Kbin=AglDB.GetBin(RUsed);
+                         FillBinMGen(EffFragmMCD ->beforeAgl, Kbin,Tup.mcweight);
+                         if(mass<1.5) FillBinMGen(EffFragmMCD ->afterAgl, Kbin,Tup.mcweight);
+                }
+
+
 
 	}
 
@@ -60,6 +81,7 @@ void MCdeutonsDistr_Write(){
 	DistDMCTOF ->Write();
 	DistDMCNaF ->Write();
 	DistDMCAgl ->Write();
+	EffFragmMCD ->Write();
 
 }
 
@@ -85,8 +107,11 @@ void MCdeutonsDistr(string filename){
         TH2F * DistDMCNaF  =  (TH2F*) inputHistoFile ->Get ("DistDMCNaF");
         TH2F * DistDMCAgl  =  (TH2F*) inputHistoFile ->Get ("DistDMCAgl");
 	
+	Efficiency * EffFragmMCD = new Efficiency (inputHistoFile,"EffFragmMCD");
 
 	cout<<"******* Deutons MC distributions comparisons********"<<endl;   
+
+	EffFragmMCD->Eval_Efficiency();
 
 	TH1F * SliceMassDMCTOF[6];
 	TH1F * SliceMassDMCNaF[6];
@@ -192,6 +217,9 @@ void MCdeutonsDistr(string filename){
 
 	}
 
+	TH2F * EffFragmMCD_TOF           =(TH2F *)EffFragmMCD ->effTOF->Clone();
+	TH2F * EffFragmMCD_NaF           =(TH2F *)EffFragmMCD ->effNaF->Clone();
+	TH2F * EffFragmMCD_Agl           =(TH2F *)EffFragmMCD ->effAgl->Clone();
 
 
 	MCdeutonsDistr_Plot(	
@@ -206,8 +234,11 @@ void MCdeutonsDistr(string filename){
                                        
                         SliceDistDMCTOF,
                         SliceDistDMCNaF,
-                        SliceDistDMCAgl);
-
+                        SliceDistDMCAgl,
+			
+			EffFragmMCD_TOF,
+			EffFragmMCD_NaF,
+                        EffFragmMCD_Agl);
 
 }
 

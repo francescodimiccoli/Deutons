@@ -162,7 +162,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	float x,y=0;
 	int j=0;
 	{
-		string filename="./Galprop/Trotta2011/Def/new_D.txt";
+		string filename="./Galprop/Default/deut_1200MV.dat";
 		cout<<filename<<endl;
 		ifstream fp(filename.c_str());
 		while (!fp.eof()){
@@ -175,7 +175,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 
 	j=0;
 	{
-		string filename="./Galprop/Trotta2011/Def/new_D1250.txt";
+		string filename="./Galprop/Default/deut_0MV.dat";
 		cout<<filename<<endl;
 		ifstream fp(filename.c_str());
 		while (!fp.eof()){

@@ -50,7 +50,7 @@ void ExposureTime_Write(){
 void UpdateZoneLivetime (Binning bins, int zonageo, TH2F * esposizionegeo){
 
 	for(int i=0;i<bins.RigBins().size()-1;i++)
-                        if(bins.RigBins()[i+1]>=1.2*Tup.Rcutoff){
+                        if(bins.RigBins()[i+1]>=SF*Tup.Rcutoff){
                                 esposizionegeo -> SetBinContent(i+1, zonageo, esposizionegeo -> GetBinContent(i+1, zonageo) + Tup.Livetime) ;
 	}
 	return;

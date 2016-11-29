@@ -22,8 +22,7 @@ void DATAQualeff_Fill (int zona)
    if(!Herejcut) return;
    if(Tup.Beta<=0||Tup.R<=0) return; 
    if(!ProtonsMassWindow) return;   
-   if(!Tup.R>1.2*Tup.Rcutoff) return;
-	
+   if(!(Tup.R>Rcut[zona])) return;	
    int Kbin=PRB.GetRBin (Tup.R);
 
 

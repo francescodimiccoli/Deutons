@@ -95,6 +95,15 @@ void SlidesforPlot (string filename)
 	TH1F * DistMC_bin      = (TH1F*) inputHistoFile->Get ("DistMC_bin");
 	TH1F * DistMC_bin_rew  = (TH1F*) inputHistoFile->Get ("DistMC_bin_rew");
 
+	TH2F * FragmDTOF	= (TH2F*) inputHistoFile->Get ("FragmDTOF"); 
+        TH2F * FragmDNaF        = (TH2F*) inputHistoFile->Get ("FragmDNaF"); 
+        TH2F * FragmDAgl        = (TH2F*) inputHistoFile->Get ("FragmDAgl"); 
+	          
+        TH2F * FragmHeTOF	= (TH2F*) inputHistoFile->Get ("FragmHeTOF"); 
+        TH2F * FragmHeNaF	= (TH2F*) inputHistoFile->Get ("FragmHeNaF"); 
+        TH2F * FragmHeAgl	= (TH2F*) inputHistoFile->Get ("FragmHeAgl"); 
+	
+
 	TCanvas *p1 =new TCanvas ("RvsBeta TOF MC");
 	TCanvas *p2 =new TCanvas ("RvsBeta NaF MC");
 	TCanvas *p3 =new TCanvas ("RvsBeta Agl MC");
@@ -136,6 +145,18 @@ void SlidesforPlot (string filename)
 	TCanvas *p13Q=new TCanvas ("Qual. Mass TOF MC");
 	TCanvas *p14Q=new TCanvas ("Qual. Mass NaF MC");
 	TCanvas *p15Q=new TCanvas ("Qual. Mass Agl MC");
+
+	TCanvas *P10=new TCanvas ("Mass TOF data Qual");
+	TCanvas *P11=new TCanvas ("Mass NaF data Qual");
+	TCanvas *P12=new TCanvas ("Mass Agl data Qual");
+
+	TCanvas *P13=new TCanvas ("Mass TOF MC Qual");
+	TCanvas *P14=new TCanvas ("Mass NaF MC Qual");
+	TCanvas *P15=new TCanvas ("Mass Agl MC Qual");
+
+
+
+	
 	TCanvas *p16=new TCanvas ("Distance discr. TOF MC");
 	TCanvas *p17=new TCanvas ("Distance discr. NaF MC");
 	TCanvas *p18=new TCanvas ("Distance discr. Agl MC");
@@ -144,6 +165,9 @@ void SlidesforPlot (string filename)
 	TCanvas *p20=new TCanvas ("LikvsDist  NaF MC");
 	TCanvas *p21=new TCanvas ("LikvsDist  Agl MC");
 
+	TCanvas * Q = new TCanvas("Fragmented Deuterons");
+	TCanvas * R = new TCanvas("Fragmented Heliums");
+	
 
 
 	cout<<"******************* R vs Beta plots ******************"<<endl;
@@ -778,6 +802,87 @@ void SlidesforPlot (string filename)
 	MassAglQ->GetXaxis()->SetTitleSize (0.045);
 	MassAglQ->Draw();
 
+
+
+	P10->cd();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        gPad->SetLogy();
+        MassTOFQ->SetLineColor (1);
+        MassTOFQ->SetLineWidth (4);
+	MassTOF->SetLineColor (1);
+        MassTOF->SetLineWidth (4);
+	MassTOFQ->SetFillColor (1);
+	MassTOF ->SetFillColor (1);
+	MassTOFQ->SetFillStyle (3001);
+        MassTOF ->SetFillStyle (3002);
+        MassTOFQ->GetXaxis()->SetTitle ("Mass [GeV/c^2]");
+        MassTOFQ->GetXaxis()->SetTitleSize (0.045);
+        MassTOF->Draw();
+	MassTOFQ->Draw("same");
+	
+	{
+                TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (MassTOF ,"ISS Data (Control sample cuts)", "lf");
+                leg->AddEntry (MassTOFQ,"ISS Data (Likelihood + Distance cuts)", "lf");
+		leg->SetLineWidth(2);
+                leg->Draw("same");
+        }
+	
+	P11->cd();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        gPad->SetLogy();
+        MassNaFQ->SetLineColor (1);
+        MassNaFQ->SetLineWidth (4);
+        MassNaF->SetLineColor (1);
+        MassNaF->SetLineWidth (4);
+        MassNaFQ->SetFillColor (1);
+        MassNaF ->SetFillColor (1);
+        MassNaFQ->SetFillStyle (3001);
+        MassNaF ->SetFillStyle (3002);
+        MassNaFQ->GetXaxis()->SetTitle ("Mass [GeV/c^2]");
+        MassNaFQ->GetXaxis()->SetTitleSize (0.045);
+        MassNaF->Draw();
+        MassNaFQ->Draw("same");
+
+        {
+                TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (MassNaF ,"ISS Data (Control sample cuts)", "lf");
+                leg->AddEntry (MassNaFQ,"ISS Data (Likelihood + Distance cuts)", "lf");
+		leg->SetLineWidth(2);
+                leg->Draw("same");
+        }
+
+	P12->cd();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        gPad->SetLogy();
+        MassAglQ->SetLineColor (1);
+        MassAglQ->SetLineWidth (4);
+        MassAgl->SetLineColor (1);
+        MassAgl->SetLineWidth (4);
+        MassAglQ->SetFillColor (1);
+        MassAgl ->SetFillColor (1);
+        MassAglQ->SetFillStyle (3001);
+        MassAgl ->SetFillStyle (3002);
+        MassAglQ->GetXaxis()->SetTitle ("Mass [GeV/c^2]");
+        MassAglQ->GetXaxis()->SetTitleSize (0.045);
+        MassAgl->Draw();
+        MassAglQ->Draw("same");
+
+        {
+                TLegend* leg =new TLegend (0.4, 0.7,0.95,0.95);
+                leg->AddEntry (MassNaF ,"ISS Data (Control sample cuts)", "lf");
+                leg->AddEntry (MassAglQ,"ISS Data (Likelihood + Distance cuts)", "lf");
+		leg->SetLineWidth(2);
+                leg->Draw("same");
+        }
+
+
+
+
+
 	p13Q->cd();
 	gPad->SetGridx();
 	gPad->SetGridy();
@@ -831,6 +936,150 @@ void SlidesforPlot (string filename)
 	MassAgl_PQ->GetXaxis()->SetTitleSize (0.045);
 	MassAgl_PQ->Draw();
 	MassAgl_DQ->Draw ("same");
+
+
+	P13->cd();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        gPad->SetLogy();
+        
+	MassTOF_PQ->SetLineColor (2);
+        MassTOF_PQ->SetLineWidth (5);
+        MassTOF_DQ->SetLineColor (4);
+        MassTOF_DQ->SetLineWidth (5);
+        MassTOF_DQ->SetFillColor (4);
+        MassTOF_PQ->SetFillColor (2);
+       
+	MassTOF_P->SetLineColor (2);
+        MassTOF_P->SetLineWidth (2);
+	MassTOF_P->SetMarkerStyle(8);
+	MassTOF_D->SetMarkerStyle(8);
+        MassTOF_P->SetMarkerColor(2);
+        MassTOF_D->SetMarkerColor(4);
+	MassTOF_D->SetLineColor (4);
+        MassTOF_D->SetLineWidth (5);
+        MassTOF_D->SetFillColor (4);
+        MassTOF_P->SetFillColor (2);
+ 
+	MassTOF_PQ->SetFillStyle (3001);
+        MassTOF_DQ->SetFillStyle (3002);
+	
+	MassTOF_P->SetFillStyle (3002);
+        MassTOF_D->SetFillStyle (3002);
+
+        MassTOF_PQ->GetXaxis()->SetTitle ("Mass [GeV/c^2]");
+        MassTOF_PQ->GetXaxis()->SetTitleSize (0.045);
+        
+	MassTOF_P->Draw();
+        MassTOF_D->Draw ("same");
+	MassTOF_PQ->Draw("same");
+        MassTOF_DQ->Draw ("same");
+
+	{
+                TLegend* leg =new TLegend (0.65, 0.7,0.95,0.95);
+                leg->AddEntry (MassTOF_P ,"Protons MC (Control sample cuts)", "lp");
+                leg->AddEntry (MassTOF_D ,"Deuterons MC (Likelihood + Distance cuts)", "lp");
+                leg->AddEntry (MassTOF_PQ,"Protons MC (Control sample cuts)", "lf");
+                leg->AddEntry (MassTOF_DQ,"Deuterons MC (Likelihood + Distance cuts)", "lf");
+		leg->SetLineWidth(2);
+                leg->Draw("same");
+        }
+
+	P14->cd();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        gPad->SetLogy();
+        
+	MassNaF_PQ->SetLineColor (2);
+        MassNaF_PQ->SetLineWidth (5);
+        MassNaF_DQ->SetLineColor (4);
+        MassNaF_DQ->SetLineWidth (5);
+        MassNaF_DQ->SetFillColor (4);
+        MassNaF_PQ->SetFillColor (2);
+       
+	MassNaF_P->SetLineColor (2);
+        MassNaF_P->SetLineWidth (2);
+	MassNaF_P->SetMarkerStyle(8);
+	MassNaF_D->SetMarkerStyle(8);
+        MassNaF_P->SetMarkerColor(2);
+        MassNaF_D->SetMarkerColor(4);
+	MassNaF_D->SetLineColor (4);
+        MassNaF_D->SetLineWidth (5);
+        MassNaF_D->SetFillColor (4);
+        MassNaF_P->SetFillColor (2);
+ 
+	MassNaF_PQ->SetFillStyle (3001);
+        MassNaF_DQ->SetFillStyle (3002);
+	
+	MassNaF_P->SetFillStyle (3002);
+        MassNaF_D->SetFillStyle (3002);
+
+        MassNaF_PQ->GetXaxis()->SetTitle ("Mass [GeV/c^2]");
+        MassNaF_PQ->GetXaxis()->SetTitleSize (0.045);
+        
+	MassNaF_P->Draw();
+        MassNaF_D->Draw ("same");
+	MassNaF_PQ->Draw("same");
+        MassNaF_DQ->Draw ("same");
+
+	{
+                TLegend* leg =new TLegend (0.65, 0.7,0.95,0.95);
+                leg->AddEntry (MassNaF_P ,"Protons MC (Control sample cuts)", "lp");
+                leg->AddEntry (MassNaF_D ,"Deuterons MC (Likelihood + Distance cuts)", "lp");
+                leg->AddEntry (MassNaF_PQ,"Protons MC (Control sample cuts)", "lf");
+                leg->AddEntry (MassNaF_DQ,"Deuterons MC (Likelihood + Distance cuts)", "lf");
+		leg->SetLineWidth(2);
+                leg->Draw("same");
+        }
+
+
+	P15->cd();
+        gPad->SetGridx();
+        gPad->SetGridy();
+        gPad->SetLogy();
+        
+	MassAgl_PQ->SetLineColor (2);
+        MassAgl_PQ->SetLineWidth (5);
+        MassAgl_DQ->SetLineColor (4);
+        MassAgl_DQ->SetLineWidth (5);
+        MassAgl_DQ->SetFillColor (4);
+        MassAgl_PQ->SetFillColor (2);
+       
+	MassAgl_P->SetLineColor (2);
+        MassAgl_P->SetLineWidth (2);
+	MassAgl_P->SetMarkerStyle(8);
+	MassAgl_D->SetMarkerStyle(8);
+        MassAgl_P->SetMarkerColor(2);
+        MassAgl_D->SetMarkerColor(4);
+	MassAgl_D->SetLineColor (4);
+        MassAgl_D->SetLineWidth (5);
+        MassAgl_D->SetFillColor (4);
+        MassAgl_P->SetFillColor (2);
+ 
+	MassAgl_PQ->SetFillStyle (3001);
+        MassAgl_DQ->SetFillStyle (3002);
+	
+	MassAgl_P->SetFillStyle (3002);
+        MassAgl_D->SetFillStyle (3002);
+
+        MassAgl_PQ->GetXaxis()->SetTitle ("Mass [GeV/c^2]");
+        MassAgl_PQ->GetXaxis()->SetTitleSize (0.045);
+        
+	MassAgl_P->Draw();
+        MassAgl_D->Draw ("same");
+	MassAgl_PQ->Draw("same");
+        MassAgl_DQ->Draw ("same");
+
+	{
+                TLegend* leg =new TLegend (0.65, 0.7,0.95,0.95);
+                leg->AddEntry (MassAgl_P ,"Protons MC (Control sample cuts)", "lp");
+                leg->AddEntry (MassAgl_D ,"Deuterons MC (Likelihood + Distance cuts)", "lp");
+                leg->AddEntry (MassAgl_PQ,"Protons MC (Control sample cuts)", "lf");
+                leg->AddEntry (MassAgl_DQ,"Deuterons MC (Likelihood + Distance cuts)", "lf");
+		leg->SetLineWidth(2);
+                leg->Draw("same");
+        }
+
 
 	cout<<"******************* Distance discr. plots ******************"<<endl;
 
@@ -1137,6 +1386,68 @@ void SlidesforPlot (string filename)
 		leg->Draw("same");
 	}
 
+	Q->Divide(3,1);
+	
+	Q->cd(1);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	FragmDTOF->GetXaxis()->SetTitle("R_{meas}");
+	FragmDTOF->GetYaxis()->SetTitle("R_{gen}");
+	FragmDTOF->GetXaxis()->SetTitleSize(0.045);
+	FragmDTOF->GetYaxis()->SetTitleSize(0.045);	
+	FragmDTOF->Draw("col");	
+
+	Q->cd(2);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	FragmDNaF->GetXaxis()->SetTitle("R_{meas}");
+	FragmDNaF->GetYaxis()->SetTitle("R_{gen}");
+	FragmDNaF->GetXaxis()->SetTitleSize(0.045);
+	FragmDNaF->GetYaxis()->SetTitleSize(0.045);	
+	FragmDNaF->Draw("col");	
+
+	Q->cd(3);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	FragmDAgl->GetXaxis()->SetTitle("R_{meas}");
+	FragmDAgl->GetYaxis()->SetTitle("R_{gen}");
+	FragmDAgl->GetXaxis()->SetTitleSize(0.045);
+	FragmDAgl->GetYaxis()->SetTitleSize(0.045);	
+	FragmDAgl->Draw("col");	
+
+
+	R->Divide(3,1);
+	
+	R->cd(1);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	FragmHeTOF->GetXaxis()->SetTitle("R_{meas}");
+	FragmHeTOF->GetYaxis()->SetTitle("R_{gen}");
+	FragmHeTOF->GetXaxis()->SetTitleSize(0.045);
+	FragmHeTOF->GetYaxis()->SetTitleSize(0.045);	
+	FragmHeTOF->Draw("col");	
+
+	R->cd(2);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	FragmHeNaF->GetXaxis()->SetTitle("R_{meas}");
+	FragmHeNaF->GetYaxis()->SetTitle("R_{gen}");
+	FragmHeNaF->GetXaxis()->SetTitleSize(0.045);
+	FragmHeNaF->GetYaxis()->SetTitleSize(0.045);	
+	FragmHeNaF->Draw("col");	
+
+	R->cd(3);
+	gPad->SetGridx();
+	gPad->SetGridy();
+	FragmHeAgl->GetXaxis()->SetTitle("R_{meas}");
+	FragmHeAgl->GetYaxis()->SetTitle("R_{gen}");
+	FragmHeAgl->GetXaxis()->SetTitleSize(0.045);
+	FragmHeAgl->GetYaxis()->SetTitleSize(0.045);	
+	FragmHeAgl->Draw("col");	
+
+
+
+
 
 	//fileFinalPlots->Flush();
 	//fileFinalPlots->Close();
@@ -1167,12 +1478,22 @@ void SlidesforPlot (string filename)
 	finalPlots.Add(p13 );
 	finalPlots.Add(p14 );
 	finalPlots.Add(p15 );
-	finalPlots.Add(p10Q);
-	finalPlots.Add(p11Q);
-	finalPlots.Add(p12Q);
 	finalPlots.Add(p13Q);
 	finalPlots.Add(p14Q);
 	finalPlots.Add(p15Q);
+	finalPlots.Add(P13 );
+	finalPlots.Add(P14 );
+	finalPlots.Add(P15 );
+	
+	finalPlots.Add(p10 );
+	finalPlots.Add(p11 );
+	finalPlots.Add(p12 );
+	finalPlots.Add(p10Q);
+	finalPlots.Add(p11Q);
+	finalPlots.Add(p12Q);
+	finalPlots.Add(P10 );
+	finalPlots.Add(P11 );
+	finalPlots.Add(P12 );
 	finalPlots.Add(p16 );
 	finalPlots.Add(p17 );
 	finalPlots.Add(p18 );
@@ -1181,6 +1502,10 @@ void SlidesforPlot (string filename)
 	finalPlots.Add(p21 );
 	finalPlots.Add(f );
 	finalPlots.Add(g );
+	finalPlots.Add(Q );
+	finalPlots.Add(R );
+	
+
 	finalPlots.writeObjsInFolder("Common plots for slides");
 
 }

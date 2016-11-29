@@ -188,9 +188,6 @@ void ACCEPTANCE::Eval_Gen_Acceptance(int n){
 	if(after_NaF)  	 Gen_Acceptance_NaF   = (TH1 *) after_NaF		->Clone();
 	if(after_Agl) 	 Gen_Acceptance_Agl   = (TH1 *) after_Agl		->Clone();
 
-	cout<<"sgracchio "<<endl;
-	for(int i=0;i<before_R->GetNbinsX();i++)
-		cout<<before_R->GetBinContent(i+1)<<" "<<after_R->GetBinContent(i+1)<<endl;
 
 	Gen_Acceptance_R    -> Divide ( before_R	) ;
 	Gen_Acceptance_TOF  -> Divide ( before_TOF	) ;
