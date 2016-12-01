@@ -61,25 +61,25 @@ void DeutonsDATA_Dist_Fill(int zona)
 	if(!(Likcut&&Distcut)) return;
 		Distance_Discr = ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
 		Kbin=ToFDB.GetBin(RUsed);	
-			if(Tup.R>1.2*Tup.Rcutoff) FitTOF_Dbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
+			if(Tup.R>SF*Tup.Rcutoff) FitTOF_Dbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
 			((TH3*)FitTOFgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,Kbin,zona);
 		Kbin=ToFPB.GetBin(RUsed);	
-			if(Tup.R>1.2*Tup.Rcutoff) FitTOF_Pbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
+			if(Tup.R>SF*Tup.Rcutoff) FitTOF_Pbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
 		if(cmask.isFromNaF()) {
 			Distance_Discr =  ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
 			Kbin=NaFDB.GetBin(RUsed);
-				if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Dbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
+				if(Tup.R>SF*Tup.Rcutoff) FitNaF_Dbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
 				((TH3*)FitNaFgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,Kbin,zona);
 			Kbin=NaFPB.GetBin(RUsed);	
-				if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Pbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
+				if(Tup.R>SF*Tup.Rcutoff) FitNaF_Pbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
 		}
 		if(cmask.isFromAgl()) {
 			Distance_Discr =  ((Tup.Dist5D_P-Tup.Dist5D)/(Tup.Dist5D_P+Tup.Dist5D));
 			Kbin=AglDB.GetBin(RUsed);	
-				if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Dbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
+				if(Tup.R>SF*Tup.Rcutoff) FitAgl_Dbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
 				((TH3*)FitAglgeo_Dbins_Dist -> DATA) -> Fill(Distance_Discr,Kbin,zona);
 			Kbin=AglPB.GetBin(RUsed);	
-				if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Pbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
+				if(Tup.R>SF*Tup.Rcutoff) FitAgl_Pbins_Dist -> DATA -> Fill(Distance_Discr,Kbin);
 			}
 	return;
 }

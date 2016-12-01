@@ -58,13 +58,13 @@ void ProtonFlux_Fill(int zona)
 
    if(Tup.Dist5D_P<6 && Likcut) {
       P_Flux_geo-> Counts -> Fill(Kbin,zona);
-      if(Tup.R>1.2*Tup.Rcutoff) {
+      if(Tup.R>SF*Tup.Rcutoff) {
          P_Flux -> Counts-> Fill(Kbin);
          P_Flux_geo_prim -> Counts -> Fill(Kbin,zona);
       }
    }
 
-   if(Herejcut && Tup.R>1.2*Tup.Rcutoff) {
+   if(Herejcut && Tup.R>SF*Tup.Rcutoff) {
       P_Flux_pre -> Counts -> Fill(Kbin);
       if(Tup.Dist5D_P<6&&Likcut)  P_Flux_sel -> Counts -> Fill(Kbin);
    }

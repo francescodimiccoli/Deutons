@@ -280,7 +280,7 @@ float Eval_CutEff(TH1 * Histo,float cut){
 			float Y = Histo -> GetYaxis() -> GetBinLowEdge(y);
 			if(X<cut||Y<cut) counts_passed_cut += Histo -> GetBinContent(x+1,y+1);
                 }
-	return counts_passed_cut/(float)Histo->GetEntries();
+	return counts_passed_cut/(float)Histo->Integral();
 }
 
 float Eval_Herej(TH1F *HistoHe,float cut){

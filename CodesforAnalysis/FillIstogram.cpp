@@ -58,7 +58,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
 
    if(INDX!=READ) {
-      string nomefile=inputpath + "/Risultati/2011_09/RisultatiMC_"+frac+".root";
+      string nomefile=inputpath + "/Risultati/2012_09/RisultatiMC_"+frac+".root";
       fileMC =TFile::Open(nomefile.c_str());
       nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
       fileData =TFile::Open(nomefile.c_str(), "READ");
@@ -152,14 +152,14 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    if(INDX==READ) {
       if(frac=="tot") Hecut(filename);
       SlidesforPlot(filename);
-      DistanceCut(filename);
+      //DistanceCut(filename);
       Correlazione_Preselezioni(filename);
 
       MCpreeff(filename);
       MCUnbiaseff(filename);
       MCControlsamplecuteff(filename);
       MCQualeff(filename);
-      FluxFactorizationtest(filename);
+      //FluxFactorizationtest(filename);
       MCTrackeff(filename);
       AntiDCutOptimization(filename);	
       AntiDEfficiencies(filename);

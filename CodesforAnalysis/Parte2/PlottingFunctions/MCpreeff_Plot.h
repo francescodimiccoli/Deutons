@@ -32,7 +32,9 @@ void MCpreeff_Plot(
 	gPad->SetLogx();
 	gPad->SetGridx();
 	gPad->SetGridy();
-	string MCLegend[7]= {"protons.B800","d.pl1.0_520_GG_Blic","d.pl1.0_520_GG_BlicDPMJet","d.pl1.0_520_GG_QMD","d.pl1.0_520_Shen_Blic","d.pl1.0_520_Shen_BlicDPMJet","d.pl1.0_520_Shen_QMD"};
+
+	string MCLegend[7]= {"Protons MC B800","Deuteorons MC \"GG_Blic\"","Deuterons MC \"GG_BlicDPMJet\"","Deuterons MC \"GG_QMD\"","Deuterons MC \"Shen_Blic\"","Deuterons MC \"Shen_BlicDPMJet\"","Deuterons MC \"Shen_QMD\""};
+	
 	TGraph * EffPreMCP_R = new TGraph();
 	EffPreMCP_R->SetTitle(MCLegend[0].c_str());
 	for(int i=0; i<nbinsr; i++) EffPreMCP_R->SetPoint(i,PRB.RigBinCent(i),EffPreMCP_R_TH1F->GetBinContent(i+1));
@@ -66,6 +68,8 @@ void MCpreeff_Plot(
 		}
 	}
 
+        int plottingstyles[6]={3,4,20,25,29,26};
+	
 	c4_bis->cd(1);
 	gPad->SetLogx();
 	gPad->SetGridx();
@@ -75,6 +79,7 @@ void MCpreeff_Plot(
 	TGraph * EffPreMCD[6];
 	EffPreMCP->SetMarkerColor(2);
 	EffPreMCP->SetMarkerStyle(8);
+	EffPreMCP->SetMarkerSize(2);
 	EffPreMCP->SetLineColor(2);
 	EffPreMCP->SetLineWidth(2);
 	EffPreMCP->SetTitle("Preselections Efficiency MC (Beta bins)");
@@ -83,7 +88,7 @@ void MCpreeff_Plot(
 	EffPreMCP->GetXaxis()->SetTitleSize(0.045);
 	EffPreMCP->GetYaxis()->SetTitleSize(0.045);
 	{
-		EffPreMCP->Draw("ACP");
+		EffPreMCP->Draw("AP");
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
 		leg->AddEntry(EffPreMCP,MCLegend[0].c_str(), "ep");
 
@@ -91,12 +96,13 @@ void MCpreeff_Plot(
 			EffPreMCD[h]= new TGraph();
 			for(int i=0; i<nbinsToF; i++) EffPreMCD[h]->SetPoint(i,ToFPB.EkPerMassBinCent(i), EffPreMCD_TH2F->GetBinContent(i+1,h+1));
 			EffPreMCD[h]->SetMarkerColor(4);
-			EffPreMCD[h]->SetMarkerStyle(h+3);
-			leg->AddEntry(EffPreMCD[h],MCLegend[h+1].c_str(), "ep");
+			EffPreMCD[h]->SetMarkerStyle(plottingstyles[h]);
+			leg->AddEntry(EffPreMCD[h],MCLegend[h+1].c_str(), "p");
 			EffPreMCD[h]->SetMarkerSize(2);
 			EffPreMCD[h]->SetLineColor(4);
 			EffPreMCD[h]->SetLineWidth(2);
 			EffPreMCD[h]->Draw("Psame");
+			leg->SetLineWidth(2);
 			leg->Draw();
 		}
 	}
@@ -110,6 +116,7 @@ void MCpreeff_Plot(
 	TGraph * EffPreMCDNaF[6];
 	EffPreMCPNaF->SetMarkerColor(2);
 	EffPreMCPNaF->SetMarkerStyle(8);
+	EffPreMCPNaF->SetMarkerSize(2);
 	EffPreMCPNaF->SetLineColor(2);
 	EffPreMCPNaF->SetLineWidth(2);
 	EffPreMCPNaF->SetTitle("Preselections Efficiency MC (Beta bins NaF)");
@@ -118,21 +125,22 @@ void MCpreeff_Plot(
 	EffPreMCPNaF->GetXaxis()->SetTitleSize(0.045);
 	EffPreMCPNaF->GetYaxis()->SetTitleSize(0.045);
 	{
-		EffPreMCPNaF->Draw("ACP");
+		EffPreMCPNaF->Draw("AP");
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-		leg->AddEntry(EffPreMCPNaF,MCLegend[0].c_str(), "ep");
+		leg->AddEntry(EffPreMCPNaF,MCLegend[0].c_str(), "p");
 
 		for(int h=0; h<6; h++) {
 			EffPreMCDNaF[h]= new TGraph();
 			for(int i=0; i<nbinsNaF; i++) EffPreMCDNaF[h]->SetPoint(i,NaFPB.EkPerMassBinCent(i),
 					EffPreMCDNaF_TH2F->GetBinContent(i+1,h+1));
 			EffPreMCDNaF[h]->SetMarkerColor(4);
-			EffPreMCDNaF[h]->SetMarkerStyle(h+3);
-			leg->AddEntry(EffPreMCDNaF[h],MCLegend[h+1].c_str(), "ep");
+			EffPreMCDNaF[h]->SetMarkerStyle(plottingstyles[h]);
+			leg->AddEntry(EffPreMCDNaF[h],MCLegend[h+1].c_str(), "p");
 			EffPreMCDNaF[h]->SetMarkerSize(2);
 			EffPreMCDNaF[h]->SetLineColor(4);
 			EffPreMCDNaF[h]->SetLineWidth(2);
 			EffPreMCDNaF[h]->Draw("Psame");
+			leg->SetLineWidth(2);
 			leg->Draw();
 		}
 	}
@@ -146,6 +154,7 @@ void MCpreeff_Plot(
 	TGraph * EffPreMCDAgl[6];
 	EffPreMCPAgl->SetMarkerColor(2);
 	EffPreMCPAgl->SetMarkerStyle(8);
+	EffPreMCPAgl->SetMarkerSize(2);
 	EffPreMCPAgl->SetLineColor(2);
 	EffPreMCPAgl->SetLineWidth(2);
 	EffPreMCPAgl->SetTitle("Preselections Efficiency MC (Beta bins Agl)");
@@ -154,20 +163,21 @@ void MCpreeff_Plot(
 	EffPreMCPAgl->GetXaxis()->SetTitleSize(0.045);
 	EffPreMCPAgl->GetYaxis()->SetTitleSize(0.045);
 	{
-		EffPreMCPAgl->Draw("ACP");
+		EffPreMCPAgl->Draw("AP");
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-		leg->AddEntry(EffPreMCPAgl,MCLegend[0].c_str(), "ep");
+		leg->AddEntry(EffPreMCPAgl,MCLegend[0].c_str(), "p");
 
 		for(int h=0; h<6; h++) {
 			EffPreMCDAgl[h]= new TGraph();
 			for(int i=0; i<nbinsAgl; i++) EffPreMCDAgl[h]->SetPoint(i,AglPB.EkPerMassBinCent(i), EffPreMCDAgl_TH2F->GetBinContent(i+1,h+1));
 			EffPreMCDAgl[h]->SetMarkerColor(4);
-			EffPreMCDAgl[h]->SetMarkerStyle(h+3);
-			leg->AddEntry(EffPreMCDAgl[h],MCLegend[h+1].c_str(), "ep");
+			EffPreMCDAgl[h]->SetMarkerStyle(plottingstyles[h]);
+			leg->AddEntry(EffPreMCDAgl[h],MCLegend[h+1].c_str(), "p");
 			EffPreMCDAgl[h]->SetMarkerSize(2);
 			EffPreMCDAgl[h]->SetLineColor(4);
 			EffPreMCDAgl[h]->SetLineWidth(2);
 			EffPreMCDAgl[h]->Draw("Psame");
+			leg->SetLineWidth(2);
 			leg->Draw();
 		}
 	}

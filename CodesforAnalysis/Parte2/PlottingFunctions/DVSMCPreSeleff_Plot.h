@@ -84,17 +84,21 @@ void 	DVSMCPreSeleff_Plot(
 		PreSel_EffData_R_Graph[S]->SetMarkerStyle(21);
 		PreSel_EffMC_R_Graph[S]->SetLineColor(2);
 		PreSel_EffData_R_Graph[S]->SetLineColor(1);
-		PreSel_EffMC_R_Graph[S]->GetXaxis()->SetTitle("R[GV]");
+		PreSel_EffMC_R_Graph[S]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
 		PreSel_EffMC_R_Graph[S]->GetYaxis()->SetTitle("Efficiency ");
 		PreSel_EffMC_R_Graph[S]->SetTitle("R binning");
 		PreSel_EffMC_R_Graph[S]->GetYaxis()->SetRangeUser(0.9,1.1);
+
+		PreSel_EffMC_R_Graph[S]->GetXaxis()->SetTitleSize(0.045);
+                PreSel_EffMC_R_Graph[S]->GetYaxis()->SetTitleSize(0.045);
 
 		PreSel_EffMC_R_Graph[S]->Draw("AP");
 		PreSel_EffData_R_Graph[S]->Draw("Psame");
 		{
 			TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
 			leg->AddEntry(PreSel_EffMC_R_Graph[S],"Protons MC", "ep");
-			leg->AddEntry(PreSel_EffData_R_Graph[S],"Iss Data", "ep");
+			leg->AddEntry(PreSel_EffData_R_Graph[S],"ISS Data", "ep");
+			leg->SetLineWidth(2);
 			leg->Draw("same");
 		}
 
@@ -123,17 +127,22 @@ void 	DVSMCPreSeleff_Plot(
 		PreSel_EffData_TOF_Graph[S]->SetMarkerStyle(21);
 		PreSel_EffMC_TOF_Graph[S]->SetLineColor(2);
 		PreSel_EffData_TOF_Graph[S]->SetLineColor(1);
-		PreSel_EffMC_TOF_Graph[S]->GetXaxis()->SetTitle("R[GV]");
+		PreSel_EffMC_TOF_Graph[S]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
 		PreSel_EffMC_TOF_Graph[S]->GetYaxis()->SetTitle("Efficiency ");
 		PreSel_EffMC_TOF_Graph[S]->SetTitle("R binning");
 		PreSel_EffMC_TOF_Graph[S]->GetYaxis()->SetRangeUser(0.9,1.1);
+		
+		PreSel_EffMC_TOF_Graph[S]->GetXaxis()->SetTitleSize(0.045);
+                PreSel_EffMC_TOF_Graph[S]->GetYaxis()->SetTitleSize(0.045);
+
 
 		PreSel_EffMC_TOF_Graph[S]->Draw("AP");
 		PreSel_EffData_TOF_Graph[S]->Draw("Psame");
 		{
 			TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
 			leg->AddEntry(PreSel_EffMC_TOF_Graph[S],"Protons MC", "ep");
-			leg->AddEntry(PreSel_EffData_TOF_Graph[S],"Iss Data", "ep");
+			leg->AddEntry(PreSel_EffData_TOF_Graph[S],"ISS Data", "ep");
+			leg->SetLineWidth(2);
 			leg->Draw("same");
 		}
 
@@ -161,17 +170,21 @@ void 	DVSMCPreSeleff_Plot(
 		PreSel_EffData_NaF_Graph[S]->SetMarkerStyle(21);
 		PreSel_EffMC_NaF_Graph[S]->SetLineColor(2);
 		PreSel_EffData_NaF_Graph[S]->SetLineColor(1);
-		PreSel_EffMC_NaF_Graph[S]->GetXaxis()->SetTitle("R[GV]");
+		PreSel_EffMC_NaF_Graph[S]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
 		PreSel_EffMC_NaF_Graph[S]->GetYaxis()->SetTitle("Efficiency ");
 		PreSel_EffMC_NaF_Graph[S]->SetTitle("R binning");
 		PreSel_EffMC_NaF_Graph[S]->GetYaxis()->SetRangeUser(0.9,1.1);
+		
+		PreSel_EffMC_NaF_Graph[S]->GetXaxis()->SetTitleSize(0.045);
+                PreSel_EffMC_NaF_Graph[S]->GetYaxis()->SetTitleSize(0.045);
 
 		PreSel_EffMC_NaF_Graph[S]->Draw("AP");
 		PreSel_EffData_NaF_Graph[S]->Draw("Psame");
 		{
 			TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
 			leg->AddEntry(PreSel_EffMC_NaF_Graph[S],"Protons MC", "ep");
-			leg->AddEntry(PreSel_EffData_NaF_Graph[S],"Iss Data", "ep");
+			leg->AddEntry(PreSel_EffData_NaF_Graph[S],"ISS Data", "ep");
+			leg->SetLineWidth(2);
 			leg->Draw("same");
 		}
 
@@ -200,17 +213,21 @@ void 	DVSMCPreSeleff_Plot(
 		PreSel_EffData_Agl_Graph[S]->SetMarkerStyle(21);
 		PreSel_EffMC_Agl_Graph[S]->SetLineColor(2);
 		PreSel_EffData_Agl_Graph[S]->SetLineColor(1);
-		PreSel_EffMC_Agl_Graph[S]->GetXaxis()->SetTitle("R[GV]");
+		PreSel_EffMC_Agl_Graph[S]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
 		PreSel_EffMC_Agl_Graph[S]->GetYaxis()->SetTitle("Efficiency ");
 		PreSel_EffMC_Agl_Graph[S]->SetTitle("R binning");
 		PreSel_EffMC_Agl_Graph[S]->GetYaxis()->SetRangeUser(0.9,1.1);
+		
+		PreSel_EffMC_Agl_Graph[S]->GetXaxis()->SetTitleSize(0.045);
+                PreSel_EffMC_Agl_Graph[S]->GetYaxis()->SetTitleSize(0.045);
 
 		PreSel_EffMC_Agl_Graph[S]->Draw("AP");
 		PreSel_EffData_Agl_Graph[S]->Draw("Psame");
 		{
 			TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
 			leg->AddEntry(PreSel_EffMC_Agl_Graph[S],"Protons MC", "ep");
-			leg->AddEntry(PreSel_EffData_Agl_Graph[S],"Iss Data", "ep");
+			leg->AddEntry(PreSel_EffData_Agl_Graph[S],"ISS Data", "ep");
+			leg->SetLineWidth(2);
 			leg->Draw("same");
 		}
 
@@ -253,10 +270,13 @@ void 	DVSMCPreSeleff_Plot(
 		PreSel_CorrectionFit_R_Graph[S]->SetLineWidth(4);
 		PreSel_Correction_R_Graph[S]->SetMarkerColor(2);
 		PreSel_Correction_R_Graph[S]->SetMarkerStyle(8);
-		PreSel_Correction_R_Graph[S]->GetXaxis()->SetTitle("R[GV]");
+		PreSel_Correction_R_Graph[S]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
 		PreSel_Correction_R_Graph[S]->GetYaxis()->SetTitle("Efficiency (Data/MC)");
 		PreSel_Correction_R_Graph[S]->SetTitle("R binning");
 		PreSel_Correction_R_Graph[S]->GetYaxis()->SetRangeUser(0.9,1.2);
+
+		PreSel_Correction_R_Graph[S]->GetXaxis()->SetTitleSize(0.045);
+                PreSel_Correction_R_Graph[S]->GetYaxis()->SetTitleSize(0.045);
 
 		PreSel_Correction_R_Graph[S]->Draw("AP");
 		PreSel_CorrectionFit_R_Graph[S]->Draw("P4Csame");
@@ -264,6 +284,7 @@ void 	DVSMCPreSeleff_Plot(
 			TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
 			leg->AddEntry(PreSel_Correction_R_Graph[S],"Efficiency correction", "ep");
 			leg->AddEntry(PreSel_CorrectionFit_R_Graph[S],"Param.", "l");
+			leg->SetLineWidth(2);
 			leg->Draw("same");
 		}
 
@@ -293,10 +314,13 @@ void 	DVSMCPreSeleff_Plot(
 		PreSel_CorrectionFit_TOF_Graph[S]->SetLineWidth(4);
 		PreSel_Correction_TOF_Graph[S]->SetMarkerColor(2);
 		PreSel_Correction_TOF_Graph[S]->SetMarkerStyle(8);
-		PreSel_Correction_TOF_Graph[S]->GetXaxis()->SetTitle("R[GV]");
+		PreSel_Correction_TOF_Graph[S]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
 		PreSel_Correction_TOF_Graph[S]->GetYaxis()->SetTitle("Efficiency (Data/MC)");
 		PreSel_Correction_TOF_Graph[S]->SetTitle("R binning");
 		PreSel_Correction_TOF_Graph[S]->GetYaxis()->SetRangeUser(0.9,1.2);
+
+		PreSel_Correction_TOF_Graph[S]->GetXaxis()->SetTitleSize(0.045);
+                PreSel_Correction_TOF_Graph[S]->GetYaxis()->SetTitleSize(0.045);
 
 		PreSel_Correction_TOF_Graph[S]->Draw("AP");
 		PreSel_CorrectionFit_TOF_Graph[S]->Draw("P4Csame");
@@ -304,6 +328,7 @@ void 	DVSMCPreSeleff_Plot(
 			TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
 			leg->AddEntry(PreSel_Correction_TOF_Graph[S],"Efficiency correction", "ep");
 			leg->AddEntry(PreSel_CorrectionFit_TOF_Graph[S],"Param.", "l");
+			leg->SetLineWidth(2);
 			leg->Draw("same");
 		}
 
@@ -332,10 +357,13 @@ void 	DVSMCPreSeleff_Plot(
 		PreSel_CorrectionFit_NaF_Graph[S]->SetLineWidth(4);
 		PreSel_Correction_NaF_Graph[S]->SetMarkerColor(2);
 		PreSel_Correction_NaF_Graph[S]->SetMarkerStyle(8);
-		PreSel_Correction_NaF_Graph[S]->GetXaxis()->SetTitle("R[GV]");
+		PreSel_Correction_NaF_Graph[S]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
 		PreSel_Correction_NaF_Graph[S]->GetYaxis()->SetTitle("Efficiency (Data/MC)");
 		PreSel_Correction_NaF_Graph[S]->SetTitle("R binning");
 		PreSel_Correction_NaF_Graph[S]->GetYaxis()->SetRangeUser(0.9,1.2);
+
+		PreSel_Correction_NaF_Graph[S]->GetXaxis()->SetTitleSize(0.045);
+                PreSel_Correction_NaF_Graph[S]->GetYaxis()->SetTitleSize(0.045);
 
 		PreSel_Correction_NaF_Graph[S]->Draw("AP");
 		PreSel_CorrectionFit_NaF_Graph[S]->Draw("P4Csame");
@@ -343,6 +371,7 @@ void 	DVSMCPreSeleff_Plot(
 			TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
 			leg->AddEntry(PreSel_Correction_NaF_Graph[S],"Efficiency correction", "ep");
 			leg->AddEntry(PreSel_CorrectionFit_NaF_Graph[S],"Param.", "l");
+			leg->SetLineWidth(2);
 			leg->Draw("same");
 		}
 
@@ -372,10 +401,13 @@ void 	DVSMCPreSeleff_Plot(
 		PreSel_CorrectionFit_Agl_Graph[S]->SetLineWidth(4);
 		PreSel_Correction_Agl_Graph[S]->SetMarkerColor(2);
 		PreSel_Correction_Agl_Graph[S]->SetMarkerStyle(8);
-		PreSel_Correction_Agl_Graph[S]->GetXaxis()->SetTitle("R[GV]");
+		PreSel_Correction_Agl_Graph[S]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
 		PreSel_Correction_Agl_Graph[S]->GetYaxis()->SetTitle("Efficiency (Data/MC)");
 		PreSel_Correction_Agl_Graph[S]->SetTitle("R binning");
 		PreSel_Correction_Agl_Graph[S]->GetYaxis()->SetRangeUser(0.9,1.2);
+
+		PreSel_Correction_Agl_Graph[S]->GetXaxis()->SetTitleSize(0.045);
+                PreSel_Correction_Agl_Graph[S]->GetYaxis()->SetTitleSize(0.045);
 
 		PreSel_Correction_Agl_Graph[S]->Draw("AP");
 		PreSel_CorrectionFit_Agl_Graph[S]->Draw("P4Csame");
@@ -383,6 +415,7 @@ void 	DVSMCPreSeleff_Plot(
 			TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
 			leg->AddEntry(PreSel_Correction_Agl_Graph[S],"Efficiency correction", "ep");
 			leg->AddEntry(PreSel_CorrectionFit_Agl_Graph[S],"Param.", "l");
+			leg->SetLineWidth(2);
 			leg->Draw("same");
 		}
 

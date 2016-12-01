@@ -6,7 +6,7 @@ Efficiency * EffUnbiasDATA  = new Efficiency ("EffUnbiasDATA" );
 Efficiency * EffUnbiasDATAQ = new Efficiency ("EffUnbiasDATAQ");
 
 void DATAUnbiaseffQ_Fill () {
-	if(Tup.Beta<=0||Tup.R<=0||Tup.Beta<=0||Tup.R<1.2*Tup.Rcutoff) return;
+	if(Tup.Beta<=0||Tup.R<=0||Tup.Beta<=0||Tup.R<SF*Tup.Rcutoff) return;
 	if(!Herejcut) return;
 	if(!ProtonsMassWindow) return;
 	

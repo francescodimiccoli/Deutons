@@ -24,6 +24,7 @@ void 	DATAQualeff_Plot( TH1 *LATDistDATATOF      ,
 
    TCanvas *c15=new TCanvas ("Latitude Likelihood Efficiency");
    TCanvas *c16=new TCanvas ("Latitude Distance Efficiency");
+   string Legend[11]={"Lat. Zone 0","Lat. Zone 1","Lat. Zone 2","Lat. Zone 3","Lat. Zone 4","Lat. Zone 5","Lat. Zone 6","Lat. Zone 7","Lat. Zone 8","Lat. Zone 9","Lat. Zone 10" };	
 
    c15->Divide (2,3);
    c16->Divide (2,3);
@@ -54,14 +55,18 @@ void 	DATAQualeff_Plot( TH1 *LATDistDATATOF      ,
    EffDATALikP[10]->GetYaxis()->SetRangeUser (0.1,1.1);
    EffDATALikP[10]->Draw ("AP");
    for (int l=0; l<10; l++) {
-      EffDATALikP[l]->SetMarkerColor (l);
+      EffDATALikP[l]->SetMarkerColor (55+2*l);
       EffDATALikP[l]->SetMarkerStyle (8);
-      EffDATALikP[l]->SetLineColor (l);
+      EffDATALikP[l]->SetLineColor (55+2*l);
       EffDATALikP[l]->Draw ("Psame");
    }
-
-
-
+   {
+   TLegend* leg =new TLegend(0.8, 0.1,0.98,0.95);
+  	for (int l=0; l<11; l++) leg->AddEntry(EffDATALikP[l],Legend[l].c_str(), "p");
+   	leg->SetLineWidth(2);
+	leg->Draw("same");
+   }
+	
    c15->cd (3);
    gPad->SetLogx();
    gPad->SetGridx();
@@ -87,11 +92,19 @@ void 	DATAQualeff_Plot( TH1 *LATDistDATATOF      ,
    EffDATALikNaFP[10]->GetYaxis()->SetRangeUser (0.1,1.1);
    EffDATALikNaFP[10]->Draw ("AP");
    for (int l=0; l<10; l++) {
-      EffDATALikNaFP[l]->SetMarkerColor (l);
+      EffDATALikNaFP[l]->SetMarkerColor (55+2*l);
       EffDATALikNaFP[l]->SetMarkerStyle (8);
-      EffDATALikNaFP[l]->SetLineColor (l);
+      EffDATALikNaFP[l]->SetLineColor (55+2*l);
       EffDATALikNaFP[l]->Draw ("Psame");
    }
+   {
+   TLegend* leg =new TLegend(0.8, 0.1,0.98,0.95);
+        for (int l=0; l<11; l++) leg->AddEntry(EffDATALikNaFP[l],Legend[l].c_str(), "p");
+   	leg->SetLineWidth(2);
+	leg->Draw("same");
+   }
+
+
 
    c15->cd (5);
    gPad->SetLogx();
@@ -118,11 +131,19 @@ void 	DATAQualeff_Plot( TH1 *LATDistDATATOF      ,
    EffDATALikAglP[10]->GetYaxis()->SetRangeUser (0.1,1.1);
    EffDATALikAglP[10]->Draw ("AP");
    for (int l=0; l<10; l++) {
-      EffDATALikAglP[l]->SetMarkerColor (l);
+      EffDATALikAglP[l]->SetMarkerColor (55+2*l);
       EffDATALikAglP[l]->SetMarkerStyle (8);
-      EffDATALikAglP[l]->SetLineColor (l);
+      EffDATALikAglP[l]->SetLineColor (55+2*l);
       EffDATALikAglP[l]->Draw ("Psame");
    }
+   {
+   TLegend* leg =new TLegend(0.8, 0.1,0.98,0.95);
+        for (int l=0; l<11; l++) leg->AddEntry(EffDATALikAglP[l],Legend[l].c_str(), "p");
+   	leg->SetLineWidth(2);
+	leg->Draw("same");
+   }
+	
+
 
    TGraphErrors *CorrLATLik;
    c15->cd (2);
@@ -236,11 +257,18 @@ void 	DATAQualeff_Plot( TH1 *LATDistDATATOF      ,
    EffDATADistP[10]->GetYaxis()->SetRangeUser (0.1,1.1);
    EffDATADistP[10]->Draw ("AP");
    for (int l=0; l<10; l++) {
-      EffDATADistP[l]->SetMarkerColor (l);
+      EffDATADistP[l]->SetMarkerColor (55+2*l);
       EffDATADistP[l]->SetMarkerStyle (8);
-      EffDATADistP[l]->SetLineColor (l);
+      EffDATADistP[l]->SetLineColor (55+2*l);
       EffDATADistP[l]->Draw ("Psame");
    }
+   {
+   TLegend* leg =new TLegend(0.8, 0.1,0.98,0.95);
+        for (int l=0; l<11; l++) leg->AddEntry(EffDATADistP[l],Legend[l].c_str(), "p");
+   	leg->SetLineWidth(2);
+	leg->Draw("same");
+   }
+
 
    c16->cd (3);
    gPad->SetLogx();
@@ -267,11 +295,18 @@ void 	DATAQualeff_Plot( TH1 *LATDistDATATOF      ,
    EffDATADistNaFP[10]->GetYaxis()->SetRangeUser (0.1,1.1);
    EffDATADistNaFP[10]->Draw ("AP");
    for (int l=0; l<10; l++) {
-      EffDATADistNaFP[l]->SetMarkerColor (l);
+      EffDATADistNaFP[l]->SetMarkerColor (55+2*l);
       EffDATADistNaFP[l]->SetMarkerStyle (8);
-      EffDATADistNaFP[l]->SetLineColor (l);
+      EffDATADistNaFP[l]->SetLineColor (55+2*l);
       EffDATADistNaFP[l]->Draw ("Psame");
    }
+   {
+   TLegend* leg =new TLegend(0.8, 0.1,0.98,0.95);
+        for (int l=0; l<11; l++) leg->AddEntry(EffDATADistNaFP[l],Legend[l].c_str(), "p");
+   	leg->SetLineWidth(2);
+	leg->Draw("same");
+   }
+
 
    c16->cd (5);
    gPad->SetLogx();
@@ -298,11 +333,18 @@ void 	DATAQualeff_Plot( TH1 *LATDistDATATOF      ,
    EffDATADistAglP[10]->GetYaxis()->SetRangeUser (0.1,1.1);
    EffDATADistAglP[10]->Draw ("AP");
    for (int l=0; l<10; l++) {
-      EffDATADistAglP[l]->SetMarkerColor (l);
+      EffDATADistAglP[l]->SetMarkerColor (55+2*l);
       EffDATADistAglP[l]->SetMarkerStyle (8);
-      EffDATADistAglP[l]->SetLineColor (l);
+      EffDATADistAglP[l]->SetLineColor (55+2*l);
       EffDATADistAglP[l]->Draw ("Psame");
    }
+   {
+   TLegend* leg =new TLegend(0.8, 0.1,0.98,0.95);
+        for (int l=0; l<11; l++) leg->AddEntry(EffDATADistAglP[l],Legend[l].c_str(), "p");
+   	leg->SetLineWidth(2);
+	leg->Draw("same");
+   }
+
 
    TGraphErrors *CorrLATDist;
    c16->cd (2);

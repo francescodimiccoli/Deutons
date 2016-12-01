@@ -90,14 +90,18 @@ void DVSMCQualeff_Plot(
         LikDVSMC_P_MC->GetYaxis()->SetTitle("Efficiency ");
         LikDVSMC_P_MC->SetTitle("R binning");
         LikDVSMC_P_MC->GetYaxis()->SetRangeUser(0,1);
-
-        LikDVSMC_P_MC->Draw("AP");
+	
+	LikDVSMC_P_MC->GetXaxis()->SetTitleSize(0.045);
+        LikDVSMC_P_MC->GetYaxis()->SetTitleSize(0.045);
+        
+	LikDVSMC_P_MC->Draw("AP");
         LikDVSMC_P_Data->Draw("Psame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(LikDVSMC_P_MC,"Protons MC", "ep");
-                leg->AddEntry(LikDVSMC_P_Data,"Iss Data", "ep");
-                leg->Draw("same");
+                leg->AddEntry(LikDVSMC_P_Data,"ISS Data", "ep");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -130,14 +134,19 @@ void DVSMCQualeff_Plot(
         LikDVSMCTOF_P_MC->GetYaxis()->SetTitle("Efficiency ");
         LikDVSMCTOF_P_MC->SetTitle("TOF range");
         LikDVSMCTOF_P_MC->GetYaxis()->SetRangeUser(0,1);
-
+	
+	LikDVSMCTOF_P_MC->GetXaxis()->SetTitleSize(0.045);
+        LikDVSMCTOF_P_MC->GetYaxis()->SetTitleSize(0.045);
+        
+	
         LikDVSMCTOF_P_MC->Draw("AP");
         LikDVSMCTOF_P_Data->Draw("Psame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(LikDVSMCTOF_P_MC,"Protons MC", "ep");
-                leg->AddEntry(LikDVSMCTOF_P_Data,"Iss Data", "ep");
-                leg->Draw("same");
+                leg->AddEntry(LikDVSMCTOF_P_Data,"ISS Data", "ep");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -169,14 +178,19 @@ void DVSMCQualeff_Plot(
         LikDVSMCNaF_P_MC->GetYaxis()->SetTitle("Efficiency ");
         LikDVSMCNaF_P_MC->SetTitle("NaF range");
         LikDVSMCNaF_P_MC->GetYaxis()->SetRangeUser(0,1);
-
+	
+	LikDVSMCNaF_P_MC->GetXaxis()->SetTitleSize(0.045);
+        LikDVSMCNaF_P_MC->GetYaxis()->SetTitleSize(0.045);
+        
+	
         LikDVSMCNaF_P_MC->Draw("AP");
         LikDVSMCNaF_P_Data->Draw("Psame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(LikDVSMCNaF_P_MC,"Protons MC", "ep");
-                leg->AddEntry(LikDVSMCNaF_P_Data,"Iss Data", "ep");
-                leg->Draw("same");
+                leg->AddEntry(LikDVSMCNaF_P_Data,"ISS Data", "ep");
+               leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 	c20->cd(4);
@@ -208,13 +222,17 @@ void DVSMCQualeff_Plot(
         LikDVSMCAgl_P_MC->SetTitle("Agl range");
         LikDVSMCAgl_P_MC->GetYaxis()->SetRangeUser(0,1);
 
+	LikDVSMCAgl_P_MC->GetXaxis()->SetTitleSize(0.045);
+        LikDVSMCAgl_P_MC->GetYaxis()->SetTitleSize(0.045);
+
         LikDVSMCAgl_P_MC->Draw("AP");
         LikDVSMCAgl_P_Data->Draw("Psame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(LikDVSMCAgl_P_MC,"Protons MC", "ep");
-                leg->AddEntry(LikDVSMCAgl_P_Data,"Iss Data", "ep");
-                leg->Draw("same");
+                leg->AddEntry(LikDVSMCAgl_P_Data,"ISS Data", "ep");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -250,13 +268,17 @@ void DVSMCQualeff_Plot(
         DistDVSMC_P_MC->SetTitle("R binning");
         DistDVSMC_P_MC->GetYaxis()->SetRangeUser(0,1);
 
+	DistDVSMC_P_MC->GetXaxis()->SetTitleSize(0.045);
+        DistDVSMC_P_MC->GetYaxis()->SetTitleSize(0.045);
+
         DistDVSMC_P_MC->Draw("AP");
         DistDVSMC_P_Data->Draw("Psame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(DistDVSMC_P_MC,"Protons MC", "ep");
-                leg->AddEntry(DistDVSMC_P_Data,"Iss Data", "ep");
-                leg->Draw("same");
+                leg->AddEntry(DistDVSMC_P_Data,"ISS Data", "ep");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -290,13 +312,17 @@ void DVSMCQualeff_Plot(
         DistDVSMCTOF_P_MC->SetTitle("TOF range");
         DistDVSMCTOF_P_MC->GetYaxis()->SetRangeUser(0,1);
 
+	DistDVSMCTOF_P_MC->GetXaxis()->SetTitleSize(0.045);
+        DistDVSMCTOF_P_MC->GetYaxis()->SetTitleSize(0.045);
+
         DistDVSMCTOF_P_MC->Draw("AP");
         DistDVSMCTOF_P_Data->Draw("Psame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(DistDVSMCTOF_P_MC,"Protons MC", "ep");
-                leg->AddEntry(DistDVSMCTOF_P_Data,"Iss Data", "ep");
-                leg->Draw("same");
+                leg->AddEntry(DistDVSMCTOF_P_Data,"ISS Data", "ep");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -329,13 +355,17 @@ void DVSMCQualeff_Plot(
         DistDVSMCNaF_P_MC->SetTitle("NaF range");
         DistDVSMCNaF_P_MC->GetYaxis()->SetRangeUser(0,1);
 
+	DistDVSMCNaF_P_MC->GetXaxis()->SetTitleSize(0.045);
+        DistDVSMCNaF_P_MC->GetYaxis()->SetTitleSize(0.045);
+
         DistDVSMCNaF_P_MC->Draw("AP");
         DistDVSMCNaF_P_Data->Draw("Psame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(DistDVSMCNaF_P_MC,"Protons MC", "ep");
-                leg->AddEntry(DistDVSMCNaF_P_Data,"Iss Data", "ep");
-                leg->Draw("same");
+                leg->AddEntry(DistDVSMCNaF_P_Data,"ISS Data", "ep");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
         c21->cd(4);
@@ -367,13 +397,17 @@ void DVSMCQualeff_Plot(
         DistDVSMCAgl_P_MC->SetTitle("Agl range");
         DistDVSMCAgl_P_MC->GetYaxis()->SetRangeUser(0,1);
 
+	DistDVSMCAgl_P_MC->GetXaxis()->SetTitleSize(0.045);
+        DistDVSMCAgl_P_MC->GetYaxis()->SetTitleSize(0.045);
+
         DistDVSMCAgl_P_MC->Draw("AP");
         DistDVSMCAgl_P_Data->Draw("Psame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(DistDVSMCAgl_P_MC,"Protons MC", "ep");
-                leg->AddEntry(DistDVSMCAgl_P_Data,"Iss Data", "ep");
-                leg->Draw("same");
+                leg->AddEntry(DistDVSMCAgl_P_Data,"ISS Data", "ep");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -410,12 +444,16 @@ void DVSMCQualeff_Plot(
 	LikDVSMC_P_Graph->SetTitle("R binning");
 	LikDVSMC_P_Graph->GetYaxis()->SetRangeUser(0.9,1.2);
 
+	LikDVSMC_P_Graph->GetXaxis()->SetTitleSize(0.045);
+        LikDVSMC_P_Graph->GetYaxis()->SetTitleSize(0.045);
+
 	LikDVSMC_P_Graph->Draw("AP");
 	LikDVSMCFit_P_Graph->Draw("P4Csame");
 	{
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
 		leg->AddEntry(LikDVSMC_P_Graph,"Efficiency correction", "ep");
 		leg->AddEntry(LikDVSMCFit_P_Graph,"Param.", "l");
+		leg->SetLineWidth(2);
 		leg->Draw("same");
 	}
 	
@@ -452,6 +490,9 @@ void DVSMCQualeff_Plot(
         LikDVSMC_P_GraphTOF->GetYaxis()->SetRangeUser(0.9,1.2);
 	LikDVSMC_P_GraphTOF->SetTitle("TOF range");
 
+	LikDVSMC_P_GraphTOF->GetXaxis()->SetTitleSize(0.045);
+        LikDVSMC_P_GraphTOF->GetYaxis()->SetTitleSize(0.045);
+
 	LikDVSMC_P_GraphTOF->Draw("AP");
         LikDVSMCFit_P_GraphTOF->Draw("P4Csame");
 
@@ -459,7 +500,8 @@ void DVSMCQualeff_Plot(
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(LikDVSMC_P_GraphTOF,"Efficiency correction", "ep");
                 leg->AddEntry(LikDVSMCFit_P_GraphTOF,"Param.", "l");
-                leg->Draw("same");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -475,9 +517,9 @@ void DVSMCQualeff_Plot(
         j=0;
         for(int i=0;i<nbinsNaF;i++) {
                 if(LikP_CorrectionFit_NaF -> GetBinContent(i+1)>0){
-                        LikDVSMC_P_GraphNaF->SetPoint(j,ToFPB.EkPerMassBinCent(i),LikP_Correction_NaF -> GetBinContent(i+1));
+                        LikDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkPerMassBinCent(i),LikP_Correction_NaF -> GetBinContent(i+1));
                         LikDVSMC_P_GraphNaF->SetPointError(j,0,LikP_Correction_NaF -> GetBinError(i+1));
-                        LikDVSMCFit_P_GraphNaF->SetPoint(j,ToFPB.EkPerMassBinCent(i),LikP_CorrectionFit_NaF -> GetBinContent(i+1));
+                        LikDVSMCFit_P_GraphNaF->SetPoint(j,NaFPB.EkPerMassBinCent(i),LikP_CorrectionFit_NaF -> GetBinContent(i+1));
                         LikDVSMCFit_P_GraphNaF->SetPointError(j,0,LikP_CorrectionFit_NaF -> GetBinError(i+1));
 
                         j++;
@@ -494,13 +536,17 @@ void DVSMCQualeff_Plot(
         LikDVSMC_P_GraphNaF->GetYaxis()->SetRangeUser(0.9,1.2);
 	LikDVSMC_P_GraphNaF->SetTitle("NaF range");
 
+	LikDVSMC_P_GraphNaF->GetXaxis()->SetTitleSize(0.045);
+        LikDVSMC_P_GraphNaF->GetYaxis()->SetTitleSize(0.045);
+	
 	LikDVSMC_P_GraphNaF->Draw("AP");
         LikDVSMCFit_P_GraphNaF->Draw("P4Csame");
 	{
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(LikDVSMC_P_GraphNaF,"Efficiency correction", "ep");
                 leg->AddEntry(LikDVSMCFit_P_GraphNaF,"Param.", "l");
-                leg->Draw("same");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -518,9 +564,9 @@ void DVSMCQualeff_Plot(
         j=0;
         for(int i=0;i<nbinsToF;i++) {
                 if(LikP_CorrectionFit_Agl -> GetBinContent(i+1)>0){
-                        LikDVSMC_P_GraphAgl->SetPoint(j,ToFPB.EkPerMassBinCent(i),LikP_Correction_Agl -> GetBinContent(i+1));
+                        LikDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkPerMassBinCent(i),LikP_Correction_Agl -> GetBinContent(i+1));
                         LikDVSMC_P_GraphAgl->SetPointError(j,0,LikP_Correction_Agl -> GetBinError(i+1));
-                        LikDVSMCFit_P_GraphAgl->SetPoint(j,ToFPB.EkPerMassBinCent(i),LikP_CorrectionFit_Agl -> GetBinContent(i+1));
+                        LikDVSMCFit_P_GraphAgl->SetPoint(j,AglPB.EkPerMassBinCent(i),LikP_CorrectionFit_Agl -> GetBinContent(i+1));
                         LikDVSMCFit_P_GraphAgl->SetPointError(j,0,LikP_CorrectionFit_Agl -> GetBinError(i+1));
 
                         j++;
@@ -537,13 +583,17 @@ void DVSMCQualeff_Plot(
         LikDVSMC_P_GraphAgl->GetYaxis()->SetRangeUser(0.9,1.2);
 	LikDVSMC_P_GraphAgl->SetTitle("Agl range");
 
+	LikDVSMC_P_GraphAgl->GetXaxis()->SetTitleSize(0.045);
+        LikDVSMC_P_GraphAgl->GetYaxis()->SetTitleSize(0.045);
+
 	LikDVSMC_P_GraphAgl->Draw("AP");
         LikDVSMCFit_P_GraphAgl->Draw("P4Csame");
 	{
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(LikDVSMC_P_GraphAgl,"Efficiency correction", "ep");
                 leg->AddEntry(LikDVSMCFit_P_GraphAgl,"Param.", "l");
-                leg->Draw("same");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 	 c21_bis->Divide(2,2);
@@ -579,13 +629,17 @@ void DVSMCQualeff_Plot(
         DistDVSMC_P_Graph->SetTitle("R binning");
         DistDVSMC_P_Graph->GetYaxis()->SetRangeUser(0.9,1.2);
 
+	DistDVSMC_P_Graph->GetXaxis()->SetTitleSize(0.045);
+        DistDVSMC_P_Graph->GetYaxis()->SetTitleSize(0.045);
+
         DistDVSMC_P_Graph->Draw("AP");
         DistDVSMCFit_P_Graph->Draw("P4Csame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(DistDVSMC_P_Graph,"Efficiency correction", "ep");
                 leg->AddEntry(DistDVSMCFit_P_Graph,"Param.", "l");
-                leg->Draw("same");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -621,6 +675,9 @@ void DVSMCQualeff_Plot(
         DistDVSMC_P_GraphTOF->GetYaxis()->SetRangeUser(0.9,1.2);
         DistDVSMC_P_GraphTOF->SetTitle("TOF range");
 
+	DistDVSMC_P_GraphTOF->GetXaxis()->SetTitleSize(0.045);
+        DistDVSMC_P_GraphTOF->GetYaxis()->SetTitleSize(0.045);
+
         DistDVSMC_P_GraphTOF->Draw("AP");
         DistDVSMCFit_P_GraphTOF->Draw("P4Csame");
 
@@ -628,7 +685,8 @@ void DVSMCQualeff_Plot(
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(DistDVSMC_P_GraphTOF,"Efficiency correction", "ep");
                 leg->AddEntry(DistDVSMCFit_P_GraphTOF,"Param.", "l");
-                leg->Draw("same");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -644,9 +702,9 @@ void DVSMCQualeff_Plot(
         j=0;
         for(int i=0;i<nbinsNaF;i++) {
                 if(DistP_CorrectionFit_NaF -> GetBinContent(i+1)>0){
-                        DistDVSMC_P_GraphNaF->SetPoint(j,ToFPB.EkPerMassBinCent(i),DistP_Correction_NaF -> GetBinContent(i+1));
+                        DistDVSMC_P_GraphNaF->SetPoint(j,NaFPB.EkPerMassBinCent(i),DistP_Correction_NaF -> GetBinContent(i+1));
                         DistDVSMC_P_GraphNaF->SetPointError(j,0,DistP_Correction_NaF -> GetBinError(i+1));
-                        DistDVSMCFit_P_GraphNaF->SetPoint(j,ToFPB.EkPerMassBinCent(i),DistP_CorrectionFit_NaF -> GetBinContent(i+1));
+                        DistDVSMCFit_P_GraphNaF->SetPoint(j,NaFPB.EkPerMassBinCent(i),DistP_CorrectionFit_NaF -> GetBinContent(i+1));
                         DistDVSMCFit_P_GraphNaF->SetPointError(j,0,DistP_CorrectionFit_NaF -> GetBinError(i+1));
 
                         j++;
@@ -663,13 +721,17 @@ void DVSMCQualeff_Plot(
         DistDVSMC_P_GraphNaF->GetYaxis()->SetRangeUser(0.9,1.2);
         DistDVSMC_P_GraphNaF->SetTitle("NaF range");
 
+	DistDVSMC_P_GraphNaF->GetXaxis()->SetTitleSize(0.045);
+        DistDVSMC_P_GraphNaF->GetYaxis()->SetTitleSize(0.045);
+
         DistDVSMC_P_GraphNaF->Draw("AP");
         DistDVSMCFit_P_GraphNaF->Draw("P4Csame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(DistDVSMC_P_GraphNaF,"Efficiency correction", "ep");
                 leg->AddEntry(DistDVSMCFit_P_GraphNaF,"Param.", "l");
-                leg->Draw("same");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 
@@ -687,9 +749,9 @@ void DVSMCQualeff_Plot(
         j=0;
         for(int i=0;i<nbinsToF;i++) {
                 if(DistP_CorrectionFit_Agl -> GetBinContent(i+1)>0){
-                        DistDVSMC_P_GraphAgl->SetPoint(j,ToFPB.EkPerMassBinCent(i),DistP_Correction_Agl -> GetBinContent(i+1));
+                        DistDVSMC_P_GraphAgl->SetPoint(j,AglPB.EkPerMassBinCent(i),DistP_Correction_Agl -> GetBinContent(i+1));
                         DistDVSMC_P_GraphAgl->SetPointError(j,0,DistP_Correction_Agl -> GetBinError(i+1));
-                        DistDVSMCFit_P_GraphAgl->SetPoint(j,ToFPB.EkPerMassBinCent(i),DistP_CorrectionFit_Agl -> GetBinContent(i+1));
+                        DistDVSMCFit_P_GraphAgl->SetPoint(j,AglPB.EkPerMassBinCent(i),DistP_CorrectionFit_Agl -> GetBinContent(i+1));
                         DistDVSMCFit_P_GraphAgl->SetPointError(j,0,DistP_CorrectionFit_Agl -> GetBinError(i+1));
 
                         j++;
@@ -706,13 +768,17 @@ void DVSMCQualeff_Plot(
         DistDVSMC_P_GraphAgl->GetYaxis()->SetRangeUser(0.9,1.2);
         DistDVSMC_P_GraphAgl->SetTitle("Agl range");
 
+	DistDVSMC_P_GraphAgl->GetXaxis()->SetTitleSize(0.045);
+        DistDVSMC_P_GraphAgl->GetYaxis()->SetTitleSize(0.045);
+
         DistDVSMC_P_GraphAgl->Draw("AP");
         DistDVSMCFit_P_GraphAgl->Draw("P4Csame");
         {
                 TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
                 leg->AddEntry(DistDVSMC_P_GraphAgl,"Efficiency correction", "ep");
                 leg->AddEntry(DistDVSMCFit_P_GraphAgl,"Param.", "l");
-                leg->Draw("same");
+                leg->SetLineWidth(2);
+		leg->Draw("same");
         }
 
 

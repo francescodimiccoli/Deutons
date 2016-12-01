@@ -31,6 +31,7 @@
 #include <TMVA/Factory.h>
 #include <TMVA/Reader.h>
 #include <TMVA/Tools.h>
+#include "TLegend.h"
 
 using namespace std;
 
@@ -225,7 +226,8 @@ int main()
 
 				}
 
-	string Variables[9]={"N. Anti-clusters","Unused TOF Clusters","|Rup-Rdown|:R","Unused Tracker layers","Tracker: Y Hits without X","Track Chi^2","|E.dep(lower TOF) - E.dep(upper TOF)|","|E.dep(layer 2)-E.dep(layer 1)|","|E. dep.(tot)-E.dep.(track)|"};
+	string Variables[9]={"# of ACC clusters","# of extra TOF Clusters","|Rup-Rdown|/R","# of not used Tracker layers","Tracker: # of Y Hits without X","Track Global Chi^2","|E.dep(lower TOF) - E.dep(upper TOF)|","|E.dep(layer 2)-E.dep(layer 1)|","|E. dep.(tot)-E.dep.(track)|"};
+	
 	grafico1[0]=new TH1F("Anticl",Variables[0].c_str(),10,0,10);
 	grafico1[1]=new TH1F("Un. TOF",Variables[1].c_str(),20,0,20);
 	grafico1[2]=new TH1F("R Diff.",Variables[2].c_str(),50,0,1);
@@ -308,7 +310,7 @@ int main()
 	cout<<"************************************** TRAINING *****************************************************"<<endl;
 	int avanzamento=0;
 	bool Hecut=false;
-	for(int i=0; i<ntupla1->GetEntries()/5;i++) {
+	for(int i=0; i<ntupla1->GetEntries();i++) {
 		 ntupla1->GetEvent(i);
 		if(100*(i/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massagen= ReturnMass_Gen(MC_type);
@@ -318,12 +320,13 @@ int main()
 		TOF_Up_Down=fabs(EdepTOFD-EdepTOFU);
 		Betagen=(pow(pow(Momentogen/Massagen,2)/(1+pow(Momentogen/Massagen,2)),0.5));
 		
-		if(Beta<0.75&&Beta>0&&(1/Massa)<MassLimit&&R<4&&R>0&&Massagen<1) {
-				RvsRgen_bad->Fill(R,Momentogen);
-				if(R<100){
-				sigmagen_bad->Fill(fabs(R-Momentogen)/(pow(Momentogen,2)*Rig->Eval(Momentogen)),fabs(Beta-Betagen)/(pow(Beta,2)*beta->Eval(Beta)));
-				}
-		}
+		if(Beta<0.75&&Beta>0&&R>0&&R<4&&((int)Cutmask>>11)!=512&&((int)Cutmask>>11)!=0&&(1/Massa)<MassLimit&&Massagen<1) {
+                                RvsRgen_bad->Fill(R,Momentogen);
+                                if(R<100){
+                                sigmagen_bad->Fill(fabs(R-Momentogen)/(pow(Momentogen,2)*Rig->Eval(Momentogen)),fabs(Beta-Betagen)/(pow(Beta,2)*beta->Eval(Beta)));
+                                }
+                }
+	
 		if(Beta<0.75&&Beta>0&&(1/Massa)<MassLimit&&R>0&&R<4){ 	
 			if(Massagen<1&&Massagen>0.5)
 			{
@@ -431,24 +434,32 @@ int main()
 		c1[m]->cd(1);
 		gPad->SetGridx();
 		gPad->SetGridy();
+		gPad->SetLogy();
 		grafico1[m]->SetBarOffset(0.25);
 		/*grafico3[m]->SetBarOffset(1.5);*/
-		grafico1[m]->SetBarWidth(0.5);
-                grafico2[m]->SetBarWidth(0.5);
+		grafico1[m]->SetBarWidth(0.7);
+                grafico2[m]->SetBarWidth(0.7);
 		grafico2[m]->GetXaxis()->SetTitle(Variables[m].c_str());
+		grafico2[m]->GetYaxis()->SetTitle("Normalized distribution");
+		grafico2[m]->GetXaxis()->SetTitleSize(0.045);
+		grafico2[m]->GetYaxis()->SetTitleSize(0.045);
 		grafico2[m]->Draw("B");
 		grafico1[m]->Draw("B,SAME");
-		//grafico3[m]->Draw("SAME");
 		grafico1[m]->SetFillColor(2);
 		grafico2[m]->SetFillColor(4);
 		grafico3[m]->SetFillColor(3);
 		grafico3[m]->SetFillStyle(3001);
 		Bkgnd[m]->SetLineWidth(2);
 		Bkgnd[m]->SetLineColor(2);
-		//Bkgnd[m]->Draw("SAME");
 		Signal[m]->SetLineWidth(2);
 		Signal[m]->SetLineColor(4);
-		//Signal[m]->Draw("SAME");
+		{
+			TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+			leg->AddEntry(grafico1[m],"Protons MC (mass>1.875)", "f");
+			leg->AddEntry(grafico2[m],"Deuterons MC (mass>1.875)", "f");
+			leg->SetLineWidth(2);
+			leg->Draw("same");
+		}
 	}
 	cout<<"************************************** TEST *****************************************************"<<endl;
 	/////////////LKLHD CALCULATION//////////
@@ -481,7 +492,7 @@ float NAnticlMean[11]={
 	BDTreader();
 	avanzamento=0;
 	int qu=0;
-	for(int l=0; l<ntupla1->GetEntries()/5;l++) {
+	for(int l=0; l<ntupla1->GetEntries()/3;l++) {
 		 ntupla1->GetEvent(l);
 		if(100*(l/(float)(ntupla1->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massagen= ReturnMass_Gen(MC_type);
@@ -531,7 +542,7 @@ float NAnticlMean[11]={
 
 
 	avanzamento=0;
-	for(int l=0; l<ntupla2->GetEntries()/5;l++) {
+	for(int l=0; l<ntupla2->GetEntries()/2;l++) {
 		 ntupla2->GetEvent(l);
 		if(100*(l/(float)(ntupla2->GetEntries()))>avanzamento) {cout<<avanzamento<<endl;avanzamento++;}
 		Massa=pow(fabs(pow(fabs(R)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
@@ -615,14 +626,22 @@ float NAnticlMean[11]={
 		graficoz[m][1]->SetBarWidth(0.5);
 		graficoz[m][1]->GetXaxis()->SetTitle(Variables[m].c_str());
 		graficoz[m][1]->SetLineColor(1);
-		graficoz[m][1]->Draw("L");
+		graficoz[m][1]->SetLineWidth(5);
+		graficoz[m][1]->Draw();
+		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                        leg->AddEntry(graficoz[m][1],"ISS data (Mag. lat. <0.2)", "l");
+
 		for(int z=2;z<11;z++){
 			graficoz[m][z]->SetBarWidth(0.5);
 			graficoz[m][z]->SetBarWidth(0.5);
 			graficoz[m][z]->GetXaxis()->SetTitle(Variables[m].c_str());
 			graficoz[m][z]->SetLineColor(z-1);
-			graficoz[m][z]->Draw("L,SAME");
+			graficoz[m][z]->SetLineWidth(5);
+			graficoz[m][z]->Draw("same");
+			if(z<10) leg->AddEntry(graficoz[m][z],("ISS data ( 0."+ to_string(z) + "< Mag. lat. < 0." +to_string(z+1) +")").c_str(), "l");
+			else leg->AddEntry(graficoz[m][z],"ISS data ( Mag. Lat. > 1.0)", "l");
 		}
+		leg->Draw("same");
 	}
 
 

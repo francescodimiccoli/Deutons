@@ -423,7 +423,6 @@ void ScanCombinations(std::vector<std::vector<TH1 *>> SystError , int i, std::ve
 			comb[i]=c;
 			
 			for (int z=0;z<comb.size();z++)
-				cout<<comb[z]<<" ";
 		
 			TotalCorr = (TH1*)SystError[0][comb[0]]->Clone();
 			for(int z=1;z<comb.size();z++) TotalCorr->Multiply(SystError[z][comb[z]]);
@@ -437,11 +436,9 @@ void ScanCombinations(std::vector<std::vector<TH1 *>> SystError , int i, std::ve
 			else{
 				for(int l=0;l<SystCorr->GetNbinsX();l++){
 					((TH2*)SystCorr)->Fill(l,TotalCorr->GetBinContent(l+1));
-					if(TotalCorr->GetBinContent(l+1)>1.4) cout<<"ecco"<<endl;
 				}
 
 			} 
-			cout<<endl;
 
 			if(i+1<SystError.size()) ScanCombinations(SystError,i+1,comb,SystCorr);			
 		}
