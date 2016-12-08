@@ -796,14 +796,14 @@ void DVSMCQualeff_Plot(
 	finalPlots.writeObjsInFolder("DATA-driven Results/Data vs MC/Selections/Corrections");
 
         
-	finalPlots.Add(DistDVSMC_P_Graph   );
-	finalPlots.Add(DistDVSMC_P_GraphTOF);
-	finalPlots.Add(DistDVSMC_P_GraphNaF);
-	finalPlots.Add(DistDVSMC_P_GraphAgl);
-	finalPlots.Add(LikDVSMC_P_Graph    );
-	finalPlots.Add(LikDVSMC_P_GraphTOF );
-	finalPlots.Add(LikDVSMC_P_GraphNaF );
-	finalPlots.Add(LikDVSMC_P_GraphAgl );
+	finalPlots.Add(DistDVSMCFit_P_Graph   );
+	finalPlots.Add(DistDVSMCFit_P_GraphTOF);
+	finalPlots.Add(DistDVSMCFit_P_GraphNaF);
+	finalPlots.Add(DistDVSMCFit_P_GraphAgl);
+	finalPlots.Add(LikDVSMCFit_P_Graph    );
+	finalPlots.Add(LikDVSMCFit_P_GraphTOF );
+	finalPlots.Add(LikDVSMCFit_P_GraphNaF );
+	finalPlots.Add(LikDVSMCFit_P_GraphAgl );
 	finalPlots.writeObjsInFolder("Export/DvsMC");
 
 	return;

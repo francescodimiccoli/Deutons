@@ -54,7 +54,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	TCanvas * c35 = new TCanvas("D/P ratio");
 
 	float potenza=0;
-	c33->Divide(1,4);
+	c33->Divide(1,2);
 	gPad->SetGridx();
 	gPad->SetGridy();
 
@@ -81,6 +81,10 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	gPad->SetLogy();
 	gPad->SetGridx();
 	gPad->SetGridy();
+	TH2F * Frame = new TH2F("Frame","Frame",1000,0.1,20,1e3,1e4,1e7);	
+	Frame->GetXaxis()->SetTitle("kin. En./nucl.");
+	Frame->GetYaxis()->SetTitle("Exposure Time (sec)");
+	Frame->Draw();
 	esposp_TOF->SetMarkerStyle(8);
 	esposp_TOF->SetMarkerColor(2);
 	esposp_TOF->SetLineColor(2);
@@ -92,16 +96,13 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	esposd_TOF->GetXaxis()->SetTitleSize(0.05);
 	esposd_TOF->GetYaxis()->SetTitleSize(0.05);     
 	esposd_TOF->SetTitle("TOF range");
-	esposd_TOF->Draw("APC");
-	esposp_TOF->Draw("PCsame");
-	c33->cd(2);
-	gPad->SetLogy();
-	gPad->SetGridx();
-	gPad->SetGridy();
+	esposd_TOF->Draw("PCsame");
+	//esposp_TOF->Draw("PCsame");
+	
 	esposp_NaF->SetMarkerStyle(8);
 	esposp_NaF->SetMarkerColor(2);
 	esposp_NaF->SetLineColor(2);
-	esposd_NaF->SetMarkerStyle(8);
+	esposd_NaF->SetMarkerStyle(4);
 	esposd_NaF->SetMarkerColor(4);
 	esposd_NaF->SetLineColor(4);
 	esposd_NaF->GetXaxis()->SetTitle("kin. En./nucl.");
@@ -109,16 +110,13 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	esposd_NaF->GetXaxis()->SetTitleSize(0.05);
 	esposd_NaF->GetYaxis()->SetTitleSize(0.05);
 	esposd_NaF->SetTitle("RICH NaF range");
-	esposd_NaF->Draw("APC");
-	esposp_NaF->Draw("PCsame");
-	c33->cd(3);
-	gPad->SetLogy();
-	gPad->SetGridx();
-	gPad->SetGridy();
+	esposd_NaF->Draw("PCsame");
+	//esposp_NaF->Draw("PCsame");
+	
 	esposp_Agl->SetMarkerStyle(8);
 	esposp_Agl->SetMarkerColor(2);
 	esposp_Agl->SetLineColor(2);
-	esposd_Agl->SetMarkerStyle(8);
+	esposd_Agl->SetMarkerStyle(3);
 	esposd_Agl->SetMarkerColor(4);
 	esposd_Agl->SetLineColor(4);
 	esposd_Agl->GetXaxis()->SetTitle("kin. En./nucl.");
@@ -126,10 +124,10 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	esposd_Agl->GetXaxis()->SetTitleSize(0.05);
 	esposd_Agl->GetYaxis()->SetTitleSize(0.05);
 	esposd_Agl->SetTitle("RICH Agl range");
-	esposd_Agl->Draw("APC");
-	esposp_Agl->Draw("PCsame");
+	esposd_Agl->Draw("PCsame");
+	//esposp_Agl->Draw("PCsame");
 
-	c33->cd(4);
+	c33->cd(2);
 	gPad->SetLogy();
 	gPad->SetGridx();
 	gPad->SetGridy();
@@ -162,7 +160,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	float x,y=0;
 	int j=0;
 	{
-		string filename="./Galprop/Default/deut_1200MV.dat";
+		string filename="./Galprop/Tom/deut_1500.dat";
 		cout<<filename<<endl;
 		ifstream fp(filename.c_str());
 		while (!fp.eof()){
@@ -175,7 +173,7 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 
 	j=0;
 	{
-		string filename="./Galprop/Default/deut_0MV.dat";
+		string filename="./Galprop/Tom/deut_450.dat";
 		cout<<filename<<endl;
 		ifstream fp(filename.c_str());
 		while (!fp.eof()){
@@ -862,6 +860,16 @@ void 	DeutonFlux_Plot(TH1 *DeutonsPrimaryFlux_TOF 	   ,
 	finalPlots.Add(D_FluxNaF);
 	finalPlots.Add(D_FluxAgl);
 	finalPlots.writeObjsInFolder("Export/DFluxes");
+	
+	finalPlots.Add(DStatTOF);
+	finalPlots.Add(DStatNaF);
+	finalPlots.Add(DStatAgl);
+	finalPlots.Add(DSystTOF);
+	finalPlots.Add(DSystNaF);
+	finalPlots.Add(DSystAgl);
+	finalPlots.writeObjsInFolder("Export/DErr");
+
+
 
 	finalPlots.Add(PD_ratioTOF);
         finalPlots.Add(PD_ratioNaF);

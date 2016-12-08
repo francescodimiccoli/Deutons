@@ -45,17 +45,16 @@ void DrawCalibration(TVirtualPad * c, TSpline3 * Corr[],const string &name,const
 	TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
 	Corr[0]->SetLineWidth(2);
 	Corr[0]->SetLineColor(1);
-	leg->AddEntry(Corr[1],mesi[1].c_str(), "ep");
 	Corr[0]->Draw("");
 	TH1F *frame=c->DrawFrame(0.4,0.85,1,1.1,name.c_str());
 	frame->GetXaxis()->SetTitle(xaxisname.c_str());
 	frame->GetYaxis()->SetTitle(yaxisname.c_str());
-	for(int i=1;i<num_mesi;i++) {
+	for(int i=0;i<num_mesi;i++) {
 		Corr[i]->SetLineWidth(2);
 		Corr[i]->SetLineColor(colorbase+2*i);
 		Corr[i]->SetMarkerColor(colorbase+2*i);
 		Corr[i]->SetMarkerStyle(8);
-		leg->AddEntry(Corr[i],ConvertString(mesi[i]).c_str(), "ep");
+		leg->AddEntry(Corr[i],ConvertString(mesi[i]).c_str(), "p");
 		Corr[i]->Draw("same");
 	}
 	leg->Draw("same");
@@ -69,24 +68,28 @@ void DrawCorrection(TVirtualPad * c, TGraphErrors * Corr[],const string &name,co
 	gPad->SetGridy();
 	gPad->SetLogx();
 	gStyle->SetPalette(1);
-	TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
+	TLegend* leg =new TLegend(0.91,0.1,0.95,0.9);
 	Corr[0]->SetLineWidth(2);
 	Corr[0]->SetLineColor(1);
 	Corr[0]->SetMarkerStyle(8);
 	Corr[0]->SetMarkerColor(1);
-	leg->AddEntry(Corr[0],ConvertString(mesi[0]).c_str(), "ep");
+	leg->AddEntry(Corr[0],ConvertString(mesi[0]).c_str(), "p");
 	Corr[0]->Draw("AC");
 	Corr[0]->GetXaxis()->SetTitle(xaxisname.c_str());
 	Corr[0]->GetYaxis()->SetTitle(yaxisname.c_str());
-	Corr[0]->GetYaxis()->SetRangeUser(0.7,1.3);
+	Corr[0]->GetYaxis()->SetRangeUser(0.95,1.2);
+	Corr[0]->GetXaxis()->SetTitleSize(0.045);
+	Corr[0]->GetYaxis()->SetTitleSize(0.045);
 	for(int i=1;i<num_mesi;i++) {
 		Corr[i]->SetLineWidth(2);
 		Corr[i]->SetLineColor(colorbase+2*i);
 		Corr[i]->SetMarkerStyle(8);
 		Corr[i]->SetMarkerColor(colorbase+2*i);
-		leg->AddEntry(Corr[i],ConvertString(mesi[i]).c_str(), "ep");
+		
+		leg->AddEntry(Corr[i],ConvertString(mesi[i]).c_str(), "p");
 		Corr[i]->Draw("Csame");
 	}
+	leg->SetLineWidth(2);
 	leg->Draw("same");
 }
 
@@ -109,7 +112,7 @@ TGraphErrors * FluxesMean(TGraphErrors * Fluxes[],int bins){
 			err[p]+=1/pow(ey,2);	
 		}
 	flux[p] = flux[p]/err[p];
-	err[p] = pow(1/err[p],0.5); 
+	err[p] =pow(num_mesi*1/err[p],0.5); 
 	}
 	
 	for(int p=1;p<bins;p++){
@@ -194,6 +197,10 @@ int main()
 	string filename3="../database_D.root";
         TFile * file3 = TFile::Open(filename3.c_str(),"READ");
 
+	 string filename4="../database_PD.root";
+        TFile * file4 = TFile::Open(filename4.c_str(),"READ");
+
+
 	cout<<"*** Protons ***"<<endl;
 	TList *Experiments = file2->GetListOfKeys();
 	TIter next(Experiments);
@@ -222,6 +229,18 @@ int main()
         }
 
 
+	cout<<"*** D / P ratio ***"<<endl;
+
+        std::vector<TGraphAsymmErrors *> PD_Graphs;
+
+        TList *ExperimentsPD = file4->GetListOfKeys();
+        TIter nextPD(ExperimentsPD);
+        TKey * keyPD;
+
+        while((keyPD = (TKey*)nextPD())){
+                obj = file4->Get(keyPD->GetName());
+                if(obj->InheritsFrom("TGraphAsymmErrors")) PD_Graphs.push_back((TGraphAsymmErrors *)obj);
+        }
 
 	cout<<" ************** RISULTATI  ******************** "<<endl;
 
@@ -272,6 +291,11 @@ int main()
 		D_FluxesTOF[i] 		=  (TGraphErrors *) 	result[i]->Get("Export/DFluxes/Deutons Flux: Primaries TOF");
 		D_FluxesNaF[i] 		=  (TGraphErrors *) 	result[i]->Get("Export/DFluxes/Deutons Flux: Primaries NaF");
 		D_FluxesAgl[i] 		=  (TGraphErrors *) 	result[i]->Get("Export/DFluxes/Deutons Flux: Primaries Agl");
+		
+		PD_FluxesTOF[i] 		=  (TGraphErrors *) 	result[i]->Get("Export/DP_ratios/PD_ratioTOF");
+		PD_FluxesNaF[i] 		=  (TGraphErrors *) 	result[i]->Get("Export/DP_ratios/PD_ratioNaF");
+		PD_FluxesAgl[i] 		=  (TGraphErrors *) 	result[i]->Get("Export/DP_ratios/PD_ratioAgl");
+
 
 
 	}
@@ -298,6 +322,7 @@ int main()
 	TCanvas *c16=new TCanvas("Deutons Fluxes Ratio");
 	TCanvas *c15_bis=new TCanvas("Protons Fluxes");
         TCanvas *c16_bis=new TCanvas("Deutons Fluxes");
+	TCanvas *c17_bis = new TCanvas ("D/P ratio");
 	TCanvas *c17=new TCanvas("Time dependence");
 
 	c1->cd();
@@ -312,31 +337,31 @@ int main()
 	c4->cd();
 	DrawCalibration(c4,Corr_TOFD,"Lower E.dep. Corr. factors","Beta","Corr. Factor");
 	c5->cd();
-	DrawCorrection(c5,CorrLATpre_Spl[0],"","Latitude","Corr. Factor");
+	DrawCorrection(c5,CorrLATpre_Spl[0],"","#theta_{m}","C_{lat}");
 
 	c6->cd();
-	DrawCorrection(c6,CorrLATpre_Spl[1],"","Latitude","Corr. Factor");
+	DrawCorrection(c6,CorrLATpre_Spl[1],"","#theta_{m}","C_{lat}");
 
 	c7->cd();
-	DrawCorrection(c6,CorrLATpre_Spl[2],"","Latitude","Corr. Factor");
+	DrawCorrection(c6,CorrLATpre_Spl[2],"","#theta_{m}","C_{lat}");
 	c8->Divide(1,3);
 	c8->cd(1);
-	DrawCorrection(c8,CorrLAT_LikTOF_Spl,"","latitude","Corr. Factor");
+	DrawCorrection(c8,CorrLAT_LikTOF_Spl,"","#theta_{m}","C_{lat}");
 
 	c8->cd(2);
-	DrawCorrection(c8,CorrLAT_LikNaF_Spl,"","Latitude","Corr- Factor");
+	DrawCorrection(c8,CorrLAT_LikNaF_Spl,"","#theta_{m}","C_{lat}");
 
 	c8->cd(3);
-	DrawCorrection(c8,CorrLAT_LikAgl_Spl,"nome","Latitude","Corr. Factor");
+	DrawCorrection(c8,CorrLAT_LikAgl_Spl,"nome","#theta_{m}","C_{lat}");
 	c9->Divide(1,3);
 	c9->cd(1);
-	DrawCorrection(c9,CorrLAT_DistTOF_Spl,"","Latitude","Corr. Factor");
+	DrawCorrection(c9,CorrLAT_DistTOF_Spl,"","#theta_{m}","C_{lat}");
 
 	c9->cd(2);
-	DrawCorrection(c9,CorrLAT_DistNaF_Spl,"","Latitude","Corr. Factor");
+	DrawCorrection(c9,CorrLAT_DistNaF_Spl,"","#theta_{m}","C_{lat}");
 
 	c9->cd(3);
-	DrawCorrection(c9,CorrLAT_DistNaF_Spl,"","Latitude","Corr. Factor");
+	DrawCorrection(c9,CorrLAT_DistNaF_Spl,"","#theta_{m}","C_{lat}");
 
 	c10->Divide(2,2);
 	c11->Divide(2,2);
@@ -396,9 +421,9 @@ int main()
 	TH1F * Trackeff_time = new TH1F("","",num_mesi,0,num_mesi);
         TH1F * Triggeff_time = new TH1F("","",num_mesi,0,num_mesi);
 	for(int i=0;i<num_mesi;i++) {
-		effy = TrackerEff[i]-> GetBinContent(33);
+		effy = TrackerEff[i]-> GetBinContent(30);
 		Trackeff_time -> SetBinContent(i+1,effy);
-                effey = TrackerEff[i]-> GetBinError(33);
+                effey = TrackerEff[i]-> GetBinError(30);
                 Trackeff_time -> SetBinError(i+1,effey);
                 Trackeff_time -> GetXaxis() -> SetBinLabel(i+1,ConvertString(mesi[i]).c_str());
         	effy = TriggerEff[i]-> GetBinContent(1);                
@@ -484,7 +509,7 @@ int main()
         gPad->SetLogx();
         gPad->SetLogy();
 
-	TH2F * Frame = new TH2F("Frame","Frame",1000,0,30,1e4,0.01,1000);
+	TH2F * Frame = new TH2F("Frame","Frame",1e4,0.01,30,1e4,0.01,1000);
 	Frame->SetTitle("Deuterons Primary Flux");
 	Frame->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
 	Frame->GetYaxis()->SetTitle("Flux [(m^2 sec sr GeV/nucl.)^-1]");
@@ -529,7 +554,52 @@ int main()
         gPad->SetLogx();
         gPad->SetLogy();
 
-        TH2F * Frame2 = new TH2F("Frame2","Frame2",1000,0,30,1e4,0.01,1000);
+	TGraph* galprop3P=new TGraph();
+        TGraph* galprop3P2=new TGraph();
+        float x,y=0;
+        int j=0;
+        {
+                string filename="./Galprop/Tom/deut_1500.dat";
+                cout<<filename<<endl;
+                ifstream fp(filename.c_str());
+                while (!fp.eof()){
+                        fp>>x>>y;
+                        if(x/1e3>0.05&&x/1e3<=100)
+                                galprop3P->SetPoint(j,x/1e3,y*1e7);
+                        j++;
+                }
+        }
+
+        j=0;
+        {
+                string filename="./Galprop/Tom/deut_100.dat";
+                cout<<filename<<endl;
+                ifstream fp(filename.c_str());
+                while (!fp.eof()){
+                        fp>>x>>y;
+                        if(x/1e3>0.05&&x/1e3<=100)
+                                galprop3P2->SetPoint(j,x/1e3,y*1e7);
+                        j++;
+                }
+        }
+        galprop3P->GetXaxis()->SetRangeUser(0.1,10);
+        galprop3P->GetYaxis()->SetRangeUser(1e-3,1e3);
+        galprop3P->SetTitle("GALPROP (#Phi = 400-1500 MV)");
+        galprop3P->GetXaxis()->SetTitle("Kin.En./nucl. [GeV/nucl.]");
+        galprop3P ->GetYaxis()->SetTitle("Flux [(m^2 sr GeV/nucl.)^-1]");
+        galprop3P ->GetXaxis()->SetTitleSize(0.045);
+        galprop3P->GetYaxis()->SetTitleSize(0.045);
+        galprop3P ->GetYaxis()->SetRangeUser(1e-2,1e4);
+	galprop3P ->SetLineWidth(2);	
+        galprop3P2->SetLineWidth(2);
+	galprop3P ->SetLineColor(4);
+        galprop3P2->SetLineColor(4);       
+	galprop3P ->SetLineStyle(2);	
+        galprop3P2->SetLineStyle(2);
+	
+
+ 
+	TH2F * Frame2 = new TH2F("Frame2","Frame2",1000,0,30,1e4,0.01,1000);
         Frame2->SetTitle("Deuterons Primary Flux");
         Frame2->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
         Frame2->GetYaxis()->SetTitle("Flux [(m^2 sec sr GeV/nucl.)^-1]");
@@ -557,18 +627,84 @@ int main()
 	D_MeanAgl->SetMarkerStyle(8);
         D_MeanAgl->SetMarkerSize(2);
         D_MeanAgl->Draw("Psame");
+
+	galprop3P->Draw("sameC");
+        galprop3P2->Draw("sameC");
+
 	{
         TLegend* leg =new TLegend(0.91,0.1,1.0,0.9);
                 leg->AddEntry(D_MeanTOF,"This Work", "ep");
 
         for(uint n=0;n<D_Graphs.size();n++){
                 D_Graphs[n] ->Draw("Psame");
-                D_Graphs[n] -> SetMarkerSize(1.5);
+                D_Graphs[n] -> SetMarkerSize(2);
                 D_Graphs[n] -> SetLineWidth(1.5);
-		leg->AddEntry(D_Graphs[n],D_Graphs[n]->GetTitle(),"ep");
+		leg->AddEntry(D_Graphs[n],D_Graphs[n]->GetTitle(),"p");
         }
-        leg->Draw("same");
+        	leg->AddEntry(galprop3P,galprop3P->GetTitle(),"l");
+	leg->Draw("same");
         }
+	
+
+	c17_bis->cd();
+	gPad->SetGridx();
+        gPad->SetGridy();
+        gPad->SetLogx();
+	TH2F * Frame4 = new TH2F("Frame4","Frame4",1000,0,30,1e4,0.001,0.1);
+        Frame4->SetTitle("D/P Ratio");
+        Frame4->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+        Frame4->GetYaxis()->SetTitle("d/p Flux Ratio");
+        Frame4->GetXaxis()->SetTitleSize(0.045);
+        Frame4->GetYaxis()->SetTitleSize(0.045);
+        Frame4->Draw();
+        TGraphErrors * DP_MeanTOF = FluxesMean(PD_FluxesTOF,18);
+        DP_MeanTOF->SetMarkerColor(colorbase);
+        DP_MeanTOF->SetLineColor(colorbase);
+        DP_MeanTOF->SetMarkerStyle(8);
+        DP_MeanTOF->SetLineWidth(1);
+        DP_MeanTOF->SetMarkerSize(2);
+        DP_MeanTOF->Draw("Psame");
+        TGraphErrors * DP_MeanNaF = FluxesMean(PD_FluxesNaF,18);
+        DP_MeanNaF->SetMarkerColor(colorbase);
+        DP_MeanNaF->SetLineColor(colorbase);
+        DP_MeanNaF->SetLineWidth(1);
+        DP_MeanNaF->SetMarkerStyle(4);
+        DP_MeanNaF->SetMarkerSize(2);
+        DP_MeanNaF->Draw("Psame");
+        TGraphErrors * DP_MeanAgl = FluxesMean(PD_FluxesAgl,18);
+        DP_MeanAgl->SetMarkerColor(colorbase);
+        DP_MeanAgl->SetLineColor(colorbase);
+        DP_MeanAgl->SetLineWidth(1);
+        DP_MeanAgl->SetMarkerStyle(3);
+        DP_MeanAgl->SetMarkerSize(2);
+        DP_MeanAgl->Draw("Psame");
+
+	TLegend * legPD =new TLegend(0.4, 0.7,0.95,0.95);
+        legPD->AddEntry(DP_MeanTOF,"This Work () - TOF", "ep");
+        legPD->AddEntry(DP_MeanNaF,"This Work () - NaF", "ep");
+        legPD->AddEntry(DP_MeanAgl,"This Work () - Agl", "ep");
+
+
+
+        for(uint n=0;n<PD_Graphs.size();n++){
+                PD_Graphs[n] ->Draw("Psame");
+                PD_Graphs[n]->SetMarkerSize(2); 
+		legPD->AddEntry(PD_Graphs[n],PD_Graphs[n]->GetTitle(),"p");
+        }
+
+	legPD->Draw("same");
+
+
+
+
+
+
+
+
+
+
+
+
 
 	c16->cd();
         bool same = true;
@@ -791,6 +927,7 @@ int main()
 	c16->Write();	
 	c16_bis->Write();
 	c17->Write();
+	c17_bis->Write();
 	f_out->Write();
 	f_out->Close();
 	
@@ -844,7 +981,12 @@ void CheckFileIntegrity(int i,std::string mesi[]){
            P_Fluxes[i]    	&& 	
            D_FluxesTOF[i] 	&& 	
            D_FluxesNaF[i] 	&&	
-           D_FluxesAgl[i] 	)  cout<<"file "<<ConvertString(mesi[i]).c_str()<<"( "<<i<<") is complete"<<endl;
+           D_FluxesAgl[i] 	&&
+	   PD_FluxesTOF[i] 	&& 	
+           PD_FluxesNaF[i] 	&&	
+           PD_FluxesAgl[i] 	
+						
+					)  cout<<"file "<<ConvertString(mesi[i]).c_str()<<"( "<<i<<") is complete"<<endl;
 		else cout<<"file "<<ConvertString(mesi[i]).c_str()<<"( "<<i<<") is broken"<<endl;	
 }
 

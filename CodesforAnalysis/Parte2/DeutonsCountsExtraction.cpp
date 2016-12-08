@@ -208,7 +208,7 @@ void DeutonsTemplFits(string filename, string frac)
 
 		   FitTOF_Dbest->SetFitRange(1.1,3);
 		   FitNaF_Dbest->SetFitRange(1.1,3);
-		   FitAgl_Dbest->SetFitRange(1.0,3);
+		   FitAgl_Dbest->SetFitRange(1.1,3);
 
 		   if(frac!="tot"){
 			   FitTOF_Dbest         -> DisableFit(); 

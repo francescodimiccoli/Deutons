@@ -20,13 +20,13 @@ void ProtonFlux_Fill(int zona) {
 
 	if(Distcut && Likcut) {
 		P_Flux_geo-> Counts_R -> Fill(Kbin,zona);
-		if(Tup.R>1.2*Tup.Rcutoff) {
+		if(Tup.R>SF*Tup.Rcutoff) {
 			P_Flux -> Counts_R-> Fill(Kbin);
 			P_Flux_geo_prim -> Counts_R -> Fill(Kbin,zona);
 		}
 	}
 	
-	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<SF*Tup.Rcutoff) return;
 
 	if(Herejcut && ProtonsMassWindow ) P_Flux_pre -> Counts_R -> Fill(Kbin);
 	if(Distcut  && Likcut )  P_Flux_sel -> Counts_R -> Fill(Kbin);

@@ -88,7 +88,7 @@ void OtherExperimentsComparison(string filename){
         ThisWorkP->SetName("Protons Primary Flux");
         ThisWorkP->SetMarkerStyle(8);
         ThisWorkP->SetMarkerColor(4);
-	ThisWorkP->SetMarkerSize(1.4);
+	ThisWorkP->SetMarkerSize(2);
         ThisWorkP->SetTitle("Primary Protons Flux");
         ThisWorkP->SetName(("This Work (" + mese + ")").c_str());
 	ThisWorkP->GetXaxis()->SetTitle("Kin. En./nucl. [GeV/nucl.]");
@@ -98,12 +98,54 @@ void OtherExperimentsComparison(string filename){
         ThisWorkP->GetYaxis()->SetRangeUser(1e-2,1e4);
         ThisWorkP->Draw("AP");
 	TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-                leg->AddEntry(ThisWorkP,("This Work (" + mese + ")").c_str(), "ep");
+                leg->AddEntry(ThisWorkP,("This Work (" + mese + ")").c_str(), "p");
 	
 	for(uint n=0;n<P_Graphs.size();n++){	
+		P_Graphs[n]->SetMarkerSize(2);
 		P_Graphs[n] ->Draw("Psame");
-		 leg->AddEntry(P_Graphs[n],P_Graphs[n]->GetTitle(),"ep");
+		leg->AddEntry(P_Graphs[n],P_Graphs[n]->GetTitle(),"p");
 	}
+	TGraph* galpropP=new TGraph();
+        TGraph* galpropP2=new TGraph();
+        float x,y=0;
+        int j=0;
+        {
+                string filename="./Galprop/Tom/prot_1500.dat";
+                cout<<filename<<endl;
+                ifstream fp(filename.c_str());
+                while (!fp.eof()){
+                        fp>>x>>y;
+                        if(x/1e3>0.05&&x/1e3<=100)
+                                galpropP->SetPoint(j,x/1e3,y*1e7*pow(x/1e3,potenza));
+                        j++;
+                }
+        }
+
+        j=0;
+        {
+                string filename="./Galprop/Tom/prot_100.dat";
+                cout<<filename<<endl;
+                ifstream fp(filename.c_str());
+                while (!fp.eof()){
+                        fp>>x>>y;
+                        if(x/1e3>0.05&&x/1e3<=100)
+                                galpropP2->SetPoint(j,x/1e3,y*1e7*pow(x/1e3,potenza));
+                        j++;
+                }
+        }
+
+        galpropP->SetTitle("GALPROP (#Phi = 400-1500 MV)");
+
+        galpropP->SetLineColor(2);
+        galpropP2->SetLineColor(2);
+        galpropP->SetLineWidth(4);
+        galpropP2->SetLineWidth(4);
+        galpropP->SetLineStyle(4);
+        galpropP2->SetLineStyle(4);
+
+        galpropP->Draw("sameC");
+        galpropP2->Draw("sameC");
+	leg->AddEntry(galpropP,galpropP->GetTitle(),"l");
 	leg -> Draw("same");
 	
 	c2 -> cd();
@@ -123,7 +165,7 @@ void OtherExperimentsComparison(string filename){
         ThisWorkDTOF->SetMarkerStyle(8);
         ThisWorkDTOF->SetMarkerColor(4);
         ThisWorkDTOF->SetLineColor(4);
-        ThisWorkDTOF->SetMarkerSize(1.4);
+        ThisWorkDTOF->SetMarkerSize(2);
         ThisWorkDTOF->SetTitle("Primary Deutons Flux");
         ThisWorkDTOF->SetName(("This Work (" + mese + ")").c_str());
         ThisWorkDTOF->GetXaxis()->SetTitle("Kin. En./nucl. [GeV/nucl.]");
@@ -142,7 +184,7 @@ void OtherExperimentsComparison(string filename){
         ThisWorkDNaF->SetMarkerStyle(4);
         ThisWorkDNaF->SetMarkerColor(4);
         ThisWorkDNaF->SetLineColor(4);
-	ThisWorkDNaF->SetMarkerSize(1.4);
+	ThisWorkDNaF->SetMarkerSize(2);
 	
 	TGraphErrors * ThisWorkDAgl = new TGraphErrors;
         for(int i=0; i<nbinsAgl; i++) {
@@ -153,9 +195,9 @@ void OtherExperimentsComparison(string filename){
         ThisWorkDAgl->SetMarkerStyle(3);
         ThisWorkDAgl->SetMarkerColor(4);
         ThisWorkDAgl->SetLineColor(4);
-	ThisWorkDAgl->SetMarkerSize(1.4);
+	ThisWorkDAgl->SetMarkerSize(2);
 
-	TLegend * legD =new TLegend(0.4, 0.7,0.95,0.95);
+	TLegend * legD =new TLegend(0.8, 0.1,0.95,0.95);
         legD->AddEntry(ThisWorkDTOF,("This Work (" + mese + ") - TOF").c_str(), "ep");
 	legD->AddEntry(ThisWorkDNaF,("This Work (" + mese + ") - NaF").c_str(), "ep");
 	legD->AddEntry(ThisWorkDAgl,("This Work (" + mese + ") - Agl").c_str(), "ep");
@@ -165,8 +207,53 @@ void OtherExperimentsComparison(string filename){
 	ThisWorkDAgl->Draw("Psame");
 	for(uint n=0;n<D_Graphs.size();n++){
                 D_Graphs[n] ->Draw("Psame");
-                 legD->AddEntry(D_Graphs[n],D_Graphs[n]->GetTitle(),"ep");
+                D_Graphs[n]->SetMarkerSize(2); 
+		legD->AddEntry(D_Graphs[n],D_Graphs[n]->GetTitle(),"p");
         }
+	
+	
+	TGraph* galprop3P=new TGraph();
+        TGraph* galprop3P2=new TGraph();
+        x,y=0;
+        j=0;
+        {
+                string filename="./Galprop/Tom/deut_1500.dat";
+                cout<<filename<<endl;
+                ifstream fp(filename.c_str());
+                while (!fp.eof()){
+                        fp>>x>>y;
+                        if(x/1e3>0.05&&x/1e3<=100)
+                                galprop3P->SetPoint(j,x/1e3,y*1e7*pow(x/1e3,potenza));
+                        j++;
+                }
+        }
+
+        j=0;
+        {
+                string filename="./Galprop/Tom/deut_100.dat";
+                cout<<filename<<endl;
+                ifstream fp(filename.c_str());
+                while (!fp.eof()){
+                        fp>>x>>y;
+                        if(x/1e3>0.05&&x/1e3<=100)
+                                galprop3P2->SetPoint(j,x/1e3,y*1e7*pow(x/1e3,potenza));
+                        j++;
+                }
+        }
+
+        galprop3P->SetTitle("GALPROP (#Phi = 400-1500 MV)");
+
+	galprop3P->SetLineColor(4);
+	galprop3P2->SetLineColor(4);
+	galprop3P->SetLineWidth(4);
+        galprop3P2->SetLineWidth(4);
+	galprop3P->SetLineStyle(4);
+        galprop3P2->SetLineStyle(4);
+
+        galprop3P->Draw("sameC");
+        galprop3P2->Draw("sameC");
+
+	legD->AddEntry(galprop3P,galprop3P->GetTitle(),"l");
 	legD->Draw("same");
 
 
@@ -232,6 +319,9 @@ void OtherExperimentsComparison(string filename){
                 PD_Graphs[n] ->Draw("Psame");
                  legPD->AddEntry(PD_Graphs[n],PD_Graphs[n]->GetTitle(),"ep");
         }
+
+	
+
 
 	
 	legPD->Draw("same");

@@ -249,6 +249,7 @@ void DistanceCut_Plot(	TH1 * Sum_TOF,
         BadPrejLik_TOF ->GetXaxis()->SetTitle("cut value");
         BadPrejLik_TOF ->GetYaxis()->SetTitle("Bad P rejection");
         BadPrejLik_TOF ->Draw("APC");
+	BadPrej_TOF ->Draw("PCsame");
 
         c8->cd(2);
         gPad->SetLogx();
@@ -261,6 +262,8 @@ void DistanceCut_Plot(	TH1 * Sum_TOF,
         BadPrejLik_NaF  ->GetXaxis()->SetTitle("cut value");
         BadPrejLik_NaF  ->GetYaxis()->SetTitle("Bad P rejection");
         BadPrejLik_NaF  ->Draw("APC");
+	BadPrej_NaF ->Draw("PCsame");
+
 
         c8->cd(3);
         gPad->SetLogx();
@@ -273,6 +276,7 @@ void DistanceCut_Plot(	TH1 * Sum_TOF,
         BadPrejLik_Agl ->GetXaxis()->SetTitle("cut value");
         BadPrejLik_Agl ->GetYaxis()->SetTitle("Bad P rejection");
         BadPrejLik_Agl ->Draw("APC");
+	BadPrej_Agl ->Draw("PCsame");
 
 	finalPlots.Add(c1);
 	finalPlots.Add(c2);

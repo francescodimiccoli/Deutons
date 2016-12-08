@@ -36,3 +36,7 @@
 	TGraphErrors *D_FluxesAgl[40];
         TGraphErrors *D_FluxesratioAgl[40];	
 
+	TGraphErrors *PD_FluxesTOF[40];
+	TGraphErrors *PD_FluxesNaF[40];
+	TGraphErrors *PD_FluxesAgl[40];
+
