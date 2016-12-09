@@ -16,6 +16,7 @@ struct Variables
     float   PhiS;
 
     int     PhysBPatt;
+    int     JMembPatt;
     int     CUTMASK;
     int     RICHmask;
 
@@ -57,6 +58,7 @@ struct Variables
     float   qInner;
 
     // Monte-Carlo Data
+	float GenCharge;
 	float GenMomentum;
 	float GenMass;
     float GenX, GenY, GenZ;
@@ -89,10 +91,11 @@ void Variables::RegisterBranches(TTree * tree)
     tree->Branch("PhiS",&PhiS);
 
     tree->Branch("PhysBPatt",&PhysBPatt);
+    tree->Branch("JMembPatt",&JMembPatt);
     tree->Branch("CUTMASK",&CUTMASK);
     tree->Branch("RICHmask",&RICHmask);
 
-    tree->Branch("R;",&R);
+    tree->Branch("R",&R);
     tree->Branch("Rup",&Rup);
     tree->Branch("Rdown",&Rdown);
     tree->Branch("R_L1",&R_L1);
@@ -132,6 +135,7 @@ void Variables::RegisterBranches(TTree * tree)
     // Monte-Carlo Data
 	tree->Branch("GenMomentum",&GenMomentum);
 	tree->Branch("GenMass",&GenMass);
+	tree->Branch("GenCharge",&GenCharge);
     tree->Branch("GenX",&GenX); 
     tree->Branch("GenY",&GenY); 
     tree->Branch("GenZ",&GenZ);
@@ -153,6 +157,7 @@ void Variables::ResetVariables() {
     ThetaS   = 0;
     PhiS     = 0;
     
+    JMembPatt = 0;
     PhysBPatt = 0;
     CUTMASK   = 0;
     RICHmask  = 0;
@@ -196,6 +201,7 @@ void Variables::ResetVariables() {
     // Monte-Carlo Data
 	GenMomentum = -9999;
 	GenMass = 0;
+	GenCharge = -100;
     GenX  = 0; GenY  = 0; GenZ  = 0;
     GenPX = 0; GenPY = 0; GenPZ = 0;
 }

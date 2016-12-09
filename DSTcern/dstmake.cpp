@@ -153,6 +153,8 @@ int main(int argc, char * argv[])
             TofMCPar::MCtuneDT = -87.0;
             TofMCPar::MCtuneST =  10.0;	
             
+            vars->GenCharge   = mc->Charge;
+            vars->GenMass     = mc->Mass;
             vars->GenMomentum = mc->Momentum;
             vars->GenX = mc->Coo[0];  vars->GenPX = mc->Dir[0];;
             vars->GenY = mc->Coo[1];  vars->GenPY = mc->Dir[1];;
@@ -177,6 +179,7 @@ int main(int argc, char * argv[])
         if(!trig) continue;
 
         vars->PhysBPatt = trig->PhysBPatt;
+        vars->JMembPatt = trig->JMembPatt;
 
         if(ev->pRichRing(0) && richflag) {
             ev->pRichRing(0)->switchDynCalibration(); 
