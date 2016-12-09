@@ -103,11 +103,11 @@ void Acceptance(string filename){
         AcceptanceP -> Apply_DvsMCcorrection_NaF(FullsetP_Correction_NaF);
         AcceptanceP -> Apply_DvsMCcorrection_Agl(FullsetP_Correction_Agl);
 	
-	AcceptanceD -> Apply_DvsMCcorrection_R  (FullsetP_Correction_R);
-	AcceptanceD -> Apply_DvsMCcorrection_TOF(FullsetP_Correction_TOF);
-        AcceptanceD -> Apply_DvsMCcorrection_NaF(FullsetP_Correction_NaF);
-        AcceptanceD -> Apply_DvsMCcorrection_Agl(FullsetP_Correction_Agl);
-			
+/*	AcceptanceD -> Apply_DvsMCcorrection_R  (FullsetP_Correction_R,6);
+	AcceptanceD -> Apply_DvsMCcorrection_TOF(FullsetP_Correction_TOF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_NaF(FullsetP_Correction_NaF,6);
+        AcceptanceD -> Apply_DvsMCcorrection_Agl(FullsetP_Correction_Agl,6);
+*/		
 
 	//rich
 	AcceptanceP -> Apply_DvsMCcorrection_NaF(RICH_Correction_P_NaF);

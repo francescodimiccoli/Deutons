@@ -58,7 +58,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
 
    if(INDX!=READ) {
-      string nomefile=inputpath + "/Risultati/"+mese+"/RisultatiMC_"+frac+".root";
+      string nomefile=inputpath + "/Risultati/2012_09/RisultatiMC_"+frac+".root";
       fileMC =TFile::Open(nomefile.c_str());
       nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
       fileData =TFile::Open(nomefile.c_str(), "READ");
@@ -159,7 +159,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       MCUnbiaseff(filename);
       MCControlsamplecuteff(filename);
       MCQualeff(filename);
-      FluxFactorizationtest(filename);
+      //FluxFactorizationtest(filename);
       MCTrackeff(filename);
       AntiDCutOptimization(filename);	
       AntiDEfficiencies(filename);
@@ -174,8 +174,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       DATAQualeff(filename);
       DATARICHeff(filename);
       DATAEdepLAT(filename);
-      DeutonsTemplFits(filename,frac);
-      DeutonsTemplFits_Dist(filename,frac);	
+      if(frac=="tot") DeutonsTemplFits(filename,frac);
+      if(frac=="tot") DeutonsTemplFits_Dist(filename,frac);	
 
       CorrLAT(filename);
       DVSMCPreSeleff(filename);
@@ -186,8 +186,8 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
       Acceptance(filename);
       AntiDpredictions(filename);
       ProtonFlux(filename);
-      DeutonFlux(filename);
-      OtherExperimentsComparison(filename);
+      if(frac=="tot") DeutonFlux(filename);
+      if(frac=="tot") OtherExperimentsComparison(filename);
    }
 
 

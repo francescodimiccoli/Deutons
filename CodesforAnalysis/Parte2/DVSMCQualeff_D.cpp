@@ -8,7 +8,7 @@ DatavsMC * Lik_DvsMC_D  = new DatavsMC("Lik_DvsMC_D" ,11,1,6);
 
 void DVSMCQualeffD_D_Fill(int zona){
 
-	if(Tup.Beta<=0||Tup.R<=0||Tup.R<1.2*Tup.Rcutoff) return;
+	if(Tup.Beta<=0||Tup.R<=0||Tup.R<SF*Tup.Rcutoff) return;
         if(!trgpatt.IsPhysical()) return;
         if(!Herejcut) return;
 	if(!Betastrongcut) return;

@@ -129,7 +129,7 @@ int main(int argc, char * argv[])
 	PRB.Print();
 
 	string ARGV(argv[1]);
-	string indirizzo_in = "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/B800Q_new/sommaMC"+ARGV+ ".root";
+	string indirizzo_in = "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/B800Q_newChi5/sommaMC"+ARGV+ ".root";
 	TFile *file =TFile::Open(indirizzo_in.c_str());
 	TTree *geo_stuff = (TTree *)file->Get("parametri_geo");
 	string indirizzo_out="/storage/gpfs_ams/ams/users/fdimicco/Deutons/Risultati/"+calib+"/RisultatiMC_"+ARGV+".root";
@@ -137,7 +137,7 @@ int main(int argc, char * argv[])
 	TNtuple *grandezzequal = new TNtuple("grandezzequal","grandezzequal","Velocity:MC_type:R:NAnticluster:Clusterinutili:DiffR:fuoriX:layernonusati:Chisquare:Richtotused:RichPhEl:Cutmask:Momentogen:EdepTRD:IsCharge1");
 	TNtuple *grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
 	TNtuple * pre = new TNtuple("pre","distr for giov","R:Beta:EdepL1:EdepTOFU:EdepTrack:EdepTOFD:EdepECAL:MC_type:Momentogen:mcweight:BetaRICH_new:Cutmask:BetanS:BetaR");
-	TNtuple * trig = new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:Trig_Num:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:mcweight");
+	TNtuple * trig = new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:mcweight");
 	TNtuple * Q = new TNtuple("Q","Q","R:Beta:MC_type:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof:Momentogen");
 
 	BDTreader();
@@ -187,6 +187,8 @@ int main(int argc, char * argv[])
         geo_stuff->SetBranchAddress("qInner",&qInner);
         geo_stuff->SetBranchAddress("qUtof",&qUtof);
 	geo_stuff->SetBranchAddress("qLtof",&qLtof); 
+        geo_stuff->SetBranchAddress("R_L1",&R_L1);
+
 		
 	int giov=0;
 	int nprotoni=0;
@@ -278,7 +280,6 @@ int main(int argc, char * argv[])
 		Cutmask = Cutmask|(RICHmask_new<<11);
 
 		mcweight=reweighter.getWeight(fabs(Momento_gen));
-
 		EdepTrack=0;
 		EdepTOFU=((*Endep)[0]+(*Endep)[1])/2;
 		EdepTOFD=((*Endep)[2]+(*Endep)[3])/2;
@@ -316,7 +317,7 @@ int main(int argc, char * argv[])
 void Trigg (TTree *albero,int i,TNtuple *ntupla)
 {
 	albero->GetEvent(i);
-	ntupla->Fill(MC_type,Momento_gen,Ev_Num,Trig_Num,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,mcweight);
+	ntupla->Fill(MC_type,Momento_gen,Ev_Num,R_L1,R_pre,Beta_pre,Cutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,mcweight);
 
 }
 

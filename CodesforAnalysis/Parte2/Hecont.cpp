@@ -156,7 +156,7 @@ void HecutD_Fill() {
 	if(Tup.R<=1.3*Tup.Rcutoff) cout<<"ecco"<<endl;
 
 	bool HeL1sample = false;
-	if(Tup.EdepL1>0.015 && Tup.R>1.2*Tup.Rcutoff ) HeL1sample = true;
+	if(Tup.EdepL1>0.015 && Tup.R>SF*Tup.Rcutoff ) HeL1sample = true;
 
 
 

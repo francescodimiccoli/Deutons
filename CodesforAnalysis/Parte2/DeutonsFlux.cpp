@@ -47,25 +47,17 @@ void DeutonFlux(string filename) {
 
 	cout<<"*************** DEUTONS FLUXES CALCULATION *******************"<<endl;
 	
-	//Evaluation additional Fit Error
 	
-	TH1F * SystR  ;
-        TH1F * SystTOF;
-        TH1F * SystNaF;
-        TH1F * SystAgl;
+	TH1F * CountsR   ;
+        TH1F * CountsTOF ;
+        TH1F * CountsNaF ;
+        TH1F * CountsAgl ;
 	
-	if(D_Flux -> Counts_R  ) SystR   = (TH1F*) D_Flux -> Counts_R   ->Clone();
-	if(D_Flux -> Counts_TOF) SystTOF = (TH1F*) D_Flux -> Counts_TOF ->Clone();	
-	if(D_Flux -> Counts_NaF) SystNaF = (TH1F*) D_Flux -> Counts_NaF ->Clone();
-	if(D_Flux -> Counts_Agl) SystAgl = (TH1F*) D_Flux -> Counts_Agl ->Clone();
+	if(D_Flux -> Counts_R  ) CountsR   = (TH1F*) D_Flux -> Counts_R   ->Clone();
+	if(D_Flux -> Counts_TOF) CountsTOF = (TH1F*) D_Flux -> Counts_TOF ->Clone();	
+	if(D_Flux -> Counts_NaF) CountsNaF = (TH1F*) D_Flux -> Counts_NaF ->Clone();
+	if(D_Flux -> Counts_Agl) CountsAgl = (TH1F*) D_Flux -> Counts_Agl ->Clone();
 	
-	if(D_Flux -> Counts_R  )SystR   -> Add(	(TH1F*) D_Flux_Dist -> Counts_R  ->Clone()	,-1); 
-        if(D_Flux -> Counts_TOF)SystTOF -> Add(	(TH1F*) D_Flux_Dist -> Counts_TOF->Clone()	,-1);
-        if(D_Flux -> Counts_NaF)SystNaF -> Add(	(TH1F*) D_Flux_Dist -> Counts_NaF->Clone()	,-1);
-        if(D_Flux -> Counts_Agl)SystAgl -> Add(	(TH1F*) D_Flux_Dist -> Counts_Agl->Clone()	,-1);
-
-//	D_Flux      -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
-//	D_Flux_Dist -> Add_SystFitError(1,SystR,SystTOF,SystNaF,SystAgl);
 
 
 	//
@@ -239,6 +231,11 @@ void DeutonFlux(string filename) {
 			Corr_AcceptanceD_TOF,	
 			Corr_AcceptanceD_NaF,
 			Corr_AcceptanceD_Agl,
+			
+			CountsTOF,
+                        CountsNaF,
+                        CountsAgl,
+			
 			DStatTOF,
 			DStatNaF,
                         DStatAgl,

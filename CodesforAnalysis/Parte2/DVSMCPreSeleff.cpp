@@ -16,8 +16,7 @@ void Initialize_DVSMCpre(){
 void DVSMCPreSeleff_D_Fill(int zona){
 
 	//cuts
-	if(!trgpatt.IsPhysical()||Tup.R_pre<=0||Tup.R_pre<1.2*Tup.Rcutoff||!ProtonsMassWindow) return;
-	if(!((Tup.R_pre>Rcut[zona]&&zona<10)||(zona==10)))  return;
+	if(!trgpatt.IsPhysical()||Tup.R_pre<=0||Tup.R_pre<SF*Tup.Rcutoff||!ProtonsMassWindow) return;
 	if(!Herejcut) return;
 	//
 	int Kbin;

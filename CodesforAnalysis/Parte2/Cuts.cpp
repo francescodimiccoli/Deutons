@@ -50,7 +50,7 @@ void Cuts()
 
    //likelihood cut
    Likcut=false;
-   Likcut=Qualitycut(log(1-Tup.LDiscriminant),-1,-3,-3);
+   Likcut=Qualitycut(log(1-Tup.LDiscriminant),-1.2,-2.6,-3.2);
 
    //Distance cut protons
 

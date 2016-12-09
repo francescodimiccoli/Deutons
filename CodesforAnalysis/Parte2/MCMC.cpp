@@ -56,7 +56,7 @@ void MCMC_Fill()
 
 void MCMCDATA_Fill(){
 
-	if( Likcut && Distcut && Tup.R>1.2*Tup.Rcutoff)
+	if( Likcut && Distcut && Tup.R>SF*Tup.Rcutoff)
     {
 		MCMC_TOF->FillData( Tup.Beta, Tup.R );
         if(cmask.isFromNaF()) MCMC_NaF->FillData( Tup.BetaRICH, Tup.R );

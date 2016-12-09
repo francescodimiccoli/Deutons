@@ -233,7 +233,7 @@ int notpassed[10]= {0,1021,955,33,1007,799,959,799,187,187};
 float Velocity=0;
 int seconds=0;
 float qL1,qInner,qLtof,qUtof=0;
-
+double  R_L1=0;
 
 
 TMVA::Reader *reader;
@@ -372,7 +372,6 @@ bool Quality(TTree *albero,int i)
    IsCharge1=0;
    //if(fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta))<3||fabs(EdepTOFbeta->Eval(Beta)-EndepTOF)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta))<10) IsCharge1=1;
    if(qInner<1.5&&qUtof<1.5&&qLtof<1.5) IsCharge1=1;
-   cout<<E_depTRD<<endl;
    Velocity=0;
    Velocity=Beta;
    if((((int)Cutmask)>>11)==0||(((int)Cutmask)>>11)==512) Velocity=BetaRICH_new;

@@ -47,6 +47,15 @@ void DVSMCRICHeff_Plot (TH1 *  RICH_Correction_P_NaF,
 
 	RICHDVSMC_P_GraphNaF->Draw("AP4C");
 	RICHDVSMC_P_TH1FNaF->Draw("Psame");
+	{
+                TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                leg->AddEntry(RICHDVSMC_P_TH1FNaF,"Efficiency correction", "ep");
+                leg->AddEntry(RICHDVSMC_P_GraphNaF,"Param.", "l");
+                leg->SetLineWidth(2);
+                leg->Draw("same");
+        }
+
+
 
 
 	c20_bis->cd(2);
@@ -80,6 +89,13 @@ void DVSMCRICHeff_Plot (TH1 *  RICH_Correction_P_NaF,
 	RICHDVSMC_P_GraphAgl->Draw("AP4C");
 	RICHDVSMC_P_TH1FAgl->Draw("Psame");
 
+	{
+                TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
+                leg->AddEntry(RICHDVSMC_P_TH1FAgl,"Efficiency correction", "ep");
+                leg->AddEntry(RICHDVSMC_P_GraphAgl,"Param.", "l");
+                leg->SetLineWidth(2);
+                leg->Draw("same");
+        }
 
 
 

@@ -4,8 +4,8 @@
 void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
                          TH1 * ProtonsGeomagFlux ,
                          TH1 * P_pre_PrimaryFlux ,
-                         TH1 * P_sel_PrimaryFlux 
-
+                         TH1 * P_sel_PrimaryFlux ,
+			TH1F * Tempi
 	){
 
 
@@ -82,7 +82,7 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 	float x,y=0;
 	int j=0;
 	{
-		string nomefile="./Galprop/Trotta2011/Def/new_P200.txt";
+		string nomefile="./Galprop/Tom/prot_100.dat";
 		ifstream fp(nomefile.c_str());
 		while (!fp.eof()) {
 			fp>>x>>y;
@@ -94,7 +94,7 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 
 	j=0;
 	{
-		string nomefile="./Galprop/Trotta2011/Def/new_P1250.txt";
+		string nomefile="./Galprop/Tom/prot_1500.dat";
 		ifstream fp(nomefile.c_str());
 		while (!fp.eof()) {
 			fp>>x>>y;
@@ -157,6 +157,7 @@ void	ProtonFlux_Plot( TH1 * ProtonsPrimaryFlux,
 	finalPlots.writeObjsInFolder("P Fluxes");
 
 	finalPlots.Add(PFlux);
+	finalPlots.Add(Tempi);
 	finalPlots.writeObjsInFolder("Export/PFluxes");
 
 

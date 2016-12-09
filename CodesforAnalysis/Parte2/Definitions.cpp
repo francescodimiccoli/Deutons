@@ -14,7 +14,9 @@ extern const int nbinsToF=18;
 extern const int nbinsNaF=18;
 extern const int nbinsAgl=18;
 
+// Rigidity cutoff safety factor
 
+float SF = 1.4;
 
 TF1 *protons = new TF1("f1","pow((pow(x,2)/pow(0.938,2)/(1 + pow(x,2)/pow(0.938,2))),0.5)",0.1,100);
 TF1 *deutons = new TF1("f1","pow((pow(x,2)/pow(1.875,2)/(1 + pow(x,2)/pow(1.875,2))),0.5)",0.1,100);

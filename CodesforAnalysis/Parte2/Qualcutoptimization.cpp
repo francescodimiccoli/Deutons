@@ -56,42 +56,42 @@ void DistanceCut_Fill() {
 	if(Betastrongcut){
 		// Helium rej.
 		if(Massa_gen<1)	{
-			if(cmask.isOnlyFromToF()) Dist5D_PdistrP_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P,Tup.mcweight);
-			if(cmask.isFromNaF())	  Dist5D_PdistrP_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P,Tup.mcweight);
-			if(cmask.isFromAgl())  	  Dist5D_PdistrP_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P,Tup.mcweight);			
+			if(cmask.isOnlyFromToF()) Dist5D_PdistrP_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromNaF())	  Dist5D_PdistrP_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromAgl())  	  Dist5D_PdistrP_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);			
 		}
 		if(Massa_gen>1&&Massa_gen<2){
-			if(cmask.isOnlyFromToF()) Dist5D_PdistrD_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P,Tup.mcweight);
-			if(cmask.isFromNaF())	  Dist5D_PdistrD_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P,Tup.mcweight);
-			if(cmask.isFromAgl())  	  Dist5D_PdistrD_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P,Tup.mcweight);						
+			if(cmask.isOnlyFromToF()) Dist5D_PdistrD_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromNaF())	  Dist5D_PdistrD_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromAgl())  	  Dist5D_PdistrD_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);						
 		}
 		if(Massa_gen>3&&Massa_gen<4){
-			if(cmask.isOnlyFromToF()) Dist5D_PdistrHe_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P,Tup.mcweight);
-			if(cmask.isFromNaF())	  Dist5D_PdistrHe_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P,Tup.mcweight);
-			if(cmask.isFromAgl())  	  Dist5D_PdistrHe_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P,Tup.mcweight);                      
+			if(cmask.isOnlyFromToF()) Dist5D_PdistrHe_TOF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromNaF())	  Dist5D_PdistrHe_NaF -> Fill(Tup.Dist5D,Tup.Dist5D_P);
+			if(cmask.isFromAgl())  	  Dist5D_PdistrHe_Agl -> Fill(Tup.Dist5D,Tup.Dist5D_P);                      
 		}
 
 		//Qual. cuts optimization
 		if(cmask.isOnlyFromToF()) {
 			mass = (Tup.R/Tup.Beta)*pow(1-pow(Tup.Beta,2),0.5);
 			if(mass>1.87){
-				if(Massa_gen<1) 		DistvsLikTOF_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D,Tup.mcweight);
-				if(Massa_gen>1&&Massa_gen<2)	DistvsLikTOF_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D,Tup.mcweight);
+				if(Massa_gen<1) 		DistvsLikTOF_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+				if(Massa_gen>1&&Massa_gen<2)	DistvsLikTOF_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
 			}
 		}	
 		if(cmask.isFromNaF()){
                         mass = (Tup.R/Tup.BetaRICH)*pow(1-pow(Tup.BetaRICH,2),0.5);
                         if(mass>1.87){
-                                if(Massa_gen<1)                 DistvsLikNaF_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D,Tup.mcweight);
-                                if(Massa_gen>1&&Massa_gen<2)    DistvsLikNaF_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D,Tup.mcweight);
+                                if(Massa_gen<1)                 DistvsLikNaF_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+                                if(Massa_gen>1&&Massa_gen<2)    DistvsLikNaF_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
                         }
                 }       
 
 		if(cmask.isFromAgl()){
                         mass = (Tup.R/Tup.BetaRICH)*pow(1-pow(Tup.BetaRICH,2),0.5);
                         if(mass>1.87){
-                                if(Massa_gen<1)                 DistvsLikAgl_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D,Tup.mcweight);
-                                if(Massa_gen>1&&Massa_gen<2)    DistvsLikAgl_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D,Tup.mcweight);
+                                if(Massa_gen<1)                 DistvsLikAgl_P -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
+                                if(Massa_gen>1&&Massa_gen<2)    DistvsLikAgl_D -> Fill(-log(1-Tup.LDiscriminant),Tup.Dist5D);
                         }
                 }
 		
@@ -170,13 +170,22 @@ void DistanceCut(string filename){
         TH1F * Lik_goodD_Agl = ProjectionXtoTH1F(DistvsLikAgl_D , "Lik_goodD_Agl",0,DistvsLikAgl_D->GetNbinsY());
         TH1F * Lik_badP_Agl = ProjectionXtoTH1F(DistvsLikAgl_P ,  "Lik_badP_Agl ",0,DistvsLikAgl_P->GetNbinsY());
 
-	
+	/*
 	TH1F * Distance_goodD_TOF = ProjectionYtoTH1F(DistvsLikTOF_D , "Distance_goodD_TOF",40,DistvsLikTOF_D->GetNbinsX());
         TH1F * Distance_badP_TOF =  ProjectionYtoTH1F(DistvsLikTOF_P , "Distance_badP_TOF ",40,DistvsLikTOF_P->GetNbinsX());
         TH1F * Distance_goodD_NaF = ProjectionYtoTH1F(DistvsLikNaF_D , "Distance_goodD_NaF",55,DistvsLikNaF_D->GetNbinsX());
         TH1F * Distance_badP_NaF =  ProjectionYtoTH1F(DistvsLikNaF_P , "Distance_badP_NaF ",55,DistvsLikNaF_P->GetNbinsX());
         TH1F * Distance_goodD_Agl = ProjectionYtoTH1F(DistvsLikAgl_D , "Distance_goodD_Agl",55,DistvsLikAgl_D->GetNbinsX());
         TH1F * Distance_badP_Agl =  ProjectionYtoTH1F(DistvsLikAgl_P , "Distance_badP_Agl ",55,DistvsLikAgl_P->GetNbinsX());
+	*/
+	TH1F * Distance_goodD_TOF = ProjectionYtoTH1F(DistvsLikTOF_D , "Distance_goodD_TOF",0,DistvsLikTOF_D->GetNbinsX());
+        TH1F * Distance_badP_TOF =  ProjectionYtoTH1F(DistvsLikTOF_P , "Distance_badP_TOF ",0,DistvsLikTOF_P->GetNbinsX());
+        TH1F * Distance_goodD_NaF = ProjectionYtoTH1F(DistvsLikNaF_D , "Distance_goodD_NaF",0,DistvsLikNaF_D->GetNbinsX());
+        TH1F * Distance_badP_NaF =  ProjectionYtoTH1F(DistvsLikNaF_P , "Distance_badP_NaF ",0,DistvsLikNaF_P->GetNbinsX());
+        TH1F * Distance_goodD_Agl = ProjectionYtoTH1F(DistvsLikAgl_D , "Distance_goodD_Agl",0,DistvsLikAgl_D->GetNbinsX());
+        TH1F * Distance_badP_Agl =  ProjectionYtoTH1F(DistvsLikAgl_P , "Distance_badP_Agl ",0,DistvsLikAgl_P->GetNbinsX());
+
+
 
 
 
@@ -280,7 +289,7 @@ float Eval_CutEff(TH1 * Histo,float cut){
 			float Y = Histo -> GetYaxis() -> GetBinLowEdge(y);
 			if(X<cut||Y<cut) counts_passed_cut += Histo -> GetBinContent(x+1,y+1);
                 }
-	return counts_passed_cut/(float)Histo->GetEntries();
+	return counts_passed_cut/(float)Histo->Integral();
 }
 
 float Eval_Herej(TH1F *HistoHe,float cut){
@@ -331,7 +340,7 @@ TGraph * Plot_BadPrej(TH1F * HistoP,TH1F * HistoD,bool reverse){
 			float P_eff = HistoP ->Integral(0,x)/(float)HistoP -> GetEntries();
 			float opt = 0;
 			if(P_eff>0) opt = D_eff/pow(P_eff,0.5);
-			BadPrej -> SetPoint(point,cut,opt); 
+			BadPrej -> SetPoint(point,D_eff,1-P_eff); 
 			point++;
 		}
 	else
@@ -341,7 +350,7 @@ TGraph * Plot_BadPrej(TH1F * HistoP,TH1F * HistoD,bool reverse){
                         float P_eff = HistoP ->Integral(x,HistoP -> GetNbinsX())/(float)HistoP -> GetEntries();
                         float opt = 0;
                         if(P_eff>0) opt = D_eff/pow(P_eff,0.5);
-                        BadPrej -> SetPoint(point,cut,opt);
+                        BadPrej -> SetPoint(point,D_eff,1-P_eff);
                         point++;
                 }
 		

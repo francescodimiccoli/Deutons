@@ -72,27 +72,27 @@ void DeutonsDATA_Fill(int zona)
 
    mass = ((Tup.R/Tup.Beta)*pow((1-pow(Tup.Beta,2)),0.5));
    Kbin=ToFDB.GetBin(RUsed);
-   if(Tup.R>1.2*Tup.Rcutoff) FitTOF_Dbins -> DATA -> Fill(mass,Kbin);
+   if(Tup.R>SF*Tup.Rcutoff) FitTOF_Dbins -> DATA -> Fill(mass,Kbin);
    ((TH3*)FitTOFgeo_Dbins -> DATA) -> Fill(mass,Kbin,zona);
    Kbin=ToFPB.GetBin(RUsed);
-   if(Tup.R>1.2*Tup.Rcutoff) FitTOF_Pbins -> DATA -> Fill(mass,Kbin);
+   if(Tup.R>SF*Tup.Rcutoff) FitTOF_Pbins -> DATA -> Fill(mass,Kbin);
 
       if(cmask.isFromNaF()) {//NaF
          mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
          Kbin=NaFDB.GetBin(RUsed);
-	    if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Dbins -> DATA -> Fill(mass,Kbin);
+	    if(Tup.R>SF*Tup.Rcutoff) FitNaF_Dbins -> DATA -> Fill(mass,Kbin);
             ((TH3*)FitNaFgeo_Dbins -> DATA) -> Fill(mass,Kbin,zona);
       	 Kbin=NaFPB.GetBin(RUsed);    
-            if(Tup.R>1.2*Tup.Rcutoff) FitNaF_Pbins -> DATA -> Fill(mass,Kbin);
+            if(Tup.R>SF*Tup.Rcutoff) FitNaF_Pbins -> DATA -> Fill(mass,Kbin);
       }
 
       if(cmask.isFromAgl()) {//Agl
          mass = ((Tup.R/Tup.BetaRICH)*pow((1-pow(Tup.BetaRICH,2)),0.5));
          Kbin=AglDB.GetBin(RUsed); 
-	   if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Dbins -> DATA -> Fill(mass,Kbin);
+	   if(Tup.R>SF*Tup.Rcutoff) FitAgl_Dbins -> DATA -> Fill(mass,Kbin);
             ((TH3*)FitAglgeo_Dbins -> DATA) -> Fill(mass,Kbin,zona);
      	  Kbin=AglPB.GetBin(RUsed); 
-           if(Tup.R>1.2*Tup.Rcutoff) FitAgl_Pbins -> DATA -> Fill(mass,Kbin);
+           if(Tup.R>SF*Tup.Rcutoff) FitAgl_Pbins -> DATA -> Fill(mass,Kbin);
       }
    return;
 }
@@ -236,8 +236,8 @@ void DeutonsTemplFits(string filename, string frac)
 		   FitAgl_Dbins[i][j]->SetTolerance(0.1+0.2*j);
 
 		   FitTOF_Dbins[i][j]->SetFitRange(0.9+0.07*i,3);
-		   FitNaF_Dbins[i][j]->SetFitRange(0.8+0.1*i,3);
-		   FitAgl_Dbins[i][j]->SetFitRange(0.8+0.1*i,3);
+		   FitNaF_Dbins[i][j]->SetFitRange(0.9+0.1*i,3);
+		   FitAgl_Dbins[i][j]->SetFitRange(0.9+0.1*i,3);
 
 		   if(frac!="tot"){
 			   FitTOF_Dbins[i][j]         -> DisableFit(); 
@@ -276,20 +276,20 @@ void DeutonsTemplFits(string filename, string frac)
    FitTOFgeo_Dbins 	-> DisableFit();// 
    FitNaFgeo_Dbins 	-> DisableFit();// 
    FitAglgeo_Dbins 	-> DisableFit();// 
-
+/*
    FitTOF_Pbins 	-> DisableFit();// 
    FitNaF_Pbins 	-> DisableFit();// 
    FitAgl_Pbins 	-> DisableFit();// 
-
+*/
 
    /*FitTOFgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0025);
    FitNaFgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0015);
    FitAglgeo_Dbins 	     ->  SetFitConstraints(0.8,1,0.0001,0.2,0.0001,0.0005);
-
-   FitTOF_Pbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.02,0.00,0.0025);
-   FitNaF_Pbins 	 ->  SetFitConstraints(0.8,1,0.0001,0.02,0.00,0.0015);
-   FitAgl_Pbins 	->  SetFitConstraints(0.8,1,0.0001,0.02,0.00,0.0005);
-*/	
+   */
+   FitTOF_Pbins 	 ->  SetFitConstraints(ContaminationTOF,0.6,1,0.0001,0.05);
+   FitNaF_Pbins 	 ->  SetFitConstraints(ContaminationNaF,0.6,1,0.0001,0.05);
+   FitAgl_Pbins 	 ->  SetFitConstraints(ContaminationAgl,0.6,1,0.0001,0.05);
+	
    cout<<"** TOF **"<<endl;
    FitTOFgeo_Dbins -> TemplateFits();
    FitTOF_Pbins    -> TemplateFits();
