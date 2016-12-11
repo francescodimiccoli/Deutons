@@ -5,13 +5,13 @@ $n	=$inizio;
 chomp (@rootuple = `more eos_data.txt`);
 
 while($n<=$fine){
-        $jobs = `bjobs|wc -l`;
+	$jobs = `bjobs|wc -l`;
         $jobsrun = `bjobs|grep RUN|wc -l`;
-	if($jobs<=1){
-		for($m=0;$m<500;$m++){
+	while($jobs<500){
+        	$jobs = `bjobs|wc -l`;
+        	$jobsrun = `bjobs|grep RUN|wc -l`;
 		system("sh ../Launch/$rootuple[$n].sh");
 		$n++;
-		}
 	}
 	print "jobs launched: ".$n."\n";
 	print "tot jobs: ".$jobs." running: ".$jobsrun."\n";
