@@ -1,3 +1,4 @@
+#include <bitset>
 #include "TROOT.h"
 #include "TNtuple.h"
 #include <TSpline.h>
@@ -8,6 +9,7 @@
 void Controllodist (TTree *albero,int i,TNtuple *ntupla);
 void Controllodistd (TTree *albero,int i,TNtuple *ntupla);
 void Selez (TTree *albero,int i,TNtuple *ntupla);
+int hitbits;
 int giov=0;
 int nprotoni=0;
 int entriestot=0;
@@ -42,6 +44,7 @@ TH1F * selected_PHL[10];
 TH1F * selezioni_DHL[10];
 TH1F * selected_DHL[10];
 
+int GetUnusedLayers(){ return 7 - std::bitset<32>(hitbits & 0b1111111).count(); }
 
 float mcweight=1;
 
@@ -204,43 +207,34 @@ int main(int argc, char * argv[])
 
 	BDTreader();
 	if(check) {
-		geo_stuff->SetBranchAddress("U_time",&U_time);
-		geo_stuff->SetBranchAddress("Latitude",&Latitude);
-		geo_stuff->SetBranchAddress("zonageo",&zonageo);
-		geo_stuff->SetBranchAddress("Rcutoff",&Rcutoff);
-		geo_stuff->SetBranchAddress("Livetime",&Livetime);
-		geo_stuff->SetBranchAddress("PhysBPatt",&PhysBPatt);
-		geo_stuff->SetBranchAddress("Pres_Unbias",&Pres_Unbias);
-		geo_stuff->SetBranchAddress("Preselected",&Preselected);
-		geo_stuff->SetBranchAddress("R_pre",&R_pre);
-		geo_stuff->SetBranchAddress("Beta_pre",&Beta_pre);
-		geo_stuff->SetBranchAddress("CUTMASK",&CUTMASK);
-		geo_stuff->SetBranchAddress("trtrack_edep",&trtrack_edep);
-		geo_stuff->SetBranchAddress("trtot_edep",&trtot_edep);
-		geo_stuff->SetBranchAddress("Endep",&Endep);
-		geo_stuff->SetBranchAddress("BetaRICH_new",&BetaRICH_new);
-		geo_stuff->SetBranchAddress("RICHmask_new",&RICHmask_new);
-		geo_stuff->SetBranchAddress("EdepECAL",&EdepECAL);
-		geo_stuff->SetBranchAddress("layernonusati",&layernonusati);
-		geo_stuff->SetBranchAddress("NAnticluster",&NAnticluster);
-		geo_stuff->SetBranchAddress("NTofClusters",&NTofClusters);
-		geo_stuff->SetBranchAddress("NTofClustersusati",&NTofClustersusati);
-		geo_stuff->SetBranchAddress("Rup",&Rup);
-		geo_stuff->SetBranchAddress("Rdown",&Rdown);
-		geo_stuff->SetBranchAddress("R",&R);
-		geo_stuff->SetBranchAddress("chiq",&chiq);
-		geo_stuff->SetBranchAddress("R_",&R_);
-		geo_stuff->SetBranchAddress("Chisquare",&Chisquare);
-		geo_stuff->SetBranchAddress("ResiduiX",&ResiduiX);
-		geo_stuff->SetBranchAddress("ResiduiY",&ResiduiY);
-		geo_stuff->SetBranchAddress("Beta",&Beta);
-		geo_stuff->SetBranchAddress("BetaR",&BetaR);
-		geo_stuff->SetBranchAddress("NTrackHits",&NTrackHits);
-		geo_stuff->SetBranchAddress("zonageo",&zonageo);
-		geo_stuff->SetBranchAddress("Massa",&Massa);
-		geo_stuff->SetBranchAddress("Richtotused",&Richtotused);
-		geo_stuff->SetBranchAddress("RichPhEl",&RichPhEl);
-		geo_stuff->SetBranchAddress("R_L1",&R_L1);	
+		geo_stuff->SetBranchAddress("U_time",&U_time);                             // Check
+		geo_stuff->SetBranchAddress("Latitude",&Latitude);                         // Check
+		geo_stuff->SetBranchAddress("Rcutoff35",&Rcutoff);                         // Check
+		geo_stuff->SetBranchAddress("Livetime",&Livetime);                         // Check
+		geo_stuff->SetBranchAddress("PhysBPatt",&PhysBPatt);                       // Check
+		geo_stuff->SetBranchAddress("R",&R_pre);                                   // Check
+		geo_stuff->SetBranchAddress("BetaRaw",&Beta_pre);                          // Check
+		geo_stuff->SetBranchAddress("CUTMASK",&CUTMASK);                           // Check
+		geo_stuff->SetBranchAddress("trtrack_edep",&trtrack_edep);                 // Check
+		geo_stuff->SetBranchAddress("trtot_edep",&trtot_edep);                     // Check
+		geo_stuff->SetBranchAddress("TOFEndep",&Endep);                            // Check
+		geo_stuff->SetBranchAddress("BetaRICH",&BetaRICH_new);                     // Check
+		geo_stuff->SetBranchAddress("RICHmask",&RICHmask_new);                     // Check
+		geo_stuff->SetBranchAddress("EdepECAL",&EdepECAL);                         // Check
+		geo_stuff->SetBranchAddress("NAnticluster",&NAnticluster);                 // Check
+		geo_stuff->SetBranchAddress("NTofClusters",&NTofClusters);                 // Check
+		geo_stuff->SetBranchAddress("NTofClustersusati",&NTofClustersusati);       // Check
+		geo_stuff->SetBranchAddress("Rup",&Rup);                                   // Check
+		geo_stuff->SetBranchAddress("Rdown",&Rdown);                               // Check
+		geo_stuff->SetBranchAddress("R",&R);                                       // Check
+		geo_stuff->SetBranchAddress("Chisquare",&Chisquare);                       // Check
+		geo_stuff->SetBranchAddress("BetaHR",&Beta);                               // Check
+		geo_stuff->SetBranchAddress("BetaOld",&BetaR);                             // Check
+		geo_stuff->SetBranchAddress("NTrackHits",&NTrackHits);                     // Check 
+		geo_stuff->SetBranchAddress("Richtotused",&Richtotused);                   // Check
+		geo_stuff->SetBranchAddress("RichPhEl",&RichPhEl);                         // Check
+		geo_stuff->SetBranchAddress("R_L1",&R_L1);	                               // Check
+        geo_stuff->SetBranchAddress("hitbits",&hitbits);
 	}
 
 	giov=0;
@@ -258,6 +252,7 @@ int main(int argc, char * argv[])
 		if(!check) break;
 		if(i%1300==0) cout<<i/(float)events*100<<"%"<<endl;
 		geo_stuff->GetEvent(i);
+        layernonusati = GetUnusedLayers(); //count bits=1 in layermask
 		R_corr=R;
 		if(i==0) { tbeg=U_time; cout <<"Tempo Iniziale: "<<tbeg<<endl;}
 		if(i==events-1) {tend=U_time; cout <<"Tempo Finale: "<<tend<<endl;}
@@ -265,10 +260,9 @@ int main(int argc, char * argv[])
 		Particle_ID=0;
 
 		Cutmask=CUTMASK;
-		Cutmask=CUTMASK|(1<<10);
 		//Temp. rich bug fixing
-		if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH_new==-1) RICHmask_new=1;
-		Cutmask = Cutmask|(RICHmask_new<<11);
+		//if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH_new==-1) RICHmask_new=1;
+		Cutmask = Cutmask | (RICHmask_new<<11);
 		if(!(((Cutmask&187)==187))) continue;
 		entries++;
 		if (Quality(geo_stuff,i)) {
