@@ -10,39 +10,12 @@ void Controllodist (TTree *albero,int i,TNtuple *ntupla);
 void Controllodistd (TTree *albero,int i,TNtuple *ntupla);
 void Selez (TTree *albero,int i,TNtuple *ntupla);
 int hitbits;
-int giov=0;
-int nprotoni=0;
-int entriestot=0;
 int events=0;
 int INDX;
 float BetanS=0;
 float Encinp;
 float Encind;
 int PhysBPatt=0;
-float esposizionep[18]= {0};
-float esposizioned[18]= {0};
-float esposizionepgeo[18][11]= {{0}};
-float esposizionedgeo[18][11]= {{0}};
-float esposizionepNaF[18]= {0};
-float esposizionedNaF[18]= {0};
-float esposizionepgeoNaF[18][11]= {{0}};
-float esposizionedgeoNaF[18][11]= {{0}};
-float esposizionepAgl[18]= {0};
-float esposizionedAgl[18]= {0};
-float esposizionepgeoAgl[18][11]= {{0}};
-float esposizionedgeoAgl[18][11]= {{0}};
-string numero[11]= {"0","1","2","3","4","5","6","7","8","9","10"};
-float Rcut[11]= {18,18,16,14,12,10,8,6,4,2,1};
-TH2F * unbias = new TH2F("Unbias","Unbias",43,0,43,11,0,11);
-TH2F * UPreselected = new TH2F("Upreselected","Upreselected",43,0,43,11,0,11);
-TH1F * UnbiasHL = new TH1F("UnbiasHL","UnbiasHL",43,0,43);
-TH1F * UPreselectedHL = new TH1F("UpreselectedHL","Upreselected",43,0,43);
-TH2F * selezioni_P[10];
-TH2F * selected_P[10];
-TH1F * selezioni_PHL[10];
-TH1F * selected_PHL[10];
-TH1F * selezioni_DHL[10];
-TH1F * selected_DHL[10];
 
 int GetUnusedLayers(){ return 7 - std::bitset<32>(hitbits & 0b1111111).count(); }
 
@@ -54,8 +27,9 @@ int main(int argc, char * argv[])
 	if (argc<3) return 0;
 	string nome;
 	string tagli[10]= {"Trigger","3of4 TOF","TRD Segments","Rigidity exists","Chi^2 R","Matching TOF","Matching TRD","In TRD Accept.","1 Particle","1 Tr. Track"};
-	/////////// CALIBR.
-	int control=0;
+	
+	/////////// CALIBR. READING ..... //////////////////////////
+	int control=1;
 	string calib=argv[2];
 	string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/CodesforAnalysis/CALIBRAZIONI/"+calib+".root");
 	TFile *_file2 = TFile::Open(nomecal.c_str());
@@ -83,23 +57,6 @@ int main(int argc, char * argv[])
 	Corr_TOFD =  (TSpline3 *) _file2->Get("Fit Results/Splines/Corr_TOFD");
 	cout<<Rig<<" "<<beta<<" "<<betaNaF<<" "<<betaAgl<<" "<<eL1<<" "<<etofu<<" "<<etrack<<" "<<etofd<<" "<<EdepL1beta<<" "<<EdepTOFbeta<<" "<<EdepTrackbeta<<" "<<EdepTOFDbeta<<" "<<Corr_L1<<" "<<Corr_TOFU<<" "<<Corr_Track<<" "<<Corr_TOFD<<endl;
 
-	//////////////////////// DICHIARAZIONE IST. //////////////////////
-	for(int j=0; j<10; j++) {
-		nome="Selezioni"+tagli[j];
-		selezioni_P[j]=new TH2F(nome.c_str(),nome.c_str(),43,0,43,11,0,11);
-		nome="Selected"+tagli[j];
-		selected_P[j]=new TH2F(nome.c_str(),nome.c_str(),43,0,43,11,0,11);
-		nome="SelezioniHL"+tagli[j];
-		selezioni_PHL[j]=new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-		nome="SelectedHL"+tagli[j];
-		selected_PHL[j]=new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-		nome="SelezioniHL_D"+tagli[j];
-		selezioni_DHL[j]=new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-		nome="SelectedHL_D"+tagli[j];
-		selected_DHL[j]=new TH1F(nome.c_str(),nome.c_str(),43,0,43);
-		nome="SelezioniHL_MC"+tagli[j];
-	}
-	//////////////////////////////////////////////////////////////////
 	string Variables[9]= {"N. Anti-clusters","Unused TOF Clusters","|Rup-Rdown|:R","Unused Tracker layers","Tracker: Y Hits without X","Track Chi^2","|E.dep(lower TOF) - E.dep(upper TOF)|","|E.dep(layer 2)-E.dep(layer 1)|","|E. dep.(tot)-E.dep.(track)|"};
 	for(int u2=0; u2<9; u2++) {
 		nome="Splines/Spline: "+Variables[u2]+"_SGNL";
@@ -130,11 +87,9 @@ int main(int argc, char * argv[])
 	cout<<endl;
 	for(int qs=0; qs<9; qs++) cout<<SignalAgl[qs]<<" ";
 	cout<<endl;
-
+	///////////////////////////////////////////////////////////////////////////////
 
 	cout<<"Vuoi Ntuple? (1-Sì;2-No)"<<endl;
-	//cin>>scelta;
-	scelta=1;
 	cout<<"**************************** R BINS ***********************************"<<endl;
 	Particle proton(0.9382720813, 1, 1);
 	Binning PRB(proton);
@@ -233,49 +188,48 @@ int main(int argc, char * argv[])
 		geo_stuff->SetBranchAddress("NTrackHits",&NTrackHits);                     // Check 
 		geo_stuff->SetBranchAddress("Richtotused",&Richtotused);                   // Check
 		geo_stuff->SetBranchAddress("RichPhEl",&RichPhEl);                         // Check
-		geo_stuff->SetBranchAddress("R_L1",&R_L1);	                               // Check
-        geo_stuff->SetBranchAddress("hitbits",&hitbits);
+		geo_stuff->SetBranchAddress("R_L1",&R_L1);	                           // Check
+        	geo_stuff->SetBranchAddress("hitbits",&hitbits);
 	}
 
-	giov=0;
-	nprotoni=0;
 	if(check) events =geo_stuff->GetEntries();
 	INDX=atoi(argv[1]);
 	cout<<endl;
 	cout<<INDX<<endl;
 	cout<<endl;
 	cout<<"Eventi: "<<events<<endl;
-	int entries=0;
-	if(entries>entriestot) entries=entriestot;
 
+	//////////// MAIN LOOP (discriminants calculation) //////////////
 	for(int i=0; i<events; i++) {
 		if(!check) break;
+	
 		if(i%1300==0) cout<<i/(float)events*100<<"%"<<endl;
 		geo_stuff->GetEvent(i);
-        layernonusati = GetUnusedLayers(); //count bits=1 in layermask
 		R_corr=R;
 		if(i==0) { tbeg=U_time; cout <<"Tempo Iniziale: "<<tbeg<<endl;}
 		if(i==events-1) {tend=U_time; cout <<"Tempo Finale: "<<tend<<endl;}
 		for(int I=0; I<43; I++) if(R<bin[I+1]&&R>bin[I]) preselezionate[I][zonageo]++;
-		Particle_ID=0;
 
+		
+		layernonusati = GetUnusedLayers(); //count bits=1 in layermask
+			
 		Cutmask=CUTMASK;
-		//Temp. rich bug fixing
-		//if(((Cutmask>>11)==0||(Cutmask>>11)==512)&&BetaRICH_new==-1) RICHmask_new=1;
-		Cutmask = Cutmask | (RICHmask_new<<11);
+                Cutmask = Cutmask|(RICHmask_new<<11);
+
 		if(!(((Cutmask&187)==187))) continue;
-		entries++;
 		if (Quality(geo_stuff,i)) {
-			giov++;
-			if(scelta==1) aggiungiantupla(geo_stuff,i,pre);
+			aggiungiantupla(geo_stuff,i,pre);
 			if(control!=1) {
 				Protoni(geo_stuff,i);
-				if (Deutoni(geo_stuff,i)) if(scelta==1) Grandezzesepd(geo_stuff,i,grandezzesepd);
+				if (Deutoni(geo_stuff,i)) Grandezzesepd(geo_stuff,i,grandezzesepd);
 			}
 		}
-		if(scelta==1) Grandezzequal(geo_stuff,i,grandezzequal);
+		Grandezzequal(geo_stuff,i,grandezzequal);
 	}
-
+	///////////////////////////////////////////////////////////
+	
+	//////////// LIVE TIME LOOP  /////////////////////////////////
+	
 	cout<<"------Calcolo Live Time-----"<<endl;
 	zona=0;
 	for(int j=0; j<43; j++) for(int i=0; i<11; i++) tempobingeo[j][i]=0;
@@ -313,7 +267,6 @@ int main(int argc, char * argv[])
 
 
 		Cutmask=CUTMASK;
-		Cutmask=CUTMASK|(1<<10);
 		Cutmask = Cutmask|(RICHmask_new<<11);
 
 		EdepTrack=0;
@@ -322,7 +275,7 @@ int main(int argc, char * argv[])
 
 		for(int layer=1; layer<8; layer++) EdepTrack+=(*trtot_edep)[layer];
 		EdepTrack=EdepTrack/7;
-		if(scelta==1) Trigg(geo_stuff,z,trig);
+		Trigg(geo_stuff,z,trig);
 	}
 	/////////////////////////////////////////////////////
 
@@ -332,8 +285,8 @@ int main(int argc, char * argv[])
 	}
 
 
-	if(scelta==1) File->Write();
-	if(scelta==1) File->Close();
+	 File->Write();
+	 File->Close();
 
 	return 1;
 }

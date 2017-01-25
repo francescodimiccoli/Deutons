@@ -170,8 +170,6 @@ int main(int argc, char * argv[])
 	geo_stuff->SetBranchAddress("Rdown",&Rdown);
 	geo_stuff->SetBranchAddress("R",&R);
 	geo_stuff->SetBranchAddress("Chisquare",&Chisquare);
-	geo_stuff->SetBranchAddress("ResiduiX",&ResiduiX);
-	geo_stuff->SetBranchAddress("ResiduiY",&ResiduiY);
 	geo_stuff->SetBranchAddress("chiq",&chiq);
 	geo_stuff->SetBranchAddress("R_",&R_);
 	geo_stuff->SetBranchAddress("Beta",&Beta);
