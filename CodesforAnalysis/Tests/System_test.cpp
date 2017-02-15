@@ -63,22 +63,23 @@ void Do_TemplateFIT(TFit * Fit);
 
 int System_test(){
 
-	int STEPS=5;
+	int STEPS=7;
 	float DEF_SIGMA=0.07;
 	float SHIFT=0.04;
+	float BIN=7;
 
 	cout<<"************************ READING DATA ***************************"<<endl;
 
-	string inputfile = "/storage/gpfs_ams/ams/users/fdimicco/Deutons/InnerTrackerAnalysis/Histos/2011_09/2011_09_tot_P1.root";
+	string inputfile = "../../Histos/2011_09/2011_09_tot_P1.root";
 
 	TFile * input = TFile::Open(inputfile.c_str());
 	TH2F * TemplateP   =  (TH2F *)input->Get("FitTOF_Dbins_P");
 	TH3F * TemplateD   =  (TH3F *)input->Get("FitTOF_Dbins_D");
 	TH2F * DATA   =  (TH2F *)input->Get("FitTOF_Dbins_Data");	
 
-	TH1F * OriginalP = Extract_Bin(TemplateP, 6);
-	TH1F * OriginalD = Extract_Bin(TemplateD, 6);
-	TH1F * Data      = Extract_Bin(DATA, 6);
+	TH1F * OriginalP = Extract_Bin(TemplateP, BIN);
+	TH1F * OriginalD = Extract_Bin(TemplateD, BIN);
+	TH1F * Data      = Extract_Bin(DATA, BIN);
 	
 	cout<<"************************ DISTORTION TEST ***************************"<<endl;
 	
@@ -143,7 +144,7 @@ int System_test(){
 
 			Fits[i][j]->Templ_D->SetLineColor(4);
 			Fits[i][j]->Templ_D->SetLineWidth(4);
-			Fits[i][j]->Templ_D->SetTitle("DEUton MC Template");
+			Fits[i][j]->Templ_D->SetTitle("Deuton MC Template");
 			Fits[i][j]->Templ_D->GetXaxis()->SetTitle("Mass [GeV/nucl.]");
 			Fits[i][j]->Templ_D->Draw("hist,SAME");
 		}
@@ -169,19 +170,22 @@ int System_test(){
 	int goodfits=0;
 	for(int i=0; i<Collection.size(); i++)
                 for(int j=0; j<Collection[i].size(); j++){
-			Chisquare->SetBinContent(i+1,j+1,Fits[i][j]->Tfit->GetChisquare()/50);
-			if(Fits[i][j]->Tfit->GetChisquare()/50<200) {
-				dev+=pow((Fits[i][j]->Templ_D->Integral() - Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral()),2);
-				goodfits++;
+			if(Fits[i][j]->Tfit->GetChisquare()>0){	
+				Chisquare->SetBinContent(i+1,j+1,Fits[i][j]->Tfit->GetChisquare()/50.);
+				if(Fits[i][j]->Tfit->GetChisquare()/50<200) {
+					dev+=pow((Fits[i][j]->Templ_D->Integral() - Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral()),2);
+					goodfits++;
 				}
 			}
+			else Chisquare->SetBinContent(i+1,j+1,25000/50.);
+		}
 
 	dev/=goodfits;
         dev=pow(dev,0.5);
         dev/=Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral();
         cout<<"std dev: "<<dev<<endl;
 
-	TH1F * Error = new TH1F("Error","Error",STEPS*2,0.6*Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral(),1.4*Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral());
+	TH1F * Error = new TH1F("Error","Error",STEPS*STEPS,0.6*Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral(),1.4*Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral());
 
 	for(int i=0; i<Collection.size(); i++)
                 for(int j=0; j<Collection[i].size(); j++){
@@ -195,7 +199,7 @@ int System_test(){
 	gPad->SetTickx();
         gPad->SetTicky();
 
-	DCounts->SetTitle("Deuteron Count Deviation" );
+	DCounts->SetTitle(("Deuteron Count Deviation from "+to_string((int) Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral())).c_str() );
 	DCounts->GetXaxis()->SetTitle("#sigma deformation (%)");
 	DCounts->GetYaxis()->SetTitle("Peak shift (%)");
 	DCounts->GetZaxis()->SetRangeUser(0.9,1.2);
@@ -219,6 +223,10 @@ int System_test(){
 
 	Error->SetTitle(("Syst. error estimation: "+s_err+"%").c_str());
 	Error->GetXaxis()->SetTitle("Weighted counts");
+	Error->SetLineWidth(4);
+	Error->SetLineColor(2);
+	Error->SetFillColor(2);
+	Error->SetFillStyle(3001);
 	Error->Draw("hist");
 	
 
@@ -359,17 +367,17 @@ TH1F * Distort_Histo(TH1F * Original,float distort_factor, float shift_factor){
 std::vector< std::vector<TH1F *> > Multiple_Distortions(TH1F * Original,float distort_factor, float shift_factor, int steps){
 
 	std::vector<std::vector<TH1F *>> Collection;
-	gStyle->SetPalette(55);
+	gStyle->SetPalette(1);
 	float distort_step = 2*distort_factor/float(steps-1);
 	float shift_step = 2*shift_factor/float(steps-1);
 	int c=0;
-	int color_step = (gStyle->GetColorPalette(50)-gStyle->GetColorPalette(0))/steps/steps;
+	int color_step = (50)/steps/steps;
 	for(int i=0;i<steps;i++){
 		Collection.push_back(std::vector<TH1F *>());
 		for(int j=0;j<steps;j++){
 			TH1F * Distorted = Distort_Histo(Original,-distort_factor+i*distort_step,-shift_factor+j*shift_step);
 			
-			Distorted->SetLineColor(gStyle->GetColorPalette(0)+c);
+			Distorted->SetLineColor(gStyle->GetColorPalette(0+c));
 			string str1 = to_string ((-shift_factor+j*shift_step)*100);
 			string str2 = to_string ((-distort_factor+i*distort_step)*100);
 	  		str1.erase ( str1.find_last_not_of('0') + 1, std::string::npos );			
