@@ -9,6 +9,8 @@ my $dirname = dirname(abs_path(__FILE__));
 
 
 my $outputdir = $ARGV[0];
+
+
 if( !(-d $outputdir) ){ die "The folder $outputdir does not exist. Please create." }
 if( !(-w $outputdir) ){ die "Cannot write to $outputdir, please check your permissions."}
 
@@ -17,8 +19,8 @@ system("mkdir -p $outputdir/logs");
 system("mkdir -p $outputdir/err");
 system("mkdir -p $outputdir/Launch");
 
-system ("sh Create_eoslist.sh");
-chomp (@rootuple = `more eos_data.txt`);
+system ("sh Create_eoslist.sh ");
+chomp (@rootuple = `more eos.txt`);
 
 
 $num_rootuple = scalar(@rootuple);

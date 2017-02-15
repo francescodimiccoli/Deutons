@@ -202,7 +202,7 @@ int main(int argc, char * argv[])
 		if(OneParticle(ev))              vars->CUTMASK |= 1 << 7;
 		if(minimumbiasTRACKER(ev,5))     vars->CUTMASK |= 1 << 8;
 		if(goldenTRACKER(ev,0,5))        vars->CUTMASK |= 1 << 9;
-        if(ev->IsTrackPickingUpNoise())  vars->CUTMASK |= 1 << 10;
+        	if(ev->IsTrackPickingUpNoise())  vars->CUTMASK |= 1 << 10;
 
 
 
@@ -341,6 +341,7 @@ int main(int argc, char * argv[])
 		
 
 		/////////////////////////////// LIKELIHOOD VARIABLES //////////////////////////////////////////
+		// for next production: add the info about tracker hits being XY or only Y 
 		if(Tr) vars->hitbits = Tr->GetHitBits();
 		
 		vars->NAnticluster = ev->NAntiCluster();

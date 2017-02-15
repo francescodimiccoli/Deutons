@@ -162,33 +162,33 @@ int main(int argc, char * argv[])
 
 	BDTreader();
 	if(check) {
-		geo_stuff->SetBranchAddress("U_time",&U_time);                             // Check
-		geo_stuff->SetBranchAddress("Latitude",&Latitude);                         // Check
-		geo_stuff->SetBranchAddress("Rcutoff35",&Rcutoff);                         // Check
-		geo_stuff->SetBranchAddress("Livetime",&Livetime);                         // Check
-		geo_stuff->SetBranchAddress("PhysBPatt",&PhysBPatt);                       // Check
-		geo_stuff->SetBranchAddress("R",&R_pre);                                   // Check
-		geo_stuff->SetBranchAddress("BetaRaw",&Beta_pre);                          // Check
-		geo_stuff->SetBranchAddress("CUTMASK",&CUTMASK);                           // Check
-		geo_stuff->SetBranchAddress("trtrack_edep",&trtrack_edep);                 // Check
-		geo_stuff->SetBranchAddress("trtot_edep",&trtot_edep);                     // Check
-		geo_stuff->SetBranchAddress("TOFEndep",&Endep);                            // Check
-		geo_stuff->SetBranchAddress("BetaRICH",&BetaRICH_new);                     // Check
-		geo_stuff->SetBranchAddress("RICHmask",&RICHmask_new);                     // Check
-		geo_stuff->SetBranchAddress("EdepECAL",&EdepECAL);                         // Check
-		geo_stuff->SetBranchAddress("NAnticluster",&NAnticluster);                 // Check
-		geo_stuff->SetBranchAddress("NTofClusters",&NTofClusters);                 // Check
-		geo_stuff->SetBranchAddress("NTofClustersusati",&NTofClustersusati);       // Check
-		geo_stuff->SetBranchAddress("Rup",&Rup);                                   // Check
-		geo_stuff->SetBranchAddress("Rdown",&Rdown);                               // Check
-		geo_stuff->SetBranchAddress("R",&R);                                       // Check
-		geo_stuff->SetBranchAddress("Chisquare",&Chisquare);                       // Check
-		geo_stuff->SetBranchAddress("BetaHR",&Beta);                               // Check
-		geo_stuff->SetBranchAddress("BetaOld",&BetaR);                             // Check
-		geo_stuff->SetBranchAddress("NTrackHits",&NTrackHits);                     // Check 
-		geo_stuff->SetBranchAddress("Richtotused",&Richtotused);                   // Check
-		geo_stuff->SetBranchAddress("RichPhEl",&RichPhEl);                         // Check
-		geo_stuff->SetBranchAddress("R_L1",&R_L1);	                           // Check
+		geo_stuff->SetBranchAddress("U_time",&U_time);                             
+		geo_stuff->SetBranchAddress("Latitude",&Latitude);                         
+		geo_stuff->SetBranchAddress("Rcutoff35",&Rcutoff);                         
+		geo_stuff->SetBranchAddress("Livetime",&Livetime);                         
+		geo_stuff->SetBranchAddress("PhysBPatt",&PhysBPatt);                       
+		geo_stuff->SetBranchAddress("R",&R_pre);                                   
+		geo_stuff->SetBranchAddress("BetaRaw",&Beta_pre);                          
+		geo_stuff->SetBranchAddress("CUTMASK",&CUTMASK);                           
+		geo_stuff->SetBranchAddress("trtrack_edep",&trtrack_edep);                 
+		geo_stuff->SetBranchAddress("trtot_edep",&trtot_edep);                     
+		geo_stuff->SetBranchAddress("TOFEndep",&Endep);                           
+		geo_stuff->SetBranchAddress("BetaRICH",&BetaRICH_new);                    
+		geo_stuff->SetBranchAddress("RICHmask",&RICHmask_new);                     
+		geo_stuff->SetBranchAddress("EdepECAL",&EdepECAL);                         
+		geo_stuff->SetBranchAddress("NAnticluster",&NAnticluster);                
+		geo_stuff->SetBranchAddress("NTofClusters",&NTofClusters);                
+		geo_stuff->SetBranchAddress("NTofClustersusati",&NTofClustersusati);      
+		geo_stuff->SetBranchAddress("Rup",&Rup);                                   
+		geo_stuff->SetBranchAddress("Rdown",&Rdown);                               
+		geo_stuff->SetBranchAddress("R",&R);                                      
+		geo_stuff->SetBranchAddress("Chisquare",&Chisquare);                       
+		geo_stuff->SetBranchAddress("BetaHR",&Beta);                             
+		geo_stuff->SetBranchAddress("BetaOld",&BetaR);                             
+		geo_stuff->SetBranchAddress("NTrackHits",&NTrackHits);                      
+		geo_stuff->SetBranchAddress("Richtotused",&Richtotused);                   
+		geo_stuff->SetBranchAddress("RichPhEl",&RichPhEl);                         
+		geo_stuff->SetBranchAddress("R_L1",&R_L1);	                           
         	geo_stuff->SetBranchAddress("hitbits",&hitbits);
 	}
 

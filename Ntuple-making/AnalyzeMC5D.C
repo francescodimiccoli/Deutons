@@ -1,8 +1,8 @@
 #include "TROOT.h"
 #include "TNtuple.h"
 #include <TSpline.h>
-#include "Selections5D.h"
 #include "Commonglobals.cpp"
+#include "Selections5D.h"
 #include "reweight.h"
 #include "histUtils.h"
 #include "../include/binning.h"
@@ -347,14 +347,12 @@ void Qfill (TTree *albero,int i,TNtuple *ntupla)
 int AssignMC_type(float Massa_gen)
 {
 	int MC_type=0;
-	//protons MC
 	int cursor=0;
 	if(Massa_gen<1)	{
 		if(Massa_gen<0.93805) MC_type = MC_type|(1<<(cursor+0));
 		if(Massa_gen<0.939  ) MC_type = MC_type|(1<<(cursor+1));
 		MC_type = MC_type|(1<<(cursor+2));
 	}
-	//deutons MCs
 	cursor=8;
 	if(Massa_gen>1&&Massa_gen<2) {
 		MC_type = MC_type|(1<<(cursor+0));
@@ -362,7 +360,6 @@ int AssignMC_type(float Massa_gen)
 		int c_s_type=(int)(10000*Massa_gen-moffset + 2);
 		MC_type = MC_type|(1<<(cursor+c_s_type));
 	}
-	//Helium MC
 	cursor=16;
 	if(Massa_gen>3)	{
 		MC_type = MC_type|(1<<(cursor+0));
