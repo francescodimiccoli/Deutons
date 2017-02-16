@@ -86,8 +86,10 @@ int main(int argc, char * argv[])
 
 	
 	string INPUT(argv[2]);
+	string OUTPUT(argv[3]);
 	TFile *file =TFile::Open(INPUT.c_str());
 	TTree *tree = (TTree *)file->Get("parametri_geo");
+	TFile * File = new TFile(OUTPUT.c_str(), "RECREATE");
 	bool check=tree?true:false;
 	if(!check) {cout<<"Corrupted input file"<<endl;return 0;}
 	bool isMC = IsMC(tree);
@@ -102,13 +104,13 @@ int main(int argc, char * argv[])
 
 	 if(isMC) cout<<"It is a MC file"<<endl; 
 	 if(isMC){
-	 	grandezzesepd=new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:MC_type:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
-		trig=new TNtuple("trig","trig","MC_type:Momento_gen:Ev_Num:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:mcweight");
-		Q = new TNtuple("Q","Q","R:Beta:MC_type:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof:Momentogen");
+	 	grandezzesepd=new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Massa_gen:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
+		trig=new TNtuple("trig","trig","Massa_gen:Momento_gen:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:mcweight");
+		Q = new TNtuple("Q","Q","R:Beta:Massa_gen:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof:Momentogen");
 	 }
 	 else{
 		grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:PhysBPatt:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P");
-		trig=new TNtuple("trig","trig","Seconds:Latitude:Rcutoff:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:Livetime");
+		trig=new TNtuple("trig","trig","U_Time:Latitude:Rcutoff:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:Livetime");
 		Q = new TNtuple("Q","Q","R:Beta:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof"); 
 	}
 
@@ -119,7 +121,14 @@ int main(int argc, char * argv[])
 		tree->GetEvent(i);
 		vars->Update();
 		ProcessEvent(vars,isMC,reweighter);	
-	}	
+
+		vars->FillwithAnalysisVariables(grandezzesepd,isMC);
+		vars->FillwithRawVariables(trig,isMC);	
+		vars->FillwithChargeInfos(Q,isMC); 
+	}
+	File->Write();
+	File->Close();
+
 	return 0;
 }
 
@@ -134,7 +143,11 @@ void ProcessEvent(Variables *vars,bool isMC,Reweighter reweighter){
 			CalibrateEdep(vars);	
 		
 	}
-	Likelihood(vars);	
+	if(IsPreselected(vars)){
+		Likelihood(vars);
+		Eval_Distance(vars);
+		Eval_Distance(vars,false);	
+	}	
 	vars->PrintCurrentState();
 	return;		
 

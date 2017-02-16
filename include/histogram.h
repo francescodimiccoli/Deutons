@@ -16,6 +16,7 @@ public:
     std::vector<float> getEdges()   {return edges  ;}
     std::vector<float> getContent() {return content;}
 
+    inline Histogram(){};	
     inline Histogram(std::vector<float> edges);
     inline Histogram(std::vector<float> edges, std::vector<float> content);
     inline float at(float x) const;

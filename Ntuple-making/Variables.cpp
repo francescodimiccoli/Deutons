@@ -52,6 +52,9 @@ struct Variables{
 	void ReadBranches(TTree * tree);
 	void Update();
 	void PrintCurrentState();
+	void FillwithAnalysisVariables(TNtuple *grandezzesepd,bool isMC);
+	void FillwithRawVariables(TNtuple *trig,bool isMC);
+	void FillwithChargeInfos(TNtuple *Q,bool isMC);
 	
 };
 
@@ -106,7 +109,11 @@ void Variables::Update(){
    	EdepTOFD=((*Endep)[2]+(*Endep)[3])/2;
 	for(int layer=1; layer<8; layer++) EdepTrack+=(*trtrack_edep)[layer];
 	   EdepTrack=EdepTrack/7;
-
+	DistP=100;
+        DistD=100;
+        Likelihood=0;
+        joinCutmask=0;
+	mcweight=0;
 }
 
 void Variables::PrintCurrentState(){
@@ -164,3 +171,25 @@ void Variables::PrintCurrentState(){
         cout<<endl;
 
 }
+
+
+
+void Variables::FillwithAnalysisVariables(TNtuple *grandezzesepd,bool isMC){
+	if(isMC) grandezzesepd->Fill(R,Beta,(*trtrack_edep)[0],Massa_gen,joinCutmask,PhysBPatt,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,Likelihood,mcweight,DistD,DistP);
+	else	  grandezzesepd->Fill(R,Beta,(*trtrack_edep)[0],joinCutmask,Latitude,PhysBPatt,EdepTOFU,EdepTrack,EdepTOFD,Rcutoff,BetaRICH_new,Likelihood,DistD,DistP);
+	return;
+}
+
+void Variables::FillwithRawVariables(TNtuple *trig,bool isMC){
+	if(isMC) trig->Fill(Massa_gen,Momento_gen,R_L1,R,Beta_pre,joinCutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,mcweight);
+	else     trig->Fill(U_time,Latitude,Rcutoff,R_L1,R,Beta_pre,joinCutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,Livetime);
+	return;
+}
+               
+void Variables::FillwithChargeInfos(TNtuple *Q,bool isMC){
+	if(isMC) Q->Fill(R,Beta,Massa_gen,joinCutmask,BetaRICH_new,DistD,DistP,Likelihood,R,qL1,qInner,qUtof,qLtof,Momento_gen );
+	else     Q->Fill(R,Beta,joinCutmask,BetaRICH_new,DistD,DistP,Likelihood,R,qL1,qInner,qUtof,qLtof);
+	return;
+}
+
+

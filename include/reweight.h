@@ -5,6 +5,7 @@
 
 class Reweighter {
 public:
+    Reweighter(){ }	
     Reweighter(Histogram from, Histogram to);
     Histogram getFrom() const { return from; }
     Histogram getTo  () const { return to;   }
@@ -12,7 +13,6 @@ public:
 private:
     Histogram from, to;
 };
-
 
 Reweighter::Reweighter(Histogram f, Histogram t): from(f), to(t) {}
 
