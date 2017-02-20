@@ -2,7 +2,7 @@ int GetUnusedLayers(int hitbits){ return 7 - std::bitset<32>(hitbits & 0b1111111
 
 bool IsNaF(Variables * vars){ if(((vars->joinCutmask)>>11)==512) return true; else return false;}
 
-bool IsAgl(Variables * vars){ if(((vars->joinCutmask)>>11)==0) return true; else return false;}
+bool IsAgl(Variables * vars){ if(((vars->joinCutmask)>>11)==0 && vars->BetaRICH_new>0) return true; else return false;}
 
 bool IsPreselected(Variables * vars){if((vars->joinCutmask&187)==187) return true; else return false;  }
 
@@ -59,25 +59,24 @@ void Eval_Distance(Variables * vars,bool forprotons=true){
         float DistTOFD=0;
         float DistTrack=0;
         float DistTRD=0;
-        int DR1=0;
+        float Dist=0;
+	int DR1=0;
         int DR2=0;
 	float Dist1=1000000;
         float Dist2=1000000;
 	float step = 0.075;
 	float RG = vars->R;
-
 	for(int z=0; z<1e6; z++) {
 		if(forprotons) BT=protons->Eval(RGDT); else BT=deutons->Eval(RGDT);
 		distR=(RGDT-RG)/(pow(RGDT,2)*Rig->Eval(RGDT));
 		distB=(BT-vars->Beta)/(pow(BT,2)*beta->Eval(BT));
-		if(IsNaF) distB=(BT-vars->BetaRICH_new)/(pow(BT,2)*betaNaF->Eval(BT));
-		if(IsAgl) distB=(BT-vars->BetaRICH_new)/(pow(BT,2)*betaAgl->Eval(BT));
+		if(IsNaF(vars)) distB=(BT-vars->BetaRICH_new)/(pow(BT,2)*betaNaF->Eval(BT));
+		if(IsAgl(vars)) distB=(BT-vars->BetaRICH_new)/(pow(BT,2)*betaAgl->Eval(BT));
 		distETOFU=(EdepTOFbeta->Eval(BT)-vars->EdepTOFU)/(pow(EdepTOFbeta->Eval(BT),2)*etofu->Eval(BT));
 		distETrack=(EdepTrackbeta->Eval(BT)-vars->EdepTrack)/(pow(EdepTrackbeta->Eval(BT),2)*etrack->Eval(BT));
 		distETOFD=(EdepTOFbeta->Eval(BT)-vars->EdepTOFD)/(pow(EdepTOFbeta->Eval(BT),2)*etofd->Eval(BT));
 
-		float Dist=pow(pow(distR,2)+pow(distB,2)+pow(distETrack,2)+pow(distETOFU,2)+pow(distETOFD,2),0.5);
-
+		Dist=pow(pow(distR,2)+pow(distB,2)+pow(distETrack,2)+pow(distETOFU,2)+pow(distETOFD,2),0.5);
 
 		if(Dist<Dist1) {
 			DR1=0;
@@ -89,8 +88,8 @@ void Eval_Distance(Variables * vars,bool forprotons=true){
 			if(DR1>25) break;
 		}
 		else{
-			if(fabs(Dist-Dist2)<0.0001) DR2++;
-			if(DR2>4||DR1>3000) break;
+			if(fabs(Dist-Dist2)<0.001) DR2++;
+			if(DR2>4||DR1>300) break;
 		}
 		RGDT+=step;
 		Dist2=Dist;

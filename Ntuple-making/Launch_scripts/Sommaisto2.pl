@@ -37,6 +37,26 @@ for ($n=0;$n<100; $n++)
 	print OUT "\n";
 }
 
+
+
+
+for ($n=0;$n<100; $n++)
+{
+
+        open(OUT,">","/storage/gpfs_ams/ams/users/fdimicco/MAIN/SumScripts/SommaistoMC$n.sh");
+        print OUT  "#!/bin/bash
+
+                hadd -f /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$n.root ";
+
+        print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1MC/protons/sommaMC$n.root";
+	print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1MC/deuterons/sommaMC$n.root";
+	print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1MC/He/sommaMC$n.root";
+	print OUT "\n";
+}
+
+
+
+
 open(OUT,">","/storage/gpfs_ams/ams/users/fdimicco/MAIN/SumScripts/Sommaisto.sh");
 
 print OUT  "#!/bin/bash";

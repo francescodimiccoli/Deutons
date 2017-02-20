@@ -17,9 +17,10 @@ void CalibrateEdep(Variables *vars){
 
 
 void ProcessEvent(Variables *vars,bool isMC,Reweighter reweighter){
+	vars->RICHmask_new=(vars->RICHmask_new&1023);
 	vars->joinCutmask=vars->CUTMASK;
 	vars->joinCutmask=vars->CUTMASK|(1<<10);
-	vars->joinCutmask = vars->joinCutmask|(vars->RICHmask_new<<11);	
+	vars->joinCutmask = vars->joinCutmask|((vars->RICHmask_new)<<11);	
 	if(isMC){
 		vars->mcweight=reweighter.getWeight(fabs(vars->Momento_gen));
                         if(vars->Momento_gen<1) vars->mcweight=1;
@@ -31,7 +32,7 @@ void ProcessEvent(Variables *vars,bool isMC,Reweighter reweighter){
 		Eval_Distance(vars);
 		Eval_Distance(vars,false);	
 	}	
-//	vars->PrintCurrentState();
+	//vars->PrintCurrentState();
 	return;		
 
 }

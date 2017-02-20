@@ -38,6 +38,7 @@ void CalibrateEdep(Variables *vars);
 
 void ProcessEvent(Variables *vars,bool isMC,Reweighter reweighter);
 
+void UpdateProgressBar(int currentevent, int totalentries);
 
 int main(int argc, char * argv[])
 {
@@ -45,70 +46,32 @@ int main(int argc, char * argv[])
 	if(!ReadCalibration(month)) return 0;
 	if(!ReadPdfForLikelihood()) return 0;
 
-	cout<<"**************************** R BINS ***********************************"<<endl;
-        Particle proton(0.9382720813, 1, 1);
-        Binning PRB(proton);
-
-        PRB.setBinsFromRigidity(43, 0.5, 100);
-        PRB.Print();
-
-        cout<<"**************************** BETA BINS TOF***********************************"<<endl;
-
-        Particle deuton(1.8756129   , 1, 2);
-
-        Binning ToFDB(deuton);
-        Binning ToFPB(proton);
-
-        float ekmin=0.1, ekmax=1;
-        ToFDB.setBinsFromEkPerMass (18, ekmin, ekmax);
-        ToFPB.setBinsFromEkPerMass (18, ekmin, ekmax);
-        ToFDB.Print();
-
-        cout<<"**************************** BETA BINS NaF***********************************"<<endl;
-
-        Binning NaFDB(deuton);
-        Binning NaFPB(proton);
-
-        ekmin=0.666; ekmax=4.025;
-        NaFDB.setBinsFromEkPerMass (18, ekmin, ekmax);
-        NaFPB.setBinsFromEkPerMass (18, ekmin, ekmax);
-        NaFDB.Print();
-
-        cout<<"**************************** BETA BINS Agl***********************************"<<endl;
-
-        Binning AglDB(deuton);
-        Binning AglPB(proton);
-
-        ekmin=2.57; ekmax=9.01;
-        AglDB.setBinsFromEkPerMass (18, ekmin, ekmax);
-        AglPB.setBinsFromEkPerMass (18, ekmin, ekmax);
-        AglDB.Print();
-
-	
 	string INPUT(argv[2]);
 	string OUTPUT(argv[3]);
+
 	TFile *file =TFile::Open(INPUT.c_str());
 	TTree *tree = (TTree *)file->Get("parametri_geo");
 	TFile * File = new TFile(OUTPUT.c_str(), "RECREATE");
+
 	bool check=tree?true:false;
 	if(!check) {cout<<"Corrupted input file"<<endl;return 0;}
+
 	bool isMC = IsMC(tree);
 
+	Variables * vars = new Variables;
+	vars->ReadBranches(tree);
 
- 	Variables * vars = new Variables;
-      	 vars->ReadBranches(tree);
+	TNtuple * grandezzesepd;
+	TNtuple * trig;
+	TNtuple * Q;
 
-	 TNtuple * grandezzesepd;
-	 TNtuple * trig;
-	 TNtuple * Q;
-
-	 if(isMC) cout<<"It is a MC file"<<endl; 
-	 if(isMC){
-	 	grandezzesepd=new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Massa_gen:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
+	if(isMC) cout<<"It is a MC file"<<endl; 
+	if(isMC){
+		grandezzesepd=new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Massa_gen:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
 		trig=new TNtuple("trig","trig","Massa_gen:Momento_gen:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:mcweight");
 		Q = new TNtuple("Q","Q","R:Beta:Massa_gen:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof:Momentogen");
-	 }
-	 else{
+	}
+	else{
 		grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:PhysBPatt:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P");
 		trig=new TNtuple("trig","trig","U_Time:Latitude:Rcutoff:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:Livetime");
 		Q = new TNtuple("Q","Q","R:Beta:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof"); 
@@ -116,8 +79,9 @@ int main(int argc, char * argv[])
 
 	Reweighter reweighter;
 	if(isMC) reweighter=ReweightInitializer(); 	
-	
+
 	for(int i=0; i<tree->GetEntries(); i++){
+		UpdateProgressBar(i, tree->GetEntries());	
 		tree->GetEvent(i);
 		vars->Update();
 		ProcessEvent(vars,isMC,reweighter);	
@@ -133,4 +97,11 @@ int main(int argc, char * argv[])
 }
 
 
+void UpdateProgressBar(int currentevent, int totalentries)
+{
+	int newratio =(int)100*(currentevent/    (float)totalentries);
+	int oldratio =(int)100*((currentevent-1)/(float)totalentries);
+	if(newratio>oldratio)
+		cout<<'\r' << "Progress : "<< newratio+1 << " %"<< flush; //+1 pour finir a 100%
+}
 
