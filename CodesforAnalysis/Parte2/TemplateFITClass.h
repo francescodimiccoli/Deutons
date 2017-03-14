@@ -147,6 +147,6 @@ class TemplateFIT {
       TH1F * GetResult_He(int bin, int lat=0) {TH1F * res = (TH1F*)fits[lat][bin]->Templ_He ->Clone(); res -> Scale(fits[lat][bin]->wheightHe); return res;};
       TH1F * GetResult_Data(int bin,int lat=0) {return (TH1F*)fits[lat][bin] -> Data;};
       void DisableFit();
-      void TemplateFits(int mc_type=1);
+      void TemplateFits(int mc_type=0);
       void TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,int lat=0);
 };

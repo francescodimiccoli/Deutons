@@ -3,6 +3,7 @@ struct Variables{
 	int 	   U_time;
         float 	   Latitude;
         float 	   Rcutoff;
+	float 	   IGRFRcutoff;
         float      Livetime;
         int        PhysBPatt;
         float      R_pre;
@@ -62,42 +63,43 @@ struct Variables{
 
 void Variables::ReadBranches(TTree * tree){
 
-	 tree->SetBranchAddress("U_time"	,&U_time);
-         tree->SetBranchAddress("Latitude"	,&Latitude);
-         tree->SetBranchAddress("Rcutoff35"	,&Rcutoff);
-         tree->SetBranchAddress("Livetime"	,&Livetime);
-         tree->SetBranchAddress("PhysBPatt"	,&PhysBPatt);
-         tree->SetBranchAddress("R"		,&R_pre);
-         tree->SetBranchAddress("BetaRaw"	,&Beta_pre);
-         tree->SetBranchAddress("CUTMASK"	,&CUTMASK);
-         tree->SetBranchAddress("trtrack_edep"	,&trtrack_edep);
-         tree->SetBranchAddress("trtot_edep"	,&trtot_edep);
-         tree->SetBranchAddress("TOFEndep"	,&Endep);
-	 tree->SetBranchAddress("BetaRICH"	,&BetaRICH_new);
-	 tree->SetBranchAddress("RICHmask"	,&RICHmask_new);
-	 tree->SetBranchAddress("EnergyECAL"	,&EdepECAL);
-	 tree->SetBranchAddress("NAnticluster"	,&NAnticluster);
-	 tree->SetBranchAddress("NTofClusters"	,&NTofClusters);
+	 tree->SetBranchAddress("U_time"	 ,&U_time);
+         tree->SetBranchAddress("Latitude"	 ,&Latitude);
+         tree->SetBranchAddress("Rcutoff35"	 ,&IGRFRcutoff);
+	 tree->SetBranchAddress("StoermerRcutoff",&Rcutoff);
+         tree->SetBranchAddress("Livetime"	 ,&Livetime);
+         tree->SetBranchAddress("PhysBPatt"	 ,&PhysBPatt);
+         tree->SetBranchAddress("R"		 ,&R_pre);
+         tree->SetBranchAddress("BetaRaw"	 ,&Beta_pre);
+         tree->SetBranchAddress("CUTMASK"	 ,&CUTMASK);
+         tree->SetBranchAddress("trtrack_edep"	 ,&trtrack_edep);
+         tree->SetBranchAddress("trtot_edep"	 ,&trtot_edep);
+         tree->SetBranchAddress("TOFEndep"	 ,&Endep);
+	 tree->SetBranchAddress("BetaRICH"	 ,&BetaRICH_new);
+	 tree->SetBranchAddress("RICHmask"	 ,&RICHmask_new);
+	 tree->SetBranchAddress("EnergyECAL"	 ,&EdepECAL);
+	 tree->SetBranchAddress("NAnticluster"	 ,&NAnticluster);
+	 tree->SetBranchAddress("NTofClusters"	 ,&NTofClusters);
 	 tree->SetBranchAddress("NTofClustersusati",&NTofClustersusati);
-	 tree->SetBranchAddress("Rup"		,&Rup);
-	 tree->SetBranchAddress("Rdown"		,&Rdown);
-	 tree->SetBranchAddress("R"		,&R);
-	 tree->SetBranchAddress("Chisquare"	,&Chisquare);
-	 tree->SetBranchAddress("BetaHR"	,&Beta);
-	 tree->SetBranchAddress("BetaOld"	,&BetaR);
-	 tree->SetBranchAddress("NTrackHits"	,&NTrackHits );                  
-	 tree->SetBranchAddress("Richtotused"	,&Richtotused );  
-	 tree->SetBranchAddress("RichPhEl"	,&RichPhEl);  
-	 tree->SetBranchAddress("R_L1"		,&R_L1);  
-	 tree->SetBranchAddress("hitbits"	,&hitbits);  
-	 tree->SetBranchAddress("qL1"		,&qL1);  
-	 tree->SetBranchAddress("qInner"	,&qInner);  
-	 tree->SetBranchAddress("qUtof"		,&qUtof);  
-	 tree->SetBranchAddress("qLtof"		,&qLtof);  
+	 tree->SetBranchAddress("Rup"		 ,&Rup);
+	 tree->SetBranchAddress("Rdown"		 ,&Rdown);
+	 tree->SetBranchAddress("R"		 ,&R);
+	 tree->SetBranchAddress("Chisquare"	 ,&Chisquare);
+	 tree->SetBranchAddress("BetaHR"	 ,&Beta);
+	 tree->SetBranchAddress("BetaOld"	 ,&BetaR);
+	 tree->SetBranchAddress("NTrackHits"	 ,&NTrackHits );                  
+	 tree->SetBranchAddress("Richtotused"	 ,&Richtotused );  
+	 tree->SetBranchAddress("RichPhEl"	 ,&RichPhEl);  
+	 tree->SetBranchAddress("R_L1"		 ,&R_L1);  
+	 tree->SetBranchAddress("hitbits"	 ,&hitbits);  
+	 tree->SetBranchAddress("qL1"		 ,&qL1);  
+	 tree->SetBranchAddress("qInner"	 ,&qInner);  
+	 tree->SetBranchAddress("qUtof"		 ,&qUtof);  
+	 tree->SetBranchAddress("qLtof"		 ,&qLtof);  
                                                       
 	                                              
-	 tree->SetBranchAddress("GenMomentum"	,&Momento_gen);  
-	 tree->SetBranchAddress("GenMass"	,&Massa_gen);  		
+	 tree->SetBranchAddress("GenMomentum"	 ,&Momento_gen);  
+	 tree->SetBranchAddress("GenMass"	 ,&Massa_gen);  		
 
 
 }
@@ -114,6 +116,7 @@ void Variables::Update(){
         Likelihood=0;
         joinCutmask=0;
 	mcweight=0;
+	U_time-=1305200000; //time offset (in order to have small time stamp)	
 }
 
 void Variables::PrintCurrentState(){
@@ -181,8 +184,8 @@ void Variables::FillwithAnalysisVariables(TNtuple *grandezzesepd,bool isMC){
 }
 
 void Variables::FillwithRawVariables(TNtuple *trig,bool isMC){
-	if(isMC) trig->Fill(Massa_gen,Momento_gen,R_L1,R,Beta_pre,joinCutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,mcweight);
-	else     trig->Fill(U_time,Latitude,Rcutoff,R_L1,R,Beta_pre,joinCutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,EdepECAL,PhysBPatt,Livetime);
+	if(isMC) trig->Fill(Massa_gen,Momento_gen,R_L1,R,Beta_pre,joinCutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,U_time-Timebeg,PhysBPatt,mcweight);
+	else     trig->Fill(U_time,Latitude,Rcutoff,R_L1,R,Beta_pre,joinCutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,U_time-Timebeg,PhysBPatt,Livetime);
 	return;
 }
                

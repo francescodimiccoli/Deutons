@@ -11,6 +11,7 @@ struct Variables
     float   Zenith;
     float   Rcutoff35;
     float   Rcutoff40;
+    float   StoermerRcutoff;
     float   Livetime;
     float   ThetaS;
     float   PhiS;
@@ -86,6 +87,8 @@ void Variables::RegisterBranches(TTree * tree)
     tree->Branch("Latitude",&Latitude);
     tree->Branch("Rcutoff35",&Rcutoff35);
     tree->Branch("Rcutoff40",&Rcutoff40);
+    tree->Branch("StoermerRcutoff",&StoermerRcutoff);
+    
     tree->Branch("Livetime",&Livetime);
     tree->Branch("ThetaS",&ThetaS);
     tree->Branch("PhiS",&PhiS);

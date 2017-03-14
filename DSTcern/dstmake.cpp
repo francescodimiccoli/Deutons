@@ -171,6 +171,16 @@ int main(int argc, char * argv[])
             vars->Rcutoff35 = rti.cfi[2][1];
             vars->Rcutoff40 = rti.cfi[3][1];
         }
+	if(ev->pParticle(0)){
+                        double dirTheta_ams= ev->pParticle(0)->Theta;
+                        double dirPhi_ams= ev->pParticle(0)->Phi;
+                        AMSDir amsdir(dirTheta_ams, dirPhi_ams);
+                        double cutoff =0;
+                        int momOrR = 1; //==0 GeV/c  ; ==1 GV
+                        int positive = 1; //==0 particle.mon == 1 (+) , == 2 (-)
+                        int ss = ev->pParticle(0)->GetStoermerCutoff(cutoff,momOrR,positive ,amsdir);
+                        vars->StoermerRcutoff=cutoff;
+         }
 		//////////////////////////////////////////////////////////////////////////////////		
 
 

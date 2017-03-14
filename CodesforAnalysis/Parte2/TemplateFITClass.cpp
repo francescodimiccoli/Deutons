@@ -81,7 +81,7 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit,int bin,int lat)
       Fit -> Tfit = 0;
       Fit -> Tfit_outcome = 1;
    } else {
-      if(Fit -> Data -> Integral() > 500) {
+      if(Fit -> Data -> Integral() > 5000) {
          Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
 	
 	 Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(minrange), Fit -> Data -> FindBin(maxrange));
@@ -274,5 +274,14 @@ void TemplateFIT::TemplateFitPlot(TVirtualPad * c, std::string var_name,int bin,
          Data->Draw("epsame");
       }
    }
+   if(!TemplateFITenabled) {
+         PMC ->Draw();
+         DMC ->Draw("same");
+         HeMC->Draw("same");
+         Data->Draw("epsame");
+      }
+
+
+   
    return;
 }

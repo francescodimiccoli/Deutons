@@ -68,12 +68,12 @@ int main(int argc, char * argv[])
 	if(isMC) cout<<"It is a MC file"<<endl; 
 	if(isMC){
 		grandezzesepd=new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Massa_gen:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
-		trig=new TNtuple("trig","trig","Massa_gen:Momento_gen:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:mcweight");
+		trig=new TNtuple("trig","trig","Massa_gen:Momento_gen:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:Second:PhysBPatt:mcweight");
 		Q = new TNtuple("Q","Q","R:Beta:Massa_gen:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof:Momentogen");
 	}
 	else{
-		grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:PhysBPatt:EdepTOFU:EdepTrack:EdepTOFD:Rcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P");
-		trig=new TNtuple("trig","trig","U_Time:Latitude:Rcutoff:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:EdepECAL:PhysBPatt:Livetime");
+		grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:PhysBPatt:EdepTOFU:EdepTrack:EdepTOFD:IGRFRcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P:Rcutoff");
+		trig=new TNtuple("trig","trig","U_Time:Latitude:Rcutoff:IGRFRcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:Second:PhysBPatt:Livetime");
 		Q = new TNtuple("Q","Q","R:Beta:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof"); 
 	}
 
@@ -84,6 +84,9 @@ int main(int argc, char * argv[])
 		UpdateProgressBar(i, tree->GetEntries());	
 		tree->GetEvent(i);
 		vars->Update();
+		
+		if(i==0) Timebeg = vars->U_time;	
+		
 		ProcessEvent(vars,isMC,reweighter);	
 
 		vars->FillwithAnalysisVariables(grandezzesepd,isMC);

@@ -58,9 +58,9 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
 
    if(INDX!=READ) {
-      string nomefile=inputpath + "/Risultati/2012_09/RisultatiMC_"+frac+".root";
+      string nomefile=inputpath + "/Risultati/2012_05/NtupleMC"+frac+".root";
       fileMC =TFile::Open(nomefile.c_str());
-      nomefile=inputpath+"/Risultati/"+mese+"/RisultatiDATI_"+frac+".root";
+      nomefile=inputpath+"/Risultati/"+mese+"/NtupleData"+frac+".root";
       fileData =TFile::Open(nomefile.c_str(), "READ");
       ntupMCSepD=(TNtuple*)fileMC->Get("grandezzesepd");
       ntupMCTrig=(TNtuple*)fileMC->Get("trig");
@@ -92,7 +92,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 
    }
    if(INDX==BUILDALL||INDX==BUILDSEPD) {
-      LoopOnDataSepD(ntupDataSepD);
+       LoopOnDataSepD(ntupDataSepD);
    }
 
    cout<<endl<<"************************ SAVING DATA ************************"<<endl;
@@ -105,6 +105,7 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
 	
   
       ExposureTime_Write();	  
+      //Orbit_Write();
       DATAQualeff_Write();
       DATARICHeff_Write();
       DATApreSeleff_Write();
@@ -152,14 +153,14 @@ void FillIstogramAndDoAnalysis(mode INDX,string frac,string mese, string outputp
    if(INDX==READ) {
       if(frac=="tot") Hecut(filename);
       SlidesforPlot(filename);
-      DistanceCut(filename);
-      Correlazione_Preselezioni(filename);
+      //Orbit(filename);	
+//    DistanceCut(filename);
 
       MCpreeff(filename);
       MCUnbiaseff(filename);
       MCControlsamplecuteff(filename);
       MCQualeff(filename);
-      //FluxFactorizationtest(filename);
+      FluxFactorizationtest(filename);
       MCTrackeff(filename);
       AntiDCutOptimization(filename);	
       AntiDEfficiencies(filename);
@@ -207,7 +208,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCTrig->SetBranchAddress("R_pre",&Tup.R_pre);
    ntupMCTrig->SetBranchAddress("Beta_pre",&Tup.Beta_pre);
    ntupMCTrig->SetBranchAddress("Cutmask",&Tup.Cutmask);
-   ntupMCTrig->SetBranchAddress("MC_type",&Tup.MC_type);
+   ntupMCTrig->SetBranchAddress("Massa_gen",&Tup.Massa_gen);
    ntupMCTrig->SetBranchAddress("EdepL1",&Tup.EdepL1);
    ntupMCTrig->SetBranchAddress("EdepTOFU",&Tup.EdepTOFU);
    ntupMCTrig->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
@@ -227,7 +228,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCSepD->SetBranchAddress("EdepTOF",&Tup.EdepTOFU);
    ntupMCSepD->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
    ntupMCSepD->SetBranchAddress("EdepTOFD",&Tup.EdepTOFD);
-   ntupMCSepD->SetBranchAddress("MC_type",&Tup.MC_type);
+   ntupMCSepD->SetBranchAddress("Massa_gen",&Tup.Massa_gen);
    ntupMCSepD->SetBranchAddress("LDiscriminant",&Tup.LDiscriminant);
    ntupMCSepD->SetBranchAddress("BDT_response",&Tup.BDT_response);
    ntupMCSepD->SetBranchAddress("Cutmask",&Tup.Cutmask);
@@ -238,7 +239,7 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupMCQcheck->SetBranchAddress("Momentogen",&Tup.Momento_gen); 	
    ntupMCQcheck->SetBranchAddress("R",&Tup.R);
    ntupMCQcheck->SetBranchAddress("Beta",&Tup.Beta);	  	
-   ntupMCQcheck->SetBranchAddress("MC_type",&Tup.MC_type);
+   ntupMCQcheck->SetBranchAddress("Massa_gen",&Tup.Massa_gen);
    ntupMCQcheck->SetBranchAddress("Cutmask",&Tup.Cutmask);	
    ntupMCQcheck->SetBranchAddress("BetaRICH_new",&Tup.BetaRICH);
    ntupMCQcheck->SetBranchAddress("Dist5D",&Tup.Dist5D);
@@ -262,7 +263,8 @@ void SetRisultatiBranchAddresses(TNtuple* ntupMCSepD, TNtuple* ntupMCTrig, TNtup
    ntupDataTrig->SetBranchAddress("EdepTrack",&Tup.EdepTrack);
    ntupDataTrig->SetBranchAddress("BetaRICH",&Tup.BetaRICH);
    ntupDataTrig->SetBranchAddress("PhysBPatt",&Tup.PhysBPatt);
-   ntupDataTrig->SetBranchAddress("Seconds",&Tup.U_time);	
+   ntupDataTrig->SetBranchAddress("U_Time",&Tup.U_time);	
+   ntupDataTrig->SetBranchAddress("Second",&Tup.Seconds);
    ntupDataTrig->SetBranchAddress("Livetime",&Tup.Livetime);	
 
 
@@ -295,19 +297,18 @@ void LoopOnMCTrig(TNtuple*  ntupMCTrig)
    for(int i=0; i<ntupMCTrig->GetEntries(); i++) {
       ntupMCTrig->GetEvent(i);	
       LowEnergyWeight();	
-      cmask.setMask(Tup.Cutmask);
+      cmask.setMask(Tup.Cutmask,Tup.BetaRICH);
       trgpatt.SetTriggPatt(Tup.PhysBPatt); 
       Cuts_Pre();
       Massa_gen = ReturnMass_Gen();
       RUsed=Tup.R_pre;
       UpdateProgressBar(i, nentries);
-      //Disable_MCreweighting();
+      Disable_MCreweighting();
 
       MCpreseff_Fill();
       MCUnbiaseff_Fill();
       MCTrackeff_Fill();
       MigrationMatrix_Fill();
-      Correlazione_Preselezioni();
       FluxFactorizationtest_Pre_Fill();
       DVSMCTrackeff_Fill();
       DVSMCPreSeleff_Fill();
@@ -326,14 +327,14 @@ void LoopOnMCSepD(TNtuple* ntupMCSepD)
       ntupMCSepD->GetEvent(i);
       LowEnergyWeight();
       if(Tup.Beta<=0 || Tup.R<=0) continue;
-      cmask.setMask(Tup.Cutmask);
+      cmask.setMask(Tup.Cutmask,Tup.BetaRICH);
       trgpatt.SetTriggPatt(Tup.PhysBPatt);
       if(!cmask.isPreselected()) continue;
       Massa_gen = ReturnMass_Gen();
       UpdateProgressBar(i, nentries);
       Cuts();
       RUsed=Tup.R;
-      //Disable_MCreweighting();
+      Disable_MCreweighting();
 
       HecutMC_Fill();
       SlidesforPlot_Fill();
@@ -364,7 +365,7 @@ void LoopOnMCQcheck(TNtuple* ntupMCQcheck){
 	ntupMCQcheck->GetEvent(i);
 	LowEnergyWeight();
 	if(Tup.Beta<=0 || Tup.R<=0) continue;
-	cmask.setMask(Tup.Cutmask);
+	cmask.setMask(Tup.Cutmask,Tup.BetaRICH);
         trgpatt.SetTriggPatt(Tup.PhysBPatt);
         if(!cmask.isPreselected()) continue;
         Massa_gen = ReturnMass_Gen();
@@ -388,7 +389,7 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 	int nentries=ntupDataTrig->GetEntries();
 	for(int i=0; i<ntupDataTrig->GetEntries(); i++) {
 		ntupDataTrig->GetEvent(i);
-		cmask.setMask(Tup.Cutmask);
+		cmask.setMask(Tup.Cutmask,Tup.BetaRICH);
 		trgpatt.SetTriggPatt(Tup.PhysBPatt);
 		Cuts_Pre();
 		RUsed=Tup.R_pre;
@@ -401,13 +402,11 @@ void LoopOnDataTrig(TNtuple* ntupDataTrig)
 
 		float Zona=getGeoZone(Tup.Latitude);	     
 		ExposureTime_Fill(Zona);
-
-		if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
+		//Orbit_Fill();
                 if(Tup.Beta_pre<=0) continue;
 
-
-		DATApreSeleff_Fill(Zona);
 		DVSMCTrackeff_D_Fill(); // < Check if needs the ones before
+		DATApreSeleff_Fill(Zona);
 		DVSMCPreSeleff_D_Fill(Zona);
 	}
 	cout << endl;
@@ -422,14 +421,15 @@ void LoopOnDataSepD(TNtuple* ntupDataSepD)
    int nentries=ntupDataSepD->GetEntries();
    for(int i=0; i<nentries; i++) {
       ntupDataSepD->GetEvent(i);
-      cmask.setMask(Tup.Cutmask);
+      cmask.setMask(Tup.Cutmask,Tup.BetaRICH);
       trgpatt.SetTriggPatt(Tup.PhysBPatt);
-      if((cmask.isFromAgl()||cmask.isFromNaF())&&Tup.BetaRICH<0) continue;
       if(Tup.Beta<=0||Tup.R<=0) continue;
       if(!cmask.isPreselected()) continue;
 
       Cuts();
       float Zona=getGeoZone(Tup.Latitude);
+      
+
       RUsed=Tup.R;
       UpdateProgressBar(i, nentries);
 
@@ -464,7 +464,7 @@ float getGeoZone(float latitude)
    float zone=-1;
    double geomag[12]= {0,0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.3};
    for(int z=0; z<12; z++) {
-      if(latitude>geomag[z] && latitude<geomag[z+1])
+      if(fabs(latitude)>geomag[z] && fabs(latitude)<geomag[z+1])
          zone=z;
    }
    return zone;

@@ -20,7 +20,7 @@ system("mkdir -p $outputdir/err");
 system("mkdir -p $outputdir/Launch");
 
 system ("sh Create_eoslist.sh ");
-chomp (@rootuple = `more eos.txt`);
+chomp (@rootuple = `more eos_data.txt`);
 
 
 $num_rootuple = scalar(@rootuple);

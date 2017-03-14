@@ -1,6 +1,6 @@
 using namespace std;
 int Ev_Num;
-
+int Timebeg;
 TSpline3 *Rig;
 TSpline3 *beta;
 TF1 *betaNaF;

@@ -16,7 +16,7 @@ extern const int nbinsAgl=18;
 
 // Rigidity cutoff safety factor
 
-float SF = 1.4;
+float SF = 1.2;
 
 TF1 *protons = new TF1("f1","pow((pow(x,2)/pow(0.938,2)/(1 + pow(x,2)/pow(0.938,2))),0.5)",0.1,100);
 TF1 *deutons = new TF1("f1","pow((pow(x,2)/pow(1.875,2)/(1 + pow(x,2)/pow(1.875,2))),0.5)",0.1,100);
@@ -58,7 +58,7 @@ struct Tuplevar {
    float Cutmask;
    float Latitude;
    float LDiscriminant;
-   float MC_type;
+   float Massa_gen;
    float Momento_gen;
    float R;
    float Rcutoff;
@@ -67,6 +67,7 @@ struct Tuplevar {
    float PhysBPatt;
    float mcweight;
    float U_time;
+   float Seconds;
    float Livetime;	
    float qL1;
    float qInner;
@@ -106,24 +107,21 @@ Tuplevar Tup;
 float ReturnMass_Gen()
 {
    float Mass_gen=0;
-   if ( ( ( (int) Tup.MC_type) &0xFF    ) >0)      Mass_gen = 0.938;
-   if ( ( ( (int) Tup.MC_type) &0xFF00  ) >0)      Mass_gen = 1.875;
-   if ( ( ( (int) Tup.MC_type) &0xFF0000) >0)      Mass_gen = 3.725;
-   return Mass_gen;
+   return Tup.Massa_gen;
 }
 
 //retrieve MC cross section type
 int ReturnMCGenType()
 {
-   int mc_type=-1;
-   int cursor=0;
+   int mc_type=0;
+/*   int cursor=0;
    if (ReturnMass_Gen() <1&&ReturnMass_Gen() >0) cursor=0 ;
    if (ReturnMass_Gen() <2&&ReturnMass_Gen() >1) cursor=8 ;
    if (ReturnMass_Gen() <4&&ReturnMass_Gen() >3) cursor=16;
    for (int i=2; i<8; i++) {
       if ( ( ( ( (int) Tup.MC_type) >> (cursor+i) ) & 1 ) ==1) mc_type=i-2;
    }
-   if (mc_type == -1) std::cout<<"ERROR: MC cross section type not found"<<std::endl;
+   if (mc_type == -1) std::cout<<"ERROR: MC cross section type not found"<<std::endl;*/
    return mc_type;
 }
 

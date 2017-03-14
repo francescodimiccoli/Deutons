@@ -51,13 +51,13 @@ void MCpreeff_Plot(
 	{
 		EffPreMCP_R->Draw("ACP");
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-		leg->AddEntry(EffPreMCP_R,MCLegend[0].c_str(), "ep");
+		leg->AddEntry(EffPreMCP_R,MCLegend[0].c_str(), "lp");
 
 		for(int h=0; h<6; h++) {
 			EffPreMCD_R[h]= new TGraph();
 			EffPreMCD_R[h]->SetTitle(MCLegend[h+1].c_str());
 			for(int i=0; i<nbinsr; i++) EffPreMCD_R[h]->SetPoint(i,PRB.RigBinCent(i),EffPreMCD_R_TH2F->GetBinContent(i+1,h+1));
-			leg->AddEntry(EffPreMCD_R[h],MCLegend[h+1].c_str(), "ep");
+			leg->AddEntry(EffPreMCD_R[h],MCLegend[h+1].c_str(), "lp");
 			EffPreMCD_R[h]->SetMarkerColor(4);
 			EffPreMCD_R[h]->SetMarkerStyle(h+3);
 			EffPreMCD_R[h]->SetMarkerSize(2);
@@ -90,7 +90,7 @@ void MCpreeff_Plot(
 	{
 		EffPreMCP->Draw("AP");
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-		leg->AddEntry(EffPreMCP,MCLegend[0].c_str(), "ep");
+		leg->AddEntry(EffPreMCP,MCLegend[0].c_str(), "lp");
 
 		for(int h=0; h<6; h++) {
 			EffPreMCD[h]= new TGraph();
@@ -186,11 +186,11 @@ void MCpreeff_Plot(
 	gPad->SetLogx();
 	gPad->SetGridx();
 	gPad->SetGridy();
-	TGraphErrors * Cascade[5];
-	for (int i=0;i<5;i++){
+	TGraphErrors * Cascade[6];
+	for (int i=0;i<6;i++){
 		Cascade[i]=new TGraphErrors;
 	}			
-	for (int i=0;i<5;i++){
+	for (int i=0;i<6;i++){
 		for(int j=0; j<nbinsr; j++){
 			Cascade[i]->SetPoint(j,PRB.RigBinCent(j),EffCascade[i]->GetBinContent(j+1));
 			Cascade[i]->SetPointError(j,0,EffCascade[i]->GetBinError(j+1));	
@@ -198,6 +198,7 @@ void MCpreeff_Plot(
 		Cascade[i]->SetLineColor(i+2);	
 		Cascade[i]->SetLineWidth(3);
 		Cascade[i]->SetMarkerStyle(8);
+		Cascade[i]->SetMarkerSize(2);
 		Cascade[i]->SetMarkerColor(i+2);
 	}	
 	Cascade[0]->Draw("APC");
@@ -205,17 +206,20 @@ void MCpreeff_Plot(
 	Cascade[0]->GetYaxis()->SetTitle("Efficiency");	   
 	Cascade[0]->GetXaxis()->SetTitleSize(0.045);	  
 	Cascade[0]->GetYaxis()->SetTitleSize(0.045);
+	Cascade[5]->SetLineColor(1);
+	Cascade[5]->SetMarkerColor(1);
 
 	Cascade[0]->GetYaxis()->SetRangeUser(0,1);
-	for (int i=1;i<5;i++) Cascade[i]->Draw("PCsame");
+	for (int i=1;i<6;i++) Cascade[i]->Draw("PCsame");
 
 	{
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-		leg->AddEntry(Cascade[0],"Minimum Bias TOF", "ep");
-		leg->AddEntry(Cascade[1],"R Exists", "ep");
-		leg->AddEntry(Cascade[2],"TOF-Tracker Match", "ep"); 
-		leg->AddEntry(Cascade[3],"Good R Chisquare", "ep");
-		leg->AddEntry(Cascade[4],"Only One Track", "ep");
+		leg->AddEntry(Cascade[0],"Minimum Bias TOF", "lp");
+		leg->AddEntry(Cascade[1],"R Exists", "lp");
+		leg->AddEntry(Cascade[2],"TOF-Tracker Match", "lp"); 
+		leg->AddEntry(Cascade[3],"Good R Chisquare", "lp");
+		leg->AddEntry(Cascade[4],"Only One Track", "lp");
+		leg->AddEntry(Cascade[5],"L1 Hit", "lp");
 		leg->Draw("same");
 	}
 
@@ -248,10 +252,10 @@ void MCpreeff_Plot(
 
 	{
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-		leg->AddEntry(RICHCascade[0],"Good RICH Ring", "ep");
-		leg->AddEntry(RICHCascade[1],"PMTs > 3", "ep");
-		leg->AddEntry(RICHCascade[2],"Photoelectrons", "ep");
-		leg->AddEntry(RICHCascade[3],"Beta Consistency", "ep");
+		leg->AddEntry(RICHCascade[0],"Good RICH Ring", "lp");
+		leg->AddEntry(RICHCascade[1],"PMTs > 3", "lp");
+		leg->AddEntry(RICHCascade[2],"Photoelectrons", "lp");
+		leg->AddEntry(RICHCascade[3],"Beta Consistency", "lp");
 		leg->Draw("same");
 	}
 
@@ -298,9 +302,9 @@ void MCpreeff_Plot(
 
 	{
 		TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95); 
-		leg->AddEntry(preEff,"Clean-Event sel.", "ep");
-		leg->AddEntry(nafEff,"Clean-Event sel. + RICH NaF", "ep");
-		leg->AddEntry(aglEff,"Clean-Event sel. + RICH Agl", "ep");
+		leg->AddEntry(preEff,"Clean-Event sel.", "lp");
+		leg->AddEntry(nafEff,"Clean-Event sel. + RICH NaF", "lp");
+		leg->AddEntry(aglEff,"Clean-Event sel. + RICH Agl", "lp");
 		leg->Draw("same");
 	}
 
