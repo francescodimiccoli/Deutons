@@ -299,9 +299,11 @@ void SlidesforPlot_Fill ()
 
 void SlidesforPlot_D_Fill ()
 {
+      if(Tup.R>1.2*Tup.Rcutoff) 	{
       RvsBetaTOF->Fill (Tup.R,Tup.Beta);
       if ( cmask.isFromNaF() ) RvsBetaNaF->Fill (Tup.R,Tup.BetaRICH);
       if ( cmask.isFromAgl() ) RvsBetaAgl->Fill (Tup.R,Tup.BetaRICH);
+	}
 
       EdepUTOFvsB->Fill (Tup.Beta,Tup.EdepTOFU);
       EdepLTOFvsB->Fill (Tup.Beta,Tup.EdepTOFD);
@@ -322,7 +324,7 @@ void SlidesforPlot_D_Fill ()
 	   }
     }      
 
-    if (Herejcut&&Tup.Latitude>0.8){
+    if (Herejcut&&fabs(Tup.Latitude)>0.8){
 
      if (Betastrongcut&&Tup.BetaRICH<0      && Tup.R>SF*Tup.Rcutoff) MassTOF->Fill ( (Tup.R/Tup.Beta) *pow (1-pow (Tup.Beta,2),0.5) );
       if (Betastrongcut&& cmask.isFromNaF() && Tup.R>SF*Tup.Rcutoff) MassNaF->Fill ( (Tup.R/Tup.BetaRICH) *pow (1-pow (Tup.BetaRICH,2),0.5) );

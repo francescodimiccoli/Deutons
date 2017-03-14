@@ -35,6 +35,7 @@
 #include "Parte2/OptimizationCutClass.h"
 
 #include "Parte2/ExposureTime.cpp"
+#include "Parte2/Orbit.cpp"
 
 #include "Parte2/MCpreeff.cpp"
 #include "Parte2/MCUnbiaseff.cpp"

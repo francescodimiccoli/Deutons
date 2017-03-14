@@ -120,7 +120,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
         for(int h=0;h<6;h++){
                 EffgenbetaDTOF[h]=new TGraphErrors();
                 p=0;
-                for(int i=0;i<nbinsToF;i++) {EffgenbetaDTOF[h]->SetPoint(p,ToFDB.EkPerMassBinCent(i),DGen_Acceptance_TOF  ->GetBinContent(i+1,h+1));p++;}
+                for(int i=0;i<nbinsToF;i++) {EffgenbetaDTOF[h]->SetPoint(p,ToFDB.RigBinCent(i),DGen_Acceptance_TOF  ->GetBinContent(i+1,h+1));p++;}
         EffgenbetaDTOF[h]->SetMarkerStyle(8);
         EffgenbetaDTOF[h]->SetMarkerColor(4);
         EffgenbetaDTOF[h]->SetMarkerSize(2);
@@ -145,7 +145,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
         for(int h=0;h<6;h++){
                 EffgenbetaDNaF[h]=new TGraphErrors();
                 p=0;
-                for(int i=0;i<nbinsNaF;i++) {EffgenbetaDNaF[h]->SetPoint(p,NaFDB.EkPerMassBinCent(i),DGen_Acceptance_NaF  ->GetBinContent(i+1,h+1));p++;}
+                for(int i=0;i<nbinsNaF;i++) {EffgenbetaDNaF[h]->SetPoint(p,NaFDB.RigBinCent(i),DGen_Acceptance_NaF  ->GetBinContent(i+1,h+1));p++;}
 
         EffgenbetaDNaF[h]->SetMarkerStyle(8);
         EffgenbetaDNaF[h]->SetMarkerColor(4);
@@ -169,7 +169,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
         for(int h=0;h<6;h++){
                 EffgenbetaDAgl[h]=new TGraphErrors();
                 p=0;
-                for(int i=0;i<nbinsAgl;i++) {EffgenbetaDAgl[h]->SetPoint(p,AglDB.EkPerMassBinCent(i),DGen_Acceptance_Agl ->GetBinContent(i+1,h+1));p++;}
+                for(int i=0;i<nbinsAgl;i++) {EffgenbetaDAgl[h]->SetPoint(p,AglDB.RigBinCent(i),DGen_Acceptance_Agl ->GetBinContent(i+1,h+1));p++;}
 
         EffgenbetaDAgl[h]->SetMarkerStyle(8);
         EffgenbetaDAgl[h]->SetMarkerColor(4);
@@ -211,7 +211,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	p=0;
 	EffgenbetaPTOF=new TGraphErrors();
 	p=0;
-	for(int i=0;i<nbinsToF;i++) {EffgenbetaPTOF->SetPoint(p,ToFPB.EkPerMassBinCent(i),PGen_Acceptance_TOF  ->GetBinContent(i+1));p++;}
+	for(int i=0;i<nbinsToF;i++) {EffgenbetaPTOF->SetPoint(p,ToFPB.RigBinCent(i),PGen_Acceptance_TOF  ->GetBinContent(i+1));p++;}
 	EffgenbetaPTOF->SetMarkerStyle(8);
 	EffgenbetaPTOF->SetMarkerColor(2);
 	EffgenbetaPTOF->SetMarkerSize(2);
@@ -242,7 +242,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	p=0;
 	EffgenbetaPNaF=new TGraphErrors();
 	p=0;
-	for(int i=0;i<nbinsNaF;i++) {EffgenbetaPNaF->SetPoint(p,NaFPB.EkPerMassBinCent(i),PGen_Acceptance_NaF  ->GetBinContent(i+1));p++;}
+	for(int i=0;i<nbinsNaF;i++) {EffgenbetaPNaF->SetPoint(p,NaFPB.RigBinCent(i),PGen_Acceptance_NaF  ->GetBinContent(i+1));p++;}
 	EffgenbetaPNaF->SetMarkerStyle(8);
 	EffgenbetaPNaF->SetMarkerColor(2);
 	EffgenbetaPNaF->SetMarkerSize(2);
@@ -259,7 +259,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	p=0;
 	EffgenbetaPAgl=new TGraphErrors();
 	p=0;
-	for(int i=0;i<nbinsAgl;i++) {EffgenbetaPAgl->SetPoint(p,AglPB.EkPerMassBinCent(i),PGen_Acceptance_Agl  ->GetBinContent(i+1));p++;}
+	for(int i=0;i<nbinsAgl;i++) {EffgenbetaPAgl->SetPoint(p,AglPB.RigBinCent(i),PGen_Acceptance_Agl  ->GetBinContent(i+1));p++;}
 	EffgenbetaPAgl->SetMarkerStyle(8);
 	EffgenbetaPAgl->SetMarkerColor(2);
 	EffgenbetaPAgl->SetMarkerSize(2);
@@ -372,7 +372,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
                 for(int m=0;m<nbinsToF;m++) {AccSelMCDbeta[h]->SetPoint(p,ToFDB.EkPerMassBinCent(m),DMCAcceptance_TOF -> GetBinContent(m+1,h+1));
 					    AccSelMCDbeta[h]->SetPointError(p,0,DMCAcceptance_TOF -> GetBinError(m+1,h+1));
 					     p++;}
-		if(h==1) 
+		if(h==0) 
 		{
 			p=0;
 			for(int m=0;m<nbinsToF;m++) {AccSelMCPbeta->SetPoint(p,ToFPB.EkPerMassBinCent(m),PMCAcceptance_TOF -> GetBinContent(m+1));
@@ -393,20 +393,20 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 		AccSelMCDbeta[h]->SetFillStyle(3001);
                 AccSelMCDbeta[h]->SetLineWidth(4);
                 AccSelMCDbeta[h]->SetMarkerStyle(h+3);
-                AccSelMCDbeta[1]->SetTitle("Final effective Acceptance");
-                AccSelMCDbeta[1]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
-                AccSelMCDbeta[1]->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
-                AccSelMCDbeta[1]->GetXaxis()->SetTitleSize(0.045);
-                AccSelMCDbeta[1]->GetYaxis()->SetTitleSize(0.045);
-                AccSelMCDbeta[1]->GetYaxis()->SetRangeUser(1e-2,1.3);
+                AccSelMCDbeta[0]->SetTitle("Final effective Acceptance");
+                AccSelMCDbeta[0]->GetXaxis()->SetTitle("Kin. En. / nucl. [GeV/nucl.]");
+                AccSelMCDbeta[0]->GetYaxis()->SetTitle("Acceptance [m^2 sr]");
+                AccSelMCDbeta[0]->GetXaxis()->SetTitleSize(0.045);
+                AccSelMCDbeta[0]->GetYaxis()->SetTitleSize(0.045);
+                AccSelMCDbeta[0]->GetYaxis()->SetRangeUser(1e-2,1.3);
         	}
 	}
 	{	TLegend* leg =new TLegend(0.4, 0.7,0.95,0.95);
-		AccSelMCDbeta[1]->Draw("C4same");
+		AccSelMCDbeta[0]->Draw("C4same");
 		AccSelMCPbeta->SetLineStyle(1);
 		AccSelMCPbeta->Draw("C4same");
         	leg->AddEntry(AccSelMCPbeta,"Proton Acceptance","fl");		
-		leg->AddEntry(AccSelMCDbeta[1],"Deuteron Acceptance","fl");
+		leg->AddEntry(AccSelMCDbeta[0],"Deuteron Acceptance","fl");
 		leg->SetLineWidth(2);
 		leg->Draw("same");
 	}
@@ -442,7 +442,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 		AccSelMCDbetaNaF[h]->SetLineWidth(4);
                 AccSelMCDbetaNaF[h]->SetMarkerStyle(h+3);
         }
-                AccSelMCDbetaNaF[1]->Draw("C4same");
+                AccSelMCDbetaNaF[0]->Draw("C4same");
 		AccSelMCPbetaNaF->Draw("C4same");
 	
 
@@ -476,7 +476,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 		AccSelMCDbetaAgl[h]->SetLineWidth(4);
                 AccSelMCDbetaAgl[h]->SetMarkerStyle(h+3);
         }
-                AccSelMCDbetaAgl[1]->Draw("C4same");
+                AccSelMCDbetaAgl[0]->Draw("C4same");
 		AccSelMCPbetaAgl->SetLineStyle(1);
 		AccSelMCPbetaAgl->Draw("C4same");
 
@@ -489,7 +489,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	gPad->SetLogy();
 	TH1F * ErrTOTP_R=(TH1F *)EffStatErrR_P->Clone();
 	for(int iR=0;iR<ErrTOTP_R->GetNbinsX();iR++) 
-		ErrTOTP_R->SetBinContent(iR+1,PCorrectedAcceptance_R ->GetBinError(iR+1)/PCorrectedAcceptance_R ->GetBinContent(iR+1));
+		if(PCorrectedAcceptance_R ->GetBinContent(iR+1)>0) ErrTOTP_R->SetBinContent(iR+1,PCorrectedAcceptance_R ->GetBinError(iR+1)/PCorrectedAcceptance_R ->GetBinContent(iR+1));
 		
 	ErrTOTP_R->GetXaxis()->SetTitle("Bin nr.");
 	ErrTOTP_R->GetYaxis()->SetTitle("Relative Error");
@@ -538,7 +538,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	gPad->SetLogy();
 	TH1F * ErrTOTP_TOF=(TH1F *)EffStatErrTOF_P->Clone();
 	for(int iR=0;iR<ErrTOTP_TOF->GetNbinsX();iR++) 
-		ErrTOTP_TOF->SetBinContent(iR+1,PCorrectedAcceptance_TOF ->GetBinError(iR+1)/PCorrectedAcceptance_TOF ->GetBinContent(iR+1));
+		if(PCorrectedAcceptance_TOF ->GetBinContent(iR+1)>0)  ErrTOTP_TOF->SetBinContent(iR+1,PCorrectedAcceptance_TOF ->GetBinError(iR+1)/PCorrectedAcceptance_TOF ->GetBinContent(iR+1));
 	ErrTOTP_TOF->GetXaxis()->SetTitle("Bin nr.");
         ErrTOTP_TOF->GetYaxis()->SetTitle("Relative Error");
         ErrTOTP_TOF->GetXaxis()->SetTitleSize(0.045);
@@ -588,7 +588,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	gPad->SetLogy();
 	TH1F * ErrTOTP_NaF=(TH1F *)EffStatErrNaF_P->Clone();
 	for(int iR=0;iR<ErrTOTP_NaF->GetNbinsX();iR++) 
-		ErrTOTP_NaF->SetBinContent(iR+1,PCorrectedAcceptance_NaF ->GetBinError(iR+1)/PCorrectedAcceptance_NaF ->GetBinContent(iR+1));
+		if(PCorrectedAcceptance_NaF ->GetBinContent(iR+1)>0) ErrTOTP_NaF->SetBinContent(iR+1,PCorrectedAcceptance_NaF ->GetBinError(iR+1)/PCorrectedAcceptance_NaF ->GetBinContent(iR+1));
 
 	ErrTOTP_NaF->GetXaxis()->SetTitle("Bin nr.");
         ErrTOTP_NaF->GetYaxis()->SetTitle("Relative Error");
@@ -655,14 +655,14 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	gPad->SetLogy();
 	TH1F * ErrTOTP_Agl=(TH1F *)EffStatErrAgl_P->Clone();
 	for(int iR=0;iR<ErrTOTP_Agl->GetNbinsX();iR++) 
-		ErrTOTP_Agl->SetBinContent(iR+1,PCorrectedAcceptance_Agl ->GetBinError(iR+1)/PCorrectedAcceptance_Agl ->GetBinContent(iR+1));
+		if(PCorrectedAcceptance_Agl ->GetBinContent(iR+1)>0) ErrTOTP_Agl->SetBinContent(iR+1,PCorrectedAcceptance_Agl ->GetBinError(iR+1)/PCorrectedAcceptance_Agl ->GetBinContent(iR+1));
 	
 	ErrTOTP_Agl->GetXaxis()->SetTitle("Bin nr.");
         ErrTOTP_Agl->GetYaxis()->SetTitle("Relative Error");
         ErrTOTP_Agl->GetXaxis()->SetTitleSize(0.045);
         ErrTOTP_Agl->GetYaxis()->SetTitleSize(0.045);
         ErrTOTP_Agl->SetTitle("Acceptance TOTAL Error breakdown (Agl range)");
-	ErrTOTP_NaF->GetYaxis()->SetRangeUser(1e-4,1);
+	ErrTOTP_Agl->GetYaxis()->SetRangeUser(1e-4,1);
 
 	ErrTOTP_Agl->SetLineColor(1);
 	ErrTOTP_Agl->SetLineWidth(4);	
@@ -722,7 +722,8 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	gPad->SetLogy();
 	TH1F * ErrTOTD_TOF=(TH1F *)EffStatErrTOF_P->Clone();
 	for(int iR=0;iR<ErrTOTD_TOF->GetNbinsX();iR++) 
-		ErrTOTD_TOF->SetBinContent(iR+1, DCorrectedAcceptance_TOF->GetBinError(iR+1,1)/DCorrectedAcceptance_TOF->GetBinContent(iR+1,1));
+		if(DCorrectedAcceptance_TOF->GetBinContent(iR+1,1)>0) ErrTOTD_TOF->SetBinContent(iR+1, DCorrectedAcceptance_TOF->GetBinError(iR+1,1)/DCorrectedAcceptance_TOF->GetBinContent(iR+1,1));
+	
 	ErrTOTD_TOF->GetXaxis()->SetTitle("Bin nr.");
         ErrTOTD_TOF->GetYaxis()->SetTitle("Relative Error");
         ErrTOTD_TOF->GetXaxis()->SetTitleSize(0.045);
@@ -769,7 +770,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
 	gPad->SetLogy();
 	TH1F * ErrTOTD_NaF=(TH1F *)EffStatErrNaF_P->Clone();
 	for(int iR=0;iR<ErrTOTD_NaF->GetNbinsX();iR++) 
-		ErrTOTD_NaF->SetBinContent(iR+1, DCorrectedAcceptance_NaF->GetBinError(iR+1,1)/DCorrectedAcceptance_NaF->GetBinContent(iR+1,1));
+		if(DCorrectedAcceptance_NaF->GetBinContent(iR+1,1)>0)	ErrTOTD_NaF->SetBinContent(iR+1, DCorrectedAcceptance_NaF->GetBinError(iR+1,1)/DCorrectedAcceptance_NaF->GetBinContent(iR+1,1));
 	ErrTOTD_NaF->GetXaxis()->SetTitle("Bin nr.");
         ErrTOTD_NaF->GetYaxis()->SetTitle("Relative Error");
         ErrTOTD_NaF->GetXaxis()->SetTitleSize(0.045);
@@ -826,7 +827,7 @@ void	Acceptance_Plot (TH1* PGen_Acceptance_R   	,
         gPad->SetLogy();
         TH1F * ErrTOTD_Agl=(TH1F *)EffStatErrAgl_P->Clone();
         for(int iR=0;iR<ErrTOTD_Agl->GetNbinsX();iR++)
-                ErrTOTD_Agl->SetBinContent(iR+1, DCorrectedAcceptance_Agl->GetBinError(iR+1,1)/DCorrectedAcceptance_Agl->GetBinContent(iR+1,1));
+              if(DCorrectedAcceptance_Agl->GetBinContent(iR+1,1)>0)  ErrTOTD_Agl->SetBinContent(iR+1, DCorrectedAcceptance_Agl->GetBinError(iR+1,1)/DCorrectedAcceptance_Agl->GetBinContent(iR+1,1));
         ErrTOTD_Agl->GetXaxis()->SetTitle("Bin nr.");
         ErrTOTD_Agl->GetYaxis()->SetTitle("Relative Error");
         ErrTOTD_Agl->GetXaxis()->SetTitleSize(0.045);

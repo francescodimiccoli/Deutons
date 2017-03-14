@@ -195,7 +195,7 @@ bool goldenTRACKER(AMSEventR *ev,int s,int fit)
     Double_t qtracciaY,qtracciaX;
     qtracciaY=traccia->GetNormChisqY(fitID);
     qtracciaX=traccia->GetNormChisqX(fitID);
-    if(qtracciaY>5||qtracciaX>10) return false;
+    if(qtracciaY>10||qtracciaX>10) return false;
     else return true;
 }  
 

@@ -12,25 +12,6 @@
 #include <TMVA/Reader.h>
 #include <TMVA/Tools.h>
 
-TSpline3 *Rig;
-TSpline3 *beta;
-TF1 *betaNaF;
-TF1 *betaAgl;
-TSpline3 *eL1;
-TSpline3 *etofu;
-TSpline3 *etrack;
-TSpline3 *etofd;
-TSpline3 *EdepL1beta;
-TSpline3 *EdepTOFbeta;
-TSpline3 *EdepTrackbeta;
-TSpline3 *EdepTOFDbeta;
-TSpline3 *Corr_L1;
-TSpline3 *Corr_TOFU ;
-TSpline3 *Corr_Track;
-TSpline3 *Corr_TOFD;
-
-TF1 *protons = new TF1("f1","pow((pow(x,2)/pow(0.938,2)/(1 + pow(x,2)/pow(0.938,2))),0.5)",0.1,100);
-TF1 *deutons = new TF1("f1","pow((pow(x,2)/pow(1.875,2)/(1 + pow(x,2)/pow(1.875,2))),0.5)",0.1,100);
 double bin[44];
 float tempobin[44]= {0};
 float tempobingeo[44][11];
@@ -81,9 +62,6 @@ int a1,b1,c1,d1,e1=0;
 int alpha,Gamma,delta,alpha1,gamma1,delta1=0;
 int a2=0;
 float EndepTOF;
-std::vector<float> * TRDclusters = 0;
-std::vector<double> * ResiduiX;
-std::vector<double> * ResiduiY;
 float Chisquare=0;
 float endepostatrack=0;
 int NTrackHits=0;
@@ -229,39 +207,20 @@ float PDiscriminant=0;
 int Cutmask=0;
 int UnbiasPre=9;
 int noR=33;
-int notpassed[10]= {0,1021,955,33,1007,799,959,799,187,187};
 float Velocity=0;
 int seconds=0;
 float qL1,qInner,qLtof,qUtof=0;
 double  R_L1=0;
 
-
 TMVA::Reader *reader;
 Float_t BDT_response;
-TFile *_file0 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Final_Def.root");
-TFile *_file1 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables.root");
-TFile *_file3 = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables_NaF.root");
-TFile *_file3b = TFile::Open("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/QualityVariables_Agl.root");
-TMatrixF *TOF_Phi;
-TMatrixF *Track_Phi;
-TMatrixF *TRD_Phi;
-TMatrixF *TOF_Dist;
-TMatrixF *Track_Dist;
-TMatrixF *TRD_Dist;
-TMatrixF *TOF_Phi_P;
-TMatrixF *Track_Phi_P;
-TMatrixF *TRD_Phi_P;
-TMatrixF *TOF_Dist_P;
-TMatrixF *Track_Dist_P;
-TMatrixF *TRD_Dist_P;
-TSpline3 *Bkgnd[9];
-TSpline3 *Signal[9];
-TSpline3 *BkgndNaF[9];
-TSpline3 *SignalNaF[9];
-TSpline3 *BkgndAgl[9];
-TSpline3 *SignalAgl[9];
 float EdepECAL=0;
+
+
+
+
 using namespace std;
+
 void BDTreader()
 {
    TMVA::Tools::Instance();
@@ -275,17 +234,22 @@ void BDTreader()
    reader->BookMVA("BDTmethod", "/storage/gpfs_ams/ams/users/fdimicco/Deutons/TMVA/QualityBDT_BDT.weights.xml");
 }
 
+void Eval_BDT(TTree *albero,int i){
+   for(int layer=0; layer<9; layer++) trtoted[layer]=(*trtot_edep)[layer];
+   for(int layer=0; layer<9; layer++) trtred[layer]=(*trtrack_edep)[layer];
+   for(int layer=0; layer<4; layer++)  EdepLayer[layer]=(*Endep)[layer];
+   diffR=fabs(Rup-Rdown)/R;
+   NTofUsed=NTofClusters-NTofClustersusati;
+   Layernonusati=layernonusati;
+   nAnticluster=NAnticluster;
+   BDT_response=reader->EvaluateMVA("BDTmethod");
+   
+}
+
 bool Quality(TTree *albero,int i)
 {
    albero->GetEvent(i);
    bool selection = true;
-   //CONTROLLOFIT
-   fuoriX=0;
-   fuoriY=0;
-   for(int layer=1; layer<8; layer++) {
-      if((*ResiduiY)[layer]<-200) fuoriY++;
-      if((*ResiduiX)[layer]<-200&&(*ResiduiY)[layer]>-200) fuoriX++;
-   }
    TOF_Up_Down=fabs(((*Endep)[2]+(*Endep)[3])-((*Endep)[0]+(*Endep)[1]));
    DiffTrackEdep=0;
    for(int layer=0; layer<1; layer++) DiffTrackEdep+=fabs((*trtot_edep)[layer]-(*trtrack_edep)[layer]);
@@ -312,8 +276,10 @@ bool Quality(TTree *albero,int i)
 	   double Ltrue=1;
 	   double Lfalse=1;
 	   for(int m=0; m<6; m++) {
+		   if(m!=4){
 			   Lfalse=Lfalse*Bkgnd[m]->Eval(var[m]);
 			   Ltrue=Ltrue*Signal[m]->Eval(var[m]);
+		   }
 	   }
 	   LDiscriminant=Ltrue/(Ltrue+Lfalse);
    }
@@ -332,34 +298,23 @@ bool Quality(TTree *albero,int i)
 	   double Ltrue=1;
 	   double Lfalse=1;
 	   for(int m=0; m<8; m++) {
-		   if((((int)Cutmask)>>11)==512) {
+		   if(m!=4){
+			   if((((int)Cutmask)>>11)==512) {
 				   Lfalse=Lfalse*BkgndNaF[m]->Eval(var[m]);
 				   Ltrue=Ltrue*SignalNaF[m]->Eval(var[m]);
-		   }
-		   if((((int)Cutmask)>>11)==0) {
+			   }
+			   if((((int)Cutmask)>>11)==0) {
 				   Lfalse=Lfalse*BkgndAgl[m]->Eval(var[m]);
 				   Ltrue=Ltrue*SignalAgl[m]->Eval(var[m]);
-		   }
+			   }
+		   }	
 	   }
 	   LDiscriminant=Ltrue/(Ltrue+Lfalse);
    }
 
    ///////////////////////////////////////////////////////////////////////////
-   ////////////////// BDT TMVA ///////////////////////////////////////////////
-   for(int layer=1; layer<8; layer++) ResX[layer]=(*ResiduiX)[layer];
-   for(int layer=1; layer<8; layer++) ResY[layer]=(*ResiduiY)[layer];
-   for(int layer=0; layer<9; layer++) trtoted[layer]=(*trtot_edep)[layer];
-   for(int layer=0; layer<9; layer++) trtred[layer]=(*trtrack_edep)[layer];
-   for(int layer=0; layer<4; layer++)  EdepLayer[layer]=(*Endep)[layer];
-   diffR=fabs(Rup-Rdown)/R;
-   NTofUsed=NTofClusters-NTofClustersusati;
-   Layernonusati=layernonusati;
-   nAnticluster=NAnticluster;
-   BDT_response=reader->EvaluateMVA("BDTmethod");
-   //if(BDT_response<0.14) selection=false;
-   /////////////////////////////////////////////////////////////////////////
-
-   /////////////////////////// Variables for Likelihood ///////////////////////////
+   
+   /////////////////////////// Variables ///////////////////////////
    EdepTrack=0;
    EdepTOFU=((*Endep)[0]+(*Endep)[1])/2;
    EdepTOFD=((*Endep)[2]+(*Endep)[3])/2;
@@ -367,21 +322,23 @@ bool Quality(TTree *albero,int i)
    for(int layer=1; layer<8; layer++) EdepTrack+=(*trtrack_edep)[layer];
    EdepTrack=EdepTrack/7;
    EndepTOF=((*Endep)[0]+(*Endep)[1]+(*Endep)[2]+(*Endep)[3])/4;
+   
    R_corr=R;
    Massa=pow(fabs(pow(fabs(R_corr)*pow((1-pow(Beta,2)),0.5)/Beta,2)),0.5);
-   IsCharge1=0;
-   //if(fabs(EdepTrackbeta->Eval(Beta)-EdepTrack)/(pow(EdepTrackbeta->Eval(Beta),2)*etrack->Eval(Beta))<3||fabs(EdepTOFbeta->Eval(Beta)-EndepTOF)/(pow(EdepTOFbeta->Eval(Beta),2)*etofu->Eval(Beta))<10) IsCharge1=1;
+   
    if(qInner<1.5&&qUtof<1.5&&qLtof<1.5) IsCharge1=1;
+   
    Velocity=0;
    Velocity=Beta;
    if((((int)Cutmask)>>11)==0||(((int)Cutmask)>>11)==512) Velocity=BetaRICH_new;
+   
    //////////////////////////////////////////////////////////////////////
 
    return true;
 
 }
 
-void Nuovasel(float RG,float M, TF1 *RBETA)
+void Eval_Distance(float RG,float M, TF1 *RBETA)
 {
 	RGDT=0;
 	BT=0;
@@ -597,118 +554,28 @@ void Nuovasel(float RG,float M, TF1 *RBETA)
 }
 
 
-float CalculateLklhd()
-{
-   long double logL_true;
-   long double logL_fake;
-   long double L_Discr;
-   long double logL_Discr;
-   float Par;
-   /////////////// CONVERSIONE COORD POLARI //////////////////////////
-   DistTOF=pow(pow(PSCALTOF2,2)+pow(PSCALTOF3,2),0.5);
-   DistTrack=pow(pow(PSCALTrack2,2)+pow(PSCALTrack3,2),0.5);
-   DistTRD=pow(pow(PSCALTRD2,2)+pow(PSCALTRD3,2),0.5);
-   PhiProjTOF=acos(PSCALTOF2/DistTOF);
-   if(PSCALTOF3<0) PhiProjTOF=2*pi-PhiProjTOF;
-   PhiProjTrack=acos(PSCALTrack2/DistTrack);
-   if(PSCALTrack3<0) PhiProjTrack=2*pi-PhiProjTrack;
-   PhiProjTRD=acos(PSCALTRD2/DistTRD);
-   if(PSCALTRD3<0) PhiProjTRD=2*pi-PhiProjTRD;
-   std::cout<<"////"<<std::endl;
-   std::cout<<DistTOF<<" "<<DistTrack<<" "<<DistTRD<<std::endl;
-   std::cout<<PhiProjTOF<<" "<<PhiProjTrack<<" "<<PhiProjTRD<<std::endl;
-   ////////////////////////////////////////////////////////////////////
-   if(DistTOF<10&&DistTrack<10&&DistTRD<10&&PhiProjTOF<10&&PhiProjTrack<10&&PhiProjTRD<10&&RminTOF<3.8&&RminTrack<3.8&&RminTRD<3.8) {
-      for(int k=0; k<11; k++) {
-         Par=0.5+k*0.3;
-         if(RminTOF>Par&&RminTOF<=Par+0.3) {
-            logL_true+=log10((*TOF_Phi)[(int)(PhiProjTOF*10)][k])+log10((*TOF_Dist)[(int)(DistTOF*10)][k]);
-            logL_fake+=log10((*TOF_Phi_P)[(int)(PhiProjTOF*10)][k])+log10((*TOF_Dist_P)[(int)(DistTOF)][k]);
-         }
-      }
-      std::cout<<logL_true<<" "<<logL_fake<<std::endl;
-      for(int k=0; k<11; k++) {
-         Par=0.5+k*0.3;
-         if(RminTrack>Par&&RminTrack<=Par+0.3) {
-            logL_true+=log10((*Track_Phi)[(int)(PhiProjTrack*10)][k])+log10((*Track_Dist)[(int)(DistTrack*10)][k]);
-            logL_fake+=log10((*Track_Phi_P)[(int)(PhiProjTrack*10)][k])+log10((*Track_Dist_P)[(int)(DistTrack*10)][k]);
-         }
-      }
-      std::cout<<logL_true<<" "<<logL_fake<<std::endl;
-      for(int k=0; k<11; k++) {
-         Par=0.5+k*0.3;
-         if(RminTRD>Par&&RminTRD<=Par+0.3) {
-            logL_true+=log10((*TRD_Phi)[(int)(PhiProjTRD*10)][k])+log10((*TRD_Dist)[(int)(DistTRD*10)][k]);
-            logL_fake+=log10((*TRD_Phi_P)[(int)(PhiProjTRD*10)][k])+log10((*TRD_Dist_P)[(int)(DistTRD*10)][k]);
-         }
-      }
-      std::cout<<logL_true<<" "<<logL_fake<<std::endl;
-      L_Discr=pow(10,logL_true)/pow(10,logL_fake);
-   } else L_Discr=-1;
-   logL_Discr=log(L_Discr)/10;
-   //std::cout<<L_Discr<<" "<<logL_true<<" "<<logL_fake<<std::endl;
-   return logL_Discr;
-}
 
 bool Protoni (TTree *albero,int i)
 {
 
-   bool isprot=true;
    clusterTOFfuori=0;
    clusterTrackfuori=0;
    clusterTRDfuori=0;
    albero->GetEvent(i);
-   Nuovasel(R,0.938,protons);
+   Eval_Distance(R,0.938,protons);
 
-   //=true: Disattiva selezione/////
-   isprot=true;
-   ////////////////////////////////
-   return isprot;
+   return true;
 }
 
 bool Deutoni (TTree *albero,int i)
 {
-   bool isprot=true;
    clusterTOFfuori=0;
    clusterTrackfuori=0;
    clusterTRDfuori=0;
    albero->GetEvent(i);
-   Nuovasel(R,1.875,deutons);
-   //PDiscriminant=CalculateLklhd();
-   //=true: Disattiva selezione/////
-   isprot=true;
-   ////////////////////////////////
-   return isprot;
+   Eval_Distance(R,1.875,deutons);
+   
+   return true;
 }
 
 
-int deutonsID (TTree *albero,int i)
-{
-   int P_ID=0;
-   albero->GetEvent(i);
-   bool isprot=true;
-   if(!(DistTOF<3&&DistTrack<3&&DistTRD<3)) isprot=false;
-   if(PDiscriminant<4) isprot=false;
-   /////////////// =true : ANNULLARE SELEZIONE //////////////////
-   //isprot=true;
-   /////////////////////////////////////////////////////
-   if(isprot) P_ID=2;
-   return P_ID;
-
-
-}
-
-
-int protonsID (TTree *albero,int i)
-{
-   int P_ID=0;
-   albero->GetEvent(i);
-   bool isprot=true;
-   if(!(DistTOF<3&&DistTrack<3&&DistTRD<3)) isprot=false;
-   ///////////////  =true : ANNULLARE SELEZIONE //////////////////
-   //isprot=true;
-   /////////////////////////////////////////////////////
-   if(isprot) P_ID=1;
-   return P_ID;
-
-}

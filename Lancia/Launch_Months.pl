@@ -31,9 +31,9 @@ while($n<=$fine){
 			print "created\n\n";
 			if($n!=$fine){
 				print "Launching $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
-				system("perl $workdir/perl/lsf.pl $mesi[$n+1] 0");
-				system("perl $workdir/perl/Lancia.pl");
-				system("perl $workdir/Lancia/Lancia.pl $date[$n] $date[$n+1] 0");
+				system("perl $workdir/perl/Create_lsfscripts.pl $mesi[$n+1] 0");
+				system("perl $workdir/perl/Create_Launchscripts.pl");
+				system("perl $workdir/Lancia/Launch_jobs.pl $date[$n] $date[$n+1] 0");
 				print "Launched $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
 			}
 		}
@@ -41,9 +41,9 @@ while($n<=$fine){
 			if($n!=$fine){
 				system("mkdir $workdir/Histos/$mesi[$n+1]");
 				print "Launching $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
-				system("perl $workdir/perl/lsf.pl $mesi[$n+1] 1");
-				system("perl $workdir/perl/Lancia.pl"); 
-				system("perl $workdir/Lancia/Lancia.pl $date[$n] $date[$n+1] 1");
+				system("perl $workdir/perl/Create_lsfscripts.pl $mesi[$n+1] 1");
+				system("perl $workdir/perl/Create_Launchscripts.pl"); 
+				system("perl $workdir/Lancia/Launch_jobs.pl $date[$n] $date[$n+1] 1");
 				print "Launched $mesi[$n+1] jobs: from $date[$n] to $date[$n+1]...\n";
 			}
 		}
@@ -54,7 +54,7 @@ while($n<=$fine){
 					system("$workdir/Calibrations/Preliminar.exe $mesi[$n]");
 				}
 			}
-			if($mode==2||$mode==1) {system("perl ./SommaParte1.pl $mesi[$n]");}	
+			if($mode==2||$mode==1) {system("perl ./Sum_outputs.pl $mesi[$n]");}	
 		}	
 		$n++;
 	}

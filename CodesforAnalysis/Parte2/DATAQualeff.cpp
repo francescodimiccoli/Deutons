@@ -24,8 +24,7 @@ void DATAQualeff_Fill (int zona)
    if(!ProtonsMassWindow) return;   
    if(!(Tup.R>Rcut[zona])) return;	
    int Kbin=PRB.GetRBin (Tup.R);
-
-
+	
    if (cmask.isFromNaF() ) { //NaF
       LATDistanceDATA_NaF  ->beforeR->Fill (Kbin,zona);
       if (Distcut) 

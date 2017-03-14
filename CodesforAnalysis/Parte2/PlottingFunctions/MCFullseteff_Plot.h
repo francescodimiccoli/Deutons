@@ -68,7 +68,7 @@ void 	MCFullseteff_Plot(
 		leg->AddEntry(EffFullsetMCP_R,MCLegend[0].c_str(), "ep");
 		leg->AddEntry(EffFullsetMCP_R_fit,"Protons Fit", "l");
 
-		for(int h=3;h<4;h++){
+		for(int h=0;h<1;h++){
 			EffFullsetMCD_R[h]= new TGraphErrors();
 			EffFullsetMCD_R_fit[h]= new TGraphErrors();
 
@@ -141,7 +141,7 @@ void 	MCFullseteff_Plot(
 		leg->AddEntry(EffFullsetMCP,MCLegend[0].c_str(), "ep");
 		leg->AddEntry(EffFullsetMCP_fit,"Protons Fit", "l");
 
-		for(int h=3;h<4;h++){
+		for(int h=0;h<1;h++){
 			EffFullsetMCD[h]= new TGraphErrors();
 			EffFullsetMCD_fit[h]= new TGraphErrors();
 
@@ -215,7 +215,7 @@ void 	MCFullseteff_Plot(
 		leg->AddEntry(EffFullsetMCPNaF,MCLegend[0].c_str(), "ep");
 		leg->AddEntry(EffFullsetMCPNaF_fit,"Protons Fit", "l");
 
-		for(int h=3;h<4;h++){
+		for(int h=0;h<1;h++){
 			EffFullsetMCDNaF[h]= new TGraphErrors();
 			EffFullsetMCDNaF_fit[h]= new TGraphErrors();
 
@@ -289,7 +289,7 @@ void 	MCFullseteff_Plot(
                 leg->AddEntry(EffFullsetMCPAgl,MCLegend[0].c_str(), "ep");
                 leg->AddEntry(EffFullsetMCPAgl_fit,"Protons Fit", "l");
 
-                for(int h=3;h<4;h++){
+                for(int h=0;h<1;h++){
                         EffFullsetMCDAgl[h]= new TGraphErrors();
                         EffFullsetMCDAgl_fit[h]= new TGraphErrors();
 

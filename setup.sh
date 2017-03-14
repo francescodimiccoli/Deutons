@@ -7,7 +7,7 @@
 
 
 #root 6
-source /storage/gpfs_ams/ams/users/kostya/VirtualEnv/env.sh
+source /storage/gpfs_ams/ams/users/fdimicco/Deutons/Setup/env.sh
 source /storage/gpfs_ams/ams/users/kostya/VirtualEnv/install/bin/thisroot.sh
 #env > envs
 

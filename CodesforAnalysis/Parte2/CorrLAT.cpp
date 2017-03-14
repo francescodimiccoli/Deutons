@@ -32,11 +32,15 @@ void CorrLAT(string filename) {
 
 	cout<<"******* TOTAL LAT. CORRECTION *************"<<endl;
 
-	//product of LAT corr. of 3 preselections
-	TH1F * PreLATCorr = (TH1F *)(( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",1,1)) -> Clone();
-	PreLATCorr -> Multiply( (TH1F *)( ( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",2,2))->Clone()	);
-	PreLATCorr -> Multiply( (TH1F *)( ( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",3,3))->Clone()	);
+	cout<<LATpreSelDATA ->  LATcorrR_fit<<endl;
+	
+//	TH1F * PreLATCorr = (TH1F *)(( (TH2F *)LATpreSelDATA ->  LATcorrR_fit ) -> ProjectionX("",1,1)) -> Clone();
+	TH1F * PreLATCorr  = ProjectionXtoTH1F((TH2F *)LATpreSelDATA ->  LATcorrR_fit , "PreLATCorr",1,1);
+	TH1F * PreLATCorr2 = ProjectionXtoTH1F((TH2F *)LATpreSelDATA ->  LATcorrR_fit , "PreLATCorr2",2,2);
+	TH1F * PreLATCorr3 = ProjectionXtoTH1F((TH2F *)LATpreSelDATA ->  LATcorrR_fit , "PreLATCorr3",3,3);	
 
+	PreLATCorr -> Multiply( PreLATCorr2);
+	PreLATCorr -> Multiply( PreLATCorr3);
 	TH1F *  PreLATCorrR   = (TH1F *) PreLATCorr -> Clone();
 	TH1F *  PreLATCorrTOF = (TH1F *) PreLATCorr -> Clone();   
 	TH1F *  PreLATCorrNaF = (TH1F *) PreLATCorr -> Clone();

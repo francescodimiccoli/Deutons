@@ -7,11 +7,11 @@ using namespace std;
 
 class Cutmask {
    public:
-      Cutmask() {cmask=0;}
+      Cutmask() {cmask=0; BetaRICH=-1;}
       Cutmask (int cutmask)   : cmask (cutmask) {}
       Cutmask (float cutmask) : cmask ( (int) (cutmask+0.5) ) {}
-      void setMask (int cutmask)   {cmask=cutmask;}
-      void setMask (float cutmask) {cmask= (int) (cutmask+0.5);}
+      void setMask (int cutmask, float betaRICH)   {cmask=cutmask; BetaRICH = betaRICH;} 
+      void setMask (float cutmask, float betaRICH) {cmask= (int) (cutmask+0.5); BetaRICH = betaRICH;}
       int getMask () {return cmask;}
 
 
@@ -23,11 +23,12 @@ class Cutmask {
       bool isGoldenToF3or4Layers()      { return cmask& (1<<5);}
       bool isGoldenTRD()                { return cmask& (1<<6);}
       bool hasSingleTrTrack()           { return cmask& (1<<7);}
-      bool isMinimumBiasToF4Layers()    { return cmask& (1<<8);}
+      bool isMinimumBiasTrackerL1()     { return cmask& (1<<8);}
       bool isGoldenToF4Layers()         { return cmask& (1<<9);}
       // Bit 10 is always set
-      bool isFromNaF() {return (cmask>>11) == 512;}
-      bool isFromAgl() {return (cmask>>11) == 0;}
+      bool hasRICHRing() {return (((cmask>>11)&3)==0 && BetaRICH>0); }
+      bool isFromNaF() {return ((cmask>>11) == 512 && BetaRICH>0);}
+      bool isFromAgl() {return ((cmask>>11) == 0 && BetaRICH>0);}
       bool isOnlyFromToF() {return ( !isFromAgl() && !isFromNaF() );}
 
       bool isPreselected(); ///< This 187 thing
@@ -38,6 +39,7 @@ class Cutmask {
 
    private:
       int cmask;
+      float BetaRICH;
       void printANSIYesNo (string legend, bool condition, int width=25);
 
 };

@@ -9,8 +9,8 @@ system("rm $workdir/logs/*.log");
 system("rm $workdir/err/*.err");
 
 if($ARGV[0]!=0&&$ARGV[2]!=1) {
-	system("rm $workdir..//MAIN/sommadati/sommadati*");
-	system("perl $workdir/../MAIN/perl/Sommaisto2.pl $ARGV[0] $ARGV[1]");
+	system("rm $workdir/../MAIN/sommadati/sommadati*");
+	system("perl $workdir/Ntuple-making/Launch_scripts/Sommaisto2.pl $ARGV[0] $ARGV[1]");
 }
 
 

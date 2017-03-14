@@ -7,14 +7,17 @@ using namespace std;
 Efficiency * EffpreselMCP = new Efficiency("EffpreselMCP");
 Efficiency * EffpreselMCD = new Efficiency("EffpreselMCD", 6);
 
-Efficiency * EffpreselMCP_Now = new Efficiency("EffpreselMCP_Now");
+Efficiency * EffpreselMCP_L1 = new Efficiency("EffpreselMCP_L1");
+Efficiency * EffpreselMCD_L1 = new Efficiency("EffpreselMCD_L1", 6);
+
+Efficiency * EffpreselMCP_Now = new Efficiency("EffpreselMCP_Now");	//withouth reweighting, for acceptance
 Efficiency * EffpreselMCD_Now = new Efficiency("EffpreselMCD_Now", 6);
 
 
 
 
 
-Efficiency * EffCascadeMCP[5];
+Efficiency * EffCascadeMCP[6];
 Efficiency * EffCascadeRICHMCP[4];
 
 Efficiency * EffPreMCP = new Efficiency("EffPreMCP");
@@ -25,7 +28,7 @@ Efficiency * RInner = new Efficiency("RInner");
 Efficiency * R_L1   = new Efficiency("R_L1");
 
 void InizializeEff(){
-	for(int i=0;i<5;i++) EffCascadeMCP[i]= new Efficiency(("EffCascadeMCP"+to_string(i)));
+	for(int i=0;i<6;i++) EffCascadeMCP[i]= new Efficiency(("EffCascadeMCP"+to_string(i)));
 	for(int i=0;i<4;i++) EffCascadeRICHMCP[i]= new Efficiency(("EffCascadeRICHMCP"+to_string(i)));
 }
 
@@ -35,16 +38,24 @@ void MCpreseff_Fill() {
 	if(Massa_gen<1&&Massa_gen>0.5) {
 		//R bins
 		EffpreselMCP->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
+		EffpreselMCP_L1->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 		EffpreselMCP_Now->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),1);
 
-		if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0) 
-			EffpreselMCP->afterR->Fill(PRB.GetRBin(RUsed),Tup.mcweight);
 
+
+		if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0) {
+			EffpreselMCP->afterR->Fill(PRB.GetRBin(RUsed),Tup.mcweight);
+			if(Tup.R_L1>0) EffpreselMCP_L1->afterR->Fill(PRB.GetRBin(RUsed),Tup.mcweight);
+		}
 
 		// Beta bins
 		EffpreselMCP->beforeTOF->Fill(ToFPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
 		EffpreselMCP->beforeNaF->Fill(NaFPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
 		EffpreselMCP->beforeAgl->Fill(AglPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
+
+		EffpreselMCP_L1->beforeTOF->Fill(ToFPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
+		EffpreselMCP_L1->beforeNaF->Fill(NaFPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
+		EffpreselMCP_L1->beforeAgl->Fill(AglPB.GetBin(Tup.Momento_gen),Tup.mcweight);	
 
 		EffpreselMCP_Now->beforeTOF->Fill(ToFPB.GetBin(Tup.Momento_gen),1);	
 		EffpreselMCP_Now->beforeNaF->Fill(NaFPB.GetBin(Tup.Momento_gen),1);	
@@ -52,17 +63,23 @@ void MCpreseff_Fill() {
 
 
 
+
 		if(cmask.isPreselected() && Tup.Beta_pre>0 && Tup.R_pre>0)
 		{
 			kbin=ToFPB.GetBin(RUsed);
 			EffpreselMCP->afterTOF->Fill(kbin,Tup.mcweight); 
+			if(Tup.R_L1>0) EffpreselMCP->afterTOF->Fill(kbin,Tup.mcweight);
+			
 			if(cmask.isFromNaF()) {
 				kbin=NaFPB.GetBin(RUsed);	
 				EffpreselMCP->afterNaF->Fill(kbin,Tup.mcweight); 
+				if(Tup.R_L1>0) EffpreselMCP_L1->afterNaF->Fill(kbin,Tup.mcweight);
+				
 			} 
 			if(cmask.isFromAgl()) {
 				kbin=AglPB.GetBin(RUsed);   
 				EffpreselMCP->afterAgl->Fill(kbin,Tup.mcweight);
+				if(Tup.R_L1>0) EffpreselMCP_L1->afterAgl->Fill(kbin,Tup.mcweight);
 			}  
 		}
 
@@ -74,6 +91,7 @@ void MCpreseff_Fill() {
 		EffCascadeMCP[2]->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 		EffCascadeMCP[3]->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 		EffCascadeMCP[4]->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
+		EffCascadeMCP[5]->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 		
 		if(cmask.isMinimumBiasToF3or4Layers()){
 			EffCascadeMCP[0]->afterR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
@@ -85,6 +103,7 @@ void MCpreseff_Fill() {
 						EffCascadeMCP[3]->afterR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 						if(cmask.hasSingleTrTrack()){
 							EffCascadeMCP[4]->afterR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
+							if(Tup.R_L1>0) EffCascadeMCP[5]->afterR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 						}	
 					}
 				}
@@ -98,7 +117,7 @@ void MCpreseff_Fill() {
 		EffCascadeRICHMCP[2]->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 		EffCascadeRICHMCP[3]->beforeR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 		
-		if((((int)Tup.Cutmask>>11)&3)==0){
+		if(cmask.hasRICHRing()){
 			EffCascadeRICHMCP[0]->afterR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
 			if((((int)Tup.Cutmask>>11)&4)==0){
 				EffCascadeRICHMCP[1]->afterR->Fill(PRB.GetRBin(Tup.Momento_gen),Tup.mcweight);
@@ -136,33 +155,49 @@ void MCpreseff_Fill() {
 	if(Massa_gen>1&&Massa_gen<2) {
 		// R bins      
 		((TH2*)EffpreselMCD->beforeR) ->Fill( DRB.GetRBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight);
+		((TH2*)EffpreselMCD_L1->beforeR) ->Fill( DRB.GetRBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight);
 		((TH2*)EffpreselMCD_Now->beforeR) ->Fill( DRB.GetRBin(Tup.Momento_gen),ReturnMCGenType(),1);
 	
-		if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0)
-			((TH2*) EffpreselMCD->afterR) ->Fill( DRB.GetRBin(RUsed),ReturnMCGenType(),Tup.mcweight);
 
+
+	
+		if(cmask.isPreselected()&&Tup.Beta_pre>0&&Tup.R_pre>0){
+			((TH2*) EffpreselMCD->afterR) ->Fill( DRB.GetRBin(RUsed),ReturnMCGenType(),Tup.mcweight);
+			if(Tup.R_L1>0) ((TH2*) EffpreselMCD_L1->afterR) ->Fill( DRB.GetRBin(RUsed),ReturnMCGenType(),Tup.mcweight);	
+		}
 		// Beta bins
 
 		((TH2*)EffpreselMCD->beforeTOF)->Fill( ToFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
 		((TH2*)EffpreselMCD->beforeNaF)->Fill( NaFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
 		((TH2*)EffpreselMCD->beforeAgl)->Fill( AglDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
 
+		((TH2*)EffpreselMCD_L1->beforeTOF)->Fill( ToFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
+		((TH2*)EffpreselMCD_L1->beforeNaF)->Fill( NaFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
+		((TH2*)EffpreselMCD_L1->beforeAgl)->Fill( AglDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),Tup.mcweight); 
+
 		((TH2*)EffpreselMCD_Now->beforeTOF)->Fill( ToFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),1); 
 		((TH2*)EffpreselMCD_Now->beforeNaF)->Fill( NaFDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),1); 
 		((TH2*)EffpreselMCD_Now->beforeAgl)->Fill( AglDB.GetBin(Tup.Momento_gen),ReturnMCGenType(),1); 
+
+
+
 
 
 		if(cmask.isPreselected() && Tup.Beta_pre>0 && Tup.R_pre>0)
 		{
 			kbin=ToFDB.GetBin(RUsed);
 			((TH2*)EffpreselMCD->afterTOF)->Fill(kbin,ReturnMCGenType(),Tup.mcweight);
+			if(Tup.R_L1>0) ((TH2*) EffpreselMCD_L1->afterTOF)->Fill(kbin,ReturnMCGenType(),Tup.mcweight);
+
 			if(cmask.isFromNaF()) {
 				kbin=NaFDB.GetBin(RUsed);
 				((TH2*)EffpreselMCD->afterNaF)->Fill(kbin,ReturnMCGenType(),Tup.mcweight);
+				if(Tup.R_L1>0) ((TH2*) EffpreselMCD_L1->afterNaF)->Fill(kbin,ReturnMCGenType(),Tup.mcweight);
 			}
 			if(cmask.isFromAgl()) {
 				kbin=AglDB.GetBin(RUsed);
 				((TH2*)EffpreselMCD->afterAgl)->Fill(kbin,ReturnMCGenType(),Tup.mcweight);
+				if(Tup.R_L1>0) ((TH2*) EffpreselMCD_L1->afterAgl)->Fill(kbin,ReturnMCGenType(),Tup.mcweight);
 			}
 		}
 
@@ -174,10 +209,13 @@ void MCpreseff_Fill() {
 void MCpreeff_Write() {
 	EffpreselMCP->Write();
 	EffpreselMCD->Write();
+	EffpreselMCP_L1->Write();
+	EffpreselMCD_L1->Write();
 	EffpreselMCP_Now->Write();
 	EffpreselMCD_Now->Write();
 	
-	for(int i=0;i<5;i++) EffCascadeMCP[i]->Write();
+	
+	for(int i=0;i<6;i++) EffCascadeMCP[i]->Write();
 	for(int i=0;i<4;i++) EffCascadeRICHMCP[i]->Write();
 	
 	EffPreMCP ->Write();
@@ -201,10 +239,14 @@ void MCpreeff(string filename) {
 	Efficiency * EffpreselMCP = new Efficiency(inputHistoFile, "EffpreselMCP");
 	Efficiency * EffpreselMCD = new Efficiency(inputHistoFile, "EffpreselMCD");
 
-	Efficiency * EffCascadeMCP[5];
+	Efficiency * EffpreselMCP_L1 = new Efficiency(inputHistoFile, "EffpreselMCP_L1");
+	Efficiency * EffpreselMCD_L1 = new Efficiency(inputHistoFile, "EffpreselMCD_L1");
+
+	
+	Efficiency * EffCascadeMCP[6];
 	Efficiency * EffCascadeRICHMCP[4];
 
-	for(int i=0;i<5;i++) EffCascadeMCP[i]=     new Efficiency(inputHistoFile,("EffCascadeMCP"+to_string(i)));
+	for(int i=0;i<6;i++) EffCascadeMCP[i]=     new Efficiency(inputHistoFile,("EffCascadeMCP"+to_string(i)));
         for(int i=0;i<4;i++) EffCascadeRICHMCP[i]= new Efficiency(inputHistoFile,("EffCascadeRICHMCP"+to_string(i)));
 
 	Efficiency * EffPreMCP = new Efficiency(inputHistoFile,"EffPreMCP");
@@ -223,7 +265,10 @@ void MCpreeff(string filename) {
 	EffpreselMCP -> Eval_Efficiency();
 	EffpreselMCD -> Eval_Efficiency();
 
-	for(int i=0;i<5;i++) EffCascadeMCP[i]    -> Eval_Efficiency();  
+	EffpreselMCP_L1 -> Eval_Efficiency();
+	EffpreselMCD_L1 -> Eval_Efficiency();
+
+	for(int i=0;i<6;i++) EffCascadeMCP[i]    -> Eval_Efficiency();  
         for(int i=0;i<4;i++) EffCascadeRICHMCP[i]-> Eval_Efficiency();
 
 	EffPreMCP  -> Eval_Efficiency();
@@ -242,10 +287,10 @@ void MCpreeff(string filename) {
 	TH2F * EffPreMCDNaF_TH2F =  (TH2F *)EffpreselMCD->effNaF->Clone();
 	TH2F * EffPreMCDAgl_TH2F =  (TH2F *)EffpreselMCD->effAgl->Clone();
 
-	TH1F * EffCascade[5];
+	TH1F * EffCascade[6];
 	TH1F * EffCascadeRICH[4];
 
-	for(int i=0;i<5;i++) EffCascade[i] = (TH1F *)EffCascadeMCP[i]->effR->Clone();
+	for(int i=0;i<6;i++) EffCascade[i] = (TH1F *)EffCascadeMCP[i]->effR->Clone();
 	for(int i=0;i<4;i++) EffCascadeRICH[i] = (TH1F *)EffCascadeRICHMCP[i]->effR->Clone();
 
 	TH1F * Effpre =  (TH1F *)EffPreMCP->effR->Clone();

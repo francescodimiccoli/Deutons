@@ -7,26 +7,28 @@
 	TH2F * esposizionepgeoAgl  = new TH2F("esposizionepgeoAgl","esposizionepgeoAgl",18,0,18,11,0,11);
 
 	TH1F * Tempi = new TH1F("Tempi","Tempi",11,0,11);
+	TH2F * RvsRcutoff = new TH2F("RvsRcutoff","RvsRcutoff",1000,0,20,1000,0,20);
 
 void UpdateZoneLivetime (Binning bins, int zonageo, TH2F * esposizionegeo);
 
  void ExposureTime_Fill(float Zona){
 	
-	if((int)Tup.U_time!=ActualTime) {
-		Tempi -> SetBinContent((int)Zona, Tempi -> GetBinContent((int)Zona)+Tup.Livetime );
-	//protons exposure time	
-	UpdateZoneLivetime( PRB,  (int)Zona,esposizionegeo_R );
-	UpdateZoneLivetime( ToFPB,(int)Zona,esposizionepgeoTOF );
-	UpdateZoneLivetime( NaFPB,(int)Zona,esposizionepgeoNaF );
-	UpdateZoneLivetime( AglPB,(int)Zona,esposizionepgeoAgl );
-	
-	//deutone exposure time
-	UpdateZoneLivetime( ToFDB,(int)Zona,esposizionedgeoTOF );
-	UpdateZoneLivetime( NaFDB,(int)Zona,esposizionedgeoNaF );
-	UpdateZoneLivetime( AglDB,(int)Zona,esposizionedgeoAgl );
-	
-	ActualTime = (int)Tup.U_time;
-	}
+	 RvsRcutoff -> Fill(Tup.R_pre,Tup.Rcutoff);
+	 if((int)Tup.Seconds!=ActualTime) {
+		 Tempi -> SetBinContent((int)Zona, Tempi -> GetBinContent((int)Zona)+Tup.Livetime );
+		 //protons exposure time	
+		 UpdateZoneLivetime( PRB,  (int)Zona,esposizionegeo_R );
+		 UpdateZoneLivetime( ToFPB,(int)Zona,esposizionepgeoTOF );
+		 UpdateZoneLivetime( NaFPB,(int)Zona,esposizionepgeoNaF );
+		 UpdateZoneLivetime( AglPB,(int)Zona,esposizionepgeoAgl );
+
+		 //deutone exposure time
+		 UpdateZoneLivetime( ToFDB,(int)Zona,esposizionedgeoTOF );
+		 UpdateZoneLivetime( NaFDB,(int)Zona,esposizionedgeoNaF );
+		 UpdateZoneLivetime( AglDB,(int)Zona,esposizionedgeoAgl );
+
+		 ActualTime = (int)Tup.Seconds;
+	 }
 	return;
 }	
 	
@@ -40,6 +42,7 @@ void ExposureTime_Write(){
 	esposizionepgeoTOF  -> Write();
 	esposizionepgeoNaF  -> Write();
 	esposizionepgeoAgl  -> Write();
+	RvsRcutoff -> Write();
 	Tempi -> Write();
 	return;
 

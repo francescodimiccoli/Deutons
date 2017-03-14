@@ -118,6 +118,7 @@ void ACCEPTANCE::Set_MC_Par( float Trigrate, float rmin, float rmax){
 
 void ACCEPTANCE::Set_Binning(bool deutons){
 
+	cout<<after_TOF<<endl;
 	int nbins_beta =   after_TOF -> GetNbinsX() + 1; //TOF,NaF,Agl: same number of bins
 
 	if (deutons) {
