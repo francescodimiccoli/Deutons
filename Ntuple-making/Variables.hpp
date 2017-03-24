@@ -179,13 +179,13 @@ void Variables::PrintCurrentState(){
 
 void Variables::FillwithAnalysisVariables(TNtuple *grandezzesepd,bool isMC){
 	if(isMC) grandezzesepd->Fill(R,Beta,(*trtrack_edep)[0],Massa_gen,joinCutmask,PhysBPatt,EdepTOFU,EdepTrack,EdepTOFD,Momento_gen,BetaRICH_new,Likelihood,mcweight,DistD,DistP);
-	else	  grandezzesepd->Fill(R,Beta,(*trtrack_edep)[0],joinCutmask,Latitude,PhysBPatt,EdepTOFU,EdepTrack,EdepTOFD,Rcutoff,BetaRICH_new,Likelihood,DistD,DistP);
+	else	  grandezzesepd->Fill(R,Beta,(*trtrack_edep)[0],joinCutmask,Latitude,PhysBPatt,EdepTOFU,EdepTrack,EdepTOFD,IGRFRcutoff,BetaRICH_new,Likelihood,DistD,DistP,Rcutoff);
 	return;
 }
 
 void Variables::FillwithRawVariables(TNtuple *trig,bool isMC){
 	if(isMC) trig->Fill(Massa_gen,Momento_gen,R_L1,R,Beta_pre,joinCutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,U_time-Timebeg,PhysBPatt,mcweight);
-	else     trig->Fill(U_time,Latitude,Rcutoff,R_L1,R,Beta_pre,joinCutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,U_time-Timebeg,PhysBPatt,Livetime);
+	else     trig->Fill(U_time,Latitude,Rcutoff,IGRFRcutoff,R,Beta_pre,joinCutmask,(*trtrack_edep)[0],EdepTOFU,EdepTOFD,EdepTrack,BetaRICH_new,U_time-Timebeg,PhysBPatt,Livetime);
 	return;
 }
                

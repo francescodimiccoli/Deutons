@@ -141,7 +141,7 @@ int main(int argc, char * argv[])
    
    cout<<"****************************** BINS ***************************************"<<endl;
 
-   DRB.setBinsFromRigidity(nbinsr, 0.5, 100); // RB did not have Ek
+   DRB.setBinsFromRigidity(nbinsr, 0.5, 100);
    PRB.setBinsFromRigidity(nbinsr, 0.5, 100); 
 
    PRB.Print();

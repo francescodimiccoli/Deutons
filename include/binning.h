@@ -39,7 +39,8 @@ class Binning {
       Particle getParticle() {return particle; }
       inline void  RFill (TH1* h, float Var); ///< Fill the histogram with var indicating the rigidity bin
       inline void Print(); ///< Print the content of the bins
-
+      inline float GetBinLowEdge(int bin);	
+      inline float GetBinCenter(int bin);	
 
       std::vector<float> EkBins  ()   {  return   ekbin;   }
       std::vector<float> EtotBins()   {  return etotbin;   }
@@ -225,6 +226,16 @@ std::vector<float> Binning::EtotPerMassBins()
 int Binning::GetBin(float var){
 	if(Redges)    return GetRBin    (var);
 	if(Betaedges) return GetBetaBin (var);
+}
+
+float Binning::GetBinLowEdge(int bin){
+        if(Redges)    return RigBin (bin);
+        if(Betaedges) return BetaBin (bin);
+}
+
+float Binning::GetBinCenter(int bin){
+        if(Redges)    return RigBinCent (bin);
+        if(Betaedges) return BetaBinCent (bin);
 }
 
 int Binning::GetRBin (float var)
