@@ -10,9 +10,10 @@ class Resolution{
 		int nbins;
 		float xmin,xmax;
 		TH1F * Sigmas_Histo;
-		TH1F * Resolutions_Histo;
 		TH1F * Means_Histo;
-
+		TH1F * Resolutions_Histo;
+		TObject * Model;
+	
 	public:
 		//standard constructor
 		Resolution(std::string Basename,Binning Bins, std::string Cut, std::string Var, std::string Discr_var, int Nbins, float Xmin, float Xmax){
@@ -30,8 +31,9 @@ class Resolution{
 			discr_var=Discr_var;	
 
 			Sigmas_Histo      = new TH1F((Basename + "_sigmas").c_str(),(Basename + "_sigmas").c_str(),Bins.size(),0,Bins.size()); 		
-			Resolutions_Histo = new TH1F((Basename + "_reso"  ).c_str(),(Basename + "_reso"  ).c_str(),Bins.size(),0,Bins.size());
 			Means_Histo 	  = new TH1F((Basename + "_means" ).c_str(),(Basename + "_means" ).c_str(),Bins.size(),0,Bins.size());
+			Resolutions_Histo = new TH1F((Basename + "_reso"  ).c_str(),(Basename + "_reso"  ).c_str(),Bins.size(),0,Bins.size());
+		
 		}
 
 		//reading constructors
@@ -45,29 +47,36 @@ class Resolution{
 			}
 			nbins=Bins.size();
 
-			Sigmas_Histo      = (TH1F*)  File.Get((path+Basename + "/Fit Results/" + Basename+ "_sigmas" ).c_str());
-			Resolutions_Histo = (TH1F*)  File.Get((path+Basename + "/Fit Results/" + Basename+ "_sigmas" ).c_str());
-			Means_Histo       = (TH1F*)  File.Get((path+Basename + "/Fit Results/" + Basename+ "_sigmas" ).c_str());	
-
-			if(!Sigmas_Histo||!Resolutions_Histo||!Means_Histo){					
+			Sigmas_Histo      = (TH1F*)  File.Get((path+ "Fit Results/" + Basename+ "_sigmas" ).c_str());
+			Means_Histo       = (TH1F*)  File.Get((path+ "Fit Results/" + Basename+ "_means"  ).c_str());	
+			Resolutions_Histo = (TH1F*)  File.Get((path+ "Fit Results/" + Basename+ "_reso"  ).c_str());	
+			Model 		  = (TObject *) File.Get((path+ "Fit Results/" + Basename+ "_Model"  ).c_str());			
+	
+			if(!Sigmas_Histo||!Means_Histo||!Resolutions_Histo){					
 				Sigmas_Histo      = new TH1F((Basename + "_sigmas").c_str(),(Basename + "_sigmas").c_str(),Bins.size(),0,Bins.size());	
-				Resolutions_Histo = new TH1F((Basename + "_reso"  ).c_str(),(Basename + "_reso"  ).c_str(),Bins.size(),0,Bins.size());
 				Means_Histo 	  = new TH1F((Basename + "_means" ).c_str(),(Basename + "_means" ).c_str(),Bins.size(),0,Bins.size());
+				Resolutions_Histo = new TH1F((Basename + "_reso"  ).c_str(),(Basename + "_reso"  ).c_str(),Bins.size(),0,Bins.size());
 			}
 		}
 
 		void Fill(TTree * tree);	
 		void Save(FileSaver finalhisto,bool recreate=false);
 		void Normalize();
-		void Eval_Resolution();
+		void Eval_Resolution(std::vector<float> ExpectationValues={-1});
+
+
 	bool CheckHistos();
 	std::string GetName() {return basename;}
 	Binning GetBinning(){return bins;}
 
 
-	TH1F * Get_Resolutions() {return Resolutions_Histo;}
 	TH1F * Get_Means() {return Means_Histo;}
 	TH1F * Get_Sigmas() {return Sigmas_Histo;}
+	TH1F * Get_Resolutions() {return Resolutions_Histo;}
+
+	TH1F * Get_Histo(int i) { return Histos[i];}
+	TObject * Get_Model(){ return Model;}
+
 
 	TSpline3* ModelSigmaWithSpline();	
 	TF1* ModelSigmaWithPoly();
@@ -108,20 +117,25 @@ void Resolution::Save(FileSaver finalhisto,bool recreate){
 void Resolution::Normalize(){
 
 	for(int i=0;i<Histos.size();i++){
-		float integral=Histos[i]->Integral();
-		Histos[i]->Sumw2();
-		Histos[i]->Scale(1/integral);
+		if(Histos[i]->Integral()>2000){
+			float integral=Histos[i]->Integral();
+			Histos[i]->Sumw2();
+			Histos[i]->Scale(1/integral);
+			}
+		else
+			for(int i=0;i<Histos[i]->GetNbinsX();i++)
+				Histos[i]->SetBinContent(i+1,0);
 	}
 	return;
 
 }
 
 
-void Resolution::Eval_Resolution(){
+void Resolution::Eval_Resolution(std::vector<float> ExpectationValues){
 
 	for(int i=0;i<Histos.size();i++){
 		double FitRangeEdges[2];
-		double quantiles[2] = {0.025,0.8};
+		double quantiles[2] = {0.15,0.85};
 		Histos[i]->GetQuantiles(2,FitRangeEdges,quantiles);
 
 		TF1 * fitfunc = new TF1("fitfunc","gaus",-1,1);
@@ -129,43 +143,57 @@ void Resolution::Eval_Resolution(){
 		fitfunc->SetParameter(1,Histos[i]->GetMean());
 		fitfunc->SetParameter(2,Histos[i]->GetRMS());
 
-		Histos[i]->Fit("fitfunc","","",FitRangeEdges[0],FitRangeEdges[1]);
-	
-		float mean  	  = bins.GetBinCenter(i);
+		if(Histos[i]->Integral()>0) Histos[i]->Fit("fitfunc","","",FitRangeEdges[0],FitRangeEdges[1]);
+		
+		float mean;
+		if(ExpectationValues[0]!=-1) mean = ExpectationValues[i]; 
+		else mean  = bins.GetBinCenter(i);
+		
 		float meanshift   = fitfunc->GetParameter(1)/(1/mean);
 		float meanshifterr= fitfunc->GetParError(1)/(1/mean);
 		
-		float sigma 	  = pow(mean,2)*fitfunc->GetParameter(2);
-		float sigmaerr    = pow(mean,2)*fitfunc->GetParError(2);	
+		float sigma 	  = fitfunc->GetParameter(2);
+		float sigmaerr    = fitfunc->GetParError(2);	
 
-		Sigmas_Histo->SetBinContent(i+1,sigma);
-		Sigmas_Histo->SetBinError(i+1,sigmaerr);		
+		if(Histos[i]->GetEntries()>0){	
+			Sigmas_Histo->SetBinContent(i+1,sigma);
+			Sigmas_Histo->SetBinError(i+1,sigmaerr);		
 
-		Means_Histo->SetBinContent(i+1,meanshift);
-		Means_Histo->SetBinError(i+1,meanshifterr);
+			Means_Histo->SetBinContent(i+1,meanshift);
+			Means_Histo->SetBinError(i+1,meanshifterr);
 
-		Resolutions_Histo->SetBinContent(i+1,sigma/mean);
-		Resolutions_Histo->SetBinError(i+1,sigmaerr/mean);				
+			Resolutions_Histo->SetBinContent(i+1,sigma*mean);
+			Resolutions_Histo->SetBinError(i+1,sigmaerr*mean);
+
+		}
+				
 	}	
 	return;
 }
+
 
 TSpline3* Resolution::ModelSigmaWithSpline(){
 		
 	TSpline3* Model;
 	if(Sigmas_Histo->Integral()==0)	cout<<"******** ERROR: Sigma values seems not to be yet calculated: returning NULL **********"<<endl;
 	else{
-		FitFunction * Fit = new FitFunction(Sigmas_Histo,1);
+		FitFunction * Fit = new FitFunction(Sigmas_Histo,5);
 		Fit->FitValues();
 		TH1F * FittedValues = (TH1F *) Fit->ReturnFittedValues();	
-		double x[nbins]={0};
-		double y[nbins]={0};
+		int nbinsnotzero=0;
+		for(int i=0;i<nbins;i++) if(Sigmas_Histo->GetBinContent(i+1)>0) nbinsnotzero++;
+		double x[nbinsnotzero]={0};
+		double y[nbinsnotzero]={0};
+		int i=0;
 		for(int j =0;j<nbins;j++){
-			x[j]=bins.GetBinCenter(j);
-			y[j]=FittedValues->GetBinContent(j+1);	
+		      if(Sigmas_Histo->GetBinContent(j+1)>0){	
+			x[i]=bins.GetBinCenter(j);
+			y[i]=FittedValues->GetBinContent(j+1);
+			i++;
+			}	
 		}
 
-		Model = new TSpline3((basename+"_Model").c_str(),x,y,nbins);
+		Model = new TSpline3((basename+"_Model").c_str(),x,y,nbinsnotzero);
 		Model -> SetName((basename+"_Model").c_str());
 	}
 	return Model;
@@ -174,7 +202,7 @@ TSpline3* Resolution::ModelSigmaWithSpline(){
 
 TF1* Resolution::ModelSigmaWithPoly(){
 		
-	TF1* Model=new TF1((basename+"_Model").c_str(),"pol3");
+	TF1* Model=new TF1((basename+"_Model").c_str(),"pol4");
 	TGraphErrors *Graph=new TGraphErrors();
 	if(Sigmas_Histo->Integral()==0)	cout<<"******** ERROR: Sigma values seems not to be yet calculated: returning NULL **********"<<endl;
 	else{

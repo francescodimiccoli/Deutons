@@ -12,7 +12,7 @@
 /** @brief Class used for all the binning manipulation
  * @author $Author: L. Basara$
  * @date $Date: 2016/05/19$
- */
+*/
 
 class Binning {
    public:

@@ -28,9 +28,9 @@ void FileSaver::writeObjsInFolder(string folder, bool recreate)
                 fileFinalPlots->mkdir(folder.c_str());
         fileFinalPlots->cd   (folder.c_str());
         for (int i = 0; i <= fArr->GetLast(); i++){
-                cout<<fArr->At(i)<<endl;
 		fArr->At(i)->Write(fArr->At(i)->GetName(),2);
-        }
+       	 	cout<<"Object saved ..."<<endl;
+	 }
         fileFinalPlots->Flush();
         fileFinalPlots->Write();
         fileFinalPlots->Close();
