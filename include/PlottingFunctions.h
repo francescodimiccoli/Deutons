@@ -1,5 +1,46 @@
 using namespace std;
 
+TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxis,std::string Yaxis){
+	
+		TH2F * Frame = new TH2F("Frame","Frame",1000,xmin,xmax,1000,ymin,ymax);
+		Frame->SetStats(false);
+		Frame->SetTitle("");
+
+		Frame->SetStats(false);
+		Frame->SetTitle("");
+
+		Frame->GetYaxis()->SetMoreLogLabels();
+		Frame->GetXaxis()->SetMoreLogLabels();
+
+		Frame->GetYaxis()->SetNoExponent();
+		Frame->GetXaxis()->SetNoExponent();
+
+		Frame->GetYaxis()->SetRangeUser(ymin,ymax);
+		Frame->GetYaxis()->SetRangeUser(ymin,ymax);
+
+		Frame->GetXaxis()->SetTitle(Xaxis.c_str());
+		Frame->GetYaxis()->SetTitle(Yaxis.c_str());	
+
+		Frame->GetXaxis()->SetTitleFont(33);
+                Frame->GetYaxis()->SetTitleFont(33); 
+
+                Frame->GetXaxis()->SetLabelFont(33);
+                Frame->GetYaxis()->SetLabelFont(33); 
+
+		Frame->GetXaxis()->SetLabelSize(40);
+                Frame->GetYaxis()->SetLabelSize(40); 
+
+		Frame->GetXaxis()->SetTitleSize(40);
+		Frame->GetYaxis()->SetTitleSize(40);	
+
+		Frame->GetXaxis()->CenterTitle();
+		Frame->GetYaxis()->CenterTitle();
+
+		return Frame;	
+	
+}
+
+
 void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, std::string Yaxis, int color, std::string options, float ymin=-1,float ymax=-1,int rebin=1){
 	c -> cd();
 	gPad-> SetLogy();
@@ -58,36 +99,10 @@ void PlotFunction(TVirtualPad * c, TF1 * Function, std::string Xaxis, std::strin
 	Function->SetRange(xmin,xmax);
 
 	if(options==""){	
-		TH2F * Frame = new TH2F("Frame","Frame",100,xmin,xmax,100,ymin,ymax);
-		Frame->SetStats(false);
-		Frame->SetTitle("");
+		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
 
 		TLegend * leg = new TLegend(0.6,0.95,0.95,0.7);
 		leg->SetName("leg");
-
-		Frame->GetYaxis()->SetMoreLogLabels();
-		Frame->GetXaxis()->SetMoreLogLabels();
-
-		Frame->GetYaxis()->SetNoExponent();
-		Frame->GetXaxis()->SetNoExponent();
-
-		Frame->GetYaxis()->SetRangeUser(ymin,ymax);
-		Frame->GetYaxis()->SetRangeUser(ymin,ymax);
-
-		Frame->GetXaxis()->SetTitle(Xaxis.c_str());
-		Frame->GetYaxis()->SetTitle(Yaxis.c_str());	
-
-		Frame->GetXaxis()->SetTitleSize(0.045);
-		Frame->GetYaxis()->SetTitleSize(0.045);	
-
-		Frame->GetXaxis()->CenterTitle();
-		Frame->GetYaxis()->CenterTitle();
-
-		Frame->GetXaxis()->SetTitleFont(32);
-		Frame->GetYaxis()->SetTitleFont(32); 
-
-		Frame->GetXaxis()->SetLabelFont(32);
-		Frame->GetYaxis()->SetLabelFont(32); 
 
 		Frame->Draw("same");
 		Function->Draw("same");
@@ -122,37 +137,10 @@ void PlotFunction(TVirtualPad * c, TSpline3 * Function, std::string Xaxis, std::
 
 
 	if(options==""){	
-		TH2F * Frame = new TH2F("Frame","Frame",100,xmin,xmax,100,ymin,ymax);
-		Frame->SetStats(false);
-		Frame->SetTitle("");
+		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
 
 		TLegend * leg = new TLegend(0.6,0.95,0.95,0.7);
 		leg->SetName("leg");
-
-
-		Frame->GetYaxis()->SetMoreLogLabels();
-		Frame->GetXaxis()->SetMoreLogLabels();
-
-		Frame->GetYaxis()->SetNoExponent();
-		Frame->GetXaxis()->SetNoExponent();
-
-		Frame->GetYaxis()->SetRangeUser(ymin,ymax);
-		Frame->GetYaxis()->SetRangeUser(ymin,ymax);
-
-		Frame->GetXaxis()->SetTitle(Xaxis.c_str());
-		Frame->GetYaxis()->SetTitle(Yaxis.c_str());	
-
-		Frame->GetXaxis()->SetTitleSize(0.045);
-		Frame->GetYaxis()->SetTitleSize(0.045);	
-
-		Frame->GetXaxis()->CenterTitle();
-		Frame->GetYaxis()->CenterTitle();
-
-		Frame->GetXaxis()->SetTitleFont(32);
-		Frame->GetYaxis()->SetTitleFont(32); 
-
-		Frame->GetXaxis()->SetLabelFont(32);
-		Frame->GetYaxis()->SetLabelFont(32); 
 
 		Frame->Draw("same");
 		Function->Draw("same");
@@ -180,13 +168,9 @@ void PlotFunction(TVirtualPad * c, TSpline3 * Function, std::string Xaxis, std::
 
 void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname=""){
 
-	c -> cd();
-	gPad-> SetTickx();
-	gPad-> SetTicky();
-	gPad-> SetGridx();
-	gPad-> SetGridy();
-	gPad-> SetLogx();
-
+	c->cd();
+	c->SetTopMargin(0.1);
+	c->SetBottomMargin(0.1);
 	TGraphErrors * Graph = new TGraphErrors();
 	int a=0;
 	for(int i=0;i<Values->GetNbinsX();i++){
@@ -206,39 +190,13 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	Graph->SetMarkerColor(color);
 
 	if(options==""){	
-		TH2F * Frame = new TH2F("Frame","Frame",100,xmin,xmax,100,ymin,ymax);
+		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
 
 		TLegend * leg = new TLegend(0.6,0.95,0.95,0.7);
 		leg->SetName("leg");
 
-		Frame->SetStats(false);
-		Frame->SetTitle("");
 
-		Frame->GetYaxis()->SetMoreLogLabels();
-		Frame->GetXaxis()->SetMoreLogLabels();
-
-		Frame->GetYaxis()->SetNoExponent();
-		Frame->GetXaxis()->SetNoExponent();
-
-		Frame->GetYaxis()->SetRangeUser(ymin,ymax);
-		Frame->GetYaxis()->SetRangeUser(ymin,ymax);
-
-		Frame->GetXaxis()->SetTitle(Xaxis.c_str());
-		Frame->GetYaxis()->SetTitle(Yaxis.c_str());	
-
-		Frame->GetXaxis()->SetTitleSize(0.045);
-		Frame->GetYaxis()->SetTitleSize(0.045);	
-
-		Frame->GetXaxis()->CenterTitle();
-		Frame->GetYaxis()->CenterTitle();
-
-		Frame->GetXaxis()->SetTitleFont(32);
-		Frame->GetYaxis()->SetTitleFont(32); 
-
-		Frame->GetXaxis()->SetLabelFont(32);
-		Frame->GetYaxis()->SetLabelFont(32); 
-
-		Frame->Draw();
+		Frame->Draw("same");
 		Graph->Draw("ePsame");
 		if(legendname=="") leg->AddEntry(Graph,Values->GetName(),"ep");             
 		else leg->AddEntry(Graph,legendname.c_str(),"ep");
@@ -260,3 +218,25 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	return;
 }
 
+
+
+void PlotTH1FRatiointoGraph(TVirtualPad * c, Binning bins, TH1F * Values1, TH1F * Values2, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname1="",std::string legendname2=""){
+
+
+	TH1F * Ratio1=(TH1F*) Values1->Clone();
+	Ratio1->Sumw2();
+	Ratio1->Divide(Values1);
+
+	TH1F * Ratio2=(TH1F*) Values2->Clone();
+	Ratio2->Sumw2();
+	Ratio2->Divide(Values1);
+
+	std::string yaxis = Yaxis + " (ratio)";
+
+	PlotTH1FintoGraph(c,bins, Ratio1,Xaxis,yaxis,2,Ekin,options,xmin,xmax,ymin,ymax,legendname1);
+	PlotTH1FintoGraph(c,bins, Ratio2,Xaxis,yaxis,4,Ekin,"ePsame",xmin,xmax,ymin,ymax,legendname2);	
+
+	return;
+
+
+}

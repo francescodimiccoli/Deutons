@@ -116,6 +116,13 @@ void Variables::Update(){
         Likelihood=0;
         joinCutmask=0;
 	mcweight=0;
+	
+        RICHmask_new=(RICHmask_new&1023);
+        joinCutmask=CUTMASK;
+        joinCutmask=CUTMASK|(1<<10);
+        joinCutmask=joinCutmask|((RICHmask_new)<<11);	
+
+
 	U_time-=1305200000; //time offset (in order to have small time stamp)	
 }
 

@@ -19,6 +19,16 @@ Binning DRB(deuton);
 Binning PRB(proton);
 
 
+//resolution binning
+Binning ToFResB(deuton);
+Binning NaFResB(deuton);
+Binning AglResB(deuton);
+
+Binning PResB(proton);
+
+
+
+
 void SetBins(){	
 
 	DRB.setBinsFromRigidity(nbinsr, 0.5, 100); 
@@ -36,5 +46,23 @@ void SetBins(){
 	AglDB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
 	AglPB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
 
+
+	PResB.setBinsFromRigidity(60, 0.5, 100);	
+	ToFResB.setBinsFromRigidity(25, 1,8);
+	NaFResB.setBinsFromRigidity(25, 3,13);
+	AglResB.setBinsFromRigidity(25, 6,25);
+
+
+
 	return;
 }
+
+
+void UpdateProgressBar(int currentevent, int totalentries)
+{
+        int newratio =(int)100*(currentevent/    (float)totalentries);
+        int oldratio =(int)100*((currentevent-1)/(float)totalentries);
+        if(newratio>oldratio)
+                std::cout<<'\r' << "Progress : "<< newratio+1 << " %"<< std::flush; //+1 pour finir a 100%
+}
+

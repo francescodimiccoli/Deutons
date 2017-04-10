@@ -12,11 +12,12 @@ class Resolution{
 		TH1F * Sigmas_Histo;
 		TH1F * Means_Histo;
 		TH1F * Resolutions_Histo;
-		TObject * Model;
+		TObject * ModelSigmas;
+		TObject * ModelMeans;
 	
 	public:
 		//standard constructor
-		Resolution(std::string Basename,Binning Bins, std::string Cut, std::string Var, std::string Discr_var, int Nbins, float Xmin, float Xmax){
+		Resolution(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax,std::string Var="", std::string Discr_var=""){
 			for(int i=0;i<Bins.size();i++){
 				TH1F * Histo = new TH1F((Basename + to_string(i)).c_str(),(Basename + to_string(i)).c_str(),Nbins,Xmin,Xmax);
 				Histos.push_back(Histo);	
@@ -50,8 +51,10 @@ class Resolution{
 			Sigmas_Histo      = (TH1F*)  File.Get((path+ "Fit Results/" + Basename+ "_sigmas" ).c_str());
 			Means_Histo       = (TH1F*)  File.Get((path+ "Fit Results/" + Basename+ "_means"  ).c_str());	
 			Resolutions_Histo = (TH1F*)  File.Get((path+ "Fit Results/" + Basename+ "_reso"  ).c_str());	
-			Model 		  = (TObject *) File.Get((path+ "Fit Results/" + Basename+ "_Model"  ).c_str());			
-	
+			ModelSigmas 	  = (TObject *) File.Get((path+ "Fit Results/" + Basename+ "_ModelSigmas").c_str());			
+			ModelMeans        = (TObject *) File.Get((path+ "Fit Results/" + Basename+ "_ModelMeans").c_str());	
+
+
 			if(!Sigmas_Histo||!Means_Histo||!Resolutions_Histo){					
 				Sigmas_Histo      = new TH1F((Basename + "_sigmas").c_str(),(Basename + "_sigmas").c_str(),Bins.size(),0,Bins.size());	
 				Means_Histo 	  = new TH1F((Basename + "_means" ).c_str(),(Basename + "_means" ).c_str(),Bins.size(),0,Bins.size());
@@ -60,6 +63,8 @@ class Resolution{
 		}
 
 		void Fill(TTree * tree);	
+		void Fill(TTree * tree, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
+		void FillEventByEvent(float var, float discr_var, bool cut);
 		void Save(FileSaver finalhisto,bool recreate=false);
 		void Normalize();
 		void Eval_Resolution(std::vector<float> ExpectationValues={-1});
@@ -75,11 +80,19 @@ class Resolution{
 	TH1F * Get_Resolutions() {return Resolutions_Histo;}
 
 	TH1F * Get_Histo(int i) { return Histos[i];}
-	TObject * Get_Model(){ return Model;}
+	TObject * Get_SigmasModel(){ return ModelSigmas;}
+	TObject * Get_MeansModel(){ return ModelMeans;}
 
 
-	TSpline3* ModelSigmaWithSpline();	
-	TF1* ModelSigmaWithPoly();
+
+	TSpline3* ModelSigmasWithSpline()   {return ModelWithSpline(Sigmas_Histo,(basename+"_ModelSigmas").c_str(),bins);};	
+	TF1* 	  ModelSigmasWithPoly()     {return ModelWithPoly(Sigmas_Histo,(basename+"_ModelSigmas").c_str(),bins);};
+	
+	TSpline3* ModelMeansWithSpline()    {return ModelWithSpline(Means_Histo,(basename+"_ModelMeans").c_str(),bins);};	
+	TF1* 	  ModelMeansWithPoly()	    {return ModelWithPoly(Means_Histo,(basename+"_ModelMeans").c_str(),bins);};
+
+	TF1 * ModelMeansRatio(Resolution * Reso1);
+
 };
 
 
@@ -104,6 +117,34 @@ void Resolution::Fill(TTree * tree){
 }
 
 
+void Resolution::Fill(TTree * tree, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) ){
+
+	cout<<basename.c_str()<<" Filling ..."<< endl;
+	vars->ReadBranches(tree);
+	for(int i=0;i<tree->GetEntries();i++){
+
+		UpdateProgressBar(i, tree->GetEntries());
+		tree->GetEvent(i);
+                vars->Update();
+		FillEventByEvent( var(vars), discr_var(vars),ApplyCuts(cut,vars));
+	}
+	return;
+}
+
+
+void Resolution::FillEventByEvent(float var, float discr_var, bool CUT){
+	
+	int kbin;
+	kbin = 	bins.GetBin(discr_var);
+	if(CUT&&kbin>0) 
+		Histos[kbin]->Fill(var);		
+	return;	
+
+}
+
+
+
+
 void Resolution::Save(FileSaver finalhisto,bool recreate){
 
 	for(int i=0;i<bins.size();i++) 
@@ -117,15 +158,18 @@ void Resolution::Save(FileSaver finalhisto,bool recreate){
 void Resolution::Normalize(){
 
 	for(int i=0;i<Histos.size();i++){
-		if(Histos[i]->Integral()>2000){
 			float integral=Histos[i]->Integral();
+			if(integral>0){
 			Histos[i]->Sumw2();
 			Histos[i]->Scale(1/integral);
 			}
-		else
-			for(int i=0;i<Histos[i]->GetNbinsX();i++)
-				Histos[i]->SetBinContent(i+1,0);
-	}
+			else
+				for(int j=0;j<Histos[i]->GetNbinsX();j++){
+					Histos[i]->SetBinContent(j+1,0);
+					Histos[i]->SetBinError(j+1,0);
+
+				}
+		}
 	return;
 
 }
@@ -135,7 +179,7 @@ void Resolution::Eval_Resolution(std::vector<float> ExpectationValues){
 
 	for(int i=0;i<Histos.size();i++){
 		double FitRangeEdges[2];
-		double quantiles[2] = {0.15,0.85};
+		double quantiles[2] = {0.13,0.8};
 		Histos[i]->GetQuantiles(2,FitRangeEdges,quantiles);
 
 		TF1 * fitfunc = new TF1("fitfunc","gaus",-1,1);
@@ -172,58 +216,23 @@ void Resolution::Eval_Resolution(std::vector<float> ExpectationValues){
 }
 
 
-TSpline3* Resolution::ModelSigmaWithSpline(){
-		
-	TSpline3* Model;
-	if(Sigmas_Histo->Integral()==0)	cout<<"******** ERROR: Sigma values seems not to be yet calculated: returning NULL **********"<<endl;
-	else{
-		FitFunction * Fit = new FitFunction(Sigmas_Histo,5);
-		Fit->FitValues();
-		TH1F * FittedValues = (TH1F *) Fit->ReturnFittedValues();	
-		int nbinsnotzero=0;
-		for(int i=0;i<nbins;i++) if(Sigmas_Histo->GetBinContent(i+1)>0) nbinsnotzero++;
-		double x[nbinsnotzero]={0};
-		double y[nbinsnotzero]={0};
-		int i=0;
-		for(int j =0;j<nbins;j++){
-		      if(Sigmas_Histo->GetBinContent(j+1)>0){	
-			x[i]=bins.GetBinCenter(j);
-			y[i]=FittedValues->GetBinContent(j+1);
-			i++;
-			}	
-		}
 
-		Model = new TSpline3((basename+"_Model").c_str(),x,y,nbinsnotzero);
-		Model -> SetName((basename+"_Model").c_str());
-	}
-	return Model;
+TF1 * Resolution::ModelMeansRatio(Resolution * Reso1){
+	
+	TH1F * Means1 = (TH1F *)Means_Histo->Clone();
+	TH1F * Means2 = (TH1F *)Reso1->Means_Histo->Clone();
+
+	Means1->Sumw2();
+	Means2->Sumw2();
+		
+	Means2->Divide(Means1);
+	
+
+	TF1 * model = ModelWithPoly(Means2,(basename+"_ModelMeansRatio").c_str(),bins);
+	return model;
+
 }
 
-
-TF1* Resolution::ModelSigmaWithPoly(){
-		
-	TF1* Model=new TF1((basename+"_Model").c_str(),"pol4");
-	TGraphErrors *Graph=new TGraphErrors();
-	if(Sigmas_Histo->Integral()==0)	cout<<"******** ERROR: Sigma values seems not to be yet calculated: returning NULL **********"<<endl;
-	else{
-		double x[nbins]={0};
-		double y[nbins]={0};
-		double x_err[nbins]={0};
-                double y_err[nbins]={0};
-
-		for(int j =0;j<nbins;j++){
-			x[j]=bins.GetBinCenter(j);
-			y[j]=Sigmas_Histo->GetBinContent(j+1);	
-			y_err[j]=Sigmas_Histo->GetBinError(j+1);	
-			Graph->SetPoint(j,x[j],y[j]);
-			Graph->SetPointError(j,x_err[j],y_err[j]);
-		}
-
-		Graph -> Fit((basename+"_Model").c_str(),"","",(float)x[0],(float)x[nbins]);	
-		Model -> SetName((basename+"_Model").c_str());
-	}
-	return Model;
-}
 
 
 bool Resolution::CheckHistos(){

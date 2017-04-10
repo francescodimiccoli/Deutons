@@ -69,6 +69,60 @@ void FitFunction::FitValues(){
 
 
 
+TSpline3* ModelWithSpline(TH1F * Histo,std::string basename,Binning Bins){
+
+        TSpline3* Model=new TSpline3 ();
+        if(Histo->Integral()==0)        cout<<"******** ERROR: Exp. values seems not to be yet calculated: returning NULL **********"<<endl;
+        else{
+                int bins = Histo->GetNbinsX();
+                FitFunction * Fit = new FitFunction(Histo,0);
+                Fit->FitValues();
+                TH1F * FittedValues = (TH1F *) Fit->ReturnFittedValues();
+                int nbinsnotzero=0;
+                for(int i=0;i<bins;i++) if(Histo->GetBinContent(i+1)>0) nbinsnotzero++;
+                double x[nbinsnotzero]={0};
+                double y[nbinsnotzero]={0};
+                int i=0;
+                for(int j =0;j<bins;j++){
+                      if(Histo->GetBinContent(j+1)>0){
+                        x[i]=Bins.GetBinCenter(j);
+                        y[i]=FittedValues->GetBinContent(j+1);
+                        i++;
+                        }
+                }
+
+                Model = new TSpline3((basename).c_str(),x,y,nbinsnotzero);
+                Model -> SetName((basename).c_str());
+        }
+        return Model;
+}
+
+
+TF1* ModelWithPoly(TH1F * Histo,std::string basename,Binning Bins){
+
+        TF1* Model=new TF1((basename).c_str(),"pol4");
+        TGraphErrors *Graph=new TGraphErrors();
+        int bins = Histo->GetNbinsX();
+        if(Histo->Integral()==0)        cout<<"******** ERROR: Exp. values seems not to be yet calculated: returning NULL **********"<<endl;
+        else{
+                double x[bins]={0};
+                double y[bins]={0};
+                double x_err[bins]={0};
+                double y_err[bins]={0};
+
+                for(int j =0;j<bins;j++){
+                        x[j]=Bins.GetBinCenter(j);
+                        y[j]=Histo->GetBinContent(j+1);
+                        y_err[j]=Histo->GetBinError(j+1);
+                        Graph->SetPoint(j,x[j],y[j]);
+                        Graph->SetPointError(j,x_err[j],y_err[j]);
+                }
+
+                Graph -> Fit((basename).c_str(),"","",(float)x[0],(float)x[bins]);
+                Model -> SetName((basename).c_str());
+        }
+        return Model;
+}
 
 
 
