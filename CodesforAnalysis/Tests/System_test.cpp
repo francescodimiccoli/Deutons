@@ -6,6 +6,10 @@
 #include "TH2.h"
 #include "TH3.h"
 #include "TF2.h"
+#include <vector>
+#include <string>
+#include <sstream>
+
 #include "TVector3.h"
 #include "TMath.h"
 #include "TKey.h"
@@ -19,7 +23,6 @@
 #include "TGraphAsymmErrors.h"
 #include "TGraphErrors.h"
 #include "TObjArray.h"
-
 
 using namespace std;
 
@@ -45,9 +48,9 @@ float GetSigmatoMultiply(float distort_factor, TH1F * Original);
 
 TH1F * Distort_Histo(TH1F * Original,float distort_factor, float shift_factor=0);
 	
-std::vector< std::vector<TH1F *> > Multiple_Distortions(TH1F * Original,float distort_factor, float shift_factor, int steps=5);
+std::vector<std::vector<TH1F *>> Multiple_Distortions(TH1F * Original,float distort_factor, float shift_factor, int steps=5);
 
-std::vector< std::vector<TH1F *> > CopyCollection(std::vector< std::vector<TH1F *> > Collection);
+std::vector<std::vector<TH1F *>> CopyCollection(std::vector< std::vector<TH1F *> > Collection);
 
 struct TFit {
    TH1F * Templ_P ;
@@ -67,24 +70,25 @@ int System_test(){
 	float DEF_SIGMA=0.07;
 	float SHIFT=0.04;
 	float BIN=7;
+	std::vector<std::vector<int>> f;
 
 	cout<<"************************ READING DATA ***************************"<<endl;
 
-	string inputfile = "../../Histos/2011_09/2011_09_tot_P1.root";
+	string inputfile = "/storage/gpfs_ams/ams/users/fdimicco/Deutons/Analysis/AnalysisFiles/1314835200/Result.root";
 
 	TFile * input = TFile::Open(inputfile.c_str());
-	TH2F * TemplateP   =  (TH2F *)input->Get("FitTOF_Dbins_P");
-	TH3F * TemplateD   =  (TH3F *)input->Get("FitTOF_Dbins_D");
-	TH2F * DATA   =  (TH2F *)input->Get("FitTOF_Dbins_Data");	
+	TH1F * TemplateP   =  (TH1F *)input->Get("TOFfits/TemplateP/TOFfits_MCP_7");
+	TH1F * TemplateD   =  (TH1F *)input->Get("TOFfits/TemplateD/TOFfits_MCD_7");
+	TH1F * DATA   	   =  (TH1F *)input->Get("TOFfits/Data/TOFfits_Data_7");	
 
-	TH1F * OriginalP = Extract_Bin(TemplateP, BIN);
-	TH1F * OriginalD = Extract_Bin(TemplateD, BIN);
-	TH1F * Data      = Extract_Bin(DATA, BIN);
+	TH1F * OriginalP = (TH1F *)TemplateP ->Clone(); 
+	TH1F * OriginalD = (TH1F *)TemplateD ->Clone();
+	TH1F * Data      = (TH1F *)DATA      ->Clone();  
 	
 	cout<<"************************ DISTORTION TEST ***************************"<<endl;
-	
+
 		
-	std::vector< std::vector<TH1F *> > Collection = Multiple_Distortions(OriginalP,DEF_SIGMA,SHIFT,STEPS);
+	std::vector<std::vector<TH1F *>> Collection = Multiple_Distortions(OriginalP,DEF_SIGMA,SHIFT,STEPS);
 
 	TCanvas * c1 = new TCanvas("Example of distortion");
 	gPad->SetLogy();
@@ -192,14 +196,14 @@ int System_test(){
 			Error->Fill(Fits[i][j]->Templ_D->Integral(),1/Chisquare->GetBinContent(i+1,j+1));
 	}
 	float S_Error=Error->GetStdDev()/Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral();
-	string s_err = to_string (S_Error*100);
+	string s_err = "1";//to_string (S_Error*100);
         s_err.erase ( s_err.find_last_not_of('0') + 1, std::string::npos );
 	
 	TCanvas * c3 = new TCanvas("Results: Deuteron Counts");		
 	gPad->SetTickx();
         gPad->SetTicky();
 
-	DCounts->SetTitle(("Deuteron Count Deviation from "+to_string((int) Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral())).c_str() );
+	DCounts->SetTitle(("Deuteron Count Deviation from "+"1"/*+to_string((int) Fits[STEPS/2+1][STEPS/2+1]->Templ_D->Integral())*/).c_str() );
 	DCounts->GetXaxis()->SetTitle("#sigma deformation (%)");
 	DCounts->GetYaxis()->SetTitle("Peak shift (%)");
 	DCounts->GetZaxis()->SetRangeUser(0.9,1.2);
@@ -258,8 +262,8 @@ TH1F * Extract_Bin(TH1 * Histo, int bin,int third_dim)
 
 TSpline3 * Model_Histo(TH1F * Histo){
 	int nbins =Histo->GetNbinsX();
-	double X[nbins];
-	double Y[nbins];
+	double X[1000];
+	double Y[1000];
 
 	for(int i=0;i<Histo->GetNbinsX();i++){
 		X[i]=Histo->GetBinCenter(i+1);
@@ -378,8 +382,8 @@ std::vector< std::vector<TH1F *> > Multiple_Distortions(TH1F * Original,float di
 			TH1F * Distorted = Distort_Histo(Original,-distort_factor+i*distort_step,-shift_factor+j*shift_step);
 			
 			Distorted->SetLineColor(gStyle->GetColorPalette(0+c));
-			string str1 = to_string ((-shift_factor+j*shift_step)*100);
-			string str2 = to_string ((-distort_factor+i*distort_step)*100);
+			string str1 = "0";//to_string ((-shift_factor+j*shift_step)*100);
+			string str2 = "1";//to_string ((-distort_factor+i*distort_step)*100);
 	  		str1.erase ( str1.find_last_not_of('0') + 1, std::string::npos );			
 			str2.erase ( str2.find_last_not_of('0') + 1, std::string::npos );
 			Distorted->SetTitle(("Shift: " +str1 + "0% , Sigma: " + str2+"0%").c_str());

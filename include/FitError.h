@@ -75,7 +75,7 @@ TSpline3* ModelWithSpline(TH1F * Histo,std::string basename,Binning Bins){
         if(Histo->Integral()==0)        cout<<"******** ERROR: Exp. values seems not to be yet calculated: returning NULL **********"<<endl;
         else{
                 int bins = Histo->GetNbinsX();
-                FitFunction * Fit = new FitFunction(Histo,0);
+                FitFunction * Fit = new FitFunction(Histo,2);
                 Fit->FitValues();
                 TH1F * FittedValues = (TH1F *) Fit->ReturnFittedValues();
                 int nbinsnotzero=0;
@@ -87,7 +87,8 @@ TSpline3* ModelWithSpline(TH1F * Histo,std::string basename,Binning Bins){
                       if(Histo->GetBinContent(j+1)>0){
                         x[i]=Bins.GetBinCenter(j);
                         y[i]=FittedValues->GetBinContent(j+1);
-                        i++;
+                        if(i==0) y[i] = Histo->GetBinContent(j+1); // otherwise the first bin is smoothed with 0
+			i++;
                         }
                 }
 
@@ -117,8 +118,12 @@ TF1* ModelWithPoly(TH1F * Histo,std::string basename,Binning Bins){
                         Graph->SetPoint(j,x[j],y[j]);
                         Graph->SetPointError(j,x_err[j],y_err[j]);
                 }
-
-                Graph -> Fit((basename).c_str(),"","",(float)x[0],(float)x[bins]);
+		int fit_attempt=0;
+		while(Model->GetParameter(0)==0){
+                	Graph -> Fit((basename).c_str(),"","",(float)x[fit_attempt],(float)x[bins-fit_attempt]);
+			fit_attempt++;
+			cout<<0.01*(float)fit_attempt<<endl;
+		}
                 Model -> SetName((basename).c_str());
         }
         return Model;

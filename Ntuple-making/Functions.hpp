@@ -6,9 +6,9 @@ void CalibrateEdep(Variables *vars){
         Velocity=fabs(Velocity);
 
         if(Velocity>0&&Velocity<1){
-                vars->EdepTOFU =((vars->EdepTOFU)*Corr_TOFU->Eval(Velocity));
-                vars->EdepTOFD =((vars->EdepTOFD)*Corr_TOFD->Eval(Velocity));
-                vars->EdepTrack=((vars->EdepTrack)*Corr_Track->Eval(Velocity));
+                vars->EdepTOFU =((vars->EdepTOFU)*(1/Corr_TOFU->Eval(Velocity)));
+                vars->EdepTOFD =((vars->EdepTOFD)*(1/Corr_TOFD->Eval(Velocity)));
+                vars->EdepTrack=((vars->EdepTrack)*(1/Corr_Track->Eval(Velocity)));
         }
 
         return;
@@ -17,20 +17,17 @@ void CalibrateEdep(Variables *vars){
 
 
 void ProcessEvent(Variables *vars,bool isMC,Reweighter reweighter){
-	vars->RICHmask_new=(vars->RICHmask_new&1023);
-	vars->joinCutmask=vars->CUTMASK;
-	vars->joinCutmask=vars->CUTMASK|(1<<10);
-	vars->joinCutmask = vars->joinCutmask|((vars->RICHmask_new)<<11);	
+	
 	if(isMC){
 		vars->mcweight=reweighter.getWeight(fabs(vars->Momento_gen));
                         if(vars->Momento_gen<1) vars->mcweight=1;
-			CalibrateEdep(vars);	
+			//CalibrateEdep(vars);	
 		
 	}
-	if(IsPreselected(vars)){
+	if(ApplyCuts("IsPreselected",vars)){
 		Likelihood(vars);
-		Eval_Distance(vars);
-		Eval_Distance(vars,false);	
+		Eval_DistanceFromP(vars);
+		Eval_DistanceFromD(vars);	
 	}	
 	//vars->PrintCurrentState();
 	return;		
@@ -52,30 +49,76 @@ bool IsMC(TTree * tree){
 bool ReadCalibration(string month){
 
         cout<<"****************** CALIB. READING **************************"<<endl;
-        string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/CodesforAnalysis/CALIBRAZIONI/"+month+".root");
-        TFile *_file2 = TFile::Open(nomecal.c_str());
-        if(_file2) cout<<"calibration file found: "<<(month + ".root").c_str()<<endl;
+        string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/Calibrations/Calibfiles/"+month+"/Calib.root");
+        FileSaver Calibration;	
+	Calibration.setName(nomecal.c_str());
+	bool checkfile = Calibration.CheckFile();
+
+	if(checkfile) cout<<"calibration file found: "<<(month).c_str()<<endl;
         else { cout<<"calibration file not found"<<endl; return false;}
 
-        Rig = (TSpline3 *) _file2->Get("Fit Results/Splines/Rig");
-        beta = (TSpline3 *) _file2->Get("Fit Results/Splines/beta");
-        betaNaF = (TF1 *) _file2->Get("Fit Results/Splines/SigmaInvBetaNaF_spl");
-        betaAgl = (TF1 *) _file2->Get("Fit Results/Splines/SigmaInvBetaAgl_spl");
-        eL1 = (TSpline3 *) _file2->Get("Fit Results/Splines/eL1");
-        etofu =  (TSpline3 *) _file2->Get("Fit Results/Splines/etofu");
-        etrack =  (TSpline3 *) _file2->Get("Fit Results/Splines/etrack");
-        etofd =  (TSpline3 *) _file2->Get("Fit Results/Splines/etofd");
-        EdepL1beta =  (TSpline3 *) _file2->Get("Fit Results/Splines/EdepL1beta");
-        EdepTOFbeta =  (TSpline3 *) _file2->Get("Fit Results/Splines/EdepTOFbeta");
-        EdepTrackbeta =  (TSpline3 *) _file2->Get("Fit Results/Splines/EdepTrackbeta");
-        EdepTOFDbeta =  (TSpline3 *) _file2->Get("Fit Results/Splines/EdepTOFDbeta");
-        Corr_L1 =  (TSpline3 *) _file2->Get("Fit Results/Splines/Corr_L1");
-        Corr_TOFU =  (TSpline3 *) _file2->Get("Fit Results/Splines/Corr_TOFU");
-        Corr_Track =  (TSpline3 *) _file2->Get("Fit Results/Splines/Corr_Track");
-        Corr_TOFD =  (TSpline3 *) _file2->Get("Fit Results/Splines/Corr_TOFD");
-        cout<<Rig<<" "<<beta<<" "<<" "<<betaNaF<<" "<<betaAgl<<" "<<eL1<<" "<<etofu<<" "<<etrack<<" "<<etofd<<" "<<EdepL1beta<<" "<<EdepTOFbeta<<" "<<EdepTrackbeta<<" "<<EdepTOFDbeta<<" "<<Corr_L1<<" "<<Corr_TOFU<<" "<<Corr_Track<<" "<<Corr_TOFD<<endl;
+	Resolution * RigidityResolution_P = new Resolution(Calibration,"RvsR Resolution (P)",PResB);
+        Resolution * RigidityResolution_D = new Resolution(Calibration,"RvsR Resolution (D)",PResB);
 
-        return true;
+	Resolution * BetaTOFResolution_P = new Resolution(Calibration,"BetaTOFvsBeta Resolution (P)",ToFResB);
+        Resolution * BetaTOFResolution_D = new Resolution(Calibration,"BetaTOFvsBeta Resolution (D)",ToFResB);
+	
+	Resolution * BetaNaFResolution_P = new Resolution(Calibration,"BetaNaFvsBeta Resolution (P)",NaFResB);
+        Resolution * BetaNaFResolution_D = new Resolution(Calibration,"BetaNaFvsBeta Resolution (D)",NaFResB);
+	
+	Resolution * BetaAglResolution_P = new Resolution(Calibration,"BetaAglvsBeta Resolution (P)",AglResB);
+        Resolution * BetaAglResolution_D = new Resolution(Calibration,"BetaAglvsBeta Resolution (D)",AglResB);
+
+	Resolution * EdepUTOFResolution_P= new Resolution(Calibration,"EdepUTOFvsBeta Resolution (P)",ToFResB);
+        Resolution * EdepUTOFResolution_D= new Resolution(Calibration,"EdepUTOFvsBeta Resolution (D)",ToFResB);
+
+	Resolution * EdepLTOFResolution_P= new Resolution(Calibration,"EdepLTOFvsBeta Resolution (P)",ToFResB);
+	Resolution * EdepLTOFResolution_D= new Resolution(Calibration,"EdepLTOFvsBeta Resolution (D)",ToFResB);
+
+	Resolution * EdepTrackResolution_P= new Resolution(Calibration,"EdepTrackvsBeta Resolution (P)",ToFResB);
+	Resolution * EdepTrackResolution_D= new Resolution(Calibration,"EdepTrackvsBeta Resolution (D)",ToFResB);
+
+	Resolution * EdepUTOFMC_P = new Resolution(Calibration,"EdepUTOFvsBeta Measured MC",ToFResB);
+	Resolution * EdepUTOFDT_P = new Resolution(Calibration,"EdepUTOFvsBeta Measured DT",ToFResB);
+
+	Resolution * EdepLTOFMC_P = new Resolution(Calibration,"EdepLTOFvsBeta Measured MC",ToFResB);
+	Resolution * EdepLTOFDT_P = new Resolution(Calibration,"EdepLTOFvsBeta Measured DT",ToFResB);
+
+	Resolution * EdepTrackMC_P = new Resolution(Calibration,"EdepTrackvsBeta Measured MC",ToFResB);
+	Resolution * EdepTrackDT_P = new Resolution(Calibration,"EdepTrackvsBeta Measured DT",ToFResB);
+
+
+	Rig_p		=(TSpline3 *) RigidityResolution_P  ->Get_SigmasModel(); 
+	beta_p		=(TF1 *   )   BetaTOFResolution_P   ->Get_SigmasModel(); 
+	betaNaF_p	=(TF1 *	  )   BetaNaFResolution_P   ->Get_SigmasModel(); 
+	betaAgl_p	=(TF1 *	  )   BetaAglResolution_P   ->Get_SigmasModel(); 
+	Rigmean_p	=(TSpline3 *) RigidityResolution_P  ->Get_MeansModel(); 
+	betamean_p	=(TF1 *   )   BetaTOFResolution_P   ->Get_MeansModel(); 
+	betaNaFmean_p	=(TF1 *	  )   BetaNaFResolution_P   ->Get_MeansModel(); 
+	betaAglmean_p	=(TF1 *	  )   BetaAglResolution_P   ->Get_MeansModel(); 
+	etofu_p		=(TSpline3 *) EdepUTOFResolution_P  ->Get_SigmasModel(); 
+	etrack_p	=(TSpline3 *) EdepTrackResolution_P ->Get_SigmasModel(); 
+	etofd_p		=(TSpline3 *) EdepLTOFResolution_P  ->Get_SigmasModel(); 
+	EdepTOFbeta_p	=(TSpline3 *) EdepUTOFResolution_P  ->Get_MeansModel(); 
+	EdepTrackbeta_p	=(TSpline3 *) EdepTrackResolution_P ->Get_MeansModel();  
+	EdepTOFDbeta_p	=(TSpline3 *) EdepLTOFResolution_P  ->Get_MeansModel(); 
+
+	Rig_d		=(TSpline3 *) RigidityResolution_D  ->Get_SigmasModel(); 
+        beta_d		=(TF1 *   )   BetaTOFResolution_D   ->Get_SigmasModel(); 
+        betaNaF_d	=(TF1 *	  )   BetaNaFResolution_D   ->Get_SigmasModel(); 
+        betaAgl_d	=(TF1 *	  )   BetaAglResolution_D   ->Get_SigmasModel(); 
+        Rigmean_d	=(TSpline3 *) RigidityResolution_D  ->Get_MeansModel(); 
+        betamean_d	=(TF1 *   )   BetaTOFResolution_D   ->Get_MeansModel(); 
+        betaNaFmean_d	=(TF1 *	  )   BetaNaFResolution_D   ->Get_MeansModel(); 
+        betaAglmean_d	=(TF1 *	  )   BetaAglResolution_D   ->Get_MeansModel(); 
+        etofu_d		=(TSpline3 *) EdepUTOFResolution_D  ->Get_SigmasModel(); 
+        etrack_d	=(TSpline3 *) EdepTrackResolution_D ->Get_SigmasModel(); 
+        etofd_d		=(TSpline3 *) EdepLTOFResolution_D  ->Get_SigmasModel(); 
+        EdepTOFbeta_d	=(TSpline3 *) EdepUTOFResolution_D  ->Get_MeansModel(); 
+        EdepTrackbeta_d	=(TSpline3 *) EdepTrackResolution_D ->Get_MeansModel();  
+        EdepTOFDbeta_d	=(TSpline3 *) EdepLTOFResolution_D  ->Get_MeansModel(); 
+
+        return checkfile;
 
 }
 

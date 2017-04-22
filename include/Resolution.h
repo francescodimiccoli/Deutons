@@ -67,7 +67,7 @@ class Resolution{
 		void FillEventByEvent(float var, float discr_var, bool cut);
 		void Save(FileSaver finalhisto,bool recreate=false);
 		void Normalize();
-		void Eval_Resolution(std::vector<float> ExpectationValues={-1});
+		void Eval_Resolution(std::vector<float> ExpectationValues={-1},float low_limit=0.05,float high_limit=0.85);
 
 
 	bool CheckHistos();
@@ -159,7 +159,7 @@ void Resolution::Normalize(){
 
 	for(int i=0;i<Histos.size();i++){
 			float integral=Histos[i]->Integral();
-			if(integral>0){
+			if(integral>100){
 			Histos[i]->Sumw2();
 			Histos[i]->Scale(1/integral);
 			}
@@ -175,20 +175,39 @@ void Resolution::Normalize(){
 }
 
 
-void Resolution::Eval_Resolution(std::vector<float> ExpectationValues){
+void Resolution::Eval_Resolution(std::vector<float> ExpectationValues,float low_limit,float high_limit){
 
 	for(int i=0;i<Histos.size();i++){
 		double FitRangeEdges[2];
-		double quantiles[2] = {0.13,0.8};
+		double quantiles[2] = {low_limit,high_limit};
 		Histos[i]->GetQuantiles(2,FitRangeEdges,quantiles);
 
 		TF1 * fitfunc = new TF1("fitfunc","gaus",-1,1);
 		fitfunc->SetParameter(0,Histos[i]->GetBinContent(Histos[i]->GetMaximumBin()));
 		fitfunc->SetParameter(1,Histos[i]->GetMean());
 		fitfunc->SetParameter(2,Histos[i]->GetRMS());
-
-		if(Histos[i]->Integral()>0) Histos[i]->Fit("fitfunc","","",FitRangeEdges[0],FitRangeEdges[1]);
 		
+		//scanning for best fit window
+		float step=0.025;
+                float window=0.05;
+		float chi[5]={999999};
+
+		if(Histos[i]->Integral()>0){ 
+			for(int j=0;j<5;j++){
+				Histos[i]->Fit("fitfunc","","",FitRangeEdges[0]-(window-j*step)*FitRangeEdges[0],FitRangeEdges[1]+(window-j*step)*FitRangeEdges[1]);
+				chi[j]=fitfunc->GetChisquare();
+				}
+		}
+		float j_minchisquare=0;
+		float temp=chi[0];
+		for(int j=0;j<5;j++){
+			if(chi[j]<temp) {temp=chi[j]; j_minchisquare=(float)j;}
+			cout<<j_minchisquare<<endl;
+		}
+		//final fit
+		Histos[i]->Fit("fitfunc","","",FitRangeEdges[0]-(window-j_minchisquare*step)*FitRangeEdges[0],FitRangeEdges[1]+(window-j_minchisquare*step)*FitRangeEdges[1]);
+
+
 		float mean;
 		if(ExpectationValues[0]!=-1) mean = ExpectationValues[i]; 
 		else mean  = bins.GetBinCenter(i);

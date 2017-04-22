@@ -19,7 +19,7 @@
 #include "../include/GlobalBinning.h"
 
 #include "../Ntuple-making/Commonglobals.cpp"
-#include "../Ntuple-making/Variables.hpp"
+#include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 
 #include "../include/filesaver.h"
@@ -29,19 +29,9 @@
 
 
 
-float GetInverseRigidity (Variables * vars) {return 1/vars->R-1/vars->Momento_gen;}
-float GetGenMomentum     (Variables * vars) {return vars->Momento_gen;}
-float GetInverseEdepUToF (Variables * vars) {return 1/vars->EdepTOFU;}
-float GetInverseEdepLToF (Variables * vars) {return 1/vars->EdepTOFD;}
-float GetBetaTOF	 (Variables * vars) {return vars->Beta;}
-float GetInverseEdepTrack(Variables * vars) {return 1/vars->EdepTrack;}
-float GetBetaGen	 (Variables * vars) {return pow((pow((vars->Momento_gen/vars->Massa_gen),2)/(pow((vars->Momento_gen/vars->Massa_gen),2)+1)),0.5);}
-float GetInverseBetaTOF  (Variables * vars) {return 1/vars->Beta - 1/GetBetaGen(vars);}
-float GetInverseBetaRICH (Variables * vars) {return 1/vars->BetaRICH_new - 1/GetBetaGen(vars);}
 
 
-
-bool Calculate_Resolution( Resolution * Reso, Variables * vars, bool checkfile, TTree * treeMC,  FileSaver finalHistos, float (*var) (Variables * vars),float (*discr_var) (Variables * vars),  std::vector<float> ExpValues={-1}, bool spline = false){
+bool Calculate_Resolution( Resolution * Reso, Variables * vars, bool checkfile, TTree * treeMC,  FileSaver finalHistos, float (*var) (Variables * vars),float (*discr_var) (Variables * vars),  std::vector<float> ExpValues={-1}, bool spline = false,float low_limit=0.05,float high_limit=0.85){
 	if(!checkfile){
                 Reso->Fill(treeMC,vars,var,discr_var);
 		Reso->Normalize();
@@ -50,7 +40,7 @@ bool Calculate_Resolution( Resolution * Reso, Variables * vars, bool checkfile, 
         else Reso = new Resolution(finalHistos,Reso->GetName(),Reso->GetBinning());
 
         if(Reso->CheckHistos()){
-                Reso->Eval_Resolution(ExpValues);
+                Reso->Eval_Resolution(ExpValues,low_limit,high_limit);
 		Reso->Save(finalHistos);
         }
    	finalHistos.Add(Reso->Get_Means()	);
@@ -153,8 +143,8 @@ int main(int argc, char * argv[])
 	Resolution * BetaNaFResolution_P = new Resolution("BetaNaFvsBeta Resolution (P)",NaFResB,"IsPreselected&IsProtonMC&IsFromNaF",250,-0.05,0.15);
 	Calculate_Resolution( BetaNaFResolution_P, varsMC,checkfile, treeMC, finalHistos, GetInverseBetaRICH, GetBetaGen);
 
-	Resolution * BetaAglResolution_P = new Resolution("BetaAglvsBeta Resolution (P)",AglResB,"IsPreselected&IsProtonMC&IsFromAgl",250,-0.075,0.075);
-	Calculate_Resolution( BetaAglResolution_P, varsMC,checkfile, treeMC, finalHistos, GetInverseBetaRICH, GetBetaGen);
+	Resolution * BetaAglResolution_P = new Resolution("BetaAglvsBeta Resolution (P)",AglResB,"IsPreselected&IsProtonMC&IsFromAgl",250,-0.02,0.075);
+	Calculate_Resolution( BetaAglResolution_P, varsMC,checkfile, treeMC, finalHistos, GetInverseBetaRICH, GetBetaGen,AglResB.BetaBinsCent(),false,0.315,0.93);
 
 	Resolution * BetaTOFResolution_D = new Resolution("BetaTOFvsBeta Resolution (D)",ToFResB,"IsPreselected&IsDeutonMC",1000,-0.5,1.5);
 	Calculate_Resolution( BetaTOFResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseBetaTOF, GetBetaGen);
@@ -162,58 +152,59 @@ int main(int argc, char * argv[])
 	Resolution * BetaNaFResolution_D = new Resolution("BetaNaFvsBeta Resolution (D)",NaFResB,"IsPreselected&IsDeutonMC&IsFromNaF",250,-0.05,0.15);
 	Calculate_Resolution( BetaNaFResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseBetaRICH, GetBetaGen);
 
-	Resolution * BetaAglResolution_D = new Resolution("BetaAglvsBeta Resolution (D)",AglResB,"IsPreselected&IsDeutonMC&IsFromAgl",250,-0.075,0.075);
-	Calculate_Resolution( BetaAglResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseBetaRICH, GetBetaGen);
+	Resolution * BetaAglResolution_D = new Resolution("BetaAglvsBeta Resolution (D)",AglResB,"IsPreselected&IsDeutonMC&IsFromAgl",500,-0.02,0.075);
+	Calculate_Resolution( BetaAglResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseBetaRICH, GetBetaGen,AglResB.BetaBinsCent(),false,0.315,0.93);
 
-
+	std::vector<float> meanedep;
+	for(int i=0;i<ToFResB.size();i++) meanedep.push_back(1.);
 	// E. dep. (U.ToF, L.ToF, Inner Tracker)
 	
 	Resolution * EdepUTOFResolution_P = new Resolution("EdepUTOFvsBeta Resolution (P)",ToFResB,"IsPreselected&IsProtonMC",1000,-1.5,1.5);
-	Calculate_Resolution( EdepUTOFResolution_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepUToF, GetBetaGen);
+	Calculate_Resolution( EdepUTOFResolution_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepUToF, GetBetaGen,meanedep,true,0.35,0.95);
 
         Resolution * EdepUTOFResolution_D = new Resolution("EdepUTOFvsBeta Resolution (D)",ToFResB,"IsPreselected&IsDeutonMC",1000,-1.5,1.5);
-	Calculate_Resolution( EdepUTOFResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepUToF, GetBetaGen);
+	Calculate_Resolution( EdepUTOFResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepUToF, GetBetaGen,meanedep,true,0.35,0.95);
 	
 	Resolution * EdepLTOFResolution_P = new Resolution("EdepLTOFvsBeta Resolution (P)",ToFResB,"IsPreselected&IsProtonMC",1000,-1.5,1.5);
-	Calculate_Resolution( EdepLTOFResolution_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepLToF, GetBetaGen);
+	Calculate_Resolution( EdepLTOFResolution_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepLToF, GetBetaGen,meanedep,true,0.35,0.95);
 
-        Resolution * EdepLTOFResolution_D = new Resolution("EdepUTOFvsBeta Resolution (D)",ToFResB,"IsPreselected&IsDeutonMC",1000,-1.5,1.5);
-        Calculate_Resolution( EdepLTOFResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepLToF, GetBetaGen);
+        Resolution * EdepLTOFResolution_D = new Resolution("EdepLTOFvsBeta Resolution (D)",ToFResB,"IsPreselected&IsDeutonMC",1000,-1.5,1.5);
+        Calculate_Resolution( EdepLTOFResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepLToF, GetBetaGen,meanedep,true,0.35,0.95);
 
 	Resolution * EdepTrackResolution_P = new Resolution("EdepTrackvsBeta Resolution (P)",ToFResB,"IsPreselected&IsProtonMC",500,-1.5,15);
-	Calculate_Resolution( EdepTrackResolution_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepTrack, GetBetaGen);
+	Calculate_Resolution( EdepTrackResolution_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepTrack, GetBetaGen,meanedep,true,0.1,0.75);
 	
 	Resolution * EdepTrackResolution_D = new Resolution("EdepTrackvsBeta Resolution (D)",ToFResB,"IsPreselected&IsDeutonMC",500,-1.5,15);
-	Calculate_Resolution( EdepTrackResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepTrack, GetBetaGen);
+	Calculate_Resolution( EdepTrackResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepTrack, GetBetaGen,meanedep,true,0.1,0.75);
 
 
 	// E.dep. calibration
 	
 	//Upper ToF 	
 	Resolution * EdepUTOFMC_P = new Resolution("EdepUTOFvsBeta Measured MC",ToFResB,"IsPreselected&IsProtonMC&L1LooseCharge1",1000,-1.5,1.5);
-	Calculate_Resolution( EdepUTOFMC_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepUToF, GetBetaTOF);
+	Calculate_Resolution( EdepUTOFMC_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepUToF, GetBetaTOF,meanedep,true,0.35,0.95);
 
 	Resolution * EdepUTOFDT_P = new Resolution("EdepUTOFvsBeta Measured DT",ToFResB,"IsPreselected&IsData&L1LooseCharge1",1000,-1.5,1.5);
-	Calculate_Resolution( EdepUTOFDT_P, varsDT,checkfile, treeDT, finalHistos, GetInverseEdepUToF, GetBetaTOF);
+	Calculate_Resolution( EdepUTOFDT_P, varsDT,checkfile, treeDT, finalHistos, GetInverseEdepUToF, GetBetaTOF,meanedep,true,0.35,0.95);
 
 	CalculateMeanRatio( EdepUTOFDT_P,EdepUTOFMC_P, finalHistos);
 
 	// Inner Tracker
 	Resolution * EdepTrackMC_P = new Resolution("EdepTrackvsBeta Measured MC",ToFResB,"IsPreselected&IsProtonsMC&L1LooseCharge1",500,-1.5,15);
-        Calculate_Resolution( EdepTrackMC_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepTrack, GetBetaTOF);
+        Calculate_Resolution( EdepTrackMC_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepTrack, GetBetaTOF,meanedep,true,0.1,0.75);
 
 	Resolution * EdepTrackDT_P = new Resolution("EdepTrackvsBeta Measured DT",ToFResB,"IsPreselected&IsData&L1LooseCharge1",500,-1.5,15);
-	Calculate_Resolution( EdepTrackDT_P, varsDT,checkfile, treeDT, finalHistos, GetInverseEdepTrack, GetBetaTOF);
+	Calculate_Resolution( EdepTrackDT_P, varsDT,checkfile, treeDT, finalHistos, GetInverseEdepTrack, GetBetaTOF,meanedep,true,0.1,0.75);
 
 	CalculateMeanRatio( EdepTrackDT_P,EdepTrackMC_P, finalHistos);
 
 
 	//Lower ToF
 	Resolution * EdepLTOFMC_P = new Resolution("EdepLTOFvsBeta Measured MC",ToFResB,"IsPreselected&IsProtonMC&L1LooseCharge1",1000,-1.5,1.5);
-	Calculate_Resolution( EdepLTOFMC_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepLToF, GetBetaTOF);
+	Calculate_Resolution( EdepLTOFMC_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepLToF, GetBetaTOF,meanedep,true,0.35,0.95);
 
 	Resolution * EdepLTOFDT_P = new Resolution("EdepLTOFvsBeta Measured DT",ToFResB,"IsPreselected&IsData&L1LooseCharge1",1000,-1.5,1.5);
-	Calculate_Resolution( EdepLTOFDT_P, varsDT,checkfile, treeDT, finalHistos, GetInverseEdepLToF, GetBetaTOF);
+	Calculate_Resolution( EdepLTOFDT_P, varsDT,checkfile, treeDT, finalHistos, GetInverseEdepLToF, GetBetaTOF,meanedep,true,0.35,0.95);
 
 	CalculateMeanRatio( EdepLTOFDT_P,EdepLTOFMC_P, finalHistos);
 

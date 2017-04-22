@@ -17,15 +17,29 @@
 #include <TMVA/Reader.h>
 #include <TMVA/Tools.h>
 
+#include "TGraphErrors.h"
+#include "TCanvas.h"
+#include "TLegend.h"
+#include "../include/GlobalBinning.h"
 
 #include "Commonglobals.cpp"
 #include "Variables.hpp"
+
+#include "../include/Cuts.h"
+#include "../include/filesaver.h"
+
+#include "../include/FitError.h"
+#include "../include/Resolution.h"
+
 #include "Discriminants5D.h"
 
 #include "reweight.h"
 #include "histUtils.h"
 #include "../include/binning.h"
 #include "Functions.hpp"
+
+
+
 
 
 bool ReadCalibration(string month);
@@ -38,14 +52,12 @@ void CalibrateEdep(Variables *vars);
 
 void ProcessEvent(Variables *vars,bool isMC,Reweighter reweighter);
 
-void UpdateProgressBar(int currentevent, int totalentries);
 
 int main(int argc, char * argv[])
 {
 	string month = argv[1];
 	if(!ReadCalibration(month)) return 0;
 	if(!ReadPdfForLikelihood()) return 0;
-
 	string INPUT(argv[2]);
 	string OUTPUT(argv[3]);
 
@@ -97,14 +109,7 @@ int main(int argc, char * argv[])
 	File->Close();
 
 	return 0;
+
 }
 
-
-void UpdateProgressBar(int currentevent, int totalentries)
-{
-	int newratio =(int)100*(currentevent/    (float)totalentries);
-	int oldratio =(int)100*((currentevent-1)/(float)totalentries);
-	if(newratio>oldratio)
-		cout<<'\r' << "Progress : "<< newratio+1 << " %"<< flush; //+1 pour finir a 100%
-}
 

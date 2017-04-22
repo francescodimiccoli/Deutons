@@ -9,6 +9,7 @@ class FileSaver {
       string setName() {return filename;}
       bool CheckFile();	      
       TObject * Get(std::string name);	
+      TFile * GetFile();
 	
    private:
       string filename;
@@ -54,3 +55,8 @@ TObject *  FileSaver::Get(std::string name){
 	return Obj;	
 }
 
+
+TFile * FileSaver::GetFile(){
+	TFile * fileFinalPlots=TFile::Open(filename.c_str(), "READ");
+	return fileFinalPlots;
+}

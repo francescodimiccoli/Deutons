@@ -41,14 +41,14 @@ TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxi
 }
 
 
-void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, std::string Yaxis, int color, std::string options, float ymin=-1,float ymax=-1,int rebin=1){
+void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, std::string Yaxis, int color, std::string options, float ymin=-1,float ymax=-1,float thickline=3,std::string legendname="",bool filled = false,bool dots= false,bool skipleg=false,int rebin=1){
 	c -> cd();
 	gPad-> SetLogy();
 	gPad-> SetTickx();
 	gPad-> SetTicky();
 
 	Distribution->SetLineColor(color);
-	Distribution->SetLineWidth(3);
+	Distribution->SetLineWidth(thickline);
 
 	Distribution->SetStats(false);
 	Distribution->SetTitle("");
@@ -75,9 +75,47 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 	Distribution->GetXaxis()->SetLabelFont(32);
 	Distribution->GetYaxis()->SetLabelFont(32); 
 
+	Distribution->SetMarkerColor(color);
+	Distribution->SetMarkerStyle(8);
+	Distribution->SetMarkerSize(thickline);
+
+
+
+
+	if(filled){
+		Distribution->SetFillColor(color);
+		Distribution->SetFillStyle(3001);
+	}
 
 	Distribution->Draw((options+",hist").c_str());
+ 	
+	if(!skipleg){
+		TLegend * leg = (TLegend*) gPad->FindObject("leg");
+		if(leg){
+			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
+			else {
+				if(dots) leg->AddEntry(Distribution,legendname.c_str(),"epl");
+				else leg->AddEntry(Distribution,legendname.c_str(),"l");
+			}
 
+			leg->SetTextFont(32);
+			leg->Draw("same");
+		}
+
+		else{
+			leg = new TLegend(0.7, 0.2,0.95,0.95);
+			leg->SetName("leg");
+			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
+			else {
+				if(dots) leg->AddEntry(Distribution,legendname.c_str(),"epl");
+				else leg->AddEntry(Distribution,legendname.c_str(),"l"); 
+			}
+			leg->SetTextFont(32);
+			leg->SetLineWidth(5);
+			leg->SetFillColor(0);
+			leg->Draw("same"); 
+		}
+	}
 	if(fit){
 		fit->SetLineColor(color);
 		fit->SetLineWidth(5);
@@ -87,6 +125,70 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 
 	return;
 }
+
+void PlotTH1F(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, std::string Yaxis, int color, std::string options,std::string legendname, float thickness=3, bool skipleg=false){
+
+	c -> cd();
+	gPad-> SetLogz();
+	gPad-> SetTickx();
+	gPad-> SetTicky();
+
+
+	Distribution->SetStats(false);
+	Distribution->SetTitle("");
+
+	Distribution->SetLineColor(color);
+	Distribution->SetMarkerColor(color);
+
+	Distribution->SetLineWidth(thickness);
+	Distribution->SetMarkerSize(thickness);
+
+
+	Distribution->GetXaxis()->SetTitle(Xaxis.c_str());
+	Distribution->GetYaxis()->SetTitle(Yaxis.c_str());	
+
+	Distribution->GetXaxis()->SetTitleSize(0.045);
+	Distribution->GetYaxis()->SetTitleSize(0.045);	
+
+	Distribution->GetXaxis()->CenterTitle();
+	Distribution->GetYaxis()->CenterTitle();
+
+	Distribution->GetXaxis()->SetTitleFont(32);
+	Distribution->GetYaxis()->SetTitleFont(32); 
+
+	Distribution->GetXaxis()->SetLabelFont(32);
+	Distribution->GetYaxis()->SetLabelFont(32); 
+
+	Distribution->Draw((options+"same").c_str());
+
+	if(!skipleg){
+		TLegend * leg = (TLegend*) gPad->FindObject("leg");
+		if(leg){
+			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
+				else leg->AddEntry(Distribution,legendname.c_str(),(options).c_str());
+
+			leg->SetTextFont(32);
+			leg->Draw("same");
+		}
+
+		else{
+			leg = new TLegend(0.7, 0.2,0.95,0.95);
+			leg->SetName("leg");
+			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
+				else leg->AddEntry(Distribution,legendname.c_str(),(options).c_str()); 
+			leg->SetTextFont(32);
+			leg->SetLineWidth(5);
+			leg->SetFillColor(0);
+			leg->Draw("same"); 
+		}
+	}
+
+
+	return;
+}
+
+
+
 
 void PlotFunction(TVirtualPad * c, TF1 * Function, std::string Xaxis, std::string Yaxis, int color, std::string options, float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname=""){
 	c -> cd();
@@ -183,38 +285,42 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	}	
 
 	Graph->SetLineColor(color);
-	Graph->SetLineWidth(5);
+	Graph->SetLineWidth(7);
 	Graph->SetLineColor(color);
 	Graph->SetMarkerSize(3);
 	Graph->SetMarkerStyle(8);
 	Graph->SetMarkerColor(color);
 
-	if(options==""){	
-		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
+	TH2F * Frame = (TH2F*) gPad->FindObject("Frame");	
 
+	if(Frame){
+		Graph->Draw(options.c_str());
+                TLegend * leg = (TLegend*) gPad->FindObject("leg");
+                if(legendname=="")leg->AddEntry(Graph,Values->GetName(),options.c_str());
+                else leg->AddEntry(Graph,legendname.c_str(),options.c_str());
+                leg->SetLineWidth(3);
+                leg->SetFillColor(0);
+                leg->Draw("same");
+	
+	}
+
+	else{
+
+		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
+		Frame->Draw();
+        	Graph->Draw((options+"same").c_str());
+	
 		TLegend * leg = new TLegend(0.6,0.95,0.95,0.7);
 		leg->SetName("leg");
 
-
-		Frame->Draw("same");
-		Graph->Draw("ePsame");
-		if(legendname=="") leg->AddEntry(Graph,Values->GetName(),"ep");             
-		else leg->AddEntry(Graph,legendname.c_str(),"ep");
+		if(legendname=="") leg->AddEntry(Graph,Values->GetName(),options.c_str());             
+		else leg->AddEntry(Graph,legendname.c_str(),options.c_str());
 		leg->SetLineWidth(3);
 		leg->SetFillColor(0);
 		leg->Draw("same");		
 
 	}
-
-	else {
-		Graph->Draw(options.c_str());
-		TLegend * leg = (TLegend*) gPad->FindObject("leg");
-		if(legendname=="")leg->AddEntry(Graph,Values->GetName(),"ep");             
-		else leg->AddEntry(Graph,legendname.c_str(),"ep");
-		leg->SetLineWidth(3);
-		leg->SetFillColor(0);
-		leg->Draw("same");
-	}
+	
 	return;
 }
 
