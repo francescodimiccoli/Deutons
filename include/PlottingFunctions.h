@@ -27,8 +27,8 @@ TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxi
                 Frame->GetXaxis()->SetLabelFont(33);
                 Frame->GetYaxis()->SetLabelFont(33); 
 
-		Frame->GetXaxis()->SetLabelSize(40);
-                Frame->GetYaxis()->SetLabelSize(40); 
+		Frame->GetXaxis()->SetLabelSize(25);
+                Frame->GetYaxis()->SetLabelSize(25); 
 
 		Frame->GetXaxis()->SetTitleSize(40);
 		Frame->GetYaxis()->SetTitleSize(40);	
@@ -43,7 +43,7 @@ TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxi
 
 void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, std::string Yaxis, int color, std::string options, float ymin=-1,float ymax=-1,float thickline=3,std::string legendname="",bool filled = false,bool dots= false,bool skipleg=false,int rebin=1){
 	c -> cd();
-	gPad-> SetLogy();
+//	gPad-> SetLogy();
 	gPad-> SetTickx();
 	gPad-> SetTicky();
 
@@ -69,11 +69,19 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 	Distribution->GetXaxis()->CenterTitle();
 	Distribution->GetYaxis()->CenterTitle();
 
-	Distribution->GetXaxis()->SetTitleFont(32);
-	Distribution->GetYaxis()->SetTitleFont(32); 
+	Distribution->GetXaxis()->SetTitleFont(33);
+	Distribution->GetYaxis()->SetTitleFont(33); 
 
-	Distribution->GetXaxis()->SetLabelFont(32);
-	Distribution->GetYaxis()->SetLabelFont(32); 
+	Distribution->GetXaxis()->SetLabelFont(33);
+	Distribution->GetYaxis()->SetLabelFont(33); 
+
+	Distribution->GetXaxis()->SetLabelSize(25);
+	Distribution->GetYaxis()->SetLabelSize(25); 
+                    
+	Distribution->GetXaxis()->SetTitleSize(40);
+	Distribution->GetYaxis()->SetTitleSize(40);	
+
+
 
 	Distribution->SetMarkerColor(color);
 	Distribution->SetMarkerStyle(8);
@@ -94,7 +102,7 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 		if(leg){
 			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
 			else {
-				if(dots) leg->AddEntry(Distribution,legendname.c_str(),"epl");
+				if(dots) leg->AddEntry(Distribution,legendname.c_str(),"p");
 				else leg->AddEntry(Distribution,legendname.c_str(),"l");
 			}
 
@@ -107,7 +115,7 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 			leg->SetName("leg");
 			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
 			else {
-				if(dots) leg->AddEntry(Distribution,legendname.c_str(),"epl");
+				if(dots) leg->AddEntry(Distribution,legendname.c_str(),"p");
 				else leg->AddEntry(Distribution,legendname.c_str(),"l"); 
 			}
 			leg->SetTextFont(32);
@@ -187,6 +195,37 @@ void PlotTH1F(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, std::stri
 	return;
 }
 
+void PlotTH2F(TVirtualPad * c, TH2F * Distribution, std::string Xaxis, std::string Yaxis, std::string options){
+
+	c -> cd();
+	gPad-> SetTickx();
+	gPad-> SetTicky();
+
+
+	Distribution->SetStats(false);
+	Distribution->SetTitle("");
+
+
+	Distribution->GetXaxis()->SetTitle(Xaxis.c_str());
+	Distribution->GetYaxis()->SetTitle(Yaxis.c_str());	
+
+	Distribution->GetXaxis()->SetTitleSize(0.045);
+	Distribution->GetYaxis()->SetTitleSize(0.045);	
+
+	Distribution->GetXaxis()->CenterTitle();
+	Distribution->GetYaxis()->CenterTitle();
+
+	Distribution->GetXaxis()->SetTitleFont(32);
+	Distribution->GetYaxis()->SetTitleFont(32); 
+
+	Distribution->GetXaxis()->SetLabelFont(32);
+	Distribution->GetYaxis()->SetLabelFont(32); 
+
+	Distribution->Draw((options+"same").c_str());
+
+	return;
+}
+
 
 
 
@@ -250,6 +289,7 @@ void PlotFunction(TVirtualPad * c, TSpline3 * Function, std::string Xaxis, std::
 		else leg->AddEntry(Function,legendname.c_str(),"l");
 		leg->SetLineWidth(3);
 		leg->SetFillColor(0);
+		leg->SetTextFont(32);
 		leg->Draw("same");
 
 	}
@@ -261,6 +301,7 @@ void PlotFunction(TVirtualPad * c, TSpline3 * Function, std::string Xaxis, std::
 		else leg->AddEntry(Function,legendname.c_str(),"l");
 		leg->SetLineWidth(3);
 		leg->SetFillColor(0);
+		 leg->SetTextFont(32);
 		leg->Draw("same");
 	}
 
@@ -300,7 +341,8 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
                 else leg->AddEntry(Graph,legendname.c_str(),options.c_str());
                 leg->SetLineWidth(3);
                 leg->SetFillColor(0);
-                leg->Draw("same");
+                 leg->SetTextFont(32);
+		leg->Draw("same");
 	
 	}
 
@@ -317,6 +359,7 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 		else leg->AddEntry(Graph,legendname.c_str(),options.c_str());
 		leg->SetLineWidth(3);
 		leg->SetFillColor(0);
+		 leg->SetTextFont(32);
 		leg->Draw("same");		
 
 	}

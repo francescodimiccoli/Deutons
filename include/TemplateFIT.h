@@ -33,6 +33,12 @@ struct TFit {
 };
 
 
+struct Systpar{
+	int steps;
+	float sigma;
+	float shift;
+};
+
 
 class TemplateFIT {
 
@@ -58,6 +64,11 @@ class TemplateFIT {
 	std::string discr_var;
 
 	std::string basename;
+
+	Systpar systpar;
+	float fitrangemin;
+	float fitrangemax;
+	bool fitDisabled=false;
 
 	public:	
 	//standard constructor
@@ -88,8 +99,13 @@ class TemplateFIT {
 
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+		
+		systpar.sigma=0.04;
+		systpar.shift=0.02;
+		systpar.steps=5;
 
-
+		fitrangemin=0.6;
+		fitrangemax=2.5;	
 	}
 
 	//reading constructor
@@ -99,7 +115,6 @@ class TemplateFIT {
                         for(int i=0;i<Bins.size();i++){
                                 TH1F * Histo = (TH1F*)  File.Get((path+ "Data/" + Basename  +"_Data_" + to_string(i)).c_str());
                                 Data.push_back(Histo);
-				cout<<Data[i]->GetEntries()<<endl;
                                 }
 			 for(int i=0;i<Bins.size();i++){
                                 TH1F * Histo = (TH1F*)  File.Get((path+ "TemplateP/" + Basename  + "_MCP_" + to_string(i)).c_str());
@@ -116,8 +131,16 @@ class TemplateFIT {
 			 StatError  = new TH1F("StatError","StatError",bins.size(),0,bins.size()) ;
 			 SystError  = new TH1F("SystError","SystError",bins.size(),0,bins.size()) ;
 
-			ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
-        		DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+			 ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
+			 DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+
+			 systpar.sigma=0.04;
+			 systpar.shift=0.02;
+			 systpar.steps=5;
+
+			 fitrangemin=0.6;
+			 fitrangemax=2.5;	
+
 
 
 	}
@@ -131,6 +154,11 @@ class TemplateFIT {
 	void CalculateFinalPDCounts();
 	void Save(FileSaver finalhisto,bool recreate=false);	
 	void SaveFitResults(FileSaver finalhisto);
+
+	void SetSystematicParameters(int steps,float sigma,float shift){ systpar.steps=steps; systpar.shift=shift; systpar.sigma=sigma; return;};
+	void SetFitRange(float min, float max){fitrangemin=min; fitrangemax=max; return;}
+
+	void DisableFit(){fitDisabled=true;}
 
 	std::string GetName(){return basename;}
 	TH1F * GetStatError(){ return StatError;}
@@ -232,11 +260,12 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit){
 	Tpl -> Add( Fit ->  Templ_D );
 	Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
 	float highP=1;
-	float lowP=0.5;
-	float highD=0.25;
+	float lowP=0.9;
+	float highD=0.1;
 	float lowD=0.00001;
-	float min=0.7;
-	float max=2.5;
+	float min=fitrangemin;
+	float max=fitrangemax;
+
 	Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(min), Fit -> Data -> FindBin(max));
 	
 	bool fitcondition = (Fit -> Data->Integral()>5000)&&(Fit -> Templ_P->Integral()>1000) &&(Fit -> Templ_D->Integral()>500);
@@ -248,6 +277,7 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit){
 			cout<<fit_attempt<<endl;
 			if(Fit -> Tfit_outcome == 0) break;
 			else {
+				cout<<fit_attempt<<endl;
 				Fit -> Tfit -> Constrain(0, lowP+(float)fit_attempt/1000 ,highP );
 				Fit -> Tfit -> Constrain(1, lowD-(float)fit_attempt/10000 ,highD-fit_attempt/10000 );
 				Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
@@ -427,9 +457,10 @@ std::vector< std::vector<TH1F *> > Multiple_Distortions(TH1F * Original,float di
 void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 
 
+	if(!fitDisabled){
 
 	for(int bin=0;bin<bins.size();bin++){
-		std::vector< std::vector<TH1F *> > Collection = Multiple_Distortions((TH1F*)TemplateP[bin],0.07,0.02,5);
+		std::vector< std::vector<TH1F *> > Collection = Multiple_Distortions((TH1F*)TemplateP[bin],systpar.sigma,systpar.shift,systpar.steps);
 		cout<<"Bin: "<<bin<<endl;
 
 
@@ -460,8 +491,8 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 		}		
 
 		// FITS for systematic error
-		TH2F * dcountsspread = new TH2F(("DCountsSpread Bin " +to_string(bin)).c_str(),("DCountsSpread Bin " +to_string(bin)).c_str(),5,-7,7,5,-2,2);
-        	TH2F * tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)).c_str(),5,-7,7,5,-2,2);
+		TH2F * dcountsspread = new TH2F(("DCountsSpread Bin " +to_string(bin)).c_str(),("DCountsSpread Bin " +to_string(bin)).c_str(),systpar.steps,-systpar.sigma*100,systpar.sigma*100,-systpar.steps,-systpar.shift*100,-systpar.shift*100);
+        	TH2F * tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)).c_str(),systpar.steps,-systpar.sigma*100,systpar.sigma*100,-systpar.steps,-systpar.shift*100,-systpar.shift*100);
 		TH1F * weighteddcounts  = new TH1F(("Weighted Counts Bin " +to_string(bin)).c_str(),("Weighted Counts Bin " +to_string(bin)).c_str(),50,fits[bin]->DCounts - 0.5*fits[bin]->DCounts,fits[bin]->DCounts + 0.5*fits[bin]->DCounts);
 
 		for(int sigma=0;sigma<Collection.size();sigma++){
@@ -507,11 +538,16 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 	}
 
 	CalculateFinalPDCounts();	
+	}
+
 	return;
 }
 
 void TemplateFIT::CalculateFinalPDCounts(){
 	for(int bin=0;bin<bins.size();bin++){
+
+		StatError -> Smooth(1);
+		SystError -> Smooth(1);
 		
 		float toterr= pow(pow(StatError -> GetBinContent(bin+1),2) + pow(SystError -> GetBinContent(bin+1),2) ,0.5);
 		
