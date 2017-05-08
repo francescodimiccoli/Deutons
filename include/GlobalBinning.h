@@ -4,8 +4,13 @@ int nbinsToF=18;
 int nbinsNaF=18;
 int nbinsAgl=18;
 
+float ToFsmearSigma= 79.8;
+float ToFsmearShift= -1.5;
+
 Particle proton(0.9382720813, 1, 1);  // proton mass 938 MeV
 Particle deuton(1.8756129   , 1, 2);  // deuterium mass 1876 MeV, Z=1, A=2
+
+TRandom3 * Rand= new TRandom3(time(0));
 
 
 Binning ToFDB(deuton);

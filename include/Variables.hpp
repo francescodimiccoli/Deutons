@@ -290,12 +290,33 @@ float GetInverseRigidity (Variables * vars) {return 1/vars->R-1/vars->Momento_ge
 float GetGenMomentum     (Variables * vars) {return vars->Momento_gen;}
 float GetInverseEdepUToF (Variables * vars) {return 1/vars->EdepTOFU;}
 float GetInverseEdepLToF (Variables * vars) {return 1/vars->EdepTOFD;}
-float GetBetaTOF         (Variables * vars) {return vars->Beta;}
-float GetBetaRICH        (Variables * vars) {return vars->BetaRICH_new;}
 float GetInverseEdepTrack(Variables * vars) {return 1/vars->EdepTrack;}
 float GetBetaGen         (Variables * vars) {return pow((pow((vars->Momento_gen/vars->Massa_gen),2)/(pow((vars->Momento_gen/vars->Massa_gen),2)+1)),0.5);}
 float GetInverseBetaTOF  (Variables * vars) {return 1/vars->Beta - 1/GetBetaGen(vars);}
 float GetInverseBetaRICH (Variables * vars) {return 1/vars->BetaRICH_new - 1/GetBetaGen(vars);}
+float GetBetaTOF         (Variables * vars) {return vars->Beta;}
+float GetBetaRICH        (Variables * vars) {return vars->BetaRICH_new;}
 float GetRecMassTOF	 (Variables * vars) {return (vars->R/vars->Beta)*pow((1-pow(vars->Beta,2)),0.5);}
 float GetRecMassRICH     (Variables * vars) {return (vars->R/vars->BetaRICH_new)*pow((1-pow(vars->BetaRICH_new,2)),0.5);}
+
+
+float GetSmearedBetaTOF  (Variables * vars) {   
+	if(vars->Massa_gen>0){
+		float time = 1.2/(vars->Beta*3e-4);
+		time = time + ToFsmearShift + Rand->Gaus(0,ToFsmearSigma);
+		return 1.2/(time*3e-4);
+	}
+	else return GetBetaTOF(vars);
+}
+
+float GetSmearedRecMassTOF(Variables * vars) { 
+	if(vars->Massa_gen>0){		
+		float smearbeta=GetSmearedBetaTOF(vars);   
+		return (vars->R/smearbeta)*pow((1-pow(smearbeta,2)),0.5);
+	}
+	else return GetRecMassTOF(vars);
+}
+
+
+
 

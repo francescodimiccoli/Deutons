@@ -83,7 +83,7 @@ class Tuning{
 	}	
 	
 	void UseCutoffFilterMode() {CutoffFilterMode=true; return;};
-	float SmearBeta(float Beta, int stepsigma, int stepshift);
+	float SmearBeta(float Beta, float stepsigma, float stepshift);
 	void Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars );
 	void FillEventByEvent(std::vector<std::vector<TH1F *>> Histos, float var, float discr_var, bool CUT, float weight);
 	void FillEventByEvent(std::vector<TH1F *> Histo, float var, float discr_var, bool CUT, float weight);	
@@ -257,11 +257,11 @@ void Tuning::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars ){
 }
 
 
-float Tuning::SmearBeta(float Beta, int stepsigma, int stepshift){
+float Tuning::SmearBeta(float Beta, float stepsigma, float stepshift){
 
 	float time = 1.2/(Beta*3e-4);
 	float shiftstart=-shift;
-	time = time + (shiftstart+(2*shift/steps)*stepshift) + Rand->Gaus(0,(float)((2*sigma/steps)*stepsigma));
+	time = time + (shiftstart+(2*shift/(float)steps)*stepshift) + Rand->Gaus(0,(float)((2*sigma/steps)*stepsigma));
 	return 1.2/(time*3e-4);
 
 }
@@ -271,7 +271,7 @@ void Tuning::FillEventByEvent(std::vector<std::vector<TH1F *>> Histos, float var
 	int kbin;
 	for(int i=0;i<steps;i++)
 		for(int j=0;j<steps;j++){	
-			float betasmear= SmearBeta(beta,i,j);
+			float betasmear= SmearBeta(beta,(float)i,(float)j);
 			kbin =  bins.GetBin(betasmear);
 			float mass = var/betasmear * pow((1-pow(betasmear,2)),0.5);
 			if(mass>0.4&&mass<1.3&&CUT&&kbin>0)
@@ -331,7 +331,7 @@ void Tuning::EvalResiduals(){
 			for(int j=0;j<steps;j++){
 				float chi=ChiSquare[bin]->GetBinContent(i+1,j+1);
 				if(pow(chi,0.5)<chimin)
-					{ bestChi2[bin]=i*steps+j; shiftbest->SetBinContent(bin+1,(-shift+(2*shift/steps)*j)); sigmabest->SetBinContent(bin+1,((2*sigma/steps)*i)); chimin=pow(chi,0.5);}
+					{ bestChi2[bin]=i*steps+j; shiftbest->SetBinContent(bin+1,(-shift+(2*shift/steps)*(j+1))); sigmabest->SetBinContent(bin+1,((2*sigma/steps)*(i+1))); chimin=pow(chi,0.5);}
 			}
 		}
 
