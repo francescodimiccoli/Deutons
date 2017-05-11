@@ -1,3 +1,6 @@
+CodesforAnalysis/Mesi.h
+*.swp
+*.root
 amsvar.sh
 logs
 err
@@ -6,3 +9,5 @@ Histos
 lsf
 *.exe
 CodesforAnalysis/CALIBRAZIONI/*
+DSTcern/lsf/*
+DSTcern/Launch/*

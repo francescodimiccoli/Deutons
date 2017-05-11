@@ -47,6 +47,9 @@ class TemplateFIT {
 	std::vector<TH1F *> TemplateP;
 	std::vector<TH1F *> TemplateD;
 	std::vector<TH1F *> Data;
+	std::vector<TH1F *> DataPrim;
+	std::vector<TH1F *> TransferFunction;
+
 
 	std::vector<TH2F *> DCountsSpread;
 	std::vector<TH1F *> WeightedDCounts;
@@ -61,6 +64,7 @@ class TemplateFIT {
 	Binning bins;
         std::string var;
         std::string cut;
+	std::string cutprimary;
 	std::string discr_var;
 
 	std::string basename;
@@ -80,6 +84,12 @@ class TemplateFIT {
                                 Data.push_back(Histo);
                         }
 		for(int i=0;i<Bins.size();i++){
+				string name=Basename + "_DataPrim_" + to_string(i);
+                                TH1F * Histo = new TH1F((name).c_str(),(name).c_str(),Nbins,Xmin,Xmax);
+                                DataPrim.push_back(Histo);
+                        }
+		
+		for(int i=0;i<Bins.size();i++){
 				string name=Basename + "_MCP_" + to_string(i);
                                 TH1F * Histo = new TH1F((name).c_str(),(name).c_str(),Nbins,Xmin,Xmax);
                                 TemplateP.push_back(Histo);
@@ -92,6 +102,7 @@ class TemplateFIT {
 	
 		basename=Basename;
 		cut = Cut;
+		cutprimary=Cut+"&IsPrimary";
 		bins=Bins;
 		
 		StatError  = new TH1F("StatError","StatError",bins.size(),0,bins.size()) ;
@@ -115,6 +126,10 @@ class TemplateFIT {
                         for(int i=0;i<Bins.size();i++){
                                 TH1F * Histo = (TH1F*)  File.Get((path+ "Data/" + Basename  +"_Data_" + to_string(i)).c_str());
                                 Data.push_back(Histo);
+                                }
+			for(int i=0;i<Bins.size();i++){
+                                TH1F * Histo = (TH1F*)  File.Get((path+ "Data/" + Basename  +"_DataPrim_" + to_string(i)).c_str());
+                                DataPrim.push_back(Histo);
                                 }
 			 for(int i=0;i<Bins.size();i++){
                                 TH1F * Histo = (TH1F*)  File.Get((path+ "TemplateP/" + Basename  + "_MCP_" + to_string(i)).c_str());
@@ -145,7 +160,7 @@ class TemplateFIT {
 
 	}
 
-
+	void Eval_TransferFunction();
 	void Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) );
 	void FillEventByEvent(std::vector<TH1F *> Histos, float var, float discr_var, bool CUT,float weight=1);
 
@@ -172,7 +187,15 @@ class TemplateFIT {
 
 };
 
-
+void TemplateFIT::Eval_TransferFunction(){
+	for(int bin=0;bin<DataPrim.size();bin++){
+		TH1F * transferfunction = (TH1F *) DataPrim[bin]->Clone();
+		transferfunction->Sumw2();
+		transferfunction->Divide(Data[bin]);
+		TransferFunction.push_back(transferfunction);
+	}
+	return;
+}
 
 void TemplateFIT::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) ){
 
@@ -184,8 +207,9 @@ void TemplateFIT::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars, floa
 		UpdateProgressBar(i, treeDT->GetEntries());
 		treeDT->GetEvent(i);
 		FillEventByEvent( Data, var(vars), discr_var(vars),ApplyCuts(cut,vars),vars->mcweight);
+		FillEventByEvent( DataPrim, var(vars), discr_var(vars),ApplyCuts(cutprimary,vars),vars->mcweight);			
 	}
-
+	
 	cout<<basename.c_str()<<" Filling ... (MC Protons)"<< endl;
 	vars->ReadAnalysisBranches(treeMC);
 
@@ -214,9 +238,14 @@ void TemplateFIT::FillEventByEvent(std::vector<TH1F *> Histos, float var, float 
 
 void TemplateFIT::Save(FileSaver finalhisto,bool recreate){
 
-	for(int i=0;i<bins.size();i++) 
+	for(int i=0;i<bins.size();i++){ 
 		finalhisto.Add(Data[i]);
+		finalhisto.Add(DataPrim[i]);
+	}
 	finalhisto.writeObjsInFolder((basename + "/Data").c_str(),recreate);
+
+	finalhisto.writeObjsInFolder((basename + "/Data").c_str(),recreate);
+
 
 	for(int i=0;i<bins.size();i++) 
 		finalhisto.Add(TemplateP[i]);
@@ -230,6 +259,10 @@ void TemplateFIT::Save(FileSaver finalhisto,bool recreate){
 }
 
 void TemplateFIT::SaveFitResults(FileSaver finalhisto){
+	for(int i=0;i<bins.size();i++) 
+                finalhisto.Add(TransferFunction[i]);
+        finalhisto.writeObjsInFolder((basename + "/Data").c_str());
+
 	for(int i=0;i<bins.size();i++){
 		finalhisto.Add(DCountsSpread[i]);
 		finalhisto.writeObjsInFolder((basename+"/Fit Results/Spreads/DCounts").c_str());
@@ -456,6 +489,7 @@ std::vector< std::vector<TH1F *> > Multiple_Distortions(TH1F * Original,float di
 
 void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 
+	Eval_TransferFunction();
 
 	if(!fitDisabled){
 
@@ -491,8 +525,8 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 		}		
 
 		// FITS for systematic error
-		TH2F * dcountsspread = new TH2F(("DCountsSpread Bin " +to_string(bin)).c_str(),("DCountsSpread Bin " +to_string(bin)).c_str(),systpar.steps,-systpar.sigma*100,systpar.sigma*100,-systpar.steps,-systpar.shift*100,-systpar.shift*100);
-        	TH2F * tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)).c_str(),systpar.steps,-systpar.sigma*100,systpar.sigma*100,-systpar.steps,-systpar.shift*100,-systpar.shift*100);
+		TH2F * dcountsspread = new TH2F(("DCountsSpread Bin " +to_string(bin)).c_str(),("DCountsSpread Bin " +to_string(bin)).c_str(),systpar.steps,-systpar.sigma*100,systpar.sigma*100,systpar.steps,-systpar.shift*100,systpar.shift*100);
+        	TH2F * tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)).c_str(),systpar.steps,-systpar.sigma*100,systpar.sigma*100,systpar.steps,-systpar.shift*100,systpar.shift*100);
 		TH1F * weighteddcounts  = new TH1F(("Weighted Counts Bin " +to_string(bin)).c_str(),("Weighted Counts Bin " +to_string(bin)).c_str(),50,fits[bin]->DCounts - 0.5*fits[bin]->DCounts,fits[bin]->DCounts + 0.5*fits[bin]->DCounts);
 
 		for(int sigma=0;sigma<Collection.size();sigma++){

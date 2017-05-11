@@ -187,6 +187,7 @@ int main(int argc, char * argv[]){
 		}	
 	}			     	
 
+
 	c6->cd(1);
 	PlotDistribution(gPad,TotErrTOF ,"TOF Range Bin","Relative error",2,"same",0.001,2,10,"T. Fit Total Error");
 	PlotDistribution(gPad,SystErrTOF,"TOF Range Bin","Relative error",4,"same",0.001,2,4,"T. Fit Systematic Error");
@@ -199,17 +200,40 @@ int main(int argc, char * argv[]){
 	//PlotDistribution(gPad,TotErrAgl ,"Agl Range Bin","Relative error",2,"same",0.001,2,10,"T. Fit Total Error");
 	//PlotDistribution(gPad,SystErrAgl,"Agl Range Bin","Relative error",4,"same",0.001,2,4,"T. Fit Systematic Error");
 	//PlotDistribution(gPad,StatErrAgl,"Agl Range Bin","Relative error",1,"same",0.001,2,4,"T. Fit Statistical Error");
-	
 
 	Plots.Add(c6);
-        Plots.writeObjsInFolder("Results");
+	Plots.writeObjsInFolder("Results");
+
+
+	TCanvas * c7 = new TCanvas("Parameters");
+	c7->SetCanvasSize(2000,1500);
+
+	TH1F * ShiftBest = (TH1F*) finalHistos.Get((pathresTOF+"Best Fit Shift").c_str());
+        TH1F * SigmaBest = (TH1F*) finalHistos.Get((pathresTOF+"Best Fit Sigma").c_str());
+	
+
+	TPad * c7_up = new TPad("upperPad", "upperPad",0.0,0.5,1.0,1.0);
+	c7_up->Draw();
+
+	TPad * c7_do = new TPad("lowerPad", "lowerPad",0.0,0.0,1.0,0.5);
+	c7_do->Draw();
+
+	PlotTH1FintoGraph(c7_up,ToFDB, ShiftBest, "#beta ToF",  "Mean shift [ps]",2,false,"ep",0.45,0.9,-100,100,"Best #chi^{2} Shift");
+	PlotTH1FintoGraph(c7_do,ToFDB, SigmaBest, "#beta ToF",  "Additive #sigma [ps]",4,false,"ep",0.45,0.9,-40,180,"Best #chi^{2} #sigma");
+		
+
+	Plots.Add(c7);
+	Plots.writeObjsInFolder("Results");
+
+
+
 	return 0;
 }
 
 
 void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 
-	std::string pathdata  = (FIT->GetName() + "/Data");
+	std::string pathdata  = (FIT->GetName());
 	std::string pathtemplP= (FIT->GetName() + "/Fit Results/ScaledTemplatesP");
 	std::string pathtemplD= (FIT->GetName() + "/Fit Results/ScaledTemplatesD");	
 	std::string pathfit   = (FIT->GetName() + "/Fit Results/FractionFit");
@@ -220,13 +244,14 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 
 	for(int i=1; i<FIT->GetBinning().size();i++){
 		
-		std::string pathbinP = pathtemplP    + "/Bin"+to_string(i);
+		std::string pathbinP    = pathtemplP + "/Bin"+to_string(i);
 		std::string pathbinD    = pathtemplD + "/Bin"+to_string(i);
+		std::string pathbindata = pathdata   + "/Bin "+to_string(i)+"/Data/";
 		std::string pathbinfit  = pathfit    + "/Bin"+to_string(i);
 
 		std::vector<TH1F*> TemplatesP=GetListOfTemplates(infile, pathbinP);
 		std::vector<TH1F*> TemplatesD=GetListOfTemplates(infile, pathbinD);		
-		std::vector<TH1F*> Datas     =GetListOfTemplates(infile, pathdata);
+		std::vector<TH1F*> Datas     =GetListOfTemplates(infile, pathbindata);
 		std::vector<TH1F*> Fits      =GetListOfTemplates(infile, pathbinfit);
 
 	
@@ -235,8 +260,8 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		c1->SetCanvasSize(2000,1500);
 
 		for(int j=TemplatesP.size()-1;j>=0;j--){
-			if(j==0) PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",1,"same",0.1,1e5,10);
-			else     PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",colorbase + j,"same",0.1,1e5,7);		
+			if(j==0) PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",1,"same",1,TemplatesP[j]->GetBinContent(TemplatesP[j]->GetMaximumBin())*1.13,10);
+			else     PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",colorbase + j,"same",1,TemplatesP[j]->GetBinContent(TemplatesP[j]->GetMaximumBin())*1.13,7,"",false,false,true);		
 		}
 	
 		Plots.Add(c1);
@@ -246,13 +271,13 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		TCanvas * c2 = new TCanvas("Modified T. Fits");
                 c2->SetCanvasSize(2000,1500);
 
-		PlotDistribution(gPad, TemplatesP[0],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",0.1,1e5,10,"Protons MC Template");
-		PlotDistribution(gPad, TemplatesD[0],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",0.1,1e5,10,"Deuterons MC Template");
-		PlotDistribution(gPad, Datas[i],"Reconstructed Mass [GeV/c^2]","Counts",1,"Psame",0.1,1e5,3,"ISS data",false,true);
+		PlotDistribution(gPad, TemplatesP[0],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Original Protons MC Template");
+		PlotDistribution(gPad, TemplatesD[0],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,10,"Original Deuterons MC Template");
 		for(int j=TemplatesP.size()-1;j>=1;j--){
-                        PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",0.1,1e5,3,"",false,false,true);
-			PlotDistribution(gPad, TemplatesD[j],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",0.1,1e5,3,"",false,false,true);
+                        PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,1e5,1,"",false,false,true);
+			PlotDistribution(gPad, TemplatesD[j],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,1,"",false,false,true);
                 }
+		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"Psame",1,1e5,3,"ISS data",false,true);
 	
 
 
@@ -263,15 +288,34 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		TCanvas * c3 = new TCanvas("Template Fits");
                 c3->SetCanvasSize(2000,1500);
 
-		PlotDistribution(gPad, TemplatesP[0],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",0.1,1e5,10,"Protons MC Template");
-		PlotDistribution(gPad, TemplatesD[0],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",0.1,1e5,10,"Deuterons MC Template");
-		if(Fits.size()>0) PlotDistribution(gPad, Fits[0],"Reconstructed Mass [GeV/c^2]","Counts",6,"same",0.1,1e5,10,"Fraction Fit");
-		PlotDistribution(gPad, Datas[i],"Reconstructed Mass [GeV/c^2]","Counts",1,"ePsame",0.1,1e5,3,"ISS data",false,true);
+		PlotDistribution(gPad, TemplatesP[0],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,2,"Original Protons MC Template");
+		PlotDistribution(gPad, TemplatesD[0],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,2,"Original Deuterons MC Template");
+		PlotDistribution(gPad, TemplatesP[1],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC Template");
+		PlotDistribution(gPad, TemplatesD[1],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,10,"Best #chi^{2} Deuterons MC Template");
+		
+		if(Fits.size()>0) PlotDistribution(gPad, Fits[0],"Reconstructed Mass [GeV/c^2]","Counts",6,"same",1,1e5,10,"Fraction Fit");
+		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"ePsame",1,1e5,3,"ISS data",false,true);
 
 
 		Plots.Add(c3);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
-			
+	
+
+		TCanvas * c4 = new TCanvas("ChiSquare");
+                c4->SetCanvasSize(2000,1500);
+		gPad->SetLogz();	
+		TH2F * Chi = (TH2F*) infile->Get((FIT->GetName()+"/Fit Results/Spreads/ChiSquare/ChiSquare Bin "+to_string(i)).c_str());
+                Chi->GetZaxis()->SetRangeUser(0.5,100);
+                PlotTH2F(gPad, Chi, "#sigma deformation (%)","Mean shift (%)", "colz");	
+
+
+		Plots.Add(c4);
+                Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
+	
+
+		
+
+	
 
 	}
 

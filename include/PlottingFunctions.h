@@ -111,7 +111,7 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 		}
 
 		else{
-			leg = new TLegend(0.7, 0.2,0.95,0.95);
+			leg = new TLegend(0.6, 0.6,0.95,0.95);
 			leg->SetName("leg");
 			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
 			else {
@@ -180,7 +180,7 @@ void PlotTH1F(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, std::stri
 		}
 
 		else{
-			leg = new TLegend(0.7, 0.2,0.95,0.95);
+			leg = new TLegend(0.7, 0.7,0.95,0.95);
 			leg->SetName("leg");
 			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
 				else leg->AddEntry(Distribution,legendname.c_str(),(options).c_str()); 
