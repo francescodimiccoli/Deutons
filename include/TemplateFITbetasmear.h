@@ -19,6 +19,9 @@ struct TFit {
    float ChiSquare=0;			
    float StatErr=0;	
 
+   TH1F * Templ_DPrim;
+   float DCountsPrim=0;		
+
    TFit(){}	
    TFit(TH1F * templ_P, TH1F * templ_D, TH1F * data, TH1F * dataPrim) { Templ_P= templ_P; Templ_D=templ_D; Data=data; DataPrim=dataPrim; }
 
@@ -66,6 +69,11 @@ class TemplateFIT {
 	TH1F * ProtonCounts;
 	TH1F * DeuteronCounts;
 
+	TH1F * ProtonCountsPrim;
+	TH1F * DeuteronCountsPrim;
+
+
+
 	TH1F * BestFitSigma;
 	TH1F * BestFitShift;
 
@@ -81,10 +89,11 @@ class TemplateFIT {
 	float fitrangemin;
 	float fitrangemax;
 	bool fitDisabled=false;
+	bool isrich=false;
 
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax,int steps=11,float sigma=50,float shift=40){
+	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=50,float shift=40){
 		
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
@@ -116,23 +125,27 @@ class TemplateFIT {
 
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+
+		ProtonCountsPrim    = new TH1F("Primary Proton Counts","Primary Proton Counts",bins.size(),0,bins.size()) ;
+        	DeuteronCountsPrim  = new TH1F("Primary Deuteron Counts","Primary Deuteron Counts",bins.size(),0,bins.size()) ;
+	
 	
 		BestFitSigma  = new TH1F("Best FIt Sigma","Best FIt Sigma",bins.size(),0,bins.size()) ;
         	BestFitShift  = new TH1F("Best Fit Shift","Best FIt Shift",bins.size(),0,bins.size()) ;
 
+		isrich = IsRich;
 
-	
 		systpar.sigma=sigma;
 		systpar.shift=shift;
 		systpar.steps=steps;
 
 		fitrangemin=0.6;
-		fitrangemax=2.5;	
+		fitrangemax=3;	
 	}
 
 	//reading constructor
-	
-	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins,int steps=11,float sigma=50,float shift=40){
+
+	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=11,float sigma=50,float shift=40){
 
 		TFile * file = File.GetFile();
 
@@ -159,26 +172,30 @@ class TemplateFIT {
 
 
 
-			 basename=Basename;
-			 bins=Bins; 
+		basename=Basename;
+		bins=Bins; 
 
-			 StatError  = new TH1F("StatError","StatError",bins.size(),0,bins.size()) ;
-			 SystError  = new TH1F("SystError","SystError",bins.size(),0,bins.size()) ;
+		StatError  = new TH1F("StatError","StatError",bins.size(),0,bins.size()) ;
+		SystError  = new TH1F("SystError","SystError",bins.size(),0,bins.size()) ;
 
-			 ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
-			 DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
+		DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+	
+		ProtonCountsPrim    = new TH1F("Primary Proton Counts","Primary Proton Counts",bins.size(),0,bins.size()) ;
+        	DeuteronCountsPrim  = new TH1F("Primary Deuteron Counts","Primary Deuteron Counts",bins.size(),0,bins.size()) ;
+	
 
-			 BestFitSigma  = new TH1F("Best Fit Sigma","Best Fit Sigma",bins.size(),0,bins.size()) ;
-        		 BestFitShift  = new TH1F("Best Fit Shift","Best Fit Shift",bins.size(),0,bins.size()) ;
+		BestFitSigma  = new TH1F("Best Fit Sigma","Best Fit Sigma",bins.size(),0,bins.size()) ;
+		BestFitShift  = new TH1F("Best Fit Shift","Best Fit Shift",bins.size(),0,bins.size()) ;
 
+		isrich=IsRich;
 
+		systpar.sigma=sigma;
+		systpar.shift=shift;
+		systpar.steps=steps;
 
-			systpar.sigma=sigma;
-			systpar.shift=shift;
-			systpar.steps=steps;
-
-			 fitrangemin=0.6;
-			 fitrangemax=2.5;	
+		fitrangemin=0.6;
+		fitrangemax=3;	
 
 
 
@@ -187,6 +204,7 @@ class TemplateFIT {
 	void Eval_TransferFunction();
 	void Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) );
 	float SmearBeta(float Beta, float stepsigma, float stepshift);
+	float SmearBetaRICH(float Beta, float stepsigma, float stepshift);
 
 	void FillEventByEventData(float var, float discr_var, bool CUT, bool CUTPRIM, float weight);
 	void FillEventByEventMC(float var, float discr_var, bool CUTP, bool CUTD, float weight);
@@ -216,12 +234,13 @@ class TemplateFIT {
 };
 
 void TemplateFIT::Eval_TransferFunction(){
-/*	for(int bin=0;bin<DataPrim.size();bin++){
-		TH1F * transferfunction = (TH1F *) DataPrim[bin]->Clone();
+	for(int bin=0;bin<fits.size();bin++){
+		TH1F * transferfunction = (TH1F *) fits[bin][0][5]->DataPrim->Clone();
 		transferfunction->Sumw2();
-		transferfunction->Divide(Data[bin]);
+		transferfunction->Divide(fits[bin][0][5]->Data);
+		transferfunction->Smooth();
 		TransferFunction.push_back(transferfunction);
-	}*/
+	}
 	return;
 }
 
@@ -268,6 +287,15 @@ void TemplateFIT::FillEventByEventData(float var, float discr_var, bool CUT, boo
 
 }
 
+
+float TemplateFIT::SmearBetaRICH(float Beta, float stepsigma, float stepshift){
+	float angle= acos(1/(1.15*Beta))*10e4;
+	float shiftstart=-systpar.shift;
+	angle = angle + (shiftstart+(2*systpar.shift/(float)systpar.steps)*stepshift) + Rand->Gaus(0,(float)((2*systpar.sigma/systpar.steps)*stepsigma));
+	return 1/(1.15*cos(angle/10e4));
+}
+
+
 float TemplateFIT::SmearBeta(float Beta, float stepsigma, float stepshift){
 
 	float time = 1.2/(Beta*3e-4);
@@ -282,7 +310,9 @@ void TemplateFIT::FillEventByEventMC(float var, float discr_var, bool CUTP, bool
 	if((CUTP||CUTD)){
 		for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
-				float betasmear= SmearBeta(discr_var,(float)i,(float)j);
+				float betasmear;
+				if(!isrich) betasmear = SmearBeta(discr_var,(float)i,(float)j);
+				else 	   betasmear = SmearBetaRICH(discr_var,(float)i,(float)j);
 				int kbin =  bins.GetBin(betasmear);
 				float mass = var/betasmear * pow((1-pow(betasmear,2)),0.5);
 				if(CUTP&&kbin>0) fits[kbin][i][j]->Templ_P->Fill(mass,weight);		
@@ -363,11 +393,23 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 				}
 	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
 	}
+	
+	for(int bin=0;bin<bins.size();bin++){
+		if(BestChiSquare[bin]&&fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Tfit){
+			TH1F * FIT=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Tfit-> GetPlot();
+			if(FIT){
+			FIT->SetName(("Fraction Fit bin" + to_string(bin)).c_str());
+			finalhisto.Add(FIT);
+			finalhisto.writeObjsInFolder((basename+"/Fit Results/FractionFits/Bin"+to_string(bin)).c_str());
+			}
+		}
+	}
 
-/*	for(int i=0;i<bins.size();i++) 
+
+	for(int i=0;i<bins.size();i++) 
                 finalhisto.Add(TransferFunction[i]);
-        finalhisto.writeObjsInFolder((basename + "/Data").c_str());
-*/
+        finalhisto.writeObjsInFolder((basename + "/Fit Results/TrasnferFunctions/").c_str());
+
 	for(int i=0;i<bins.size();i++){
 		finalhisto.Add(DCountsSpread[i]);
 		finalhisto.writeObjsInFolder((basename+"/Fit Results/Spreads/DCounts").c_str());
@@ -388,6 +430,9 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 	finalhisto.Add(SystError);
 	finalhisto.Add(ProtonCounts);
 	finalhisto.Add(DeuteronCounts);
+	finalhisto.Add(ProtonCountsPrim);
+	finalhisto.Add(DeuteronCountsPrim);
+
 
 	finalhisto.writeObjsInFolder((basename+"/Fit Results/").c_str());
 
@@ -401,10 +446,7 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit){
 	Tpl -> Add( Fit ->  Templ_P );
 	Tpl -> Add( Fit ->  Templ_D );
 	Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
-	float highP=1;
-	float lowP=0.9;
-	float highD=0.1;
-	float lowD=0.00001;
+	
 	float min=fitrangemin;
 	float max=fitrangemax;
 
@@ -412,16 +454,18 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit){
 	
 	bool fitcondition = (Fit -> Data->Integral()>5000)&&(Fit -> Templ_P->Integral()>1000) &&(Fit -> Templ_D->Integral()>500);
 
-	if(fitcondition) {  
-		Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
+	if(fitcondition) { 
+	
+		Fit -> Tfit -> Constrain(0, 0.0001 ,1 );
+                Fit -> Tfit -> Constrain(1, 0.0001 ,1 );
+			 
+		if(Fit -> Tfit ) Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
 
 		for(int fit_attempt=0; fit_attempt<20; fit_attempt++) {
 			cout<<fit_attempt<<endl;
 			if(Fit -> Tfit_outcome == 0) break;
 			else {
 				cout<<fit_attempt<<endl;
-				Fit -> Tfit -> Constrain(0, lowP+(float)fit_attempt/1000 ,highP );
-				Fit -> Tfit -> Constrain(1, lowD-(float)fit_attempt/10000 ,highD-fit_attempt/10000 );
 				Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
 			}
 		}
@@ -447,7 +491,7 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit){
 			Cov01= Fit -> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
 			Fit -> StatErr = pow(pow(w2*e2,2)+pow(w1*e1,2)-2*Cov01*w1*w2,0.5);
 
-			Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Templ_P ->GetNbinsX()*1.7);
+			Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Templ_P ->GetNbinsX()*1.3);
 			Fit -> DCounts = Fit ->  Templ_D -> Integral();
 			Fit -> PCounts = Fit ->  Templ_P -> Integral();
 		}
@@ -459,6 +503,11 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit){
 	return;
 }
 
+float EvalFitProbability(float chi){
+	TF1 * CumulativeChiSquare=new TF1("Chi","exp(-x)*x^-0.5",0.001,10);
+	return CumulativeChiSquare->Integral(chi,100);
+}
+
 
 void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 	
@@ -468,29 +517,38 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 
 	for(int bin=0;bin<bins.size();bin++){
 
-		// FITS for systematic error
+		// Template Fits
+		for(int sigma=0;sigma<systpar.steps;sigma++){
+                        for(int shift=0;shift<systpar.steps;shift++){
+                                cout<<fits[bin][sigma][shift]<<endl;
+                                Do_TemplateFIT(fits[bin][sigma][shift]);
+
+				fits[bin][sigma][shift]->Templ_DPrim=(TH1F*) fits[bin][sigma][shift]->Templ_D->Clone();
+				fits[bin][sigma][shift]->Templ_DPrim->Multiply(TransferFunction[bin]);
+				fits[bin][sigma][shift]->DCountsPrim = fits[bin][sigma][shift]->Templ_DPrim->Integral();
+
+			}
+		}
+
+		// Histograms for systematic error evaluation
 		TH2F * dcountsspread = new TH2F(("DCountsSpread Bin " +to_string(bin)).c_str(),("DCountsSpread Bin " +to_string(bin)).c_str(),systpar.steps,0,2*systpar.sigma,systpar.steps,-systpar.shift,systpar.shift);
         	TH2F * tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)).c_str(),systpar.steps,0,2*systpar.sigma,systpar.steps,-systpar.shift,systpar.shift);
-		TH1F * weighteddcounts  = new TH1F(("Weighted Counts Bin " +to_string(bin)).c_str(),("Weighted Counts Bin " +to_string(bin)).c_str(),25,0.4*fits[bin][0][5]->DCounts,1.7*fits[bin][0][5]->DCounts);
+		TH1F * weighteddcounts  = new TH1F(("Weighted Counts Bin " +to_string(bin)).c_str(),("Weighted Counts Bin " +to_string(bin)).c_str(),35,0.4*fits[bin][0][4]->DCounts,1.7*fits[bin][0][4]->DCounts);
 		BestChi * MinimumChi = new BestChi();
 		
 
 		for(int sigma=0;sigma<systpar.steps;sigma++){
 			for(int shift=0;shift<systpar.steps;shift++){
-
-				cout<<fits[bin][sigma][shift]<<endl;
-
-				Do_TemplateFIT(fits[bin][sigma][shift]);
-
-				
 				dcountsspread->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->DCounts);
 				if(fits[bin][sigma][shift]->ChiSquare>0)
 						tfitchisquare->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->ChiSquare);
 				else  tfitchisquare->SetBinContent(sigma+1,shift+1,500);
-				weighteddcounts -> Fill(dcountsspread->GetBinContent(sigma+1,shift+1),exp(-fits[bin][sigma][shift]->ChiSquare));
 
+				if(	fits[bin][sigma][shift]->DCounts>0.1*fits[bin][0][4]->DCounts &&
+					fits[bin][sigma][shift]->DCounts<2*fits[bin][0][4]->DCounts  )
+
+				weighteddcounts -> Fill(fits[bin][sigma][shift]->DCounts,EvalFitProbability(fits[bin][sigma][shift]->ChiSquare));
 			}
-
 		}
 
 		MinimumChi->FindMinimum(tfitchisquare);	
@@ -557,6 +615,15 @@ void TemplateFIT::CalculateFinalPDCounts(){
 		DeuteronCounts->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts);
                 DeuteronCounts->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts);		
 		
+		ProtonCountsPrim->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts);
+		ProtonCountsPrim->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts);
+
+		DeuteronCountsPrim->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim);
+                DeuteronCountsPrim->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim);		
+		
+		
+
+
 	}
 		
 

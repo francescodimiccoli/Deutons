@@ -63,7 +63,7 @@ int main(int argc, char * argv[])
         ToFDB.Print();
 
         cout<<"**NaF**"<<endl;
-        NaFDB.Print();
+        NaFPB.Print();
 
         cout<<"**Agl**"<<endl;
         AglDB.Print();
@@ -83,7 +83,7 @@ int main(int argc, char * argv[])
         Variables * vars = new Variables;
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
-
+	
 	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
 	if(!checkfile){
 		TOFfits->Fill(treeMC,treeDT,vars,GetRecMassTOF,GetBetaTOF);
@@ -97,36 +97,35 @@ int main(int argc, char * argv[])
 		TOFfits->SaveFitResults(finalHistos);
 	}
 
-/*	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4);
+	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,400,200);
 	if(!checkfile){
 		NaFfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
 		NaFfits->DisableFit();
 		NaFfits->Save(finalHistos);
 	}
-	else {NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB);
+	else {NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,400,200);
 	
 		NaFfits->Save(finalHistos);
-		NaFfits->SetSystematicParameters(3,0.04,0.04);
-		NaFfits->SetFitRange(0.7,2.5);
+		NaFfits->SetFitRange(0.6,3);
 		NaFfits->ExtractCounts(finalHistos);
 		NaFfits->SaveFitResults(finalHistos);
 	}
-
-	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4);
+	
+	
+	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,110,60);
 	if(!checkfile){
 		Aglfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
 		Aglfits->DisableFit();
 		Aglfits->Save(finalHistos);
 	}
-	else {Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB);
+	else {Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,110,80);
 	
 		Aglfits->Save(finalHistos);
-		Aglfits->SetSystematicParameters(3,0.04,0.04);
-		Aglfits->SetFitRange(0.7,2.5);
+		Aglfits->SetFitRange(0.6,3);
 		Aglfits->ExtractCounts(finalHistos);
 		Aglfits->SaveFitResults(finalHistos);
 	}
-*/
+
 	return 0;
 }
 

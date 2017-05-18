@@ -52,7 +52,7 @@ std::vector<TH1F*> GetListOfTemplates(TFile * file,std::string path){
 
 }
 
-
+void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binning bins, std::string title, std::string x_udm,float xmin, float xmax,float y1min,float y1max,float y2min,float y2max);
 void DrawFits(TemplateFIT * FIT,FileSaver finalHistos, FileSaver Plots);
 
 int main(int argc, char * argv[]){
@@ -99,12 +99,12 @@ int main(int argc, char * argv[]){
         cout<<"****************************** PLOTTING FITS ***************************************"<<endl;
 
 	TemplateFIT * ToFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
-	//TemplateFIT * NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB);
-	//TemplateFIT * Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB);
+	TemplateFIT * NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB);
+	TemplateFIT * Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB);
 
 	DrawFits(ToFfits,finalHistos,Plots);
-	//DrawFits(NaFfits,finalHistos,Plots);
-	//DrawFits(Aglfits,finalHistos,Plots);
+	DrawFits(NaFfits,finalHistos,Plots);
+	DrawFits(Aglfits,finalHistos,Plots);
 
 
 
@@ -114,28 +114,28 @@ int main(int argc, char * argv[]){
 	c4->SetCanvasSize(2000,1500);
 
 	std::string pathresTOF   = (ToFfits->GetName() + "/Fit Results/");
-	//std::string pathresNaF   = (NaFfits->GetName() + "/Fit Results/");
-	//std::string pathresAgl   = (Aglfits->GetName() + "/Fit Results/");
+	std::string pathresNaF   = (NaFfits->GetName() + "/Fit Results/");
+	std::string pathresAgl   = (Aglfits->GetName() + "/Fit Results/");
 		
 	TH1F * DCountsTOF = (TH1F*) finalHistos.Get((pathresTOF+"Deuteron Counts").c_str());
 	TH1F * PCountsTOF = (TH1F*) finalHistos.Get((pathresTOF+"Proton Counts").c_str());
-	//TH1F * DCountsNaF = (TH1F*) finalHistos.Get((pathresNaF+"Deuteron Counts").c_str());
-	//TH1F * PCountsNaF = (TH1F*) finalHistos.Get((pathresNaF+"Proton Counts").c_str());
-	//TH1F * DCountsAgl = (TH1F*) finalHistos.Get((pathresAgl+"Deuteron Counts").c_str());
-	//TH1F * PCountsAgl = (TH1F*) finalHistos.Get((pathresAgl+"Proton Counts").c_str());
+	TH1F * DCountsNaF = (TH1F*) finalHistos.Get((pathresNaF+"Deuteron Counts").c_str());
+	TH1F * PCountsNaF = (TH1F*) finalHistos.Get((pathresNaF+"Proton Counts").c_str());
+	TH1F * DCountsAgl = (TH1F*) finalHistos.Get((pathresAgl+"Deuteron Counts").c_str());
+	TH1F * PCountsAgl = (TH1F*) finalHistos.Get((pathresAgl+"Proton Counts").c_str());
 	
 	
 	DCountsTOF->SetName("Deuteron Counts (TOF)");
 	PCountsTOF->SetName("Proton Counts (TOF)");
-	//DCountsNaF->SetName("Deuteron Counts (NaF)");
-	//PCountsNaF->SetName("Proton Counts (NaF)");
-	//DCountsAgl->SetName("Deuteron Counts (Agl)");
-	//PCountsAgl->SetName("Proton Counts (Agl)");
+	DCountsNaF->SetName("Deuteron Counts (NaF)");
+	PCountsNaF->SetName("Proton Counts (NaF)");
+	DCountsAgl->SetName("Deuteron Counts (Agl)");
+	PCountsAgl->SetName("Proton Counts (Agl)");
 
 
 	PlotTH1FintoGraph(gPad,ToFDB, DCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"ePsame",0.1,10,10,4e4);
-	//PlotTH1FintoGraph(gPad,NaFDB, DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"ePsame",0.1,10,10,4e4);
-	//PlotTH1FintoGraph(gPad,AglDB, DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"ePsame",0.1,10,10,4e4);
+	PlotTH1FintoGraph(gPad,NaFDB, DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"ePsame",0.1,10,10,4e4);
+	PlotTH1FintoGraph(gPad,AglDB, DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"ePsame",0.1,10,10,4e4);
 
 	Plots.Add(c4);
 	Plots.writeObjsInFolder("Results");
@@ -146,14 +146,14 @@ int main(int argc, char * argv[]){
 	
 	TH1F * RatioTOF = (TH1F*)DCountsTOF->Clone();
 	RatioTOF->Divide(PCountsTOF);
-	//TH1F * RatioNaF = (TH1F*)DCountsNaF->Clone();
-	//RatioNaF->Divide(PCountsNaF);
-	//TH1F * RatioAgl = (TH1F*)DCountsAgl->Clone();
-	//RatioAgl->Divide(PCountsAgl);
+	TH1F * RatioNaF = (TH1F*)DCountsNaF->Clone();
+	RatioNaF->Divide(PCountsNaF);
+	TH1F * RatioAgl = (TH1F*)DCountsAgl->Clone();
+	RatioAgl->Divide(PCountsAgl);
 
 	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"ePsame",0.1,10,1e-3,1e-1,"d/P Counts ratio (TOF)");
-	//PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"ePsame",0.1,10,1e-3,1e-1,"d/P Counts ratio (NaF)");
-	//PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"ePsame",0.1,10,1e-3,1e-1,"d/P Counts ratio (Agl)");
+	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"ePsame",0.1,10,1e-3,1e-1,"d/P Counts ratio (NaF)");
+	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"ePsame",0.1,10,1e-3,1e-1,"d/P Counts ratio (Agl)");
 
 
 	Plots.Add(c5);
@@ -166,26 +166,30 @@ int main(int argc, char * argv[]){
 
 	TH1F * StatErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"StatError").c_str());
         TH1F * SystErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"SystError").c_str());
-	//TH1F * StatErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"StatError").c_str());
-        //TH1F * SystErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"SystError").c_str());
-	//TH1F * StatErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"StatError").c_str());
-        //TH1F * SystErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"SystError").c_str());
+	TH1F * StatErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"StatError").c_str());
+        TH1F * SystErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"SystError").c_str());
+	TH1F * StatErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"StatError").c_str());
+        TH1F * SystErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"SystError").c_str());
 
 	TH1F * TotErrTOF  = (TH1F *)StatErrTOF->Clone();
-	//TH1F * TotErrNaF  = (TH1F *)StatErrNaF->Clone();
-	//TH1F * TotErrAgl  = (TH1F *)StatErrAgl->Clone();
+	TH1F * TotErrNaF  = (TH1F *)StatErrNaF->Clone();
+	TH1F * TotErrAgl  = (TH1F *)StatErrAgl->Clone();
 	
 	for(int bin=0;bin<DCountsTOF->GetNbinsX();bin++) {
 		if(DCountsTOF->GetBinContent(bin+1)>0){
 			TotErrTOF->SetBinContent(bin+1,DCountsTOF->GetBinError(bin+1)/DCountsTOF->GetBinContent(bin+1));
-			TotErrTOF->SetBinError(bin+1,0);	
-			//TotErrNaF->SetBinContent(bin+1,DCountsNaF->GetBinError(bin+1)/DCountsNaF->GetBinContent(bin+1));
-			//TotErrNaF->SetBinError(bin+1,0);	
-			//TotErrAgl->SetBinContent(bin+1,DCountsAgl->GetBinError(bin+1)/DCountsAgl->GetBinContent(bin+1));
-			//TotErrAgl->SetBinError(bin+1,0);	
-
+			TotErrTOF->SetBinError(bin+1,0);
+		}
+		if(DCountsNaF->GetBinContent(bin+1)>0){	
+			TotErrNaF->SetBinContent(bin+1,DCountsNaF->GetBinError(bin+1)/DCountsNaF->GetBinContent(bin+1));
+			TotErrNaF->SetBinError(bin+1,0);
+		}
+		if(DCountsAgl->GetBinContent(bin+1)>0){	
+			TotErrAgl->SetBinContent(bin+1,DCountsAgl->GetBinError(bin+1)/DCountsAgl->GetBinContent(bin+1));
+			TotErrAgl->SetBinError(bin+1,0);
 		}	
-	}			     	
+
+	}	
 
 
 	c6->cd(1);
@@ -193,23 +197,34 @@ int main(int argc, char * argv[]){
 	PlotDistribution(gPad,SystErrTOF,"TOF Range Bin","Relative error",4,"same",0.001,2,4,"T. Fit Systematic Error");
 	PlotDistribution(gPad,StatErrTOF,"TOF Range Bin","Relative error",1,"same",0.001,2,4,"T. Fit Statistical Error");
 	c6->cd(2);
-	//PlotDistribution(gPad,TotErrNaF ,"NaF Range Bin","Relative error",2,"same",0.001,2,10,"T. Fit Total Error");
-	//PlotDistribution(gPad,SystErrNaF,"NaF Range Bin","Relative error",4,"same",0.001,2,4,"T. Fit Systematic Error");
-	//PlotDistribution(gPad,StatErrNaF,"NaF Range Bin","Relative error",1,"same",0.001,2,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,TotErrNaF ,"NaF Range Bin","Relative error",2,"same",0.001,2,10,"T. Fit Total Error");
+	PlotDistribution(gPad,SystErrNaF,"NaF Range Bin","Relative error",4,"same",0.001,2,4,"T. Fit Systematic Error");
+	PlotDistribution(gPad,StatErrNaF,"NaF Range Bin","Relative error",1,"same",0.001,2,4,"T. Fit Statistical Error");
 	c6->cd(3);
-	//PlotDistribution(gPad,TotErrAgl ,"Agl Range Bin","Relative error",2,"same",0.001,2,10,"T. Fit Total Error");
-	//PlotDistribution(gPad,SystErrAgl,"Agl Range Bin","Relative error",4,"same",0.001,2,4,"T. Fit Systematic Error");
-	//PlotDistribution(gPad,StatErrAgl,"Agl Range Bin","Relative error",1,"same",0.001,2,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,TotErrAgl ,"Agl Range Bin","Relative error",2,"same",0.001,2,10,"T. Fit Total Error");
+	PlotDistribution(gPad,SystErrAgl,"Agl Range Bin","Relative error",4,"same",0.001,2,4,"T. Fit Systematic Error");
+	PlotDistribution(gPad,StatErrAgl,"Agl Range Bin","Relative error",1,"same",0.001,2,4,"T. Fit Statistical Error");
 
 	Plots.Add(c6);
 	Plots.writeObjsInFolder("Results");
+	
+	DrawParameters(finalHistos,Plots,pathresTOF,ToFDB,"Parameters TOF","[ps]",0.45,0.9,-100,100,-40,180);
+	DrawParameters(finalHistos,Plots,pathresNaF,NaFDB,"Parameters NaF","[rad/10^{4}]",0.7,0.98,-1000,1000,-1000,2000);
+	DrawParameters(finalHistos,Plots,pathresAgl,AglDB,"Parameters Agl","[rad/10^{4}]",0.95,1.005,-230,230,-150,400);
 
 
-	TCanvas * c7 = new TCanvas("Parameters");
+
+
+	return 0;
+}
+
+void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binning bins, std::string title, std::string x_udm, float xmin, float xmax,float y1min,float y1max,float y2min,float y2max){
+
+	TCanvas * c7 = new TCanvas(title.c_str());
 	c7->SetCanvasSize(2000,1500);
 
-	TH1F * ShiftBest = (TH1F*) finalHistos.Get((pathresTOF+"Best Fit Shift").c_str());
-        TH1F * SigmaBest = (TH1F*) finalHistos.Get((pathresTOF+"Best Fit Sigma").c_str());
+	TH1F * ShiftBest = (TH1F*) finalHistos.Get((path+"Best Fit Shift").c_str());
+        TH1F * SigmaBest = (TH1F*) finalHistos.Get((path+"Best Fit Sigma").c_str());
 	
 
 	TPad * c7_up = new TPad("upperPad", "upperPad",0.0,0.5,1.0,1.0);
@@ -218,16 +233,13 @@ int main(int argc, char * argv[]){
 	TPad * c7_do = new TPad("lowerPad", "lowerPad",0.0,0.0,1.0,0.5);
 	c7_do->Draw();
 
-	PlotTH1FintoGraph(c7_up,ToFDB, ShiftBest, "#beta ToF",  "Mean shift [ps]",2,false,"ep",0.45,0.9,-100,100,"Best #chi^{2} Shift");
-	PlotTH1FintoGraph(c7_do,ToFDB, SigmaBest, "#beta ToF",  "Additive #sigma [ps]",4,false,"ep",0.45,0.9,-40,180,"Best #chi^{2} #sigma");
+	PlotTH1FintoGraph(c7_up,bins, ShiftBest, "Measured #beta",  ("Mean shift "+x_udm).c_str(),2,false,"ep",xmin,xmax,y1min,y1max,"Best #chi^{2} Shift");
+	PlotTH1FintoGraph(c7_do,bins, SigmaBest, "Measured #beta",  ("Additive #sigma "+x_udm).c_str(),4,false,"ep",xmin,xmax,y2min,y2max,"Best #chi^{2} #sigma");
 		
 
 	Plots.Add(c7);
 	Plots.writeObjsInFolder("Results");
-
-
-
-	return 0;
+	return;
 }
 
 
@@ -236,7 +248,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 	std::string pathdata  = (FIT->GetName());
 	std::string pathtemplP= (FIT->GetName() + "/Fit Results/ScaledTemplatesP");
 	std::string pathtemplD= (FIT->GetName() + "/Fit Results/ScaledTemplatesD");	
-	std::string pathfit   = (FIT->GetName() + "/Fit Results/FractionFit");
+	std::string pathfit   = (FIT->GetName() + "/Fit Results/FractionFits");
 	std::string pathres   = (FIT->GetName() + "/Fit Results/");
 	
 	TFile * infile = finalHistos.GetFile();	
@@ -277,7 +289,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
                         PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,1e5,1,"",false,false,true);
 			PlotDistribution(gPad, TemplatesD[j],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,1,"",false,false,true);
                 }
-		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"Psame",1,1e5,3,"ISS data",false,true);
+		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"ePsame",1,1e5,3,"ISS data",false,true);
 	
 
 
@@ -293,7 +305,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		PlotDistribution(gPad, TemplatesP[1],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC Template");
 		PlotDistribution(gPad, TemplatesD[1],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,10,"Best #chi^{2} Deuterons MC Template");
 		
-		if(Fits.size()>0) PlotDistribution(gPad, Fits[0],"Reconstructed Mass [GeV/c^2]","Counts",6,"same",1,1e5,10,"Fraction Fit");
+		if(Fits.size()>0) PlotDistribution(gPad, Fits[0],"Reconstructed Mass [GeV/c^2]","Counts",6,"same",1,1e5,4,"Fraction Fit");
 		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"ePsame",1,1e5,3,"ISS data",false,true);
 
 
