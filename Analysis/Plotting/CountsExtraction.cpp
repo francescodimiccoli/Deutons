@@ -166,10 +166,14 @@ int main(int argc, char * argv[]){
 
 	TH1F * StatErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"StatError").c_str());
         TH1F * SystErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"SystError").c_str());
+	TH1F * HeCoErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"HeContTOF_Eff").c_str());
 	TH1F * StatErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"StatError").c_str());
         TH1F * SystErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"SystError").c_str());
+	TH1F * HeCoErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"HeContNaF_Eff").c_str());
 	TH1F * StatErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"StatError").c_str());
         TH1F * SystErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"SystError").c_str());
+	TH1F * HeCoErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"HeContAgl_Eff").c_str());
+
 
 	TH1F * TotErrTOF  = (TH1F *)StatErrTOF->Clone();
 	TH1F * TotErrNaF  = (TH1F *)StatErrNaF->Clone();
@@ -193,17 +197,20 @@ int main(int argc, char * argv[]){
 
 
 	c6->cd(1);
-	PlotDistribution(gPad,TotErrTOF ,"TOF Range Bin","Relative error",2,"same",0.001,2,10,"T. Fit Total Error");
-	PlotDistribution(gPad,SystErrTOF,"TOF Range Bin","Relative error",4,"same",0.001,2,4,"T. Fit Systematic Error");
-	PlotDistribution(gPad,StatErrTOF,"TOF Range Bin","Relative error",1,"same",0.001,2,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,TotErrTOF ,"TOF Range Bin","Relative error",2,"same",1e-4,1.1,10,"T. Fit Total Error");
+	PlotDistribution(gPad,SystErrTOF,"TOF Range Bin","Relative error",4,"same",1e-4,1.1,4,"T. Fit Systematic Error");
+	PlotDistribution(gPad,StatErrTOF,"TOF Range Bin","Relative error",1,"same",1e-4,1.1,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,HeCoErrTOF,"TOF Range Bin","Relative error",3,"same",1e-4,1.1,4,"Helium Fragm. Error");
 	c6->cd(2);
-	PlotDistribution(gPad,TotErrNaF ,"NaF Range Bin","Relative error",2,"same",0.001,2,10,"T. Fit Total Error");
-	PlotDistribution(gPad,SystErrNaF,"NaF Range Bin","Relative error",4,"same",0.001,2,4,"T. Fit Systematic Error");
-	PlotDistribution(gPad,StatErrNaF,"NaF Range Bin","Relative error",1,"same",0.001,2,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,TotErrNaF ,"NaF Range Bin","Relative error",2,"same",1e-4,1.1,10,"T. Fit Total Error");
+	PlotDistribution(gPad,SystErrNaF,"NaF Range Bin","Relative error",4,"same",1e-4,1.1,4,"T. Fit Systematic Error");
+	PlotDistribution(gPad,StatErrNaF,"NaF Range Bin","Relative error",1,"same",1e-4,1.1,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,HeCoErrNaF,"NaF Range Bin","Relative error",3,"same",1e-4,1.1,4,"Helium Fragm. Error");
 	c6->cd(3);
-	PlotDistribution(gPad,TotErrAgl ,"Agl Range Bin","Relative error",2,"same",0.001,2,10,"T. Fit Total Error");
-	PlotDistribution(gPad,SystErrAgl,"Agl Range Bin","Relative error",4,"same",0.001,2,4,"T. Fit Systematic Error");
-	PlotDistribution(gPad,StatErrAgl,"Agl Range Bin","Relative error",1,"same",0.001,2,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,TotErrAgl ,"Agl Range Bin","Relative error",2,"same",1e-4,1.1,10,"T. Fit Total Error");
+	PlotDistribution(gPad,SystErrAgl,"Agl Range Bin","Relative error",4,"same",1e-4,1.1,4,"T. Fit Systematic Error");
+	PlotDistribution(gPad,StatErrAgl,"Agl Range Bin","Relative error",1,"same",1e-4,1.1,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,HeCoErrAgl,"Agl Range Bin","Relative error",3,"same",1e-4,1.1,4,"Helium Fragm. Error");
 
 	Plots.Add(c6);
 	Plots.writeObjsInFolder("Results");
@@ -245,7 +252,7 @@ void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binn
 
 void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 
-	std::string pathdata  = (FIT->GetName());
+	std::string pathdata  = (FIT->GetName() + "/Fit Results/Data");
 	std::string pathtemplP= (FIT->GetName() + "/Fit Results/ScaledTemplatesP");
 	std::string pathtemplD= (FIT->GetName() + "/Fit Results/ScaledTemplatesD");	
 	std::string pathfit   = (FIT->GetName() + "/Fit Results/FractionFits");
@@ -258,7 +265,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		
 		std::string pathbinP    = pathtemplP + "/Bin"+to_string(i);
 		std::string pathbinD    = pathtemplD + "/Bin"+to_string(i);
-		std::string pathbindata = pathdata   + "/Bin "+to_string(i)+"/Data/";
+		std::string pathbindata = pathdata   + "/Bin"+to_string(i);
 		std::string pathbinfit  = pathfit    + "/Bin"+to_string(i);
 
 		std::vector<TH1F*> TemplatesP=GetListOfTemplates(infile, pathbinP);

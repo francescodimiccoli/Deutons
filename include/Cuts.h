@@ -13,6 +13,8 @@ using namespace std;
 
 bool IsProtonMC    (Variables * vars){ return (vars->Massa_gen<1&&vars->Massa_gen>0);}
 bool IsDeutonMC    (Variables * vars){ return (vars->Massa_gen<2&&vars->Massa_gen>1);}
+bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_gen>1);}
+
 bool IsPrimary	   (Variables * vars){ return (vars->R>1.0*vars->Rcutoff); }
 bool IsMC          (Variables * vars){ return (vars->Massa_gen>0);} 
 bool IsData        (Variables * vars){ return (vars->Massa_gen==0);}
@@ -22,7 +24,11 @@ bool IsFromAgl     (Variables * vars){ return (((int)vars->joinCutmask>>11)==0&&
 bool IsOnlyFromToF (Variables * vars){ return !((IsFromNaF(vars))||(IsFromAgl(vars)));}
 bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0 && vars->qL1<1.6);} 
 bool ProtonsMassCut(Variables * vars){ return GetRecMassTOF(vars)>0.5&&GetRecMassTOF(vars)<1.5;}
-
+bool DeutonsMassCut(Variables * vars){  if(IsFromNaF(vars)||IsFromAgl(vars))
+						return GetRecMassRICH(vars)>1.6&&GetRecMassRICH(vars)<4.5;
+				     	else
+						return GetRecMassTOF(vars)>1.6&&GetRecMassTOF(vars)<4.5;
+				     }
 
 bool Qualitycut(Variables * vars, float cutvariable, float cutTOF, float cutNaF, float cutAgl){
 
@@ -37,6 +43,7 @@ bool Qualitycut(Variables * vars, float cutvariable, float cutTOF, float cutNaF,
 bool DistanceCut   (Variables * vars){ return (Qualitycut(vars,vars->DistP,3,4,4)||Qualitycut(vars,vars->DistD,3,4,4));}
 bool LikelihoodCut (Variables * vars){ return  Qualitycut(vars,log(1-vars->Likelihood),-1.2,-2.6,-3.2);}
 
+bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->DistD>14 && vars->DistD<40);}
 
 template<typename Out>
 void split(const std::string &s, char delim, Out result) {
@@ -64,6 +71,7 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 	for(int i=0;i<spl.size();i++){
 		if(spl[i]=="IsProtonMC"	   ) IsPassed=IsPassed && IsProtonMC    (Vars);
 		if(spl[i]=="IsDeutonMC"	   ) IsPassed=IsPassed && IsDeutonMC    (Vars);
+		if(spl[i]=="IsHeliumMC"	   ) IsPassed=IsPassed && IsHeliumMC    (Vars);
 		if(spl[i]=="IsPrimary"	   ) IsPassed=IsPassed && IsPrimary     (Vars);
 		if(spl[i]=="IsMC"          ) IsPassed=IsPassed && IsMC          (Vars);
 		if(spl[i]=="IsData"	   ) IsPassed=IsPassed && IsData        (Vars);
@@ -75,6 +83,8 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="DistanceCut")    IsPassed=IsPassed && DistanceCut(Vars);
 		if(spl[i]=="LikelihoodCut")  IsPassed=IsPassed && LikelihoodCut(Vars);
 		if(spl[i]=="ProtonsMassCut") IsPassed=IsPassed && ProtonsMassCut(Vars);
+		if(spl[i]=="DeutonsMassCut") IsPassed=IsPassed && DeutonsMassCut(Vars);
+		if(spl[i]=="IsGoodHe")       IsPassed=IsPassed && IsGoodHe(Vars);
 	}
 
 	return IsPassed;

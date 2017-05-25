@@ -44,6 +44,11 @@ int main(int argc, char * argv[])
 
         FileSaver finalHistos;
         finalHistos.setName(OUTPUT.c_str());
+
+	FileSaver finalResults;
+        finalResults.setName((OUTPUT+"_Results").c_str());
+
+
         bool checkfile = finalHistos.CheckFile();
 
         TFile *fileDT =TFile::Open(INPUT1.c_str());
@@ -84,46 +89,46 @@ int main(int argc, char * argv[])
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 	
-	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
+	TemplateFIT * TOFfits= new TemplateFIT("TOFfits","HeContTOF",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
 	if(!checkfile){
 		TOFfits->Fill(treeMC,treeDT,vars,GetRecMassTOF,GetBetaTOF);
 		TOFfits->DisableFit();
 		TOFfits->Save(finalHistos);
 	}
-	else { TOFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
+	else { TOFfits= new TemplateFIT(finalHistos,"TOFfits","HeContTOF",ToFDB);
 	
-		TOFfits->Save(finalHistos);
-		TOFfits->ExtractCounts(finalHistos);	
-		TOFfits->SaveFitResults(finalHistos);
+	//	TOFfits->Save(finalHistos);
+		TOFfits->ExtractCounts(finalHistos,finalResults);	
+		TOFfits->SaveFitResults(finalResults);
 	}
 
-	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,400,200);
+	TemplateFIT * NaFfits= new TemplateFIT("NaFfits","HeContNaF",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,400,200);
 	if(!checkfile){
 		NaFfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
 		NaFfits->DisableFit();
 		NaFfits->Save(finalHistos);
 	}
-	else {NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,400,200);
+	else {NaFfits= new TemplateFIT(finalHistos,"NaFfits","HeContNaF",NaFDB,true,11,400,200);
 	
-		NaFfits->Save(finalHistos);
+	//	NaFfits->Save(finalHistos);
 		NaFfits->SetFitRange(0.6,3);
-		NaFfits->ExtractCounts(finalHistos);
-		NaFfits->SaveFitResults(finalHistos);
+		NaFfits->ExtractCounts(finalHistos,finalResults);
+		NaFfits->SaveFitResults(finalResults);
 	}
 	
 	
-	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,110,60);
+	TemplateFIT * Aglfits= new TemplateFIT("Aglfits","HeContAgl",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,110,60);
 	if(!checkfile){
 		Aglfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
 		Aglfits->DisableFit();
 		Aglfits->Save(finalHistos);
 	}
-	else {Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,110,80);
+	else {Aglfits= new TemplateFIT(finalHistos,"Aglfits","HeContAgl",AglDB,true,11,110,80);
 	
-		Aglfits->Save(finalHistos);
+	//	Aglfits->Save(finalHistos);
 		Aglfits->SetFitRange(0.6,3);
-		Aglfits->ExtractCounts(finalHistos);
-		Aglfits->SaveFitResults(finalHistos);
+		Aglfits->ExtractCounts(finalHistos,finalResults);
+		Aglfits->SaveFitResults(finalResults);
 	}
 
 	return 0;
