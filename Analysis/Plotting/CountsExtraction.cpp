@@ -118,24 +118,24 @@ int main(int argc, char * argv[]){
 	std::string pathresAgl   = (Aglfits->GetName() + "/Fit Results/");
 		
 	TH1F * DCountsTOF = (TH1F*) finalHistos.Get((pathresTOF+"Deuteron Counts").c_str());
-	TH1F * PCountsTOF = (TH1F*) finalHistos.Get((pathresTOF+"Proton Counts").c_str());
 	TH1F * DCountsNaF = (TH1F*) finalHistos.Get((pathresNaF+"Deuteron Counts").c_str());
-	TH1F * PCountsNaF = (TH1F*) finalHistos.Get((pathresNaF+"Proton Counts").c_str());
 	TH1F * DCountsAgl = (TH1F*) finalHistos.Get((pathresAgl+"Deuteron Counts").c_str());
+	TH1F * PCountsTOF = (TH1F*) finalHistos.Get((pathresTOF+"Proton Counts").c_str());
+	TH1F * PCountsNaF = (TH1F*) finalHistos.Get((pathresNaF+"Proton Counts").c_str());
 	TH1F * PCountsAgl = (TH1F*) finalHistos.Get((pathresAgl+"Proton Counts").c_str());
 	
+	TH1F * DCountsPrimTOF = (TH1F*) finalHistos.Get((pathresTOF+"Primary Deuteron Counts").c_str());
+	TH1F * DCountsPrimNaF = (TH1F*) finalHistos.Get((pathresNaF+"Primary Deuteron Counts").c_str());
+	TH1F * DCountsPrimAgl = (TH1F*) finalHistos.Get((pathresAgl+"Primary Deuteron Counts").c_str());
 	
-	DCountsTOF->SetName("Deuteron Counts (TOF)");
-	PCountsTOF->SetName("Proton Counts (TOF)");
-	DCountsNaF->SetName("Deuteron Counts (NaF)");
-	PCountsNaF->SetName("Proton Counts (NaF)");
-	DCountsAgl->SetName("Deuteron Counts (Agl)");
-	PCountsAgl->SetName("Proton Counts (Agl)");
+	PlotTH1FintoGraph(gPad,ToFDB, DCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFDB, DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglDB, DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (Agl)",29);
 
+	PlotTH1FintoGraph(gPad,ToFDB, DCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,NaFDB, DCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,AglDB, DCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
 
-	PlotTH1FintoGraph(gPad,ToFDB, DCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"ePsame",0.1,10,10,4e4);
-	PlotTH1FintoGraph(gPad,NaFDB, DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"ePsame",0.1,10,10,4e4);
-	PlotTH1FintoGraph(gPad,AglDB, DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"ePsame",0.1,10,10,4e4);
 
 	Plots.Add(c4);
 	Plots.writeObjsInFolder("Results");
@@ -151,9 +151,9 @@ int main(int argc, char * argv[]){
 	TH1F * RatioAgl = (TH1F*)DCountsAgl->Clone();
 	RatioAgl->Divide(PCountsAgl);
 
-	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"ePsame",0.1,10,1e-3,1e-1,"d/P Counts ratio (TOF)");
-	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"ePsame",0.1,10,1e-3,1e-1,"d/P Counts ratio (NaF)");
-	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"ePsame",0.1,10,1e-3,1e-1,"d/P Counts ratio (Agl)");
+	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"d/P Counts ratio (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"d/P Counts ratio (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"d/P Counts ratio (Agl)",29);
 
 
 	Plots.Add(c5);
@@ -173,8 +173,7 @@ int main(int argc, char * argv[]){
 	TH1F * StatErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"StatError").c_str());
         TH1F * SystErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"SystError").c_str());
 	TH1F * HeCoErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"HeContAgl_Eff").c_str());
-
-
+	
 	TH1F * TotErrTOF  = (TH1F *)StatErrTOF->Clone();
 	TH1F * TotErrNaF  = (TH1F *)StatErrNaF->Clone();
 	TH1F * TotErrAgl  = (TH1F *)StatErrAgl->Clone();
@@ -214,6 +213,37 @@ int main(int argc, char * argv[]){
 
 	Plots.Add(c6);
 	Plots.writeObjsInFolder("Results");
+
+
+	TH1F * BestChiSquareTOF 	= (TH1F*) finalHistos.Get((pathresTOF+"Best ChiSquare").c_str());
+        TH1F * OriginalChiSquareTOF 	= (TH1F*) finalHistos.Get((pathresTOF+"Original ChiSquare").c_str());
+	TH1F * BestChiSquareNaF 	= (TH1F*) finalHistos.Get((pathresNaF+"Best ChiSquare").c_str());
+        TH1F * OriginalChiSquareNaF 	= (TH1F*) finalHistos.Get((pathresNaF+"Original ChiSquare").c_str());
+	TH1F * BestChiSquareAgl 	= (TH1F*) finalHistos.Get((pathresAgl+"Best ChiSquare").c_str());
+        TH1F * OriginalChiSquareAgl 	= (TH1F*) finalHistos.Get((pathresAgl+"Original ChiSquare").c_str());
+	
+	
+	TCanvas * c7 = new TCanvas("Chi Square");
+        c7->SetCanvasSize(5000,1000);
+	c7->Divide(3,1);
+
+	c7->cd(1);
+	PlotDistribution(gPad,BestChiSquareTOF ,"TOF Range Bin","#chi^2 of T. Fit",2,"Psame",1e-1,30,3,"Best #chi^{2} mod. Template");
+	PlotDistribution(gPad,OriginalChiSquareTOF,"TOF Range Bin","#chi^2 of T. Fit",4,"Psame",1e-1,30,3,"Original MC Templates");
+	
+	c7->cd(2);
+	PlotDistribution(gPad,BestChiSquareNaF ,"NaF Range Bin","#chi^2 of T. Fit",2,"Psame",1e-1,35,3,"Best #chi^{2} mod. Template");
+	PlotDistribution(gPad,OriginalChiSquareNaF,"NaF Range Bin","#chi^2 of T. Fit",4,"Psame",1e-1,35,3,"Original MC Templates");
+
+	c7->cd(3);
+	PlotDistribution(gPad,BestChiSquareAgl ,"Agl Range Bin","#chi^2 of T. Fit",2,"Psame",1e-1,35,3,"Best #chi^{2} mod. Template");
+	PlotDistribution(gPad,OriginalChiSquareAgl,"Agl Range Bin","#chi^2 of T. Fit",4,"Psame",1e-1,35,3,"Original MC Templates");
+	
+	Plots.Add(c7);
+	Plots.writeObjsInFolder("Results");
+
+
+
 	
 	DrawParameters(finalHistos,Plots,pathresTOF,ToFDB,"Parameters TOF","[ps]",0.45,0.9,-100,100,-40,180);
 	DrawParameters(finalHistos,Plots,pathresNaF,NaFDB,"Parameters NaF","[rad/10^{4}]",0.7,0.98,-1000,1000,-1000,2000);
@@ -256,6 +286,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 	std::string pathtemplP= (FIT->GetName() + "/Fit Results/ScaledTemplatesP");
 	std::string pathtemplD= (FIT->GetName() + "/Fit Results/ScaledTemplatesD");	
 	std::string pathfit   = (FIT->GetName() + "/Fit Results/FractionFits");
+	std::string pathtrans = (FIT->GetName() + "/Fit Results/TrasnferFunctions");
 	std::string pathres   = (FIT->GetName() + "/Fit Results/");
 	
 	TFile * infile = finalHistos.GetFile();	
@@ -272,7 +303,9 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		std::vector<TH1F*> TemplatesD=GetListOfTemplates(infile, pathbinD);		
 		std::vector<TH1F*> Datas     =GetListOfTemplates(infile, pathbindata);
 		std::vector<TH1F*> Fits      =GetListOfTemplates(infile, pathbinfit);
+		std::vector<TH1F*> Transfer  =GetListOfTemplates(infile, pathtrans);
 
+		
 	
 
 		TCanvas * c1 = new TCanvas("Modified Templates");
@@ -312,27 +345,59 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		PlotDistribution(gPad, TemplatesP[1],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC Template");
 		PlotDistribution(gPad, TemplatesD[1],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,10,"Best #chi^{2} Deuterons MC Template");
 		
-		if(Fits.size()>0) PlotDistribution(gPad, Fits[0],"Reconstructed Mass [GeV/c^2]","Counts",6,"same",1,1e5,4,"Fraction Fit");
 		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"ePsame",1,1e5,3,"ISS data",false,true);
-
+		if(Fits.size()>0) PlotDistribution(gPad, Fits[0],"Reconstructed Mass [gev/c^2]","counts",6,"same",1,1e5,4,"Fraction Fit");
+	
 
 		Plots.Add(c3);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
+
+		TCanvas * c5 = new TCanvas("Transfer Functions");
+                c5->SetCanvasSize(2000,1500);
+
+		for(int j=0;j<Transfer.size();j++){
+			Transfer[j]->Smooth(3);
+			PlotDistribution(gPad, Transfer[j],"Reconstructed Mass [GeV/c^2]","Prim. / (Prim. + Sec.)",j,"hist,same",0,1,7,("Bin. "+to_string(j)).c_str(),false,false);
+		}
+
+		Plots.Add(c5);
+                Plots.writeObjsInFolder((FIT->GetName()+"/Fits").c_str());
+
 	
 
 		TCanvas * c4 = new TCanvas("ChiSquare");
                 c4->SetCanvasSize(2000,1500);
 		gPad->SetLogz();	
 		TH2F * Chi = (TH2F*) infile->Get((FIT->GetName()+"/Fit Results/Spreads/ChiSquare/ChiSquare Bin "+to_string(i)).c_str());
-                Chi->GetZaxis()->SetRangeUser(0.5,100);
-                PlotTH2F(gPad, Chi, "#sigma deformation (%)","Mean shift (%)", "colz");	
+                Chi->GetZaxis()->SetRangeUser(0.2,100);
+                PlotTH2F(gPad, Chi, "Additive #sigma","Mean shift", "colz");	
 
 
 		Plots.Add(c4);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
+
+		TCanvas * c6 = new TCanvas("OverCutoff Events");
+                c6->SetCanvasSize(2000,1500);
+			
+		TH1F * OverCutoffP = (TH1F *) TemplatesP[1]->Clone();
+		OverCutoffP->Multiply(Transfer[i]);
+		TH1F * OverCutoffD = (TH1F *) TemplatesD[1]->Clone();
+		OverCutoffD->Multiply(Transfer[i]);
+		TH1F * NoCutoffP = (TH1F *) TemplatesP[1]->Clone();
+
+		NoCutoffP->Scale(
+			OverCutoffP->GetBinContent(OverCutoffP->GetMaximumBin())/
+			NoCutoffP->GetBinContent(NoCutoffP->GetMaximumBin()) );
+
+		PlotDistribution(gPad, NoCutoffP,"Reconstructed Mass [GeV/c^2]","Primary Counts",2,"same",1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"Best #chi^{2} Protons MC Template");
+		PlotDistribution(gPad, OverCutoffP,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC (Cutoff filtered)");
+		PlotDistribution(gPad, OverCutoffD,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
+		PlotDistribution(gPad, Datas[1],"Reconstructed Mass [GeV/c^2]","Primary Counts",1,"ePsame",1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"ISS data",false,true);
 	
 
-		
+		Plots.Add(c6);
+                Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
+
 
 	
 

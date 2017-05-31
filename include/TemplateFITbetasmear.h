@@ -1,5 +1,23 @@
 using namespace std;
 
+// not used
+TSpline3 * ExtractCutoffWeight(TH1F * ExposureTime){
+
+        ExposureTime->Scale(1/ExposureTime->GetBinContent(ExposureTime->GetMaximumBin()));
+
+        double x[ExposureTime->GetNbinsX()];
+        double y[ExposureTime->GetNbinsX()];
+
+        for(int i=0;i<ExposureTime->GetNbinsX();i++){
+                x[i]=ExposureTime->GetBinCenter(i+1);
+                y[i]=ExposureTime->GetBinContent(i+1);
+        }
+
+        TSpline3 * CutoffWeight = new TSpline3("CutoffWeight",x,y,ExposureTime->GetNbinsX());
+        CutoffWeight->SetName("CutoffWeight");
+        return CutoffWeight;
+
+}
 
 
 
@@ -7,9 +25,11 @@ using namespace std;
 struct TFit {
    TH1F * Templ_P ;
    TH1F * Templ_D ;
-   TH1F * Templ_He;
+
    TH1F * Data;
    TH1F * DataPrim;	
+
+
    float wheightP,wheightD,wheightHe;
    TFractionFitter *Tfit;
    int Tfit_outcome;
@@ -89,6 +109,8 @@ class TemplateFIT {
 	std::string basename;
 	std::string hecontname;
 
+	TH1F * Exposure_Time;
+
 	Systpar systpar;
 	float fitrangemin;
 	float fitrangemax;
@@ -97,7 +119,7 @@ class TemplateFIT {
 
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,std::string HeContname,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=50,float shift=40){
+	TemplateFIT(std::string Basename,std::string HeContname,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=50,float shift=40,TH1F * ExposureTime=0x0){
 		
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
@@ -141,7 +163,7 @@ class TemplateFIT {
 		BestChiSquares     = new TH1F("Best ChiSquare","Best ChiSquare",bins.size(),0,bins.size()) ;
         	OriginalChiSquares = new TH1F("Original ChiSquare","Original CHiSquare",bins.size(),0,bins.size()) ;
 
-
+		Exposure_Time=(TH1F*)ExposureTime;
 
 		isrich = IsRich;
 
@@ -155,7 +177,7 @@ class TemplateFIT {
 
 	//reading constructor
 
-	TemplateFIT(FileSaver  File, std::string Basename,std::string HeContname,Binning Bins, bool IsRich=false, int steps=11,float sigma=50,float shift=40){
+	TemplateFIT(FileSaver  File, std::string Basename,std::string HeContname,Binning Bins, bool IsRich=false, int steps=11,float sigma=50,float shift=40,TH1F * ExposureTime=0x0){
 
 		TFile * file = File.GetFile();
 
@@ -204,6 +226,8 @@ class TemplateFIT {
         	OriginalChiSquares = new TH1F("Original ChiSquare","Original CHiSquare",bins.size(),0,bins.size()) ;
 
 		isrich=IsRich;
+
+		Exposure_Time=(TH1F*)ExposureTime;
 
 		systpar.sigma=sigma;
 		systpar.shift=shift;
@@ -333,6 +357,7 @@ void TemplateFIT::FillEventByEventMC(float var, float discr_var, bool CUTP, bool
 				float mass = var/betasmear * pow((1-pow(betasmear,2)),0.5);
 				if(CUTP&&kbin>0) fits[kbin][i][j]->Templ_P->Fill(mass,weight);		
 				if(CUTD&&kbin>0) fits[kbin][i][j]->Templ_D->Fill(mass,weight);
+			
 			}
 	}
 	return;	
@@ -612,12 +637,12 @@ void TemplateFIT::EvalFinalParameters(){
 		
 	
 		if(BinSTD>0){
-		BestFitSigma->SetBinError(bin+1,4/BinSTD);
-		BestFitShift->SetBinError(bin+1,4/BinSTD);
+		BestFitSigma->SetBinError(bin+1,pow(pow(4/BinSTD,2)+pow(1.5*(2*systpar.sigma/(float)systpar.steps),2),0.5));
+		BestFitShift->SetBinError(bin+1,pow(pow(4/BinSTD,2)+pow(1.5*(2*systpar.shift/(float)systpar.steps),2),0.5));
 		}
 
-		BestChiSquares     ->SetBinContent(bin+1,BestChiSquare[bin]->chimin);
-                OriginalChiSquares ->SetBinContent(bin+1,TFitChisquare[bin]->GetBinContent(1,6));
+		if(BestChiSquare[bin]->chimin<100) 	       BestChiSquares     ->SetBinContent(bin+1,BestChiSquare[bin]->chimin);
+                if(TFitChisquare[bin]->GetBinContent(1,6)<100) OriginalChiSquares ->SetBinContent(bin+1,TFitChisquare[bin]->GetBinContent(1,6));
 		BestChiSquares     ->SetBinError(bin+1,0.25);	
                 OriginalChiSquares ->SetBinError(bin+1,0.25);
 	}

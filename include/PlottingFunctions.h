@@ -111,7 +111,7 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 		}
 
 		else{
-			leg = new TLegend(0.6, 0.6,0.95,0.95);
+			leg = new TLegend(0.6, 0.75,0.95,0.95);
 			leg->SetName("leg");
 			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
 			else {
@@ -309,7 +309,7 @@ void PlotFunction(TVirtualPad * c, TSpline3 * Function, std::string Xaxis, std::
 	return;
 }
 
-void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname=""){
+void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname="",int dotstyle=8){
 
 	c->cd();
 	c->SetTopMargin(0.1);
@@ -329,7 +329,7 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	Graph->SetLineWidth(7);
 	Graph->SetLineColor(color);
 	Graph->SetMarkerSize(3);
-	Graph->SetMarkerStyle(8);
+	Graph->SetMarkerStyle(dotstyle);
 	Graph->SetMarkerColor(color);
 
 	TH2F * Frame = (TH2F*) gPad->FindObject("Frame");	
@@ -337,7 +337,7 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	if(Frame){
 		Graph->Draw(options.c_str());
                 TLegend * leg = (TLegend*) gPad->FindObject("leg");
-                if(legendname=="")leg->AddEntry(Graph,Values->GetName(),options.c_str());
+                if(legendname=="")leg->AddEntry(Graph,Values->GetName(),"P");
                 else leg->AddEntry(Graph,legendname.c_str(),options.c_str());
                 leg->SetLineWidth(3);
                 leg->SetFillColor(0);
@@ -355,7 +355,7 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 		TLegend * leg = new TLegend(0.6,0.95,0.95,0.7);
 		leg->SetName("leg");
 
-		if(legendname=="") leg->AddEntry(Graph,Values->GetName(),options.c_str());             
+		if(legendname=="") leg->AddEntry(Graph,Values->GetName(),"P");             
 		else leg->AddEntry(Graph,legendname.c_str(),options.c_str());
 		leg->SetLineWidth(3);
 		leg->SetFillColor(0);
