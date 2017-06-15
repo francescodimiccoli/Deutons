@@ -9,7 +9,7 @@ print "Printed: Work Dir. = ".$workdir."\n\n";
 #creating sum scripts and output directory
 #
 
-system ("rm -r $workdir/AnalysisFiles/$ARGV[0]");
+# system ("rm -r $workdir/AnalysisFiles/$ARGV[0]");
 system ("mkdir $workdir/AnalysisFiles/$ARGV[0]");
 system ("rm -r $workdir/logs/$ARGV[0]");
 system ("mkdir $workdir/logs/$ARGV[0]");
@@ -25,11 +25,13 @@ for($j=0;$j<100;$j++)
 			export WORKDIR=$workdir;
 			source \$WORKDIR/../amsvar.sh;
 			
-			\$WORKDIR/CountsExtraction  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n
 
-			\$WORKDIR/HeliumContamination  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root  >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n";
+			
 
-				
+
+			\$WORKDIR/Fluxes  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1  >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n";
+
+	
 
 			
 

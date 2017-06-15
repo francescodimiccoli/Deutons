@@ -7,12 +7,15 @@ class Efficiency{
 	TH1F * before;
 	TH1F * after;
 	TH1F * Eff;
+	TGraphErrors * FittedEff;
 	FileSaver  file;
 	Binning bins;
 	std::string cut_before;
 	std::string cut_after;
 	std::string basename;
 	std::string directory;
+	bool fitrequested=false;
+
 	public:
 
 	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after){
@@ -30,10 +33,10 @@ class Efficiency{
 	file=File;
                 bins=Bins;
                 basename=Basename;
+		directory=Directory;
 		before =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_before").c_str());
 		after  =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_after").c_str());
 		Eff    =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
-
 	}
 
 	void Fill( TNtuple * treeMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
@@ -41,10 +44,13 @@ class Efficiency{
 	void Save(FileSaver finalhistos);
 	void SaveResults(FileSaver finalhistos);
 	void Eval_Efficiency();
+	void Eval_FittedEfficiency();
 
+	void CloneEfficiency(Efficiency * Second);
 	void ComposeEfficiency(Efficiency * Second);
 	
 	TH1F * GetEfficiency() {return Eff;}
+	TGraphErrors * GetFittedEfficiency() {return FittedEff;}
 	TH1F * GetBefore()     {return before;}
 	TH1F * GetAfter()      {return after;}
 	
@@ -55,6 +61,20 @@ void Efficiency::ComposeEfficiency(Efficiency * Second){
 		Eff->Sumw2();
 		if(Second->GetEfficiency()) Eff->Multiply(Second->GetEfficiency());
 	}
+	return;
+}
+
+void Efficiency::CloneEfficiency(Efficiency * Second){
+
+	before = (TH1F*) Second->GetBefore()->Clone();	
+	after  = (TH1F*) Second->GetAfter()->Clone();
+
+	before->SetName((basename+"_before").c_str());
+	after ->SetName((basename+"_after").c_str());
+
+	before->SetTitle((basename+"_before").c_str());
+	after ->SetTitle((basename+"_after").c_str());
+	
 	return;
 }
 
@@ -115,9 +135,31 @@ void Efficiency::Eval_Efficiency(){
 	return;
 }
 
+void Efficiency::Eval_FittedEfficiency(){
+	fitrequested=true;
+	FittedEff= new TGraphErrors();
+	FittedEff->SetName((basename+"_FitEff").c_str());
+	FittedEff->SetName((basename+"_FitEff").c_str());
+
+	for(int i=0;i<bins.size();i++){
+		cout<<bins.EkPerMassBinCent(i)<<" "<<Eff->GetBinContent(i+1)<<endl;
+		FittedEff->SetPoint(i,bins.EkPerMassBinCent(i), Eff->GetBinContent(i+1));
+		FittedEff->SetPointError(i,0, Eff->GetBinError(i+1));	
+	}
+
+	FittedEff->Fit("pol3");	
+	return;
+
+}
+
 void Efficiency::SaveResults(FileSaver finalhistos){
 	finalhistos.Add(Eff); 	
-        finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());
+	finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());
+	if(fitrequested){
+		cout<<FittedEff<<endl;
+		finalhistos.Add(FittedEff);
+		finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());
+	}
 }
 
 

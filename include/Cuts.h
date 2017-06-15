@@ -29,6 +29,14 @@ bool DeutonsMassCut(Variables * vars){  if(IsFromNaF(vars)||IsFromAgl(vars))
 				     	else
 						return GetRecMassTOF(vars)>1.6&&GetRecMassTOF(vars)<4.5;
 				     }
+bool TemplatesMassCut(Variables * vars){  if(IsFromNaF(vars)||IsFromAgl(vars))
+						return GetRecMassRICH(vars)>0.1&&GetRecMassRICH(vars)<4.5;
+				     	else
+						return GetRecMassTOF(vars)>0.1&&GetRecMassTOF(vars)<4.5;
+				     }
+
+
+
 
 bool Qualitycut(Variables * vars, float cutvariable, float cutTOF, float cutNaF, float cutAgl){
 
@@ -84,6 +92,7 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="LikelihoodCut")  IsPassed=IsPassed && LikelihoodCut(Vars);
 		if(spl[i]=="ProtonsMassCut") IsPassed=IsPassed && ProtonsMassCut(Vars);
 		if(spl[i]=="DeutonsMassCut") IsPassed=IsPassed && DeutonsMassCut(Vars);
+		if(spl[i]=="TemplatesMassCut")IsPassed=IsPassed && TemplatesMassCut(Vars);
 		if(spl[i]=="IsGoodHe")       IsPassed=IsPassed && IsGoodHe(Vars);
 	}
 

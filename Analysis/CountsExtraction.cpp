@@ -102,7 +102,7 @@ int main(int argc, char * argv[])
 		TOFfits->SaveFitResults(finalResults);
 	}
 
-	TemplateFIT * NaFfits= new TemplateFIT("NaFfits","HeContNaF",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,400,200);
+	TemplateFIT * NaFfits= new TemplateFIT("NaFfits","HeContNaF",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,400);
 	if(!checkfile){
 		NaFfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
 		NaFfits->DisableFit();
@@ -117,7 +117,7 @@ int main(int argc, char * argv[])
 	}
 	
 	
-	TemplateFIT * Aglfits= new TemplateFIT("Aglfits","HeContAgl",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,110,60);
+	TemplateFIT * Aglfits= new TemplateFIT("Aglfits","HeContAgl",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,110);
 	if(!checkfile){
 		Aglfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
 		Aglfits->DisableFit();

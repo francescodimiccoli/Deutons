@@ -37,9 +37,16 @@ int main(int argc, char * argv[])
 
         cout<<"****************************** FILES OPENING ***************************************"<<endl;
 
+	
         string INPUT1(argv[1]);
         string INPUT2(argv[2]);
         string OUTPUT(argv[3]);
+
+	string refill="";
+	if(argc > 4 ) 	refill = argv[4];	
+	
+	bool Refill = false;
+	if(refill!="") Refill=true;
 
         FileSaver finalHistos;
         finalHistos.setName(OUTPUT.c_str());
@@ -97,11 +104,11 @@ int main(int argc, char * argv[])
 
 	Efficiency * HeContaminationTOF = new Efficiency(finalHistos,"HeContTOF","HeliumFragmentation",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut"		,"IsPreselected&IsGoodHe");
 
-	HeliumFragmTOF->Fill(treeMC, vars,GetBetaTOF);
+	HeliumFragmTOF->Fill(treeMC, vars,GetBetaTOF,Refill);
 	
-	HeliumFragmIntoDTOF->Fill(treeMC, vars,GetBetaTOF);
+	HeliumFragmIntoDTOF->Fill(treeMC, vars,GetBetaTOF,Refill);
 
-	HeContaminationTOF->Fill(treeDT, vars,GetBetaTOF);
+	HeContaminationTOF->Fill(treeDT, vars,GetBetaTOF,Refill);
 
 	HeliumFragmTOF->Save(finalHistos);
 	HeliumFragmTOF->Eval_Efficiency();
@@ -128,11 +135,11 @@ int main(int argc, char * argv[])
 	Efficiency * HeContaminationNaF = new Efficiency(finalHistos,"HeContNaF","HeliumFragmentation",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF"  ,"IsPreselected&IsFromNaF&IsGoodHe"); 
 	
 
-	HeliumFragmNaF->Fill(treeMC, vars,GetBetaRICH);
+	HeliumFragmNaF->Fill(treeMC, vars,GetBetaRICH,Refill);
 	
-	HeliumFragmIntoDNaF->Fill(treeMC, vars,GetBetaRICH);
+	HeliumFragmIntoDNaF->Fill(treeMC, vars,GetBetaRICH,Refill);
 
-	HeContaminationNaF->Fill(treeDT, vars,GetBetaRICH);
+	HeContaminationNaF->Fill(treeDT, vars,GetBetaRICH,Refill);
 			
 
 	HeliumFragmNaF->Save(finalHistos);
@@ -161,11 +168,11 @@ int main(int argc, char * argv[])
 	
 
 
-	HeliumFragmAgl->Fill(treeMC, vars,GetBetaRICH);
+	HeliumFragmAgl->Fill(treeMC, vars,GetBetaRICH,Refill);
 	
-	HeliumFragmIntoDAgl->Fill(treeMC, vars,GetBetaRICH);
+	HeliumFragmIntoDAgl->Fill(treeMC, vars,GetBetaRICH,Refill);
 
-	HeContaminationAgl->Fill(treeDT, vars,GetBetaRICH);
+	HeContaminationAgl->Fill(treeDT, vars,GetBetaRICH,Refill);
 
 	HeliumFragmAgl->Save(finalHistos);
 	HeliumFragmAgl->Eval_Efficiency();

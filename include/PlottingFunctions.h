@@ -309,7 +309,7 @@ void PlotFunction(TVirtualPad * c, TSpline3 * Function, std::string Xaxis, std::
 	return;
 }
 
-void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname="",int dotstyle=8){
+void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname="",int dotstyle=8,bool skipleg=false){
 
 	c->cd();
 	c->SetTopMargin(0.1);
@@ -337,8 +337,8 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	if(Frame){
 		Graph->Draw(options.c_str());
                 TLegend * leg = (TLegend*) gPad->FindObject("leg");
-                if(legendname=="")leg->AddEntry(Graph,Values->GetName(),"P");
-                else leg->AddEntry(Graph,legendname.c_str(),options.c_str());
+		if(legendname=="")leg->AddEntry(Graph,Values->GetName(),"P");
+                else if(!skipleg) leg->AddEntry(Graph,legendname.c_str(),"P");
                 leg->SetLineWidth(3);
                 leg->SetFillColor(0);
                  leg->SetTextFont(32);
@@ -356,7 +356,7 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 		leg->SetName("leg");
 
 		if(legendname=="") leg->AddEntry(Graph,Values->GetName(),"P");             
-		else leg->AddEntry(Graph,legendname.c_str(),options.c_str());
+		else if(!skipleg) leg->AddEntry(Graph,legendname.c_str(),"P");
 		leg->SetLineWidth(3);
 		leg->SetFillColor(0);
 		 leg->SetTextFont(32);

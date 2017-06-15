@@ -288,6 +288,7 @@ void Variables::PrintCurrentAnalysisState(){
 
 float GetInverseRigidity (Variables * vars) {return 1/vars->R-1/vars->Momento_gen;}
 float GetGenMomentum     (Variables * vars) {return vars->Momento_gen;}
+
 float GetInverseEdepUToF (Variables * vars) {return 1/vars->EdepTOFU;}
 float GetInverseEdepLToF (Variables * vars) {return 1/vars->EdepTOFD;}
 float GetInverseEdepTrack(Variables * vars) {return 1/vars->EdepTrack;}
