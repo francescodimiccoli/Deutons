@@ -39,7 +39,7 @@ class Efficiency{
 		Eff    =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
 	}
 
-	void Fill( TNtuple * treeMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
+	void Fill( TNtuple * treeMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false,bool weight=true);
 	void FillEventByEvent(float discr_var, bool CUT_BEFORE, bool CUT_AFTER, float weight);
 	void Save(FileSaver finalhistos);
 	void SaveResults(FileSaver finalhistos);
@@ -78,7 +78,7 @@ void Efficiency::CloneEfficiency(Efficiency * Second){
 	return;
 }
 
-void Efficiency::Fill(TNtuple * tree, Variables * vars, float (*discr_var) (Variables * vars),bool refill){
+void Efficiency::Fill(TNtuple * tree, Variables * vars, float (*discr_var) (Variables * vars),bool refill,bool weight){
 
 	cout<<file.Get((directory+"/"+basename+"/"+basename+"_before").c_str())<<" "<<file.Get((directory+"/"+basename+"/"+basename+"_after").c_str())<<endl;
 
@@ -98,6 +98,7 @@ void Efficiency::Fill(TNtuple * tree, Variables * vars, float (*discr_var) (Vari
 			vars->AnalysisVariablseReset();		
 			UpdateProgressBar(i, tree->GetEntries());
 			tree->GetEvent(i);
+			if(weight) vars->mcweight=1;
 			FillEventByEvent(discr_var(vars),ApplyCuts(cut_before,vars),ApplyCuts(cut_after,vars),vars->mcweight);
 		}
 

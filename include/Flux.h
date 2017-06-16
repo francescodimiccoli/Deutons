@@ -17,6 +17,7 @@ class Flux{
 	Efficiency * MCEfficiency;
 	TH1F * Counts;
 	TH1F * Geom_Acceptance;
+	TH1F * Triggers;
 	TH1F * ExposureTime;
 	Binning bins;
 	std::string basename;	
@@ -34,16 +35,21 @@ class Flux{
 		Counts = (TH1F *) FileRes.Get((CountsName).c_str());
 		ExposureTime = (TH1F *) File.Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
 		Geom_Acceptance = (TH1F *) File.Get(("Fluxes/"+Basename+"/"+GeomName).c_str());
+		Triggers = (TH1F *) File.Get(("Fluxes/"+Basename+"/Triggers").c_str());
+
 
 		bins = Bins;		
 		basename = Basename;
 		exposurename = ExposureName;
 		geomname = GeomName;
 	}
-	Flux(FileSaver File, FileSaver FileRes, std::string Basename, std::string Effname, std::string EffDir,std::string CountsName, Binning Bins){
+	Flux(FileSaver FileRes, std::string Basename, std::string Effname, std::string EffDir,std::string CountsName,std::string ExposureName, std::string GeomName, Binning Bins){
 		MCEfficiency = new Efficiency(FileRes,Effname,EffDir,Bins);
 		Counts = (TH1F *) FileRes.Get((CountsName).c_str());
-
+		ExposureTime = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
+		Geom_Acceptance = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+GeomName).c_str());
+		FluxEstim = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str());
+			
 		bins = Bins;		
 		basename = Basename;
 	}
@@ -53,7 +59,8 @@ class Flux{
 	void Eval_GeomAcceptance(TNtuple * treeMC, FileSaver finalhistos,std::string cut);
 	void Eval_Flux();
 	void SaveResults(FileSaver finalhistos);
-
+	
+	TH1F * GetFlux(){return FluxEstim;}
 };
 
 void Flux::Set_MCPar(float rmin, float rmax, float trigrate){
@@ -71,13 +78,27 @@ void Flux::Eval_Flux(){
 	FluxEstim -> SetName((basename+"_Flux").c_str());
 	FluxEstim -> SetTitle((basename+"_Flux").c_str());
 
+	FluxEstim -> Sumw2();
+	
 	FluxEstim -> Divide(MCEfficiency->GetEfficiency());
 	if(ExposureTime) FluxEstim -> Divide(ExposureTime);
-	if(Geom_Acceptance) FluxEstim -> Divide(Geom_Acceptance);
+	
+	if(Geom_Acceptance){
+		float totaltriggers = Triggers->Integral();
+		for(int i=0;i<bins.size();i++){
+			float gen_bins= totaltriggers*(pow(param.Trigrate,-1))*(log(bins.RigBins()[i+1])-log(bins.RigBins()[i]))/(log(param.Rmax)-log(param.Rmin)); 
+			Geom_Acceptance -> SetBinContent(i+1,Geom_Acceptance -> GetBinContent(i+1)/gen_bins); 			
+			Geom_Acceptance -> SetBinError(i+1,pow(Geom_Acceptance -> GetBinContent(i+1),0.5)/gen_bins); 			
+			}
+		 Geom_Acceptance -> Sumw2();
+		 Geom_Acceptance -> Scale(47.78);
+		 FluxEstim -> Divide(Geom_Acceptance);
+		}
 
-	for(int i=0;i<bins.size();i++)
+	for(int i=0;i<bins.size();i++){
+		FluxEstim->SetBinError(i+1,FluxEstim->GetBinError(i+1)/(bins.EkPerMasBins()[i+1]-bins.EkPerMasBins()[i]));
 		FluxEstim->SetBinContent(i+1,FluxEstim->GetBinContent(i+1)/(bins.EkPerMasBins()[i+1]-bins.EkPerMasBins()[i]));
-
+	}
 	return;		
 }
 
@@ -89,29 +110,30 @@ void Flux::SaveResults(FileSaver finalhistos){
 }
 
 void Flux::Eval_GeomAcceptance(TNtuple * RawMC,FileSaver finalhistos,std::string cut){
-	if(1!=0){
-		Geom_Acceptance = new TH1F(geomname.c_str(),geomname.c_str(),bins.size(),0,bins.size());
 
-		Variables * vars = new Variables;
-		Efficiency * Geom = new Efficiency(finalhistos,"","",bins,cut.c_str() ,cut.c_str());
-		Geom->Fill(RawMC, vars,GetBetaGen,true);
-	
-		Geom_Acceptance = (TH1F *)Geom->GetBefore()->Clone();
-		Geom_Acceptance -> SetName(geomname.c_str());
-		Geom_Acceptance -> SetTitle(geomname.c_str());
-	
-		float gen_events = RawMC->GetEntries();
-		
-		for(int i=0;i<bins.size();i++){
-			float gen_bins= bins.RigBins()[i+1]-bins.RigBins()[i];///*gen_events*(pow(param.Trigrate,-1))*/(log(bins.RigBins()[i+1])-log(bins.RigBins()[i]));//(log(param.Rmax)-log(param.Rmin)); 
-			Geom_Acceptance -> SetBinContent(i+1,/*Geom_Acceptance -> GetBinContent(i+1)*/gen_bins); 			
-			}
+	if((!Geom_Acceptance||!Triggers)){
+			Geom_Acceptance = new TH1F(geomname.c_str(),geomname.c_str(),bins.size(),0,bins.size());
 
-		finalhistos.Add(Geom_Acceptance); 	
-		finalhistos.writeObjsInFolder(("Fluxes/"+basename).c_str());
+			Variables * vars = new Variables;
+			Efficiency * Geom = new Efficiency(finalhistos,"","",bins,cut.c_str() ,cut.c_str());
+			Geom->Fill(RawMC, vars,GetBetaGen,true);
+			Efficiency * Trig = new Efficiency(finalhistos,"","",PRB,cut.c_str() ,cut.c_str());
+			Trig->Fill(RawMC, vars,GetGenMomentum,true);
 
+			Geom_Acceptance = (TH1F *)Geom->GetBefore()->Clone();
+			Geom_Acceptance -> SetName(geomname.c_str());
+			Geom_Acceptance -> SetTitle(geomname.c_str());
+
+			Triggers = (TH1F *)Trig->GetBefore()->Clone();
+			Triggers -> SetName("Triggers");
+			Triggers -> SetTitle("Triggers");
+
+			finalhistos.Add(Geom_Acceptance); 	
+			finalhistos.Add(Triggers); 	
+			finalhistos.writeObjsInFolder(("Fluxes/"+basename).c_str());
 
 	}
+
 	return;
 };
 
