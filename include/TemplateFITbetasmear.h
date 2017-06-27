@@ -40,7 +40,10 @@ struct TFit {
    float StatErr=0;	
 
    TH1F * Templ_DPrim;
+   TH1F * Templ_PPrim;
+   
    float DCountsPrim=0;		
+   float PCountsPrim=0;	
 
    TFit(){}	
    TFit(TH1F * templ_P, TH1F * templ_D, TH1F * data, TH1F * dataPrim) { Templ_P= templ_P; Templ_D=templ_D; Data=data; DataPrim=dataPrim; }
@@ -329,10 +332,13 @@ void TemplateFIT::FillEventByEventData(float var, float discr_var, bool CUT, boo
 
 
 float TemplateFIT::SmearBetaRICH(float Beta, float stepsigma, float stepshift){
-	float angle= acos(1/(1.15*Beta))*10e4;
+	float angle;
+	if(Beta<0.87) angle= acos(1/(1.25*Beta))*10e4;
+	else 	      angle= acos(1/(1.15*Beta))*10e4;
 	float shiftstart=-systpar.shift;
 	angle = angle + (shiftstart+(2*systpar.shift/(float)systpar.steps)*stepshift) + Rand->Gaus(0,(float)((2*systpar.sigma/systpar.steps)*stepsigma));
-	return 1/(1.15*cos(angle/10e4));
+	if(Beta<0.87) return 1/(1.25*cos(angle/10e4));
+	else	      return 1/(1.15*cos(angle/10e4));
 }
 
 
@@ -357,7 +363,6 @@ void TemplateFIT::FillEventByEventMC(float var, float discr_var, bool CUTP, bool
 				float mass = var/betasmear * pow((1-pow(betasmear,2)),0.5);
 				if(CUTP&&kbin>0) fits[kbin][i][j]->Templ_P->Fill(mass,weight);		
 				if(CUTD&&kbin>0) fits[kbin][i][j]->Templ_D->Fill(mass,weight);
-			
 			}
 	}
 	return;	
@@ -578,6 +583,10 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto, FileSaver finalResults){
 				fits[bin][sigma][shift]->Templ_DPrim->Multiply(TransferFunction[bin]);
 				fits[bin][sigma][shift]->DCountsPrim = fits[bin][sigma][shift]->Templ_DPrim->Integral();
 
+				fits[bin][sigma][shift]->Templ_PPrim=(TH1F*) fits[bin][sigma][shift]->Templ_P->Clone();
+				fits[bin][sigma][shift]->Templ_PPrim->Multiply(TransferFunction[bin]);
+				fits[bin][sigma][shift]->PCountsPrim = fits[bin][sigma][shift]->Templ_PPrim->Integral();
+
 			}
 		}
 
@@ -687,8 +696,8 @@ void TemplateFIT::CalculateFinalPDCounts(){
 		DeuteronCounts->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts);
                 DeuteronCounts->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts);		
 		
-		ProtonCountsPrim->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts);
-		ProtonCountsPrim->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts);
+		ProtonCountsPrim->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCountsPrim);
+		ProtonCountsPrim->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCountsPrim);
 
 		DeuteronCountsPrim->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim);
                 DeuteronCountsPrim->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim);		

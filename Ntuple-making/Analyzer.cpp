@@ -16,6 +16,7 @@
 #include "TMath.h"
 #include <TMVA/Reader.h>
 #include <TMVA/Tools.h>
+#include "TRandom3.h"
 
 #include "TGraphErrors.h"
 #include "TCanvas.h"
@@ -81,12 +82,12 @@ int main(int argc, char * argv[])
 	if(isMC){
 		grandezzesepd=new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Massa_gen:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
 		trig=new TNtuple("trig","trig","Massa_gen:Momento_gen:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:Second:PhysBPatt:mcweight");
-		Q = new TNtuple("Q","Q","R:Beta:Massa_gen:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof:Momentogen");
+		Q = new TNtuple("Q","Q","R:Beta:qL1:Massa_gen:Cutmask:PhysBPatt:qUtof:qInner:qLtof:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
 	}
 	else{
 		grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:PhysBPatt:EdepTOFU:EdepTrack:EdepTOFD:IGRFRcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P:Rcutoff");
 		trig=new TNtuple("trig","trig","U_Time:Latitude:Rcutoff:IGRFRcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:Second:PhysBPatt:Livetime");
-		Q = new TNtuple("Q","Q","R:Beta:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof"); 
+		Q = new TNtuple("Q","Q","R:Beta:qL1:Cutmask:Latitude:PhysBPatt:qUtof:qInner:qLtof:IGRFRcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P:Rcutoff"); 
 	}
 
 	Reweighter reweighter;

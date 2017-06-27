@@ -201,8 +201,8 @@ void Variables::FillwithRawVariables(TNtuple *trig,bool isMC){
 }
                
 void Variables::FillwithChargeInfos(TNtuple *Q,bool isMC){
-	if(isMC) Q->Fill(R,Beta,Massa_gen,joinCutmask,BetaRICH_new,DistD,DistP,Likelihood,R,qL1,qInner,qUtof,qLtof,Momento_gen );
-	else     Q->Fill(R,Beta,joinCutmask,BetaRICH_new,DistD,DistP,Likelihood,R,qL1,qInner,qUtof,qLtof);
+	if(isMC) Q->Fill(R,Beta,qL1,Massa_gen,joinCutmask,PhysBPatt,qUtof,qInner,qLtof,Momento_gen,BetaRICH_new,Likelihood,mcweight,DistD,DistP );
+	else     Q->Fill(R,Beta,qL1,joinCutmask,Latitude,PhysBPatt,qUtof,qInner,qLtof,IGRFRcutoff,BetaRICH_new,Likelihood,DistD,DistP,Rcutoff);
 	return;
 }
 
@@ -217,8 +217,8 @@ void Variables::ReadAnalysisBranches(TNtuple * tree){
          tree->SetBranchAddress("PhysBPatt"	 ,&PhysBPatt);
          tree->SetBranchAddress("EdepTOF"	 ,&EdepTOFU);
 	 tree->SetBranchAddress("EdepTOFU"        ,&EdepTOFU);
-	 tree->SetBranchAddress("EdepTrack"	 ,&EdepTrack);
-			  	
+	 tree->SetBranchAddress("EdepTrack"	 ,&EdepTrack);	
+		  	
  	 tree->SetBranchAddress("EdepTOFD"	 ,&EdepTOFD);
          tree->SetBranchAddress("Momentogen"	 ,&Momento_gen);
          tree->SetBranchAddress("BetaRICH_new"	 ,&BetaRICH_new);
@@ -229,6 +229,12 @@ void Variables::ReadAnalysisBranches(TNtuple * tree){
 	 tree->SetBranchAddress("Latitude"	 ,&Latitude);
  	 tree->SetBranchAddress("Rcutoff"        ,&Rcutoff);
  	 tree->SetBranchAddress("IGRFRcutoff"    ,&IGRFRcutoff);
+
+	 tree->SetBranchAddress("qUtof"	 ,&qUtof);
+	 tree->SetBranchAddress("qLtof"  ,&qLtof);
+	 tree->SetBranchAddress("qInner" ,&qInner);
+	 tree->SetBranchAddress("qL1" 	 ,&qL1);
+	   	
 	 return;
 }
 
@@ -254,7 +260,10 @@ void Variables::AnalysisVariablseReset(){
         Latitude    =0; 
         Rcutoff     =0; 
         IGRFRcutoff =0; 
-
+	qL1         =0;
+	qUtof       =0;
+	qLtof	    =0;
+	qInner	    =0;
 	return;
 }
 
@@ -300,6 +309,7 @@ float GetBetaRICH        (Variables * vars) {return vars->BetaRICH_new;}
 float GetRecMassTOF	 (Variables * vars) {return (vars->R/vars->Beta)*pow((1-pow(vars->Beta,2)),0.5);}
 float GetRecMassRICH     (Variables * vars) {return (vars->R/vars->BetaRICH_new)*pow((1-pow(vars->BetaRICH_new,2)),0.5);}
 
+float GetRigidity (Variables * vars) {return vars->R;}
 
 float GetSmearedBetaTOF  (Variables * vars) {   
 	if(vars->Massa_gen>0){

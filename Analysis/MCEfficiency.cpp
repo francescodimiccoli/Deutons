@@ -109,20 +109,29 @@ int main(int argc, char * argv[])
         AllRangesEfficiency * FullSet_D       = new AllRangesEfficiency(finalHistos,"FullsetEff_D","FullsetEfficiency"  ,"","",Refill);
 
 
+	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency","IsProtonMC&IsPreselected","IsProtonMC&IsPreselected","IsProtonMC&IsPreselected","IsProtonMC&IsPreselected","IsProtonMC&IsPreselected&IsFromNaF","IsProtonMC&IsPreselected&IsFromAgl",Refill);
+	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency","IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected&IsFromNaF","IsDeutonMC&IsPreselected&IsFromAgl",Refill);
+
+
 	RigBinFullSetEff->Fill(treeMC,vars,GetGenMomentum,Refill);
 	Preselections_P	->Fill(treeMC,vars);
         Quality_P       ->Fill(treeMC,vars);
 	Preselections_D ->Fill(treeMC,vars);
 	Quality_D       ->Fill(treeMC,vars);
+	RICH_P	->Fill(treeMC,vars);
+	RICH_D	->Fill(treeMC,vars);
 	FullSet_P 	->CloneEfficiency(Preselections_P);
 	FullSet_D       ->CloneEfficiency(Preselections_D);
 
+	
 
 	RigBinFullSetEff->Save(finalHistos);	
 	Preselections_P	->Save(finalHistos);
         Quality_P       ->Save(finalHistos);
 	Preselections_D ->Save(finalHistos);
 	Quality_D       ->Save(finalHistos);
+	RICH_P 	->Save(finalHistos);
+	RICH_D       ->Save(finalHistos);
 	FullSet_P 	->Save(finalHistos);
 	FullSet_D       ->Save(finalHistos);
 
@@ -132,6 +141,8 @@ int main(int argc, char * argv[])
         Quality_P       ->Eval_Efficiency();
         Preselections_D ->Eval_Efficiency();
         Quality_D       ->Eval_Efficiency();
+	RICH_P	        ->Eval_Efficiency();
+        RICH_D  	->Eval_Efficiency();
 	FullSet_P       ->Eval_Efficiency();
         FullSet_D       ->Eval_Efficiency();
 	FullSet_P 	->ComposeEfficiency(Quality_P);
@@ -145,6 +156,8 @@ int main(int argc, char * argv[])
 	Quality_P       ->SaveResults(finalResults);
 	Preselections_D ->SaveResults(finalResults);
 	Quality_D       ->SaveResults(finalResults);
+	RICH_P 		->SaveResults(finalResults);
+	RICH_D 		->SaveResults(finalResults);
 	FullSet_P 	->SaveResults(finalResults);
 	FullSet_D 	->SaveResults(finalResults);
 

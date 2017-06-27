@@ -6,7 +6,7 @@ void Likelihood(Variables * vars){
 	float var[9]= {1,1,1,1,1,1,1,1,1};
 	var[0]=vars->NAnticluster;
 	var[1]=(vars->NTofClusters-vars->NTofClustersusati);
-	if(vars->R!=0) var[2]=(fabs(vars->Rup-vars->Rdown)/vars->R);
+	if(vars->R!=0) var[2]=(fabs((vars->Rup-vars->Rdown)/vars->R));
         else var[2]=1;
 	var[3]=GetUnusedLayers(vars->hitbits);
 	var[4]=1; //former "fuoriX", not present in the new DSTs ->to be added
@@ -22,19 +22,26 @@ void Likelihood(Variables * vars){
 	for(int m=0; m<6; m++){
                 Lfalse=Lfalse*Bkgnd[m]->Eval(var[m]);
                 Ltrue=Ltrue*Signal[m]->Eval(var[m]);
-	}
+		}
 	else if(ApplyCuts("IsFromNaF",vars))
 		for(int m=0; m<8; m++){
                 Lfalse=Lfalse*BkgndNaF[m]->Eval(var[m]);
                 Ltrue=Ltrue*SignalNaF[m]->Eval(var[m]);
-        }
+        	}
 	else if(ApplyCuts("IsFromAgl",vars))
-                for(int m=0; m<8; m++){
-                Lfalse=Lfalse*BkgndAgl[m]->Eval(var[m]);
-                Ltrue=Ltrue*SignalAgl[m]->Eval(var[m]);
-        }
-       
+		for(int m=0; m<8; m++){
+			Lfalse=Lfalse*BkgndAgl[m]->Eval(var[m]);
+			Ltrue=Ltrue*SignalAgl[m]->Eval(var[m]);
+		}
 
+	if(Ltrue<0) Ltrue=0;
+	if(Lfalse<0) Lfalse=0;
+
+	if(ApplyCuts("IsFromAgl",vars)){
+		for(int m=0; m<8; m++) cout<<var[m]<<" "; cout<<endl;
+		if(Ltrue==0) cout<<"ecco"<<endl;
+	}
+	
 	vars->Likelihood=Ltrue/(Ltrue+Lfalse);
 	
 	return;

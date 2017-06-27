@@ -9,16 +9,16 @@
 
 using namespace std;
 
-
+std::vector<float> LatEdges={0.0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.2};
 
 bool IsProtonMC    (Variables * vars){ return (vars->Massa_gen<1&&vars->Massa_gen>0);}
 bool IsDeutonMC    (Variables * vars){ return (vars->Massa_gen<2&&vars->Massa_gen>1);}
 bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_gen>1);}
 
-bool IsPrimary	   (Variables * vars){ return (vars->R>1.0*vars->Rcutoff); }
+bool IsPrimary	   (Variables * vars){ return (vars->R>1.3*vars->Rcutoff); }
 bool IsMC          (Variables * vars){ return (vars->Massa_gen>0);} 
 bool IsData        (Variables * vars){ return (vars->Massa_gen==0);}
-bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0));}
+bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0);}
 bool IsFromNaF     (Variables * vars){ return (((int)vars->joinCutmask>>11)==512&&vars->BetaRICH_new>0);}
 bool IsFromAgl     (Variables * vars){ return (((int)vars->joinCutmask>>11)==0&&vars->BetaRICH_new>0);}
 bool IsOnlyFromToF (Variables * vars){ return !((IsFromNaF(vars))||(IsFromAgl(vars)));}
@@ -52,6 +52,11 @@ bool DistanceCut   (Variables * vars){ return (Qualitycut(vars,vars->DistP,3,4,4
 bool LikelihoodCut (Variables * vars){ return  Qualitycut(vars,log(1-vars->Likelihood),-1.2,-2.6,-3.2);}
 
 bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->DistD>14 && vars->DistD<40);}
+
+bool IsInLatZone   (Variables * vars, int lat) { return (vars->Latitude>=LatEdges[lat]&&vars->Latitude<LatEdges[lat+1]);}
+
+bool ControlSample (Variables * vars) { return (IsPreselected(vars)/*&&vars->qInner>0.2&&vars->qInner<1.75*/ );}
+
 
 template<typename Out>
 void split(const std::string &s, char delim, Out result) {
@@ -94,10 +99,18 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="DeutonsMassCut") IsPassed=IsPassed && DeutonsMassCut(Vars);
 		if(spl[i]=="TemplatesMassCut")IsPassed=IsPassed && TemplatesMassCut(Vars);
 		if(spl[i]=="IsGoodHe")       IsPassed=IsPassed && IsGoodHe(Vars);
+		if(spl[i]=="ControlSample")  IsPassed=IsPassed && ControlSample(Vars);
+		
+		for(int lat=0;lat<10;lat++)
+			if(spl[i]==("IsInLatZone"+to_string(lat)).c_str())      IsPassed=IsPassed && IsInLatZone(Vars,lat);
+
 	}
 
 	return IsPassed;
 }
 
-
-
+int GetLatitude(Variables * vars){
+	for (int lat=0;lat<10;lat++)
+		if(vars->Latitude>=LatEdges[lat]&&vars->Latitude<LatEdges[lat+1]) return lat;
+		return -1;		
+}

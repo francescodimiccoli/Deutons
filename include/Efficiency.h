@@ -4,9 +4,10 @@ class Efficiency{
 
 	private:
 
-	TH1F * before;
-	TH1F * after;
-	TH1F * Eff;
+	TH1 * before;
+	TH1 * after;
+	TH1 * Eff;
+
 	TGraphErrors * FittedEff;
 	FileSaver  file;
 	Binning bins;
@@ -29,18 +30,33 @@ class Efficiency{
 		after  = new TH1F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size());
 	};
 
+	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::vector<float> LatZones){
+		file=File;
+		bins=Bins;
+		basename=Basename;
+		cut_before=Cut_before;
+		cut_after=Cut_after;
+		directory=Directory;
+		before = new TH2F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size(),LatZones.size()-1,0,LatZones.size()-1);
+		after  = new TH2F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size(),LatZones.size()-1,0,LatZones.size()-1);
+	};
+
+
+
 	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins ){
 	file=File;
                 bins=Bins;
                 basename=Basename;
 		directory=Directory;
-		before =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_before").c_str());
-		after  =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_after").c_str());
-		Eff    =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
+		before =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_before").c_str());
+		after  =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_after").c_str());
+		Eff    =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
 	}
 
 	void Fill( TNtuple * treeMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false,bool weight=true);
 	void FillEventByEvent(float discr_var, bool CUT_BEFORE, bool CUT_AFTER, float weight);
+	void FillEventByEventLatitude(float discr_var, bool CUT_BEFORE, bool CUT_AFTER,int latzone);	
+	
 	void Save(FileSaver finalhistos);
 	void SaveResults(FileSaver finalhistos);
 	void Eval_Efficiency();
@@ -49,11 +65,13 @@ class Efficiency{
 	void CloneEfficiency(Efficiency * Second);
 	void ComposeEfficiency(Efficiency * Second);
 	
-	TH1F * GetEfficiency() {return Eff;}
+	TH1 * GetEfficiency() {return Eff;}
 	TGraphErrors * GetFittedEfficiency() {return FittedEff;}
-	TH1F * GetBefore()     {return before;}
-	TH1F * GetAfter()      {return after;}
-	
+	TH1 * GetBefore()     {return before;}
+	TH1 * GetAfter()      {return after;}
+
+	std::string GetCut_Before()	{return cut_before;}	
+	std::string GetCut_After()	{return cut_after;}
 };
 
 void Efficiency::ComposeEfficiency(Efficiency * Second){
@@ -100,6 +118,8 @@ void Efficiency::Fill(TNtuple * tree, Variables * vars, float (*discr_var) (Vari
 			tree->GetEvent(i);
 			if(weight) vars->mcweight=1;
 			FillEventByEvent(discr_var(vars),ApplyCuts(cut_before,vars),ApplyCuts(cut_after,vars),vars->mcweight);
+			if(after->GetNbinsY()>1) FillEventByEventLatitude(discr_var(vars),ApplyCuts(cut_before,vars),ApplyCuts(cut_after,vars),GetLatitude(vars));
+
 		}
 
 	}
@@ -112,10 +132,21 @@ void Efficiency::FillEventByEvent(float discr_var, bool CUT_BEFORE, bool CUT_AFT
 
 	int kbin;
         kbin =  bins.GetBin(discr_var);
-	if(kbin>0){
-		if(CUT_BEFORE) before->Fill(kbin,weight);
-		if(CUT_AFTER ) after->Fill(kbin,weight);
-	}
+		if(kbin>0){
+			if(CUT_BEFORE) before->Fill(kbin,weight);
+			if(CUT_AFTER ) after->Fill(kbin,weight);
+		}
+        return;
+}
+
+void Efficiency::FillEventByEventLatitude(float discr_var, bool CUT_BEFORE, bool CUT_AFTER,int latzone){
+
+	int kbin;
+        kbin =  bins.GetBin(discr_var);
+		if(kbin>0){
+			if(CUT_BEFORE) before->Fill(kbin,latzone);
+			if(CUT_AFTER ) after->Fill(kbin,latzone);
+		}
         return;
 }
 
@@ -128,7 +159,7 @@ void Efficiency::Save(FileSaver finalhistos){
 
 
 void Efficiency::Eval_Efficiency(){
-	Eff = (TH1F *)after->Clone();
+	Eff = (TH1 *)after->Clone();
 	Eff -> Sumw2();
 	Eff -> Divide(before);
 	Eff ->SetName((basename+"_Eff").c_str());

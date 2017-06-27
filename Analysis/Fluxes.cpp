@@ -84,7 +84,10 @@ int main(int argc, char * argv[])
         ToFDB.UseBetaEdges();
         NaFDB.UseBetaEdges();
         AglDB.UseBetaEdges();
-	
+	ToFPB.UseBetaEdges();
+        NaFPB.UseBetaEdges();
+        AglPB.UseBetaEdges();
+
 	PRB.UseREdges();
 
 
@@ -122,6 +125,40 @@ int main(int argc, char * argv[])
 	DFluxAgl->SaveResults(finalResults);
 
 
+	Flux * PFluxTOF = new Flux(finalHistos,finalResults, "PFluxTOF", "FullsetEff_P_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF","Gen. Acceptance",ToFPB);
+	Flux * PFluxNaF = new Flux(finalHistos,finalResults, "PFluxNaF", "FullsetEff_P_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF","Gen. Acceptance",NaFPB);
+	Flux * PFluxAgl = new Flux(finalHistos,finalResults, "PFluxAgl", "FullsetEff_P_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl","Gen. Acceptance",AglPB);
+
+	PFluxTOF-> Eval_ExposureTime(RawDT,finalHistos);
+        PFluxNaF-> Eval_ExposureTime(RawDT,finalHistos);
+        PFluxAgl-> Eval_ExposureTime(RawDT,finalHistos);
+
+	PFluxTOF->Set_MCPar(0.5,100,0.0308232619);	
+	PFluxNaF->Set_MCPar(0.5,100,0.0308232619);	
+	PFluxAgl->Set_MCPar(0.5,100,0.0308232619);	
+
+	PFluxTOF-> Eval_GeomAcceptance(treeMC,finalHistos,"IsProtonMC");
+        PFluxNaF-> Eval_GeomAcceptance(treeMC,finalHistos,"IsProtonMC");
+        PFluxAgl-> Eval_GeomAcceptance(treeMC,finalHistos,"IsProtonMC");
+
+	PFluxTOF-> Eval_Flux();
+        PFluxNaF-> Eval_Flux();
+        PFluxAgl-> Eval_Flux();
+
+	PFluxTOF->SaveResults(finalResults);
+	PFluxNaF->SaveResults(finalResults);
+	PFluxAgl->SaveResults(finalResults);
+
+	
+	TH1F * DPRatioTOF = DFluxTOF->Eval_FluxRatio(PFluxTOF,"DP ratio TOF");
+	TH1F * DPRatioNaF = DFluxNaF->Eval_FluxRatio(PFluxTOF,"DP ratio NaF");
+	TH1F * DPRatioAgl = DFluxAgl->Eval_FluxRatio(PFluxTOF,"DP ratio Agl");
+
+	finalResults.Add(DPRatioTOF);
+	finalResults.Add(DPRatioNaF);
+	finalResults.Add(DPRatioAgl);
+
+        finalResults.writeObjsInFolder("Fluxes/");	
 
 	return 0;
 }

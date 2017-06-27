@@ -89,6 +89,11 @@ int main(int argc, char * argv[]){
 	AllRangesEfficiency * Quality_D       = new AllRangesEfficiency(finalHistos,"QualEff_D","QualityEfficiency"     );
         AllRangesEfficiency * FullSet_D       = new AllRangesEfficiency(finalHistos,"FullsetEff_D","FullsetEfficiency"  );
 
+	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency");
+	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency");
+
+
+
 
 	TCanvas * c1 = new TCanvas("Efficiency Cascade"); 
         c1->SetCanvasSize(2000,1500);
@@ -152,6 +157,25 @@ int main(int argc, char * argv[]){
 	Plots.Add(c2);
 	Plots.writeObjsInFolder("Efficiencies");
 
+	TCanvas * c3 = new TCanvas(" RICH rec. Efficiency"); 
+        c3->SetCanvasSize(2000,1500);
+
+	//fix legend
+	PlotTH1FintoGraph(gPad,NaFDB, RICH_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.5,10,0,0.9,"NaF range",22);
+	PlotTH1FintoGraph(gPad,AglDB, RICH_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.5,10,0,0.9,"Agl range",29);
+
+	PlotTH1FintoGraph(gPad,ToFDB, RICH_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.5,10,0,0.9,"Protons",8);
+	PlotTH1FintoGraph(gPad,ToFDB, RICH_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.5,10,0,0.9,"Deutons",8);
+	//
+
+	PlotTH1FintoGraph(gPad,NaFDB, RICH_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.5,10,0,0.9,"NaF range",22,true);
+	PlotTH1FintoGraph(gPad,AglDB, RICH_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.5,10,0,0.9,"Agl range",29,true);
+
+	PlotTH1FintoGraph(gPad,NaFDB, RICH_D->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.5,10,0,0.9,"Deutons NaF",22,true);
+	PlotTH1FintoGraph(gPad,AglDB, RICH_D->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.5,10,0,0.9,"Deutons Agl",29,true);
+	
+	Plots.Add(c3);
+	Plots.writeObjsInFolder("Efficiencies");
 
 
 

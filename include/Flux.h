@@ -61,6 +61,9 @@ class Flux{
 	void SaveResults(FileSaver finalhistos);
 	
 	TH1F * GetFlux(){return FluxEstim;}
+	TH1F * GetGenAcceptance(){return Geom_Acceptance;}
+
+	TH1F * Eval_FluxRatio(Flux * Denominator,std::string name);
 };
 
 void Flux::Set_MCPar(float rmin, float rmax, float trigrate){
@@ -165,3 +168,14 @@ void Flux::Eval_ExposureTime(TNtuple * RawDT,FileSaver finalhistos){
 	return;
 }
 
+TH1F * Flux::Eval_FluxRatio(Flux * Denominator,std::string name){
+
+	TH1F * Numerator = (TH1F*) FluxEstim -> Clone();
+	Numerator->SetName(name.c_str());
+	Numerator->SetTitle(name.c_str());
+	Numerator->Sumw2();
+
+	Numerator->Divide(Denominator->GetFlux());
+
+	return Numerator;
+}
