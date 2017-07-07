@@ -99,7 +99,6 @@ void Efficiency::CloneEfficiency(Efficiency * Second){
 void Efficiency::Fill(TNtuple * tree, Variables * vars, float (*discr_var) (Variables * vars),bool refill,bool weight){
 
 	cout<<file.Get((directory+"/"+basename+"/"+basename+"_before").c_str())<<" "<<file.Get((directory+"/"+basename+"/"+basename+"_after").c_str())<<endl;
-
 	if(( (TH1F*)  file.Get((directory+"/"+basename+"/"+basename+"_before").c_str()) &&
 				(TH1F*)  file.Get((directory+"/"+basename+"/"+basename+"_after").c_str()) ) && !refill) {
 
@@ -117,9 +116,8 @@ void Efficiency::Fill(TNtuple * tree, Variables * vars, float (*discr_var) (Vari
 			UpdateProgressBar(i, tree->GetEntries());
 			tree->GetEvent(i);
 			if(weight) vars->mcweight=1;
-			FillEventByEvent(discr_var(vars),ApplyCuts(cut_before,vars),ApplyCuts(cut_after,vars),vars->mcweight);
-			if(after->GetNbinsY()>1) FillEventByEventLatitude(discr_var(vars),ApplyCuts(cut_before,vars),ApplyCuts(cut_after,vars),GetLatitude(vars));
-
+			if(after->GetNbinsY()==1) FillEventByEvent(discr_var(vars),ApplyCuts(cut_before,vars),ApplyCuts(cut_after,vars),vars->mcweight);
+			else FillEventByEventLatitude(discr_var(vars),ApplyCuts(cut_before,vars),ApplyCuts(cut_after,vars),GetLatitude(vars));
 		}
 
 	}

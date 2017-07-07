@@ -55,7 +55,7 @@ bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->Dist
 
 bool IsInLatZone   (Variables * vars, int lat) { return (vars->Latitude>=LatEdges[lat]&&vars->Latitude<LatEdges[lat+1]);}
 
-bool ControlSample (Variables * vars) { return (IsPreselected(vars)/*&&vars->qInner>0.2&&vars->qInner<1.75*/ );}
+bool ControlSample (Variables * vars) { return (IsPreselected(vars)&&vars->qInner>0.2&&vars->qInner<1.75 );}
 
 
 template<typename Out>
@@ -110,7 +110,8 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 }
 
 int GetLatitude(Variables * vars){
+	int latzone=-9;
 	for (int lat=0;lat<10;lat++)
-		if(vars->Latitude>=LatEdges[lat]&&vars->Latitude<LatEdges[lat+1]) return lat;
-		return -1;		
+		if(fabs(vars->Latitude)>=LatEdges[lat]&&fabs(vars->Latitude)<LatEdges[lat+1])  latzone=lat;
+		return latzone;		
 }
