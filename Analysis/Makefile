@@ -9,11 +9,11 @@ exe2 = MCEfficiency
 exe3 = Fluxes
 exe4 = EffCorr
 #file to compile
-CC = CountsExtraction.cpp
-CC1 = HeliumContamination.cpp
-CC2 = MCEfficiency.cpp
-CC3 = Fluxes.cpp
-CC4 = EffCorr.cpp
+CC = sources/CountsExtraction.cpp
+CC1 = sources/HeliumContamination.cpp
+CC2 = sources/MCEfficiency.cpp
+CC3 = sources/Fluxes.cpp
+CC4 = sources/EffCorr.cpp
 #root libs
 rootlibs=`root-config --libs --cflags` 
 all:
