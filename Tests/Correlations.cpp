@@ -72,7 +72,7 @@ class CorrelationCalculator{
 void CorrelationCalculator::PopulateHistos(){
 	for(int i=0;i<Variables.size();i++)
 		for(int j=0;j<Variables.size();j++)
-			if(i<=j){
+			if(i>=j){
 				Matrix[i][j]=PopulateHisto(Q,Variables[i],Variables[j],Binnings[i],Binnings[j],MinimumCut.c_str(),to_string(i)+"vs"+to_string(j).c_str());
 				Matrix[i][j]->SetName((Variables[i]+"vs"+Variables[j]).c_str());	
 				Matrix[i][j]->SetTitle((Variables[i]+"vs"+Variables[j]).c_str());
@@ -84,7 +84,7 @@ void CorrelationCalculator::PopulateHistos(){
 void CorrelationCalculator::Eval_CorrelMatrix(){
 	for(int i=0;i<Variables.size();i++)
                 for(int j=0;j<Variables.size();j++)
-                        if(i<=j)
+                        if(i>=j)
 			       CorrMatrix->SetBinContent(i+1,j+1,fabs(Matrix[i][j]->GetCorrelationFactor()));
 			else   CorrMatrix->SetBinContent(i+1,j+1,-10);
 	return;			
@@ -93,7 +93,7 @@ void CorrelationCalculator::Eval_CorrelMatrix(){
 void CorrelationCalculator::SaveHistos(FileSaver finalhistos){
 	for(int i=0;i<Variables.size();i++)
                 for(int j=0;j<Variables.size();j++)
-			if(i<=j)
+			if(i>=j)
 				finalhistos.Add(Matrix[i][j]);
 	finalhistos.Add(CorrMatrix);
 	finalhistos.writeObjsInFolder(Basename.c_str());
@@ -122,39 +122,39 @@ int Correlations(){
 
 
 
-	std::vector<std::string> QualityVariables ={"Dist5D","LDiscriminant","qL1","qUtof","qLtof","qInner"};
+	std::vector<std::string> QualityVariables ={"Dist5D_P","LDiscriminant","qL1","qUtof","qLtof","qInner"};
 	std::vector<std::string> QualityBinnings  ={"200,0,18","100,0,1","100,0,3","100,0,3","100,0,3","100,0,3"};
 	
 	std::vector<std::string> RICHVariables ={"qL1","qUtof","qLtof","qInner",IsFromNaF,IsFromAgl};
 	std::vector<std::string> RICHBinnings  ={"100,0,3","100,0,3","100,0,3","100,0,3","2,0,2","2,0,2"};
 
-	std::vector<std::string> PresVariables ={"qL1","qUtof","qLtof","qInner",IsPreselected,L1Hit};
-	std::vector<std::string> PresBinnings  ={"100,0,3","100,0,3","100,0,3","100,0,3","2,0,2","2,0,2"};
+	std::vector<std::string> PresVariables ={"qL1","qUtof","qLtof","qInner",IsPreselected,L1Hit,IsFromAgl};
+	std::vector<std::string> PresBinnings  ={"100,0,3","100,0,3","100,0,3","100,0,3","2,0,2","2,0,2","2,0,2"};
 
 
 	
 
 	cout<<"************************ CALCULATION of CORRELATION MATRIXES ***************************"<<endl;
 	
-	CorrelationCalculator * QualityTOF = new CorrelationCalculator(Q,"QualityTOF",QualityVariables,QualityBinnings,(IsPreselected+"&&"+L1Hit+"&&"+IsOnlyFromTOF+"&&"+IsDeutonMC).c_str());
+	CorrelationCalculator * QualityTOF = new CorrelationCalculator(Q,"QualityTOF",QualityVariables,QualityBinnings,(IsPreselected+"&&"+L1Hit+"&&"+IsOnlyFromTOF+"&&"+IsProtonMC).c_str());
 	
 	QualityTOF->PopulateHistos();
 	QualityTOF->Eval_CorrelMatrix();
 	QualityTOF->SaveHistos(finalHistos);
 
-	CorrelationCalculator * QualityAgl = new CorrelationCalculator(Q,"QualityAgl",QualityVariables,QualityBinnings,(IsPreselected+"&&"+L1Hit+"&&"+IsFromAgl+"&&"+IsDeutonMC).c_str());
+	CorrelationCalculator * QualityAgl = new CorrelationCalculator(Q,"QualityAgl",QualityVariables,QualityBinnings,(IsPreselected+"&&"+L1Hit+"&&"+IsFromAgl+"&&"+IsProtonMC).c_str());
 	
 	QualityAgl->PopulateHistos();
 	QualityAgl->Eval_CorrelMatrix();
 	QualityAgl->SaveHistos(finalHistos);
 	
-	CorrelationCalculator * RICH = new CorrelationCalculator(Q,"RICH",RICHVariables,RICHBinnings,(IsPreselected+"&&"+L1Hit+"&&"+IsDeutonMC).c_str());
+	CorrelationCalculator * RICH = new CorrelationCalculator(Q,"RICH",RICHVariables,RICHBinnings,(IsPreselected+"&&"+L1Hit+"&&"+IsProtonMC).c_str());
 	
 	RICH->PopulateHistos();
 	RICH->Eval_CorrelMatrix();
 	RICH->SaveHistos(finalHistos);
 
-	CorrelationCalculator * PreSel = new CorrelationCalculator(Q,"PreSel",PresVariables,PresBinnings,IsDeutonMC.c_str());
+	CorrelationCalculator * PreSel = new CorrelationCalculator(Q,"PreSel",PresVariables,PresBinnings,IsProtonMC.c_str());
 	
 	PreSel->PopulateHistos();
 	PreSel->Eval_CorrelMatrix();
