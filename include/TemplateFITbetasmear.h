@@ -1,3 +1,6 @@
+#ifndef TEMPLATEFITBETASMEAR_H
+#define TEMPLATEFITBETASMEAR_H
+
 using namespace std;
 
 // not used
@@ -32,7 +35,7 @@ struct TFit {
 
    float wheightP,wheightD,wheightHe;
    TFractionFitter *Tfit;
-   int Tfit_outcome;
+   int Tfit_outcome=-1;
    
    float DCounts=0;
    float PCounts=0;
@@ -251,7 +254,7 @@ class TemplateFIT {
 	void FillEventByEventData(float var, float discr_var, bool CUT, bool CUTPRIM, float weight);
 	void FillEventByEventMC(float var, float discr_var, bool CUTP, bool CUTD, float weight);
 
-	void Do_TemplateFIT(TFit * Fit);
+	//void Do_TemplateFIT(TFit * Fit);
 	void ExtractCounts(FileSaver finalhisto,FileSaver finalResults);
 	void EvalFinalParameters();
 	void EvalFinalErrors(FileSaver finalResults);
@@ -495,7 +498,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 }
 
 
-void TemplateFIT::Do_TemplateFIT(TFit * Fit){
+void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax){
 
 	TObjArray *Tpl;
 	Tpl = new TObjArray(2);
@@ -508,7 +511,7 @@ void TemplateFIT::Do_TemplateFIT(TFit * Fit){
 
 	Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(min), Fit -> Data -> FindBin(max));
 	
-	bool fitcondition = (Fit -> Data->Integral()>5000)&&(Fit -> Templ_P->Integral()>1000) &&(Fit -> Templ_D->Integral()>500);
+	bool fitcondition = (Fit -> Data->Integral()>500)&&(Fit -> Templ_P->Integral()>500) &&(Fit -> Templ_D->Integral()>500);
 
 	if(fitcondition) { 
 	
@@ -577,7 +580,7 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto, FileSaver finalResults){
 		for(int sigma=0;sigma<systpar.steps;sigma++){
                         for(int shift=0;shift<systpar.steps;shift++){
                                 cout<<fits[bin][sigma][shift]<<endl;
-                                Do_TemplateFIT(fits[bin][sigma][shift]);
+                                Do_TemplateFIT(fits[bin][sigma][shift],fitrangemin,fitrangemax);
 
 				fits[bin][sigma][shift]->Templ_DPrim=(TH1F*) fits[bin][sigma][shift]->Templ_D->Clone();
 				fits[bin][sigma][shift]->Templ_DPrim->Multiply(TransferFunction[bin]);
@@ -709,4 +712,4 @@ void TemplateFIT::CalculateFinalPDCounts(){
 		
 
 }
-
+#endif

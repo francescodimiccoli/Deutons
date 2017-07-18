@@ -51,6 +51,7 @@ bool FileSaver::CheckFile(){
 TObject *  FileSaver::Get(std::string name){
 	TObject * Obj;
 	TFile * fileFinalPlots=TFile::Open(filename.c_str(), "READ");
+	if(!fileFinalPlots) return Obj;
 	fileFinalPlots->GetObject(name.c_str(),Obj);
 	return Obj;	
 }

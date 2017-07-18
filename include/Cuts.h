@@ -11,6 +11,9 @@ using namespace std;
 
 std::vector<float> LatEdges={0.0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.2};
 
+TH1F* ProjectionXtoTH1F(TH2F* h2, string title, int binmin, int binmax);
+TH1F* TH1DtoTH1F(TH1D* hd);
+ 
 bool IsProtonMC    (Variables * vars){ return (vars->Massa_gen<1&&vars->Massa_gen>0);}
 bool IsDeutonMC    (Variables * vars){ return (vars->Massa_gen<2&&vars->Massa_gen>1);}
 bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_gen>1);}
@@ -35,6 +38,13 @@ bool TemplatesMassCut(Variables * vars){  if(IsFromNaF(vars)||IsFromAgl(vars))
 						return GetRecMassTOF(vars)>0.1&&GetRecMassTOF(vars)<4.5;
 				     }
 
+bool ControlSampleMassCut(Variables * vars){  if(IsFromNaF(vars)||IsFromAgl(vars))
+						return GetRecMassRICH(vars)>0.3;
+				     	else
+						return GetRecMassTOF(vars)>0.3;
+				     }
+
+
 
 
 
@@ -55,7 +65,7 @@ bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->Dist
 
 bool IsInLatZone   (Variables * vars, int lat) { return (vars->Latitude>=LatEdges[lat]&&vars->Latitude<LatEdges[lat+1]);}
 
-bool ControlSample (Variables * vars) { return (IsPreselected(vars)&&vars->qInner>0.2&&vars->qInner<1.75 );}
+bool ControlSample (Variables * vars) { return (IsPreselected(vars)&&vars->qInner>0.2&&vars->qInner<1.75&&ControlSampleMassCut(vars));}
 
 
 template<typename Out>
@@ -82,6 +92,7 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 	
 	bool IsPassed = true;
 	for(int i=0;i<spl.size();i++){
+		if(spl[i]=="") 		     IsPassed=IsPassed;
 		if(spl[i]=="IsProtonMC"	   ) IsPassed=IsPassed && IsProtonMC    (Vars);
 		if(spl[i]=="IsDeutonMC"	   ) IsPassed=IsPassed && IsDeutonMC    (Vars);
 		if(spl[i]=="IsHeliumMC"	   ) IsPassed=IsPassed && IsHeliumMC    (Vars);
@@ -114,4 +125,16 @@ int GetLatitude(Variables * vars){
 	for (int lat=0;lat<10;lat++)
 		if(fabs(vars->Latitude)>=LatEdges[lat]&&fabs(vars->Latitude)<LatEdges[lat+1])  latzone=lat;
 		return latzone;		
+}
+
+TH1F* ProjectionXtoTH1F(TH2F* h2, string title, int binmin, int binmax) {
+   TH1D* hd=h2->ProjectionX(title.data(),binmin, binmax);
+   TH1F* hf=TH1DtoTH1F(hd);
+   return hf;
+}
+
+TH1F* TH1DtoTH1F(TH1D* hd) {
+   TH1F*  hf=(TH1F*)hd->Clone();
+   hf->SetName(hd->GetTitle());
+    return hf;
 }

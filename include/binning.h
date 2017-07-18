@@ -241,7 +241,7 @@ float Binning::GetBinCenter(int bin){
 
 int Binning::GetRBin (float var)
 {
-   if (var<rigbin[0]) return -1;
+   if (var<rigbin[0]||var>rigbin[rigbin.size()-1]) return -1;
    for (uint ib=0; ib<rigbin.size(); ib++)  {
       if (var>rigbin[ib] && var<=rigbin[ib+1])
          return ib;
@@ -251,7 +251,7 @@ int Binning::GetRBin (float var)
 
 int Binning::GetBetaBin (float var)
 {
-   if (var<betabin[0]) return -1;
+   if (var<betabin[0]||var>betabin[betabin.size()-1]) return -1;
    for (uint ib=0; ib<betabin.size(); ib++)  {
       if (var>betabin[ib] && var<=betabin[ib+1])
          return ib;
