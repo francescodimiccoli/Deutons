@@ -66,6 +66,8 @@ bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->Dist
 bool IsInLatZone   (Variables * vars, int lat) { return (vars->Latitude>=LatEdges[lat]&&vars->Latitude<LatEdges[lat+1]);}
 
 bool ControlSample (Variables * vars) { return (IsPreselected(vars)&&vars->qInner>0.2&&vars->qInner<1.75&&ControlSampleMassCut(vars));}
+bool PresControlSample (Variables * vars) { return (vars->qInner>0.2&&vars->qInner<1.75&&ControlSampleMassCut(vars));}
+
 
 
 template<typename Out>
@@ -111,6 +113,7 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="TemplatesMassCut")IsPassed=IsPassed && TemplatesMassCut(Vars);
 		if(spl[i]=="IsGoodHe")       IsPassed=IsPassed && IsGoodHe(Vars);
 		if(spl[i]=="ControlSample")  IsPassed=IsPassed && ControlSample(Vars);
+		if(spl[i]=="PresControlSample")  IsPassed=IsPassed && PresControlSample(Vars);
 		
 		for(int lat=0;lat<10;lat++)
 			if(spl[i]==("IsInLatZone"+to_string(lat)).c_str())      IsPassed=IsPassed && IsInLatZone(Vars,lat);

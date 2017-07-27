@@ -30,7 +30,7 @@
 #include "../../include/TemplateFITbetasmear.h"
 
 
-
+void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, TNtuple* tree,Binning Bins,float (*discr_var) (Variables * vars),std::string name,std::string cut, bool refill);
 
 int main(int argc, char * argv[])
 {
@@ -96,6 +96,7 @@ int main(int argc, char * argv[])
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 	
+
 	TemplateFIT * TOFfits= new TemplateFIT("TOFfits","HeContTOF",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
 	if((!checkfile)||Refill){
 		TOFfits->Fill(treeMC,treeDT,vars,GetRecMassTOF,GetBetaTOF);
@@ -104,7 +105,7 @@ int main(int argc, char * argv[])
 	}
 	else { TOFfits= new TemplateFIT(finalHistos,"TOFfits","HeContTOF",ToFDB);
 	
-	//	TOFfits->Save(finalHistos);
+		TOFfits->DisableFit();
 		TOFfits->ExtractCounts(finalHistos,finalResults);	
 		TOFfits->SaveFitResults(finalResults);
 	}
@@ -117,8 +118,8 @@ int main(int argc, char * argv[])
 	}
 	else {NaFfits= new TemplateFIT(finalHistos,"NaFfits","HeContNaF",NaFDB,true,11,400,200);
 	
-	//	NaFfits->Save(finalHistos);
 		NaFfits->SetFitRange(0.6,3);
+		NaFfits->DisableFit();
 		NaFfits->ExtractCounts(finalHistos,finalResults);
 		NaFfits->SaveFitResults(finalResults);
 	}
@@ -132,17 +133,46 @@ int main(int argc, char * argv[])
 	}
 	else {Aglfits= new TemplateFIT(finalHistos,"Aglfits","HeContAgl",AglDB,true,11,110,80);
 	
-	//	Aglfits->Save(finalHistos);
 		Aglfits->SetFitRange(0.6,3);
+		Aglfits->DisableFit();
 		Aglfits->ExtractCounts(finalHistos,finalResults);
 		Aglfits->SaveFitResults(finalResults);
 	}
+
+	ExtractSimpleCountNr(finalHistos,finalResults,treeDT,PRB,GetRigidity,"HEPCounts","IsPreselected&LikelihoodCut&DistanceCut&IsPrimary",Refill);
 
 	return 0;
 }
 
 
+void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, TNtuple* tree,Binning Bins,float (*discr_var) (Variables * vars),std::string name,std::string cut, bool refill){
 
+	TH1F * Counts;
+	if(refill){
+		Counts = new TH1F(name.c_str(),name.c_str(),Bins.size(),0,Bins.size());
+		cout<<name.c_str()<<" Filling ... "<< endl;
+		Variables * vars = new Variables;
+		vars->ReadAnalysisBranches(tree);
+	
+		for(int i=0;i<tree->GetEntries();i++){
+			vars->AnalysisVariablseReset();		
+			UpdateProgressBar(i, tree->GetEntries());
+			tree->GetEvent(i);
+			int kbin;
+			kbin = 	Bins.GetBin(discr_var(vars));
+			if(ApplyCuts(cut.c_str(),vars)&&kbin>0)
+				Counts->Fill(kbin);
+		}
+	}
+	else Counts = (TH1F*) finalhistos.Get((name + "/" + name).c_str());
+	
+      finalhistos.Add(Counts);
+      finalhistos.writeObjsInFolder((name + "/" + name).c_str());
+
+      finalResults.Add(Counts);
+      finalResults.writeObjsInFolder((name + "/" + name).c_str());
+      return;	
+}
 	
 
 

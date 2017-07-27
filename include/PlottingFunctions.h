@@ -2,7 +2,7 @@ using namespace std;
 
 TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxis,std::string Yaxis){
 	
-		TH2F * Frame = new TH2F("Frame","Frame",1000,xmin,xmax,1000,ymin,ymax);
+		TH2F * Frame = new TH2F("Frame","Frame",1e3,xmin,xmax,1e3,ymin,ymax);
 		Frame->SetStats(false);
 		Frame->SetTitle("");
 

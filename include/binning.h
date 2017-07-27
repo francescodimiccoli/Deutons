@@ -71,7 +71,7 @@ inline std::vector<float> EtotPerMassBins();  ///< returns Etot per mass
       float BetaBinCent (int bin)       { return  betabincent[bin];        }
       float EkPerMassBinCent (int bin)  {  return ekpermassbincent[bin];   }
 
-
+      bool IsUsingBetaEdges() {return Betaedges;}
 
    private:
       Particle particle;

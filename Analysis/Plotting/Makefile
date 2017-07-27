@@ -8,6 +8,8 @@ exe1= MCEfficiency
 exe2= P_Fluxes
 exe3= D_Fluxes
 exe4= RICHEffCorr 
+exe5= QualEffCorr 
+
 
 
 
@@ -17,6 +19,8 @@ CC1= MCEfficiency.cpp
 CC2= P_Fluxes.cpp
 CC3= D_Fluxes.cpp
 CC4= RICHEffCorr.cpp
+CC5= QualEffCorr.cpp
+
 
 
 #
@@ -28,4 +32,5 @@ all:
 	$(Compiler) $(FLAGS)  -o $(exe2) $(CC2)  $(rootlibs) -lTMVA
 	$(Compiler) $(FLAGS)  -o $(exe3) $(CC3)  $(rootlibs) -lTMVA
 	$(Compiler) $(FLAGS)  -o $(exe4) $(CC4)  $(rootlibs) -lTMVA
+	$(Compiler) $(FLAGS)  -o $(exe5) $(CC5)  $(rootlibs) -lTMVA
 

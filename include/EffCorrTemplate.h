@@ -4,8 +4,9 @@ float SmearBetaRICH(float Beta){
         float angle;
         if(Beta<0.87) angle= acos(1/(1.25*Beta))*10e4;
         else          angle= acos(1/(1.15*Beta))*10e4;
-        angle = angle + (0) + Rand->Gaus(0,0);
-        if(Beta<0.87) return 1/(1.25*cos(angle/10e4));
+        if(Beta<0.87) angle = angle + (-188) + Rand->Gaus(0,518);
+        else          angle = angle + (-41) + Rand->Gaus(0,73);
+	if(Beta<0.87) return 1/(1.25*cos(angle/10e4));
         else          return 1/(1.15*cos(angle/10e4));
 }
 
@@ -14,7 +15,7 @@ float SmearBetaRICH(float Beta){
 float SmearBeta(float Beta){
 
         float time = 1.2/(Beta*3e-4);
-        time = time + (0) + Rand->Gaus(0,0);
+        time = time + (-18) + Rand->Gaus(0,58);
         return 1.2/(time*3e-4);
 
 }
@@ -149,46 +150,64 @@ class EffCorrTemplate{
 	void Eval_Efficiencies();
 	void SaveResults(FileSaver finalhistos);
 	void Eval_Corrections();
+
+	std::string GetName()		{return basename;}
+	std::string GetDirPath()           {return directory;}
 	TH1F * GetCorrectionLat_P(int lat)  {return LatCorrections_P[lat];}
 	TH1F * GetGlobCorrection_P()	  {return GlobalCorrection_P;}
 	TH1F * GetCorrectionLat_D(int lat)  {return LatCorrections_D[lat];}
 	TH1F * GetGlobCorrection_D()	  {return GlobalCorrection_D;}
 
+	
 
+	TH1F * GetBeforeMC_P(int bin)	{return BeforeMC_P[bin];}
+	TH1F * GetBeforeMC_D(int bin)	{return BeforeMC_D[bin];}
+	TH1F * GetAfterMC_P(int bin)	{return AfterMC_P[bin];}
+	TH1F * GetAfterMC_D(int bin)	{return AfterMC_D[bin];}
+	TH1F * GetBeforeDataLat(int bin,int lat){return BeforeData[lat][bin];}
+	TH1F * GetAfterDataLat(int bin,int lat){return AfterData[lat][bin];}
+	TH1F * GetBeforeDataGlob(int bin,int lat){return BeforeDataGlob[bin];}
+	TH1F * GetAfterDataGlob(int bin,int lat){return AfterDataGlob[bin];}
+	
 };
 
 void EffCorrTemplate::ReinitializeHistos(bool refill){
+	TFile * input = file.GetFile();
 	for(int bin=0;bin<bins.size();bin++){
 			
 			std::string name = (basename+"_MC_Before_"+to_string(bin));
-			BeforeMC_P[bin] = (TH1F*)file.Get(((directory+"/"+basename+"_MC")+"/"+name).c_str());
-			if((!BeforeMC_P[bin])||refill) BeforeMC_P[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);	
+			if(input) BeforeMC_P[bin] = (TH1F*)input->Get(((directory+"/"+basename+"_MC")+"/"+name).c_str());
+			if((!input)||(!BeforeMC_P[bin])||refill) BeforeMC_P[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);	
 
 			name = (basename+"_MC_After_"+to_string(bin));
-			AfterMC_P[bin] = (TH1F*)file.Get(((directory+"/"+basename+"_MC")+"/"+name).c_str()); 
-                        if((!AfterMC_P[bin])||refill) AfterMC_P[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
+			if(input) AfterMC_P[bin] = (TH1F*)input->Get(((directory+"/"+basename+"_MC")+"/"+name).c_str()); 
+                        if((!input)||(!AfterMC_P[bin])||refill) AfterMC_P[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
 
 			name = (basename+"_MCD_Before_"+to_string(bin));
-			BeforeMC_D[bin] = (TH1F*)file.Get(((directory+"/"+basename+"_MC")+"/"+name).c_str());
-                        if((!BeforeMC_D[bin])||refill) BeforeMC_D[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
+			if(input) BeforeMC_D[bin] = (TH1F*)input->Get(((directory+"/"+basename+"_MC")+"/"+name).c_str());
+                        if((!input)||(!BeforeMC_D[bin])||refill) BeforeMC_D[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
 
 			name = (basename+"_MCD_After_"+to_string(bin));
-			AfterMC_D[bin] = (TH1F*)file.Get(((directory+"/"+basename+"_MC")+"/"+name).c_str());
-                        if((!AfterMC_D[bin])||refill) AfterMC_D[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
+			if(input) AfterMC_D[bin] = (TH1F*)input->Get(((directory+"/"+basename+"_MC")+"/"+name).c_str());
+                        if((!input)||(!AfterMC_D[bin])||refill) AfterMC_D[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
 
 		}
 		for(int lat=0;lat<10;lat++) {
 			for(int bin=0;bin<bins.size();bin++){
 			
 				string name = (basename+"_DT_"+to_string(lat)+"_Before_"+to_string(bin));
-				BeforeData[lat][bin]=(TH1F*)file.Get((directory+"/"+basename+"_lat/lat"+to_string(lat)+"/"+name).c_str());
-				if((!BeforeData[lat][bin])||refill) BeforeData[lat][bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
+				if(input) BeforeData[lat][bin]=(TH1F*)input->Get((directory+"/"+basename+"_lat/lat"+to_string(lat)+"/"+name).c_str());
+				if((!input)||(!BeforeData[lat][bin])||refill) BeforeData[lat][bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
 				
 				name = (basename+"_DT_"+to_string(lat)+"_After_"+to_string(bin));	
-				AfterData[lat][bin] = (TH1F*)file.Get((directory+"/"+basename+"_lat/lat"+to_string(lat)+"/"+name).c_str());
-				if((!AfterData[lat][bin])||refill) AfterData[lat][bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
+				if(input) AfterData[lat][bin] = (TH1F*)input->Get((directory+"/"+basename+"_lat/lat"+to_string(lat)+"/"+name).c_str());
+				if((!input)||(!AfterData[lat][bin])||refill) AfterData[lat][bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
 			}
-		}	
+		}
+
+
+
+	return;	
 }
 
 void EffCorrTemplate::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars,float (*var) (Variables * vars),float (*discr_var) (Variables * vars),bool refill){
@@ -259,7 +278,6 @@ void EffCorrTemplate::Save(FileSaver finalhistos){
 		finalhistos.Add(AfterMC_P[bin]);
 		finalhistos.Add(BeforeMC_D[bin]);
 		finalhistos.Add(AfterMC_D[bin]);
-
 	}	
 	finalhistos.writeObjsInFolder((directory+"/"+basename+"_MC").c_str());
 
@@ -335,6 +353,27 @@ void EffCorrTemplate::Eval_Efficiencies(){
 			GlobEfficiency_D->SetBinError(bin+1,stat_error);
 		}	
 	}
+	for(int lat=0;lat<10;lat++)
+		for(int bin=0;bin<bins.size();bin++){
+		//Do_TemplateFIT(FitBefore[lat][bin],0.1,3);
+                //Do_TemplateFIT(FitAfter [lat][bin],0.1,3);
+		if(FitBefore[lat][bin]->Tfit_outcome==0&&FitAfter[lat][bin]->Tfit_outcome==0){
+                        LatEfficiency_P->SetBinContent(bin+1,FitAfter[lat][bin]->Templ_P->Integral()/FitBefore[lat][bin]->Templ_P->Integral());
+                        LatEfficiency_D->SetBinContent(bin+1,FitAfter[lat][bin]->Templ_D->Integral()/FitBefore[lat][bin]->Templ_D->Integral());
+                        float stat_error=GetStatError(FitAfter[lat][bin],FitBefore[lat][bin]);
+                        LatEfficiency_P->SetBinError(bin+1,stat_error);
+                        LatEfficiency_D->SetBinError(bin+1,stat_error);
+                }
+		else{
+                        cout<<"Integral: "<<lat<<" "<<bin<<" "<<FitAfter[lat][bin]->Data->Integral()<<" "<<FitBefore[lat][bin]->Data->Integral()<<endl;
+			LatEfficiency_P->SetBinContent(bin+1,lat+1,FitAfter[lat][bin]->Data->Integral()/FitBefore[lat][bin]->Data->Integral());
+                        LatEfficiency_D->SetBinContent(bin+1,lat+1,FitAfter[lat][bin]->Data->Integral()/FitBefore[lat][bin]->Data->Integral());
+                        float stat_error=pow(FitAfter[lat][bin]->Data->Integral(),0.5)/FitAfter[lat][bin]->Data->Integral() + 
+					 pow(FitBefore[lat][bin]->Data->Integral(),0.5)/FitBefore[lat][bin]->Data->Integral() ;
+                        LatEfficiency_P->SetBinError(bin+1,stat_error);
+                        LatEfficiency_D->SetBinError(bin+1,stat_error);
+                }
+	}	
 	return;	
 }
 
@@ -419,5 +458,6 @@ void EffCorrTemplate::Eval_Corrections(){
 	
 	return;
 }
+
 
 

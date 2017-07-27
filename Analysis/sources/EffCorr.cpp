@@ -100,8 +100,11 @@ int main(int argc, char * argv[])
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
-//	EffCorr * RICHEffCorr_NaF = new EffCorr(finalHistos,"RICHCorrection_NaF","RICH Eff. Corr",NaFPB,"ControlSample","ControlSample&IsFromNaF","","IsProtonMC");
-//	EffCorr * RICHEffCorr_Agl = new EffCorr(finalHistos,"RICHCorrection_Agl","RICH Eff. Corr",AglPB,"ControlSample","ControlSample&IsFromAgl","","IsProtonMC");
+	EffCorr * HEPPresEffCorr = new EffCorr(finalHistos,"HEPPresEffCorr","HEPPresEffCorr",PRB,"PresControlSample","PresControlSample&IsPreselected","","IsProtonMC");
+	EffCorr * HEPQualEffCorr = new EffCorr(finalHistos,"HEPQualEffCorr","HEPQualEffCorr",PRB,"ControlSample","ControlSample&DistanceCut&LikelihoodCut","","IsProtonMC");
+	
+	EffCorr * RICHEffCorr_NaF = new EffCorr(finalHistos,"RICHCorrection_NaF","RICH Eff. Corr",NaFPB,"ControlSample","ControlSample&IsFromNaF","","IsProtonMC");
+	EffCorr * RICHEffCorr_Agl = new EffCorr(finalHistos,"RICHCorrection_Agl","RICH Eff. Corr",AglPB,"ControlSample","ControlSample&IsFromAgl","","IsProtonMC");
 
 	EffCorrTemplate* DistCorr_TOF = new EffCorrTemplate(finalHistos,"DistanceCorrTOF","Quality Eff. Corr",ToFDB,"ControlSample","ControlSample&DistanceCut","","");	
 	EffCorrTemplate* DistCorr_NaF = new EffCorrTemplate(finalHistos,"DistanceCorrNaF","Quality Eff. Corr",NaFDB,"ControlSample&IsFromNaF","ControlSample&IsFromNaF&DistanceCut","","",true);	
@@ -111,9 +114,10 @@ int main(int argc, char * argv[])
 	EffCorrTemplate* LikCorr_Agl = new EffCorrTemplate(finalHistos,"LikelihoodCorrAgl","Quality Eff. Corr",AglDB,"ControlSample&DistanceCut&IsFromAgl","ControlSample&IsFromAgl&DistanceCut&LikelihoodCut","","",true);	
 
 
-
-//	RICHEffCorr_NaF -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);	
-//	RICHEffCorr_Agl -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);	
+	HEPPresEffCorr -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);
+	HEPQualEffCorr -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);	
+	RICHEffCorr_NaF -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);	
+	RICHEffCorr_Agl -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);	
 	DistCorr_TOF -> Fill(treeMC,treeDT,vars,GetRecMassTOF,GetBetaTOF,Refill);	
 	DistCorr_NaF -> Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH,Refill);	
 	DistCorr_Agl -> Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH,Refill);	
@@ -121,9 +125,10 @@ int main(int argc, char * argv[])
 	LikCorr_NaF -> Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH,Refill);	
 	LikCorr_Agl -> Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH,Refill);	
 
-
-//	RICHEffCorr_NaF -> Save(finalHistos);
-//	RICHEffCorr_Agl -> Save(finalHistes);
+	HEPPresEffCorr -> Save(finalHistos);
+	HEPQualEffCorr -> Save(finalHistos);
+	RICHEffCorr_NaF -> Save(finalHistos);
+	RICHEffCorr_Agl -> Save(finalHistos);
 	DistCorr_TOF -> Save(finalHistos); 
 	DistCorr_NaF -> Save(finalHistos); 
 	DistCorr_Agl -> Save(finalHistos); 
@@ -132,8 +137,10 @@ int main(int argc, char * argv[])
 	LikCorr_Agl -> Save(finalHistos); 
 
 
-//	RICHEffCorr_NaF -> Eval_Efficiencies();
-//	RICHEffCorr_Agl -> Eval_Efficienciee();
+	HEPPresEffCorr -> Eval_Efficiencies();
+	HEPQualEffCorr -> Eval_Efficiencies();
+	RICHEffCorr_NaF -> Eval_Efficiencies();
+	RICHEffCorr_Agl -> Eval_Efficiencies();
 	DistCorr_TOF -> Eval_Efficiencies();
 	DistCorr_NaF -> Eval_Efficiencies();
 	DistCorr_Agl -> Eval_Efficiencies();
@@ -142,8 +149,10 @@ int main(int argc, char * argv[])
 	LikCorr_Agl -> Eval_Efficiencies();
 
 
-//	RICHEffCorr_NaF -> Eval_Corrections();
-//	RICHEffCorr_Agl -> Eval_Corrections();
+	HEPPresEffCorr -> Eval_Corrections();
+	HEPQualEffCorr -> Eval_Corrections();
+	RICHEffCorr_NaF -> Eval_Corrections();
+	RICHEffCorr_Agl -> Eval_Corrections();
 	DistCorr_TOF -> Eval_Corrections();
 	DistCorr_NaF -> Eval_Corrections();
 	DistCorr_Agl -> Eval_Corrections();
@@ -152,8 +161,10 @@ int main(int argc, char * argv[])
 	LikCorr_Agl -> Eval_Corrections();
 
 	
-//	RICHEffCorr_NaF -> SaveResults(finalResults);
-// 	RICHEffCorr_Agl -> SaveResults(finalResults);
+	HEPPresEffCorr -> SaveResults(finalResults);
+	HEPQualEffCorr -> SaveResults(finalResults);
+	RICHEffCorr_NaF -> SaveResults(finalResults);
+ 	RICHEffCorr_Agl -> SaveResults(finalResults);
 	DistCorr_TOF -> SaveResults(finalResults);
         DistCorr_NaF -> SaveResults(finalResults);
  	DistCorr_Agl -> SaveResults(finalResults);

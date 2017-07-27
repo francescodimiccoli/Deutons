@@ -39,7 +39,7 @@ struct TFit {
    
    float DCounts=0;
    float PCounts=0;
-   float ChiSquare=0;			
+   float ChiSquare=500;			
    float StatErr=0;	
 
    TH1F * Templ_DPrim;
@@ -362,7 +362,9 @@ void TemplateFIT::FillEventByEventMC(float var, float discr_var, bool CUTP, bool
 				float betasmear;
 				if(!isrich) betasmear = SmearBeta(discr_var,(float)i,(float)j);
 				else 	   betasmear = SmearBetaRICH(discr_var,(float)i,(float)j);
-				int kbin =  bins.GetBin(betasmear);
+				int kbin; 
+				if(bins.IsUsingBetaEdges()) kbin = bins.GetBin(betasmear);
+				else kbin =bins.GetBin(discr_var);
 				float mass = var/betasmear * pow((1-pow(betasmear,2)),0.5);
 				if(CUTP&&kbin>0) fits[kbin][i][j]->Templ_P->Fill(mass,weight);		
 				if(CUTD&&kbin>0) fits[kbin][i][j]->Templ_D->Fill(mass,weight);
@@ -451,11 +453,12 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 	
 	for(int bin=0;bin<bins.size();bin++){
 		if(BestChiSquare[bin]&&fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Tfit){
-			TH1F * FIT=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Tfit-> GetPlot();
-			if(FIT){
-			FIT->SetName(("Fraction Fit bin" + to_string(bin)).c_str());
-			finalhisto.Add(FIT);
-			finalhisto.writeObjsInFolder((basename+"/Fit Results/FractionFits/Bin"+to_string(bin)).c_str());
+			TH1F * FIT;
+			if(fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Tfit_outcome!=-1){ 
+				FIT=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Tfit-> GetPlot();
+				FIT->SetName(("Fraction Fit bin" + to_string(bin)).c_str());
+				finalhisto.Add(FIT);
+				finalhisto.writeObjsInFolder((basename+"/Fit Results/FractionFits/Bin"+to_string(bin)).c_str());
 			}
 		}
 	}
@@ -511,7 +514,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax){
 
 	Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(min), Fit -> Data -> FindBin(max));
 	
-	bool fitcondition = (Fit -> Data->Integral()>500)&&(Fit -> Templ_P->Integral()>500) &&(Fit -> Templ_D->Integral()>500);
+	bool fitcondition = (Fit -> Data->Integral()>500)&&(Fit -> Templ_P->Integral()>50) &&(Fit -> Templ_D->Integral()>50);
 
 	if(fitcondition) { 
 	
@@ -569,53 +572,57 @@ float EvalFitProbability(float chi){
 
 
 void TemplateFIT::ExtractCounts(FileSaver finalhisto, FileSaver finalResults){
-	
-	Eval_TransferFunction();
 
-	if(!fitDisabled){
+	Eval_TransferFunction();
 
 	for(int bin=0;bin<bins.size();bin++){
 
 		// Template Fits
 		for(int sigma=0;sigma<systpar.steps;sigma++){
-                        for(int shift=0;shift<systpar.steps;shift++){
-                                cout<<fits[bin][sigma][shift]<<endl;
-                                Do_TemplateFIT(fits[bin][sigma][shift],fitrangemin,fitrangemax);
+			for(int shift=0;shift<systpar.steps;shift++){
+				cout<<fits[bin][sigma][shift]<<endl;
+				if(!fitDisabled) Do_TemplateFIT(fits[bin][sigma][shift],fitrangemin,fitrangemax);
 
 				fits[bin][sigma][shift]->Templ_DPrim=(TH1F*) fits[bin][sigma][shift]->Templ_D->Clone();
 				fits[bin][sigma][shift]->Templ_DPrim->Multiply(TransferFunction[bin]);
-				fits[bin][sigma][shift]->DCountsPrim = fits[bin][sigma][shift]->Templ_DPrim->Integral();
-
+				if(!fitDisabled) fits[bin][sigma][shift]->DCountsPrim = fits[bin][sigma][shift]->Templ_DPrim->Integral();
+				else { 
+					fits[bin][sigma][shift]->DCountsPrim = fits[bin][sigma][shift]->DataPrim->Integral();
+					fits[bin][sigma][shift]->DCounts     = fits[bin][sigma][shift]->DataPrim->Integral();
+				}
 				fits[bin][sigma][shift]->Templ_PPrim=(TH1F*) fits[bin][sigma][shift]->Templ_P->Clone();
 				fits[bin][sigma][shift]->Templ_PPrim->Multiply(TransferFunction[bin]);
-				fits[bin][sigma][shift]->PCountsPrim = fits[bin][sigma][shift]->Templ_PPrim->Integral();
-
+				if(!fitDisabled) fits[bin][sigma][shift]->PCountsPrim = fits[bin][sigma][shift]->Templ_PPrim->Integral();
+				else { 
+					fits[bin][sigma][shift]->PCountsPrim = fits[bin][sigma][shift]->DataPrim->Integral();
+				        fits[bin][sigma][shift]->PCounts     = fits[bin][sigma][shift]->DataPrim->Integral();
+				     }
 			}
 		}
 
 		// Histograms for systematic error evaluation
 		TH2F * dcountsspread = new TH2F(("DCountsSpread Bin " +to_string(bin)).c_str(),("DCountsSpread Bin " +to_string(bin)).c_str(),systpar.steps,0,2*systpar.sigma,systpar.steps,-systpar.shift,systpar.shift);
-        	TH2F * tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)).c_str(),systpar.steps,0,2*systpar.sigma,systpar.steps,-systpar.shift,systpar.shift);
+		TH2F * tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)).c_str(),systpar.steps,0,2*systpar.sigma,systpar.steps,-systpar.shift,systpar.shift);
 		TH1F * weighteddcounts  = new TH1F(("Weighted Counts Bin " +to_string(bin)).c_str(),("Weighted Counts Bin " +to_string(bin)).c_str(),35,0.4*fits[bin][0][4]->DCounts,1.7*fits[bin][0][4]->DCounts);
 		BestChi * MinimumChi = new BestChi();
-		
+
 
 		for(int sigma=0;sigma<systpar.steps;sigma++){
 			for(int shift=0;shift<systpar.steps;shift++){
 				dcountsspread->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->DCounts);
 				if(fits[bin][sigma][shift]->ChiSquare>0)
-						tfitchisquare->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->ChiSquare);
+					tfitchisquare->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->ChiSquare);
 				else  tfitchisquare->SetBinContent(sigma+1,shift+1,500);
 
 				if(	fits[bin][sigma][shift]->DCounts>0.1*fits[bin][0][4]->DCounts &&
-					fits[bin][sigma][shift]->DCounts<2*fits[bin][0][4]->DCounts  )
+						fits[bin][sigma][shift]->DCounts<2*fits[bin][0][4]->DCounts  )
 
-				weighteddcounts -> Fill(fits[bin][sigma][shift]->DCounts,EvalFitProbability(fits[bin][sigma][shift]->ChiSquare));
+					weighteddcounts -> Fill(fits[bin][sigma][shift]->DCounts,EvalFitProbability(fits[bin][sigma][shift]->ChiSquare));
 			}
 		}
 
 		MinimumChi->FindMinimum(tfitchisquare);	
-		
+
 
 		BestChiSquare.push_back(MinimumChi);			
 		DCountsSpread.push_back(dcountsspread);
@@ -628,8 +635,6 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto, FileSaver finalResults){
 	EvalFinalParameters();
 	EvalFinalErrors(finalResults);
 	CalculateFinalPDCounts();	
-	}
-	
 	return;
 }
 

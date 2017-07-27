@@ -58,8 +58,8 @@ int main(int argc, char * argv[])
         TFile *fileDT =TFile::Open(INPUT1.c_str());
         TFile *fileMC =TFile::Open(INPUT2.c_str());
 
-        TNtuple *treeMC = (TNtuple *)fileMC->Get("grandezzesepd");
-        TNtuple *treeDT = (TNtuple *)fileDT->Get("grandezzesepd");
+        TNtuple *treeMC = (TNtuple *)fileMC->Get("Q");
+        TNtuple *treeDT = (TNtuple *)fileDT->Get("Q");
 
 
 	cout<<"****************************** BINS ***************************************"<<endl;
@@ -94,7 +94,7 @@ int main(int argc, char * argv[])
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
 
-	Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff ","RigBinFullSetEff",PRB,"IsProtonMC","IsProtonMC&IsPreselected&DistanceCut&LikelihoodCut");
+	Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsProtonMC&IsPreselected&DistanceCut&LikelihoodCut");
 
 
 	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency","IsProtonMC","IsProtonMC","IsProtonMC","IsProtonMC&IsPreselected",
