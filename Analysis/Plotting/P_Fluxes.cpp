@@ -39,6 +39,8 @@
 
 #include "TGraphAsymmErrors.h"
 
+TSpline3 * GetFluxSpline(TGraphAsymmErrors * Graph);
+
 int main(int argc, char * argv[]){
         cout<<"****************************** FILES OPENING ***************************************"<<endl;
 
@@ -185,17 +187,50 @@ int main(int argc, char * argv[]){
 	leg->SetLineWidth(2);
 	leg->Draw("same");
         
-	PlotTH1FintoGraph(gPad,PRB,   HEPFlux->GetFlux(), "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1,10000,"This Work (H.E.)",24);
-	PlotTH1FintoGraph(gPad,ToFPB, PFluxTOF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1,10000,"This Work (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFPB, PFluxNaF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1,10000,"This Work (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglPB, PFluxAgl->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1,10000,"This Work (Agl)",29);
+	PlotTH1FintoGraph(gPad,PRB,   HEPFlux->GetFlux(), "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (H.E.)",24);
+	PlotTH1FintoGraph(gPad,ToFPB, PFluxTOF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFPB, PFluxNaF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglPB, PFluxAgl->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (Agl)",29);
 
 	
 	Plots.Add(c2);
 	Plots.writeObjsInFolder("Fluxes");
 
 
+	TCanvas *c3 = new TCanvas("P Flux Comparison with AMS-02");
+	c3->SetCanvasSize(2000,1500);
+	c3->cd();
+        gPad->SetLogx();
+        gPad->SetLogy();
+        gPad->SetGridx();
+        gPad->SetGridy();
+
+
+	TSpline3 *AMSFlux = GetFluxSpline(P_Graphs[1]);
+	AMSFlux->SetLineColor(2);
+	AMSFlux->SetLineWidth(2);
+	
+	PlotRatioWithSplineintoGraph(gPad,PRB, HEPFlux->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (H.E.)",24);
+	PlotRatioWithSplineintoGraph(gPad,ToFDB, PFluxTOF->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (TOF)",8);
+	PlotRatioWithSplineintoGraph(gPad,NaFDB, PFluxNaF->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (NaF)",22);
+	PlotRatioWithSplineintoGraph(gPad,AglDB, PFluxAgl->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (Agl)",29);
+	
+	Plots.Add(c3);
+	Plots.writeObjsInFolder("Fluxes");
 
 
 	return 0;
+}
+
+TSpline3 * GetFluxSpline(TGraphAsymmErrors * Graph){
+	int AMSpointnr=1;
+	double a,b;
+	while (Graph->GetPoint(AMSpointnr,a,b)>0) AMSpointnr++;
+
+	double X[AMSpointnr-1];
+	double Y[AMSpointnr-1];
+
+	for(int i=0; i<AMSpointnr-1; i++)	int c= Graph->GetPoint(i+1,X[i],Y[i]);
+	TSpline3 *AMSFlux = new TSpline3("AMSFlux",X,Y,AMSpointnr-1);
+	return AMSFlux;	
 }
