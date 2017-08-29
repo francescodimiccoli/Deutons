@@ -21,7 +21,7 @@ void ProcessEvent(Variables *vars,bool isMC,Reweighter reweighter){
 	if(isMC){
 		vars->mcweight=reweighter.getWeight(fabs(vars->Momento_gen));
                         if(vars->Momento_gen<1) vars->mcweight=1;
-		//	CalibrateEdep(vars);	
+			CalibrateEdep(vars);	
 		
 	}
 	if(ApplyCuts("IsPreselected",vars)){

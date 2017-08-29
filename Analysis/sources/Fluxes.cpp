@@ -138,7 +138,7 @@ int main(int argc, char * argv[])
 
 	DFluxNaF->ApplyEfficCorr(RICHEffCorr_NaF->GetGlobCorrection());
 	DFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl->GetGlobCorrection());
-
+/*
 	DFluxTOF->ApplyEfficCorr(DistCorr_TOF->GetGlobCorrection_D());
 	DFluxNaF->ApplyEfficCorr(DistCorr_NaF->GetGlobCorrection_D());
 	DFluxAgl->ApplyEfficCorr(DistCorr_Agl->GetGlobCorrection_D());
@@ -147,7 +147,7 @@ int main(int argc, char * argv[])
 	DFluxNaF->ApplyEfficCorr(LikCorr_NaF->GetGlobCorrection_D());
 	DFluxAgl->ApplyEfficCorr(LikCorr_Agl->GetGlobCorrection_D());
 
-
+*/
 	DFluxTOF-> Eval_Flux();
         DFluxNaF-> Eval_Flux();
         DFluxAgl-> Eval_Flux();
@@ -179,20 +179,20 @@ int main(int argc, char * argv[])
         PFluxNaF-> Eval_GeomAcceptance(treeMC,finalHistos,"IsProtonMC",Refill);
         PFluxAgl-> Eval_GeomAcceptance(treeMC,finalHistos,"IsProtonMC",Refill);
 
-	HEPFlux -> ApplyEfficCorr(HEPPresEffCorr->GetGlobCorrection());
-	HEPFlux -> ApplyEfficCorr(HEPQualEffCorr->GetGlobCorrection());
+//	HEPFlux -> ApplyEfficCorr(HEPPresEffCorr->GetGlobCorrection());
+//	HEPFlux -> ApplyEfficCorr(HEPQualEffCorr->GetGlobCorrection());
 	
 	PFluxNaF->ApplyEfficCorr(RICHEffCorr_NaF->GetGlobCorrection());
 	PFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl->GetGlobCorrection());
 	
-	PFluxTOF->ApplyEfficCorr(DistCorr_TOF->GetGlobCorrection_P());
+/*	PFluxTOF->ApplyEfficCorr(DistCorr_TOF->GetGlobCorrection_P());
 	PFluxNaF->ApplyEfficCorr(DistCorr_NaF->GetGlobCorrection_P());
 	PFluxAgl->ApplyEfficCorr(DistCorr_Agl->GetGlobCorrection_P());
 
 	PFluxTOF->ApplyEfficCorr(LikCorr_TOF->GetGlobCorrection_P());
 	PFluxNaF->ApplyEfficCorr(LikCorr_NaF->GetGlobCorrection_P());
 	PFluxAgl->ApplyEfficCorr(LikCorr_Agl->GetGlobCorrection_P());
-
+*/
 	HEPFlux -> Eval_Flux();
 	PFluxTOF-> Eval_Flux();
         PFluxNaF-> Eval_Flux();
@@ -207,8 +207,8 @@ int main(int argc, char * argv[])
 
 
 	TH1F * DPRatioTOF = DFluxTOF->Eval_FluxRatio(PFluxTOF,"DP ratio TOF");
-	TH1F * DPRatioNaF = DFluxNaF->Eval_FluxRatio(PFluxTOF,"DP ratio NaF");
-	TH1F * DPRatioAgl = DFluxAgl->Eval_FluxRatio(PFluxTOF,"DP ratio Agl");
+	TH1F * DPRatioNaF = DFluxNaF->Eval_FluxRatio(PFluxNaF,"DP ratio NaF");
+	TH1F * DPRatioAgl = DFluxAgl->Eval_FluxRatio(PFluxAgl,"DP ratio Agl");
 
 	finalResults.Add(DPRatioTOF);
 	finalResults.Add(DPRatioNaF);

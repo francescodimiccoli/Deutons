@@ -26,18 +26,9 @@
 
 #include "../include/filesaver.h"
 
-#include "../include/MCTuning.h"
+#include "../include/Efficiency.h"
 
 
-
-void UpdateZoneLivetime (float Livetime, float Rcutoff, TH1F * esposizionegeo){
-
-        for(int i=0;i<esposizionegeo->GetNbinsX();i++)
-                        if(esposizionegeo->GetBinLowEdge(i+1)>=1.2*Rcutoff){
-                                esposizionegeo -> SetBinContent(i+1, esposizionegeo -> GetBinContent(i+1) + Livetime) ;
-        }
-        return;
-}
 
 
 int main(int argc, char * argv[])
@@ -57,8 +48,8 @@ int main(int argc, char * argv[])
         TFile *fileDT =TFile::Open(INPUT1.c_str());
         TFile *fileMC =TFile::Open(INPUT2.c_str());
 
-        TNtuple *treeMC = (TNtuple *)fileMC->Get("Q");
-        TNtuple *treeDT = (TNtuple *)fileDT->Get("Q");
+        TNtuple *treeMC = (TNtuple *)fileMC->Get("grandezzesepd");
+        TNtuple *treeDT = (TNtuple *)fileDT->Get("grandezzesepd");
 	TNtuple *RawDT  = (TNtuple *)fileDT->Get("trig");
 
 	cout<<"****************************** BINS ***************************************"<<endl;
@@ -90,55 +81,9 @@ int main(int argc, char * argv[])
 
         Variables * vars = new Variables;
 
-	cout<<"************ Exposure TIME **************"<<endl;
-	
-	TH1F * ExposureTime;
-
-	if(!checkfile){
-
-		float Livetime,U_time,Rcutoff;
-		RawDT->SetBranchAddress("Livetime"           ,&Livetime);
-		RawDT->SetBranchAddress("U_Time"             ,&U_time);
-		RawDT->SetBranchAddress("Rcutoff"            ,&Rcutoff);
-
-
-		ExposureTime = new TH1F("Exposure Time","Exposure Time",5000,0,100);
-
-		vars->ReadAnalysisBranches(treeDT);
-
-		int ActualTime=0;
-		for(int i=0;i<RawDT->GetEntries()/frac;i++){
-			vars->AnalysisVariablseReset();
-			UpdateProgressBar(i, treeDT->GetEntries()/frac);
-			RawDT->GetEvent(i);
-			if((int)U_time!=ActualTime) {
-				UpdateZoneLivetime(Livetime,Rcutoff,ExposureTime);
-				ActualTime=U_time;
-			}
-		}
-
-		finalHistos.Add(ExposureTime);
-		finalHistos.Add(ExtractCutoffWeight(ExposureTime));	
-		finalHistos.writeObjsInFolder("");	
-	}
-	
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
-	Tuning * MCTuning;
-	MCTuning = new Tuning(PRB,10,100,100,ExposureTime);
-	if(!checkfile){
-		MCTuning->UseCutoffFilterMode();
-		MCTuning->Fill(treeMC,treeDT,vars);
-		MCTuning->Save(finalHistos);	
-	}
-	else { 
-		MCTuning = new Tuning(finalHistos,PRB,10,50,100,ExposureTime); 
-		MCTuning->UseCutoffFilterMode();
-	}
 
-	MCTuning->Normalize();
-	MCTuning->EvalResiduals();	
-	MCTuning->SaveResults(finalHistos);
 
 	return 0;
 }

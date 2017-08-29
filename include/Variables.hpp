@@ -5,7 +5,7 @@ struct Variables{
         float 	   Rcutoff;
 	float 	   IGRFRcutoff;
         float      Livetime;
-        float      PhysBPatt;
+        int      PhysBPatt;
         float      R_pre;
         float      Beta_pre;
         int        CUTMASK;

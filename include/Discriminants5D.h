@@ -37,10 +37,6 @@ void Likelihood(Variables * vars){
 	if(Ltrue<0) Ltrue=0;
 	if(Lfalse<0) Lfalse=0;
 
-	if(ApplyCuts("IsFromAgl",vars)){
-		for(int m=0; m<8; m++) cout<<var[m]<<" "; cout<<endl;
-		if(Ltrue==0) cout<<"ecco"<<endl;
-	}
 	
 	vars->Likelihood=Ltrue/(Ltrue+Lfalse);
 	

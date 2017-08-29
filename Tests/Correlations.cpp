@@ -103,7 +103,7 @@ void CorrelationCalculator::SaveHistos(FileSaver finalhistos){
 int Correlations(){
 	cout<<"************************ READING DATA ***************************"<<endl;
 
-	string inputfile = "../Ntuple-making/Ntuples/1314835200/NtupleMC24.root";
+	string inputfile = "../Ntuple-making/Ntuples/MC/NtupleMC24.root";
 	TFile * input = TFile::Open(inputfile.c_str());
 	TNtuple * Q = (TNtuple *)input->Get("Q");
 	cout<<input<<endl;

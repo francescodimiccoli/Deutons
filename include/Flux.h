@@ -1,7 +1,7 @@
 void UpdateZoneLivetime (float Livetime, float Rcutoff, TH1F * esposizionegeo,Binning bins){
 
         for(int i=0;i<esposizionegeo->GetNbinsX();i++)
-                        if(bins.RigBins()[i]>=1.3*Rcutoff){
+                        if(bins.RigBins()[i+1]>=1.3*Rcutoff){
                                 esposizionegeo -> SetBinContent(i+1, esposizionegeo -> GetBinContent(i+1) + Livetime) ;
         }
         return;
@@ -162,8 +162,8 @@ void Flux::Eval_ExposureTime(TNtuple * RawDT,FileSaver finalhistos,bool refill){
 		ExposureTime = new TH1F(exposurename.c_str(),exposurename.c_str(),bins.size(),0,bins.size());
 
 		int ActualTime=0;
-		for(int i=0;i<RawDT->GetEntries();i++){
-			UpdateProgressBar(i, RawDT->GetEntries());
+		for(int i=0;i<RawDT->GetEntries()/FRAC;i++){
+			UpdateProgressBar(i, RawDT->GetEntries()/FRAC);
 			RawDT->GetEvent(i);
 			if((int)U_time!=ActualTime) {
 				UpdateZoneLivetime(Livetime,Rcutoff,ExposureTime,bins);

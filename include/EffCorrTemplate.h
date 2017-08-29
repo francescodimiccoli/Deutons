@@ -4,18 +4,21 @@ float SmearBetaRICH(float Beta){
         float angle;
         if(Beta<0.87) angle= acos(1/(1.25*Beta))*10e4;
         else          angle= acos(1/(1.15*Beta))*10e4;
-        if(Beta<0.87) angle = angle + (-188) + Rand->Gaus(0,518);
-        else          angle = angle + (-41) + Rand->Gaus(0,73);
+        if(Beta<0.87) angle = angle + (-191.5) + Rand->Gaus(0,529.8);
+        else          angle = angle + (-42.5) + Rand->Gaus(0,65.16);
 	if(Beta<0.87) return 1/(1.25*cos(angle/10e4));
         else          return 1/(1.15*cos(angle/10e4));
 }
 
 
 
-float SmearBeta(float Beta){
+float SmearBeta(float Beta,float R){
 
         float time = 1.2/(Beta*3e-4);
-        time = time + (-18) + Rand->Gaus(0,58);
+        float tailcontrolfactor=110./90.;
+	if(R<2.7) tailcontrolfactor=1;//migration tail fixing
+
+        time = time + (-21.2) + Rand->Gaus(0,tailcontrolfactor*98.8);
         return 1.2/(time*3e-4);
 
 }
@@ -67,6 +70,8 @@ class EffCorrTemplate{
 	FileSaver  file;
 	
 	bool isrich=false;
+
+	BadEventSimulator * BadEvSim=0x0;
 
 	public:
 
@@ -146,6 +151,7 @@ class EffCorrTemplate{
 	void Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars,float (*var) (Variables * vars),float (*discr_var) (Variables * vars),bool refill=false);
 	void FillEventByEventData(float var, float discr_var, bool CUTBEFORE, bool CUTAFTER, float latzone);
 	void FillEventByEventMC(float var, float discr_var, bool CUTBEFORE, bool CUTAFTER, bool IsP, bool IsD,float weight);
+	void SetUpBadEventSimulator(BadEventSimulator * Sim) {BadEvSim = Sim; return; };
 	void Save(FileSaver finalhistos);
 	void Eval_Efficiencies();
 	void SaveResults(FileSaver finalhistos);
@@ -216,9 +222,9 @@ void EffCorrTemplate::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars,f
 		cout<<basename.c_str()<<" Filling ... (Data)"<< endl;
 		vars->ReadAnalysisBranches(treeDT);
 
-		for(int i=0;i<treeDT->GetEntries();i++){
+		for(int i=0;i<treeDT->GetEntries()/FRAC;i++){
 			vars->AnalysisVariablseReset();		
-			UpdateProgressBar(i, treeDT->GetEntries());
+			UpdateProgressBar(i, treeDT->GetEntries()/FRAC);
 			treeDT->GetEvent(i);
 			FillEventByEventData(var(vars),discr_var(vars),ApplyCuts((cut_before+"&"+cut_data).c_str(),vars),ApplyCuts((cut_after+"&"+cut_data).c_str(),vars),GetLatitude(vars));
 		}
@@ -226,9 +232,9 @@ void EffCorrTemplate::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars,f
 		cout<<basename.c_str()<<" Filling ... (MC)"<< endl;
 		vars->ReadAnalysisBranches(treeMC);
 
-		for(int i=0;i<treeMC->GetEntries();i++){
+		for(int i=0;i<treeMC->GetEntries()/FRAC;i++){
 			vars->AnalysisVariablseReset();		
-			UpdateProgressBar(i, treeMC->GetEntries());
+			UpdateProgressBar(i, treeMC->GetEntries()/FRAC);
 			treeMC->GetEvent(i);
 			FillEventByEventMC(vars->R,discr_var(vars),ApplyCuts((cut_before+"&"+cut_MC).c_str(),vars),ApplyCuts((cut_after+"&"+cut_MC).c_str(),vars),ApplyCuts("IsProtonMC",vars),ApplyCuts("IsDeutonMC",vars),vars->mcweight);
 		}
@@ -257,11 +263,14 @@ void EffCorrTemplate::FillEventByEventData(float var, float discr_var, bool CUTB
 void EffCorrTemplate::FillEventByEventMC(float var, float discr_var, bool CUTBEFORE, bool CUTAFTER, bool IsP, bool IsD,float weight){
 
 	float betasmear;
-	if(!isrich) betasmear = SmearBeta(discr_var);
+	if(!isrich) betasmear = SmearBeta(discr_var,var);
 	else 	   betasmear = SmearBetaRICH(discr_var);
+
+	if(BadEvSim)
+		betasmear=BadEvSim->SimulateBadEvents(betasmear);
+
 	int kbin =  bins.GetBin(betasmear);
 	float mass = var/betasmear * pow((1-pow(betasmear,2)),0.5);
-
 	if(CUTBEFORE&&IsP&&kbin>0) BeforeMC_P[kbin] ->Fill(mass,weight);		
 	if(CUTAFTER&&IsP&&kbin>0)  AfterMC_P[kbin]  ->Fill(mass,weight);
 	if(CUTBEFORE&&IsD&&kbin>0) BeforeMC_D[kbin] ->Fill(mass,weight);		
@@ -357,6 +366,7 @@ void EffCorrTemplate::Eval_Efficiencies(){
 		for(int bin=0;bin<bins.size();bin++){
 		//Do_TemplateFIT(FitBefore[lat][bin],0.1,3);
                 //Do_TemplateFIT(FitAfter [lat][bin],0.1,3);
+
 		if(FitBefore[lat][bin]->Tfit_outcome==0&&FitAfter[lat][bin]->Tfit_outcome==0){
                         LatEfficiency_P->SetBinContent(bin+1,FitAfter[lat][bin]->Templ_P->Integral()/FitBefore[lat][bin]->Templ_P->Integral());
                         LatEfficiency_D->SetBinContent(bin+1,FitAfter[lat][bin]->Templ_D->Integral()/FitBefore[lat][bin]->Templ_D->Integral());

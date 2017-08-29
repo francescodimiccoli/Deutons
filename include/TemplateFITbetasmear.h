@@ -22,12 +22,40 @@ TSpline3 * ExtractCutoffWeight(TH1F * ExposureTime){
 
 }
 
+class BadEventSimulator{
+	private:
+	std::string simulatorcut;
+	int BadEventsFrequency;
+	float badrangemin;
+	float badrangemax;
+	int EvNum=0;
+	TF1 * BadEvModel;
+
+	public:
+	BadEventSimulator(std::string cut, int Freq, float min, float max) {
+			simulatorcut = cut; 
+			BadEventsFrequency=Freq; 
+			badrangemin=min; 
+			badrangemax=max;
+			BadEvModel=new TF1("Linear Model","[0]*x+[1]",badrangemin,badrangemax);
+			BadEvModel->SetParameter(0,1/(badrangemax-badrangemin));
+			BadEvModel->SetParameter(1,-badrangemin/(badrangemax-badrangemin));
+	};
+	
+	void   LoadEvent(Variables * vars) {if(ApplyCuts(simulatorcut,vars)) EvNum++; return;};
+	float SimulateBadEvents(float Beta) {
+		if(EvNum%BadEventsFrequency==0) { float betabad = BadEvModel->GetRandom(); return betabad;}
+	        return Beta;
+
+	}
+};
 
 
 
 struct TFit {
    TH1F * Templ_P ;
    TH1F * Templ_D ;
+   TH1F * Templ_He;
 
    TH1F * Data;
    TH1F * DataPrim;	
@@ -107,7 +135,6 @@ class TemplateFIT {
 	TH1F * BestFitShift;
 
 	Binning bins;
-        std::string var;
         std::string cut;
 	std::string cutprimary;
 	std::string discr_var;
@@ -122,10 +149,11 @@ class TemplateFIT {
 	float fitrangemax;
 	bool fitDisabled=false;
 	bool isrich=false;
+	BadEventSimulator * BadEvSim=0x0;
 
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,std::string HeContname,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=50,float shift=40,TH1F * ExposureTime=0x0){
+	TemplateFIT(std::string Basename,std::string HeContname,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=60,float shift=40,TH1F * ExposureTime=0x0){
 		
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
@@ -138,15 +166,19 @@ class TemplateFIT {
 					string namedprim=Basename + "_DataPrim_" +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameP    =Basename + "_MCP_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameD    =Basename + "_MCD_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
+					string nameHe   =Basename + "_MCHe_"     +to_string(bin)+" "+to_string(i)+" "+to_string(j);
+
 
 					fit->Templ_P =  new TH1F(nameP.c_str(),nameP.c_str(),Nbins,Xmin,Xmax);
 					fit->Templ_D =  new TH1F(nameD.c_str(),nameD.c_str(),Nbins,Xmin,Xmax);
+					fit->Templ_He=  new TH1F(nameHe.c_str(),nameHe.c_str(),Nbins,Xmin,Xmax);
 					fit->Data    =  new TH1F(named.c_str(),named.c_str(),Nbins,Xmin,Xmax);
 					fit->DataPrim=  new TH1F(namedprim.c_str(),namedprim.c_str(),Nbins,Xmin,Xmax);
 					fits[bin][i].push_back(fit);
 				}
 			}
-		}	
+		}
+	
 		basename=Basename;
 		hecontname=HeContname;
 		cut = Cut;
@@ -178,12 +210,12 @@ class TemplateFIT {
 		systpar.steps=steps;
 
 		fitrangemin=0.6;
-		fitrangemax=3;	
+		fitrangemax=3.5;	
 	}
 
 	//reading constructor
 
-	TemplateFIT(FileSaver  File, std::string Basename,std::string HeContname,Binning Bins, bool IsRich=false, int steps=11,float sigma=50,float shift=40,TH1F * ExposureTime=0x0){
+	TemplateFIT(FileSaver  File, std::string Basename,std::string HeContname,Binning Bins, bool IsRich=false, int steps=11,float sigma=60,float shift=40,TH1F * ExposureTime=0x0){
 
 		TFile * file = File.GetFile();
 
@@ -198,9 +230,12 @@ class TemplateFIT {
 					string namedprim=Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_DataPrim_" +to_string(bin)+" "+to_string(0)+" "+to_string(5);
 					string nameP    =Basename + "/Bin "+ to_string(bin)+"/TemplateP/" + Basename + "_MCP_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameD    =Basename + "/Bin "+ to_string(bin)+"/TemplateD/" + Basename + "_MCD_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
+					string nameHe    =Basename + "/Bin "+ to_string(bin)+"/TemplateHe/" + Basename + "_MCHe_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
+
 
 					fit->Templ_P =  (TH1F *)file->Get(nameP.c_str());
 					fit->Templ_D =  (TH1F *)file->Get(nameD.c_str());
+					fit->Templ_He=  (TH1F *)file->Get(nameHe.c_str());
 					fit->Data    =  (TH1F *)file->Get(named.c_str());
 					fit->DataPrim=  (TH1F *)file->Get(namedprim.c_str());
 					fits[bin][i].push_back(fit);
@@ -240,7 +275,7 @@ class TemplateFIT {
 		systpar.steps=steps;
 
 		fitrangemin=0.6;
-		fitrangemax=3;	
+		fitrangemax=3.5;	
 	
 
 
@@ -248,19 +283,20 @@ class TemplateFIT {
 
 	void Eval_TransferFunction();
 	void Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) );
-	float SmearBeta(float Beta, float stepsigma, float stepshift);
+	float SmearBeta(float Beta, float stepsigma, float stepshift,float R);
 	float SmearBetaRICH(float Beta, float stepsigma, float stepshift);
 
 	void FillEventByEventData(float var, float discr_var, bool CUT, bool CUTPRIM, float weight);
-	void FillEventByEventMC(float var, float discr_var, bool CUTP, bool CUTD, float weight);
+	void FillEventByEventMC(float var, float discr_var, bool CUTP, bool CUTD, bool CUTHE, float weight);
 
-	//void Do_TemplateFIT(TFit * Fit);
 	void ExtractCounts(FileSaver finalhisto,FileSaver finalResults);
 	void EvalFinalParameters();
 	void EvalFinalErrors(FileSaver finalResults);
 	void CalculateFinalPDCounts();
 	void Save(FileSaver finalhisto,bool recreate=false);	
 	void SaveFitResults(FileSaver finalhisto);
+
+	void SetUpBadEventSimulator(BadEventSimulator * Sim) {BadEvSim = Sim; return; };
 
 	void SetSystematicParameters(int steps,float sigma,float shift){ systpar.steps=steps; systpar.shift=shift; systpar.sigma=sigma; return;};
 	void SetFitRange(float min, float max){fitrangemin=min; fitrangemax=max; return;}
@@ -291,13 +327,13 @@ void TemplateFIT::Eval_TransferFunction(){
 }
 
 void TemplateFIT::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) ){
-
+	
 	cout<<basename.c_str()<<" Filling ... (Data)"<< endl;
 	vars->ReadAnalysisBranches(treeDT);
 
-	for(int i=0;i<treeDT->GetEntries();i++){
+	for(int i=0;i<treeDT->GetEntries()/FRAC;i++){
 		vars->AnalysisVariablseReset();		
-		UpdateProgressBar(i, treeDT->GetEntries());
+		UpdateProgressBar(i, treeDT->GetEntries()/FRAC);
 		treeDT->GetEvent(i);
 		FillEventByEventData(var(vars), discr_var(vars),ApplyCuts(cut,vars),ApplyCuts(cutprimary,vars),vars->mcweight);
 	}
@@ -305,13 +341,17 @@ void TemplateFIT::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars, floa
 	cout<<basename.c_str()<<" Filling ... (MC Protons)"<< endl;
 	vars->ReadAnalysisBranches(treeMC);
 
-	for(int i=0;i<treeMC->GetEntries();i++){
+	for(int i=0;i<treeMC->GetEntries()/FRAC;i++){
 		vars->AnalysisVariablseReset();		
-		UpdateProgressBar(i, treeMC->GetEntries());
+		UpdateProgressBar(i, treeMC->GetEntries()/FRAC);
 		treeMC->GetEvent(i);
+
+		if(BadEvSim) BadEvSim->LoadEvent(vars);
+		
 		std::string cutP=cut+"&IsProtonMC";
 		std::string cutD=cut+"&IsDeutonMC";
-		FillEventByEventMC(vars->R, discr_var(vars),ApplyCuts(cutP,vars),ApplyCuts(cutD,vars),vars->mcweight);
+		std::string cutHe=cut+"&IsHeliumMC";
+		FillEventByEventMC(vars->R, discr_var(vars),ApplyCuts(cutP,vars),ApplyCuts(cutD,vars),ApplyCuts(cutHe,vars),vars->mcweight);
 	}
 
 	return;
@@ -345,29 +385,40 @@ float TemplateFIT::SmearBetaRICH(float Beta, float stepsigma, float stepshift){
 }
 
 
-float TemplateFIT::SmearBeta(float Beta, float stepsigma, float stepshift){
+float TemplateFIT::SmearBeta(float Beta, float stepsigma, float stepshift,float R){
 
 	float time = 1.2/(Beta*3e-4);
 	float shiftstart=-systpar.shift;
-	time = time + (shiftstart+(2*systpar.shift/(float)systpar.steps)*stepshift) + Rand->Gaus(0,(float)((2*systpar.sigma/systpar.steps)*stepsigma));
+
+	float tailcontrolfactor=110./90.;
+	if(R<2.7) tailcontrolfactor=1;//migration tail fixing
+
+	float smeartime = (shiftstart+(2*systpar.shift/(float)systpar.steps)*stepshift) + Rand->Gaus(0,(float) tailcontrolfactor*((2*systpar.sigma/systpar.steps)*stepsigma));
+	time = time + smeartime;
 	return 1.2/(time*3e-4);
 
 }
 
-void TemplateFIT::FillEventByEventMC(float var, float discr_var, bool CUTP, bool CUTD, float weight){
+void TemplateFIT::FillEventByEventMC(float var, float discr_var, bool CUTP, bool CUTD, bool CUTHE, float weight){
 
 	if((CUTP||CUTD)){
 		for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
 				float betasmear;
-				if(!isrich) betasmear = SmearBeta(discr_var,(float)i,(float)j);
+
+				if(!isrich) betasmear = SmearBeta(discr_var,(float)i,(float)j,var);
 				else 	   betasmear = SmearBetaRICH(discr_var,(float)i,(float)j);
+				if(BadEvSim)
+						 betasmear=BadEvSim->SimulateBadEvents(betasmear);
 				int kbin; 
+
 				if(bins.IsUsingBetaEdges()) kbin = bins.GetBin(betasmear);
 				else kbin =bins.GetBin(discr_var);
+
 				float mass = var/betasmear * pow((1-pow(betasmear,2)),0.5);
-				if(CUTP&&kbin>0) fits[kbin][i][j]->Templ_P->Fill(mass,weight);		
-				if(CUTD&&kbin>0) fits[kbin][i][j]->Templ_D->Fill(mass,weight);
+				if(CUTP&&kbin>0)  fits[kbin][i][j]->Templ_P->Fill(mass,weight);		
+				if(CUTD&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill(mass,weight);
+				if(CUTHE&&kbin>0) fits[kbin][i][j]->Templ_D->Fill(mass,weight);
 			}
 	}
 	return;	
@@ -402,7 +453,14 @@ void TemplateFIT::Save(FileSaver finalhisto,bool recreate){
 		finalhisto.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/TemplateD").c_str(),recreate);
 	}
 
+	for(int bin=0;bin<bins.size();bin++){ 
+		for(int i=0;i<systpar.steps;i++)
+                        for(int j=0;j<systpar.steps;j++){
 
+				finalhisto.Add(fits[bin][i][j]->Templ_He);
+		}
+		finalhisto.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/TemplateHe").c_str(),recreate);
+	}
 
 	return;
 }
@@ -553,7 +611,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax){
 			Cov01= Fit -> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
 			Fit -> StatErr = pow(pow(w2*e2,2)+pow(w1*e1,2)-2*Cov01*w1*w2,0.5);
 
-			Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Templ_P ->GetNbinsX()*1.3);
+			Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Templ_P ->GetNbinsX());
 			Fit -> DCounts = Fit ->  Templ_D -> Integral();
 			Fit -> PCounts = Fit ->  Templ_P -> Integral();
 		}

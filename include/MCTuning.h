@@ -1,4 +1,4 @@
-
+int frac=2;
 
 class Tuning{
 
@@ -29,14 +29,14 @@ class Tuning{
 			Residuals.push_back(std::vector<TH1F *>());
 			bestChi2.push_back(0);
 			for(int i=0;i<Steps*Steps;i++){
-				TH1F * Distrib  = new TH1F(("Distrib_"+to_string(bin)+"_"+to_string(i)).c_str(),("Distrib_"+to_string(bin)+"_"+to_string(i)).c_str(),100,0,2.5);
-				TH1F * Residual = new TH1F(("Residual_"+to_string(bin)+"_"+to_string(i)).c_str(),("Residual_"+to_string(bin)+"_"+to_string(i)).c_str(),100,0,2.5);
+				TH1F * Distrib  = new TH1F(("Distrib_"+to_string(bin)+"_"+to_string(i)).c_str(),("Distrib_"+to_string(bin)+"_"+to_string(i)).c_str(),300,0.4,1.5);
+				TH1F * Residual = new TH1F(("Residual_"+to_string(bin)+"_"+to_string(i)).c_str(),("Residual_"+to_string(bin)+"_"+to_string(i)).c_str(),300,0.4,1.5);
 				DistribMC[bin].push_back(Distrib);
 				Residuals[bin].push_back(Residual);
 			}	
-			DistribData.push_back(new TH1F(("DistribData_"+to_string(bin)).c_str(),("Distrib_"+to_string(bin)).c_str(),100,0,2.5));
-			DistribDataPrimSec.push_back(new TH1F(("DistribDataPrimSec_"+to_string(bin)).c_str(),("Distrib_"+to_string(bin)).c_str(),100,0,2.5));
-			OriginalMC.push_back( new TH1F(("OriginalMC_"+to_string(bin)).c_str(),("OriginalMC_"+to_string(bin)).c_str(),100,0,2.5));
+			DistribData.push_back(new TH1F(("DistribData_"+to_string(bin)).c_str(),("Distrib_"+to_string(bin)).c_str(),300,0.4,1.5));
+			DistribDataPrimSec.push_back(new TH1F(("DistribDataPrimSec_"+to_string(bin)).c_str(),("Distrib_"+to_string(bin)).c_str(),300,0.4,1.5));
+			OriginalMC.push_back( new TH1F(("OriginalMC_"+to_string(bin)).c_str(),("OriginalMC_"+to_string(bin)).c_str(),300,0.4,1.5));
 			ChiSquare.push_back(new TH2F(("ChiSquare_"+to_string(bin)).c_str(),("ChiSquare_"+to_string(bin)).c_str(),Steps,0,2*Sigma,Steps,-Shift,Shift));
 		}
 	
@@ -84,6 +84,7 @@ class Tuning{
 	
 	void UseCutoffFilterMode() {CutoffFilterMode=true; return;};
 	float SmearBeta(float Beta, float stepsigma, float stepshift);
+	float SmearR(float R,float stepshift);
 	void Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars );
 	void FillEventByEvent(std::vector<std::vector<TH1F *>> Histos, float var, float discr_var, bool CUT, float weight);
 	void FillEventByEvent(std::vector<TH1F *> Histo, float var, float discr_var, bool CUT, float weight);	
@@ -223,12 +224,12 @@ void Tuning::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars ){
 
         vars->ReadAnalysisBranches(treeDT);
 
-        for(int i=0;i<treeDT->GetEntries();i++){
+        for(int i=0;i<treeDT->GetEntries()/frac;i++){
                 vars->AnalysisVariablseReset();
-                UpdateProgressBar(i, treeDT->GetEntries());
+                UpdateProgressBar(i, treeDT->GetEntries()/frac);
                 treeDT->GetEvent(i);
-		FillEventByEvent( DistribData, vars->R, vars->Beta,ApplyCuts("IsPreselected&LikelihoodCut&DistanceCut&ProtonsMassCut&IsPrimary",vars),1);
-       		FillEventByEvent( DistribDataPrimSec, vars->R, vars->Beta,ApplyCuts("IsPreselected&LikelihoodCut&DistanceCut&ProtonsMassCut",vars),1);
+		FillEventByEvent( DistribData, vars->R, vars->Beta,ApplyCuts("ControlSample&LikelihoodCut&QualChargeCut&IsPrimary",vars),1);
+       		FillEventByEvent( DistribDataPrimSec, vars->R, vars->Beta,ApplyCuts("ControlSample&LikelihoodCut&QualChargeCut",vars),1);
         
 	 }
 
@@ -241,20 +242,29 @@ void Tuning::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars ){
         if(Exposure_Time)   W = ExtractCutoffWeight(Exposure_Time);
 
 
-        for(int i=0;i<treeMC->GetEntries();i++){
+        for(int i=0;i<treeMC->GetEntries()/frac;i++){
                 vars->AnalysisVariablseReset();
-                UpdateProgressBar(i, treeMC->GetEntries());
+                UpdateProgressBar(i, treeMC->GetEntries()/frac);
                 treeMC->GetEvent(i);
                 float totalweight=vars->mcweight;
 		if(W&&(!CutoffFilterMode)) totalweight*=W->Eval(vars->R);
 		if(IsProtonMC(vars)) {
-			FillEventByEvent( DistribMC, vars->R, vars->Beta,ApplyCuts("IsPreselected&LikelihoodCut&DistanceCut&ProtonsMassCut",vars),totalweight);
-        		FillEventByEvent( OriginalMC, vars->R, vars->Beta,ApplyCuts("IsPreselected&LikelihoodCut&DistanceCut&ProtonsMassCut",vars),vars->mcweight);
+			FillEventByEvent( DistribMC, vars->R, vars->Beta,ApplyCuts("ControlSample&LikelihoodCut&QualChargeCut",vars),totalweight);
+        		FillEventByEvent( OriginalMC, vars->R, vars->Beta,ApplyCuts("ControlSample&LikelihoodCut&QualChargeCut",vars),vars->mcweight);
 			}
 	}
 
         return;
 }
+
+float Tuning::SmearR(float R,float stepshift){
+        float B=0.8;
+        float L=1.2;
+        float sagitta=(0.0375*B/R)*pow(L,2)*1e3;
+        sagitta = sagitta + (1/sagitta)*Rand->Gaus(0,(float)((2*shift/steps)*stepshift));
+        return (0.0375*B/sagitta)*pow(L,2)*1e3;
+}
+
 
 
 float Tuning::SmearBeta(float Beta, float stepsigma, float stepshift){
@@ -272,21 +282,29 @@ void Tuning::FillEventByEvent(std::vector<std::vector<TH1F *>> Histos, float var
 	for(int i=0;i<steps;i++)
 		for(int j=0;j<steps;j++){	
 			float betasmear= SmearBeta(beta,(float)i,(float)j);
-			kbin =  bins.GetBin(betasmear);
-			float mass = var/betasmear * pow((1-pow(betasmear,2)),0.5);
-			if(mass>0.4&&mass<1.3&&CUT&&kbin>0)
-				Histos[kbin][i*steps+j]->Fill(mass,weight);
+			float Rsmear = var;//SmearR(var,(float)j);
+			
+			if(bins.IsUsingBetaEdges()) kbin =  bins.GetBin(betasmear);
+			else kbin =  bins.GetBin(Rsmear);
+
+			float mass = Rsmear/betasmear * pow((1-pow(betasmear,2)),0.5);
+			if(/*mass>0.4&&mass<4.3&&*/CUT&&kbin>0)
+				Histos[kbin][i*steps+j]->Fill(betasmear,weight);
 			}
 	return;
 }
 
-void Tuning::FillEventByEvent(std::vector<TH1F *> Histo, float var, float discr_var, bool CUT, float weight){
+void Tuning::FillEventByEvent(std::vector<TH1F *> Histo, float var, float beta, bool CUT, float weight){
 	
 	int kbin;
-        kbin =  bins.GetBin(discr_var);
-	float mass=var/discr_var * pow((1-pow(discr_var,2)),0.5);
-	if(CUT&&kbin>0&&mass>0.5&&mass<1.3){
-		Histo[kbin]->Fill(mass,weight);
+
+	if(bins.IsUsingBetaEdges()) kbin =  bins.GetBin(beta);
+	else kbin =  bins.GetBin(var);
+
+
+	float mass=var/beta * pow((1-pow(beta,2)),0.5);
+	if(CUT&&kbin>0/*&&mass>0.5&&mass<1.3*/){
+		Histo[kbin]->Fill(beta,weight);
 	}
 	return;
 

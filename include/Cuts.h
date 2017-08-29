@@ -21,7 +21,9 @@ bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_ge
 bool IsPrimary	   (Variables * vars){ return (vars->R>1.3*vars->Rcutoff); }
 bool IsMC          (Variables * vars){ return (vars->Massa_gen>0);} 
 bool IsData        (Variables * vars){ return (vars->Massa_gen==0);}
-bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0);}
+bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0)&&(vars->qInner>0.2&&vars->qInner<1.75);}
+bool IsMinimumBias (Variables * vars){ return (((int)vars->joinCutmask&139)==139&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0)&&(vars->qInner>0.2&&vars->qInner<1.75);}
+
 bool IsFromNaF     (Variables * vars){ return (((int)vars->joinCutmask>>11)==512&&vars->BetaRICH_new>0);}
 bool IsFromAgl     (Variables * vars){ return (((int)vars->joinCutmask>>11)==0&&vars->BetaRICH_new>0);}
 bool IsOnlyFromToF (Variables * vars){ return !((IsFromNaF(vars))||(IsFromAgl(vars)));}
@@ -39,9 +41,9 @@ bool TemplatesMassCut(Variables * vars){  if(IsFromNaF(vars)||IsFromAgl(vars))
 				     }
 
 bool ControlSampleMassCut(Variables * vars){  if(IsFromNaF(vars)||IsFromAgl(vars))
-						return GetRecMassRICH(vars)>0.3;
+						return GetRecMassRICH(vars)>0.2;
 				     	else
-						return GetRecMassTOF(vars)>0.3;
+						return GetRecMassTOF(vars)>0.2;
 				     }
 
 
@@ -58,15 +60,17 @@ bool Qualitycut(Variables * vars, float cutvariable, float cutTOF, float cutNaF,
         return IsQual;
 }
 
-bool DistanceCut   (Variables * vars){ return (Qualitycut(vars,vars->DistP,3,4,4)||Qualitycut(vars,vars->DistD,3,4,4));}
-bool LikelihoodCut (Variables * vars){ return  Qualitycut(vars,log(1-vars->Likelihood),-1.2,-2.6,-3.2);}
+bool QualChargeCut (Variables * vars){ return (vars->qInner>0.8&&vars->qInner<1.3&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3);}
+
+bool DistanceCut   (Variables * vars){ return QualChargeCut(vars);}//(Qualitycut(vars,vars->DistP,3,4,4)||Qualitycut(vars,vars->DistD,3,4,4));}
+bool LikelihoodCut (Variables * vars){ return Qualitycut(vars,log(1-vars->Likelihood),-1.2,-2.6,-3.2);}
 
 bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->DistD>14 && vars->DistD<40);}
 
 bool IsInLatZone   (Variables * vars, int lat) { return (vars->Latitude>=LatEdges[lat]&&vars->Latitude<LatEdges[lat+1]);}
 
 bool ControlSample (Variables * vars) { return (IsPreselected(vars)&&vars->qInner>0.2&&vars->qInner<1.75&&ControlSampleMassCut(vars));}
-bool PresControlSample (Variables * vars) { return (vars->qInner>0.2&&vars->qInner<1.75&&ControlSampleMassCut(vars));}
+bool PresControlSample (Variables * vars) { return (IsMinimumBias(vars)&&vars->qInner>0.2&&vars->qInner<1.75&&ControlSampleMassCut(vars));}
 
 
 
@@ -102,12 +106,14 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsMC"          ) IsPassed=IsPassed && IsMC          (Vars);
 		if(spl[i]=="IsData"	   ) IsPassed=IsPassed && IsData        (Vars);
 		if(spl[i]=="IsPreselected" ) IsPassed=IsPassed && IsPreselected (Vars); 
+		if(spl[i]=="IsMinimumBias" ) IsPassed=IsPassed && IsMinimumBias (Vars); 
 		if(spl[i]=="IsOnlyFromToF" ) IsPassed=IsPassed && IsOnlyFromToF (Vars);
 		if(spl[i]=="IsFromNaF"	   ) IsPassed=IsPassed && IsFromNaF     (Vars);
 		if(spl[i]=="IsFromAgl"	   ) IsPassed=IsPassed && IsFromAgl     (Vars);
 		if(spl[i]=="L1LooseCharge1") IsPassed=IsPassed && L1LooseCharge1(Vars);
 		if(spl[i]=="DistanceCut")    IsPassed=IsPassed && DistanceCut(Vars);
 		if(spl[i]=="LikelihoodCut")  IsPassed=IsPassed && LikelihoodCut(Vars);
+		if(spl[i]=="QualChargeCut")  IsPassed=IsPassed && QualChargeCut(Vars);
 		if(spl[i]=="ProtonsMassCut") IsPassed=IsPassed && ProtonsMassCut(Vars);
 		if(spl[i]=="DeutonsMassCut") IsPassed=IsPassed && DeutonsMassCut(Vars);
 		if(spl[i]=="TemplatesMassCut")IsPassed=IsPassed && TemplatesMassCut(Vars);

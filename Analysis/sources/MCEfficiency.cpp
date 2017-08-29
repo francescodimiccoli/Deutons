@@ -109,11 +109,12 @@ int main(int argc, char * argv[])
         AllRangesEfficiency * FullSet_D       = new AllRangesEfficiency(finalHistos,"FullsetEff_D","FullsetEfficiency"  ,"","",Refill);
 
 
-	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency","IsProtonMC&IsPreselected","IsProtonMC&IsPreselected","IsProtonMC&IsPreselected","IsProtonMC&IsPreselected","IsProtonMC&IsPreselected&IsFromNaF","IsProtonMC&IsPreselected&IsFromAgl",Refill);
-	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency","IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected&IsFromNaF","IsDeutonMC&IsPreselected&IsFromAgl",Refill);
+	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency","IsProtonMC&IsMinimumBias","IsProtonMC&IsMinimumBias","IsProtonMC&IsMinimumBias","IsProtonMC&IsMinimumBias","IsProtonMC&IsMinimumBias&IsFromNaF","IsProtonMC&IsMinimumBias&IsFromAgl",Refill);
+	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias&IsFromNaF","IsDeutonMC&IsMinimumBias&IsFromAgl",Refill);
 
 
 	RigBinFullSetEff->Fill(treeMC,vars,GetGenMomentum,Refill);
+
 	Preselections_P	->Fill(treeMC,vars);
         Quality_P       ->Fill(treeMC,vars);
 	Preselections_D ->Fill(treeMC,vars);

@@ -61,8 +61,8 @@ int main(int argc, char * argv[])
         TFile *fileDT =TFile::Open(INPUT1.c_str());
         TFile *fileMC =TFile::Open(INPUT2.c_str());
 
-        TNtuple *treeMC = (TNtuple *)fileMC->Get("grandezzesepd");
-        TNtuple *treeDT = (TNtuple *)fileDT->Get("grandezzesepd");
+        TNtuple *treeMC = (TNtuple *)fileMC->Get("Q");
+        TNtuple *treeDT = (TNtuple *)fileDT->Get("Q");
 
 
 	cout<<"****************************** BINS ***************************************"<<endl;
@@ -95,6 +95,9 @@ int main(int argc, char * argv[])
         Variables * vars = new Variables;
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
+
+	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.8,1); 
+	BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
 	
 
 	TemplateFIT * TOFfits= new TemplateFIT("TOFfits","HeContTOF",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
@@ -105,13 +108,14 @@ int main(int argc, char * argv[])
 	}
 	else { TOFfits= new TemplateFIT(finalHistos,"TOFfits","HeContTOF",ToFDB);
 	
-		TOFfits->DisableFit();
+//		TOFfits->DisableFit();
 		TOFfits->ExtractCounts(finalHistos,finalResults);	
 		TOFfits->SaveFitResults(finalResults);
 	}
 
 	TemplateFIT * NaFfits= new TemplateFIT("NaFfits","HeContNaF",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,400);
 	if((!checkfile)||Refill){
+		NaFfits->SetUpBadEventSimulator(NaFBadEvSimulator);
 		NaFfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
 		NaFfits->DisableFit();
 		NaFfits->Save(finalHistos);
@@ -119,7 +123,7 @@ int main(int argc, char * argv[])
 	else {NaFfits= new TemplateFIT(finalHistos,"NaFfits","HeContNaF",NaFDB,true,11,400,200);
 	
 		NaFfits->SetFitRange(0.6,3);
-		NaFfits->DisableFit();
+	//	NaFfits->DisableFit();
 		NaFfits->ExtractCounts(finalHistos,finalResults);
 		NaFfits->SaveFitResults(finalResults);
 	}
@@ -127,6 +131,7 @@ int main(int argc, char * argv[])
 	
 	TemplateFIT * Aglfits= new TemplateFIT("Aglfits","HeContAgl",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,110);
 	if((!checkfile)||Refill){
+		Aglfits->SetUpBadEventSimulator(AglBadEvSimulator);
 		Aglfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
 		Aglfits->DisableFit();
 		Aglfits->Save(finalHistos);
@@ -134,7 +139,7 @@ int main(int argc, char * argv[])
 	else {Aglfits= new TemplateFIT(finalHistos,"Aglfits","HeContAgl",AglDB,true,11,110,80);
 	
 		Aglfits->SetFitRange(0.6,3);
-		Aglfits->DisableFit();
+	//	Aglfits->DisableFit();
 		Aglfits->ExtractCounts(finalHistos,finalResults);
 		Aglfits->SaveFitResults(finalResults);
 	}
@@ -154,9 +159,9 @@ void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, TNtuple
 		Variables * vars = new Variables;
 		vars->ReadAnalysisBranches(tree);
 	
-		for(int i=0;i<tree->GetEntries();i++){
+		for(int i=0;i<tree->GetEntries()/FRAC;i++){
 			vars->AnalysisVariablseReset();		
-			UpdateProgressBar(i, tree->GetEntries());
+			UpdateProgressBar(i, tree->GetEntries()/FRAC);
 			tree->GetEvent(i);
 			int kbin;
 			kbin = 	Bins.GetBin(discr_var(vars));
@@ -164,7 +169,7 @@ void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, TNtuple
 				Counts->Fill(kbin);
 		}
 	}
-	else Counts = (TH1F*) finalhistos.Get((name + "/" + name).c_str());
+	else Counts = (TH1F*) finalhistos.Get((name + "/" + name+ "/" + name).c_str());
 	
       finalhistos.Add(Counts);
       finalhistos.writeObjsInFolder((name + "/" + name).c_str());

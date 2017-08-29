@@ -50,12 +50,3 @@ system("bsub -q ams -o $workdir/lsf/lsf$j.out -e $workdir/err/lsf$j.err $workdir
 
 } 
 
-
-
-for($j=0;$j<100;$j++)
-{
-
-system("chmod +x $workdir/lsf/lsfMC$j.tcsh");
-system("bsub -q ams -o $workdir/lsf/lsfMC$j.out -e $workdir/err/lsfMC$j.err $workdir/lsf/lsfMC$j.tcsh >>$workdir/lsf/lsfMC$j.log\n");
-
-} 

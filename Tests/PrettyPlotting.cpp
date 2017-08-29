@@ -78,7 +78,7 @@ int main(int argc, char * argv[]){
 
         cout<<"****************************** PLOTTING RESULTS ***************************************"<<endl;
 
-	Tuning * MCTuning = new Tuning(finalHistos,ToFDB,10,50,40);
+	Tuning * MCTuning = new Tuning(finalHistos,PRB,10,50,40);
 	
 	DrawTuning(MCTuning,finalHistos,Plots);	
 	
@@ -94,8 +94,8 @@ int main(int argc, char * argv[]){
 	TPad * c1_do = new TPad("lowerPad", "lowerPad",0.0,0.0,1.0,0.5);
 	c1_do->Draw();
 
-	PlotTH1FintoGraph(c1_up,ToFDB, ShiftBest, "#beta ToF",  "Mean shift [ps]",2,false,"ep",0.45,0.9,-100,100,"Best #chi^{2} Shift");
-	PlotTH1FintoGraph(c1_do,ToFDB, SigmaBest, "#beta ToF",  "Additive #sigma [ps]",4,false,"ep",0.45,0.9,-40,180,"Best #chi^{2} #sigma");
+	PlotTH1FintoGraph(c1_up,PRB, ShiftBest, "#beta ToF",  "Mean shift [ps]",2,false,"ep",0.45,0.9,-100,100,"Best #chi^{2} Shift");
+	PlotTH1FintoGraph(c1_do,PRB, SigmaBest, "#beta ToF",  "Additive #sigma [ps]",4,false,"ep",0.45,0.9,-40,180,"Best #chi^{2} #sigma");
 		
 	Plots.Add(c1);
         Plots.writeObjsInFolder("Parameters");

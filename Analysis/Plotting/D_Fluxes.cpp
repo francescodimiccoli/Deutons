@@ -192,7 +192,9 @@ int main(int argc, char * argv[]){
 	leg->SetFillColor(0);
 	leg->SetLineWidth(2);
 	leg->Draw("same");
-        
+
+	DFluxNaF->GetFlux()->Smooth();        
+
 	PlotTH1FintoGraph(gPad,ToFDB, DFluxTOF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.01,1000,"This Work (TOF)",8);
 	PlotTH1FintoGraph(gPad,NaFDB, DFluxNaF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.01,1000,"This Work (NaF)",22);
 	PlotTH1FintoGraph(gPad,AglDB, DFluxAgl->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.01,1000,"This Work (Agl)",29);
@@ -203,17 +205,54 @@ int main(int argc, char * argv[]){
 
 	TCanvas *c3 = new TCanvas("D/P ratio");
 	c3->SetCanvasSize(2000,1500);
-
+	j=0;
+	TGraph* galprop3DP=new TGraph();
+        TGraph* galprop3DP2=new TGraph();
+        {
+                string filename="./Galprop/Tom/dP_1500.dat";
+                cout<<filename<<endl;
+                ifstream fp(filename.c_str());
+                while (!fp.eof()){
+                        fp>>x>>y;
+                        if(x/1e3>0.05&&x/1e3<=100)
+                                galprop3DP->SetPoint(j,x/(0.5*1e3),y);
+                        j++;
+                }
+        }
 	
+	       j=0;
+        {
+                string filename="./Galprop/Tom/dP_500.dat";
+                cout<<filename<<endl;
+                ifstream fp(filename.c_str());
+                while (!fp.eof()){
+                        fp>>x>>y;
+                        if(x/1e3>0.05&&x/1e3<=100)
+                                galprop3DP2->SetPoint(j,x/(0.5*1e3),y);
+                        j++;
+                }
+        }
+        galprop3DP->GetXaxis()->SetRangeUser(0.1,20);
+
+        galprop3DP->SetTitle("Deutons Flux: Geo. Zones");
+        galprop3DP->GetXaxis()->SetTitle("Kin.En./nucl. [GeV/nucl.]");
+        galprop3DP ->GetYaxis()->SetTitle("Flux [(m^2 sr GeV/nucl.)^-1]");
+        galprop3DP ->GetXaxis()->SetTitleSize(0.045);
+
 	TH1F * DPRatioTOF = (TH1F *)finalHistos.Get("Fluxes/DP ratio TOF");
 	TH1F * DPRatioNaF = (TH1F *)finalHistos.Get("Fluxes/DP ratio NaF");
 	TH1F * DPRatioAgl = (TH1F *)finalHistos.Get("Fluxes/DP ratio Agl");
+
+	DPRatioNaF->Smooth();	
 
 	cout<<DPRatioTOF<<endl;
 
 	PlotTH1FintoGraph(gPad,ToFDB, DPRatioTOF ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.07,"This Work (TOF)",8);
 	PlotTH1FintoGraph(gPad,NaFDB, DPRatioNaF ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.07,"This Work (NaF)",22);
 	PlotTH1FintoGraph(gPad,AglDB, DPRatioAgl ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.07,"This Work (Agl)",29);
+
+	galprop3DP->Draw("sameC");
+        galprop3DP2->Draw("sameC");
 
 	leg = (TLegend*) gPad->FindObject("leg");
 

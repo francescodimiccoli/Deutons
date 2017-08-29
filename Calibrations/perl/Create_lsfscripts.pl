@@ -26,6 +26,8 @@ for($j=0;$j<100;$j++)
 			sh \$WORKDIR/../../MAIN/SumScripts/Sommaisto$j.sh;
 			\$WORKDIR/Resolution_Calibrations  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root  \$WORKDIR/Calibfiles/$ARGV[0]/Calib_data$j.root  >> \$WORKDIR/logs/log$j.log;\n";
 		
+       	 	print OUT  "hadd -k \$WORKDIR/Calibfiles/$ARGV[0]/tmp.root \$WORKDIR/Calibfiles/$ARGV[0]/Calib_data$j.root \$WORKDIR/Calibfiles/$ARGV[0]/Calib.root;\n\n"
+                print OUT  "mv \$WORKDIR/Calibfiles/$ARGV[0]/tmp.root \$WORKDIR/Calibfiles/$ARGV[0]/Calib.root;\n\n"
 			
 
 		close (OUT);

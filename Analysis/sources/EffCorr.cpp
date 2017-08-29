@@ -100,6 +100,9 @@ int main(int argc, char * argv[])
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
+	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",30,0.82,1);
+        BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",120,0.96,1);
+
 	EffCorr * HEPPresEffCorr = new EffCorr(finalHistos,"HEPPresEffCorr","HEPPresEffCorr",PRB,"PresControlSample","PresControlSample&IsPreselected","","IsProtonMC");
 	EffCorr * HEPQualEffCorr = new EffCorr(finalHistos,"HEPQualEffCorr","HEPQualEffCorr",PRB,"ControlSample","ControlSample&DistanceCut&LikelihoodCut","","IsProtonMC");
 	
@@ -112,6 +115,11 @@ int main(int argc, char * argv[])
 	EffCorrTemplate* LikCorr_TOF = new EffCorrTemplate(finalHistos,"LikelihoodCorrTOF","Quality Eff. Corr",ToFDB,"ControlSample&DistanceCut","ControlSample&DistanceCut&LikelihoodCut","","");	
 	EffCorrTemplate* LikCorr_NaF = new EffCorrTemplate(finalHistos,"LikelihoodCorrNaF","Quality Eff. Corr",NaFDB,"ControlSample&DistanceCut&IsFromNaF","ControlSample&IsFromNaF&DistanceCut&LikelihoodCut","","",true);	
 	EffCorrTemplate* LikCorr_Agl = new EffCorrTemplate(finalHistos,"LikelihoodCorrAgl","Quality Eff. Corr",AglDB,"ControlSample&DistanceCut&IsFromAgl","ControlSample&IsFromAgl&DistanceCut&LikelihoodCut","","",true);	
+
+	DistCorr_NaF->SetUpBadEventSimulator(NaFBadEvSimulator);
+	DistCorr_Agl->SetUpBadEventSimulator(AglBadEvSimulator);
+	LikCorr_NaF->SetUpBadEventSimulator(NaFBadEvSimulator);
+	LikCorr_Agl->SetUpBadEventSimulator(AglBadEvSimulator);
 
 
 	HEPPresEffCorr -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);
