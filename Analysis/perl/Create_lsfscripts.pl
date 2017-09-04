@@ -29,13 +29,13 @@ for($j=0;$j<100;$j++)
 
 		print OUT  "\$WORKDIR/CountsExtraction  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/MC/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
-		print OUT  "\$WORKDIR/HeliumContamination  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/MC/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+		print OUT  "\$WORKDIR/HeliumContamination  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/MC/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
-		print OUT  "\$WORKDIR/MCEfficiency  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/MC/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+		print OUT  "\$WORKDIR/MCEfficiency  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/MC/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
-		print OUT  "\$WORKDIR/EffCorr  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/MC/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+		print OUT  "\$WORKDIR/EffCorr  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/MC/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
-		print OUT  "\$WORKDIR/Fluxes  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/MC/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+		print OUT  "\$WORKDIR/Fluxes  /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/$ARGV[0]/NtupleData$j.root /storage/gpfs_ams/ams/users/fdimicco/Deutons/Ntuple-making/Ntuples/MC/NtupleMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root  1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
 		close (OUT);
 

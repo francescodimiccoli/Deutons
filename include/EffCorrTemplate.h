@@ -15,7 +15,7 @@ float SmearBetaRICH(float Beta){
 float SmearBeta(float Beta,float R){
 
         float time = 1.2/(Beta*3e-4);
-        float tailcontrolfactor=110./90.;
+        float tailcontrolfactor=1;//110./90.;
 	if(R<2.7) tailcontrolfactor=1;//migration tail fixing
 
         time = time + (-21.2) + Rand->Gaus(0,tailcontrolfactor*98.8);
@@ -232,9 +232,10 @@ void EffCorrTemplate::Fill(TNtuple * treeMC,TNtuple * treeDT, Variables * vars,f
 		cout<<basename.c_str()<<" Filling ... (MC)"<< endl;
 		vars->ReadAnalysisBranches(treeMC);
 
-		for(int i=0;i<treeMC->GetEntries()/FRAC;i++){
+		for(int i=0;i<treeMC->GetEntries();i++){
+			if(i%(int)FRAC!=0) continue;
 			vars->AnalysisVariablseReset();		
-			UpdateProgressBar(i, treeMC->GetEntries()/FRAC);
+			UpdateProgressBar(i, treeMC->GetEntries());
 			treeMC->GetEvent(i);
 			FillEventByEventMC(vars->R,discr_var(vars),ApplyCuts((cut_before+"&"+cut_MC).c_str(),vars),ApplyCuts((cut_after+"&"+cut_MC).c_str(),vars),ApplyCuts("IsProtonMC",vars),ApplyCuts("IsDeutonMC",vars),vars->mcweight);
 		}

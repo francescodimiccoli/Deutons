@@ -65,7 +65,7 @@ bool QualChargeCut (Variables * vars){ return (vars->qInner>0.8&&vars->qInner<1.
 bool DistanceCut   (Variables * vars){ return QualChargeCut(vars);}//(Qualitycut(vars,vars->DistP,3,4,4)||Qualitycut(vars,vars->DistD,3,4,4));}
 bool LikelihoodCut (Variables * vars){ return Qualitycut(vars,log(1-vars->Likelihood),-1.2,-2.6,-3.2);}
 
-bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->DistD>14 && vars->DistD<40);}
+bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->qInner>1.6 && vars->qInner<2.6 &&  vars->qUtof>1.6 && vars->qUtof<2.6 &&  vars->qLtof>1.6 && vars->qLtof<2.6);}
 
 bool IsInLatZone   (Variables * vars, int lat) { return (vars->Latitude>=LatEdges[lat]&&vars->Latitude<LatEdges[lat+1]);}
 

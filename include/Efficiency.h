@@ -110,10 +110,10 @@ void Efficiency::Fill(TNtuple * tree, Variables * vars, float (*discr_var) (Vari
 
 		cout<<basename.c_str()<<" Filling ..."<< endl;
 		vars->ReadAnalysisBranches(tree);
-		for(int i=0;i<tree->GetEntries()/FRAC;i++){
-
+		for(int i=0;i<tree->GetEntries();i++){
+			if(i%(int)FRAC!=0) continue;
 			vars->AnalysisVariablseReset();		
-			UpdateProgressBar(i, tree->GetEntries()/FRAC);
+			UpdateProgressBar(i, tree->GetEntries());
 			tree->GetEvent(i);
 			if(weight) vars->mcweight=1;
 			if(after->GetNbinsY()==1) FillEventByEvent(discr_var(vars),ApplyCuts(cut_before,vars),ApplyCuts(cut_after,vars),vars->mcweight);

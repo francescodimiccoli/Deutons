@@ -102,7 +102,7 @@ int main(int argc, char * argv[])
 	
 	Efficiency * HeliumFragmIntoDTOF = new Efficiency(finalHistos,"HeliumFragmIntoDTOF","HeliumFragmentation",ToFDB,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&DeutonsMassCut");
 
-	Efficiency * HeContaminationTOF = new Efficiency(finalHistos,"HeContTOF","HeliumFragmentation",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut"		,"IsPreselected&IsGoodHe");
+	Efficiency * HeContaminationTOF = new Efficiency(finalHistos,"HeContTOF","HeliumFragmentation",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut","IsPreselected&IsGoodHe");
 
 	HeliumFragmTOF->Fill(treeMC, vars,GetBetaTOF,Refill);
 	
@@ -122,7 +122,7 @@ int main(int argc, char * argv[])
 	HeContaminationTOF->Save(finalHistos);
 	HeContaminationTOF->Eval_Efficiency();
 	HeContaminationTOF->ComposeEfficiency(HeliumFragmTOF);
-	HeContaminationTOF->ComposeEfficiency(HeliumFragmIntoDTOF);
+//	HeContaminationTOF->ComposeEfficiency(HeliumFragmIntoDTOF);
 	HeContaminationTOF->SaveResults(finalResults);
 
 	
@@ -154,7 +154,7 @@ int main(int argc, char * argv[])
 	HeContaminationNaF->Save(finalHistos);
 	HeContaminationNaF->Eval_Efficiency();
 	HeContaminationNaF->ComposeEfficiency(HeliumFragmNaF);
-	HeContaminationNaF->ComposeEfficiency(HeliumFragmIntoDNaF);
+//	HeContaminationNaF->ComposeEfficiency(HeliumFragmIntoDNaF);
 	HeContaminationNaF->SaveResults(finalResults);
 	
 
@@ -186,7 +186,7 @@ int main(int argc, char * argv[])
 	HeContaminationAgl->Save(finalHistos);
 	HeContaminationAgl->Eval_Efficiency();
 	HeContaminationAgl->ComposeEfficiency(HeliumFragmAgl);
-	HeContaminationAgl->ComposeEfficiency(HeliumFragmIntoDAgl);
+//	HeContaminationAgl->ComposeEfficiency(HeliumFragmIntoDAgl);
 	HeContaminationAgl->SaveResults(finalResults);
 	
 

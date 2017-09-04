@@ -93,54 +93,67 @@ int main(int argc, char * argv[])
 	cout<<"****************************** VARIABLES ***************************************"<<endl;
 
         Variables * vars = new Variables;
+	TH1F * HeContTOF=0x0;
+	TH1F * HeContNaF=0x0;
+	TH1F * HeContAgl=0x0;
+
+
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
+	if(finalResults.GetFile()){
+	      HeContTOF = (TH1F *) finalResults.Get("HeliumFragmentation/HeContTOF/HeContTOF_Eff");
+	      HeContNaF = (TH1F *) finalResults.Get("HeliumFragmentation/HeContNaF/HeContNaF_Eff");
+	      HeContAgl = (TH1F *) finalResults.Get("HeliumFragmentation/HeContAgl/HeContAgl_Eff");
+	}	
 
 	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.8,1); 
 	BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
 	
 
-	TemplateFIT * TOFfits= new TemplateFIT("TOFfits","HeContTOF",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
+	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
 	if((!checkfile)||Refill){
 		TOFfits->Fill(treeMC,treeDT,vars,GetRecMassTOF,GetBetaTOF);
 		TOFfits->DisableFit();
 		TOFfits->Save(finalHistos);
 	}
-	else { TOFfits= new TemplateFIT(finalHistos,"TOFfits","HeContTOF",ToFDB);
+	else { TOFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
 	
 //		TOFfits->DisableFit();
-		TOFfits->ExtractCounts(finalHistos,finalResults);	
+		TOFfits->SetHeliumContamination(HeContTOF);				
+		TOFfits->ExtractCounts(finalHistos);	
 		TOFfits->SaveFitResults(finalResults);
 	}
 
-	TemplateFIT * NaFfits= new TemplateFIT("NaFfits","HeContNaF",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,400);
+	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,400);
 	if((!checkfile)||Refill){
 		NaFfits->SetUpBadEventSimulator(NaFBadEvSimulator);
 		NaFfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
 		NaFfits->DisableFit();
 		NaFfits->Save(finalHistos);
 	}
-	else {NaFfits= new TemplateFIT(finalHistos,"NaFfits","HeContNaF",NaFDB,true,11,400,200);
+	else {NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,400,200);
 	
 		NaFfits->SetFitRange(0.6,3);
 	//	NaFfits->DisableFit();
-		NaFfits->ExtractCounts(finalHistos,finalResults);
+		NaFfits->SetHeliumContamination(HeContNaF);			
+		NaFfits->ExtractCounts(finalHistos);
 		NaFfits->SaveFitResults(finalResults);
 	}
 	
 	
-	TemplateFIT * Aglfits= new TemplateFIT("Aglfits","HeContAgl",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,110);
+	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,110);
 	if((!checkfile)||Refill){
 		Aglfits->SetUpBadEventSimulator(AglBadEvSimulator);
 		Aglfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
 		Aglfits->DisableFit();
 		Aglfits->Save(finalHistos);
 	}
-	else {Aglfits= new TemplateFIT(finalHistos,"Aglfits","HeContAgl",AglDB,true,11,110,80);
+	else {Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,110,80);
 	
 		Aglfits->SetFitRange(0.6,3);
 	//	Aglfits->DisableFit();
-		Aglfits->ExtractCounts(finalHistos,finalResults);
+		Aglfits->SetHeliumContamination(HeContAgl);
+		Aglfits->ExtractCounts(finalHistos);
 		Aglfits->SaveFitResults(finalResults);
 	}
 
