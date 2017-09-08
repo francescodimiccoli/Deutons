@@ -110,20 +110,20 @@ int main(int argc, char * argv[])
 	EffCorr * RICHEffCorr_Agl = new EffCorr(finalHistos,"RICHCorrection_Agl","RICH Eff. Corr",AglPB,"ControlSample","ControlSample&IsFromAgl","","IsProtonMC");
 
 	
-/*	EffCorrTemplate* DistCorr_TOF = new EffCorrTemplate(finalHistos,"DistanceCorrTOF","Quality Eff. Corr",ToFDB,"ControlSample","ControlSample&DistanceCut","","");	
+	EffCorrTemplate* DistCorr_TOF = new EffCorrTemplate(finalHistos,"DistanceCorrTOF","Quality Eff. Corr",ToFDB,"ControlSample","ControlSample&DistanceCut","","");	
 	EffCorrTemplate* DistCorr_NaF = new EffCorrTemplate(finalHistos,"DistanceCorrNaF","Quality Eff. Corr",NaFDB,"ControlSample&IsFromNaF","ControlSample&IsFromNaF&DistanceCut","","",true);	
 	EffCorrTemplate* DistCorr_Agl = new EffCorrTemplate(finalHistos,"DistanceCorrAgl","Quality Eff. Corr",AglDB,"ControlSample&IsFromAgl","ControlSample&IsFromAgl&DistanceCut","","",true);	
 	EffCorrTemplate* LikCorr_TOF = new EffCorrTemplate(finalHistos,"LikelihoodCorrTOF","Quality Eff. Corr",ToFDB,"ControlSample&DistanceCut","ControlSample&DistanceCut&LikelihoodCut","","");	
 	EffCorrTemplate* LikCorr_NaF = new EffCorrTemplate(finalHistos,"LikelihoodCorrNaF","Quality Eff. Corr",NaFDB,"ControlSample&DistanceCut&IsFromNaF","ControlSample&IsFromNaF&DistanceCut&LikelihoodCut","","",true);	
 	EffCorrTemplate* LikCorr_Agl = new EffCorrTemplate(finalHistos,"LikelihoodCorrAgl","Quality Eff. Corr",AglDB,"ControlSample&DistanceCut&IsFromAgl","ControlSample&IsFromAgl&DistanceCut&LikelihoodCut","","",true);	
-*/
+
 	RICHEffCorr_NaF->SetUpBadEventSimulator(NaFBadEvSimulator);
 	RICHEffCorr_Agl->SetUpBadEventSimulator(AglBadEvSimulator);
-/*	DistCorr_NaF->SetUpBadEventSimulator(NaFBadEvSimulator);
+	DistCorr_NaF->SetUpBadEventSimulator(NaFBadEvSimulator);
 	DistCorr_Agl->SetUpBadEventSimulator(AglBadEvSimulator);
 	LikCorr_NaF->SetUpBadEventSimulator(NaFBadEvSimulator);
 	LikCorr_Agl->SetUpBadEventSimulator(AglBadEvSimulator);
-*/
+
 
 	ParallelFiller<EffCorr*> Filler1;
 	Filler1.AddObject2beFilled(HEPPresEffCorr,GetRigidity,GetRigidity);

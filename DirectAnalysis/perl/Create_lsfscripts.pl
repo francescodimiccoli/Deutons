@@ -4,7 +4,7 @@ use warnings;
 print "Printing LSF scripts for Analysis...\n\n";
 chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 print "Printed: Work Dir. = ".$workdir."\n\n";
-$njobs=400;
+$njobs=200;
 
 #creating sum scripts and output directory
 #

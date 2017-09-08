@@ -22,11 +22,11 @@
 #include "TKey.h"
 #include "TFractionFitter.h"
 
-#include "../Ntuple-making/Commonglobals.cpp"
+#include "../include/Commonglobals.cpp"
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 #include "../include/filesaver.h"
-#include "../include/TemplateFIT.h"
+#include "../include/TemplateFITbetasmear.h"
 
 #include "../include/FitError.h"
 #include "../include/Resolution.h"
@@ -311,7 +311,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		std::vector<TH1F*> Fits      =GetListOfTemplates(infile, pathbinfit);
 		std::vector<TH1F*> Transfer  =GetListOfTemplates(infile, pathtrans);
 
-		cout<<pathbinHe<<" "<<TemplatesHe.size()<<" "<<TemplatesHe[0]<<endl;
+		//cout<<pathbinHe<<" "<<TemplatesHe.size()<<" "<<TemplatesHe[0]<<endl;
 	
 
 		TCanvas * c1 = new TCanvas("Modified Templates");
