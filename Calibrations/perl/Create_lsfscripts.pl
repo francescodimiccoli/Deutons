@@ -5,6 +5,7 @@ print "Printing LSF scripts for Calibrations...\n\n";
 chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
+$njobs=300;
 
 #creating sum scripts and output directory
 #
@@ -14,7 +15,7 @@ system ("rm -r $workdir/Calibfiles/$ARGV[0]");
 system ("mkdir $workdir/Calibfiles/$ARGV[0]");
 
 
-for($j=0;$j<100;$j++)
+for($j=0;$j<$njobs;$j++)
 {
 		open(OUT,">","../lsf/lsf$j.tcsh");
 
@@ -26,8 +27,8 @@ for($j=0;$j<100;$j++)
 			sh \$WORKDIR/../../MAIN/SumScripts/Sommaisto$j.sh;
 			\$WORKDIR/Resolution_Calibrations  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root  \$WORKDIR/Calibfiles/$ARGV[0]/Calib_data$j.root  >> \$WORKDIR/logs/log$j.log;\n";
 		
-       	 	print OUT  "hadd -k \$WORKDIR/Calibfiles/$ARGV[0]/tmp.root \$WORKDIR/Calibfiles/$ARGV[0]/Calib_data$j.root \$WORKDIR/Calibfiles/$ARGV[0]/Calib.root;\n\n"
-                print OUT  "mv \$WORKDIR/Calibfiles/$ARGV[0]/tmp.root \$WORKDIR/Calibfiles/$ARGV[0]/Calib.root;\n\n"
+       	 	print OUT  "hadd -k \$WORKDIR/Calibfiles/$ARGV[0]/tmp.root \$WORKDIR/Calibfiles/$ARGV[0]/Calib_data$j.root \$WORKDIR/Calibfiles/$ARGV[0]/Calib.root;\n\n";
+                print OUT  "mv \$WORKDIR/Calibfiles/$ARGV[0]/tmp.root \$WORKDIR/Calibfiles/$ARGV[0]/Calib.root;\n\n";
 			
 
 		close (OUT);
@@ -36,7 +37,7 @@ for($j=0;$j<100;$j++)
 
 print "Launching Calibration jobs...";
 
-for($j=0;$j<100;$j++)
+for($j=0;$j<$njobs;$j++)
 {
 
 system("chmod +x $workdir/lsf/lsf$j.tcsh");

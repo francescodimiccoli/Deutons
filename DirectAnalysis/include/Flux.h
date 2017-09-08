@@ -1,11 +1,9 @@
-void UpdateZoneLivetime (float Livetime, float Rcutoff, TH1F * esposizionegeo,Binning bins){
+#ifndef FLUX_H
+#define FLUX_H
 
-        for(int i=0;i<esposizionegeo->GetNbinsX();i++)
-                        if(bins.RigBins()[i+1]>=1.3*Rcutoff){
-                                esposizionegeo -> SetBinContent(i+1, esposizionegeo -> GetBinContent(i+1) + Livetime) ;
-        }
-        return;
-}
+#include "Livetime.h"
+#include "Cuts.h"
+#include "binning.h"
 
 struct MCPar{
 float Rmin,Rmax,Trigrate;
@@ -16,10 +14,10 @@ class Flux{
 
 	private:
 	Efficiency * MCEfficiency;
-	TH1F * Counts;
-	TH1F * Geom_Acceptance;
-	TH1F * Triggers;
-	TH1F * ExposureTime;
+	TH1F * Counts=0x0;
+	TH1F * Geom_Acceptance=0x0;
+	TH1F * Triggers=0x0;
+	TH1F * ExposureTime=0x0;
 	Binning bins;
 	std::string basename;	
 	std::string exposurename;
@@ -38,7 +36,6 @@ class Flux{
 		Geom_Acceptance = (TH1F *) File.Get(("Fluxes/"+Basename+"/"+GeomName).c_str());
 		Triggers = (TH1F *) File.Get(("Fluxes/"+Basename+"/Triggers").c_str());
 
-
 		bins = Bins;		
 		basename = Basename;
 		exposurename = ExposureName;
@@ -50,19 +47,33 @@ class Flux{
 		ExposureTime = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
 		Geom_Acceptance = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+GeomName).c_str());
 		FluxEstim = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str());
-			
+		
 		bins = Bins;		
 		basename = Basename;
 	}
-
+	bool ReinitializeHistos(bool refill) {
+		if(!ExposureTime||!Triggers||!Geom_Acceptance||refill) { 
+			ExposureTime = new TH1F(exposurename.c_str(),exposurename.c_str(),bins.size(),0,bins.size());
+                	Triggers = new TH1F("Triggers","Triggers",PRB.size(),0,PRB.size());
+			Geom_Acceptance = new TH1F(geomname.c_str(),geomname.c_str(),bins.size(),0,bins.size());
+			Counts=0x0;
+			return false;
+		}
+		else return true;	
+	}
 	void Set_MCPar(float rmin, float rmax, float trigrate);
-	void Eval_ExposureTime(TTree * treeDT, FileSaver finalhistos,bool refill);
+	void Eval_ExposureTime(Variables * vars, TTree * treeDT,FileSaver finalhistos,bool refill);
 	void Eval_GeomAcceptance(TTree * treeMC, FileSaver finalhistos,std::string cut,bool refill, bool IsRigBin=false);
 	void ApplyEfficCorr(TH1F * Correction);
 	void Eval_Flux();
 	void SaveResults(FileSaver finalhistos);
+	Binning GetBins(){return bins;}
+	std::string GetName(){return basename;}
 
+	
+	TH1F * GetExposureTime(){return ExposureTime;}
 	TH1F * GetFlux(){return FluxEstim;}
+	TH1F * GetTriggerCounts() {return Triggers;}
 	TH1F * GetGenAcceptance(){return Geom_Acceptance;}
 
 	TH1F * Eval_FluxRatio(Flux * Denominator,std::string name);
@@ -82,10 +93,10 @@ void Flux::ApplyEfficCorr(TH1F * Correction){
 
 
 void Flux::Eval_Flux(){
-
+	cout<<"Counts "<<Counts<<endl;
 	if(Counts) FluxEstim = (TH1F *) Counts->Clone();
 	else FluxEstim = new TH1F("dummy","dummy",bins.size(),0,bins.size());
-
+	cout<<"Flux: "<<MCEfficiency->GetEfficiency()->GetEntries()<<endl;
 	FluxEstim -> SetName((basename+"_Flux").c_str());
 	FluxEstim -> SetTitle((basename+"_Flux").c_str());
 
@@ -119,16 +130,31 @@ void Flux::SaveResults(FileSaver finalhistos){
 	finalhistos.Add(Geom_Acceptance);
 	finalhistos.writeObjsInFolder(("Fluxes/"+basename).c_str());
 }
-
-void Flux::Eval_GeomAcceptance(TTree * RawMC,FileSaver finalhistos,std::string cut,bool refill, bool IsRigBin){
+void Flux::Eval_GeomAcceptance(TTree * treeMC,FileSaver finalhistos,std::string cut,bool refill, bool IsRigBin){
 
 	if((!Geom_Acceptance||!Triggers||refill)){
 			Geom_Acceptance = new TH1F(geomname.c_str(),geomname.c_str(),bins.size(),0,bins.size());
-
+			Triggers = new TH1F("Triggers","Triggers",PRB.size(),0,PRB.size());		
 			Variables * vars = new Variables;
+
+			vars->ReadBranches(treeMC);
+			int kbin;
+			for(int i=0;i<treeMC->GetEntries()/FRAC;i++){
+				if(i%(int)FRAC!=0) continue;
+		                UpdateProgressBar(i, treeMC->GetEntries());
+                		treeMC->GetEvent(i);
+                		vars->Update();
+				if(!IsRigBin) kbin=bins.GetBin(GetBetaGen(vars));
+				else	      kbin=bins.GetBin(GetGenMomentum(vars));
+				if(ApplyCuts(cut,vars)&&kbin>0) Geom_Acceptance->Fill(kbin);
+				kbin=PRB.GetBin(GetGenMomentum(vars));
+				if(ApplyCuts(cut,vars)&&kbin>0) Triggers->Fill(kbin);
+			}
+			/*
 			Efficiency * Geom = new Efficiency(finalhistos,"","",bins,cut.c_str() ,cut.c_str());
 			if(!IsRigBin) Geom->Fill(RawMC, vars,GetBetaGen,true);
 			else Geom->Fill(RawMC, vars,GetGenMomentum,true);
+
 			Efficiency * Trig = new Efficiency(finalhistos,"","",PRB,cut.c_str() ,cut.c_str());
 			Trig->Fill(RawMC, vars,GetGenMomentum,true);
 
@@ -139,7 +165,7 @@ void Flux::Eval_GeomAcceptance(TTree * RawMC,FileSaver finalhistos,std::string c
 			Triggers = (TH1F *)Trig->GetBefore()->Clone();
 			Triggers -> SetName("Triggers");
 			Triggers -> SetTitle("Triggers");
-
+			*/
 			finalhistos.Add(Geom_Acceptance); 	
 			finalhistos.Add(Triggers); 	
 			finalhistos.writeObjsInFolder(("Fluxes/"+basename).c_str());
@@ -149,25 +175,21 @@ void Flux::Eval_GeomAcceptance(TTree * RawMC,FileSaver finalhistos,std::string c
 	return;
 };
 
-void Flux::Eval_ExposureTime(TTree * RawDT,FileSaver finalhistos,bool refill){
+void Flux::Eval_ExposureTime(Variables * vars, TTree * treeDT,FileSaver finalhistos,bool refill){
 		
 	if(!ExposureTime||refill){
 	
-		float Livetime,U_time,Rcutoff;
-		RawDT->SetBranchAddress("Livetime"           ,&Livetime);
-		RawDT->SetBranchAddress("U_Time"             ,&U_time);
-		RawDT->SetBranchAddress("Rcutoff"            ,&Rcutoff);
-
-
 		ExposureTime = new TH1F(exposurename.c_str(),exposurename.c_str(),bins.size(),0,bins.size());
 
 		int ActualTime=0;
-		for(int i=0;i<RawDT->GetEntries()/FRAC;i++){
-			UpdateProgressBar(i, RawDT->GetEntries()/FRAC);
-			RawDT->GetEvent(i);
-			if((int)U_time!=ActualTime) {
-				UpdateZoneLivetime(Livetime,Rcutoff,ExposureTime,bins);
-				ActualTime=U_time;
+		vars->ReadBranches(treeDT);
+		for(int i=0;i<treeDT->GetEntries()/FRAC;i++){
+			UpdateProgressBar(i, treeDT->GetEntries()/FRAC);
+			treeDT->GetEvent(i);
+			vars->Update();
+			if((int)vars->U_time!=ActualTime) {
+				UpdateZoneLivetime(vars->Livetime,vars->Rcutoff,ExposureTime,bins);
+				ActualTime=vars->U_time;
 			}
 		}
 		finalhistos.Add(ExposureTime); 	
@@ -190,4 +212,4 @@ TH1F * Flux::Eval_FluxRatio(Flux * Denominator,std::string name){
 	return Numerator;
 }
 
-
+#endif

@@ -2,7 +2,7 @@
 #include "TROOT.h"
 #include "TNtuple.h"
 #include <TSpline.h>
-#include "../include/binning.h"
+#include "../DirectAnalysis/include/binning.h"
 #include "TFile.h"
 #include "TH2.h"
 #include "TF2.h"
@@ -17,16 +17,16 @@
 #include "TGraphErrors.h"
 #include "TCanvas.h"
 #include "TLegend.h"
-#include "../include/GlobalBinning.h"
+#include "../DirectAnalysis/include/GlobalBinning.h"
 
 #include "../Ntuple-making/Commonglobals.cpp"
-#include "../include/Variables.hpp"
-#include "../include/Cuts.h"
-#include "../include/filesaver.h"
+#include "../DirectAnalysis/include/Variables.hpp"
+#include "../DirectAnalysis/include/Cuts.h"
+#include "../DirectAnalysis/include/filesaver.h"
 
-#include "../include/FitError.h"
-#include "../include/Resolution.h"
-#include "../include/PlottingFunctions.h"
+#include "../DirectAnalysis/include/FitError.h"
+#include "../DirectAnalysis/include/Resolution.h"
+#include "../DirectAnalysis/include/PlottingFunctions.h"
 
 
 int colorbase=55;
@@ -222,7 +222,7 @@ int main(int argc, char * argv[]){
 	
 	cout<<"****************************** PLOTTING ***************************************"<<endl;
 
-
+	/*
 	Resolution * RigidityResolution_P = new Resolution(finalHistos,"RvsR Resolution (P)",PResB);
         Resolution * RigidityResolution_D = new Resolution(finalHistos,"RvsR Resolution (D)",PResB);
 
@@ -292,6 +292,26 @@ int main(int argc, char * argv[]){
 
 	PlotFitResults(Plots,EdepTrackMC_P,EdepTrackDT_P,"#beta_{TOF}",0.45,1,0,13,"protons MC","ISS data");
 
+	*/
+	
+	Resolution * QUTOFMC_P = new Resolution(finalHistos,"QUTOFvsBeta Measured MC",ToFResB);
+        Resolution * QUTOFDT_P = new Resolution(finalHistos,"QUTOFvsBeta Measured DT",ToFResB);
+
+        PlotFitResults(Plots,QUTOFMC_P,QUTOFDT_P,"#beta_{TOF}",0.45,1,0,2,"protons MC","ISS data");
+
+        
+
+        Resolution * QLTOFMC_P = new Resolution(finalHistos,"QLTOFvsBeta Measured MC",ToFResB);
+        Resolution * QLTOFDT_P = new Resolution(finalHistos,"QLTOFvsBeta Measured DT",ToFResB);
+
+        PlotFitResults(Plots,QLTOFMC_P,QLTOFDT_P,"#beta_{TOF}",0.45,1,0,2,"protons MC","ISS data");
+
+        
+
+        Resolution * QInnerMC_P = new Resolution(finalHistos,"QInnervsBeta Measured MC",ToFResB);
+        Resolution * QInnerDT_P = new Resolution(finalHistos,"QInnervsBeta Measured DT",ToFResB);
+
+        PlotFitResults(Plots,QInnerMC_P,QInnerDT_P,"#beta_{TOF}",0.45,1,0,2,"protons MC","ISS data");
 
 	
 	return 0;

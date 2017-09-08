@@ -14,7 +14,7 @@ std::vector<float> LatEdges={0.0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.2};
 
 TH1F* ProjectionXtoTH1F(TH2F* h2, string title, int binmin, int binmax);
 TH1F* TH1DtoTH1F(TH1D* hd);
- 
+
 bool IsProtonMC    (Variables * vars){ return (vars->Massa_gen<1&&vars->Massa_gen>0);}
 bool IsDeutonMC    (Variables * vars){ return (vars->Massa_gen<2&&vars->Massa_gen>1);}
 bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_gen>1);}
@@ -64,7 +64,7 @@ bool Qualitycut(Variables * vars, float cutvariable, float cutTOF, float cutNaF,
 bool QualChargeCut (Variables * vars){ return (vars->qInner>0.8&&vars->qInner<1.3&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3);}
 
 bool DistanceCut   (Variables * vars){ return QualChargeCut(vars);}//(Qualitycut(vars,vars->DistP,3,4,4)||Qualitycut(vars,vars->DistD,3,4,4));}
-bool LikelihoodCut (Variables * vars){ return Qualitycut(vars,-vars->Likelihood,-0.8,-0.8,-0.8);}
+bool LikelihoodCut (Variables * vars){ return Qualitycut(vars,-vars->Likelihood,-0.83,-0.85,-0.85);}
 
 bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->qInner>1.6 && vars->qInner<2.6 &&  vars->qUtof>1.6 && vars->qUtof<2.6 &&  vars->qLtof>1.6 && vars->qLtof<2.6);}
 
@@ -72,6 +72,11 @@ bool IsInLatZone   (Variables * vars, int lat) { return (vars->Latitude>=LatEdge
 
 bool ControlSample (Variables * vars) { return (IsPreselected(vars)&&vars->qInner>0.2&&vars->qInner<1.75&&ControlSampleMassCut(vars));}
 bool PresControlSample (Variables * vars) { return (IsMinimumBias(vars)&&vars->qInner>0.2&&vars->qInner<1.75&&ControlSampleMassCut(vars));}
+
+bool TofBetaSafetyCut (Variables * vars) {return vars->Beta<0.77 ;}
+bool NafBetaSafetyCut (Variables * vars) {return vars->Beta<0.96 ;}
+bool AglBetaSafetyCut (Variables * vars) {return vars->Beta<0.985;}
+
 
 
 
@@ -121,6 +126,9 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsGoodHe")       IsPassed=IsPassed && IsGoodHe(Vars);
 		if(spl[i]=="ControlSample")  IsPassed=IsPassed && ControlSample(Vars);
 		if(spl[i]=="PresControlSample")  IsPassed=IsPassed && PresControlSample(Vars);
+		if(spl[i]=="TofBetaSafetyCut")  IsPassed=IsPassed && TofBetaSafetyCut(Vars);
+		if(spl[i]=="NafBetaSafetyCut")  IsPassed=IsPassed && NafBetaSafetyCut(Vars);
+		if(spl[i]=="AglBetaSafetyCut")  IsPassed=IsPassed && AglBetaSafetyCut(Vars);
 		
 		for(int lat=0;lat<10;lat++)
 			if(spl[i]==("IsInLatZone"+to_string(lat)).c_str())      IsPassed=IsPassed && IsInLatZone(Vars,lat);

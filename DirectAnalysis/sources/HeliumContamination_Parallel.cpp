@@ -25,7 +25,7 @@
 #include "../include/Variables.hpp"
 #include "../include/BetaSmearing.h"
 #include "../include/Cuts.h"
-
+#include "../include/ParallelFiller.h"
 
 #include "../include/filesaver.h"
 
@@ -52,6 +52,7 @@ int main(int argc, char * argv[])
         FileSaver finalHistos;
         finalHistos.setName(OUTPUT.c_str());
         bool checkfile = finalHistos.CheckFile();
+	if(!checkfile) Refill=true;
 
 	FileSaver finalResults;
         finalResults.setName((OUTPUT+"_Results").c_str());
@@ -95,21 +96,49 @@ int main(int argc, char * argv[])
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
-
+	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.8,1);
+        BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1);
 
 	// TOF
 	
 	Efficiency * HeliumFragmTOF = new Efficiency(finalHistos,"HeliumFrragmTOF","HeliumFragmentation",ToFDB,"IsPreselected&IsHeliumMC&IsGoodHe" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut");
-	
 	Efficiency * HeliumFragmIntoDTOF = new Efficiency(finalHistos,"HeliumFragmIntoDTOF","HeliumFragmentation",ToFDB,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&DeutonsMassCut");
-
 	Efficiency * HeContaminationTOF = new Efficiency(finalHistos,"HeContTOF","HeliumFragmentation",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut","IsPreselected&IsGoodHe");
 
-	HeliumFragmTOF->Fill(treeMC, vars,GetBetaTOF,Refill);
+	// NaF
 	
-	HeliumFragmIntoDTOF->Fill(treeMC, vars,GetBetaTOF,Refill);
+	Efficiency * HeliumFragmNaF = new Efficiency(finalHistos,"HeliumFrragmNaF","HeliumFragmentation",NaFDB,"IsPreselected&IsHeliumMC&IsFromNaF&IsGoodHe" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF");
+	Efficiency * HeliumFragmIntoDNaF = new Efficiency(finalHistos,"HeliumFragmIntoDNaF","HeliumFragmentation",NaFDB,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF&DeutonsMassCut");
+	Efficiency * HeContaminationNaF = new Efficiency(finalHistos,"HeContNaF","HeliumFragmentation",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF"  ,"IsPreselected&IsFromNaF&IsGoodHe"); 
 
-	HeContaminationTOF->Fill(treeDT, vars,GetBetaTOF,Refill);
+	HeliumFragmNaF->SetUpBadEventSimulator(NaFBadEvSimulator);
+	HeliumFragmIntoDNaF->SetUpBadEventSimulator(NaFBadEvSimulator);
+	HeContaminationNaF->SetUpBadEventSimulator(NaFBadEvSimulator);
+
+	//Agl
+	
+	Efficiency * HeliumFragmAgl = new Efficiency(finalHistos,"HeliumFrragmAgl","HeliumFragmentation",AglDB,"IsPreselected&IsHeliumMC&IsFromAgl&IsGoodHe" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromAgl");
+	Efficiency * HeliumFragmIntoDAgl = new Efficiency(finalHistos,"HeliumFragmIntoDAgl","HeliumFragmentation",AglDB,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromAgl&DeutonsMassCut");
+	Efficiency * HeContaminationAgl = new Efficiency(finalHistos,"HeContAgl","HeliumFragmentation",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl" ,"IsPreselected&IsFromAgl&IsGoodHe");
+	
+	HeliumFragmAgl->SetUpBadEventSimulator(AglBadEvSimulator);
+	HeliumFragmIntoDAgl->SetUpBadEventSimulator(AglBadEvSimulator);
+	HeContaminationAgl->SetUpBadEventSimulator(AglBadEvSimulator);
+
+		ParallelFiller<Efficiency *> Filler;
+		Filler.AddObject2beFilled(HeliumFragmTOF,GetSmearedBetaTOF,GetSmearedBetaTOF);
+		Filler.AddObject2beFilled(HeliumFragmIntoDTOF,GetSmearedBetaTOF,GetSmearedBetaTOF);
+		Filler.AddObject2beFilled(HeContaminationTOF,GetSmearedBetaTOF,GetSmearedBetaTOF);
+		Filler.AddObject2beFilled(HeliumFragmNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
+		Filler.AddObject2beFilled(HeliumFragmIntoDNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
+		Filler.AddObject2beFilled(HeContaminationNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
+		Filler.AddObject2beFilled(HeliumFragmAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
+		Filler.AddObject2beFilled(HeliumFragmIntoDAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
+		Filler.AddObject2beFilled(HeContaminationAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
+		Filler.ReinitializeAll(Refill);
+		//main loop
+		Filler.LoopOnMC(treeMC,vars);
+
 
 	HeliumFragmTOF->Save(finalHistos);
 	HeliumFragmTOF->Eval_Efficiency();
@@ -122,31 +151,16 @@ int main(int argc, char * argv[])
 
 	HeContaminationTOF->Save(finalHistos);
 	HeContaminationTOF->Eval_Efficiency();
+
 	HeContaminationTOF->ComposeEfficiency(HeliumFragmTOF);
 //	HeContaminationTOF->ComposeEfficiency(HeliumFragmIntoDTOF);
 	HeContaminationTOF->SaveResults(finalResults);
 
 	
-	// NaF
-	
-	Efficiency * HeliumFragmNaF = new Efficiency(finalHistos,"HeliumFrragmNaF","HeliumFragmentation",NaFDB,"IsPreselected&IsHeliumMC&IsFromNaF&IsGoodHe" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF");
-	
-	Efficiency * HeliumFragmIntoDNaF = new Efficiency(finalHistos,"HeliumFragmIntoDNaF","HeliumFragmentation",NaFDB,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF&DeutonsMassCut");
-
-	Efficiency * HeContaminationNaF = new Efficiency(finalHistos,"HeContNaF","HeliumFragmentation",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF"  ,"IsPreselected&IsFromNaF&IsGoodHe"); 
-	
-
-	HeliumFragmNaF->Fill(treeMC, vars,GetBetaRICH,Refill);
-	
-	HeliumFragmIntoDNaF->Fill(treeMC, vars,GetBetaRICH,Refill);
-
-	HeContaminationNaF->Fill(treeDT, vars,GetBetaRICH,Refill);
-			
 
 	HeliumFragmNaF->Save(finalHistos);
 	HeliumFragmNaF->Eval_Efficiency();
 	HeliumFragmNaF->SaveResults(finalResults);
-	
 
 	HeliumFragmIntoDNaF->Save(finalHistos);
 	HeliumFragmIntoDNaF->Eval_Efficiency();
@@ -159,26 +173,10 @@ int main(int argc, char * argv[])
 	HeContaminationNaF->SaveResults(finalResults);
 	
 
-	//Agl
-	
-	Efficiency * HeliumFragmAgl = new Efficiency(finalHistos,"HeliumFrragmAgl","HeliumFragmentation",AglDB,"IsPreselected&IsHeliumMC&IsFromAgl&IsGoodHe" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromAgl");
-	
-	Efficiency * HeliumFragmIntoDAgl = new Efficiency(finalHistos,"HeliumFragmIntoDAgl","HeliumFragmentation",AglDB,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromAgl&DeutonsMassCut");
-
-	Efficiency * HeContaminationAgl = new Efficiency(finalHistos,"HeContAgl","HeliumFragmentation",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl" ,"IsPreselected&IsFromAgl&IsGoodHe");
-	
-
-
-	HeliumFragmAgl->Fill(treeMC, vars,GetBetaRICH,Refill);
-	
-	HeliumFragmIntoDAgl->Fill(treeMC, vars,GetBetaRICH,Refill);
-
-	HeContaminationAgl->Fill(treeDT, vars,GetBetaRICH,Refill);
 
 	HeliumFragmAgl->Save(finalHistos);
 	HeliumFragmAgl->Eval_Efficiency();
 	HeliumFragmAgl->SaveResults(finalResults);
-
 	
 	HeliumFragmIntoDAgl->Save(finalHistos);
 	HeliumFragmIntoDAgl->Eval_Efficiency();

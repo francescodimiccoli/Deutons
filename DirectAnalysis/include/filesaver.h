@@ -1,3 +1,6 @@
+#ifndef FILESAVER_H
+#define FILESAVER_H
+
 class FileSaver {
    public:
       FileSaver(bool Isfinal=false) : filename("") {fArr=new TObjArray(); IsFinal = Isfinal;}
@@ -61,3 +64,5 @@ TFile * FileSaver::GetFile(){
 	TFile * fileFinalPlots=TFile::Open(filename.c_str(), "READ");
 	return fileFinalPlots;
 }
+
+#endif

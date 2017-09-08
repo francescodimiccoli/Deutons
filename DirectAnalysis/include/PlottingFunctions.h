@@ -1,3 +1,27 @@
+#ifndef PLOTTING_H
+#define PLOTTING_H
+
+#include "TROOT.h"
+#include "TNtuple.h"
+#include <TSpline.h>
+#include "../include/binning.h"
+#include "TFile.h"
+#include "TH2.h"
+#include "TF2.h"
+#include <TVector3.h>
+#include "TMath.h"
+#include <TFile.h>
+#include "TFile.h"
+#include "TH2.h"
+#include "TF2.h"
+#include <TVector3.h>
+#include "TMath.h"
+#include "TGraphErrors.h"
+#include "TCanvas.h"
+#include "TLegend.h"
+#include "TRandom3.h"
+#include "../include/GlobalBinning.h"
+
 using namespace std;
 
 TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxis,std::string Yaxis){
@@ -389,3 +413,5 @@ void PlotTH1FRatiointoGraph(TVirtualPad * c, Binning bins, TH1F * Values1, TH1F 
 
 
 }
+
+#endif

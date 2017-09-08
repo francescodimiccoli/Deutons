@@ -24,7 +24,7 @@
 
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
-
+#include "../include/ParallelFiller.h"
 
 #include "../include/filesaver.h"
 
@@ -54,6 +54,7 @@ int main(int argc, char * argv[])
         FileSaver finalHistos;
         finalHistos.setName(OUTPUT.c_str());
         bool checkfile = finalHistos.CheckFile();
+	if(!checkfile) Refill=true;
 
 	FileSaver finalResults;
         finalResults.setName((OUTPUT+"_Results").c_str());
@@ -115,24 +116,38 @@ int main(int argc, char * argv[])
 */
 	
 	cout<<"****************************** FLUXES EVALUATION ******************************************"<<endl;
-
-	cout<<"************* D FLUX ************"<<endl;
-
+	
 	Flux * DFluxTOF = new Flux(finalHistos,finalResults, "DFluxTOF", "FullsetEff_D_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Deuteron Counts","ExposureTOF","Gen. Acceptance",ToFDB);
 	Flux * DFluxNaF = new Flux(finalHistos,finalResults, "DFluxNaF", "FullsetEff_D_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF","Gen. Acceptance",NaFDB);
 	Flux * DFluxAgl = new Flux(finalHistos,finalResults, "DFluxAgl", "FullsetEff_D_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl","Gen. Acceptance",AglDB);
 
-	DFluxTOF-> Eval_ExposureTime(vars,treeDT,finalHistos,Refill);
-        DFluxNaF-> Eval_ExposureTime(vars,treeDT,finalHistos,Refill);
-        DFluxAgl-> Eval_ExposureTime(vars,treeDT,finalHistos,Refill);
+	Flux * HEPFlux  = new Flux(finalHistos,finalResults,"PFluxHE", "RigBinFullSetEff","RigBinFullSetEff","HEPCounts/HEPCounts/HEPCounts","HEExposure","Gen. Acceptance",PRB);
+
+	Flux * PFluxTOF = new Flux(finalHistos,finalResults, "PFluxTOF", "FullsetEff_P_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF","Gen. Acceptance",ToFPB);
+	Flux * PFluxNaF = new Flux(finalHistos,finalResults, "PFluxNaF", "FullsetEff_P_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF","Gen. Acceptance",NaFPB);
+	Flux * PFluxAgl = new Flux(finalHistos,finalResults, "PFluxAgl", "FullsetEff_P_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl","Gen. Acceptance",AglPB);
+
+
+	cout<<"********** EXPOSURE TIME & GEOM. ACCEPT. ********"<<endl;
+
+	ParallelFiller<Flux *> Filler;
+                Filler.AddObject2beFilled(DFluxTOF,GetBetaGen,GetBetaGen,"IsDeutonMC");
+		Filler.AddObject2beFilled(DFluxNaF,GetBetaGen,GetBetaGen,"IsDeutonMC");
+		Filler.AddObject2beFilled(DFluxAgl,GetBetaGen,GetBetaGen,"IsDeutonMC");
+		Filler.AddObject2beFilled(PFluxTOF,GetBetaGen,GetBetaGen,"IsProtonMC");
+		Filler.AddObject2beFilled(PFluxNaF,GetBetaGen,GetBetaGen,"IsProtonMC");
+		Filler.AddObject2beFilled(PFluxAgl,GetBetaGen,GetBetaGen,"IsProtonMC");
+		Filler.AddObject2beFilled(HEPFlux,GetGenMomentum,GetGenMomentum,"IsProtonMC");
+		Filler.ReinitializeAll(Refill);
+		//main loops
+		Filler.ExposureTimeFilling(treeDT,vars,finalHistos);
+		Filler.LoopOnMCForGenAcceptance(treeMC,vars,finalHistos);		
+
+	cout<<"************* D FLUX ************"<<endl;
 
 	DFluxTOF->Set_MCPar(0.5,20,0.0242236931);	
 	DFluxNaF->Set_MCPar(0.5,20,0.0242236931);	
 	DFluxAgl->Set_MCPar(0.5,20,0.0242236931);	
-
-	DFluxTOF-> Eval_GeomAcceptance(treeMC,finalHistos,"IsDeutonMC",Refill);
-        DFluxNaF-> Eval_GeomAcceptance(treeMC,finalHistos,"IsDeutonMC",Refill);
-        DFluxAgl-> Eval_GeomAcceptance(treeMC,finalHistos,"IsDeutonMC",Refill);
 /*
 	DFluxNaF->ApplyEfficCorr(RICHEffCorr_NaF->GetGlobCorrection());
 	DFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl->GetGlobCorrection());
@@ -156,26 +171,10 @@ int main(int argc, char * argv[])
 
 	cout<<"************* P FLUX ************"<<endl;
 
-	Flux * HEPFlux  = new Flux(finalHistos,finalResults,"PFluxHE", "RigBinFullSetEff","RigBinFullSetEff","HEPCounts/HEPCounts/HEPCounts","HEExposure","Gen. Acceptance",PRB);
-
-	Flux * PFluxTOF = new Flux(finalHistos,finalResults, "PFluxTOF", "FullsetEff_P_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF","Gen. Acceptance",ToFPB);
-	Flux * PFluxNaF = new Flux(finalHistos,finalResults, "PFluxNaF", "FullsetEff_P_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF","Gen. Acceptance",NaFPB);
-	Flux * PFluxAgl = new Flux(finalHistos,finalResults, "PFluxAgl", "FullsetEff_P_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl","Gen. Acceptance",AglPB);
-
-	HEPFlux -> Eval_ExposureTime(vars,treeDT,finalHistos,Refill);
-	PFluxTOF-> Eval_ExposureTime(vars,treeDT,finalHistos,Refill);
-        PFluxNaF-> Eval_ExposureTime(vars,treeDT,finalHistos,Refill);
-        PFluxAgl-> Eval_ExposureTime(vars,treeDT,finalHistos,Refill);
-
 	HEPFlux ->Set_MCPar(0.5,100,0.0308232619);	
 	PFluxTOF->Set_MCPar(0.5,100,0.0308232619);	
 	PFluxNaF->Set_MCPar(0.5,100,0.0308232619);	
 	PFluxAgl->Set_MCPar(0.5,100,0.0308232619);	
-
-	HEPFlux -> Eval_GeomAcceptance(treeMC,finalHistos,"IsProtonMC",Refill,true);
-	PFluxTOF-> Eval_GeomAcceptance(treeMC,finalHistos,"IsProtonMC",Refill);
-        PFluxNaF-> Eval_GeomAcceptance(treeMC,finalHistos,"IsProtonMC",Refill);
-        PFluxAgl-> Eval_GeomAcceptance(treeMC,finalHistos,"IsProtonMC",Refill);
 
 //	HEPFlux -> ApplyEfficCorr(HEPPresEffCorr->GetGlobCorrection());
 //	HEPFlux -> ApplyEfficCorr(HEPQualEffCorr->GetGlobCorrection());

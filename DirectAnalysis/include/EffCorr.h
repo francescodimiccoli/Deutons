@@ -11,7 +11,8 @@ class EffCorr{
 	TH1F * GlobalCorrection;
 	std::string basename;
 	std::string directory;
-	
+
+	BadEventSimulator * BadEvSim;	
 	public:
 
 	EffCorr(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC){
@@ -28,6 +29,27 @@ class EffCorr{
 		directory = Directory;
 	}	
 
+	void SetUpBadEventSimulator(BadEventSimulator * Sim) {
+		BadEvSim = Sim;
+	};
+	
+	void LoadEventIntoBadEvSim(Variables * vars) {
+		EffMC->LoadEventIntoBadEvSim(vars);
+	}
+	
+	bool ReinitializeHistos(bool refill){
+		bool checkifsomeismissing=false;
+		if(!(EffMC -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
+                if(!(EffData -> ReinitializeHistos(refill))) checkifsomeismissing = true;
+		return (checkifsomeismissing||refill);
+	}
+	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+		EffMC -> FillEventByEventMC(vars,var,discr_var);
+	}
+	
+	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+		EffData -> FillEventByEventData(vars,var,discr_var);
+	}
 	void Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
 	void Save(FileSaver finalhistos);
 	void Eval_Efficiencies();

@@ -1,10 +1,15 @@
 struct AllRangesEfficiency{
 
+	private:
 	bool refill=false;
 	Efficiency * EffTOF;
 	Efficiency * EffNaF;
 	Efficiency * EffAgl;
+	BadEventSimulator * BadEvSimTOF=0x0;
+	BadEventSimulator * BadEvSimNaF=0x0;
+	BadEventSimulator * BadEvSimAgl=0x0;
 
+	public:
 	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_before,std::string Cut_after,bool Refill=false){
 	
 		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB,Cut_before,Cut_after);	
@@ -28,6 +33,25 @@ struct AllRangesEfficiency{
 		EffAgl = new Efficiency(File,(Basename+"_Agl").c_str(),Directory,AglDB);
 	}
 
+	void SetUpBadEventSimulator(BadEventSimulator * SimTOF, BadEventSimulator * SimNaF, BadEventSimulator * SimAgl) {
+		BadEvSimTOF = SimTOF;
+ 		BadEvSimNaF = SimNaF;
+	        BadEvSimAgl = SimAgl;				
+	};
+	
+	void LoadEventIntoBadEvSim(Variables * vars) {
+		EffTOF->LoadEventIntoBadEvSim(vars);
+		EffNaF->LoadEventIntoBadEvSim(vars);
+		EffAgl->LoadEventIntoBadEvSim(vars);
+	}
+	
+	bool ReinitializeHistos(bool refill){
+		bool checkifsomeismissing=false;
+		if(!(EffTOF -> ReinitializeHistos(refill))) checkifsomeismissing = true;
+                if(!(EffNaF -> ReinitializeHistos(refill))) checkifsomeismissing = true;
+	        if(!(EffAgl -> ReinitializeHistos(refill))) checkifsomeismissing = true;
+		return (checkifsomeismissing||refill);
+	}
 
 	void Fill(TTree * tree, Variables * vars){
 		EffTOF -> Fill(tree,vars,GetBetaGen,refill);
@@ -35,7 +59,19 @@ struct AllRangesEfficiency{
 	        EffAgl -> Fill(tree,vars,GetBetaGen,refill);
 	}
 
-        void Save(FileSaver finalHistos){
+	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+		EffTOF -> FillEventByEventMC(vars,var,discr_var);
+                EffNaF -> FillEventByEventMC(vars,var,discr_var);
+	        EffAgl -> FillEventByEventMC(vars,var,discr_var);
+	}
+	
+	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+		EffTOF -> FillEventByEventData(vars,var,discr_var);
+                EffNaF -> FillEventByEventData(vars,var,discr_var);
+	        EffAgl -> FillEventByEventData(vars,var,discr_var);
+	}
+       
+	 void Save(FileSaver finalHistos){
                 EffTOF -> Save(finalHistos);
                 EffNaF -> Save(finalHistos);
                 EffAgl -> Save(finalHistos);

@@ -2,7 +2,7 @@
 #include "TROOT.h"
 #include "TNtuple.h"
 #include <TSpline.h>
-#include "../include/binning.h"
+#include "../DirectAnalysis/include/binning.h"
 #include "TFile.h"
 #include "TH2.h"
 #include "TF2.h"
@@ -16,29 +16,29 @@
 #include "TMath.h"
 #include "TGraphErrors.h"
 
-#include "../include/GlobalBinning.h"
+#include "../DirectAnalysis/include/GlobalBinning.h"
 
 #include "../Ntuple-making/Commonglobals.cpp"
-#include "../include/Variables.hpp"
-#include "../include/Cuts.h"
+#include "../DirectAnalysis/include/Variables.hpp"
+#include "../DirectAnalysis/include/Cuts.h"
 
-#include "../include/filesaver.h"
+#include "../DirectAnalysis/include/filesaver.h"
 
-#include "../include/FitError.h"
-#include "../include/Resolution.h"
-
-
+#include "../DirectAnalysis/include/FitError.h"
+#include "../DirectAnalysis/include/Resolution.h"
 
 
 
-bool Calculate_Resolution( Resolution * Reso, Variables * vars, bool checkfile, TTree * treeMC,  FileSaver finalHistos, float (*var) (Variables * vars),float (*discr_var) (Variables * vars),  std::vector<float> ExpValues={-1}, bool spline = false,float low_limit=0.05,float high_limit=0.85){
+
+
+bool Calculate_Resolution( Resolution * Reso, Variables * vars, bool checkfile, TTree * treeMC,  FileSaver finalHistos, float (*var) (Variables * vars),float (*discr_var) (Variables * vars),  std::vector<float> ExpValues={-1}, bool spline = false,float low_limit=0.05,float high_limit=0.85,bool fixedwindow=false){
 	if(!checkfile){
                 Reso->Fill(treeMC,vars,var,discr_var);
 		Reso->Normalize();
         }
 
         else Reso = new Resolution(finalHistos,Reso->GetName(),Reso->GetBinning());
-
+	if(fixedwindow) Reso->SetFixedFitWindow(low_limit,high_limit);
         if(Reso->CheckHistos()){
                 Reso->Eval_Resolution(ExpValues,low_limit,high_limit);
 		Reso->Save(finalHistos);
@@ -124,10 +124,11 @@ int main(int argc, char * argv[])
 	Variables * varsDT = new Variables;
         varsDT->ReadBranches(treeDT);
 
-
+	std::vector<float> meanedep;
+        for(int i=0;i<ToFResB.size();i++) meanedep.push_back(1.);
 
 	cout<<"****************************** ANALYSIS  ***************************************"<<endl;
-
+/*
 	//rigidity resolution vs rigidity 
 	Resolution * RigidityResolution_P = new Resolution("RvsR Resolution (P)",PResB,"IsPreselected&IsProtonMC",1000,-0.5,1.5);	
 	Calculate_Resolution( RigidityResolution_P, varsMC,checkfile, treeMC, finalHistos, GetInverseRigidity, GetGenMomentum,PResB.RigBinsCent(),true);
@@ -155,8 +156,6 @@ int main(int argc, char * argv[])
 	Resolution * BetaAglResolution_D = new Resolution("BetaAglvsBeta Resolution (D)",AglResB,"IsPreselected&IsDeutonMC&IsFromAgl",500,-0.02,0.075);
 	Calculate_Resolution( BetaAglResolution_D, varsMC,checkfile, treeMC, finalHistos, GetInverseBetaRICH, GetBetaGen,AglResB.BetaBinsCent(),false,0.315,0.93);
 
-	std::vector<float> meanedep;
-	for(int i=0;i<ToFResB.size();i++) meanedep.push_back(1.);
 	// E. dep. (U.ToF, L.ToF, Inner Tracker)
 	
 	Resolution * EdepUTOFResolution_P = new Resolution("EdepUTOFvsBeta Resolution (P)",ToFResB,"IsPreselected&IsProtonMC",1000,-1.5,1.5);
@@ -207,6 +206,37 @@ int main(int argc, char * argv[])
 	Calculate_Resolution( EdepLTOFDT_P, varsDT,checkfile, treeDT, finalHistos, GetInverseEdepLToF, GetBetaTOF,meanedep,true,0.35,0.95);
 
 	CalculateMeanRatio( EdepLTOFDT_P,EdepLTOFMC_P, finalHistos);
+
+*/
+	// Charge Calibration Check
+	
+	//QUtof 
+	Resolution * QUTOFMC_P = new Resolution("QUTOFvsBeta Measured MC",ToFResB,"IsPreselected&IsProtonMC&L1LooseCharge1",300,0,3); 
+	Calculate_Resolution( QUTOFMC_P, varsMC,checkfile, treeMC, finalHistos, GetUtofQ, GetBetaTOF,meanedep,false,0.8,1.08,true);
+
+	Resolution * QUTOFDT_P = new Resolution("QUTOFvsBeta Measured DT",ToFResB,"IsPreselected&IsData&L1LooseCharge1",300,0,3);
+        Calculate_Resolution( QUTOFDT_P, varsDT,checkfile, treeDT, finalHistos, GetLtofQ, GetBetaTOF,meanedep,false,0.8,1.08,true);	
+	
+	CalculateMeanRatio( QUTOFDT_P,QUTOFMC_P, finalHistos);
+
+	//QLtof
+	Resolution * QLTOFMC_P = new Resolution("QLTOFvsBeta Measured MC",ToFResB,"IsPreselected&IsProtonMC&L1LooseCharge1",300,0,3); 
+	Calculate_Resolution( QLTOFMC_P, varsMC,checkfile, treeMC, finalHistos, GetLtofQ, GetBetaTOF,meanedep,false,0.8,1.08,true);
+
+	Resolution * QLTOFDT_P = new Resolution("QLTOFvsBeta Measured DT",ToFResB,"IsPreselected&IsData&L1LooseCharge1",300,0,3);
+	Calculate_Resolution( QLTOFDT_P, varsDT,checkfile, treeDT, finalHistos, GetLtofQ, GetBetaTOF,meanedep,false,0.8,1.08,true);	
+
+	CalculateMeanRatio( QLTOFDT_P,QLTOFMC_P, finalHistos);
+
+	//QInner
+	Resolution * QInnerMC_P = new Resolution("QInnervsBeta Measured MC",ToFResB,"IsPreselected&IsProtonMC&L1LooseCharge1",300,0,3); 
+	Calculate_Resolution( QInnerMC_P, varsMC,checkfile, treeMC, finalHistos, GetInnerQ, GetBetaTOF,meanedep,false,0.8,1.08,true);
+
+	Resolution * QInnerDT_P = new Resolution("QInnervsBeta Measured DT",ToFResB,"IsPreselected&IsData&L1LooseCharge1",300,0,3);
+        Calculate_Resolution( QInnerDT_P, varsDT,checkfile, treeDT, finalHistos, GetInnerQ, GetBetaTOF,meanedep,false,0.8,1.08,true);	
+
+	CalculateMeanRatio( QInnerDT_P,QInnerMC_P, finalHistos);
+	
 
 	return 0;
 }

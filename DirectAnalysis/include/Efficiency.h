@@ -1,5 +1,8 @@
+#ifndef EFFICIENCY_H
+#define EFFICIENCY_H
 
-
+#include "BetaSmearing.h"
+#include "Cuts.h"
 class Efficiency{
 
 	private:
@@ -16,7 +19,9 @@ class Efficiency{
 	std::string basename;
 	std::string directory;
 	bool fitrequested=false;
-
+	BadEventSimulator * BadEvSim=0x0;
+	
+	bool Refill = true;
 	public:
 
 	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after){
@@ -26,6 +31,7 @@ class Efficiency{
 		cut_before=Cut_before;
 		cut_after=Cut_after;
 		directory=Directory;
+		
 		before = new TH1F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size());
 		after  = new TH1F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size());
 	};
@@ -37,25 +43,34 @@ class Efficiency{
 		cut_before=Cut_before;
 		cut_after=Cut_after;
 		directory=Directory;
+		
 		before = new TH2F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size(),LatZones.size()-1,0,LatZones.size()-1);
 		after  = new TH2F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size(),LatZones.size()-1,0,LatZones.size()-1);
 	};
 
-
-
-	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins ){
-	file=File;
-                bins=Bins;
-                basename=Basename;
+	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins){
+		file=File;
+		bins=Bins;
+		basename=Basename;
 		directory=Directory;
-		before =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_before").c_str());
-		after  =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_after").c_str());
-		Eff    =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
+	
+		ReadFile();
 	}
 
-	void Fill( TTree * treeMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false,bool weight=true);
-	void FillEventByEvent(float discr_var, bool CUT_BEFORE, bool CUT_AFTER, float weight);
-	void FillEventByEventLatitude(float discr_var, bool CUT_BEFORE, bool CUT_AFTER,int latzone);	
+	void ReadFile(){
+		before =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_before").c_str());
+                after  =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_after").c_str());
+                Eff    =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
+        }
+
+	bool ReinitializeHistos(bool refill);
+	void Fill( TTree * treeMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
+	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
+	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
+
+	void SetUpBadEventSimulator(BadEventSimulator * Sim) {BadEvSim = Sim; return; };
+	BadEventSimulator * GetBadEventSimulator() {return BadEvSim;};
+	void LoadEventIntoBadEvSim(Variables * vars) {if(BadEvSim) BadEvSim->LoadEvent(vars);}	
 	
 	void Save(FileSaver finalhistos);
 	void SaveResults(FileSaver finalhistos);
@@ -96,58 +111,70 @@ void Efficiency::CloneEfficiency(Efficiency * Second){
 	return;
 }
 
-void Efficiency::Fill(TTree * tree, Variables * vars, float (*discr_var) (Variables * vars),bool refill,bool weight){
-
-	cout<<file.Get((directory+"/"+basename+"/"+basename+"_before").c_str())<<" "<<file.Get((directory+"/"+basename+"/"+basename+"_after").c_str())<<endl;
+bool Efficiency::ReinitializeHistos(bool refill){
 	if(( (TH1F*)  file.Get((directory+"/"+basename+"/"+basename+"_before").c_str()) &&
-				(TH1F*)  file.Get((directory+"/"+basename+"/"+basename+"_after").c_str()) ) && !refill) {
-
-		before =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_before").c_str());
-		after  =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_after").c_str());
-
-	}	 
-	else {
-
-		cout<<basename.c_str()<<" Filling ..."<< endl;
-		vars->ReadBranches(tree);
-		for(int i=0;i<tree->GetEntries();i++){
-			if(i%(int)FRAC!=0) continue;
-			UpdateProgressBar(i, tree->GetEntries());
-			tree->GetEvent(i);
-			vars->Update();
-			if(weight) vars->mcweight=1;
-			if(after->GetNbinsY()==1) FillEventByEvent(discr_var(vars),ApplyCuts(cut_before,vars),ApplyCuts(cut_after,vars),vars->mcweight);
-			else FillEventByEventLatitude(discr_var(vars),ApplyCuts(cut_before,vars),ApplyCuts(cut_after,vars),GetLatitude(vars));
-		}
-
+                                (TH1F*)  file.Get((directory+"/"+basename+"/"+basename+"_after").c_str()) ) && !refill) {
+                before =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_before").c_str());
+                after  =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_after").c_str());
+		Refill=false;
+		return true;
 	}
+	else return false;
+}
+
+void Efficiency::Fill(TTree * tree, Variables * vars, float (*discr_var) (Variables * vars),bool refill){
+	if(ReinitializeHistos(refill)) return;
+	cout<<basename.c_str()<<" Filling ..."<< endl;
+	vars->ReadBranches(tree);
+	for(int i=0;i<tree->GetEntries();i++){
+		if(i%(int)FRAC!=0) continue;
+		UpdateProgressBar(i, tree->GetEntries());
+		tree->GetEvent(i);
+		vars->Update();
+		if(IsMC(vars)) FillEventByEventMC(vars,discr_var,discr_var);
+		else	       FillEventByEventData(vars,discr_var,discr_var);	
+	}
+
 	return;
 }
 
 
 
-void Efficiency::FillEventByEvent(float discr_var, bool CUT_BEFORE, bool CUT_AFTER, float weight){
-
+void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+	if(!Refill) return;
 	int kbin;
-        kbin =  bins.GetBin(discr_var);
-		if(kbin>0){
-			if(CUT_BEFORE) before->Fill(kbin,weight);
-			if(CUT_AFTER ) after->Fill(kbin,weight);
-		}
-        return;
+	float beta=discr_var(vars);;
+
+	if(BadEvSim) beta=BadEvSim->SimulateBadEvents(beta);
+
+	if(bins.IsUsingBetaEdges()) kbin = bins.GetBin(beta);
+	else kbin =bins.GetBin(discr_var(vars));
+
+	if(kbin>0){
+			if(ApplyCuts(cut_before,vars)) before->Fill(kbin,vars->mcweight);
+			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,vars->mcweight);
+	}
+	return;
 }
 
-void Efficiency::FillEventByEventLatitude(float discr_var, bool CUT_BEFORE, bool CUT_AFTER,int latzone){
 
-	int kbin;
-        kbin =  bins.GetBin(discr_var);
-		if(kbin>0){
-			if(CUT_BEFORE) before->Fill(kbin,latzone);
-			if(CUT_AFTER ) after->Fill(kbin,latzone);
+void Efficiency::FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+	if(!Refill) return;
+	int kbin =bins.GetBin(discr_var(vars));
+	
+	if(kbin>0){
+		if(after->GetNbinsY()==1){
+			if(ApplyCuts(cut_before,vars)) before->Fill(kbin);
+			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin);
 		}
-        return;
-}
+		else{
+			if(ApplyCuts(cut_before,vars)) before->Fill(kbin,GetLatitude(vars));
+			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,GetLatitude(vars));
+		}
 
+	}
+	return;
+}
 
 void Efficiency::Save(FileSaver finalhistos){
 	finalhistos.Add(before);
@@ -192,5 +219,5 @@ void Efficiency::SaveResults(FileSaver finalhistos){
 	}
 }
 
-
+#endif
 

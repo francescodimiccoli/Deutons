@@ -14,7 +14,9 @@ class Resolution{
 		TH1F * Resolutions_Histo;
 		TObject * ModelSigmas;
 		TObject * ModelMeans;
-	
+		double FitRangeEdges[2];
+		bool fixedwindow = false;
+
 	public:
 		//standard constructor
 		Resolution(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax,std::string Var="", std::string Discr_var=""){
@@ -68,7 +70,7 @@ class Resolution{
 		void Save(FileSaver finalhisto,bool recreate=false);
 		void Normalize();
 		void Eval_Resolution(std::vector<float> ExpectationValues={-1},float low_limit=0.05,float high_limit=0.85);
-
+		void SetFixedFitWindow(float min, float max){FitRangeEdges[0]=min; FitRangeEdges[1]=max; fixedwindow=true; return;}
 
 	bool CheckHistos();
 	std::string GetName() {return basename;}
@@ -136,8 +138,9 @@ void Resolution::FillEventByEvent(float var, float discr_var, bool CUT){
 	
 	int kbin;
 	kbin = 	bins.GetBin(discr_var);
-	if(CUT&&kbin>0) 
-		Histos[kbin]->Fill(var);		
+	if(CUT&&kbin>0){ 
+		Histos[kbin]->Fill(var);	
+	}
 	return;	
 
 }
@@ -159,7 +162,7 @@ void Resolution::Normalize(){
 
 	for(int i=0;i<Histos.size();i++){
 			float integral=Histos[i]->Integral();
-			if(integral>100){
+			if(integral>30){
 			Histos[i]->Sumw2();
 			Histos[i]->Scale(1/integral);
 			}
@@ -178,9 +181,8 @@ void Resolution::Normalize(){
 void Resolution::Eval_Resolution(std::vector<float> ExpectationValues,float low_limit,float high_limit){
 
 	for(int i=0;i<Histos.size();i++){
-		double FitRangeEdges[2];
 		double quantiles[2] = {low_limit,high_limit};
-		Histos[i]->GetQuantiles(2,FitRangeEdges,quantiles);
+		if(!fixedwindow) Histos[i]->GetQuantiles(2,FitRangeEdges,quantiles);
 
 		TF1 * fitfunc = new TF1("fitfunc","gaus",-1,1);
 		fitfunc->SetParameter(0,Histos[i]->GetBinContent(Histos[i]->GetMaximumBin()));
@@ -188,12 +190,13 @@ void Resolution::Eval_Resolution(std::vector<float> ExpectationValues,float low_
 		fitfunc->SetParameter(2,Histos[i]->GetRMS());
 		
 		//scanning for best fit window
-		float step=0.025;
                 float window=0.05;
+		float step=window/2;
 		float chi[5]={999999};
-
+		cout<<"RANGE::: "<<quantiles[0]<<": "<<FitRangeEdges[0]<<", "<<quantiles[1]<<": "<<FitRangeEdges[1]<<endl;
 		if(Histos[i]->Integral()>0){ 
 			for(int j=0;j<5;j++){
+				cout<<FitRangeEdges[0]-(window-j*step)*FitRangeEdges[0]<<" "<<FitRangeEdges[1]+(window-j*step)*FitRangeEdges[1]<<endl;
 				Histos[i]->Fit("fitfunc","","",FitRangeEdges[0]-(window-j*step)*FitRangeEdges[0],FitRangeEdges[1]+(window-j*step)*FitRangeEdges[1]);
 				chi[j]=fitfunc->GetChisquare();
 				}
@@ -202,7 +205,7 @@ void Resolution::Eval_Resolution(std::vector<float> ExpectationValues,float low_
 		float temp=chi[0];
 		for(int j=0;j<5;j++){
 			if(chi[j]<temp) {temp=chi[j]; j_minchisquare=(float)j;}
-			cout<<j_minchisquare<<endl;
+			cout<<j_minchisquare<<" "<<FitRangeEdges[0]-(window-j*step)*FitRangeEdges[0]<<" "<<FitRangeEdges[1]+(window-j*step)*FitRangeEdges[1]<<endl;
 		}
 		//final fit
 		Histos[i]->Fit("fitfunc","","",FitRangeEdges[0]-(window-j_minchisquare*step)*FitRangeEdges[0],FitRangeEdges[1]+(window-j_minchisquare*step)*FitRangeEdges[1]);

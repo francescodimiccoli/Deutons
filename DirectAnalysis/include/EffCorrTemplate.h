@@ -1,28 +1,5 @@
 #include "TemplateFITbetasmear.h"
-
-float SmearBetaRICH(float Beta){
-        float angle;
-        if(Beta<0.87) angle= acos(1/(1.25*Beta))*10e4;
-        else          angle= acos(1/(1.15*Beta))*10e4;
-        if(Beta<0.87) angle = angle + (-191.5) + Rand->Gaus(0,529.8);
-        else          angle = angle + (-42.5) + Rand->Gaus(0,65.16);
-	if(Beta<0.87) return 1/(1.25*cos(angle/10e4));
-        else          return 1/(1.15*cos(angle/10e4));
-}
-
-
-
-float SmearBeta(float Beta,float R){
-
-        float time = 1.2/(Beta*3e-4);
-        float tailcontrolfactor=1;//110./90.;
-	if(R<2.7) tailcontrolfactor=1;//migration tail fixing
-
-        time = time + (-21.2) + Rand->Gaus(0,tailcontrolfactor*98.8);
-        return 1.2/(time*3e-4);
-
-}
-
+#include "BetaSmearing.h"
 
 
 class EffCorrTemplate{

@@ -1,6 +1,8 @@
 #ifndef TEMPLATEFITBETASMEAR_H
 #define TEMPLATEFITBETASMEAR_H
 
+#include "BadEventSimulator.h"
+
 using namespace std;
 
 // not used
@@ -21,35 +23,6 @@ TSpline3 * ExtractCutoffWeight(TH1F * ExposureTime){
         return CutoffWeight;
 
 }
-
-class BadEventSimulator{
-	private:
-	std::string simulatorcut;
-	int BadEventsFrequency;
-	float badrangemin;
-	float badrangemax;
-	int EvNum=0;
-	TF1 * BadEvModel;
-
-	public:
-	BadEventSimulator(std::string cut, int Freq, float min, float max) {
-			simulatorcut = cut; 
-			BadEventsFrequency=Freq; 
-			badrangemin=min; 
-			badrangemax=max;
-			BadEvModel=new TF1("Linear Model","[0]*x+[1]",badrangemin,badrangemax);
-			BadEvModel->SetParameter(0,1/(badrangemax-badrangemin));
-			BadEvModel->SetParameter(1,-badrangemin/(badrangemax-badrangemin));
-	};
-	
-	void   LoadEvent(Variables * vars) {if(ApplyCuts(simulatorcut,vars)) EvNum++; return;};
-	float SimulateBadEvents(float Beta) {
-		if(EvNum%BadEventsFrequency==0) { float betabad = BadEvModel->GetRandom(); return betabad;}
-	        return Beta;
-
-	}
-};
-
 
 
 struct TFit {
@@ -142,6 +115,7 @@ class TemplateFIT {
 	std::string basename;
 
 	TH1F * Exposure_Time;
+
 
 	Systpar systpar;
 	float fitrangemin;
@@ -278,13 +252,14 @@ class TemplateFIT {
 
 	}
 
+	void ReinitializeHistos(){}; //dummy
 	void Eval_TransferFunction();
 	void Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) );
 	float SmearBeta(float Beta, float stepsigma, float stepshift,float R);
 	float SmearBetaRICH(float Beta, float stepsigma, float stepshift);
 
-	void FillEventByEventData(float var, float discr_var, bool CUT, bool CUTPRIM, float weight);
-	void FillEventByEventMC(float var, float discr_var, bool CUTP, bool CUTD, bool CUTHE, float weight);
+	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
+	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
 
 	void ExtractCounts(FileSaver finalhisto);
 	void EvalFinalParameters();
@@ -300,7 +275,8 @@ class TemplateFIT {
 
 	void DisableFit(){fitDisabled=true;}
 	void SetHeliumContamination(TH1F * HelimCont) {HeContError=HelimCont; return;};
-
+	BadEventSimulator * GetBadEventSimulator() {return BadEvSim;}
+	void LoadEventIntoBadEvSim(Variables * vars) {if(BadEvSim) BadEvSim->LoadEvent(vars);}
 
 	std::string GetName(){return basename;}
 	TH1F * GetStatError(){ return StatError;}
@@ -334,7 +310,7 @@ void TemplateFIT::Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*
 		UpdateProgressBar(i, treeDT->GetEntries()/FRAC);
 		treeDT->GetEvent(i);
 		vars->Update();
-		FillEventByEventData(var(vars), discr_var(vars),ApplyCuts(cut,vars),ApplyCuts(cutprimary,vars),vars->mcweight);
+		FillEventByEventData(vars,var,discr_var);
 	}
 	
 	cout<<basename.c_str()<<" Filling ... (MC Protons)"<< endl;
@@ -347,30 +323,25 @@ void TemplateFIT::Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*
 		vars->Update();
 
 		if(BadEvSim) BadEvSim->LoadEvent(vars);
-		
-		std::string cutP=cut+"&IsProtonMC";
-		std::string cutD=cut+"&IsDeutonMC";
-		std::string cutHe=cut+"&IsHeliumMC";
-		FillEventByEventMC(vars->R, discr_var(vars),ApplyCuts(cutP,vars),ApplyCuts(cutD,vars),ApplyCuts(cutHe,vars),vars->mcweight);
+		FillEventByEventMC(vars,var,discr_var);
 	}
 
 	return;
 }
 
 
-void TemplateFIT::FillEventByEventData(float var, float discr_var, bool CUT, bool CUTPRIM, float weight){
+void TemplateFIT::FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)){
 
 	int kbin;
-	kbin = 	bins.GetBin(discr_var);
-	if(CUT&&kbin>0){
+	kbin = 	bins.GetBin(discr_var(vars));
+	if(ApplyCuts(cut,vars)&&kbin>0){
 		for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
-				fits[kbin][i][j]->Data->Fill(var,weight);		
-				if(CUTPRIM) fits[kbin][i][j]->DataPrim->Fill(var,weight);
+				fits[kbin][i][j]->Data->Fill(var(vars),vars->mcweight);		
+				if(ApplyCuts(cutprimary,vars)) fits[kbin][i][j]->DataPrim->Fill(var(vars),vars->mcweight);
 				}
 	}
 	return;	
-
 }
 
 
@@ -390,7 +361,7 @@ float TemplateFIT::SmearBeta(float Beta, float stepsigma, float stepshift,float 
 	float time = 1.2/(Beta*3e-4);
 	float shiftstart=-systpar.shift;
 
-	float tailcontrolfactor=1;//110./90.;
+	float tailcontrolfactor=110./90.;
 	if(R<2.7) tailcontrolfactor=1;//migration tail fixing
 
 	float smeartime = (shiftstart+(2*systpar.shift/(float)systpar.steps)*stepshift) + Rand->Gaus(0,(float) tailcontrolfactor*((2*systpar.sigma/systpar.steps)*stepsigma));
@@ -399,30 +370,33 @@ float TemplateFIT::SmearBeta(float Beta, float stepsigma, float stepshift,float 
 
 }
 
-void TemplateFIT::FillEventByEventMC(float var, float discr_var, bool CUTP, bool CUTD, bool CUTHE, float weight){
+void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)){
 
-	if((CUTP||CUTD||CUTHE)){
+	std::string cutP=cut+"&IsProtonMC";
+	std::string cutD=cut+"&IsDeutonMC";
+	std::string cutHe=cut+"&IsHeliumMC";
+
+	if((ApplyCuts(cutP,vars)||ApplyCuts(cutD,vars)||ApplyCuts(cutHe,vars))){
 		for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
 				float betasmear;
 
-				if(!isrich) betasmear = SmearBeta(discr_var,(float)i,(float)j,var);
-				else 	   betasmear = SmearBetaRICH(discr_var,(float)i,(float)j);
+				if(!isrich) betasmear = SmearBeta(discr_var(vars),(float)i,(float)j,var(vars));
+				else 	   betasmear = SmearBetaRICH(discr_var(vars),(float)i,(float)j);
 				if(BadEvSim)
 						 betasmear=BadEvSim->SimulateBadEvents(betasmear);
 				int kbin; 
 
 				if(bins.IsUsingBetaEdges()) kbin = bins.GetBin(betasmear);
-				else kbin =bins.GetBin(discr_var);
+				else kbin =bins.GetBin(discr_var(vars));
 
-				float mass = var/betasmear * pow((1-pow(betasmear,2)),0.5);
-				if(CUTP&&kbin>0)  fits[kbin][i][j]->Templ_P->Fill(mass,weight);		
-				if(CUTD&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill(mass,weight);
-				if(CUTHE&&kbin>0) fits[kbin][i][j]->Templ_He->Fill(mass,weight);
+				float mass = var(vars)/betasmear * pow((1-pow(betasmear,2)),0.5);
+				if(ApplyCuts(cutP,vars)&&kbin>0)  fits[kbin][i][j]->Templ_P->Fill(mass,vars->mcweight);		
+				if(ApplyCuts(cutD,vars)&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill(mass,vars->mcweight);
+				if(ApplyCuts(cutHe,vars)&&kbin>0) fits[kbin][i][j]->Templ_He->Fill(mass,vars->mcweight);
 			}
 	}
 	return;	
-
 }
 
 

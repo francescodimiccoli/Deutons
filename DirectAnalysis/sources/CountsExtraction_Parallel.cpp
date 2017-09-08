@@ -24,6 +24,8 @@
 
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
+#include "../include/ParallelFiller.h"
+
 
 #include "../include/filesaver.h"
 #include "../include/TemplateFITbetasmear.h"
@@ -88,7 +90,7 @@ int main(int argc, char * argv[])
 
         cout<<endl;
 
-
+	
 	cout<<"****************************** VARIABLES ***************************************"<<endl;
 
         Variables * vars = new Variables();
@@ -107,54 +109,61 @@ int main(int argc, char * argv[])
 
 	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.8,1); 
 	BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
-	
 
 	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
+	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,400);
+	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,110);	
+	
+	NaFfits->SetUpBadEventSimulator(NaFBadEvSimulator);
+	Aglfits->SetUpBadEventSimulator(AglBadEvSimulator);
+
 	if((!checkfile)||Refill){
-		TOFfits->Fill(treeMC,treeDT,vars,GetRecMassTOF,GetBetaTOF);
+	
+		ParallelFiller<TemplateFIT *> Filler;
+
+		Filler.AddObject2beFilled(TOFfits,GetRecMassTOF,GetBetaTOF);
+		Filler.AddObject2beFilled(NaFfits,GetRecMassRICH,GetBetaRICH);
+		Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);
+
+		//main loops
+		Filler.LoopOnMC(treeMC,vars);
+		Filler.LoopOnData(treeDT,vars);
+		//
+
 		TOFfits->DisableFit();
 		TOFfits->Save(finalHistos);
-	}
-	else { TOFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
 	
-//		TOFfits->DisableFit();
+		NaFfits->DisableFit();
+                NaFfits->Save(finalHistos);
+	
+		Aglfits->DisableFit();
+                Aglfits->Save(finalHistos);
+	}
+
+	else { 
+
+		TOFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
+		NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,400,200);
+		Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,110,80);
+
+		TOFfits->DisableFit();
 		TOFfits->SetHeliumContamination(HeContTOF);				
 		TOFfits->ExtractCounts(finalHistos);	
 		TOFfits->SaveFitResults(finalResults);
-	}
 
-	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,400);
-	if((!checkfile)||Refill){
-		NaFfits->SetUpBadEventSimulator(NaFBadEvSimulator);
-		NaFfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
-		NaFfits->DisableFit();
-		NaFfits->Save(finalHistos);
-	}
-	else {NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,400,200);
-	
-		NaFfits->SetFitRange(0.6,3);
-	//	NaFfits->DisableFit();
-		NaFfits->SetHeliumContamination(HeContNaF);			
-		NaFfits->ExtractCounts(finalHistos);
-		NaFfits->SaveFitResults(finalResults);
-	}
-	
-	
-	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,110);
-	if((!checkfile)||Refill){
-		Aglfits->SetUpBadEventSimulator(AglBadEvSimulator);
-		Aglfits->Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH);
-		Aglfits->DisableFit();
-		Aglfits->Save(finalHistos);
-	}
-	else {Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,110,80);
+                NaFfits->SetFitRange(0.6,3);
+                NaFfits->DisableFit();
+                NaFfits->SetHeliumContamination(HeContNaF);
+                NaFfits->ExtractCounts(finalHistos);
+                NaFfits->SaveFitResults(finalResults);
 	
 		Aglfits->SetFitRange(0.6,3);
-	//	Aglfits->DisableFit();
-		Aglfits->SetHeliumContamination(HeContAgl);
-		Aglfits->ExtractCounts(finalHistos);
-		Aglfits->SaveFitResults(finalResults);
+                Aglfits->DisableFit();
+                Aglfits->SetHeliumContamination(HeContAgl);
+                Aglfits->ExtractCounts(finalHistos);
+                Aglfits->SaveFitResults(finalResults);	
 	}
+
 
 	ExtractSimpleCountNr(finalHistos,finalResults,treeDT,PRB,GetRigidity,"HEPCounts","IsPreselected&LikelihoodCut&DistanceCut&IsPrimary",Refill);
 	
