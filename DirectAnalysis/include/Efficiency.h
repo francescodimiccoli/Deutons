@@ -131,7 +131,10 @@ void Efficiency::Fill(TTree * tree, Variables * vars, float (*discr_var) (Variab
 		UpdateProgressBar(i, tree->GetEntries());
 		tree->GetEvent(i);
 		vars->Update();
-		if(IsMC(vars)) FillEventByEventMC(vars,discr_var,discr_var);
+		if(IsMC(vars)) { 
+			if(BadEvSim) BadEvSim->LoadEvent(vars);		
+			FillEventByEventMC(vars,discr_var,discr_var);
+			}
 		else	       FillEventByEventData(vars,discr_var,discr_var);	
 	}
 
@@ -144,7 +147,7 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 	if(!Refill) return;
 	int kbin;
 	float beta=discr_var(vars);;
-
+		
 	if(BadEvSim) beta=BadEvSim->SimulateBadEvents(beta);
 
 	if(bins.IsUsingBetaEdges()) kbin = bins.GetBin(beta);
@@ -161,7 +164,6 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 void Efficiency::FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 	if(!Refill) return;
 	int kbin =bins.GetBin(discr_var(vars));
-	
 	if(kbin>0){
 		if(after->GetNbinsY()==1){
 			if(ApplyCuts(cut_before,vars)) before->Fill(kbin);

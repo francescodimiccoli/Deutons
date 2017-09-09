@@ -50,6 +50,7 @@ class EffCorrTemplate{
 
 	BadEventSimulator * BadEvSim=0x0;
 
+	bool Refill = false;
 	public:
 
 	EffCorrTemplate(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,bool IsRICH=false){
@@ -124,11 +125,12 @@ class EffCorrTemplate{
 		bins = Bins;
 		file = File;
 	}	
-	void ReinitializeHistos(bool refill);
+	bool ReinitializeHistos(bool refill);
 	void Fill(TTree * treeMC,TTree * treeDT, Variables * vars,float (*var) (Variables * vars),float (*discr_var) (Variables * vars),bool refill=false);
-	void FillEventByEventData(float var, float discr_var, bool CUTBEFORE, bool CUTAFTER, float latzone);
-	void FillEventByEventMC(float var, float discr_var, bool CUTBEFORE, bool CUTAFTER, bool IsP, bool IsD,float weight);
+	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
+	void FillEventByEventMC  (Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
 	void SetUpBadEventSimulator(BadEventSimulator * Sim) {BadEvSim = Sim; return; };
+	void LoadEventIntoBadEvSim(Variables * vars) {if(BadEvSim) BadEvSim->LoadEvent(vars);}
 	void Save(FileSaver finalhistos);
 	void Eval_Efficiencies();
 	void SaveResults(FileSaver finalhistos);
@@ -154,25 +156,26 @@ class EffCorrTemplate{
 	
 };
 
-void EffCorrTemplate::ReinitializeHistos(bool refill){
+bool EffCorrTemplate::ReinitializeHistos(bool refill){
 	TFile * input = file.GetFile();
+	bool checkifsomeismissing=false;
 	for(int bin=0;bin<bins.size();bin++){
 			
 			std::string name = (basename+"_MC_Before_"+to_string(bin));
 			if(input) BeforeMC_P[bin] = (TH1F*)input->Get(((directory+"/"+basename+"_MC")+"/"+name).c_str());
-			if((!input)||(!BeforeMC_P[bin])||refill) BeforeMC_P[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);	
+			if((!input)||(!BeforeMC_P[bin])||refill) { BeforeMC_P[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3); checkifsomeismissing=true;}	
 
 			name = (basename+"_MC_After_"+to_string(bin));
 			if(input) AfterMC_P[bin] = (TH1F*)input->Get(((directory+"/"+basename+"_MC")+"/"+name).c_str()); 
-                        if((!input)||(!AfterMC_P[bin])||refill) AfterMC_P[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
+                        if((!input)||(!AfterMC_P[bin])||refill) { AfterMC_P[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3); checkifsomeismissing=true;}
 
 			name = (basename+"_MCD_Before_"+to_string(bin));
 			if(input) BeforeMC_D[bin] = (TH1F*)input->Get(((directory+"/"+basename+"_MC")+"/"+name).c_str());
-                        if((!input)||(!BeforeMC_D[bin])||refill) BeforeMC_D[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
+                        if((!input)||(!BeforeMC_D[bin])||refill){ BeforeMC_D[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3); checkifsomeismissing=true;}
 
 			name = (basename+"_MCD_After_"+to_string(bin));
 			if(input) AfterMC_D[bin] = (TH1F*)input->Get(((directory+"/"+basename+"_MC")+"/"+name).c_str());
-                        if((!input)||(!AfterMC_D[bin])||refill) AfterMC_D[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
+                        if((!input)||(!AfterMC_D[bin])||refill) { AfterMC_D[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3); checkifsomeismissing=true;}
 
 		}
 		for(int lat=0;lat<10;lat++) {
@@ -180,22 +183,21 @@ void EffCorrTemplate::ReinitializeHistos(bool refill){
 			
 				string name = (basename+"_DT_"+to_string(lat)+"_Before_"+to_string(bin));
 				if(input) BeforeData[lat][bin]=(TH1F*)input->Get((directory+"/"+basename+"_lat/lat"+to_string(lat)+"/"+name).c_str());
-				if((!input)||(!BeforeData[lat][bin])||refill) BeforeData[lat][bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
+				if((!input)||(!BeforeData[lat][bin])||refill) { BeforeData[lat][bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);checkifsomeismissing=true;}
 				
 				name = (basename+"_DT_"+to_string(lat)+"_After_"+to_string(bin));	
 				if(input) AfterData[lat][bin] = (TH1F*)input->Get((directory+"/"+basename+"_lat/lat"+to_string(lat)+"/"+name).c_str());
-				if((!input)||(!AfterData[lat][bin])||refill) AfterData[lat][bin] = new TH1F(name.c_str(),name.c_str(),30,0,3);
+				if((!input)||(!AfterData[lat][bin])||refill) { AfterData[lat][bin] = new TH1F(name.c_str(),name.c_str(),30,0,3); checkifsomeismissing=true;}
 			}
 		}
-
-
-
-	return;	
+	if(checkifsomeismissing||refill) Refill=true;
+	return (checkifsomeismissing||refill);	
 }
 
+
+
 void EffCorrTemplate::Fill(TTree * treeMC,TTree * treeDT, Variables * vars,float (*var) (Variables * vars),float (*discr_var) (Variables * vars),bool refill){
-	ReinitializeHistos(refill);
-	if(refill){
+	if(ReinitializeHistos(refill)){
 		cout<<basename.c_str()<<" Filling ... (Data)"<< endl;
 		vars->ReadBranches(treeDT);
 
@@ -203,7 +205,7 @@ void EffCorrTemplate::Fill(TTree * treeMC,TTree * treeDT, Variables * vars,float
 			UpdateProgressBar(i, treeDT->GetEntries()/FRAC);
 			treeDT->GetEvent(i);
 			vars->Update();
-			FillEventByEventData(var(vars),discr_var(vars),ApplyCuts((cut_before+"&"+cut_data).c_str(),vars),ApplyCuts((cut_after+"&"+cut_data).c_str(),vars),GetLatitude(vars));
+			FillEventByEventData(vars,var,discr_var);
 		}
 		
 		cout<<basename.c_str()<<" Filling ... (MC)"<< endl;
@@ -214,7 +216,8 @@ void EffCorrTemplate::Fill(TTree * treeMC,TTree * treeDT, Variables * vars,float
 			UpdateProgressBar(i, treeMC->GetEntries());
 			treeMC->GetEvent(i);
 			vars->Update();
-			FillEventByEventMC(vars->R,discr_var(vars),ApplyCuts((cut_before+"&"+cut_MC).c_str(),vars),ApplyCuts((cut_after+"&"+cut_MC).c_str(),vars),ApplyCuts("IsProtonMC",vars),ApplyCuts("IsDeutonMC",vars),vars->mcweight);
+			if(BadEvSim) BadEvSim->LoadEvent(vars);
+			FillEventByEventMC(vars,var,discr_var);
 		}
 	}
 
@@ -225,34 +228,31 @@ void EffCorrTemplate::Fill(TTree * treeMC,TTree * treeDT, Variables * vars,float
 		}
 			
 	return;
-
 }
 
-void EffCorrTemplate::FillEventByEventData(float var, float discr_var, bool CUTBEFORE, bool CUTAFTER, float latzone){
-
+void EffCorrTemplate::FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+	if(!Refill) return;
 	int kbin;
-	kbin = 	bins.GetBin(discr_var);
-	if(CUTBEFORE&&kbin>0)	{BeforeData[latzone][kbin]->Fill(var); }
-	if(CUTAFTER&&kbin>0)	{AfterData[latzone][kbin]->Fill(var);}
+	kbin = 	bins.GetBin(discr_var(vars));
+	if(ApplyCuts((cut_before+"&"+cut_data).c_str(),vars)&&kbin>0)	{BeforeData[GetLatitude(vars)][kbin]->Fill(var(vars)); }
+	if(ApplyCuts((cut_after +"&"+cut_data).c_str(),vars)&&kbin>0)		{AfterData[GetLatitude(vars)][kbin]->Fill(var(vars));}
 	return;	
 
 }
 
-void EffCorrTemplate::FillEventByEventMC(float var, float discr_var, bool CUTBEFORE, bool CUTAFTER, bool IsP, bool IsD,float weight){
-
-	float betasmear;
-	if(!isrich) betasmear = SmearBeta(discr_var,var);
-	else 	   betasmear = SmearBetaRICH(discr_var);
+void EffCorrTemplate::FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+	if(!Refill) return;
+	float betasmear=discr_var(vars);
 
 	if(BadEvSim)
 		betasmear=BadEvSim->SimulateBadEvents(betasmear);
 
 	int kbin =  bins.GetBin(betasmear);
-	float mass = var/betasmear * pow((1-pow(betasmear,2)),0.5);
-	if(CUTBEFORE&&IsP&&kbin>0) BeforeMC_P[kbin] ->Fill(mass,weight);		
-	if(CUTAFTER&&IsP&&kbin>0)  AfterMC_P[kbin]  ->Fill(mass,weight);
-	if(CUTBEFORE&&IsD&&kbin>0) BeforeMC_D[kbin] ->Fill(mass,weight);		
-	if(CUTAFTER&&IsD&&kbin>0)  AfterMC_D[kbin]  ->Fill(mass,weight);
+	float mass = var(vars)/betasmear * pow((1-pow(betasmear,2)),0.5);
+	if(ApplyCuts((cut_before+"&"+cut_MC +"&IsProtonMC").c_str(),vars)&&kbin>0)  BeforeMC_P[kbin] ->Fill(mass,vars->mcweight);		
+	if(ApplyCuts((cut_after +"&"+cut_MC +"&IsProtonMC").c_str(),vars)&&kbin>0)  AfterMC_P[kbin]  ->Fill(mass,vars->mcweight);
+	if(ApplyCuts((cut_before+"&"+cut_MC +"&IsDeutonMC").c_str(),vars)&&kbin>0)  BeforeMC_D[kbin] ->Fill(mass,vars->mcweight);		
+	if(ApplyCuts((cut_after +"&"+cut_MC +"&IsProtonMC").c_str(),vars)&&kbin>0)  AfterMC_D[kbin]  ->Fill(mass,vars->mcweight);
 
 	return;	
 }

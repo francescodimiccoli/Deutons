@@ -30,7 +30,7 @@
 
 #include "../include/Efficiency.h"
 #include "../include/EffCorr.h"
-//#include "../include/EffCorrTemplate.h"
+#include "../include/EffCorrTemplate.h"
 
 
 int main(int argc, char * argv[])
@@ -135,65 +135,65 @@ int main(int argc, char * argv[])
 	Filler1.LoopOnMC(treeMC,vars);
 	Filler1.LoopOnData(treeMC,vars);
 
+	ParallelFiller<EffCorrTemplate*> Filler2;
+	Filler2.AddObject2beFilled(DistCorr_TOF,GetRecMassTOF,GetSmearedBetaTOF);
+	Filler2.AddObject2beFilled(DistCorr_NaF,GetRecMassRICH,GetSmearedBetaRICH);
+	Filler2.AddObject2beFilled(DistCorr_Agl,GetRecMassRICH,GetSmearedBetaRICH);
+	Filler2.AddObject2beFilled(LikCorr_TOF,GetRecMassTOF,GetSmearedBetaTOF);
+	Filler2.AddObject2beFilled(LikCorr_NaF,GetRecMassRICH,GetSmearedBetaRICH);
+	Filler2.AddObject2beFilled(LikCorr_Agl,GetRecMassRICH,GetSmearedBetaRICH);
+	Filler2.ReinitializeAll(Refill);
+	//main loops 2
+	Filler2.LoopOnMC(treeMC,vars);
+	Filler2.LoopOnData(treeMC,vars);
 
-/*	HEPPresEffCorr -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);
-	HEPQualEffCorr -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);	
-	RICHEffCorr_NaF -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);	
-	RICHEffCorr_Agl -> Fill(treeMC,treeDT,vars,GetRigidity,Refill);	
-	DistCorr_TOF -> Fill(treeMC,treeDT,vars,GetRecMassTOF,GetBetaTOF,Refill);	
-	DistCorr_NaF -> Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH,Refill);	
-	DistCorr_Agl -> Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH,Refill);	
-	LikCorr_TOF -> Fill(treeMC,treeDT,vars,GetRecMassTOF,GetBetaTOF,Refill);	
-	LikCorr_NaF -> Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH,Refill);	
-	LikCorr_Agl -> Fill(treeMC,treeDT,vars,GetRecMassRICH,GetBetaRICH,Refill);	
-*/
 	HEPPresEffCorr -> Save(finalHistos);
 	HEPQualEffCorr -> Save(finalHistos);
 	RICHEffCorr_NaF -> Save(finalHistos);
 	RICHEffCorr_Agl -> Save(finalHistos);
-/*	DistCorr_TOF -> Save(finalHistos); 
+	DistCorr_TOF -> Save(finalHistos); 
 	DistCorr_NaF -> Save(finalHistos); 
 	DistCorr_Agl -> Save(finalHistos); 
 	LikCorr_TOF -> Save(finalHistos); 
 	LikCorr_NaF -> Save(finalHistos); 
 	LikCorr_Agl -> Save(finalHistos); 
-*/
+
 
 	HEPPresEffCorr -> Eval_Efficiencies();
 	HEPQualEffCorr -> Eval_Efficiencies();
 	RICHEffCorr_NaF -> Eval_Efficiencies();
 	RICHEffCorr_Agl -> Eval_Efficiencies();
-/*	DistCorr_TOF -> Eval_Efficiencies();
+	DistCorr_TOF -> Eval_Efficiencies();
 	DistCorr_NaF -> Eval_Efficiencies();
 	DistCorr_Agl -> Eval_Efficiencies();
 	LikCorr_TOF -> Eval_Efficiencies();
 	LikCorr_NaF -> Eval_Efficiencies();
 	LikCorr_Agl -> Eval_Efficiencies();
-*/
+
 
 	HEPPresEffCorr -> Eval_Corrections();
 	HEPQualEffCorr -> Eval_Corrections();
 	RICHEffCorr_NaF -> Eval_Corrections();
 	RICHEffCorr_Agl -> Eval_Corrections();
-/*	DistCorr_TOF -> Eval_Corrections();
+	DistCorr_TOF -> Eval_Corrections();
 	DistCorr_NaF -> Eval_Corrections();
 	DistCorr_Agl -> Eval_Corrections();
 	LikCorr_TOF -> Eval_Corrections();
 	LikCorr_NaF -> Eval_Corrections();
 	LikCorr_Agl -> Eval_Corrections();
-*/
+
 	
 	HEPPresEffCorr -> SaveResults(finalResults);
 	HEPQualEffCorr -> SaveResults(finalResults);
 	RICHEffCorr_NaF -> SaveResults(finalResults);
  	RICHEffCorr_Agl -> SaveResults(finalResults);
-/*	DistCorr_TOF -> SaveResults(finalResults);
+	DistCorr_TOF -> SaveResults(finalResults);
         DistCorr_NaF -> SaveResults(finalResults);
  	DistCorr_Agl -> SaveResults(finalResults);
 	LikCorr_TOF -> SaveResults(finalResults);
         LikCorr_NaF -> SaveResults(finalResults);
  	LikCorr_Agl -> SaveResults(finalResults);
-*/
+
 	return 0;
 }
 
