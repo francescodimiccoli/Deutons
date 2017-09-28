@@ -127,32 +127,32 @@ int main(int argc, char * argv[])
     bool richflag = false;
 
 	for(int ii=0;ii<entries;ii++)
-	{ 
+    { 
         vars->ResetVariables();
 
-		AMSEventR * ev = ch->GetEvent();
-		ev->SetDefaultMCTuningParameters();
-		
+        AMSEventR * ev = ch->GetEvent();
+        ev->SetDefaultMCTuningParameters();
 
-		if( ii % 10000 == 0){
-		    std::cout << "Processed " << ii << " out of " << entries << "\n";
+
+        if( ii % 10000 == 0){
+            std::cout << "Processed " << ii << " out of " << entries << "\n";
             // Output your testing here
-		}		
+        }		
 
         if(ev->fHeader.Zenith() > 40) continue;
 
         ////////////////////// EVENT INFORMATION ///////////////////////////////////////
-		vars->Run    = ev->Run();
-		vars->Event  = ev->Event();
-		vars->NEvent = ii;
-		vars->U_time = ev->UTime();
+        vars->Run    = ev->Run();
+        vars->Event  = ev->Event();
+        vars->NEvent = ii;
+        vars->U_time = ev->UTime();
 
-		////////////////////// MONTE CARLO INFO ////////////////////////////////////////
-		MCEventgR * mc = ev->GetPrimaryMC();
+        ////////////////////// MONTE CARLO INFO ////////////////////////////////////////
+        MCEventgR * mc = ev->GetPrimaryMC();
         if(mc){
             TofMCPar::MCtuneDT = -87.0;
             TofMCPar::MCtuneST =  10.0;	
-            
+
             vars->GenCharge   = mc->Charge;
             vars->GenMass     = mc->Mass;
             vars->GenMomentum = mc->Momentum;
@@ -161,30 +161,30 @@ int main(int argc, char * argv[])
             vars->GenZ = mc->Coo[2];  vars->GenPZ = mc->Dir[2];;
         }    
 
-		////////////////////// GEOG. VARIABLES ////////////////////////////////////////
-		vars->Zenith   = ev->fHeader.Zenith();
-		vars->Livetime = ev->LiveTime();
-		vars->Latitude = ev->fHeader.ThetaM;
-		vars->ThetaS   = ev->fHeader.ThetaS;
-		vars->PhiS     = ev->fHeader.PhiS;
+        ////////////////////// GEOG. VARIABLES ////////////////////////////////////////
+        vars->Zenith   = ev->fHeader.Zenith();
+        vars->Livetime = ev->LiveTime();
+        vars->Latitude = ev->fHeader.ThetaM;
+        vars->ThetaS   = ev->fHeader.ThetaS;
+        vars->PhiS     = ev->fHeader.PhiS;
         if (AMSEventR::GetRTI(rti,ev->UTime())==0) {
             vars->Rcutoff35 = rti.cfi[2][1];
             vars->Rcutoff40 = rti.cfi[3][1];
         }
-	if(ev->pParticle(0)){
-                        double dirTheta_ams= ev->pParticle(0)->Theta;
-                        double dirPhi_ams= ev->pParticle(0)->Phi;
-                        AMSDir amsdir(dirTheta_ams, dirPhi_ams);
-                        double cutoff =0;
-                        int momOrR = 1; //==0 GeV/c  ; ==1 GV
-                        int positive = 1; //==0 particle.mon == 1 (+) , == 2 (-)
-                        int ss = ev->pParticle(0)->GetStoermerCutoff(cutoff,momOrR,positive ,amsdir);
-                        vars->StoermerRcutoff=cutoff;
-         }
-		//////////////////////////////////////////////////////////////////////////////////		
+        if(ev->pParticle(0)){
+            double dirTheta_ams= ev->pParticle(0)->Theta;
+            double dirPhi_ams= ev->pParticle(0)->Phi;
+            AMSDir amsdir(dirTheta_ams, dirPhi_ams);
+            double cutoff =0;
+            int momOrR = 1; //==0 GeV/c  ; ==1 GV
+            int positive = 1; //==0 particle.mon == 1 (+) , == 2 (-)
+            int ss = ev->pParticle(0)->GetStoermerCutoff(cutoff,momOrR,positive ,amsdir);
+            vars->StoermerRcutoff=cutoff;
+        }
+        //////////////////////////////////////////////////////////////////////////////////		
 
 
-		/////////////////////////////////// UNBIAS ////////////////////////////////////////
+        /////////////////////////////////// UNBIAS ////////////////////////////////////////
         Level1R* trig = ev->pLevel1(0);
         if(!trig) continue;
 
@@ -195,86 +195,86 @@ int main(int argc, char * argv[])
             ev->pRichRing(0)->switchDynCalibration(); 
             richflag = true;
         }
-		/////////////////////////////////////////////////////////////////////////////////////
-		
-
-		//////////////////////////////////// CUTMASK ////////////////////////////////////////
-		bool MinTOF[2];
-		minimumbiasTOF( ev, MinTOF);
-
-		if( minimumbiasTRIGG(ev) )       vars->CUTMASK |= 1 << 0;
-		if( MinTOF[0] )                  vars->CUTMASK |= 1 << 1;
-		if( minimumbiasTRD(ev))          vars->CUTMASK |= 1 << 2;
-		if(minimumbiasTRACKER(ev,3))     vars->CUTMASK |= 1 << 3;
-		if(goldenTRACKER(ev,0,3))        vars->CUTMASK |= 1 << 4;
-		if(goldenTOF_new(ev))            vars->CUTMASK |= 1 << 5;
-		if(goldenTRD(ev,0,3))            vars->CUTMASK |= 1 << 6;
-		if(OneParticle(ev))              vars->CUTMASK |= 1 << 7;
-		if(minimumbiasTRACKER(ev,5))     vars->CUTMASK |= 1 << 8;
-		if(goldenTRACKER(ev,0,5))        vars->CUTMASK |= 1 << 9;
-        	if(ev->IsTrackPickingUpNoise())  vars->CUTMASK |= 1 << 10;
+        /////////////////////////////////////////////////////////////////////////////////////
 
 
+        //////////////////////////////////// CUTMASK ////////////////////////////////////////
+        bool MinTOF[2];
+        minimumbiasTOF( ev, MinTOF);
 
-		////////////////////////////////////////////////////////////////////////////////////////
-		
+        if( minimumbiasTRIGG(ev) )       vars->CUTMASK |= 1 << 0;
+        if( MinTOF[0] )                  vars->CUTMASK |= 1 << 1;
+        if( minimumbiasTRD(ev))          vars->CUTMASK |= 1 << 2;
+        if(minimumbiasTRACKER(ev,3))     vars->CUTMASK |= 1 << 3;
+        if(goldenTRACKER(ev,0,3))        vars->CUTMASK |= 1 << 4;
+        if(goldenTOF_new(ev))            vars->CUTMASK |= 1 << 5;
+        if(goldenTRD(ev,0,3))            vars->CUTMASK |= 1 << 6;
+        if(OneParticle(ev))              vars->CUTMASK |= 1 << 7;
+        if(minimumbiasTRACKER(ev,5))     vars->CUTMASK |= 1 << 8;
+        if(goldenTRACKER(ev,0,5))        vars->CUTMASK |= 1 << 9;
+        if(ev->IsTrackPickingUpNoise())  vars->CUTMASK |= 1 << 10;
 
-		//////////////////////  RIGIDITY //////////////////////////////////////////////////////
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+
+        //////////////////////  RIGIDITY //////////////////////////////////////////////////////
         TrTrackR* Tr = ev->pTrTrack(0);
-		if(Tr){
+        if(Tr){
             int fitID1=Tr->iTrTrackPar(1,1,1);
             int fitID2=Tr->iTrTrackPar(1,2,1);
             int fitID3=Tr->iTrTrackPar(1,3,1);
             int fitID5=Tr->iTrTrackPar(1,5,1);
 
-			if(Tr->ParExists(fitID1)) vars->Rup   = Tr->GetRigidity(fitID1); 
-			if(Tr->ParExists(fitID2)) vars->Rdown = Tr->GetRigidity(fitID2); 
-			if(Tr->ParExists(fitID3)) vars->R     = Tr->GetRigidity(fitID3); 
-			if(Tr->ParExists(fitID5)) vars->R_L1  = Tr->GetRigidity(fitID5); 
+            if(Tr->ParExists(fitID1)) vars->Rup   = Tr->GetRigidity(fitID1); 
+            if(Tr->ParExists(fitID2)) vars->Rdown = Tr->GetRigidity(fitID2); 
+            if(Tr->ParExists(fitID3)) vars->R     = Tr->GetRigidity(fitID3); 
+            if(Tr->ParExists(fitID5)) vars->R_L1  = Tr->GetRigidity(fitID5); 
 
-			if(Tr->ParExists(fitID3)) vars->Chisquare   = Tr->GetChisq(fitID3); else vars->Chisquare    = 1e7;
-			if(Tr->ParExists(fitID5)) vars->Chisquare_L1= Tr->GetChisq(fitID5); else vars->Chisquare_L1 = 1e7;
-		}
-		//////////////////////////////////////////////////////////////////////////////////////////
+            if(Tr->ParExists(fitID3)) vars->Chisquare   = Tr->GetChisq(fitID3); else vars->Chisquare    = 1e7;
+            if(Tr->ParExists(fitID5)) vars->Chisquare_L1= Tr->GetChisq(fitID5); else vars->Chisquare_L1 = 1e7;
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////
 
 
-		///////////////////////////  E. DEP. /////////////////////////////////////////////////////
+        ///////////////////////////  E. DEP. /////////////////////////////////////////////////////
 
-		/////// TRACK EDEP on track
-		if(minimumbiasTRACKER(ev,3)) {
-			vars->NTrackHits = Tr->NTrRecHit();
-			for(int i=0; i < Tr->NTrRecHit(); i++){
-				TrRecHitR * hit = ev->pTrTrack(0)->pTrRecHit(i);
-				int ilay = hit->GetLayerJ()-1;
-				TrClusterR* cluster = hit->GetYCluster();
-				vars->trtrack_edep[ilay]  = cluster->GetEdep();
-				vars->clustertrack++;
-			}
-		}
+        /////// TRACK EDEP on track
+        if(minimumbiasTRACKER(ev,3)) {
+            vars->NTrackHits = Tr->NTrRecHit();
+            for(int i=0; i < Tr->NTrRecHit(); i++){
+                TrRecHitR * hit = ev->pTrTrack(0)->pTrRecHit(i);
+                int ilay = hit->GetLayerJ()-1;
+                TrClusterR* cluster = hit->GetYCluster();
+                vars->trtrack_edep[ilay]  = cluster->GetEdep();
+                vars->clustertrack++;
+            }
+        }
 
-		/////// TRACK EDEP tot
-		for (int i=0; i<ev->NTrCluster(); i++) {
-			TrClusterR* cluster = ev->pTrCluster(i);
-			int ilay = cluster->GetLayerJ() - 1;
-			if(cluster->GetSide()==1) {
+        /////// TRACK EDEP tot
+        for (int i=0; i<ev->NTrCluster(); i++) {
+            TrClusterR* cluster = ev->pTrCluster(i);
+            int ilay = cluster->GetLayerJ() - 1;
+            if(cluster->GetSide()==1) {
                 vars->trtot_edep[ilay] += cluster->GetEdep(); 
                 vars->clustertottrack++;
             }
-		}
-		/////// TOF EDEP
-		for(int j=0; j<ev->NTofCluster(); j++)
+        }
+        /////// TOF EDEP
+        for(int j=0; j<ev->NTofCluster(); j++)
         {
             int layer = ev->pTofCluster(j)->Layer - 1;
-			vars->TOFEndepR[layer] += ev->pTofCluster(j)->Edep;
+            vars->TOFEndepR[layer] += ev->pTofCluster(j)->Edep;
         }
 
-		for(int j=0; j<ev->NTofClusterH(); j++)
+        for(int j=0; j<ev->NTofClusterH(); j++)
         {
             int layer = ev->pTofClusterH(j)->Layer;
-			vars->TOFEndep[layer] += ev->pTofClusterH(j)->GetEdep();
+            vars->TOFEndep[layer] += ev->pTofClusterH(j)->GetEdep();
         }
 
-		////// TRD EDEP
+        ////// TRD EDEP
         TrdTrackR * trdtrack = ev->pTrdTrack(0);
         if(trdtrack){
             for(int j = 0; j < trdtrack->NTrdSegment(); j++) {
@@ -286,55 +286,55 @@ int main(int argc, char * argv[])
         }
 
 
-		/////// ECAL EDEP
-		int NhitECAL = ev->NEcalHit();
+        /////// ECAL EDEP
+        int NhitECAL = ev->NEcalHit();
         vars->EnergyECAL=-100;
         if(ev->NEcalShower() == 1) {
             EcalShowerR* show = ev->pEcalShower(0); 
             vars->EnergyECAL = show->GetCorrectedEnergy(2, 2);
         }
-		////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
-	    	
-		///////////////////////////////// BETA TOF ////////////////////////////////////////////////
-		if(ev->pBeta(0))  vars->BetaOld  = ev->pBeta(0)->Beta;
+
+        ///////////////////////////////// BETA TOF ////////////////////////////////////////////////
+        if(ev->pBeta(0))  vars->BetaOld  = ev->pBeta(0)->Beta;
 
         float bestBeta = 0;
         BetaHR * betaH = ev->pBetaH(0);
-		if(betaH) { 
+        if(betaH) { 
             vars->BetaRaw = betaH->GetBeta();
 
-		    TofRecH::BuildOpt = 0;
-		    TofRecH::ReBuild();
-		    vars->BetaHR  = betaH->GetBeta();
+            TofRecH::BuildOpt = 0;
+            TofRecH::ReBuild();
+            vars->BetaHR  = betaH->GetBeta();
             bestBeta = vars->BetaHR;
-            
+
             if(mc){
                 betaH->DoMCtune();
                 vars->BetaHRS = betaH->GetBeta();
                 bestBeta = vars->BetaHRS;
             }
         }
-		/////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////
 
 
-		////////////////////////////// CHARGE /////////////////////////////////////////////////////////
-		if(minimumbiasTRACKER(ev,3)) {
-			int fitID3 = Tr->iTrTrackPar(1,3,1);
+        ////////////////////////////// CHARGE /////////////////////////////////////////////////////////
+        if(minimumbiasTRACKER(ev,3)) {
+            int fitID3 = Tr->iTrTrackPar(1,3,1);
 
-			vars->qL1   = Tr->GetLayerJQ(1, bestBeta, fitID3);
-			vars->qInner= Tr->GetInnerQ (   bestBeta, fitID3);
-		}
-		int   utoflay, ltoflay=0;
-		float utofrms, ltofrms=0;
-		if(ev->pBetaH(0)) vars->qUtof = ev->pBetaH(0)->GetQ(utoflay,utofrms,2,TofClusterHR::DefaultQOptIonW,1100,0,vars->R);
-		if(ev->pBetaH(0)) vars->qLtof = ev->pBetaH(0)->GetQ(ltoflay,ltofrms,2,TofClusterHR::DefaultQOptIonW,11  ,0,vars->R);
-		/////////////////////////////////////////////////////////////////////////////////////////////////
+            vars->qL1   = Tr->GetLayerJQ(1, bestBeta, fitID3);
+            vars->qInner= Tr->GetInnerQ (   bestBeta, fitID3);
+        }
+        int   utoflay, ltoflay=0;
+        float utofrms, ltofrms=0;
+        if(ev->pBetaH(0)) vars->qUtof = ev->pBetaH(0)->GetQ(utoflay,utofrms,2,TofClusterHR::DefaultQOptIonW,1100,0,vars->R);
+        if(ev->pBetaH(0)) vars->qLtof = ev->pBetaH(0)->GetQ(ltoflay,ltofrms,2,TofClusterHR::DefaultQOptIonW,11  ,0,vars->R);
+        /////////////////////////////////////////////////////////////////////////////////////////////////
 
         vars->RICHmask = getRICHmask(ev); 
 
-		//////////////////////////////// BETA RICH /////////////////////////////////////////////////
-		if(ev->NRichRing() > 0){
+        //////////////////////////////// BETA RICH /////////////////////////////////////////////////
+        if(ev->NRichRing() > 0){
             vars->BetaRICH=ev->pRichRing(0)->getBeta();
             int totali = ev->NRichHit();
             int hotspots=0;
@@ -346,24 +346,24 @@ int main(int argc, char * argv[])
             }
             vars->Richtotused=totali-usate-hotspots;
             vars->RichPhEl=ev->pRichRing(0)->getExpectedPhotoelectrons()/ev->pRichRing(0)->getPhotoElectrons();
-		}
-		///////////////////////////////////////////////////////////////////////////////////////////////	
-		
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////	
 
-		/////////////////////////////// LIKELIHOOD VARIABLES //////////////////////////////////////////
-		// for next production: add the info about tracker hits being XY or only Y 
-		if(Tr) vars->hitbits = Tr->GetHitBits();
-		
-		vars->NAnticluster = ev->NAntiCluster();
-		vars->NTRDSegments = ev->NTrdSegment();
-		vars->NTofClusters = ev->NTofCluster();
+
+        /////////////////////////////// LIKELIHOOD VARIABLES //////////////////////////////////////////
+        // for next production: add the info about tracker hits being XY or only Y 
+        if(Tr) vars->hitbits = Tr->GetHitBits();
+
+        vars->NAnticluster = ev->NAntiCluster();
+        vars->NTRDSegments = ev->NTrdSegment();
+        vars->NTofClusters = ev->NTofCluster();
         if(ev->pBetaH(0))
             vars->NTofClustersusati = ev->pBetaH(0)->NTofClusterH();
-		///////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////
 
 
-		measure_stuff->Fill();
-	}
+        measure_stuff->Fill();
+    }
 
 	File->Write();
 	File->Close();
