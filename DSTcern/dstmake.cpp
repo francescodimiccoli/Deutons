@@ -319,11 +319,22 @@ int main(int argc, char * argv[])
 
 
         ////////////////////////////// CHARGE /////////////////////////////////////////////////////////
-        if(minimumbiasTRACKER(ev,3)) {
-            int fitID3 = Tr->iTrTrackPar(1,3,1);
+        for(int i = 0; i < ev->nTrRecHit(); i++) {
+            TrRecHitR * hit = ev->pTrRecHit(i);
+            if(hit->GetLayerJ() != 1) continue;
 
-            vars->qL1   = Tr->GetLayerJQ(1, bestBeta, fitID3);
-            vars->qInner= Tr->GetInnerQ (   bestBeta, fitID3);
+            float q = hit->GetQ(1);
+            if(q > vars->qL1Max) {
+                vars->qL1Max = q;
+                vars->qL1MaxStatus = hit->GetQStatus();
+            }
+        }
+
+
+        if(minimumbiasTRACKER(ev,3)) {
+            vars->qL1       = Tr->GetLayerJQ(1, vars->BetaRaw);
+            vars->qL1Status = Tr->GetLayerJQStatus(1);
+            vars->qInner= Tr->GetInnerQ(vars->BetaRaw);
         }
         int   utoflay, ltoflay=0;
         float utofrms, ltofrms=0;

@@ -54,6 +54,9 @@ struct Variables
     float   RichPhEl;
     float   EdepTRD;
     float   qL1;
+    float   qL1Status;
+    float   qL1Max;
+    float   qL1MaxStatus;
     float   qUtof;
     float   qLtof;
     float   qInner;
@@ -131,6 +134,9 @@ void Variables::RegisterBranches(TTree * tree)
     tree->Branch("RichPhEl",&RichPhEl);
     tree->Branch("EdepTRD",&EdepTRD);
     tree->Branch("qL1",&qL1);
+    tree->Branch("qL1Status",&qL1Status);
+    tree->Branch("qL1Max",&qL1Max);
+    tree->Branch("qL1MaxStatus",&qL1MaxStatus);
     tree->Branch("qUtof",&qUtof);
     tree->Branch("qLtof",&qLtof);
     tree->Branch("qInner",&qInner);
@@ -192,6 +198,9 @@ void Variables::ResetVariables() {
     RichPhEl     = 0;
     EdepTRD      = 0;
     qL1          = 0;
+    qL1Max       = 0;
+    qL1Status    = 0;
+    qL1MaxStatus = 0;
     qUtof        = 0;
     qLtof        = 0;
     qInner       = 0;
