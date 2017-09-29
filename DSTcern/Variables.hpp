@@ -46,6 +46,7 @@ struct Variables
     int     NTofClusters;
     int     NTofClustersusati;
     int     NTrackHits;
+    int     NTracks;
     int     NTRDclusters;
     int     NTRDSegments;
     int     clustertrack;
@@ -54,6 +55,9 @@ struct Variables
     float   RichPhEl;
     float   EdepTRD;
     float   qL1;
+    float   qL1Status;
+    float   qL1Max;
+    float   qL1MaxStatus;
     float   qUtof;
     float   qLtof;
     float   qInner;
@@ -64,6 +68,7 @@ struct Variables
 	float GenMass;
     float GenX, GenY, GenZ;
     float GenPX, GenPY, GenPZ;
+    UInt_t MCClusterGeantPids;
 
     //Constructor
     Variables():
@@ -123,6 +128,7 @@ void Variables::RegisterBranches(TTree * tree)
     tree->Branch("NTofClusters",&NTofClusters);
     tree->Branch("NTofClustersusati",&NTofClustersusati);
     tree->Branch("NTrackHits",&NTrackHits);
+    tree->Branch("NTracks",&NTracks);
     tree->Branch("NTRDclusters",&NTRDclusters);
     tree->Branch("NTRDSegments",&NTRDSegments);
     tree->Branch("clustertrack",&clustertrack);
@@ -131,6 +137,9 @@ void Variables::RegisterBranches(TTree * tree)
     tree->Branch("RichPhEl",&RichPhEl);
     tree->Branch("EdepTRD",&EdepTRD);
     tree->Branch("qL1",&qL1);
+    tree->Branch("qL1Status",&qL1Status);
+    tree->Branch("qL1Max",&qL1Max);
+    tree->Branch("qL1MaxStatus",&qL1MaxStatus);
     tree->Branch("qUtof",&qUtof);
     tree->Branch("qLtof",&qLtof);
     tree->Branch("qInner",&qInner);
@@ -145,6 +154,7 @@ void Variables::RegisterBranches(TTree * tree)
     tree->Branch("GenPX",&GenPX); 
     tree->Branch("GenPY",&GenPY); 
     tree->Branch("GenPZ",&GenPZ);
+    tree->Branch("MCClusterGeantPids", &MCClusterGeantPids);
 }
 
 void Variables::ResetVariables() {
@@ -184,6 +194,7 @@ void Variables::ResetVariables() {
     NTofClusters = 0;
     NTofClustersusati = 0;
     NTrackHits   = 0;
+    NTracks      = 0;
     NTRDclusters = 0;
     NTRDSegments = 0;
     clustertrack = 0;
@@ -192,6 +203,9 @@ void Variables::ResetVariables() {
     RichPhEl     = 0;
     EdepTRD      = 0;
     qL1          = 0;
+    qL1Max       = 0;
+    qL1Status    = 0;
+    qL1MaxStatus = 0;
     qUtof        = 0;
     qLtof        = 0;
     qInner       = 0;
@@ -207,6 +221,7 @@ void Variables::ResetVariables() {
 	GenCharge = -100;
     GenX  = 0; GenY  = 0; GenZ  = 0;
     GenPX = 0; GenPY = 0; GenPZ = 0;
+    MCClusterGeantPids = 0;
 }
 
 
