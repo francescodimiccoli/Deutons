@@ -12,6 +12,7 @@
 #include "amschain.h"
 #include <Tofrec02_ihep.h>
 #include "Variables.hpp"
+#include "HitMCTruth.h"
 
 
 int getRICHmask(AMSEventR * ev){
@@ -96,7 +97,7 @@ int getRICHmask(AMSEventR * ev){
 
 int main(int argc, char * argv[])
 {
-    if(argc < 2) return -1;
+    if(argc < 3) return -1;
 
 
 	AMSChain* ch= new AMSChain;
@@ -159,6 +160,8 @@ int main(int argc, char * argv[])
             vars->GenX = mc->Coo[0];  vars->GenPX = mc->Dir[0];;
             vars->GenY = mc->Coo[1];  vars->GenPY = mc->Dir[1];;
             vars->GenZ = mc->Coo[2];  vars->GenPZ = mc->Dir[2];;
+
+            vars->MCClusterGeantPids = getPackedLayers_1to4(ev, 0);
         }    
 
         ////////////////////// GEOG. VARIABLES ////////////////////////////////////////
@@ -221,6 +224,7 @@ int main(int argc, char * argv[])
 
         //////////////////////  RIGIDITY //////////////////////////////////////////////////////
         TrTrackR* Tr = ev->pTrTrack(0);
+        vars->NTracks = ev->NTrTrack();
         if(Tr){
             int fitID1=Tr->iTrTrackPar(1,1,1);
             int fitID2=Tr->iTrTrackPar(1,2,1);
@@ -323,7 +327,7 @@ int main(int argc, char * argv[])
             TrRecHitR * hit = ev->pTrRecHit(i);
             if(hit->GetLayerJ() != 1) continue;
 
-            float q = hit->GetQ(1);
+            float q = hit->GetQ(2);
             if(q > vars->qL1Max) {
                 vars->qL1Max = q;
                 vars->qL1MaxStatus = hit->GetQStatus();

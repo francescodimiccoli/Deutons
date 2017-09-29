@@ -46,6 +46,7 @@ struct Variables
     int     NTofClusters;
     int     NTofClustersusati;
     int     NTrackHits;
+    int     NTracks;
     int     NTRDclusters;
     int     NTRDSegments;
     int     clustertrack;
@@ -67,6 +68,7 @@ struct Variables
 	float GenMass;
     float GenX, GenY, GenZ;
     float GenPX, GenPY, GenPZ;
+    UInt_t MCClusterGeantPids;
 
     //Constructor
     Variables():
@@ -126,6 +128,7 @@ void Variables::RegisterBranches(TTree * tree)
     tree->Branch("NTofClusters",&NTofClusters);
     tree->Branch("NTofClustersusati",&NTofClustersusati);
     tree->Branch("NTrackHits",&NTrackHits);
+    tree->Branch("NTracks",&NTracks);
     tree->Branch("NTRDclusters",&NTRDclusters);
     tree->Branch("NTRDSegments",&NTRDSegments);
     tree->Branch("clustertrack",&clustertrack);
@@ -151,6 +154,7 @@ void Variables::RegisterBranches(TTree * tree)
     tree->Branch("GenPX",&GenPX); 
     tree->Branch("GenPY",&GenPY); 
     tree->Branch("GenPZ",&GenPZ);
+    tree->Branch("MCClusterGeantPids", &MCClusterGeantPids);
 }
 
 void Variables::ResetVariables() {
@@ -190,6 +194,7 @@ void Variables::ResetVariables() {
     NTofClusters = 0;
     NTofClustersusati = 0;
     NTrackHits   = 0;
+    NTracks      = 0;
     NTRDclusters = 0;
     NTRDSegments = 0;
     clustertrack = 0;
@@ -216,6 +221,7 @@ void Variables::ResetVariables() {
 	GenCharge = -100;
     GenX  = 0; GenY  = 0; GenZ  = 0;
     GenPX = 0; GenPY = 0; GenPZ = 0;
+    MCClusterGeantPids = 0;
 }
 
 
