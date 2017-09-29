@@ -39,9 +39,11 @@ class EffCorr{
 	
 	bool ReinitializeHistos(bool refill){
 		bool checkifsomeismissing=false;
+		bool allfound=true;
 		if(!(EffMC -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
                 if(!(EffData -> ReinitializeHistos(refill))) checkifsomeismissing = true;
-		return (checkifsomeismissing||refill);
+	 	if(checkifsomeismissing||refill) allfound=false;
+		return allfound;
 	}
 	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 		EffMC -> FillEventByEventMC(vars,var,discr_var);

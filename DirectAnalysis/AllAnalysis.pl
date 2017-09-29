@@ -2,9 +2,9 @@
 
 use warnings;
 
-system("./HeliumContamination dummy.root dummy.root $ARGV[0]");
-system("./CountsExtraction dummy.root dummy.root $ARGV[0]");
-system("./MCEfficiency dummy.root dummy.root $ARGV[0]");
-system("./EffCorr dummy.root dummy.root $ARGV[0]");
-system("./Fluxes dummy.root dummy.root $ARGV[0]");
+system("./HeliumContamination_Parallel dummy.root dummy.root $ARGV[0]");
+system("./CountsExtraction_Parallel dummy.root dummy.root $ARGV[0]");
+system("./MCEfficiency_Parallel dummy.root dummy.root $ARGV[0]");
+system("./EffCorr_Parallel dummy.root dummy.root $ARGV[0]");
+system("./Fluxes_Parallel dummy.root dummy.root $ARGV[0]");
 

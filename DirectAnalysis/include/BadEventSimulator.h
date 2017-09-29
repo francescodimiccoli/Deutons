@@ -26,7 +26,7 @@ class BadEventSimulator{
 	
 	void   LoadEvent(Variables * vars) {if(ApplyCuts(simulatorcut,vars)) EvNum++; return;};
 	float SimulateBadEvents(float Beta) {
-		if(EvNum%BadEventsFrequency==0) { float betabad = BadEvModel->GetRandom(); return betabad;}
+		if(EvNum%BadEventsFrequency==0) { float betabad=BadEvModel->GetRandom(); return betabad;}
 	        return Beta;
 
 	}

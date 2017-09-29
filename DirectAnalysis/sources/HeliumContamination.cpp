@@ -95,6 +95,7 @@ int main(int argc, char * argv[])
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
+	TemplateFIT * HeContTemplate= new TemplateFIT("HeContTemplate",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
 
 
 	// TOF

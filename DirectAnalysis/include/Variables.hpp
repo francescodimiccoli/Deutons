@@ -9,11 +9,12 @@ using namespace std;
 
 int GetUnusedLayers(int hitbits){ return 7 - std::bitset<32>(hitbits & 0b1111111).count(); }
 
-Reweighter ReweightInitializer();
+Reweighter ReweightInitializer(std::string galpropfilename="/storage/gpfs_ams/ams/users/fdimicco/Deutons/DirectAnalysis/include/CRDB_ProtonsAMS_R.galprop",float r_min=0.5, float r_max=100,float norm_at=1.05);
 
 struct Variables{
 
 	Reweighter reweighter;
+	Reweighter reweighterHe;
 
 	int 	   U_time;
         float 	   Latitude;
@@ -77,6 +78,7 @@ struct Variables{
 	Variables(){
 		BDTreader();
 		reweighter = ReweightInitializer();
+		reweighterHe = ReweightInitializer("/storage/gpfs_ams/ams/users/fdimicco/Deutons/DirectAnalysis/include/CRDB_HeliumAMS_R.galprop",2,2000,2.05);
 	}
 	
 	void ReadBranches(TTree * tree);
@@ -200,8 +202,11 @@ void Variables::Update(){
 	U_time-=1305200000; //time offset (in order to have small time stamp)	
 
 	if(Momento_gen<1) mcweight=1; // in data Momento_gen=0
-	else mcweight = reweighter.getWeight(fabs(Momento_gen));
-
+	else {
+		if(Massa_gen<1) mcweight = reweighter.getWeight(fabs(Momento_gen));
+		else if(Massa_gen>1&&Massa_gen<2) mcweight = 0.05*reweighter.getWeight(fabs(Momento_gen));
+		else mcweight = reweighterHe.getWeight(fabs(Momento_gen));
+	}	
 }
 
 void Variables::PrintCurrentState(){
@@ -301,10 +306,10 @@ float GetRecMassRICH     (Variables * vars) {return (vars->R/vars->BetaRICH_new)
 float GetRigidity (Variables * vars) {return vars->R;}
 
 
-Reweighter ReweightInitializer(){
-        Histogram   mcFlux = makeLogUniform(500, 0.5, 100);
-        Histogram dataFlux = loadGalpropFile("/storage/gpfs_ams/ams/users/fdimicco/Deutons/DirectAnalysis/include/CRDB_ProtonsAMS_R.galprop");
-        dataFlux.multiply( mcFlux.at(1.05) / dataFlux.getContent()[0] );
+Reweighter ReweightInitializer(std::string galpropfilename, float r_min, float r_max, float norm_at){
+        Histogram   mcFlux = makeLogUniform(500, r_min, r_max);
+        Histogram dataFlux = loadGalpropFile(galpropfilename.c_str());
+        dataFlux.multiply( mcFlux.at(norm_at) / dataFlux.getContent()[0] );
         Reweighter reweighter(mcFlux, dataFlux);
         return reweighter;
 }
@@ -312,5 +317,5 @@ Reweighter ReweightInitializer(){
 float GetUtofQ	(Variables * vars) {return vars->qUtof; }
 float GetLtofQ	(Variables * vars) {return vars->qLtof; }
 float GetInnerQ	(Variables * vars) {return vars->qInner;}
-
+float GetL1Q (Variables * vars) {return vars->qL1;}
 #endif

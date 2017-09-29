@@ -166,13 +166,13 @@ int main(int argc, char * argv[]){
 
 	TH1F * StatErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"StatError").c_str());
         TH1F * SystErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"SystError").c_str());
-	TH1F * HeCoErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"HeContTOF_Eff").c_str());
+	TH1F * HeCoErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"HeliumContamination/HeContError").c_str());
 	TH1F * StatErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"StatError").c_str());
         TH1F * SystErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"SystError").c_str());
-	TH1F * HeCoErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"HeContNaF_Eff").c_str());
+	TH1F * HeCoErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"HeliumContamination/HeContError").c_str());
 	TH1F * StatErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"StatError").c_str());
         TH1F * SystErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"SystError").c_str());
-	TH1F * HeCoErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"HeContAgl_Eff").c_str());
+	TH1F * HeCoErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"HeliumContamination/HeContError").c_str());
 	
 	TH1F * TotErrTOF  = (TH1F *)StatErrTOF->Clone();
 	TH1F * TotErrNaF  = (TH1F *)StatErrNaF->Clone();
@@ -348,6 +348,10 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		
 		TCanvas * c3 = new TCanvas("Template Fits");
                 c3->SetCanvasSize(2000,1500);
+		gPad->SetLogy();
+		TH1F * Sum = (TH1F*) TemplatesP[1]->Clone();
+		Sum->Add(TemplatesD[1]);
+		Sum->Add(TemplatesHe[1]);
 
 		PlotDistribution(gPad, TemplatesP[0] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,2,"Original Protons MC Template");
 		PlotDistribution(gPad, TemplatesD[0] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,2,"Original Deuterons MC Template");
@@ -358,8 +362,9 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		
 
 		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"ePsame",1,1e5,3,"ISS data",false,true);
-		if(Fits.size()>0) PlotDistribution(gPad, Fits[0],"Reconstructed Mass [gev/c^2]","counts",6,"same",1,1e5,4,"Fraction Fit");
-	
+		if(Fits.size()>0) { PlotDistribution(gPad, Fits[0],"Reconstructed Mass [gev/c^2]","counts",6,"same",1,1e5,4,"Fraction Fit");
+				     PlotDistribution(gPad, Sum,"Reconstructed Mass [gev/c^2]","counts",7,"same",1,1e5,4,"Sum of Contributions");	
+		}
 
 		Plots.Add(c3);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
@@ -390,11 +395,15 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 
 		TCanvas * c6 = new TCanvas("OverCutoff Events");
                 c6->SetCanvasSize(2000,1500);
-			
+		gPad->SetLogy();
+	
 		TH1F * OverCutoffP = (TH1F *) TemplatesP[1]->Clone();
 		OverCutoffP->Multiply(Transfer[i]);
 		TH1F * OverCutoffD = (TH1F *) TemplatesD[1]->Clone();
 		OverCutoffD->Multiply(Transfer[i]);
+		TH1F * OverCutoffHe = (TH1F *) TemplatesHe[1]->Clone();
+		OverCutoffHe->Multiply(Transfer[i]);
+		
 		TH1F * NoCutoffP = (TH1F *) TemplatesP[1]->Clone();
 
 		NoCutoffP->Scale(
@@ -404,14 +413,13 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		PlotDistribution(gPad, NoCutoffP,"Reconstructed Mass [GeV/c^2]","Primary Counts",2,"same",1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"Best #chi^{2} Protons MC Template");
 		PlotDistribution(gPad, OverCutoffP,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC (Cutoff filtered)");
 		PlotDistribution(gPad, OverCutoffD,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
-		PlotDistribution(gPad, Datas[1],"Reconstructed Mass [GeV/c^2]","Primary Counts",1,"ePsame",1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"ISS data",false,true);
+		PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
 	
+		PlotDistribution(gPad, Datas[1],"Reconstructed Mass [GeV/c^2]","Primary Counts",1,"ePsame",1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"ISS data",false,true);
 
 		Plots.Add(c6);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
 
-
-	
 
 	}
 

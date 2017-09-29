@@ -12,7 +12,7 @@ print "Total Files: ".$num_Rootuple."\n";
 @rootuple;
 $i=0;
 
-$njobs = 200;
+$njobs = 250;
 
 for($n=0;$n<$num_Rootuple;$n++){
 	if($Rootuple[$n]>$ARGV[0]&& $Rootuple[$n]<$ARGV[1]){ 

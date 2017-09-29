@@ -22,11 +22,10 @@
 #include "TKey.h"
 #include "TFractionFitter.h"
 
-#include "../Ntuple-making/Commonglobals.cpp"
+#include "../../Ntuple-making/Commonglobals.cpp"
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 #include "../include/filesaver.h"
-#include "../include/TemplateFIT.h"
 
 #include "../include/FitError.h"
 #include "../include/Resolution.h"

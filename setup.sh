@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 
 #root 5
 #source /afs/cern.ch/sw/lcg/external/gcc/4.9.3/x86_64-slc6/setup.sh
@@ -7,11 +8,11 @@
 
 
 #root 6
-source /storage/gpfs_ams/ams/users/fdimicco/Deutons/Setup/env.sh
-source /storage/gpfs_ams/ams/users/kostya/VirtualEnv/install/bin/thisroot.sh
+#source /storage/gpfs_ams/ams/users/fdimicco/Deutons/Setup/env.sh
+#source /storage/gpfs_ams/ams/users/kostya/VirtualEnv/install/bin/thisroot.sh
 #env > envs
 
 
 
-source /storage/gpfs_ams/ams/users/fdimicco/Deutons/amsvar.sh
+source /storage/gpfs_ams/ams/users/fdimicco/Deutons/amsvar_cvmfs.sh
 

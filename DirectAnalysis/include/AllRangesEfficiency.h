@@ -2,14 +2,16 @@ struct AllRangesEfficiency{
 
 	private:
 	bool refill=false;
-	Efficiency * EffTOF;
-	Efficiency * EffNaF;
-	Efficiency * EffAgl;
 	BadEventSimulator * BadEvSimTOF=0x0;
 	BadEventSimulator * BadEvSimNaF=0x0;
 	BadEventSimulator * BadEvSimAgl=0x0;
 
 	public:
+	Efficiency * EffTOF;
+	Efficiency * EffNaF;
+	Efficiency * EffAgl;
+	
+
 	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_before,std::string Cut_after,bool Refill=false){
 	
 		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB,Cut_before,Cut_after);	
@@ -47,10 +49,12 @@ struct AllRangesEfficiency{
 	
 	bool ReinitializeHistos(bool refill){
 		bool checkifsomeismissing=false;
+		bool allfound=true;
 		if(!(EffTOF -> ReinitializeHistos(refill))) checkifsomeismissing = true;
                 if(!(EffNaF -> ReinitializeHistos(refill))) checkifsomeismissing = true;
 	        if(!(EffAgl -> ReinitializeHistos(refill))) checkifsomeismissing = true;
-		return (checkifsomeismissing||refill);
+		if(checkifsomeismissing||refill) allfound=false;
+		return allfound;
 	}
 
 	void Fill(TTree * tree, Variables * vars){

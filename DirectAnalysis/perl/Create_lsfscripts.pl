@@ -4,7 +4,7 @@ use warnings;
 print "Printing LSF scripts for Analysis...\n\n";
 chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 print "Printed: Work Dir. = ".$workdir."\n\n";
-$njobs=200;
+$njobs=250;
 
 #creating sum scripts and output directory
 #
@@ -28,15 +28,15 @@ for($j=0;$j<$njobs;$j++)
 			sh \$WORKDIR/../../MAIN/SumScripts/Sommaisto$j.sh;\n			
 			sh \$WORKDIR/../../MAIN/SumScripts/SommaistoMC$j.sh;";
 
-		print OUT  "\$WORKDIR/CountsExtraction /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root   \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+		print OUT  "\$WORKDIR/CountsExtraction_Parallel /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root   \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1>> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
-		print OUT  "\$WORKDIR/HeliumContamination  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+#		print OUT  "\$WORKDIR/HeliumContamination_Parallel  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
-		print OUT  "\$WORKDIR/MCEfficiency  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+#		print OUT  "\$WORKDIR/MCEfficiency_Parallel  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
-		print OUT  "\$WORKDIR/EffCorr  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+#		print OUT  "\$WORKDIR/EffCorr_Parallel  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root>> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
-		print OUT  "\$WORKDIR/Fluxes  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root  1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+#		print OUT  "\$WORKDIR/Fluxes_Parallel  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
 		close (OUT);
 

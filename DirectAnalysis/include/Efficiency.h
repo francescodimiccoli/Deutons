@@ -112,14 +112,16 @@ void Efficiency::CloneEfficiency(Efficiency * Second){
 }
 
 bool Efficiency::ReinitializeHistos(bool refill){
+	bool allfound;
 	if(( (TH1F*)  file.Get((directory+"/"+basename+"/"+basename+"_before").c_str()) &&
                                 (TH1F*)  file.Get((directory+"/"+basename+"/"+basename+"_after").c_str()) ) && !refill) {
                 before =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_before").c_str());
                 after  =(TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_after").c_str());
 		Refill=false;
-		return true;
+		allfound =true;;
 	}
-	else return false;
+	else allfound=false;
+	return allfound;
 }
 
 void Efficiency::Fill(TTree * tree, Variables * vars, float (*discr_var) (Variables * vars),bool refill){

@@ -27,10 +27,10 @@ class ParallelFiller{
 		return;
 	}
 	void ReinitializeAll(bool refill){
-		if(Refill) cout<<"Rfill"<<endl;
 		bool checkifsomeismissing=false;
 			for(int nobj=0;nobj<Objects2beFilled.size();nobj++) {
-				if(!(Objects2beFilled[nobj]->ReinitializeHistos(refill))) checkifsomeismissing=true;
+				if(!(Objects2beFilled[nobj]->ReinitializeHistos(refill))) {checkifsomeismissing=true;
+					cout<<"missing: "<<nobj<<endl;}
 				}
 		if(checkifsomeismissing||refill) Refill=true;
 		else Refill=false;

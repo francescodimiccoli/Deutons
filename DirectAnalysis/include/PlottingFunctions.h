@@ -158,7 +158,7 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 	return;
 }
 
-void PlotTH1F(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, std::string Yaxis, int color, std::string options,std::string legendname, float thickness=3, bool skipleg=false){
+void PlotTH1F(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, std::string Yaxis, int color, std::string options,std::string legendname="", float thickness=3, bool skipleg=false){
 
 	c -> cd();
 	gPad-> SetLogz();

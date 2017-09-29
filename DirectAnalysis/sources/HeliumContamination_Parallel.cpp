@@ -30,7 +30,10 @@
 #include "../include/filesaver.h"
 
 #include "../include/Efficiency.h"
+#include "../include/TemplateFITbetasmear.h"
+#include "../include/ChargeFitter.h"
 
+void ExtractContaminationWeight(TemplateFIT * HeContTemplate, FileSaver finalResults);
 
 int main(int argc, char * argv[])
 {
@@ -95,106 +98,80 @@ int main(int argc, char * argv[])
         Variables * vars = new Variables;
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
-
+/*
 	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.8,1);
         BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1);
 
-	// TOF
+
+	TemplateFIT * HeContTemplate= new TemplateFIT("HeContTemplate",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
+        if((!checkfile)||Refill){
+                HeContTemplate->Fill(treeMC,treeDT,vars,GetRecMassTOF,GetBetaTOF);
+                HeContTemplate->DisableFit();
+                HeContTemplate->Save(finalHistos);
+        }
+        else { HeContTemplate= new TemplateFIT(finalHistos,"HeContTemplate",ToFDB);
+                HeContTemplate->ExtractCounts(finalHistos);
+                HeContTemplate->SaveFitResults(finalResults);
+        	ExtractContaminationWeight(HeContTemplate,finalResults);
+	}
+*/	
 	
-	Efficiency * HeliumFragmTOF = new Efficiency(finalHistos,"HeliumFrragmTOF","HeliumFragmentation",ToFDB,"IsPreselected&IsHeliumMC&IsGoodHe" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut");
-	Efficiency * HeliumFragmIntoDTOF = new Efficiency(finalHistos,"HeliumFragmIntoDTOF","HeliumFragmentation",ToFDB,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&DeutonsMassCut");
-	Efficiency * HeContaminationTOF = new Efficiency(finalHistos,"HeContTOF","HeliumFragmentation",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut","IsPreselected&IsGoodHe");
+	Efficiency * TestReweigthingP  = new Efficiency(finalHistos,"TestReweigthingP","TestReweigthingP",PRB,"IsProtonMC" ,"IsProtonMC");
+	Efficiency * TestReweigthingHe = new Efficiency(finalHistos,"TestReweigthingHe","TestReweigthingHe",PRB,"IsHeliumMC" ,"IsHeliumMC");
 
-	// NaF
+
+	ParallelFiller<Efficiency *> Filler1;
+	Filler1.AddObject2beFilled(TestReweigthingP,GetRigidity,GetRigidity);
+	Filler1.AddObject2beFilled(TestReweigthingHe,GetRigidity,GetRigidity);
+	Filler1.ReinitializeAll(false);
+	//main loop
+	Filler1.LoopOnMC(treeMC,vars);
 	
-	Efficiency * HeliumFragmNaF = new Efficiency(finalHistos,"HeliumFrragmNaF","HeliumFragmentation",NaFDB,"IsPreselected&IsHeliumMC&IsFromNaF&IsGoodHe" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF");
-	Efficiency * HeliumFragmIntoDNaF = new Efficiency(finalHistos,"HeliumFragmIntoDNaF","HeliumFragmentation",NaFDB,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF&DeutonsMassCut");
-	Efficiency * HeContaminationNaF = new Efficiency(finalHistos,"HeContNaF","HeliumFragmentation",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF"  ,"IsPreselected&IsFromNaF&IsGoodHe"); 
-
-	HeliumFragmNaF->SetUpBadEventSimulator(NaFBadEvSimulator);
-	HeliumFragmIntoDNaF->SetUpBadEventSimulator(NaFBadEvSimulator);
-	HeContaminationNaF->SetUpBadEventSimulator(NaFBadEvSimulator);
-
-	//Agl
+	TestReweigthingP ->Save(finalHistos);
+	TestReweigthingHe->Save(finalHistos);
 	
-	Efficiency * HeliumFragmAgl = new Efficiency(finalHistos,"HeliumFrragmAgl","HeliumFragmentation",AglDB,"IsPreselected&IsHeliumMC&IsFromAgl&IsGoodHe" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromAgl");
-	Efficiency * HeliumFragmIntoDAgl = new Efficiency(finalHistos,"HeliumFragmIntoDAgl","HeliumFragmentation",AglDB,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromNaF" ,"IsPreselected&IsHeliumMC&LikelihoodCut&DistanceCut&IsFromAgl&DeutonsMassCut");
-	Efficiency * HeContaminationAgl = new Efficiency(finalHistos,"HeContAgl","HeliumFragmentation",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl" ,"IsPreselected&IsFromAgl&IsGoodHe");
-	
-	HeliumFragmAgl->SetUpBadEventSimulator(AglBadEvSimulator);
-	HeliumFragmIntoDAgl->SetUpBadEventSimulator(AglBadEvSimulator);
-	HeContaminationAgl->SetUpBadEventSimulator(AglBadEvSimulator);
-
-		ParallelFiller<Efficiency *> Filler;
-		Filler.AddObject2beFilled(HeliumFragmTOF,GetSmearedBetaTOF,GetSmearedBetaTOF);
-		Filler.AddObject2beFilled(HeliumFragmIntoDTOF,GetSmearedBetaTOF,GetSmearedBetaTOF);
-		Filler.AddObject2beFilled(HeContaminationTOF,GetSmearedBetaTOF,GetSmearedBetaTOF);
-		Filler.AddObject2beFilled(HeliumFragmNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
-		Filler.AddObject2beFilled(HeliumFragmIntoDNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
-		Filler.AddObject2beFilled(HeContaminationNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
-		Filler.AddObject2beFilled(HeliumFragmAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
-		Filler.AddObject2beFilled(HeliumFragmIntoDAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
-		Filler.AddObject2beFilled(HeContaminationAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
-		Filler.ReinitializeAll(Refill);
-		//main loop
-		Filler.LoopOnMC(treeMC,vars);
+	TestReweigthingP ->Save(finalResults);
+	TestReweigthingHe->Save(finalResults);
 
 
-	HeliumFragmTOF->Save(finalHistos);
-	HeliumFragmTOF->Eval_Efficiency();
-	HeliumFragmTOF->SaveResults(finalResults);
 
 
-	HeliumFragmIntoDTOF->Save(finalHistos);
-	HeliumFragmIntoDTOF->Eval_Efficiency();
-	HeliumFragmIntoDTOF->SaveResults(finalResults);
+	ChargeFitter * L1Charge = new ChargeFitter(finalHistos,"L1Charge","HeliumContamination",PRB,"IsPreselectedInner","InnerAndL1Charge2");
+	L1Charge->Fill(treeMC,treeDT,vars,GetL1Q,GetRigidity,Refill);
+	L1Charge->Save(finalHistos);
+	L1Charge->ModelBefores();
+	L1Charge->Eval_Efficiency();
+	L1Charge->SaveResults(finalResults);
 
-	HeContaminationTOF->Save(finalHistos);
-	HeContaminationTOF->Eval_Efficiency();
-
-	HeContaminationTOF->ComposeEfficiency(HeliumFragmTOF);
-//	HeContaminationTOF->ComposeEfficiency(HeliumFragmIntoDTOF);
-	HeContaminationTOF->SaveResults(finalResults);
-
-	
-
-	HeliumFragmNaF->Save(finalHistos);
-	HeliumFragmNaF->Eval_Efficiency();
-	HeliumFragmNaF->SaveResults(finalResults);
-
-	HeliumFragmIntoDNaF->Save(finalHistos);
-	HeliumFragmIntoDNaF->Eval_Efficiency();
-	HeliumFragmIntoDNaF->SaveResults(finalResults);
-	
-	HeContaminationNaF->Save(finalHistos);
-	HeContaminationNaF->Eval_Efficiency();
-	HeContaminationNaF->ComposeEfficiency(HeliumFragmNaF);
-//	HeContaminationNaF->ComposeEfficiency(HeliumFragmIntoDNaF);
-	HeContaminationNaF->SaveResults(finalResults);
-	
-
-
-	HeliumFragmAgl->Save(finalHistos);
-	HeliumFragmAgl->Eval_Efficiency();
-	HeliumFragmAgl->SaveResults(finalResults);
-	
-	HeliumFragmIntoDAgl->Save(finalHistos);
-	HeliumFragmIntoDAgl->Eval_Efficiency();
-	HeliumFragmIntoDAgl->SaveResults(finalResults);
-	
-	HeContaminationAgl->Save(finalHistos);
-	HeContaminationAgl->Eval_Efficiency();
-	HeContaminationAgl->ComposeEfficiency(HeliumFragmAgl);
-//	HeContaminationAgl->ComposeEfficiency(HeliumFragmIntoDAgl);
-	HeContaminationAgl->SaveResults(finalResults);
-	
-
-
-	
-	
 	return 0;
 }
 
+
+void ExtractContaminationWeight(TemplateFIT * HeContTemplate, FileSaver finalResults){
+	
+	TH1F * ContWeights = new TH1F("ContWeights","ContWeights",HeContTemplate->GetBinning().size(),0,HeContTemplate->GetBinning().size());
+	TGraphErrors * ContWeightsFit = new TGraphErrors();
+	TF1 * Model = new TF1("Model","pol3",0,1.1);
+
+	for(int i=0;i<ContWeights->GetNbinsX();i++)
+		if(HeContTemplate->GetHeContaminationWeight(i)<0.024){
+			ContWeights->SetBinContent(i+1,HeContTemplate->GetHeContaminationWeight(i));
+			ContWeights->SetBinError(i+1,HeContTemplate->GetHeContaminationErr(i));
+			ContWeightsFit->SetPoint(i,HeContTemplate->GetBinning().BetaBinCent(i),HeContTemplate->GetHeContaminationWeight(i));
+			ContWeightsFit->SetPointError(i,0,HeContTemplate->GetHeContaminationErr(i));
+		}
+
+	ContWeightsFit->SetMarkerColor(3);
+	ContWeightsFit->Fit("Model","","",0.52,0.79);
+	
+
+	finalResults.Add(ContWeights);
+	finalResults.Add(ContWeightsFit);
+	finalResults.Add(Model);
+
+	finalResults.writeObjsInFolder(HeContTemplate->GetName().c_str());	
+	return;
+}
 
 	
 

@@ -35,6 +35,9 @@ struct TFit {
 
 
    float wheightP,wheightD,wheightHe;
+   float ContribP,ContribD,ContribHe;
+   float errP,errD,errHe;
+ 	
    TFractionFitter *Tfit;
    int Tfit_outcome=-1;
    
@@ -89,6 +92,9 @@ class TemplateFIT {
 	std::vector<TH2F *> DCountsSpread;
 	std::vector<TH1F *> WeightedDCounts;
 	std::vector<TH2F *> TFitChisquare;
+	TF1 * HeContModel;
+	TH1F * MCHeContRatio;
+	TH1F * MeasuredHeContRatio;
 
 	TH1F * StatError;
 	TH1F * SystError;
@@ -247,13 +253,15 @@ class TemplateFIT {
 
 		fitrangemin=0.6;
 		fitrangemax=3.5;	
-	
+		MCHeContRatio = (TH1F*) File.Get((basename+"/Fit Results/HeliumContamination/MC Expected He over P").c_str());
+		if(!MCHeContRatio) MCHeContRatio = Eval_MCHeContRatio("MC Expected He over P");
 
 
 	}
 
 	void ReinitializeHistos(){}; //dummy
 	void Eval_TransferFunction();
+	TH1F * Eval_MCHeContRatio(std::string name);
 	void Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) );
 	float SmearBeta(float Beta, float stepsigma, float stepshift,float R);
 	float SmearBetaRICH(float Beta, float stepsigma, float stepshift);
@@ -274,15 +282,17 @@ class TemplateFIT {
 	void SetFitRange(float min, float max){fitrangemin=min; fitrangemax=max; return;}
 
 	void DisableFit(){fitDisabled=true;}
-	void SetHeliumContamination(TH1F * HelimCont) {HeContError=HelimCont; return;};
+	void SetHeliumContamination(TF1 * HelimCont) {HeContModel=HelimCont; return;};
 	BadEventSimulator * GetBadEventSimulator() {return BadEvSim;}
 	void LoadEventIntoBadEvSim(Variables * vars) {if(BadEvSim) BadEvSim->LoadEvent(vars);}
-
+	void Eval_ContError();
 	std::string GetName(){return basename;}
 	TH1F * GetStatError(){ return StatError;}
 	TH1F * GetSystError() { return SystError;}	
 	Binning  GetBinning() {return bins;}
-
+	
+	float GetHeContaminationWeight(int bin) { return fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->ContribHe; }
+	float GetHeContaminationErr   (int bin) { return fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->errHe; }
 
 	TH2F * GetDCountsSpread(int bin)	{ return DCountsSpread[bin];}
 	TH2F * GetChiSquareSpread(int bin)      { return TFitChisquare[bin];}	
@@ -335,6 +345,7 @@ void TemplateFIT::FillEventByEventData(Variables * vars, float (*var) (Variables
 	int kbin;
 	kbin = 	bins.GetBin(discr_var(vars));
 	if(ApplyCuts(cut,vars)&&kbin>0){
+		if(vars->qL1>1.8) cout<<"ecco"<<endl;
 		for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
 				fits[kbin][i][j]->Data->Fill(var(vars),vars->mcweight);		
@@ -381,16 +392,15 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 			for(int j=0;j<systpar.steps;j++){
 				float betasmear;
 
-				if(!isrich) betasmear = SmearBeta(discr_var(vars),(float)i,(float)j,var(vars));
-				else 	   betasmear = SmearBetaRICH(discr_var(vars),(float)i,(float)j);
+				if(!ApplyCuts("IsOnlyFromToF",vars)) betasmear = SmearBetaRICH(discr_var(vars),(float)i,(float)j); 
+				else 	betasmear = SmearBeta(discr_var(vars),(float)i,(float)j,var(vars));    
 				if(BadEvSim)
 						 betasmear=BadEvSim->SimulateBadEvents(betasmear);
 				int kbin; 
 
 				if(bins.IsUsingBetaEdges()) kbin = bins.GetBin(betasmear);
 				else kbin =bins.GetBin(discr_var(vars));
-
-				float mass = var(vars)/betasmear * pow((1-pow(betasmear,2)),0.5);
+				float mass = vars->R/betasmear * pow((1-pow(betasmear,2)),0.5);
 				if(ApplyCuts(cutP,vars)&&kbin>0)  fits[kbin][i][j]->Templ_P->Fill(mass,vars->mcweight);		
 				if(ApplyCuts(cutD,vars)&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill(mass,vars->mcweight);
 				if(ApplyCuts(cutHe,vars)&&kbin>0) fits[kbin][i][j]->Templ_He->Fill(mass,vars->mcweight);
@@ -458,6 +468,14 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 	finalhisto.Add(OriginalD);
 	finalhisto.Add(BestD);
 	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
+
+	TH1F * OriginalHe=(TH1F*)fits[bin][0][5]->Templ_He->Clone();
+	TH1F * BestHe=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_He->Clone();
+	OriginalHe->SetName("Original Helium Fragm. MC ");
+	BestHe->SetName("Best #chi^{2} Helium Fragm. MC ");
+	finalhisto.Add(OriginalHe);
+	finalhisto.Add(BestHe);
+	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
 	
 	}
 
@@ -490,6 +508,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 				}
 	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
 	}
+
 	for(int bin=0;bin<bins.size();bin++){
 		if(BestChiSquare[bin]&&fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Tfit){
 			TH1F * FIT;
@@ -520,12 +539,16 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 		finalhisto.writeObjsInFolder((basename+"/Fit Results/Spreads/Weighted D counts").c_str());	
 	}
 
+	if(HeContModel) finalhisto.Add(HeContModel);
+	if(HeContError) finalhisto.Add(HeContError);
+	if(MeasuredHeContRatio) finalhisto.Add(MeasuredHeContRatio);
+	if(MCHeContRatio) finalhisto.Add(MCHeContRatio);
+	finalhisto.writeObjsInFolder((basename+"/Fit Results/HeliumContamination").c_str());	
 
 	finalhisto.Add(BestFitSigma);
 	finalhisto.Add(BestFitShift);
 	finalhisto.Add(StatError);
 	finalhisto.Add(SystError);
-	finalhisto.Add(HeContError);
 	finalhisto.Add(ProtonCounts);
 	finalhisto.Add(DeuteronCounts);
 	finalhisto.Add(ProtonCountsPrim);
@@ -540,8 +563,15 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 }
 
 
-void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax, TH1F * HeCont=0x0, int bin_nr=1){
+void Pre_Scale(TH1F * PHisto,TH1F * DHisto, TH1F * HeHisto){
+	DHisto->Scale(0.02*PHisto->Integral());
+	HeHisto->Scale(0.01*PHisto->Integral());
+	return;
+}
 
+void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax, TF1 * HeCont=0x0, float bincenter=1){
+
+	Pre_Scale(Fit ->  Templ_P,Fit ->  Templ_D,Fit ->  Templ_He);
 	TObjArray *Tpl;
 	Tpl = new TObjArray(2);
 	Tpl -> Add( Fit ->  Templ_P );
@@ -562,7 +592,8 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax, TH1F * HeCon
 		Fit -> Tfit -> Constrain(1, 0.0001 ,1);
                 Fit -> Tfit -> Constrain(2, 0.0001 ,1);
 		if(Fit ->  Templ_He -> Integral()>500)
-			Fit -> Tfit -> Constrain(3, 0.0001 ,0.02);	 
+			if(HeCont) Fit -> Tfit -> Constrain(3,0.4*HeCont->Eval(bincenter),1.6*HeCont->Eval(bincenter));
+			else Fit -> Tfit -> Constrain(3, 0.0001 ,0.04);	 
 		else Fit -> Tfit -> Constrain(3, 0.000001 ,0.0000011);
 
 		if(Fit -> Tfit ) Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
@@ -591,14 +622,24 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax, TH1F * HeCon
 			float i2 = Fit-> Templ_D  ->Integral(Fit->Templ_D -> FindBin(min), Fit->Templ_D -> FindBin(max));
 			float i3 = Fit-> Templ_He ->Integral(Fit->Templ_He -> FindBin(min), Fit->Templ_He -> FindBin(max));
 
+			Fit ->ContribP= w1;
+			Fit ->ContribD= w2;
+			Fit ->ContribHe=w3;
+			
+			Fit ->errP= e1;
+			Fit ->errD= e2;
+			Fit ->errHe=e3;
 
 			Fit ->wheightP= w1*itot/i1;
 			Fit ->wheightD= w2*itot/i2;
+			Fit->wheightHe= w3*itot/i3;
+
+			if(HeCont) cout<<"He expected: "<<HeCont->Eval(bincenter)<<": ";
 			cout<<w1<<" "<<w2<<" "<<w3<<endl;
 
 			Fit ->  Templ_P  -> Scale(Fit ->wheightP);
 			Fit ->  Templ_D  -> Scale(Fit ->wheightD);
-			Fit ->  Templ_He  -> Scale(w3*itot/i3);
+			Fit ->  Templ_He -> Scale(Fit ->wheightHe);
 
 			float Cov01=0;
 
@@ -633,9 +674,10 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 		for(int sigma=0;sigma<systpar.steps;sigma++){
 			for(int shift=0;shift<systpar.steps;shift++){
 				cout<<fits[bin][sigma][shift]<<endl;
-				if(!fitDisabled) 
-					Do_TemplateFIT(fits[bin][sigma][shift],fitrangemin,fitrangemax,HeContError,bin);
-
+				if(!fitDisabled) {
+					Do_TemplateFIT(fits[bin][sigma][shift],fitrangemin,fitrangemax,HeContModel,bins.BetaBinCent(bin));
+					cout<<bin<<endl;
+				}
 				fits[bin][sigma][shift]->Templ_DPrim=(TH1F*) fits[bin][sigma][shift]->Templ_D->Clone();
 				fits[bin][sigma][shift]->Templ_DPrim->Multiply(TransferFunction[bin]);
 				if(!fitDisabled) fits[bin][sigma][shift]->DCountsPrim = fits[bin][sigma][shift]->Templ_DPrim->Integral();
@@ -737,17 +779,16 @@ void TemplateFIT::EvalFinalErrors(){
 
 
 void TemplateFIT::CalculateFinalPDCounts(){
-	
-/*	if(!HeContError)*/ HeContError = new TH1F("","",bins.size(),0,bins.size());
-	
-		HeContError-> Smooth(1);
+
+		HeContError = new TH1F ("HeContError","HeContError",bins.size(),0,bins.size());	
+		MeasuredHeContRatio = new TH1F("Measured He over P","Measured He over P",bins.size(),0,bins.size());
+		Eval_ContError();
 		StatError -> Smooth(1);
 		SystError -> Smooth(1);
 		
 	for(int bin=0;bin<bins.size();bin++){
 
-		float toterr= pow(pow(StatError -> GetBinContent(bin+1),2) + pow(SystError -> GetBinContent(bin+1),2) 
-				+ pow(HeContError -> GetBinContent(bin+1),2) ,0.5);
+		float toterr= pow(pow(StatError -> GetBinContent(bin+1),2) + pow(SystError -> GetBinContent(bin+1),2) + pow(HeContError -> GetBinContent(bin+1),2),0.5);
 		
 		ProtonCounts->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts);
 		ProtonCounts->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts);
@@ -763,5 +804,34 @@ void TemplateFIT::CalculateFinalPDCounts(){
 	}
 		
 
+}
+
+TH1F * TemplateFIT::Eval_MCHeContRatio(std::string name){
+	TH1F * HeCountRatio = new TH1F(name.c_str(),name.c_str(),bins.size(),0,bins.size());
+	for(int bin=0;bin<bins.size();bin++){
+                TH1F * HeliumCounts = (TH1F*) fits[bin][0][5]->Templ_He->Clone();
+                TH1F * ProtonCounts = (TH1F*) fits[bin][0][5]->Templ_P->Clone();	
+		if(ProtonCounts->Integral()>0){
+			HeCountRatio->SetBinContent(bin+1,HeliumCounts->Integral()/ProtonCounts->Integral());
+			HeCountRatio->SetBinError(bin+1,pow(HeliumCounts->Integral(),0.5)/ProtonCounts->Integral());
+		}
+	}
+	return HeCountRatio;
+}
+
+void TemplateFIT::Eval_ContError(){
+
+	for(int bin=0;bin<bins.size();bin++){
+		TH1F * HeliumCounts = (TH1F*) fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_He->Clone();
+		TH1F * DeuteronCounts = (TH1F*) fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_D->Clone();
+		TH1F * ProtonCounts = (TH1F*) fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_P->Clone();
+		if(DeuteronCounts->Integral()>0)
+		HeContError->SetBinContent(bin+1,0.2*HeliumCounts->Integral(HeliumCounts->FindBin(1.5),HeliumCounts->GetNbinsX())/DeuteronCounts->Integral());
+		if(ProtonCounts->Integral()>0)
+			MeasuredHeContRatio->SetBinContent(bin+1,HeliumCounts->Integral()/ProtonCounts->Integral());
+			float toterr= pow(pow(StatError -> GetBinContent(bin+1),2) + pow(SystError -> GetBinContent(bin+1),2) ,0.5);
+			MeasuredHeContRatio->SetBinError(bin+1,toterr*HeliumCounts->Integral()/ProtonCounts->Integral());
+	}
+	return;
 }
 #endif

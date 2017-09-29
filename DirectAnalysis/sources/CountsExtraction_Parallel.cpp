@@ -94,17 +94,17 @@ int main(int argc, char * argv[])
 	cout<<"****************************** VARIABLES ***************************************"<<endl;
 
         Variables * vars = new Variables();
-	TH1F * HeContTOF=0x0;
-	TH1F * HeContNaF=0x0;
-	TH1F * HeContAgl=0x0;
+	TF1 * HeContTOF=0x0;
+	TF1 * HeContNaF=0x0;
+	TF1 * HeContAgl=0x0;
 
 
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 	if(finalResults.GetFile()){
-	      HeContTOF = (TH1F *) finalResults.Get("HeliumFragmentation/HeContTOF/HeContTOF_Eff");
-	      HeContNaF = (TH1F *) finalResults.Get("HeliumFragmentation/HeContNaF/HeContNaF_Eff");
-	      HeContAgl = (TH1F *) finalResults.Get("HeliumFragmentation/HeContAgl/HeContAgl_Eff");
+	      HeContTOF = (TF1 *) finalResults.Get("HeContTemplate/Model");
+	      HeContNaF = (TF1 *) finalResults.Get("HeContTemplate/Model");
+	      HeContAgl = (TF1 *) finalResults.Get("HeContTemplate/Model");
 	}	
 
 	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.8,1); 
@@ -121,9 +121,9 @@ int main(int argc, char * argv[])
 	
 		ParallelFiller<TemplateFIT *> Filler;
 
-		Filler.AddObject2beFilled(TOFfits,GetRecMassTOF,GetBetaTOF);
+	//	Filler.AddObject2beFilled(TOFfits,GetRecMassTOF ,GetBetaTOF);
 		Filler.AddObject2beFilled(NaFfits,GetRecMassRICH,GetBetaRICH);
-		Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);
+	//	Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);
 
 		//main loops
 		Filler.LoopOnMC(treeMC,vars);
@@ -146,26 +146,26 @@ int main(int argc, char * argv[])
 		NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,400,200);
 		Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,110,80);
 
-		TOFfits->DisableFit();
+	//	TOFfits->DisableFit();
 		TOFfits->SetHeliumContamination(HeContTOF);				
 		TOFfits->ExtractCounts(finalHistos);	
 		TOFfits->SaveFitResults(finalResults);
 
                 NaFfits->SetFitRange(0.6,3);
-                NaFfits->DisableFit();
+         //       NaFfits->DisableFit();
                 NaFfits->SetHeliumContamination(HeContNaF);
                 NaFfits->ExtractCounts(finalHistos);
                 NaFfits->SaveFitResults(finalResults);
 	
 		Aglfits->SetFitRange(0.6,3);
-                Aglfits->DisableFit();
+         //      Aglfits->DisableFit();
                 Aglfits->SetHeliumContamination(HeContAgl);
                 Aglfits->ExtractCounts(finalHistos);
                 Aglfits->SaveFitResults(finalResults);	
 	}
 
 
-	ExtractSimpleCountNr(finalHistos,finalResults,treeDT,PRB,GetRigidity,"HEPCounts","IsPreselected&LikelihoodCut&DistanceCut&IsPrimary",Refill);
+	ExtractSimpleCountNr(finalHistos,finalResults,treeDT,PRB,GetRigidity,"HEPCounts","IsPreselected&LikelihoodCut&DistanceCut&IsPrimary",false);
 	
 	return 0;
 }

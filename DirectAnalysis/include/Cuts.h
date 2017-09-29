@@ -19,16 +19,19 @@ bool IsProtonMC    (Variables * vars){ return (vars->Massa_gen<1&&vars->Massa_ge
 bool IsDeutonMC    (Variables * vars){ return (vars->Massa_gen<2&&vars->Massa_gen>1);}
 bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_gen>1);}
 
+bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0 && vars->qL1<1.6);} 
 bool IsPrimary	   (Variables * vars){ return (vars->R>1.3*vars->Rcutoff); }
 bool IsMC          (Variables * vars){ return (vars->Massa_gen>0);} 
 bool IsData        (Variables * vars){ return (vars->Massa_gen==0);}
-bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0)&&(vars->qInner>0.2&&vars->qInner<1.75);}
-bool IsMinimumBias (Variables * vars){ return (((int)vars->joinCutmask&139)==139&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0)&&(vars->qInner>0.2&&vars->qInner<1.75);}
+bool IsPreselectedHe (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0)&&(vars->qL1>1.75&&vars->qL1<2.3);}
+bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0);}
+bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0)&&L1LooseCharge1(vars);}
+bool IsMinimumBias (Variables * vars){ return (((int)vars->joinCutmask&139)==139&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0)&&L1LooseCharge1(vars);}
 
 bool IsFromNaF     (Variables * vars){ return vars->IsFromNaF();}
 bool IsFromAgl     (Variables * vars){ return vars->IsFromAgl();}
 bool IsOnlyFromToF (Variables * vars){ return !((IsFromNaF(vars))||(IsFromAgl(vars)));}
-bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0 && vars->qL1<1.6);} 
+bool InnerAndL1Charge2 (Variables * vars) { return (vars->qInner>1.8&&vars->qInner<2.5&&vars->qL1>1.8&&vars->qL1<2.5);}
 bool ProtonsMassCut(Variables * vars){ return GetRecMassTOF(vars)>0.5&&GetRecMassTOF(vars)<1.5;}
 bool DeutonsMassCut(Variables * vars){  if(IsFromNaF(vars)||IsFromAgl(vars))
 						return GetRecMassRICH(vars)>1.6&&GetRecMassRICH(vars)<4.5;
@@ -112,11 +115,14 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsMC"          ) IsPassed=IsPassed && IsMC          (Vars);
 		if(spl[i]=="IsData"	   ) IsPassed=IsPassed && IsData        (Vars);
 		if(spl[i]=="IsPreselected" ) IsPassed=IsPassed && IsPreselected (Vars); 
+		if(spl[i]=="IsPreselectedInner" ) IsPassed=IsPassed && IsPreselectedInner (Vars);
+		if(spl[i]=="IsPreselectedHe" ) IsPassed=IsPassed && IsPreselectedHe (Vars);
 		if(spl[i]=="IsMinimumBias" ) IsPassed=IsPassed && IsMinimumBias (Vars); 
 		if(spl[i]=="IsOnlyFromToF" ) IsPassed=IsPassed && IsOnlyFromToF (Vars);
 		if(spl[i]=="IsFromNaF"	   ) IsPassed=IsPassed && IsFromNaF     (Vars);
 		if(spl[i]=="IsFromAgl"	   ) IsPassed=IsPassed && IsFromAgl     (Vars);
 		if(spl[i]=="L1LooseCharge1") IsPassed=IsPassed && L1LooseCharge1(Vars);
+		if(spl[i]=="InnerAndL1Charge2")   IsPassed=IsPassed && InnerAndL1Charge2(Vars);
 		if(spl[i]=="DistanceCut")    IsPassed=IsPassed && DistanceCut(Vars);
 		if(spl[i]=="LikelihoodCut")  IsPassed=IsPassed && LikelihoodCut(Vars);
 		if(spl[i]=="QualChargeCut")  IsPassed=IsPassed && QualChargeCut(Vars);

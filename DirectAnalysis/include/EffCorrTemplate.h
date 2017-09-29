@@ -159,6 +159,7 @@ class EffCorrTemplate{
 bool EffCorrTemplate::ReinitializeHistos(bool refill){
 	TFile * input = file.GetFile();
 	bool checkifsomeismissing=false;
+	bool allfound=true;
 	for(int bin=0;bin<bins.size();bin++){
 			
 			std::string name = (basename+"_MC_Before_"+to_string(bin));
@@ -190,8 +191,8 @@ bool EffCorrTemplate::ReinitializeHistos(bool refill){
 				if((!input)||(!AfterData[lat][bin])||refill) { AfterData[lat][bin] = new TH1F(name.c_str(),name.c_str(),30,0,3); checkifsomeismissing=true;}
 			}
 		}
-	if(checkifsomeismissing||refill) Refill=true;
-	return (checkifsomeismissing||refill);	
+	if(checkifsomeismissing||refill) { Refill=true; allfound=false;}
+	return allfound;	
 }
 
 
