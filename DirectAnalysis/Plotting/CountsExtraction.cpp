@@ -53,7 +53,7 @@ std::vector<TH1F*> GetListOfTemplates(TFile * file,std::string path){
 }
 
 void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binning bins, std::string title, std::string x_udm,float xmin, float xmax,float y1min,float y1max,float y2min,float y2max);
-void DrawFits(TemplateFIT * FIT,FileSaver finalHistos, FileSaver Plots);
+void DrawFits(TemplateFIT * FIT,FileSaver finalHistos, FileSaver Plots, bool IsFitNoise = false);
 
 int main(int argc, char * argv[]){
 
@@ -103,8 +103,8 @@ int main(int argc, char * argv[]){
 	TemplateFIT * Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB);
 
 	DrawFits(ToFfits,finalHistos,Plots);
-	DrawFits(NaFfits,finalHistos,Plots);
-	DrawFits(Aglfits,finalHistos,Plots);
+	DrawFits(NaFfits,finalHistos,Plots,true);
+	DrawFits(Aglfits,finalHistos,Plots,true);
 
 
 
@@ -281,8 +281,19 @@ void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binn
 	return;
 }
 
+TH1F * CreateNoiseD( TH1F * NoiseP, TH1F * SignP, TH1F * SignD ){
+	int binpeakP = SignP->FindBin(1.0);
+	int binpeakD = SignD->FindBin(2.0);
+	TH1F * NoiseD = (TH1F *) NoiseP->Clone();
+	for(int i=0;i<NoiseD->GetNbinsX();i++){
+		if(i+1-(binpeakD-binpeakP)<1) NoiseD->SetBinContent(i+1,0);
+		NoiseD->SetBinContent(i+1,NoiseP->GetBinContent(i+1-(binpeakD-binpeakP)));
+	}
+	NoiseD->Scale(SignD->Integral()/SignP->Integral());
+	return NoiseD;
+}
 
-void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
+void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFitNoise){
 
 	std::string pathdata  = (FIT->GetName() + "/Fit Results/Data");
 	std::string pathtemplP= (FIT->GetName() + "/Fit Results/ScaledTemplatesP");
@@ -353,17 +364,21 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 		Sum->Add(TemplatesD[1]);
 		Sum->Add(TemplatesHe[1]);
 
-		PlotDistribution(gPad, TemplatesP[0] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,2,"Original Protons MC Template");
-		PlotDistribution(gPad, TemplatesD[0] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,2,"Original Deuterons MC Template");
-		PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,1e5,2,"Original He Fragm. MC Template");
-		PlotDistribution(gPad, TemplatesP[1] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC Template");
-		PlotDistribution(gPad, TemplatesD[1] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,10,"Best #chi^{2} Deuterons MC Template");
-		PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,1e5,10,"Best #chi^{2} he Fragm. MC Template");
-		
+		PlotDistribution(gPad, TemplatesP[0] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,2,"Original Protons MC Template");
+		PlotDistribution(gPad, TemplatesD[0] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,2,"Original Deuterons MC Template");
+		if(!IsFitNoise) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,1e5,2,"Original He Fragm. MC Template");
+		PlotDistribution(gPad, TemplatesP[1] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,10,"Best #chi^{2} Protons MC Template");
+		PlotDistribution(gPad, TemplatesD[1] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,10,"Best #chi^{2} Deuterons MC Template");
+		if(!IsFitNoise) PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,1e5,10,"Best #chi^{2} he Fragm. MC Template");
+		else {
+			TH1F * NoiseD = CreateNoiseD(TemplatesHe[1],TemplatesP[1],TemplatesD[1]);
+			PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^2]","Counts",kRed-9,"same",1e-1,1e5,10,"Noise P Template",true);
+			PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^2]","Counts",kBlue-7,"same",1e-1,1e5,10,"Noise D Template",true);
+		}		
 
 		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"ePsame",1,1e5,3,"ISS data",false,true);
 		if(Fits.size()>0) { PlotDistribution(gPad, Fits[0],"Reconstructed Mass [gev/c^2]","counts",6,"same",1,1e5,4,"Fraction Fit");
-				     PlotDistribution(gPad, Sum,"Reconstructed Mass [gev/c^2]","counts",7,"same",1,1e5,4,"Sum of Contributions");	
+				     PlotDistribution(gPad, Sum,"Reconstructed Mass [gev/c^2]","counts",1,"same",1,1e5,4,"Sum of Contributions");	
 		}
 
 		Plots.Add(c3);
@@ -410,12 +425,17 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots){
 			OverCutoffP->GetBinContent(OverCutoffP->GetMaximumBin())/
 			NoCutoffP->GetBinContent(NoCutoffP->GetMaximumBin()) );
 
-		PlotDistribution(gPad, NoCutoffP,"Reconstructed Mass [GeV/c^2]","Primary Counts",2,"same",1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"Best #chi^{2} Protons MC Template");
-		PlotDistribution(gPad, OverCutoffP,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC (Cutoff filtered)");
-		PlotDistribution(gPad, OverCutoffD,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
-		PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
-	
-		PlotDistribution(gPad, Datas[1],"Reconstructed Mass [GeV/c^2]","Primary Counts",1,"ePsame",1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"ISS data",false,true);
+		PlotDistribution(gPad, NoCutoffP,"Reconstructed Mass [GeV/c^2]","Primary Counts",2,"same",1e-1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"Best #chi^{2} Protons MC Template");
+		PlotDistribution(gPad, OverCutoffP,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC (Cutoff filtered)");
+		PlotDistribution(gPad, OverCutoffD,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
+		if(!IsFitNoise) PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
+		else {
+                        TH1F * NoiseD = CreateNoiseD(OverCutoffHe,OverCutoffP,OverCutoffD);
+                        PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",kRed-9,"same",1e-1,1e5,10,"Noise P Template",true);
+                        PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^2]","Counts",kBlue-7,"same",1e-1,1e5,10,"Noise D Template",true);
+                }
+		
+		PlotDistribution(gPad, Datas[1],"Reconstructed Mass [GeV/c^2]","Primary Counts",1,"ePsame",1e-1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"ISS data",false,true);
 
 		Plots.Add(c6);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());

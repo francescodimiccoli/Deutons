@@ -1,3 +1,8 @@
+#ifndef COMMONGLOBALS
+#define COMMONGLOBALS
+
+#include "TSpline.h"
+
 using namespace std;
 int Ev_Num;
 int Timebeg;
@@ -34,9 +39,12 @@ TSpline3 *EdepTrackbeta_d;
 TSpline3 *EdepTOFDbeta_d;	
 
 
+
 TSpline3 *Corr_TOFU ;
 TSpline3 *Corr_Track;
 TSpline3 *Corr_TOFD;
+
+TSpline3 *EdepTRDbeta;	
 
 
 
@@ -56,7 +64,7 @@ TSpline3 *SignalNaF[9];
 TSpline3 *BkgndAgl[9];
 TSpline3 *SignalAgl[9];
 
-
+#endif
 
 
 

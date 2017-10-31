@@ -1,3 +1,35 @@
+#ifndef RESOLUTION_H
+#define RESOLUTION_H
+
+#include <bitset>
+#include "TROOT.h"
+#include "TNtuple.h"
+#include <TSpline.h>
+#include "../include/binning.h"
+#include "TFile.h"
+#include "TH1.h"
+#include "TF1.h"
+#include <TVector3.h>
+#include "TMath.h"
+#include <TFile.h>
+#include "TFile.h"
+#include "TH2.h"
+#include "TF2.h"
+#include <TVector3.h>
+#include "TMath.h"
+#include "TGraphErrors.h"
+#include "TFractionFitter.h"
+#include "TRandom3.h"
+#include "../include/GlobalBinning.h"
+#include "string.h"
+
+#include "filesaver.h"
+#include "FitError.h"
+#include "Variables.hpp"
+#include "Cuts.h"
+
+using namespace std;
+
 class Resolution{
 
 	private:
@@ -266,3 +298,29 @@ bool Resolution::CheckHistos(){
 	}		
 	return check;
 }
+
+bool ReadCalibration(){ 
+ 
+        cout<<"****************** CALIB. READING **************************"<<endl; 
+        string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/DirectAnalysis/include/CalibTRD.root"); 
+        FileSaver Calibration;   
+        Calibration.setName(nomecal.c_str()); 
+        bool checkfile = Calibration.CheckFile(); 
+ 
+        if(checkfile) cout<<"calibration file found"<<endl; 
+        else { cout<<"calibration file not found"<<endl; return false;} 
+ 
+        Resolution * EdepTRDMC_P = new Resolution(Calibration,"EdepTRDvsBeta Measured MC",ToFResB); 
+        Resolution * EdepTRDDT_P = new Resolution(Calibration,"EdepTRDvsBeta Measured DT",ToFResB); 
+ 
+ 
+        EdepTRDbeta =(TSpline3 *) EdepTRDDT_P ->Get_MeansModel();  
+        cout<<"TRD spline: "<<EdepTRDbeta<<endl; 
+ 
+        return checkfile; 
+ 
+} 
+ 
+
+
+#endif

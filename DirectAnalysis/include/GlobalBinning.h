@@ -5,6 +5,8 @@
 #include <TMVA/Tools.h>
 #include "TRandom3.h"
 
+using namespace std;
+
 int nbinsr=43;
 int nbinsToF=18;
 int nbinsNaF=18;
@@ -42,6 +44,7 @@ Binning PResB(proton);
 TMVA::Reader *readerTOF;
 TMVA::Reader *readerNaF;
 TMVA::Reader *readerAgl;
+
 
 
 

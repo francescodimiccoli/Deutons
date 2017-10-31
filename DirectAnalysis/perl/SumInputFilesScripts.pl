@@ -12,7 +12,7 @@ print "Total Files: ".$num_Rootuple."\n";
 @rootuple;
 $i=0;
 
-$njobs = 250;
+$njobs = $ARGV[2];
 
 for($n=0;$n<$num_Rootuple;$n++){
 	if($Rootuple[$n]>$ARGV[0]&& $Rootuple[$n]<$ARGV[1]){ 
@@ -42,17 +42,17 @@ for ($n=0;$n<$njobs; $n++)
 
 
 print "Listing All MC Files..\n";
-chomp (@MC_P = `ls  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1MC/protons | grep -v "log" |  sed s/.root//g`);
+chomp (@MC_P = `ls  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/pB800/ | grep -v "log" |  sed s/.root//g`);
 $num_MC_P = scalar(@MC_P);
 
 print "Total Files MC P: ".$num_MC_P."\n";
 
-chomp (@MC_D = `ls  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1MC/deuterons | grep -v "log" |  sed s/.root//g`);
+chomp (@MC_D = `ls  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/d1059/ | grep -v "log" |  sed s/.root//g`);
 $num_MC_D = scalar(@MC_D);
 
 print "Total Files MC D: ".$num_MC_D."\n";
 
-chomp (@MC_He = `ls  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1MC/He | grep -v "log" |  sed s/.root//g`);
+chomp (@MC_He = `ls  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/HeB1043/ | grep -v "log" |  sed s/.root//g`);
 $num_MC_He = scalar(@MC_He);
 
 print "Total Files MC He: ".$num_MC_He."\n";
@@ -69,7 +69,7 @@ for ($n=0;$n<$njobs; $n++)
 
 	for ($j=($num_MC_P)/$njobs*$n ; $j<($num_MC_P)/$njobs*($n+1) ; $j++)
         {
-                                print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1MC/protons/$MC_P[$j].root "
+                                print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/pB800/$MC_P[$j].root "
         }
         print OUT "\n
 
@@ -77,7 +77,7 @@ for ($n=0;$n<$njobs; $n++)
 
 	for ($j=($num_MC_D)/$njobs*$n ; $j<($num_MC_D)/$njobs*($n+1) ; $j++)
         {
-                                print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1MC/deuterons/$MC_D[$j].root "
+                                print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/d1059/$MC_D[$j].root "
         }
         print OUT "\n
 
@@ -85,7 +85,7 @@ for ($n=0;$n<$njobs; $n++)
 
 	for ($j=($num_MC_He)/$njobs*$n ; $j<($num_MC_He)/$njobs*($n+1) ; $j++)
         {
-                                print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1MC/He/$MC_He[$j].root "
+                                print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/HeB1043/$MC_He[$j].root "
         }
         print OUT "\n
 

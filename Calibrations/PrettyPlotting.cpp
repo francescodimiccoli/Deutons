@@ -293,7 +293,15 @@ int main(int argc, char * argv[]){
 	PlotFitResults(Plots,EdepTrackMC_P,EdepTrackDT_P,"#beta_{TOF}",0.45,1,0,13,"protons MC","ISS data");
 
 	*/
-	
+
+	Resolution * EdepTRDMC_P = new Resolution(finalHistos,"EdepTRDvsBeta Measured MC",ToFResB);
+	Resolution * EdepTRDDT_P = new Resolution(finalHistos,"EdepTRDvsBeta Measured DT",ToFResB);
+
+	PlotFitResults(Plots,EdepTRDMC_P,EdepTRDDT_P,"#beta_{TOF}",0.45,1,0,0.1,"protons MC","ISS data");
+
+
+
+/*	
 	Resolution * QUTOFMC_P = new Resolution(finalHistos,"QUTOFvsBeta Measured MC",ToFResB);
         Resolution * QUTOFDT_P = new Resolution(finalHistos,"QUTOFvsBeta Measured DT",ToFResB);
 
@@ -313,7 +321,7 @@ int main(int argc, char * argv[]){
 
         PlotFitResults(Plots,QInnerMC_P,QInnerDT_P,"#beta_{TOF}",0.45,1,0,2,"protons MC","ISS data");
 
-	
+*/	
 	return 0;
 	
 }

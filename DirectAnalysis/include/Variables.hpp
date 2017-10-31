@@ -67,13 +67,21 @@ struct Variables{
 	float EdepTOFU=0;
 	float EdepTOFD=0;
 	float EdepTrack=0;	
+	float EdepTRD=0;
 	float EdepL1=0;	
 	
 	//MC vars
 	float	   Momento_gen;
 	float	   Massa_gen;		
 	float	   mcweight=0;
+	UInt_t 	   MCClusterGeantPids; 	
 
+	//RICH Variables
+ 	float RICHprob;
+    	int RICHPmts;
+    	float RICHcollovertotal;
+    	int RICHgetExpected;
+	 
 
 	Variables(){
 		BDTreader();
@@ -146,6 +154,7 @@ void Variables::ReadBranches(TTree * tree){
          tree->SetBranchAddress("trtrack_edep"	 ,&trtrack_edep);
          tree->SetBranchAddress("trtot_edep"	 ,&trtot_edep);
          tree->SetBranchAddress("TOFEndep"	 ,&Endep);
+	 tree->SetBranchAddress("EdepTRD"	 ,&EdepTRD);
 	 tree->SetBranchAddress("BetaRICH"	 ,&BetaRICH_new);
 	 tree->SetBranchAddress("RICHmask"	 ,&RICHmask_new);
 	 tree->SetBranchAddress("EnergyECAL"	 ,&EdepECAL);
@@ -167,9 +176,15 @@ void Variables::ReadBranches(TTree * tree){
 	 tree->SetBranchAddress("qInner"	 ,&qInner);  
 	 tree->SetBranchAddress("qUtof"		 ,&qUtof);  
 	 tree->SetBranchAddress("qLtof"		 ,&qLtof);  
-	                                              
+	 tree->SetBranchAddress("RICHprob",&RICHprob);
+    	 tree->SetBranchAddress("RICHPmts",&RICHPmts);
+    	 tree->SetBranchAddress("RICHcollovertotal",&RICHcollovertotal);
+    	 tree->SetBranchAddress("RICHgetExpected",&RICHgetExpected);
+	                                             
 	 tree->SetBranchAddress("GenMomentum"	 ,&Momento_gen);  
 	 tree->SetBranchAddress("GenMass"	 ,&Massa_gen);  		
+	 tree->SetBranchAddress("MCClusterGeantPids",&MCClusterGeantPids); 	
+
 }
 
 void Variables::Update(){
@@ -227,6 +242,7 @@ void Variables::PrintCurrentState(){
 	cout<<"BetaRICH_new:          "<<BetaRICH_new<<endl;
 	cout<<"RICHmask_new:          "<<RICHmask_new<<endl;
 	cout<<"EdepECAL:              "<<EdepECAL<<endl;
+	cout<<"EdepTRD:               "<<EdepTRD<<endl;
 	cout<<"NAnticluster:          "<<NAnticluster<<endl;
 	cout<<"NTofClusters:          "<<NTofClusters<<endl;
 	cout<<"NTofClustersusati:     "<<NTofClustersusati<<endl;
@@ -295,6 +311,10 @@ float GetGenMomentum     (Variables * vars) {return vars->Momento_gen;}
 float GetInverseEdepUToF (Variables * vars) {return 1/vars->EdepTOFU;}
 float GetInverseEdepLToF (Variables * vars) {return 1/vars->EdepTOFD;}
 float GetInverseEdepTrack(Variables * vars) {return 1/vars->EdepTrack;}
+float GetInverseEdepTRD  (Variables * vars) {return 1/vars->EdepTRD;}
+
+
+
 float GetBetaGen         (Variables * vars) {return pow((pow((vars->Momento_gen/vars->Massa_gen),2)/(pow((vars->Momento_gen/vars->Massa_gen),2)+1)),0.5);}
 float GetInverseBetaTOF  (Variables * vars) {return 1/vars->Beta - 1/GetBetaGen(vars);}
 float GetInverseBetaRICH (Variables * vars) {return 1/vars->BetaRICH_new - 1/GetBetaGen(vars);}
@@ -302,6 +322,9 @@ float GetBetaTOF         (Variables * vars) {return vars->Beta;}
 float GetBetaRICH        (Variables * vars) {return vars->BetaRICH_new;}
 float GetRecMassTOF	 (Variables * vars) {return (vars->R/vars->Beta)*pow((1-pow(vars->Beta,2)),0.5);}
 float GetRecMassRICH     (Variables * vars) {return (vars->R/vars->BetaRICH_new)*pow((1-pow(vars->BetaRICH_new,2)),0.5);}
+float GetNegRecMassTOF	 (Variables * vars) {return (-vars->R/vars->Beta)*pow((1-pow(vars->Beta,2)),0.5);}
+float GetNegRecMassRICH     (Variables * vars) {return (-vars->R/vars->BetaRICH_new)*pow((1-pow(vars->BetaRICH_new,2)),0.5);}
+
 
 float GetRigidity (Variables * vars) {return vars->R;}
 
@@ -318,4 +341,8 @@ float GetUtofQ	(Variables * vars) {return vars->qUtof; }
 float GetLtofQ	(Variables * vars) {return vars->qLtof; }
 float GetInnerQ	(Variables * vars) {return vars->qInner;}
 float GetL1Q (Variables * vars) {return vars->qL1;}
+int   GetPIDatL1 (Variables * vars) {return static_cast<int> ((vars->MCClusterGeantPids)&255);}
+int   GetPIDatL2 (Variables * vars) {return static_cast<int> ((vars->MCClusterGeantPids>>8)&255);}
+int   GetPIDatL3 (Variables * vars) {return static_cast<int> ((vars->MCClusterGeantPids>>16)&255);}
+
 #endif

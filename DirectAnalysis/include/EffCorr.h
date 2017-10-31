@@ -29,15 +29,15 @@ class EffCorr{
 		directory = Directory;
 	}	
 
-	void SetUpBadEventSimulator(BadEventSimulator * Sim) {
+	virtual void SetUpBadEventSimulator(BadEventSimulator * Sim) {
 		BadEvSim = Sim;
 	};
 	
-	void LoadEventIntoBadEvSim(Variables * vars) {
+	virtual void LoadEventIntoBadEvSim(Variables * vars) {
 		EffMC->LoadEventIntoBadEvSim(vars);
 	}
 	
-	bool ReinitializeHistos(bool refill){
+	virtual bool ReinitializeHistos(bool refill){
 		bool checkifsomeismissing=false;
 		bool allfound=true;
 		if(!(EffMC -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
@@ -45,18 +45,18 @@ class EffCorr{
 	 	if(checkifsomeismissing||refill) allfound=false;
 		return allfound;
 	}
-	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+	virtual void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 		EffMC -> FillEventByEventMC(vars,var,discr_var);
 	}
 	
-	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+	virtual void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 		EffData -> FillEventByEventData(vars,var,discr_var);
 	}
-	void Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
-	void Save(FileSaver finalhistos);
-	void Eval_Efficiencies();
-	void SaveResults(FileSaver finalhistos);
-	void Eval_Corrections();
+	virtual void Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
+	virtual void Save(FileSaver finalhistos);
+	virtual void Eval_Efficiencies();
+	virtual void SaveResults(FileSaver finalhistos);
+	virtual void Eval_Corrections();
 	TH1F * GetCorrectionLat(int lat)  {return LatCorrections[lat];}
 	TH1F * GetGlobCorrection()	  {return GlobalCorrection;}
 

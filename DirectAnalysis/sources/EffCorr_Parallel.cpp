@@ -124,18 +124,12 @@ int main(int argc, char * argv[])
 	LikCorr_NaF->SetUpBadEventSimulator(NaFBadEvSimulator);
 	LikCorr_Agl->SetUpBadEventSimulator(AglBadEvSimulator);
 
+	ParallelFiller<EffCorr*> Filler2;
+	Filler2.AddObject2beFilled(HEPPresEffCorr,GetRigidity,GetRigidity);
+	Filler2.AddObject2beFilled(HEPQualEffCorr,GetRigidity,GetRigidity);
+	Filler2.AddObject2beFilled(RICHEffCorr_NaF,GetRigidity,GetRigidity);
+	Filler2.AddObject2beFilled(RICHEffCorr_Agl,GetRigidity,GetRigidity);	
 
-	ParallelFiller<EffCorr*> Filler1;
-	Filler1.AddObject2beFilled(HEPPresEffCorr,GetRigidity,GetRigidity);
-	Filler1.AddObject2beFilled(HEPQualEffCorr,GetRigidity,GetRigidity);
-	Filler1.AddObject2beFilled(RICHEffCorr_NaF,GetRigidity,GetRigidity);
-	Filler1.AddObject2beFilled(RICHEffCorr_Agl,GetRigidity,GetRigidity);	
-	Filler1.ReinitializeAll(Refill);
-	//main loops 1
-	Filler1.LoopOnMC(treeMC,vars);
-	Filler1.LoopOnData(treeMC,vars);
-
-	ParallelFiller<EffCorrTemplate*> Filler2;
 	Filler2.AddObject2beFilled(DistCorr_TOF,GetRecMassTOF,GetSmearedBetaTOF);
 	Filler2.AddObject2beFilled(DistCorr_NaF,GetRecMassRICH,GetSmearedBetaRICH);
 	Filler2.AddObject2beFilled(DistCorr_Agl,GetRecMassRICH,GetSmearedBetaRICH);

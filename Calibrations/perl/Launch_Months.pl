@@ -13,9 +13,9 @@ for($i=$ARGV[0];$i<$ARGV[1];$i++){
 	$jobs = `bjobs|wc -l`;
 	$jobsrun = `bjobs|grep RUN|wc -l`;
 	$seconds=0;
-	#if($jobs<1){
-	#	system("perl Create_lsfscripts.pl $date[$i] $date[$i+1]");
-	#}
+	if($jobs<1){
+		system("perl Create_lsfscripts.pl $date[$i] $date[$i+1]");
+	}
 	if($monthsdone>0) { system("hadd -f ../Calibfiles/$date[$i-1]/Calib.root ../Calibfiles/$date[$i-1]/Calib_data*"); }
 	while($jobs>0){
 		$jobs = `bjobs|wc -l`;

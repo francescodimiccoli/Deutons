@@ -2,7 +2,7 @@
 #include "BetaSmearing.h"
 
 
-class EffCorrTemplate{
+class EffCorrTemplate: public EffCorr{
 
 	private:
 
@@ -53,7 +53,8 @@ class EffCorrTemplate{
 	bool Refill = false;
 	public:
 
-	EffCorrTemplate(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,bool IsRICH=false){
+	EffCorrTemplate(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,bool IsRICH=false):
+	EffCorr(File,Basename,Directory,Bins,Cut_before,Cut_after,Cut_Data,Cut_MC){
 		for(int bin=0;bin<Bins.size();bin++){
 			
 			std::string name = (Basename+"_MC_Before_"+to_string(bin));
@@ -177,8 +178,16 @@ bool EffCorrTemplate::ReinitializeHistos(bool refill){
 			name = (basename+"_MCD_After_"+to_string(bin));
 			if(input) AfterMC_D[bin] = (TH1F*)input->Get(((directory+"/"+basename+"_MC")+"/"+name).c_str());
                         if((!input)||(!AfterMC_D[bin])||refill) { AfterMC_D[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3); checkifsomeismissing=true;}
-
-		}
+		
+			name = (basename+"_DT_Glob_Before_"+to_string(bin));
+			if(input) BeforeDataGlob[bin] = (TH1F*)input->Get((directory+"/"+basename+"_Glob"+"/"+name).c_str());
+                        if((!input)||(!BeforeDataGlob[bin])||refill) { BeforeDataGlob[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3); checkifsomeismissing=true;}
+		
+			name = (basename+"_DT_Glob_After_"+to_string(bin));
+			if(input) AfterDataGlob[bin] = (TH1F*)input->Get((directory+"/"+basename+"_Glob"+"/"+name).c_str());
+                        if((!input)||(!AfterDataGlob[bin])||refill) { AfterDataGlob[bin] = new TH1F(name.c_str(),name.c_str(),30,0,3); checkifsomeismissing=true;}
+					
+			}
 		for(int lat=0;lat<10;lat++) {
 			for(int bin=0;bin<bins.size();bin++){
 			
@@ -222,12 +231,6 @@ void EffCorrTemplate::Fill(TTree * treeMC,TTree * treeDT, Variables * vars,float
 		}
 	}
 
-	for(int bin=0;bin<bins.size();bin++)
-		for(int lat=0;lat<10;lat++){
-			BeforeDataGlob[bin]->Add(BeforeData[lat][bin]);
-			AfterDataGlob[bin]->Add(AfterData[lat][bin]);
-		}
-			
 	return;
 }
 
@@ -235,8 +238,8 @@ void EffCorrTemplate::FillEventByEventData(Variables * vars, float (*var) (Varia
 	if(!Refill) return;
 	int kbin;
 	kbin = 	bins.GetBin(discr_var(vars));
-	if(ApplyCuts((cut_before+"&"+cut_data).c_str(),vars)&&kbin>0)	{BeforeData[GetLatitude(vars)][kbin]->Fill(var(vars)); }
-	if(ApplyCuts((cut_after +"&"+cut_data).c_str(),vars)&&kbin>0)		{AfterData[GetLatitude(vars)][kbin]->Fill(var(vars));}
+	if(ApplyCuts((cut_before+"&"+cut_data).c_str(),vars)&&kbin>0)		{BeforeData[GetLatitude(vars)][kbin]->Fill(var(vars));  BeforeDataGlob[kbin]->Fill(var(vars));}
+	if(ApplyCuts((cut_after +"&"+cut_data).c_str(),vars)&&kbin>0)		{AfterData[GetLatitude(vars)][kbin]->Fill(var(vars));   AfterDataGlob[kbin]->Fill(var(vars));}
 	return;	
 
 }
@@ -249,11 +252,11 @@ void EffCorrTemplate::FillEventByEventMC(Variables * vars, float (*var) (Variabl
 		betasmear=BadEvSim->SimulateBadEvents(betasmear);
 
 	int kbin =  bins.GetBin(betasmear);
-	float mass = var(vars)/betasmear * pow((1-pow(betasmear,2)),0.5);
+	float mass = vars->R/betasmear * pow((1-pow(betasmear,2)),0.5);
 	if(ApplyCuts((cut_before+"&"+cut_MC +"&IsProtonMC").c_str(),vars)&&kbin>0)  BeforeMC_P[kbin] ->Fill(mass,vars->mcweight);		
 	if(ApplyCuts((cut_after +"&"+cut_MC +"&IsProtonMC").c_str(),vars)&&kbin>0)  AfterMC_P[kbin]  ->Fill(mass,vars->mcweight);
 	if(ApplyCuts((cut_before+"&"+cut_MC +"&IsDeutonMC").c_str(),vars)&&kbin>0)  BeforeMC_D[kbin] ->Fill(mass,vars->mcweight);		
-	if(ApplyCuts((cut_after +"&"+cut_MC +"&IsProtonMC").c_str(),vars)&&kbin>0)  AfterMC_D[kbin]  ->Fill(mass,vars->mcweight);
+	if(ApplyCuts((cut_after +"&"+cut_MC +"&IsDeutonMC").c_str(),vars)&&kbin>0)  AfterMC_D[kbin]  ->Fill(mass,vars->mcweight);
 
 	return;	
 }
@@ -276,6 +279,12 @@ void EffCorrTemplate::Save(FileSaver finalhistos){
 		}	
 		finalhistos.writeObjsInFolder((directory+"/"+basename+"_lat/lat"+to_string(lat)).c_str());
 	}
+	for(int bin=0;bin<bins.size();bin++){
+		finalhistos.Add(BeforeDataGlob[bin]);
+                finalhistos.Add(AfterDataGlob[bin]);
+	}
+	finalhistos.writeObjsInFolder((directory+"/"+basename+"_Glob").c_str());
+
 	return;
 }
 
@@ -306,6 +315,7 @@ float GetStatError(TFit * FitAfter,TFit * FitBefore){
 }
 
 void EffCorrTemplate::Eval_Efficiencies(){
+
 
 	MCEfficiency_P=EvalEfficiency(MCEfficiency_P,BeforeMC_P,AfterMC_P);
 	MCEfficiency_D=EvalEfficiency(MCEfficiency_D,BeforeMC_D,AfterMC_D);

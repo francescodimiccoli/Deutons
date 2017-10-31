@@ -208,8 +208,20 @@ int main(int argc, char * argv[])
 	CalculateMeanRatio( EdepLTOFDT_P,EdepLTOFMC_P, finalHistos);
 
 */
+	//TRD
+	Resolution * EdepTRDMC_P = new Resolution("EdepTRDvsBeta Measured MC",ToFResB,"IsPreselected&IsProtonMC&L1LooseCharge1",1000,-0.15,0.15);
+	Calculate_Resolution( EdepTRDMC_P, varsMC,checkfile, treeMC, finalHistos, GetInverseEdepTRD, GetBetaTOF,meanedep,true);
+
+	Resolution * EdepTRDDT_P = new Resolution("EdepTRDvsBeta Measured DT",ToFResB,"IsPreselected&IsData&L1LooseCharge1",1000,-0.15,0.15);
+	Calculate_Resolution( EdepTRDDT_P, varsDT,checkfile, treeDT, finalHistos, GetInverseEdepTRD, GetBetaTOF,meanedep,true);
+
+	CalculateMeanRatio( EdepTRDDT_P,EdepTRDMC_P, finalHistos);
+
+
+
+
 	// Charge Calibration Check
-	
+/*	
 	//QUtof 
 	Resolution * QUTOFMC_P = new Resolution("QUTOFvsBeta Measured MC",ToFResB,"IsPreselected&IsProtonMC&L1LooseCharge1",300,0,3); 
 	Calculate_Resolution( QUTOFMC_P, varsMC,checkfile, treeMC, finalHistos, GetUtofQ, GetBetaTOF,meanedep,false,0.8,1.08,true);
@@ -236,6 +248,8 @@ int main(int argc, char * argv[])
         Calculate_Resolution( QInnerDT_P, varsDT,checkfile, treeDT, finalHistos, GetInnerQ, GetBetaTOF,meanedep,false,0.8,1.08,true);	
 
 	CalculateMeanRatio( QInnerDT_P,QInnerMC_P, finalHistos);
+*/
+
 	
 
 	return 0;

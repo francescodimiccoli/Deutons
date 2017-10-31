@@ -6,7 +6,8 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
-
+#include "Commonglobals.cpp"
+#include "Variables.hpp"
 
 using namespace std;
 
@@ -19,14 +20,20 @@ bool IsProtonMC    (Variables * vars){ return (vars->Massa_gen<1&&vars->Massa_ge
 bool IsDeutonMC    (Variables * vars){ return (vars->Massa_gen<2&&vars->Massa_gen>1);}
 bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_gen>1);}
 
+bool IsFragmentedPfromHeMC (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
+bool IsFragmentedDfromHeMC (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==45&&(GetPIDatL3(vars))==45;}
+bool IsFragmentedTMC 	   (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==46&&(GetPIDatL3(vars))==46;}
+bool IsPureDMC 		   (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDatL2(vars))==45&&(GetPIDatL3(vars))==45;}
+bool IsFragmentedPfromDMC  (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
+
 bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0 && vars->qL1<1.6);} 
 bool IsPrimary	   (Variables * vars){ return (vars->R>1.3*vars->Rcutoff); }
 bool IsMC          (Variables * vars){ return (vars->Massa_gen>0);} 
 bool IsData        (Variables * vars){ return (vars->Massa_gen==0);}
-bool IsPreselectedHe (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0)&&(vars->qL1>1.75&&vars->qL1<2.3);}
-bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0);}
-bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0)&&L1LooseCharge1(vars);}
-bool IsMinimumBias (Variables * vars){ return (((int)vars->joinCutmask&139)==139&&(vars->R_L1>0||vars->EdepL1>0||vars->qL1>0)&&vars->R>0)&&L1LooseCharge1(vars);}
+bool IsPreselectedHe (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->EdepL1>0||vars->qL1>0)&&vars->R!=0)&&(vars->qL1>1.75&&vars->qL1<2.3);}
+bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->EdepL1>0||vars->qL1>0)&&vars->R!=0);}
+bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->EdepL1>0||vars->qL1>0)&&vars->R!=0)&&L1LooseCharge1(vars);}
+bool IsMinimumBias (Variables * vars){ return (((int)vars->joinCutmask&139)==139&&(vars->EdepL1>0||vars->qL1>0)&&vars->R!=0)&&L1LooseCharge1(vars);}
 
 bool IsFromNaF     (Variables * vars){ return vars->IsFromNaF();}
 bool IsFromAgl     (Variables * vars){ return vars->IsFromAgl();}
@@ -50,8 +57,8 @@ bool ControlSampleMassCut(Variables * vars){  if(IsFromNaF(vars)||IsFromAgl(vars
 						return GetRecMassTOF(vars)>0.2;
 				     }
 
-
-
+bool IsTRDok(Variables * vars){	return (vars->EdepTRD>(1/EdepTRDbeta->Eval(vars->Beta))-100&&vars->EdepTRD<(1/EdepTRDbeta->Eval(vars->Beta))+100);}
+bool IsNegativeCharged (Variables * vars) {return (vars->Beta>0&&vars->R<0);}
 
 
 bool Qualitycut(Variables * vars, float cutvariable, float cutTOF, float cutNaF, float cutAgl){
@@ -111,6 +118,13 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsProtonMC"	   ) IsPassed=IsPassed && IsProtonMC    (Vars);
 		if(spl[i]=="IsDeutonMC"	   ) IsPassed=IsPassed && IsDeutonMC    (Vars);
 		if(spl[i]=="IsHeliumMC"	   ) IsPassed=IsPassed && IsHeliumMC    (Vars);
+
+		if(spl[i]=="IsFragmentedPfromHeMC") IsPassed=IsPassed && IsFragmentedPfromHeMC    (Vars);
+		if(spl[i]=="IsFragmentedDfromHeMC") IsPassed=IsPassed && IsFragmentedDfromHeMC    (Vars);
+		if(spl[i]=="IsFragmentedTMC") 	    IsPassed=IsPassed && IsFragmentedTMC    (Vars);
+		if(spl[i]=="IsPureDMC") 	    IsPassed=IsPassed && IsPureDMC    (Vars);
+		if(spl[i]=="IsFragmentedPfromDMC")  IsPassed=IsPassed && IsFragmentedPfromDMC    (Vars);
+
 		if(spl[i]=="IsPrimary"	   ) IsPassed=IsPassed && IsPrimary     (Vars);
 		if(spl[i]=="IsMC"          ) IsPassed=IsPassed && IsMC          (Vars);
 		if(spl[i]=="IsData"	   ) IsPassed=IsPassed && IsData        (Vars);
@@ -135,6 +149,8 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="TofBetaSafetyCut")  IsPassed=IsPassed && TofBetaSafetyCut(Vars);
 		if(spl[i]=="NafBetaSafetyCut")  IsPassed=IsPassed && NafBetaSafetyCut(Vars);
 		if(spl[i]=="AglBetaSafetyCut")  IsPassed=IsPassed && AglBetaSafetyCut(Vars);
+		if(spl[i]=="IsTRDok")  		IsPassed=IsPassed && IsTRDok(Vars);
+		if(spl[i]=="IsNegativeCharged") IsPassed=IsPassed && IsNegativeCharged(Vars);
 		
 		for(int lat=0;lat<10;lat++)
 			if(spl[i]==("IsInLatZone"+to_string(lat)).c_str())      IsPassed=IsPassed && IsInLatZone(Vars,lat);

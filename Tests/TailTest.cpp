@@ -21,12 +21,12 @@
 #include "TGraphErrors.h"
 #include "TObjArray.h"
 
-#include "../include/filesaver.h"
+#include "../DirectAnalysis/include/filesaver.h"
 
-#include "../include/GlobalBinning.h"
+#include "../DirectAnalysis/include/GlobalBinning.h"
 
-#include "../Ntuple-making/Commonglobals.cpp"
-#include "../include/Variables.hpp"
+#include "../DirectAnalysis/include/Commonglobals.cpp"
+#include "../DirectAnalysis/include/Variables.hpp"
 
 int frac =20;
 using namespace std;
@@ -43,14 +43,14 @@ float SmearBeta(float Beta, float sigma, float shift){
 int TailTest(){
 	cout<<"************************ READING DATA ***************************"<<endl;
 
-	string inputfileMC = "../Ntuple-making/Ntuples/MC/NtupleMC.root";
+	string inputfileMC = "~/fdimicco/MAIN/sommaMC/temp/sommaMC123.root";
 	TFile * inputMC = TFile::Open(inputfileMC.c_str());
-	string inputfileDT = "../Ntuple-making/Ntuples/1314835200/NtupleData.root";
+	string inputfileDT = "~/fdimicco/MAIN/sommadati/sommadati123.root";
 	TFile * inputDT = TFile::Open(inputfileDT.c_str());
 
 
-	TNtuple * treeMC = (TNtuple *)inputMC->Get("Q");
-	TNtuple * treeDT = (TNtuple *)inputDT->Get("Q");
+	TTree * treeMC = (TTree *)inputMC->Get("parametri_geo");
+	TTree * treeDT = (TTree *)inputDT->Get("parametri_geo");
 	
 	cout<<inputMC<<" "<<inputDT<<endl;
 
@@ -69,23 +69,23 @@ int TailTest(){
 	TH1F * MassMCSmear3 = new TH1F("MassMCSmear3","MassMCSmear3",100,0,5);
 			
 
-	vars->ReadAnalysisBranches(treeDT);
+	vars->ReadBranches(treeDT);
 
         for(int i=0;i<treeDT->GetEntries()/frac;i++){
-                vars->AnalysisVariablseReset();
                 UpdateProgressBar(i, treeDT->GetEntries()/frac);
                 treeDT->GetEvent(i);
-		if(vars->qL1>0&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qInner>0.8&&vars->qInner<1.3&&vars->Beta>0.83&&vars->Beta<0.866)
+		vars->Update();
+		if(vars->qL1>0&&vars->qL1<1.7&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qInner>0.8&&vars->qInner<1.3&&vars->Beta>0.83&&vars->Beta<0.866)
 			MassDT->Fill(vars->R/vars->Beta*pow(1-pow(vars->Beta,2),0.5));
 		
 	}
 
-	vars->ReadAnalysisBranches(treeMC);
+	vars->ReadBranches(treeMC);
 
         for(int i=0;i<treeMC->GetEntries()/frac;i++){
-                vars->AnalysisVariablseReset();
                 UpdateProgressBar(i, treeMC->GetEntries()/frac);
                 treeMC->GetEvent(i);
+		vars->Update();
 		if(vars->qL1>0&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qInner>0.8&&vars->qInner<1.3&&vars->Beta>0.83&&vars->Beta<0.866&&vars->Massa_gen<1)
 			MassMC->Fill(vars->R/vars->Beta*pow(1-pow(vars->Beta,2),0.5),vars->mcweight);
 		
@@ -94,15 +94,15 @@ int TailTest(){
 		
 
 		if(vars->R>2.7) betasmear = SmearBeta(vars->Beta,90,0);
-		if(vars->qL1>0&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qInner>0.8&&vars->qInner<1.3&&betasmear>0.83&&betasmear<0.866&&vars->Massa_gen<1)
+		if(vars->qL1>0&&vars->qL1<1.7&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qInner>0.8&&vars->qInner<1.3&&betasmear>0.83&&betasmear<0.866&&vars->Massa_gen<1)
                         MassMCSmear1->Fill(vars->R/betasmear*pow(1-pow(betasmear,2),0.5),vars->mcweight);
 
 		if(vars->R>2.7) betasmear = SmearBeta(vars->Beta,110,0);
-		if(vars->qL1>0&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qInner>0.8&&vars->qInner<1.3&&betasmear>0.83&&betasmear<0.866&&vars->Massa_gen<1)
+		if(vars->qL1>0&&vars->qL1<1.7&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qInner>0.8&&vars->qInner<1.3&&betasmear>0.83&&betasmear<0.866&&vars->Massa_gen<1)
                         MassMCSmear2->Fill(vars->R/betasmear*pow(1-pow(betasmear,2),0.5),vars->mcweight);
 
 		if(vars->R>2.7) betasmear = SmearBeta(vars->Beta,150,0);
-		if(vars->qL1>0&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qInner>0.8&&vars->qInner<1.3&&betasmear>0.83&&betasmear<0.866&&vars->Massa_gen<1)
+		if(vars->qL1>0&&vars->qL1<1.7&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qInner>0.8&&vars->qInner<1.3&&betasmear>0.83&&betasmear<0.866&&vars->Massa_gen<1)
                         MassMCSmear3->Fill(vars->R/betasmear*pow(1-pow(betasmear,2),0.5),vars->mcweight);
 
 

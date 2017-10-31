@@ -4,16 +4,18 @@ use warnings;
 print "Printing LSF scripts for Analysis...\n\n";
 chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 print "Printed: Work Dir. = ".$workdir."\n\n";
-$njobs=250;
+$njobs=300;
 
 #creating sum scripts and output directory
 #
 
-system ("perl SumInputFilesScripts.pl $ARGV[0] $ARGV[1]");
+system ("perl SumInputFilesScripts.pl $ARGV[0] $ARGV[1] $njobs");
 system ("rm  $workdir/AnalysisFiles/$ARGV[0]/Result.root");
 system ("mkdir $workdir/AnalysisFiles/$ARGV[0]");
 system ("rm -r $workdir/logs/$ARGV[0]");
 system ("mkdir $workdir/logs/$ARGV[0]");
+system ("rm /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/*");
+system ("rm /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/*");
 
 
 
@@ -28,7 +30,7 @@ for($j=0;$j<$njobs;$j++)
 			sh \$WORKDIR/../../MAIN/SumScripts/Sommaisto$j.sh;\n			
 			sh \$WORKDIR/../../MAIN/SumScripts/SommaistoMC$j.sh;";
 
-		print OUT  "\$WORKDIR/CountsExtraction_Parallel /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root   \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1>> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+		print OUT  "\$WORKDIR/CountsExtraction_Parallel /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root   \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 
 #		print OUT  "\$WORKDIR/HeliumContamination_Parallel  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$j.root /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$j.root  \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
 

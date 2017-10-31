@@ -116,7 +116,7 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 
 	if(filled){
 		Distribution->SetFillColor(color);
-		Distribution->SetFillStyle(3001);
+		Distribution->SetFillStyle(3002);
 	}
 
 	Distribution->Draw((options+",hist").c_str());

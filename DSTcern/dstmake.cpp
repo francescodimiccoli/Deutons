@@ -225,6 +225,7 @@ int main(int argc, char * argv[])
         //////////////////////  RIGIDITY //////////////////////////////////////////////////////
         TrTrackR* Tr = ev->pTrTrack(0);
         vars->NTracks = ev->NTrTrack();
+        vars->nParticles = ev->nParticle();
         if(Tr){
             int fitID1=Tr->iTrTrackPar(1,1,1);
             int fitID2=Tr->iTrTrackPar(1,2,1);
@@ -361,7 +362,15 @@ int main(int argc, char * argv[])
             }
             vars->Richtotused=totali-usate-hotspots;
             vars->RichPhEl=ev->pRichRing(0)->getExpectedPhotoelectrons()/ev->pRichRing(0)->getPhotoElectrons();
+
+	    vars->RICHprob		=ev->pRichRing(0)->getProb();
+            vars->RICHPmts		=ev->pRichRing(0)->getPMTs();
+            vars->RICHcollovertotal	=ev->pRichRing(0)->getPhotoElectrons()/RichHitR::getCollectedPhotoElectrons();	
+            vars->RICHgetExpected	=ev->pRichRing(0)->getExpectedPhotoelectrons();
+
+
         }
+
         ///////////////////////////////////////////////////////////////////////////////////////////////	
 
 
