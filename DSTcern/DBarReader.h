@@ -4,9 +4,10 @@
 // Forward-declare Variable struct
 class Variable;
 
-class DBarReader : public Analysis {
+class DBarReader {
 
 private:
+    bool isMC;
 
     NtpHeader     ntpHeader; 
     NtpMCHeader   ntpMCHeader;          
@@ -25,7 +26,6 @@ private:
 
 public:
 
-    DBarReader(TFile * f);
-     
-    FillVariables(Variables * vars);
-}
+    DBarReader(TFile * f, bool isMC);
+    void FillVariables(int NEvent, Variables * vars);
+};

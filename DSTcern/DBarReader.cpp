@@ -1,3 +1,7 @@
+// g++ -c DBarReader.cpp -std=c++14 -I/afs/cern.ch/user/k/kostams/data_reduction/include/ -I`root-config --incdir`
+
+
+#include "TTree.h"
 #include "Variables.hpp"
 #include "DBarReader.h"
 
@@ -33,8 +37,8 @@ bool DBarReader::minTOF(){
 
 bool DBarReader::goldenTOF(){
     if ( (ntpTof.flag & 0x2) == 0 ) return false;
-    if ( (ntpTof.chisqcn > 10     ) return false;
-    if ( (ntpTof.chisqtn > 10     ) return false;
+    if (  ntpTof.chisqcn > 10     ) return false;
+    if (  ntpTof.chisqtn > 10     ) return false;
 }
 
 int DBarReader::RICHmaskConverter(){
@@ -44,17 +48,17 @@ int DBarReader::RICHmaskConverter(){
 }
 
 
-void DBarReader::FillVariables(Variables * vars){
+void DBarReader::FillVariables(int NEvent, Variables * vars){
 
     vars->ResetVariables();
 
     ////////////////////// EVENT INFORMATION ///////////////////////////////////////
     vars->Run       = ntpHeader.run;
     vars->Event     = ntpHeader.event;
-    vars->NEvent    = Nevent;
+    vars->NEvent    = NEvent;
     vars->U_time    = ntpHeader.utc_time; 
     vars->Livetime  = ntpHeader.livetime;
-    +vars->Latitude  = ntpHeader.thetam;
+    vars->Latitude = ntpHeader.thetam;
     vars->ThetaS    = ntpHeader.thetas;
     vars->PhiS      = ntpHeader.phis;
     vars->Zenith    = 0; // not in dbar events 
@@ -77,9 +81,9 @@ void DBarReader::FillVariables(Variables * vars){
         vars->GenCharge   = ntpMCHeader.charge;
         vars->GenMass     = ntpMCHeader.mass;
         vars->GenMomentum = ntpMCHeader.momentum[0];
-        vars->GenX = ntpMCHeader.coo[0];  vars->GenPX = ntpMCHeader.dir[0];;
-        vars->GenY = ntpMCHeader.coo[1];  vars->GenPY = ntpMCHeader.dir[1];;
-        vars->GenZ = ntpMCHeader.coo[2];  vars->GenPZ = ntpMCHeader.dir[2];;
+        vars->GenX = ntpMCHeader.coo[0][0];  vars->GenPX = ntpMCHeader.dir[0];;
+        vars->GenY = ntpMCHeader.coo[0][1];  vars->GenPY = ntpMCHeader.dir[1];;
+        vars->GenZ = ntpMCHeader.coo[0][2];  vars->GenPZ = ntpMCHeader.dir[2];;
         vars->MCClusterGeantPids = getPackedLayers_1to4();
     }    
    
@@ -87,18 +91,18 @@ void DBarReader::FillVariables(Variables * vars){
     vars->PhysBPatt = ntpHeader.sublvl1;
     vars->JMembPatt = ntpHeader.trigpatt;
 
-    int idxInner = 1, idxL1inner = 4;
-    bool goodChi2 = (ntpTracker.chisqn[idxInner][0] < 10) && 
-                    (ntpTracker.chisqn[idxInner][1] < 10);
+    bool goodChi2 = (ntpTracker.chisqn[1][0] < 10) && 
+                    (ntpTracker.chisqn[1][1] < 10);
     
     if( (ntpHeader.trigpatt & 0x2) != 0   )  vars->CUTMASK |= 1 << 0;
     if( minTOF()                          )  vars->CUTMASK |= 1 << 1;
     if( ntpTrd.nseg ==2                   )  vars->CUTMASK |= 1 << 2;
-    if( ntpTracker.rig[idxInner] != 0.0   )  vars->CUTMASK |= 1 << 3;
+    if( ntpTracker.rig[0] != 0.0          )  vars->CUTMASK |= 1 << 3;
     if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
     if( goldenTOF()                       )  vars->CUTMASK |= 1 << 5;  
+                                                                // 6
     if( ntpHeader.nparticle == 1          )  vars->CUTMASK |= 1 << 7;
-    if( ntpTracker.rig[idxL1Inner] != 0.0 )  vars->CUTMASK |= 1 << 8;
+    if( ntpTracker.rig[4] != 0.0          )  vars->CUTMASK |= 1 << 8;
 
     /////////////////////////////// TRACKER ////////////////////////////////////
     
@@ -111,13 +115,13 @@ void DBarReader::FillVariables(Variables * vars){
     vars->Chisquare_L1      = ntpTracker.chisqn[4][0]; // 4 = L1 + Inner , 0 = X side
     vars->Chisquare_y       = ntpTracker.chisqn[1][1]; // 1 = Inner      , 1 = Y side
     vars->Chisquare_L1_y    = ntpTracker.chisqn[4][1]; // 4 = L1 + Inner , 1 = Y side
-    vars->hitbitvs          = ntpTracker.pattxy; 
+    vars->hitbits           = ntpTracker.pattxy; 
 
     vars->qL1               = ntpTracker.q_lay[1][0];
     vars->qL1Status         = ntpTracker.q_lay_status[1][0];
     vars->qInner            = ntpTracker.q_inn;
     vars->clustertottrack   = ntpHeader.ntrrechit;
-    vars->clustertrack      = countBits(vars->hitbitvs);
+    vars->clustertrack      = countBits(vars->hitbits);
 
     /////////////////////////////// TOF ////////////////////////////////////
     
@@ -132,9 +136,28 @@ void DBarReader::FillVariables(Variables * vars){
 
     /////////////////////////////// RICH ////////////////////////////////////
 
-    vars->BetaRICH          = ntpiRich.beta;
-    vars->Richtotused       = ;
-    vars->RichPhEl          = ;
+    vars->BetaRICH          = ntpRich.beta;
     vars->RICHmask          = RICHmaskConverter();
+    vars->Richtotused       = ntpRich.nhit_used;
+    vars->RichPhEl          = ntpRich.np_exp_uncorr/ntpRich.np;
+    vars->RICHprob          = ntpRich.prob;
+    vars->RICHPmts          = ntpRich.npmt;
+    vars->RICHcollovertotal = ntpRich.np_exp_uncorr/ntpRich.tot_p;
+    vars->RICHgetExpected   = ntpRich.np_exp_uncorr;
 
+}
+
+DBarReader::DBarReader(TFile * tfile, bool _isMC) {
+    TTree * tree = (TTree *)tfile->Get("Event");
+    tree->Branch( "Header"  , "Header" , &ntpHeader     );
+    tree->Branch( "Trd"     , "Trd"    , &ntpTrd        );
+    tree->Branch( "Tof"     , "Tof"    , &ntpTof        );
+    tree->Branch( "Tracker" , "Tracker", &ntpTracker    );
+    tree->Branch( "Rich"    , "Rich"   , &ntpRich       );
+//  tree->Branch( "Ecal"    , "Ecal"   , &ntpEcal       );
+//  tree->Branch( "Anti"    , "Anti"   , &ntpAnti       );
+//  tree->Branch( "SA"      , "SA"     , &ntpStandAlone );
+
+    isMC = _isMC;
+    if (isMC) tree->Branch("MCHeader","MCHeader",&ntpMCHeader);
 }
