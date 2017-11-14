@@ -1,22 +1,43 @@
 using namespace std;
 int Ev_Num;
 int Timebeg;
-TSpline3 *Rig;
-TSpline3 *beta;
-TF1 *betaNaF;
-TF1 *betaAgl;
-TSpline3 *eL1;
-TSpline3 *etofu;
-TSpline3 *etrack;
-TSpline3 *etofd;
-TSpline3 *EdepL1beta;
-TSpline3 *EdepTOFbeta;
-TSpline3 *EdepTrackbeta;
-TSpline3 *EdepTOFDbeta;
-TSpline3 *Corr_L1;
+
+
+TSpline3 *Rig_p		;	
+TF1 *	  beta_p	;	
+TF1 *	  betaNaF_p	;	
+TF1 *	  betaAgl_p	;	
+TSpline3 *Rigmean_p	;	
+TF1 *	  betamean_p	;	
+TF1 *	  betaNaFmean_p	;	
+TF1 *	  betaAglmean_p	;	
+TSpline3 *etofu_p	;	
+TSpline3 *etrack_p	;	
+TSpline3 *etofd_p	;	
+TSpline3 *EdepTOFbeta_p	;	
+TSpline3 *EdepTrackbeta_p;	
+TSpline3 *EdepTOFDbeta_p;	
+                                
+TSpline3 *Rig_d		;	
+TF1 *	  beta_d	;	
+TF1 *	  betaNaF_d	;	
+TF1 *	  betaAgl_d	;	
+TSpline3 *Rigmean_d	;	
+TF1 *	  betamean_d	;	
+TF1 *	  betaNaFmean_d	;	
+TF1 *	  betaAglmean_d	;	
+TSpline3 *etofu_d	;	
+TSpline3 *etrack_d	;	
+TSpline3 *etofd_d	;	
+TSpline3 *EdepTOFbeta_d	;	
+TSpline3 *EdepTrackbeta_d;	
+TSpline3 *EdepTOFDbeta_d;	
+
+
 TSpline3 *Corr_TOFU ;
 TSpline3 *Corr_Track;
 TSpline3 *Corr_TOFD;
+
 
 
 TF1 *protons = new TF1("f1","pow((pow(x,2)/pow(0.938,2)/(1 + pow(x,2)/pow(0.938,2))),0.5)",0.1,100);

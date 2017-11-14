@@ -16,6 +16,7 @@ struct Variables
     float   ThetaS;
     float   PhiS;
 
+    int     nParticles;
     int     PhysBPatt;
     int     JMembPatt;
     int     CUTMASK;
@@ -64,6 +65,12 @@ struct Variables
     float   qLtof;
     float   qInner;
 
+    // RICH Quality
+    float RICHprob;
+    int RICHPmts;
+    float RICHcollovertotal;	
+    int RICHgetExpected;
+
     // Monte-Carlo Data
 	float GenCharge;
 	float GenMomentum;
@@ -105,6 +112,8 @@ void Variables::RegisterBranches(TTree * tree)
     tree->Branch("CUTMASK",&CUTMASK);
     tree->Branch("RICHmask",&RICHmask);
 
+    tree->Branch("nParticles",&nParticles);
+ 
     tree->Branch("R",&R);
     tree->Branch("Rup",&Rup);
     tree->Branch("Rdown",&Rdown);
@@ -145,7 +154,11 @@ void Variables::RegisterBranches(TTree * tree)
     tree->Branch("qUtof",&qUtof);
     tree->Branch("qLtof",&qLtof);
     tree->Branch("qInner",&qInner);
-
+    tree->Branch("RICHprob",&RICHprob);
+    tree->Branch("RICHPmts",&RICHPmts);
+    tree->Branch("RICHcollovertotal",&RICHcollovertotal);
+    tree->Branch("RICHgetExpected",&RICHgetExpected);
+	
     // Monte-Carlo Data
 	tree->Branch("GenMomentum",&GenMomentum);
 	tree->Branch("GenMass",&GenMass);
@@ -160,6 +173,7 @@ void Variables::RegisterBranches(TTree * tree)
 }
 
 void Variables::ResetVariables() {
+    
     Run      = 0;
     Event    = 0;
     NEvent   = 0;
@@ -172,6 +186,7 @@ void Variables::ResetVariables() {
     ThetaS   = 0;
     PhiS     = 0;
     
+    nParticles= 0;
     JMembPatt = 0;
     PhysBPatt = 0;
     CUTMASK   = 0;
@@ -211,6 +226,11 @@ void Variables::ResetVariables() {
     qUtof        = 0;
     qLtof        = 0;
     qInner       = 0;
+
+    RICHprob		=0;
+    RICHPmts		=0;
+    RICHcollovertotal	=0;	
+    RICHgetExpected	=0;
 
     std::fill(trtrack_edep.begin(), trtrack_edep.end(), 0);
     std::fill(trtot_edep.begin(),   trtot_edep.end(),   0);

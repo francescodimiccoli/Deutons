@@ -16,16 +16,31 @@
 #include "TMath.h"
 #include <TMVA/Reader.h>
 #include <TMVA/Tools.h>
+#include "TRandom3.h"
 
+#include "TGraphErrors.h"
+#include "TCanvas.h"
+#include "TLegend.h"
+#include "../include/GlobalBinning.h"
 
 #include "Commonglobals.cpp"
 #include "Variables.hpp"
+
+#include "../include/Cuts.h"
+#include "../include/filesaver.h"
+
+#include "../include/FitError.h"
+#include "../include/Resolution.h"
+
 #include "Discriminants5D.h"
 
 #include "reweight.h"
 #include "histUtils.h"
 #include "../include/binning.h"
 #include "Functions.hpp"
+
+
+
 
 
 bool ReadCalibration(string month);
@@ -38,14 +53,12 @@ void CalibrateEdep(Variables *vars);
 
 void ProcessEvent(Variables *vars,bool isMC,Reweighter reweighter);
 
-void UpdateProgressBar(int currentevent, int totalentries);
 
 int main(int argc, char * argv[])
 {
 	string month = argv[1];
 	if(!ReadCalibration(month)) return 0;
 	if(!ReadPdfForLikelihood()) return 0;
-
 	string INPUT(argv[2]);
 	string OUTPUT(argv[3]);
 
@@ -69,12 +82,12 @@ int main(int argc, char * argv[])
 	if(isMC){
 		grandezzesepd=new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Massa_gen:Cutmask:PhysBPatt:EdepTOF:EdepTrack:EdepTOFD:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
 		trig=new TNtuple("trig","trig","Massa_gen:Momento_gen:R_L1:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:Second:PhysBPatt:mcweight");
-		Q = new TNtuple("Q","Q","R:Beta:Massa_gen:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof:Momentogen");
+		Q = new TNtuple("Q","Q","R:Beta:qL1:Massa_gen:Cutmask:PhysBPatt:qUtof:qInner:qLtof:Momentogen:BetaRICH_new:LDiscriminant:mcweight:Dist5D:Dist5D_P");
 	}
 	else{
 		grandezzesepd = new TNtuple("grandezzesepd","grandezzesepd","R:Beta:EdepL1:Cutmask:Latitude:PhysBPatt:EdepTOFU:EdepTrack:EdepTOFD:IGRFRcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P:Rcutoff");
 		trig=new TNtuple("trig","trig","U_Time:Latitude:Rcutoff:IGRFRcutoff:R_pre:Beta_pre:Cutmask:EdepL1:EdepTOFU:EdepTOFD:EdepTrack:BetaRICH:Second:PhysBPatt:Livetime");
-		Q = new TNtuple("Q","Q","R:Beta:Cutmask:BetaRICH_new:Dist5D:Dist5D_P:LDiscriminant:Rmin:qL1:qInner:qUtof:qLtof"); 
+		Q = new TNtuple("Q","Q","R:Beta:qL1:Cutmask:Latitude:PhysBPatt:qUtof:qInner:qLtof:IGRFRcutoff:BetaRICH_new:LDiscriminant:Dist5D:Dist5D_P:Rcutoff"); 
 	}
 
 	Reweighter reweighter;
@@ -97,14 +110,7 @@ int main(int argc, char * argv[])
 	File->Close();
 
 	return 0;
+
 }
 
-
-void UpdateProgressBar(int currentevent, int totalentries)
-{
-	int newratio =(int)100*(currentevent/    (float)totalentries);
-	int oldratio =(int)100*((currentevent-1)/(float)totalentries);
-	if(newratio>oldratio)
-		cout<<'\r' << "Progress : "<< newratio+1 << " %"<< flush; //+1 pour finir a 100%
-}
 
