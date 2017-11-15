@@ -157,28 +157,28 @@ while(start==0)
   for(i=0;i<n;i++)
   {
    area_conversion_factor=-1.;
-   if(                                  strstr(Y_units[i],"none")!=NULL)                                  area_conversion_factor=1.0;
-   if(strcmp(area_units,"cm2")==NULL && strstr(Y_units[i],"cm2" )!=NULL)                                  area_conversion_factor=1.0;
-   if(strcmp(area_units,"cm2")==NULL && strstr(Y_units[i],"m2"  )!=NULL && strstr(Y_units[i],"cm2")==NULL)area_conversion_factor=1.0e-4;
-   if(strcmp(area_units,"m2") ==NULL && strstr(Y_units[i],"cm2" )!=NULL)                                  area_conversion_factor=1.0e+4;
-   if(strcmp(area_units,"m2") ==NULL && strstr(Y_units[i],"m2"  )!=NULL && strstr(Y_units[i],"cm2")==NULL)area_conversion_factor=1.0;
+   if(                               strstr(Y_units[i],"none")!=NULL)                                  area_conversion_factor=1.0;
+   if(strcmp(area_units,"cm2")==0 && strstr(Y_units[i],"cm2" )!=NULL)                                  area_conversion_factor=1.0;
+   if(strcmp(area_units,"cm2")==0 && strstr(Y_units[i],"m2"  )!=NULL && strstr(Y_units[i],"cm2")==NULL)area_conversion_factor=1.0e-4;
+   if(strcmp(area_units,"m2") ==0 && strstr(Y_units[i],"cm2" )!=NULL)                                  area_conversion_factor=1.0e+4;
+   if(strcmp(area_units,"m2") ==0 && strstr(Y_units[i],"m2"  )!=NULL && strstr(Y_units[i],"cm2")==NULL)area_conversion_factor=1.0;
     
    //cout<<Y_units[i]<<"-> "<<area_units<<" area_conversion_factor="<<area_conversion_factor<<endl;
     if(area_conversion_factor<0.0){cout<<"GCR_data::read: error in converting units"<<endl; exit(0);}
     
    energy_conversion_factor=-1.;
-   if(                                    strstr(Y_units[i],"none")!=NULL)   energy_conversion_factor=1.0; 
+   if(                                 strstr(Y_units[i],"none" )!=NULL)   energy_conversion_factor=1.0; 
 
-   if(strcmp(energy_units,"MeV")==NULL && strstr(Y_units[i],"/MeV" )!=NULL)  energy_conversion_factor=1.0;
-   if(strcmp(energy_units,"MeV")==NULL && strstr(Y_units[i],"/GeV" )!=NULL)  energy_conversion_factor=1.0e-3;
-   if(strcmp(energy_units,"MeV")==NULL && strstr(Y_units[i],"MeV/" )!=NULL)  energy_conversion_factor=1.0*pow(E_mean_input[i],-2);
-   if(strcmp(energy_units,"MeV")==NULL && strstr(Y_units[i],"GeV/" )!=NULL)  energy_conversion_factor=1.0*pow(E_mean_input[i],-2)*1.e-3;
+   if(strcmp(energy_units,"MeV")==0 && strstr(Y_units[i],"/MeV" )!=NULL)  energy_conversion_factor=1.0;
+   if(strcmp(energy_units,"MeV")==0 && strstr(Y_units[i],"/GeV" )!=NULL)  energy_conversion_factor=1.0e-3;
+   if(strcmp(energy_units,"MeV")==0 && strstr(Y_units[i],"MeV/" )!=NULL)  energy_conversion_factor=1.0*pow(E_mean_input[i],-2);
+   if(strcmp(energy_units,"MeV")==0 && strstr(Y_units[i],"GeV/" )!=NULL)  energy_conversion_factor=1.0*pow(E_mean_input[i],-2)*1.e-3;
 
   
-   if(strcmp(energy_units,"GeV")==NULL && strstr(Y_units[i],"/GeV" )!=NULL)  energy_conversion_factor=1.0;
-   if(strcmp(energy_units,"GeV")==NULL && strstr(Y_units[i],"/MeV" )!=NULL)  energy_conversion_factor=1.0e+3;
-   if(strcmp(energy_units,"GeV")==NULL && strstr(Y_units[i],"GeV/" )!=NULL)  energy_conversion_factor=1.0*pow(E_mean_input[i],-2);
-   if(strcmp(energy_units,"GeV")==NULL && strstr(Y_units[i],"MeV/" )!=NULL)  energy_conversion_factor=1.0*pow(E_mean_input[i],-2)*1.e+3;
+   if(strcmp(energy_units,"GeV")==0 && strstr(Y_units[i],"/GeV" )!=NULL)  energy_conversion_factor=1.0;
+   if(strcmp(energy_units,"GeV")==0 && strstr(Y_units[i],"/MeV" )!=NULL)  energy_conversion_factor=1.0e+3;
+   if(strcmp(energy_units,"GeV")==0 && strstr(Y_units[i],"GeV/" )!=NULL)  energy_conversion_factor=1.0*pow(E_mean_input[i],-2);
+   if(strcmp(energy_units,"GeV")==0 && strstr(Y_units[i],"MeV/" )!=NULL)  energy_conversion_factor=1.0*pow(E_mean_input[i],-2)*1.e+3;
 
 
    // cout<<Y_units[i]<<"-> "<<energy_units<<" energy_conversion_factor="<<energy_conversion_factor<<endl;
@@ -192,7 +192,7 @@ while(start==0)
    //  if(strstr(&err_type[i],"a")!=NULL)// absolute errors  //AWS20060411
 
    // have to do it this way because err_type is array of characters
-     if(strncmp(&err_type[i],"a",1)==NULL)// absolute errors //AWS20060411
+     if(strncmp(&err_type[i],"a",1)==0)// absolute errors //AWS20060411
     {
       //      cout<<"GCR_data:"<<i<<"  absolute errors: err_type="<<err_type[i]<<endl;//AWS20060411
        err_minus[i]=err_minus_input[i]*area_conversion_factor*energy_conversion_factor;
@@ -200,7 +200,7 @@ while(start==0)
     }
 
      // if(strstr(&err_type[i],"r")!=NULL)// relative errors //AWS20060411
-   if(strncmp(&err_type[i],"r",1)==NULL)// relative errors   //AWS20060411
+   if(strncmp(&err_type[i],"r",1)==0)// relative errors   //AWS20060411
    {
      //     cout<<"GCR_data:"<<i<<" relative errors: err_type="<<err_type[i]<<endl;//AWS20060411
     err_minus[i]=err_minus_input[i]*value[i];
@@ -212,11 +212,11 @@ while(start==0)
    if(err_minus[i]==0.0)err_minus[i]=err_plus [i]; 
 
    energy_conversion_factor=-1.;
-   if(                                    strstr(X_units[i],"none")!=NULL)  energy_conversion_factor=1.0; 
-   if(strcmp(energy_units,"MeV")==NULL && strstr(X_units[i],"MeV" )!=NULL)  energy_conversion_factor=1.0;
-   if(strcmp(energy_units,"MeV")==NULL && strstr(X_units[i],"GeV" )!=NULL)  energy_conversion_factor=1.0e+3;
-   if(strcmp(energy_units,"GeV")==NULL && strstr(X_units[i],"GeV" )!=NULL)  energy_conversion_factor=1.0;
-   if(strcmp(energy_units,"GeV")==NULL && strstr(X_units[i],"MeV" )!=NULL)  energy_conversion_factor=1.0e-3;
+   if(                                 strstr(X_units[i],"none")!=NULL)  energy_conversion_factor=1.0; 
+   if(strcmp(energy_units,"MeV")==0 && strstr(X_units[i],"MeV" )!=NULL)  energy_conversion_factor=1.0;
+   if(strcmp(energy_units,"MeV")==0 && strstr(X_units[i],"GeV" )!=NULL)  energy_conversion_factor=1.0e+3;
+   if(strcmp(energy_units,"GeV")==0 && strstr(X_units[i],"GeV" )!=NULL)  energy_conversion_factor=1.0;
+   if(strcmp(energy_units,"GeV")==0 && strstr(X_units[i],"MeV" )!=NULL)  energy_conversion_factor=1.0e-3;
    // cout<<X_units[i]<<"-> "<<energy_units<<" energy_conversion_factor="<<energy_conversion_factor<<endl;
     if(energy_conversion_factor<0.0){cout<<"GCR_data::read: error in converting units"<<endl; exit(0);}
 
