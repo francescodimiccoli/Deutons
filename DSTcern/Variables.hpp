@@ -28,6 +28,8 @@ struct Variables
     float   R_L1;
     float   Chisquare;
     float   Chisquare_L1;
+    float   Chisquare_y;
+    float   Chisquare_L1_y;
     int     hitbits;
 
     float   BetaOld;
