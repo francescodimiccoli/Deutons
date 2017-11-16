@@ -4,6 +4,7 @@
 #include "BadEventSimulator.h"
 #include "Livetime.h"
 #include "filesaver.h"
+#include "DBarReader.h"
 
 template <class T> 
 class ParallelFiller{
@@ -64,7 +65,32 @@ class ParallelFiller{
 			for(int nobj=0;nobj<Objects2beFilled.size();nobj++) Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
 		}
 	}
-	
+	void LoopOnMC(DBarReader treeMC, Variables * vars){
+		if(!Refill) return;
+		cout<<" MC Filling ..."<< endl;
+		for(int i=0;i<treeMC.GetTreeEntries();i++){
+			if(i%(int)FRAC!=0) continue;
+			UpdateProgressBar(i, treeMC.GetTreeEntries());
+			treeMC.FillVariables(i,vars);
+			vars->Update();
+			for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
+				Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
+				Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+			}
+		}
+	}
+
+	void LoopOnData(DBarReader treeDT, Variables * vars){
+		if(!Refill) return;
+		cout<<" DATA Filling ..."<< endl;
+		for(int i=0;i<treeDT.GetTreeEntries()/FRAC;i++){
+			UpdateProgressBar(i, treeDT.GetTreeEntries()/FRAC);
+			treeDT.FillVariables(i,vars);
+			vars->Update();
+			for(int nobj=0;nobj<Objects2beFilled.size();nobj++) Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+		}
+	}
+
 	void ExposureTimeFilling(TTree * treeDT, Variables * vars,FileSaver finalhistos){
 		if(!Refill) return;
                 cout<<" Exposure Time Filling ..."<< endl;

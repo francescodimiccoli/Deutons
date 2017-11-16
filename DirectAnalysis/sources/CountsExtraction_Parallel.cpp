@@ -17,7 +17,7 @@
 #include "TGraphErrors.h"
 #include "TFractionFitter.h"
 #include "TRandom3.h"
-#include "../include/GlobalBinning.h"
+//#include "../include/GlobalBinning.h"
 #include "../include/Commonglobals.cpp"
 #include "../include/Resolution.h"
 
@@ -59,8 +59,9 @@ int main(int argc, char * argv[])
         TFile *fileDT =TFile::Open(INPUT1.c_str());
         TFile *fileMC =TFile::Open(INPUT2.c_str());
 
-        TTree *treeMC = (TTree *)fileMC->Get("parametri_geo");
-        TTree *treeDT = (TTree *)fileDT->Get("parametri_geo");
+        TTree *TreeDT = (TTree *)fileDT->Get("parametri_geo");
+	DBarReader treeMC(fileMC,true);
+	DBarReader treeDT(fileDT,false);	
 
 	bool TRDCalibfound = ReadCalibration();
 
@@ -95,8 +96,6 @@ int main(int argc, char * argv[])
 	TF1 * HeContTOF=0x0;
 	TF1 * HeContNaF=0x0;
 	TF1 * HeContAgl=0x0;
-
-
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 	if(finalResults.GetFile()){
@@ -170,7 +169,7 @@ int main(int argc, char * argv[])
 	}
 
 
-	ExtractSimpleCountNr(finalHistos,finalResults,treeDT,PRB,GetRigidity,"HEPCounts","IsPreselected&LikelihoodCut&DistanceCut&IsPrimary",false);
+	ExtractSimpleCountNr(finalHistos,finalResults,TreeDT,PRB,GetRigidity,"HEPCounts","IsPreselected&LikelihoodCut&DistanceCut&IsPrimary",false);
 	
 	return 0;
 }

@@ -3,7 +3,10 @@
 
 #include "reweight.h"
 #include "histUtils.h"
+#include <bitset>
 #include "TRandom3.h"
+#include <TMVA/Reader.h>
+#include <TMVA/Tools.h>
 
 using namespace std;
 
@@ -15,13 +18,20 @@ struct Variables{
 
 	Reweighter reweighter;
 	Reweighter reweighterHe;
-
+	
+	int     Run;
+    	int     Event;
+    	int     NEvent;
 	int 	   U_time;
-        float 	   Latitude;
+        int 	NTracks;
+	float 	   Latitude;
         float 	   Rcutoff;
+	float   ThetaS;
+    	float   PhiS;
 	float 	   IGRFRcutoff;
         float      Livetime;
-        int      PhysBPatt;
+        int        JMembPatt;
+	int        PhysBPatt;
         float      R_pre;
         float      Beta_pre;
         int        CUTMASK;
@@ -40,6 +50,17 @@ struct Variables{
 	float      Rdown;
 	float      R;
 	float      Chisquare;
+   	float   Chisquare_L1;
+    	float   Chisquare_y;
+   	float   Chisquare_L1_y;
+    	int     hitbits;
+
+	int     NTRDclusters;
+    	int     NTRDSegments;
+    	int     clustertrack;
+    	int     clustertottrack;
+    
+
 	float      Beta;
 	float      BetaR;
 	int        NTrackHits;                             
@@ -47,8 +68,8 @@ struct Variables{
 	float      Richtotused_float=0;
 	float      RichPhEl;
 	float      R_L1;
-	int        hitbits;
 	float	   qL1;
+	float   qL1Status;
 	float	   qInner;
 	float	   qUtof;
 	float	   qLtof;
@@ -74,14 +95,20 @@ struct Variables{
 	float	   Momento_gen;
 	float	   Massa_gen;		
 	float	   mcweight=0;
+	float GenX, GenY, GenZ;
+ 	float GenPX, GenPY, GenPZ;
 	UInt_t 	   MCClusterGeantPids; 	
+	float	   Charge_gen;
 
 	//RICH Variables
  	float RICHprob;
     	int RICHPmts;
     	float RICHcollovertotal;
     	int RICHgetExpected;
-	 
+	
+	TMVA::Reader *readerTOF;
+	TMVA::Reader *readerNaF;
+	TMVA::Reader *readerAgl;
 
 	Variables(){
 		BDTreader();
@@ -89,6 +116,7 @@ struct Variables{
 		reweighterHe = ReweightInitializer("/storage/gpfs_ams/ams/users/fdimicco/Deutons/DirectAnalysis/include/CRDB_HeliumAMS_R.galprop",2,2000,2.05);
 	}
 	
+	void ResetVariables();
 	void ReadBranches(TTree * tree);
 	void Update();
 	void PrintCurrentState();
@@ -139,11 +167,58 @@ void Variables::BDTreader()
 
 }
 
+void Variables::ResetVariables(){
+	U_time		=0;
+        NTracks		=0;
+	Latitude	=0;
+        IGRFRcutoff	=0;
+	Rcutoff		=0;
+        Livetime	=0;
+ 	JMembPatt 	=0;
+        PhysBPatt	=0;
+        R_pre		=0;
+        Beta_pre	=0;
+        CUTMASK		=0;
+        Endep		=0;
+	EdepTRD		=0;
+	BetaRICH_new	=0;
+	RICHmask_new	=0;
+	EdepECAL	=0;
+	NAnticluster	=0;
+	NTofClusters	=0;
+	NTofClustersusati=0;
+	Rup		=0;
+	Rdown		=0;
+	R		=0;
+	Chisquare	=0;
+	 Beta		=0;
+	 BetaR		=0;
+	 NTrackHits 	=0;                  
+	 Richtotused 	=0;  
+	 RichPhEl	=0;  
+	 R_L1		=0;  
+	 hitbits	=0;  
+	 qL1		=0;  
+	 qL1Status	=0;
+	qInner		=0;  
+	 qUtof		=0;  
+	 qLtof		=0;  
+	 RICHprob	=0;
+    	 RICHPmts	=0;
+    	 RICHcollovertotal=0;
+    	 RICHgetExpected=0;
+	                                            
+	 Momento_gen	=0;  
+	 Massa_gen	=0;  		
+	 MCClusterGeantPids=0; 	
+}
+
 
 void Variables::ReadBranches(TTree * tree){
 
 	 tree->SetBranchAddress("U_time"	 ,&U_time);
-         tree->SetBranchAddress("Latitude"	 ,&Latitude);
+         tree->SetBranchAddress("NTracks"        ,&NTracks);
+	 tree->SetBranchAddress("Latitude"	 ,&Latitude);
          tree->SetBranchAddress("Rcutoff35"	 ,&IGRFRcutoff);
 	 tree->SetBranchAddress("StoermerRcutoff",&Rcutoff);
          tree->SetBranchAddress("Livetime"	 ,&Livetime);
@@ -173,6 +248,7 @@ void Variables::ReadBranches(TTree * tree){
 	 tree->SetBranchAddress("R_L1"		 ,&R_L1);  
 	 tree->SetBranchAddress("hitbits"	 ,&hitbits);  
 	 tree->SetBranchAddress("qL1"		 ,&qL1);  
+	 tree->SetBranchAddress("qL1Status"      ,&qL1Status);
 	 tree->SetBranchAddress("qInner"	 ,&qInner);  
 	 tree->SetBranchAddress("qUtof"		 ,&qUtof);  
 	 tree->SetBranchAddress("qLtof"		 ,&qLtof);  
