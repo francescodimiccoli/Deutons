@@ -145,6 +145,12 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->RICHcollovertotal = ntpRich.np_exp_uncorr/ntpRich.tot_p;
     vars->RICHgetExpected   = ntpRich.np_exp_uncorr;
 
+    /////////////////////////////// TRD ////////////////////////////////////
+
+    vars->trds_like_ep      = ntpTrd.trds_like_ep ;  
+    vars->trds_like_hep     = ntpTrd.trds_like_hep; 
+    vars->trds_like_ehe     = ntpTrd.trds_like_ehe;
+
 }
 
 DBarReader::DBarReader(TFile * tfile, bool _isMC) {

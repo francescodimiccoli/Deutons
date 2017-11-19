@@ -71,6 +71,11 @@ struct Variables
     float RICHcollovertotal;	
     int RICHgetExpected;
 
+    // TRD Lkh
+    float trds_like_ep;
+    float trds_like_hep;
+    float trds_like_ehe;
+
     // Monte-Carlo Data
 	float GenCharge;
 	float GenMomentum;
