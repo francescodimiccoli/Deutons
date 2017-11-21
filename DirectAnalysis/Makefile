@@ -1,6 +1,6 @@
 all: CountsExtraction_Parallel EffCorr_Parallel
 
-DBARPATH=../../dbar_ntp
+DBARPATH=../data_reduction
 
 obj/%.o: src/%.cpp
 	g++ -std=c++11 -o $@ -c -I$(DBARPATH)/include/ -Iinclude $(shell root-config --libs --cflags) $^                  

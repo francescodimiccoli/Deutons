@@ -30,6 +30,5 @@ public:
 
     DBarReader(TFile * f, bool isMC);
     void FillVariables(int NEvent, Variables * vars);
-    int GetTreeEntries(){return Tree->GetEntries();}; 	
-
+    int GetTreeEntries(){return 1000;/*Tree->GetEntries();*/}; 	
 };

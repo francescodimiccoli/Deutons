@@ -52,6 +52,8 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
     vars->ResetVariables();
 
+    cout<<ntpTracker.rig[1]<<" "<<ntpTracker.rig[2]<<endl;	
+
     ////////////////////// EVENT INFORMATION ///////////////////////////////////////
     vars->Run       = ntpHeader.run;
     vars->Event     = ntpHeader.event;
@@ -120,6 +122,13 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->clustertottrack   = ntpHeader.ntrrechit;
     vars->clustertrack      = countBits(vars->hitbits);
 
+    vars->trtrack_edep = new std::vector<float>;
+    vars->trtot_edep = new std::vector<float>;		
+    for(int il=1;il<=9;il++) {	
+    	vars->trtrack_edep->push_back(ntpTracker.edep_lay[1][il-1][0]);
+   	vars->trtot_edep->push_back(ntpTracker.edep_lay[1][il-1][0]);
+    }
+    
     /////////////////////////////// TOF ////////////////////////////////////
     
     // TODO: proper averaging inclding errors?
@@ -128,6 +137,11 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
     vars->BetaR           = ntpTof.evgeni_beta;
 
+    vars->Endep = new std::vector<float>;
+    for(int il=0;il<4;il++) {
+	vars->Endep->push_back(ntpTof.edep[il][0]);		
+    }
+    
     /////////////////////////////// RICH ////////////////////////////////////
 
     vars->BetaRICH_new      = ntpRich.beta;
@@ -139,20 +153,23 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->RICHcollovertotal = ntpRich.np_exp_uncorr/ntpRich.tot_p;
     vars->RICHgetExpected   = ntpRich.np_exp_uncorr;
 
+    ///////////////////////////// EDEP ///////////////////////////////////////	
 }
 
 DBarReader::DBarReader(TFile * tfile, bool _isMC) {
     TTree * tree = (TTree *)tfile->Get("Event");
     Tree = tree;
-    tree->Branch( "Header"  , "Header" , &ntpHeader     );
-    tree->Branch( "Trd"     , "Trd"    , &ntpTrd        );
-    tree->Branch( "Tof"     , "Tof"    , &ntpTof        );
-    tree->Branch( "Tracker" , "Tracker", &ntpTracker    );
-    tree->Branch( "Rich"    , "Rich"   , &ntpRich       );
-//  tree->Branch( "Ecal"    , "Ecal"   , &ntpEcal       );
-//  tree->Branch( "Anti"    , "Anti"   , &ntpAnti       );
-//  tree->Branch( "SA"      , "SA"     , &ntpStandAlone );
+    Tree->Branch( "Header"  , "Header" , &ntpHeader     );
+    Tree->Branch( "Trd"     , "Trd"    , &ntpTrd        );
+    Tree->Branch( "Tof"     , "Tof"    , &ntpTof        );
+    Tree->Branch( "Tracker" , "Tracker", &ntpTracker    );
+    Tree->Branch( "Rich"    , "Rich"   , &ntpRich       );
+//  Tree->Branch( "Ecal"    , "Ecal"   , &ntpEcal       );
+//  Tree->Branch( "Anti"    , "Anti"   , &ntpAnti       );
+//  Tree->Branch( "SA"      , "SA"     , &ntpStandAlone );
 
     isMC = _isMC;
-    if (isMC) tree->Branch("MCHeader","MCHeader",&ntpMCHeader);
+    if (isMC) Tree->Branch("MCHeader","MCHeader",&ntpMCHeader);
+    cout<<"************ TOT ENTRIES ***************"<<endl;	
+    cout<<tree->GetEntries()<<endl;
 }
