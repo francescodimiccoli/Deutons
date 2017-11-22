@@ -10,17 +10,18 @@ private:
     bool isMC;
     TTree * Tree;	
 
-    NtpHeader     ntpHeader; 
-    NtpMCHeader   ntpMCHeader;          
-    NtpTrd        ntpTrd;
-    NtpTof        ntpTof;
-    NtpTracker    ntpTracker;
-    NtpRich       ntpRich;
-    NtpEcal       ntpEcal;
-    NtpAnti       ntpAnti;
-    NtpStandAlone ntpStandAlone;
+    NtpHeader     *ntpHeader; 
+    NtpMCHeader   *ntpMCHeader;          
+    NtpTrd        *ntpTrd;
+    NtpTof        *ntpTof;
+    NtpTracker    *ntpTracker;
+    NtpRich       *ntpRich;
+    NtpEcal       *ntpEcal;
+    NtpAnti       *ntpAnti;
+    NtpStandAlone *ntpStandAlone;
 
 
+    void Init();
     UInt_t getPackedLayers_1to4();
     bool minTOF();
     bool goldenTOF();
@@ -30,5 +31,9 @@ public:
 
     DBarReader(TFile * f, bool isMC);
     void FillVariables(int NEvent, Variables * vars);
-    int GetTreeEntries(){return 1000;/*Tree->GetEntries();*/}; 	
+    int GetTreeEntries(){return Tree->GetEntries();}; 	
 };
+
+
+
+
