@@ -50,6 +50,8 @@ int DBarReader::RICHmaskConverter(){
 
 void DBarReader::FillVariables(int NEvent, Variables * vars){
 
+    Tree->GetEvent(NEvent);
+
     vars->ResetVariables();
 
     cout<<ntpTracker.rig[1]<<" "<<ntpTracker.rig[2]<<endl;	

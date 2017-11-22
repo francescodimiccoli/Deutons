@@ -8,6 +8,7 @@ class DBarReader {
 
 private:
     bool isMC;
+    TTree * Tree;	
 
     NtpHeader     ntpHeader; 
     NtpMCHeader   ntpMCHeader;          
@@ -18,7 +19,6 @@ private:
     NtpEcal       ntpEcal;
     NtpAnti       ntpAnti;
     NtpStandAlone ntpStandAlone;
-    TTree * Tree;	
 
 
     UInt_t getPackedLayers_1to4();
