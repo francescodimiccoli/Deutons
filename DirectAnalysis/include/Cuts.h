@@ -74,7 +74,7 @@ bool Qualitycut(Variables * vars, float cutvariable, float cutTOF, float cutNaF,
 bool QualChargeCut (Variables * vars){ return (vars->qInner>0.8&&vars->qInner<1.3&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3);}
 
 bool DistanceCut   (Variables * vars){ return QualChargeCut(vars);}//(Qualitycut(vars,vars->DistP,3,4,4)||Qualitycut(vars,vars->DistD,3,4,4));}
-bool LikelihoodCut (Variables * vars){ return Qualitycut(vars,-vars->Likelihood,-0.83,-0.85,-0.85);}
+bool LikelihoodCut (Variables * vars){ return true;/*Qualitycut(vars,-vars->Likelihood,-0.83,-0.85,-0.85);*/}
 
 bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->qInner>1.6 && vars->qInner<2.6 &&  vars->qUtof>1.6 && vars->qUtof<2.6 &&  vars->qLtof>1.6 && vars->qLtof<2.6);}
 

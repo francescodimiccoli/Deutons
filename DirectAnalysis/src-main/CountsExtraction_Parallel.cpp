@@ -60,8 +60,6 @@ int main(int argc, char * argv[])
         TFile *fileMC =TFile::Open(INPUT2.c_str());
 
         TTree *TreeDT = (TTree *)fileDT->Get("parametri_geo");
-	DBarReader treeMC(fileMC,true);
-	DBarReader treeDT(fileDT,false);	
 
 	bool TRDCalibfound = ReadCalibration();
 
@@ -126,8 +124,8 @@ int main(int argc, char * argv[])
 		Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);
 
 		//main loops
-		Filler.LoopOnMC(treeMC,vars);
-		Filler.LoopOnData(treeDT,vars);
+		Filler.LoopOnMC(fileMC,vars);
+		Filler.LoopOnData(fileDT,vars);
 		//
 
 		TOFfits->DisableFit();

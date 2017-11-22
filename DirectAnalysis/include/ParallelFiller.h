@@ -65,9 +65,11 @@ class ParallelFiller{
 			for(int nobj=0;nobj<Objects2beFilled.size();nobj++) Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
 		}
 	}
-	void LoopOnMC(DBarReader treeMC, Variables * vars){
+
+	void LoopOnMC(TFile * fileMC, Variables * vars){
 		if(!Refill) return;
 		cout<<" MC Filling ..."<< endl;
+		DBarReader treeMC(fileMC,true);	
 		for(int i=0;i<treeMC.GetTreeEntries();i++){
 			if(i%(int)FRAC!=0) continue;
 			UpdateProgressBar(i, treeMC.GetTreeEntries());
@@ -81,15 +83,17 @@ class ParallelFiller{
 		}
 	}
 
-	void LoopOnData(DBarReader treeDT, Variables * vars){
+	void LoopOnData(TFile * fileDT, Variables * vars){
 		if(!Refill) return;
 		cout<<" DATA Filling ..."<< endl;
+		DBarReader treeDT(fileDT,false);
 		for(int i=0;i<treeDT.GetTreeEntries()/FRAC;i++){
 			UpdateProgressBar(i, treeDT.GetTreeEntries()/FRAC);
 			treeDT.FillVariables(i,vars);
 			vars->Update();
 			//vars->PrintCurrentState();
-			for(int nobj=0;nobj<Objects2beFilled.size();nobj++) Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+			for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
+				Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
 		}
 	}
 

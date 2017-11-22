@@ -350,7 +350,7 @@ void TemplateFIT::FillEventByEventData(Variables * vars, float (*var) (Variables
 	int kbin;
 	kbin = 	bins.GetBin(discr_var(vars));
 	if(ApplyCuts(cut,vars)&&kbin>0){
-		if(vars->qL1>1.8) cout<<"ecco"<<endl;
+		//cout<<"ecco: "<<var(vars)<<" "<<vars->Beta<<" "<<vars->R<<" "<<kbin<<" "<<((int)vars->joinCutmask&187)<<endl;
 		for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
 				fits[kbin][i][j]->Data->Fill(var(vars),vars->mcweight);		
@@ -398,6 +398,7 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 	cutHe = "IsPreselectedInner&" + cutHe;  //releasing cut for more stat. in Tritium templates
 
 	if((ApplyCuts(cutP,vars)||ApplyCuts(cutD,vars)||ApplyCuts(cutHe,vars))){
+		//cout<<"ecco: "<<var(vars)<<" "<<vars->Beta<<" "<<vars->R<<" "<<((int)vars->joinCutmask&187)<<endl;
 		for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
 				float betasmear;
