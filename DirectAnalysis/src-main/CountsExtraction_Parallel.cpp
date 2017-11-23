@@ -17,7 +17,9 @@
 #include "TGraphErrors.h"
 #include "TFractionFitter.h"
 #include "TRandom3.h"
+#include "TChain.h"
 //#include "../include/GlobalBinning.h"
+#include "../include/InputFileReader.h"
 #include "../include/Commonglobals.cpp"
 #include "../include/Resolution.h"
 
@@ -46,6 +48,8 @@ int main(int argc, char * argv[])
 	bool Refill = false;
 	if(refill!="") Refill=true;
 
+	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
 
         FileSaver finalHistos;
         finalHistos.setName(OUTPUT.c_str());
@@ -53,6 +57,7 @@ int main(int argc, char * argv[])
 	FileSaver finalResults;
         finalResults.setName((OUTPUT+"_Results").c_str());
 
+	return 0;
 
         bool checkfile = finalHistos.CheckFile();
 
