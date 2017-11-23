@@ -1,0 +1,3 @@
+/eos/ams/group/dbar/release_1507300526/neg/ISS.B950/pass6//1333281082.root
+/eos/ams/group/dbar/release_1507300526/neg/ISS.B950/pass6//1333282412.root
+/eos/ams/group/dbar/release_1507300526/neg/ISS.B950/pass6//1333283817.root
