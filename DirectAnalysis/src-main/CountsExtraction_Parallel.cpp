@@ -36,39 +36,35 @@ int main(int argc, char * argv[])
 {
 
 
-        cout<<"****************************** FILES OPENING ***************************************"<<endl;
+    cout<<"****************************** FILES OPENING ***************************************"<<endl;
+    
+    string INPUT1(argv[1]);
+    string INPUT2(argv[2]);
+    string OUTPUT(argv[3]);
 
-        string INPUT1(argv[1]);
-        string INPUT2(argv[2]);
-        string OUTPUT(argv[3]);
+    string refill="";
+    if(argc > 4 ) 	refill = argv[4];	
+    
+    bool Refill = false;
+    if(refill!="") Refill=true;
+    
+    TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+    TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
 
-	string refill="";
-	if(argc > 4 ) 	refill = argv[4];	
-	
-	bool Refill = false;
-	if(refill!="") Refill=true;
+    FileSaver finalHistos;
+    finalHistos.setName(OUTPUT.c_str());
 
-	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+    FileSaver finalResults;
+    finalResults.setName((OUTPUT+"_Results").c_str());
 
-        FileSaver finalHistos;
-        finalHistos.setName(OUTPUT.c_str());
 
-	FileSaver finalResults;
-        finalResults.setName((OUTPUT+"_Results").c_str());
+    bool checkfile = finalHistos.CheckFile();
 
-	return 0;
+    TTree *TreeDT = NULL;//(TTree *)fileDT->Get("parametri_geo");
 
-        bool checkfile = finalHistos.CheckFile();
+    bool TRDCalibfound = ReadCalibration();
 
-        TFile *fileDT =TFile::Open(INPUT1.c_str());
-        TFile *fileMC =TFile::Open(INPUT2.c_str());
-
-        TTree *TreeDT = (TTree *)fileDT->Get("parametri_geo");
-
-	bool TRDCalibfound = ReadCalibration();
-
-	cout<<"****************************** BINS ***************************************"<<endl;
+    cout<<"****************************** BINS ***************************************"<<endl;
 
         SetBins();
 
@@ -92,89 +88,88 @@ int main(int argc, char * argv[])
 
         cout<<endl;
 
-	
-	cout<<"****************************** VARIABLES ***************************************"<<endl;
 
-        Variables * vars = new Variables();
-	TF1 * HeContTOF=0x0;
-	TF1 * HeContNaF=0x0;
-	TF1 * HeContAgl=0x0;
+    cout<<"****************************** VARIABLES ***************************************"<<endl;
 
-	cout<<"****************************** ANALYIS ******************************************"<<endl;
-	if(finalResults.GetFile()){
-	      HeContTOF = (TF1 *) finalResults.Get("HeContTemplate/Model");
-	      HeContNaF = (TF1 *) finalResults.Get("HeContTemplate/Model");
-	      HeContAgl = (TF1 *) finalResults.Get("HeContTemplate/Model");
-	}	
+    Variables * vars = new Variables();
+    TF1 * HeContTOF=0x0;
+    TF1 * HeContNaF=0x0;
+    TF1 * HeContAgl=0x0;
 
-	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
-	BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
+    cout<<"****************************** ANALYIS ******************************************"<<endl;
+    if(finalResults.GetFile()){
+        HeContTOF = (TF1 *) finalResults.Get("HeContTemplate/Model");
+        HeContNaF = (TF1 *) finalResults.Get("HeContTemplate/Model");
+        HeContAgl = (TF1 *) finalResults.Get("HeContTemplate/Model");
+    }
 
-	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
-	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,2000,1000);
-	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,600,500);	
-	
-	NaFfits->SetUpBadEventSimulator(NaFBadEvSimulator);
-	Aglfits->SetUpBadEventSimulator(AglBadEvSimulator);
-	NaFfits->SetFitWithNoiseMode();
-	Aglfits->SetFitWithNoiseMode();
+    BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
+    BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
 
+    TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
+    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,2000,1000);
+    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,600,500);	
 
-	if((!checkfile)||Refill){
-	
-		ParallelFiller<TemplateFIT *> Filler;
-
-		Filler.AddObject2beFilled(TOFfits,GetRecMassTOF ,GetBetaTOF);
-		Filler.AddObject2beFilled(NaFfits,GetRecMassRICH,GetBetaRICH);
-		Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);
-
-		//main loops
-		Filler.LoopOnMC(fileMC,vars);
-		Filler.LoopOnData(fileDT,vars);
-		//
-
-		TOFfits->DisableFit();
-		TOFfits->Save(finalHistos);
-	
-		NaFfits->DisableFit();
-                NaFfits->Save(finalHistos);
-	
-		Aglfits->DisableFit();
-                Aglfits->Save(finalHistos);
-	}
-
-	else { 
-
-		TOFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
-	//	NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,400,200);
-	//	Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,110,80);
-
-		NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,2000,1000);
-		Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,600,500);
+    NaFfits->SetUpBadEventSimulator(NaFBadEvSimulator);
+    Aglfits->SetUpBadEventSimulator(AglBadEvSimulator);
+    NaFfits->SetFitWithNoiseMode();
+    Aglfits->SetFitWithNoiseMode();
 
 
-	//	TOFfits->DisableFit();
-		TOFfits->SetHeliumContamination(HeContTOF);				
-		TOFfits->ExtractCounts(finalHistos);	
-		TOFfits->SaveFitResults(finalResults);
+    if((!checkfile)||Refill){
 
-                NaFfits->SetFitRange(0.6,4);
-         //       NaFfits->DisableFit();
-                NaFfits->SetHeliumContamination(HeContNaF);
-                NaFfits->ExtractCounts(finalHistos);
-                NaFfits->SaveFitResults(finalResults);
-	
-		Aglfits->SetFitRange(0.6,4);
-          //     Aglfits->DisableFit();
-                Aglfits->SetHeliumContamination(HeContAgl);
-                Aglfits->ExtractCounts(finalHistos);
-                Aglfits->SaveFitResults(finalResults);	
-	}
+        ParallelFiller<TemplateFIT *> Filler;
+
+        Filler.AddObject2beFilled(TOFfits,GetRecMassTOF ,GetBetaTOF);
+        Filler.AddObject2beFilled(NaFfits,GetRecMassRICH,GetBetaRICH);
+        Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);
+
+        //main loops
+        Filler.LoopOnMC  (DBarReader(chainMC, true ),vars);
+        Filler.LoopOnData(DBarReader(chainDT, false),vars);
+        //
+
+        TOFfits->DisableFit();
+        TOFfits->Save(finalHistos);
+
+        NaFfits->DisableFit();
+        NaFfits->Save(finalHistos);
+
+        Aglfits->DisableFit();
+        Aglfits->Save(finalHistos);
+    }
+
+    else { 
+
+        TOFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
+        //NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,400,200);
+        //Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,110,80);
+
+        NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,2000,1000);
+        Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,600,500);
 
 
-	ExtractSimpleCountNr(finalHistos,finalResults,TreeDT,PRB,GetRigidity,"HEPCounts","IsPreselected&LikelihoodCut&DistanceCut&IsPrimary",false);
-	
-	return 0;
+        //TOFfits->DisableFit();
+        TOFfits->SetHeliumContamination(HeContTOF);				
+        TOFfits->ExtractCounts(finalHistos);	
+        TOFfits->SaveFitResults(finalResults);
+
+        NaFfits->SetFitRange(0.6,4);
+        //       NaFfits->DisableFit();
+        NaFfits->SetHeliumContamination(HeContNaF);
+        NaFfits->ExtractCounts(finalHistos);
+        NaFfits->SaveFitResults(finalResults);
+
+        Aglfits->SetFitRange(0.6,4);
+        // Aglfits->DisableFit();
+        Aglfits->SetHeliumContamination(HeContAgl);
+        Aglfits->ExtractCounts(finalHistos);
+        Aglfits->SaveFitResults(finalResults);	
+    }
+
+    ExtractSimpleCountNr(finalHistos,finalResults,TreeDT,PRB,GetRigidity,"HEPCounts","IsPreselected&LikelihoodCut&DistanceCut&IsPrimary",false);
+
+    return 0;
 }
 
 
