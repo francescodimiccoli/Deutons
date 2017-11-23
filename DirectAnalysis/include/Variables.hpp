@@ -12,61 +12,93 @@ struct Variables{
     Reweighter reweighter;
     Reweighter reweighterHe;
 
-    int     Run;
-    int     Event;
-    int     NEvent;
-    int 	   U_time;
-    int 	NTracks;
-    float 	   Latitude;
-    float 	   Rcutoff;
-    float   ThetaS;
-    float   PhiS;
-    float 	   IGRFRcutoff;
+    // Event info
+    int        Run;
+    int        Event;
+    int        NEvent;
+    int        U_time;
+    int        NTracks;
+    float      ThetaS;
+    float      PhiS;
     float      Livetime;
+    float      Latitude;
+    float      PrescaleFactor;
+
+    // Cutoffs
+    float      Rcutoff;
+    float      IGRFRcutoff;
+
+    // Bit fields
     int        JMembPatt;
     int        PhysBPatt;
-    float      R_pre;
-    float      Beta_pre;
     int        CUTMASK;
-    std::vector<float>  *       trtrack_edep=0;
-    std::vector<float>  *       trtot_edep=0;
-    std::vector<float>  *       Endep=0;
-    float      BetaRICH_new;
     int        RICHmask_new;
-    float      EdepECAL;
-    int        NAnticluster;
-    float	   NAnticluster_float;
+
+    // Counts
+    float      NAnticluster_float;
     int        NTofClusters;
     int        NTofClustersusati;
-    float	   NTofUsed=0;
+    float      NTofUsed=0;  // ? 
+    int        NTRDclusters;
+    int        NAnticluster;
+    int        NTRDSegments;
+    int        NTrackHits;                             
+    int        clustertrack;
+    int        clustertottrack;
+
+
+    // Track
+    float      R_pre;  // ?
     float      Rup;
     float      Rdown;
     float      R;
+    float      R_L1;
     float      Chisquare;
-    float   Chisquare_L1;
-    float   Chisquare_y;
-    float   Chisquare_L1_y;
-    int     hitbits;
+    float      Chisquare_L1;
+    float      Chisquare_y;
+    float      Chisquare_L1_y;
+    int        hitbits;
+    
+    // Tracker Charge
+    float      qL1;
+    float      qL1Status;
+    float      qInner;
 
-    int     NTRDclusters;
-    int     NTRDSegments;
-    int     clustertrack;
-    int     clustertottrack;
-
-
+    // TOF
     float      Beta;
     float      BetaR;
-    int        NTrackHits;                             
+    float      Beta_pre; // ?
+    float      qUtof;
+    float      qLtof;
+
+    // RICH 
+    float      BetaRICH_new;
     int        Richtotused;
     float      Richtotused_float=0;
     float      RichPhEl;
-    float      R_L1;
-    float	   qL1;
-    float   qL1Status;
-    float	   qInner;
-    float	   qUtof;
-    float	   qLtof;
-    float 	   joinCutmask=0;
+    float      RICHprob;
+    int        RICHPmts;
+    float      RICHcollovertotal;
+    int        RICHgetExpected;
+
+    //MC vars
+    float      Momento_gen;
+    float      Massa_gen;
+    float      mcweight=0;
+    float      GenX, GenY, GenZ;
+    float      GenPX, GenPY, GenPZ;
+    UInt_t     MCClusterGeantPids; 	
+    float      Charge_gen;
+
+    
+
+    //Other
+    float      EdepECAL;
+    std::vector<float>  *       trtrack_edep=0;
+    std::vector<float>  *       trtot_edep=0;
+    std::vector<float>  *       Endep=0;
+
+    float      joinCutmask=0;
     float      diffR=0;
     float	   TOF_Up_Down=0;
     float	   Layernonusati=0;
@@ -83,21 +115,6 @@ struct Variables{
     float EdepTrack=0;	
     float EdepTRD=0;
     float EdepL1=0;	
-
-    //MC vars
-    float	   Momento_gen;
-    float	   Massa_gen;		
-    float	   mcweight=0;
-    float GenX, GenY, GenZ;
-    float GenPX, GenPY, GenPZ;
-    UInt_t 	   MCClusterGeantPids; 	
-    float	   Charge_gen;
-
-    //RICH Variables
-    float RICHprob;
-    int RICHPmts;
-    float RICHcollovertotal;
-    int RICHgetExpected;
 
     TMVA::Reader *readerTOF;
     TMVA::Reader *readerNaF;

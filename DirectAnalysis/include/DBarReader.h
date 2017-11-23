@@ -1,4 +1,4 @@
-#include "TFile.h"
+#include "TTree.h"
 #include "Ntp.h"
 
 // Forward-declare Variable struct
@@ -29,7 +29,7 @@ private:
 
 public:
 
-    DBarReader(TFile * f, bool isMC);
+    DBarReader(TTree * f, bool isMC);
     void FillVariables(int NEvent, Variables * vars);
     int GetTreeEntries(){return Tree->GetEntries();}; 	
 };
