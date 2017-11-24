@@ -6,15 +6,16 @@
 #include "DBarReader.h"
 
 void DBarReader::Init(){
-    ntpHeader		= new NtpHeader(); 
-    ntpMCHeader 	= new NtpMCHeader();          
-    ntpTrd 		= new NtpTrd();
-    ntpTof 		= new NtpTof();
-    ntpTracker 		= new NtpTracker();
-    ntpRich 		= new NtpRich();
-    ntpEcal 		= new NtpEcal();
-    ntpAnti 		= new NtpAnti();
-    ntpStandAlone 	= new NtpStandAlone();
+
+    ntpHeader     = new NtpHeader(); 
+    ntpMCHeader   = new NtpMCHeader();          
+    ntpTrd        = new NtpTrd();
+    ntpTof        = new NtpTof();
+    ntpTracker    = new NtpTracker();
+    ntpRich       = new NtpRich();
+    ntpEcal       = new NtpEcal();
+    ntpAnti       = new NtpAnti();
+    ntpStandAlone = new NtpStandAlone();
 }
 
 
@@ -69,14 +70,15 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->ResetVariables();
 
     ////////////////////// EVENT INFORMATION ///////////////////////////////////////
-    vars->Run       = ntpHeader->run;
-    vars->Event     = ntpHeader->event;
-    vars->NEvent    = NEvent;
-    vars->U_time    = ntpHeader->utc_time; 
-    vars->Livetime  = ntpHeader->livetime;
-    vars->Latitude = ntpHeader->thetam;
-    vars->ThetaS    = ntpHeader->thetas;
-    vars->PhiS      = ntpHeader->phis;
+    vars->Run               = ntpHeader->run;
+    vars->Event             = ntpHeader->event;
+    vars->NEvent            = NEvent;
+    vars->U_time            = ntpHeader->utc_time; 
+    vars->Livetime          = ntpHeader->livetime;
+    vars->Latitude          = ntpHeader->thetam;
+    vars->ThetaS            = ntpHeader->thetas;
+    vars->PhiS              = ntpHeader->phis;
+    vars->PrescaleFactor    = ntpHeader->pres_weight;
 
     // Stroemer cutoff is in the tracker data
     vars->Rcutoff = ntpTracker->stoermer_cutoff[0];
@@ -137,24 +139,24 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->clustertrack      = countBits(vars->hitbits);
 
     vars->trtrack_edep = new std::vector<float>;
-    vars->trtot_edep = new std::vector<float>;		
-    for(int il=1;il<=9;il++) {	
-    	vars->trtrack_edep->push_back(ntpTracker->edep_lay[1][il-1][0]);
-   	vars->trtot_edep->push_back(ntpTracker->edep_lay[1][il-1][0]);
+    vars->trtot_edep   = new std::vector<float>;
+    for(int il=1;il<=9;il++) {
+        vars->trtrack_edep->push_back(ntpTracker->edep_lay[1][il-1][0]);
+        vars->trtot_edep->push_back(ntpTracker->edep_lay[1][il-1][0]);
     }
     
     /////////////////////////////// TOF ////////////////////////////////////
     
     // TODO: proper averaging inclding errors?
-    vars->qUtof             = ( ntpTof->q_lay[0] + ntpTof->q_lay[1] ) / 2.0;
-    vars->qLtof             = ( ntpTof->q_lay[2] + ntpTof->q_lay[3] ) / 2.0;
+    vars->qUtof   = ( ntpTof->q_lay[0] + ntpTof->q_lay[1] ) / 2.0;
+    vars->qLtof   = ( ntpTof->q_lay[2] + ntpTof->q_lay[3] ) / 2.0;
 
-    vars->BetaR           = ntpTof->evgeni_beta;
-    vars->Beta		  = ntpTof->beta;
+    vars->BetaR   = ntpTof->evgeni_beta;
+    vars->Beta    = ntpTof->beta;
     
     vars->Endep = new std::vector<float>;
     for(int il=0;il<4;il++) {
-	vars->Endep->push_back(ntpTof->edep[il][0]);		
+        vars->Endep->push_back(ntpTof->edep[il][0]);
     }
     
     /////////////////////////////// RICH ////////////////////////////////////
@@ -170,11 +172,10 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
 }
 
-DBarReader::DBarReader(TFile * tfile, bool _isMC) {
+DBarReader::DBarReader(TTree * tree, bool _isMC) {
     Init();
-    TTree * tree = (TTree *)tfile->Get("Event");
     Tree = tree;
-	
+
     Tree->SetBranchAddress( "Header"  , &ntpHeader     );
     Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
     Tree->SetBranchAddress( "Tof"     , &ntpTof        );
@@ -187,6 +188,6 @@ DBarReader::DBarReader(TFile * tfile, bool _isMC) {
 
     isMC = _isMC;
     if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
-    cout<<"************ TOT ENTRIES ***************"<<endl;	
+    cout<<"************ TOT ENTRIES ***************"<<endl;
     cout<<Tree->GetEntries()<<endl;
 }

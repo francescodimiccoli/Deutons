@@ -57,49 +57,83 @@ void Variables::BDTreader()
 }
 
 void Variables::ResetVariables(){
-	U_time		=0;
-	NTracks		=0;
-	Latitude	=0;
-	IGRFRcutoff	=0;
-	Rcutoff		=0;
-	Livetime	=0;
-	JMembPatt 	=0;
-	PhysBPatt	=0;
-	R_pre		=0;
-	Beta_pre	=0;
-	CUTMASK		=0;
-	Endep		=0;
-	EdepTRD		=0;
-	BetaRICH_new	=0;
-	RICHmask_new	=0;
-	EdepECAL	=0;
-	NAnticluster	=0;
-	NTofClusters	=0;
-	NTofClustersusati=0;
-	Rup		=0;
-	Rdown		=0;
-	R		=0;
-	Chisquare	=0;
-	Beta		=0;
-	BetaR		=0;
-	NTrackHits 	=0;                  
-	Richtotused 	=0;  
-	RichPhEl	=0;  
-	R_L1		=0;  
-	hitbits	=0;  
-	qL1		=0;  
-	qL1Status	=0;
-	qInner		=0;  
-	qUtof		=0;  
-	qLtof		=0;  
-	RICHprob	=0;
-	RICHPmts	=0;
-	RICHcollovertotal=0;
-	RICHgetExpected=0;
 
-	Momento_gen	=0;  
-	Massa_gen	=0;  		
-	MCClusterGeantPids=0; 	
+    Run            = 0;
+    Event          = 0;
+    NEvent         = 0;
+    U_time         = 0;
+    NTracks        = 0;
+    ThetaS         = 0;
+    PhiS           = 0;
+    Livetime       = 0;
+    Latitude       = 0;
+    PrescaleFactor = 0;
+
+    // Cutoffs
+    Rcutoff        = 0;
+    IGRFRcutoff    = 0;
+
+    // Bit fields
+    JMembPatt      = 0;
+    PhysBPatt      = 0;
+    CUTMASK        = 0;
+    RICHmask_new   = 0;
+
+    // Counts
+    NAnticluster_float = 0;
+    NTofClusters       = 0;
+    NTofClustersusati  = 0;
+    NTofUsed           = 0;
+    NTRDclusters       = 0;
+    NAnticluster       = 0;
+    NTRDSegments       = 0;
+    NTrackHits         = 0;
+    clustertrack       = 0;
+    clustertottrack    = 0;
+
+
+    // Track
+    R_pre              = 0;
+    Rup                = 0;
+    Rdown              = 0;
+    R                  = 0;
+    R_L1               = 0;
+    Chisquare          = 0;
+    Chisquare_L1       = 0;
+    Chisquare_y        = 0;
+    Chisquare_L1_y     = 0;
+    hitbits            = 0;
+    
+    // Tracker Charge
+    qL1                = 0;
+    qL1Status          = 0;
+    qInner             = 0;
+
+    // TOF
+    Beta               = 0;
+    BetaR              = 0;
+    Beta_pre           = 0;
+    qUtof              = 0;
+    qLtof              = 0;
+
+    // RICH 
+    BetaRICH_new           = 0;
+    Richtotused            = 0;
+    Richtotused_float      = 0;
+    RichPhEl               = 0;
+    RICHprob               = 0;
+    RICHPmts               = 0;
+    RICHcollovertotal      = 0;
+    RICHgetExpected        = 0;
+
+    //MC vars
+    Momento_gen            = 0;
+    Massa_gen              = 0;
+    mcweight               = 0;
+    MCClusterGeantPids     = 0;
+    Charge_gen             = 0;
+    GenX  = 0; GenY  = 0; GenZ  = 0;
+    GenPX = 0; GenPY = 0; GenPZ = 0;
 }
 
 
