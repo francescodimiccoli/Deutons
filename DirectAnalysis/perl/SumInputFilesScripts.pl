@@ -1,11 +1,20 @@
 #usr/bin/perl
 
+chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
+print "Printed: Work Dir. = ".$workdir."\n\n";
+
+$datapath  = "/eos/ams/group/dbar/release_1507300526/neg/ISS.B950/pass6/";
+$mcP_path  = "/eos/ams/group/dbar/release_1507300526/full/Pr.B1116/pr.pl1.l1.054000.3_00/";
+$mcD_path  = "/eos/ams/group/dbar/release_1507300526/full/D.B1081/d.pl1.l1.0_5200.2_01/";
+$mcHe_path = "/eos/ams/group/dbar/release_1507300526/full/He.B1116/he4.pl1.l1.24000.3_02/";
+$out_path  = "/eos/ams/user/f/fdimicco/";
+
 
 #use warnings;
-system("rm /storage/gpfs_ams/ams/users/fdimicco/MAIN/SumScripts/Sommaisto*");
+system("rm $workdir/InputFileLists/*");
 
 print "Listing All Data Files..\n";
-chomp (@Rootuple = `ls  /storage/gpfs_ams/ams/users/fdimicco/MAIN/istogrammidatiCNAF | grep -v "log" |  sed s/.root//g`);
+chomp (@Rootuple = `ls  $datapath | grep -v "log" |  sed s/.root//g`);
 $num_Rootuple = scalar(@Rootuple);
 
 print "Total Files: ".$num_Rootuple."\n";
@@ -26,33 +35,28 @@ print "Files in the requested period: ".$num_rootuple."\n";
 
 for ($n=0;$n<$njobs; $n++)
 {
-
-	open(OUT,">","/storage/gpfs_ams/ams/users/fdimicco/MAIN/SumScripts/Sommaisto$n.sh");
-	print OUT  "#!/bin/bash
-
-		hadd -f -k  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommadati/sommadati$n.root ";
+	open(OUT,">","$workdir/InputFileLists/FileListDT$n.sh");
 
 	for ($j=($num_rootuple)/$njobs*$n ; $j<($num_rootuple)/$njobs*($n+1) ; $j++)
 	{
-				print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/istogrammidatiCNAF/$rootuple[$j].root "
+		print OUT  "$datapath/$rootuple[$j].root\n";
 	}
-	print OUT "\n";
 }
 
 
 
 print "Listing All MC Files..\n";
-chomp (@MC_P = `ls  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/pB800/ | grep -v "log" |  sed s/.root//g`);
+chomp (@MC_P = `ls  $mcP_path | grep -v "log" |  sed s/.root//g`);
 $num_MC_P = scalar(@MC_P);
 
 print "Total Files MC P: ".$num_MC_P."\n";
 
-chomp (@MC_D = `ls  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/d1059/ | grep -v "log" |  sed s/.root//g`);
+chomp (@MC_D = `ls  $mcD_path | grep -v "log" |  sed s/.root//g`);
 $num_MC_D = scalar(@MC_D);
 
 print "Total Files MC D: ".$num_MC_D."\n";
 
-chomp (@MC_He = `ls  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/HeB1043/ | grep -v "log" |  sed s/.root//g`);
+chomp (@MC_He = `ls $mcHe_path  | grep -v "log" |  sed s/.root//g`);
 $num_MC_He = scalar(@MC_He);
 
 print "Total Files MC He: ".$num_MC_He."\n";
@@ -62,54 +66,22 @@ print "Total Files MC He: ".$num_MC_He."\n";
 for ($n=0;$n<$njobs; $n++)
 {
 
-        open(OUT,">","/storage/gpfs_ams/ams/users/fdimicco/MAIN/SumScripts/SommaistoMC$n.sh");
-        print OUT  "#!/bin/bash
-
-        hadd -f -k  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC_P$n.root ";
+        open(OUT,">","$workdir/InputFileLists/FileListMC$n.sh");
 
 	for ($j=($num_MC_P)/$njobs*$n ; $j<($num_MC_P)/$njobs*($n+1) ; $j++)
         {
-                                print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/pB800/$MC_P[$j].root "
-        }
-        print OUT "\n
-
-        hadd -f -k  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC_D$n.root ";
-
+                 print OUT  "$mcP_path/$MC_P[$j].root\n"
+	 }
 	for ($j=($num_MC_D)/$njobs*$n ; $j<($num_MC_D)/$njobs*($n+1) ; $j++)
         {
-                                print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/d1059/$MC_D[$j].root "
-        }
-        print OUT "\n
-
-	 hadd -f -k  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC_He$n.root ";
-
+                 print OUT  "$mcD_path/$MC_D[$j].root\n"
+	}
 	for ($j=($num_MC_He)/$njobs*$n ; $j<($num_MC_He)/$njobs*($n+1) ; $j++)
         {
-                                print OUT  " /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/L1QStatusMC/HeB1043/$MC_He[$j].root "
-        }
-        print OUT "\n
-
-	hadd -f -k  /storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC$n.root ";
-	print OUT "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC_P$n.root ";
-	print OUT "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC_D$n.root ";
-	print OUT "/storage/gpfs_ams/ams/users/fdimicco/MAIN/sommaMC/temp/sommaMC_He$n.root ";
-	print OUT "\n";
+                 print OUT  "$mcHe_path/$MC_He[$j].root\n"
+	}
 	
 }
-
-
-
-
-open(OUT,">","/storage/gpfs_ams/ams/users/fdimicco/MAIN/SumScripts/Sommaisto.sh");
-
-print OUT  "#!/bin/bash";
-print OUT "\n";
-for ($n=0;$n<$njobs; $n++)
-{
-	print OUT  "sh /storage/gpfs_ams/ams/users/fdimicco/MAIN/SumScripts/Sommaisto$n.sh\n";
-}
-
-
 
 
 

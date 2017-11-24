@@ -1,30 +1,25 @@
 //
 // Compile it with:
 //
-//  g++ -o likelihood  TrainBDT.cpp `root-config --cflags --libs` -lTMVA
+//  g++ -o likelihood  TrainBDT_DBar.cpp `root-config --cflags --libs` -lTMVA
 
 
 #include <TFile.h>
 #include <TMVA/Factory.h>
-
+#include "TChain.h"
+#include "string.h"
+#include "include/InputFileReader.h"
 
 int main(int argc, char * argv[])
 {
     //Processing input options
     int c;
     std::string outFname;
-    std::string  inFname;
-    /*while((c = getopt(argc, argv, "o:")) != -1) {
-        if(c == 'o') outFname = std::string(optarg);
-    }
-    if (optind < argc) inFname = std::string(argv[optind++]); else return 1;
-    */	
-    if(inFname.empty())  inFname = std::string("/home/AMS/fdimicco/fdimicco/MAIN/sommaMC/temp/sommaMC.root");
-    if(outFname.empty()) outFname = std::string("QualityAgl.root");
+    if(outFname.empty()) outFname = std::string("QualityTOF.root");
 
     // Open  input files, get the trees
-    TFile * mcFile = new TFile(inFname.c_str());
-    TTree * mc = (TTree*)mcFile->Get("Event");
+
+    TChain *mc = InputFileReader("FileListMC.txt","Event");
 
     // Preparing options for the TMVA::Factory
     std::string options( 
@@ -43,25 +38,26 @@ int main(int argc, char * argv[])
     //Preparing variables 
     factory->AddVariable("nanti", 'I');
     factory->AddVariable("chisqn[1][0]", 'F');
-    factory->AddVariable("layernonusati := 7 - (hitbits&1) - (hitbits&2)*1/2 - (hitbits&4)*1/4 - (hitbits&8)*1/8 - (hitbits&16)*1/16 - (hitbits&32)*1/32 - (hitbits&64)*1/64", 'I');
-    factory->AddVariable("NTofUsed := NTofClusters - NTofClustersusati", 'I');
-    factory->AddVariable("diffR := TMath::Abs(Rup-Rdown)/R", 'F');
-    factory->AddVariable("TOF_Up_Down := TMath::Abs(TOFEndep[2]+TOFEndep[3]-TOFEndep[0]-TOFEndep[1])", 'F');
-    factory->AddVariable("Richtotused");	
-    factory->AddVariable("RichPhEl");
+    factory->AddVariable("layernonusati := 7 - (pattxy&1) - (pattxy&2)*1/2 - (pattxy&4)*1/4 - (pattxy&8)*1/8 - (pattxy&16)*1/16 - (pattxy&32)*1/32 - (pattxy&64)*1/64", 'I');
+    factory->AddVariable("NTofUsed := ntofh - beta_ncl", 'I');
+    factory->AddVariable("diffR := TMath::Abs(rig[2]-rig[3])/rig[1]", 'F');
+    factory->AddVariable("TOF_Up_Down := TMath::Abs(edep[2][0]+edep[3][0]-edep[0][0]-edep[1][0])", 'F');
+   // factory->AddVariable("Richtotused := nhit_used", 'I');	
+   // factory->AddVariable("RichPhEl:= np_exp_uncorr/np", 'F');
 	
+   std::string IsPreselected = "rig[0]>0&&(trigpatt&0x2)!=0&&chisqcn<10&&chisqtn<10&&rig[4]!=0.0&&chisqn[1][0] < 10&&chisqn[1][1] < 10&&nparticle==1&&flagp[1]==0&&flagp[2]==0&&flagp[3]==0&&flag==0";
 	
     //Preselection cuts
-    std::string signalCut = "qL1>0&&BetaHR>0.4&&BetaHR<0.77&&(R/BetaHR)*(1-BetaHR^2)^0.5>1.7&&GenMass>1&&GenMass<2&&(CUTMASK&187)==187";
-    std::string backgnCut = "qL1>0&&BetaHR>0.4&&BetaHR<0.77&&(R/BetaHR)*(1-BetaHR^2)^0.5>1.7&&GenMass<1&&GenMass<2&&(CUTMASK&187)==187";
-    std::string signalCutNaF = "qL1>0&&BetaRICH>0&&BetaRICH<0.96&&(R/BetaRICH)*(1-BetaRICH^2)^0.5>1.7&&GenMass>1&&GenMass<2&&(CUTMASK&187)==187&&(RICHmask&1023)==512";
-    std::string backgnCutNaF = "qL1>0&&BetaRICH>0&&BetaRICH<0.96&&(R/BetaRICH)*(1-BetaRICH^2)^0.5>1.7&&GenMass<1&&GenMass<2&&(CUTMASK&187)==187&&(RICHmask&1023)==512";
-    std::string signalCutAgl = "qL1>0&&BetaRICH>0&&BetaRICH<0.985&&(R/BetaRICH)*(1-BetaRICH^2)^0.5>1.7&&GenMass>1&&GenMass<2&&(CUTMASK&187)==187&&(RICHmask&1023)==0";
-    std::string backgnCutAgl = "qL1>0&&BetaRICH>0&&BetaRICH<0.985&&(R/BetaRICH)*(1-BetaRICH^2)^0.5>1.7&&GenMass<1&&GenMass<2&&(CUTMASK&187)==187&&(RICHmask&1023)==0";
+    std::string signalCut    = "q_lay[1][0]>0&&beta>0.4&&beta<0.77&&(rig[1]/beta)*(1-beta^2)^0.5>1.7&&mass>1&&mass<2";
+    std::string backgnCut    = "q_lay[1][0]>0&&beta>0.4&&beta<0.77&&(rig[1]/beta)*(1-beta^2)^0.5>1.7&&mass>0&&mass<1";
+    std::string signalCutNaF = "q_lay[1][0]>0&&beta_refit>0&&beta_refit<0.96&&(rig[1]/beta_refit)*(1-beta_refit^2)^0.5>1.7&&mass>1&&mass<2&&selection==1";
+    std::string backgnCutNaF = "q_lay[1][0]>0&&beta_refit>0&&beta_refit<0.96&&(rig[1]/beta_refit)*(1-beta_refit^2)^0.5>1.7&&mass>0&&mass<1&&selection==1";
+    std::string signalCutAgl = "q_lay[1][0]>0&&beta_refit>0&&beta_refit<0.96&&(rig[1]/beta_refit)*(1-beta_refit^2)^0.5>1.7&&mass>1&&mass<2&&selection==0";
+    std::string backgnCutAgl = "q_lay[1][0]>0&&beta_refit>0&&beta_refit<0.96&&(rig[1]/beta_refit)*(1-beta_refit^2)^0.5>1.7&&mass>0&&mass<1&&selection==0";
 		 
 
-    factory->AddTree(mc,"Signal"    ,1,signalCutAgl.c_str());
-    factory->AddTree(mc,"Background",1,backgnCutAgl.c_str());
+    factory->AddTree(mc,"Signal"    ,1,(signalCut+"&&"+IsPreselected).c_str());
+    factory->AddTree(mc,"Background",1,(backgnCut+"&&"+IsPreselected).c_str());
 
     // Preparing
     std::string preselection = "";
