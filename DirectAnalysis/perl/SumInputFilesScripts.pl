@@ -35,7 +35,7 @@ print "Files in the requested period: ".$num_rootuple."\n";
 
 for ($n=0;$n<$njobs; $n++)
 {
-	open(OUT,">","$workdir/InputFileLists/FileListDT$n.sh");
+	open(OUT,">","$workdir/InputFileLists/FileListDT$n.txt");
 
 	for ($j=($num_rootuple)/$njobs*$n ; $j<($num_rootuple)/$njobs*($n+1) ; $j++)
 	{
@@ -66,7 +66,7 @@ print "Total Files MC He: ".$num_MC_He."\n";
 for ($n=0;$n<$njobs; $n++)
 {
 
-        open(OUT,">","$workdir/InputFileLists/FileListMC$n.sh");
+        open(OUT,">","$workdir/InputFileLists/FileListMC$n.txt");
 
 	for ($j=($num_MC_P)/$njobs*$n ; $j<($num_MC_P)/$njobs*($n+1) ; $j++)
         {

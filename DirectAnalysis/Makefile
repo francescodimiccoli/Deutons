@@ -1,4 +1,4 @@
-all: CountsExtraction_Parallel EffCorr_Parallel
+all: CountsExtraction_Parallel MCEfficiency_Parallel EffCorr_Parallel
 
 DBARPATH=../data_reduction
 
@@ -10,6 +10,10 @@ obj/%.o: src-main/%.cpp
 
 CountsExtraction_Parallel: obj/GCR_data.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/CountsExtraction_Parallel.o
 	g++ $^ -o $@ $(shell root-config --libs --cflags) -lTMVA -L$(DBARPATH)/lib/ -lntp
+
+MCEfficiency_Parallel: obj/GCR_data.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/MCEfficiency_Parallel.o
+	g++ $^ -o $@ $(shell root-config --libs --cflags) -lTMVA -L$(DBARPATH)/lib/ -lntp
+
 
 EffCorr_Parallel: obj/GCR_data.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/EffCorr_Parallel.o
 	g++ $^ -o $@ $(shell root-config --libs --cflags) -lTMVA -L$(DBARPATH)/lib/ -lntp

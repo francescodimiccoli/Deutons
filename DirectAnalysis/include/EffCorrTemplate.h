@@ -339,9 +339,11 @@ void EffCorrTemplate::Eval_Efficiencies(){
 			FitAfter[10].push_back(fit_after);
 	}	
 
+	float constrainmin[3] = {0.0001,0.0001,0.0001};
+	float constrainmax[3] = {1,1,1};
 	for(int bin=0;bin<bins.size();bin++){
-		Do_TemplateFIT(FitBefore[10][bin],0.1,3);
-		Do_TemplateFIT(FitAfter [10][bin],0.1,3);
+		Do_TemplateFIT(FitBefore[10][bin],0.1,3,constrainmin,constrainmax);
+		Do_TemplateFIT(FitAfter [10][bin],0.1,3,constrainmin,constrainmax);
 	
 		if(FitBefore[10][bin]->Tfit_outcome==0&&FitAfter[10][bin]->Tfit_outcome==0){ 
 			GlobEfficiency_P->SetBinContent(bin+1,FitAfter[10][bin]->Templ_P->Integral()/FitBefore[10][bin]->Templ_P->Integral());	

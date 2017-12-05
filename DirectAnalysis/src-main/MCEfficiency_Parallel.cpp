@@ -17,7 +17,8 @@
 #include "TGraphErrors.h"
 #include "TFractionFitter.h"
 #include "TRandom3.h"
-
+#include "TChain.h"
+#include "../include/InputFileReader.h"
 #include "../include/GlobalBinning.h"
 
 #include "../include/Commonglobals.cpp"
@@ -54,12 +55,8 @@ int main(int argc, char * argv[])
 	FileSaver finalResults;
         finalResults.setName((OUTPUT+"_Results").c_str());
 
-
-        TFile *fileDT =TFile::Open(INPUT1.c_str());
-        TFile *fileMC =TFile::Open(INPUT2.c_str());
-
-        TTree *treeMC = (TTree *)fileMC->Get("parametri_geo");
-        TTree *treeDT = (TTree *)fileDT->Get("parametri_geo");
+	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+    	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
 
 
 	cout<<"****************************** BINS ***************************************"<<endl;
@@ -94,17 +91,15 @@ int main(int argc, char * argv[])
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
 
-	Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsProtonMC&IsPreselected&DistanceCut&LikelihoodCut");
+	//Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsProtonMC&IsPreselected&DistanceCut&LikelihoodCut");
 
 
-	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency","IsProtonMC","IsProtonMC","IsProtonMC","IsProtonMC&IsPreselected",
-"IsProtonMC&IsPreselected&IsFromNaF","IsProtonMC&IsPreselected&IsFromAgl",Refill);
+	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency","IsProtonMC","IsProtonMC","IsProtonMC","IsProtonMC&IsPreselected","IsProtonMC&IsPreselected&IsFromNaF","IsProtonMC&IsPreselected&IsFromAgl",Refill);
 	AllRangesEfficiency * Quality_P       = new AllRangesEfficiency(finalHistos,"QualEff_P","QualityEfficiency"     ,"IsProtonMC&IsPreselected","IsProtonMC&IsPreselected&DistanceCut&LikelihoodCut&TemplatesMassCut",Refill);
         AllRangesEfficiency * FullSet_P      = new AllRangesEfficiency(finalHistos,"FullsetEff_P","FullsetEfficiency"  ,"","",Refill);
 
 
-	AllRangesEfficiency * Preselections_D = new AllRangesEfficiency(finalHistos,"PresEff_D","PreselectionEfficiency","IsDeutonMC","IsDeutonMC","IsDeutonMC","IsDeutonMC&IsPreselected",
-"IsDeutonMC&IsPreselected&IsFromNaF","IsDeutonMC&IsPreselected&IsFromAgl",Refill);
+	AllRangesEfficiency * Preselections_D = new AllRangesEfficiency(finalHistos,"PresEff_D","PreselectionEfficiency","IsDeutonMC","IsDeutonMC","IsDeutonMC","IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected&IsFromNaF","IsDeutonMC&IsPreselected&IsFromAgl",Refill);
 	AllRangesEfficiency * Quality_D       = new AllRangesEfficiency(finalHistos,"QualEff_D","QualityEfficiency"     ,"IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected&DistanceCut&LikelihoodCut&TemplatesMassCut",Refill);
         AllRangesEfficiency * FullSet_D       = new AllRangesEfficiency(finalHistos,"FullsetEff_D","FullsetEfficiency"  ,"","",Refill);
 
@@ -113,7 +108,7 @@ int main(int argc, char * argv[])
 	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias&IsFromNaF","IsDeutonMC&IsMinimumBias&IsFromAgl",Refill);
 
 
-	RigBinFullSetEff->Fill(treeMC,vars,GetGenMomentum,Refill);
+//	RigBinFullSetEff->Fill(treeMC,vars,GetGenMomentum,Refill);
 
 		ParallelFiller<AllRangesEfficiency *> Filler;
 		Filler.AddObject2beFilled(Preselections_P,GetBetaGen,GetBetaGen);
@@ -124,13 +119,13 @@ int main(int argc, char * argv[])
 		Filler.AddObject2beFilled(RICH_P	 ,GetBetaGen,GetBetaGen);
 		Filler.ReinitializeAll(Refill);
 		//main loop
-		Filler.LoopOnMC(treeMC,vars);
+		Filler.LoopOnMC(DBarReader(chainMC, true ),vars);
 
 	FullSet_P 	->CloneEfficiency(Preselections_P);
 	FullSet_D       ->CloneEfficiency(Preselections_D);
 
 
-	RigBinFullSetEff->Save(finalHistos);	
+//	RigBinFullSetEff->Save(finalHistos);	
 	Preselections_P	->Save(finalHistos);
         Quality_P       ->Save(finalHistos);
 	Preselections_D ->Save(finalHistos);
@@ -141,7 +136,7 @@ int main(int argc, char * argv[])
 	FullSet_D       ->Save(finalHistos);
 
 
-	RigBinFullSetEff->Eval_Efficiency();
+//	RigBinFullSetEff->Eval_Efficiency();
 	Preselections_P	->Eval_Efficiency();
         Quality_P       ->Eval_Efficiency();
         Preselections_D ->Eval_Efficiency();
@@ -155,7 +150,7 @@ int main(int argc, char * argv[])
 	FullSet_P       ->Eval_FittedEfficiency();
         FullSet_D       ->Eval_FittedEfficiency();
 
-	RigBinFullSetEff->SaveResults(finalResults);
+//	RigBinFullSetEff->SaveResults(finalResults);
 	Preselections_P	->SaveResults(finalResults);
 	Quality_P       ->SaveResults(finalResults);
 	Preselections_D ->SaveResults(finalResults);

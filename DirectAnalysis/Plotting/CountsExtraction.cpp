@@ -52,8 +52,8 @@ std::vector<TH1F*> GetListOfTemplates(TFile * file,std::string path){
 
 }
 
-void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binning bins, std::string title, std::string x_udm,float xmin, float xmax,float y1min,float y1max,float y2min,float y2max);
-void DrawFits(TemplateFIT * FIT,FileSaver finalHistos, FileSaver Plots, bool IsFitNoise = false);
+void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binning bins, std::string title,std::string x, std::string x_udm,float xmin, float xmax,float y1min,float y1max,float y2min,float y2max);
+void DrawFits(TemplateFIT * FIT,FileSaver finalHistos, FileSaver Plots, bool IsFitNoise = false,bool IsSmearingCheck = false);
 
 int main(int argc, char * argv[]){
 
@@ -98,10 +98,12 @@ int main(int argc, char * argv[]){
 
         cout<<"****************************** PLOTTING FITS ***************************************"<<endl;
 
+	TemplateFIT * SmearingCheck = new TemplateFIT(finalHistos,"SmearingCheck",PRB);
 	TemplateFIT * ToFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
 	TemplateFIT * NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB);
 	TemplateFIT * Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB);
 
+	DrawFits(SmearingCheck,finalHistos,Plots,false,true);
 	DrawFits(ToFfits,finalHistos,Plots);
 	DrawFits(NaFfits,finalHistos,Plots,true);
 	DrawFits(Aglfits,finalHistos,Plots,true);
@@ -113,6 +115,7 @@ int main(int argc, char * argv[]){
 	TCanvas * c4 = new TCanvas("Deuteron Counts");
 	c4->SetCanvasSize(2000,1500);
 
+	std::string pathresCheck = (SmearingCheck->GetName() + "/Fit Results/");
 	std::string pathresTOF   = (ToFfits->GetName() + "/Fit Results/");
 	std::string pathresNaF   = (NaFfits->GetName() + "/Fit Results/");
 	std::string pathresAgl   = (Aglfits->GetName() + "/Fit Results/");
@@ -246,18 +249,33 @@ int main(int argc, char * argv[]){
 
 
 	
-	DrawParameters(finalHistos,Plots,pathresTOF,ToFDB,"Parameters TOF","[ps]",0.45,0.9,-100,100,-40,180);
-	DrawParameters(finalHistos,Plots,pathresNaF,NaFDB,"Parameters NaF","[rad/10^{4}]",0.7,0.98,-1000,1000,-1000,2000);
-	DrawParameters(finalHistos,Plots,pathresAgl,AglDB,"Parameters Agl","[rad/10^{4}]",0.95,1.005,-230,230,-150,400);
+	DrawParameters(finalHistos,Plots,pathresTOF,ToFDB,"Parameters TOF","Measured #beta","[ps]",0.45,0.9,-100,100,-40,180);
+	DrawParameters(finalHistos,Plots,pathresNaF,NaFDB,"Parameters NaF","Measured #beta","[rad/10^{4}]",0.7,0.98,-1000,1000,-1000,2000);
+	DrawParameters(finalHistos,Plots,pathresAgl,AglDB,"Parameters Agl","Measured #beta","[rad/10^{4}]",0.95,1.005,-230,230,-150,400);
 
 
+
+	TCanvas * c8 = new TCanvas("Chi Square - Smearing Check");
+        c8->SetCanvasSize(5000,1000);
+
+	TH1F * BestChiSquareCheck         = (TH1F*) finalHistos.Get((pathresCheck+"Best ChiSquare").c_str());
+        TH1F * OriginalChiSquareCheck      = (TH1F*) finalHistos.Get((pathresCheck+"Original ChiSquare").c_str());
+
+	c8->cd();
+	PlotDistribution(gPad,BestChiSquareCheck ,"Rig. Range Bin","#chi^2 of T. Fit",2,"Psame",1e-2,130,3,"Best #chi^{2} mod. Template");
+        PlotDistribution(gPad,OriginalChiSquareCheck,"Rig. Range Bin","#chi^2 of T. Fit",4,"Psame",1e-2,130,3,"Original MC Templates");
+
+	Plots.Add(c8);
+        Plots.writeObjsInFolder("Results");
+
+	DrawParameters(finalHistos,Plots,pathresCheck,PRB,"Parameters Check","Measured Rig [GV]","[ps]",0.5,120,-150,150,-40,180);
 
 	return 0;
 }
 
 
 
-void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binning bins, std::string title, std::string x_udm, float xmin, float xmax,float y1min,float y1max,float y2min,float y2max){
+void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binning bins, std::string title, std::string x,std::string x_udm, float xmin, float xmax,float y1min,float y1max,float y2min,float y2max){
 
 	TCanvas * c7 = new TCanvas(title.c_str());
 	c7->SetCanvasSize(2000,1500);
@@ -272,8 +290,8 @@ void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binn
 	TPad * c7_do = new TPad("lowerPad", "lowerPad",0.0,0.0,1.0,0.5);
 	c7_do->Draw();
 
-	PlotTH1FintoGraph(c7_up,bins, ShiftBest, "Measured #beta",  ("Mean shift "+x_udm).c_str(),2,false,"ep",xmin,xmax,y1min,y1max,"Best #chi^{2} Shift");
-	PlotTH1FintoGraph(c7_do,bins, SigmaBest, "Measured #beta",  ("Additive #sigma "+x_udm).c_str(),4,false,"ep",xmin,xmax,y2min,y2max,"Best #chi^{2} #sigma");
+	PlotTH1FintoGraph(c7_up,bins, ShiftBest, x.c_str(),  ("Mean shift "+x_udm).c_str(),2,false,"ep",xmin,xmax,y1min,y1max,"Best #chi^{2} Shift");
+	PlotTH1FintoGraph(c7_do,bins, SigmaBest, x.c_str(),  ("Additive #sigma "+x_udm).c_str(),4,false,"ep",xmin,xmax,y2min,y2max,"Best #chi^{2} #sigma");
 		
 
 	Plots.Add(c7);
@@ -293,7 +311,7 @@ TH1F * CreateNoiseD( TH1F * NoiseP, TH1F * SignP, TH1F * SignD ){
 	return NoiseD;
 }
 
-void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFitNoise){
+void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFitNoise, bool IsSmearingCheck){
 
 	std::string pathdata  = (FIT->GetName() + "/Fit Results/Data");
 	std::string pathtemplP= (FIT->GetName() + "/Fit Results/ScaledTemplatesP");
@@ -341,12 +359,12 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
                 c2->SetCanvasSize(2000,1500);
 
 		PlotDistribution(gPad, TemplatesP[0], "Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Original Protons MC Template");
-		PlotDistribution(gPad, TemplatesD[0], "Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,10,"Original Deuterons MC Template");
-		PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,1e5,10,"Original He Fragm. MC Template");
+		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[0], "Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,10,"Original Deuterons MC Template");
+		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,1e5,10,"Original He Fragm. MC Template");
 
 		for(int j=TemplatesP.size()-1;j>=1;j--){
                         PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,1e5,1,"",false,false,true);
-			PlotDistribution(gPad, TemplatesD[j],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,1,"",false,false,true);
+			if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[j],"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,1,"",false,false,true);
                 	//PlotDistribution(gPad, TemplatesHe[j],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,1e5,1,"",false,false,true);
 		}
 		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"ePsame",1,1e5,3,"ISS data",false,true);
@@ -365,10 +383,11 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		Sum->Add(TemplatesHe[1]);
 
 		PlotDistribution(gPad, TemplatesP[0] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,2,"Original Protons MC Template");
-		PlotDistribution(gPad, TemplatesD[0] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,2,"Original Deuterons MC Template");
-		if(!IsFitNoise) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,1e5,2,"Original He Fragm. MC Template");
+		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[0] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,2,"Original Deuterons MC Template");
+		if(!IsFitNoise) if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,1e5,2,"Original He Fragm. MC Template");
 		PlotDistribution(gPad, TemplatesP[1] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,10,"Best #chi^{2} Protons MC Template");
-		PlotDistribution(gPad, TemplatesD[1] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,10,"Best #chi^{2} Deuterons MC Template");
+		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[1] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,10,"Best #chi^{2} Deuterons MC Template");
+		if(!IsSmearingCheck)
 		if(!IsFitNoise) PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,1e5,10,"Best #chi^{2} he Fragm. MC Template");
 		else {
 			TH1F * NoiseD = CreateNoiseD(TemplatesHe[1],TemplatesP[1],TemplatesD[1]);
@@ -427,9 +446,10 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 		PlotDistribution(gPad, NoCutoffP,"Reconstructed Mass [GeV/c^2]","Primary Counts",2,"same",1e-1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"Best #chi^{2} Protons MC Template");
 		PlotDistribution(gPad, OverCutoffP,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC (Cutoff filtered)");
-		PlotDistribution(gPad, OverCutoffD,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
-		if(!IsFitNoise) PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
-		else {
+		if(!IsSmearingCheck) PlotDistribution(gPad, OverCutoffD,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
+		if(!IsSmearingCheck) 
+			if(!IsFitNoise) PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
+			else {
                         TH1F * NoiseD = CreateNoiseD(OverCutoffHe,OverCutoffP,OverCutoffD);
                         PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",kRed-9,"same",1e-1,1e5,10,"Noise P Template",true);
                         PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^2]","Counts",kBlue-7,"same",1e-1,1e5,10,"Noise D Template",true);

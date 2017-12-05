@@ -1,3 +1,7 @@
+#ifndef FITFUNCTION_H
+#define FITFUNCTION_H
+
+
 using namespace std;
 
 class FitFunction {
@@ -128,7 +132,7 @@ TF1* ModelWithPoly(TH1F * Histo,std::string basename,Binning Bins){
         }
         return Model;
 }
-
+#endif
 
 
 

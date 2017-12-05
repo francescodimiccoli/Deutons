@@ -35,7 +35,7 @@ void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, TTree* 
 int main(int argc, char * argv[])
 {
 
-
+    TH1::SetDefaultSumw2();     	
     cout<<"****************************** FILES OPENING ***************************************"<<endl;
     
     string INPUT1(argv[1]);
@@ -106,6 +106,7 @@ int main(int argc, char * argv[])
     BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
     BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
 
+    TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",100,0.3,1.6);	
     TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
     TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,2000,1000);
     TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,600,500);	
@@ -120,6 +121,7 @@ int main(int argc, char * argv[])
 
         ParallelFiller<TemplateFIT *> Filler;
 
+	Filler.AddObject2beFilled(SmearingCheck,GetBetaTOF,GetRigidity);
         Filler.AddObject2beFilled(TOFfits,GetRecMassTOF ,GetBetaTOF);
         Filler.AddObject2beFilled(NaFfits,GetRecMassRICH,GetBetaRICH);
         Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);
@@ -129,6 +131,9 @@ int main(int argc, char * argv[])
         Filler.LoopOnData(DBarReader(chainDT, false),vars);
         //
 
+	SmearingCheck->DisableFit();
+        SmearingCheck->Save(finalHistos);
+	
         TOFfits->DisableFit();
         TOFfits->Save(finalHistos);
 
@@ -140,7 +145,7 @@ int main(int argc, char * argv[])
     }
 
     else { 
-
+	TemplateFIT * SmearingCheck = new TemplateFIT(finalHistos,"SmearingCheck",PRB);
         TOFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
         //NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,400,200);
         //Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,110,80);
@@ -148,6 +153,11 @@ int main(int argc, char * argv[])
         NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB,true,11,2000,1000);
         Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB,true,11,600,500);
 
+	SmearingCheck->SetFitRangeByQuantiles(0.05,0.95);
+	SmearingCheck->SetFitConstraints(0.99,1,0.0001,0.001,0.0001,0.001);
+	//SmearingCheck->DisableFit();
+    	SmearingCheck->ExtractCounts(finalHistos);	
+        SmearingCheck->SaveFitResults(finalResults);
 
         //TOFfits->DisableFit();
         TOFfits->SetHeliumContamination(HeContTOF);				

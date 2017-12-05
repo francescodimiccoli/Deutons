@@ -36,16 +36,23 @@ int main(int argc, char * argv[])
     TMVA::Factory * factory = new TMVA::Factory("QualityAgl", ldFile, options.c_str());
 
     //Preparing variables 
+//  factory->AddVariable("n_badTOF:= (flagp[0]>0) + (flagp[1]>0) + (flagp[2]>0) + (flagp[3]>0)", 'I');
     factory->AddVariable("nanti", 'I');
-    factory->AddVariable("chisqn[1][0]", 'F');
-    factory->AddVariable("layernonusati := 7 - (pattxy&1) - (pattxy&2)*1/2 - (pattxy&4)*1/4 - (pattxy&8)*1/8 - (pattxy&16)*1/16 - (pattxy&32)*1/32 - (pattxy&64)*1/64", 'I');
+    factory->AddVariable("chisqn[1][1]", 'F');
+    factory->AddVariable("layernonusati := 7 - (patty&1) - (patty&2)*1/2 - (patty&4)*1/4 - (patty&8)*1/8 - (patty&16)*1/16 - (patty&32)*1/32 - (patty&64)*1/64", 'I');
     factory->AddVariable("NTofUsed := ntofh - beta_ncl", 'I');
     factory->AddVariable("diffR := TMath::Abs(rig[2]-rig[3])/rig[1]", 'F');
     factory->AddVariable("TOF_Up_Down := TMath::Abs(edep[2][0]+edep[3][0]-edep[0][0]-edep[1][0])", 'F');
    // factory->AddVariable("Richtotused := nhit_used", 'I');	
    // factory->AddVariable("RichPhEl:= np_exp_uncorr/np", 'F');
-	
-   std::string IsPreselected = "rig[0]>0&&(trigpatt&0x2)!=0&&chisqcn<10&&chisqtn<10&&rig[4]!=0.0&&chisqn[1][0] < 10&&chisqn[1][1] < 10&&nparticle==1&&flagp[1]==0&&flagp[2]==0&&flagp[3]==0&&flag==0";
+
+   std::string minTOF_3of4 = "((flagp[1]+flagp[2]+flagp[3]==0)||((flagp[0]+flagp[2]+flagp[3]==0))||(flagp[1]+flagp[0]+flagp[3]==0)||(flagp[1]+flagp[2]+flagp[0]==0))&&!(flagp[0]<0||flagp[1]<0||flagp[2]<0||flagp[3]<0)";
+
+   std::string minTOF = "(flagp[0]==0&&flagp[1]==0&&flagp[2]==0&&flagp[3]==0)";		
+
+   std::string IsPreselected = "rig[0]>0&&(trigpatt&0x2)!=0&&chisqcn<10&&chisqtn<10&&rig[4]!=0.0&&chisqn[1][0] < 10&&chisqn[1][1] < 10&&nparticle==1&&flag==0";
+   
+   //IsPreselected = IsPreselected + "&&" + minTOF;
 	
     //Preselection cuts
     std::string signalCut    = "q_lay[1][0]>0&&beta>0.4&&beta<0.77&&(rig[1]/beta)*(1-beta^2)^0.5>1.7&&mass>1&&mass<2";

@@ -4,13 +4,13 @@
 #include <bitset>
 
 int GetUnusedLayers(int hitbits){ return 7 - std::bitset<32>(hitbits & 0b1111111).count(); }
-Reweighter ReweightInitializer(std::string galpropfilename="./include/CRDB_ProtonsAMS_R.galprop",float r_min=0.5, float r_max=100,float norm_at=1.05);
+Reweighter ReweightInitializer(std::string galpropfilename="/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/include/CRDB_ProtonsAMS_R.galprop",float r_min=0.5, float r_max=100,float norm_at=1.05);
 
 
 Variables::Variables(){
     BDTreader();
     reweighter = ReweightInitializer();
-    reweighterHe = ReweightInitializer("./include/CRDB_HeliumAMS_R.galprop",2,2000,2.05);
+    reweighterHe = ReweightInitializer("/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/include/CRDB_HeliumAMS_R.galprop",2,2000,2.05);
 }
 
 
@@ -25,8 +25,8 @@ void Variables::BDTreader()
 	readerTOF->AddVariable("NTofUsed := NTofClusters - NTofClustersusati",&NTofUsed);
 	readerTOF->AddVariable("diffR := TMath::Abs(Rup-Rdown)/R",&diffR);
 	readerTOF->AddVariable("TOF_Up_Down := TMath::Abs(TOFEndep[2]+TOFEndep[3]-TOFEndep[0]-TOFEndep[1])", &TOF_Up_Down);
-	readerTOF->BookMVA("BDTmethod", "./TMVA/weights/QualityTOF_BDT.weights.xml");
-	readerTOF->BookMVA("TMVA::Types::kLikelihood", "./TMVA/weights/QualityTOF_Likelihood.weights.xml");
+	readerTOF->BookMVA("BDTmethod", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityTOF_BDT.weights.xml");
+	readerTOF->BookMVA("TMVA::Types::kLikelihood", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityTOF_Likelihood.weights.xml");
 
 	TMVA::Tools::Instance();
 	readerNaF = new TMVA::Reader( "V:Color:!Silent" );
@@ -38,8 +38,8 @@ void Variables::BDTreader()
 	readerNaF->AddVariable("TOF_Up_Down := TMath::Abs(TOFEndep[2]+TOFEndep[3]-TOFEndep[0]-TOFEndep[1])", &TOF_Up_Down);
 	readerNaF->AddVariable("Richtotused",&Richtotused_float);
 	readerNaF->AddVariable("RichPhEl", &RichPhEl);
-	readerNaF->BookMVA("BDTmethod", "./TMVA/weights/QualityNaF_BDT.weights.xml");
-	readerNaF->BookMVA("TMVA::Types::kLikelihood", "./TMVA/weights/QualityNaF_Likelihood.weights.xml");
+	readerNaF->BookMVA("BDTmethod", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityNaF_BDT.weights.xml");
+	readerNaF->BookMVA("TMVA::Types::kLikelihood", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityNaF_Likelihood.weights.xml");
 
 	TMVA::Tools::Instance();
 	readerAgl = new TMVA::Reader( "V:Color:!Silent" );
@@ -51,8 +51,8 @@ void Variables::BDTreader()
 	readerAgl->AddVariable("TOF_Up_Down := TMath::Abs(TOFEndep[2]+TOFEndep[3]-TOFEndep[0]-TOFEndep[1])", &TOF_Up_Down);
 	readerAgl->AddVariable("Richtotused",&Richtotused_float);
 	readerAgl->AddVariable("RichPhEl", &RichPhEl);
-	readerAgl->BookMVA("BDTmethod", "./TMVA/weights/QualityNaF_BDT.weights.xml");
-	readerAgl->BookMVA("TMVA::Types::kLikelihood", "./TMVA/weights/QualityNaF_Likelihood.weights.xml");
+	readerAgl->BookMVA("BDTmethod", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityNaF_BDT.weights.xml");
+	readerAgl->BookMVA("TMVA::Types::kLikelihood", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityNaF_Likelihood.weights.xml");
 
 }
 
