@@ -26,7 +26,9 @@ for($j=0;$j<$njobs;$j++)
 			source \$WORKDIR/../amsvar_cvmfs.sh;\n";
 
 		print OUT  "\$WORKDIR/CountsExtraction_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt   \$WORKDIR/AnalysisFiles/$ARGV[0]-$ARGV[1]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]-$ARGV[1]/log$j.log;\n\n";
-		#print OUT  "\$WORKDIR/MCEfficiency_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt   \$WORKDIR/AnalysisFiles/$ARGV[0]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]/log$j.log;\n\n";
+		print OUT  "\$WORKDIR/MCEfficiency_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt   \$WORKDIR/AnalysisFiles/$ARGV[0]-$ARGV[1]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]-$ARGV[1]/log$j.log;\n\n";
+
+
 
 
 		close (OUT);

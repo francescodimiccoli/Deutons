@@ -20,7 +20,7 @@
 #include "TGraphErrors.h"
 #include "TFractionFitter.h"
 #include "TRandom3.h"
-#include "../include/GlobalBinning.h"
+#include "../include/Globals.h"
 #include "string.h"
 
 #include "filesaver.h"

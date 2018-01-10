@@ -18,10 +18,8 @@
 #include "TFractionFitter.h"
 #include "TRandom3.h"
 #include "TChain.h"
-//#include "../include/GlobalBinning.h"
+#include "Globals.h"
 #include "../include/InputFileReader.h"
-#include "../include/Commonglobals.cpp"
-#include "../include/Resolution.h"
 
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
@@ -61,8 +59,6 @@ int main(int argc, char * argv[])
     bool checkfile = finalHistos.CheckFile();
 
     TTree *TreeDT = NULL;//(TTree *)fileDT->Get("parametri_geo");
-
-    bool TRDCalibfound = ReadCalibration();
 
     cout<<"****************************** BINS ***************************************"<<endl;
 
@@ -107,9 +103,9 @@ int main(int argc, char * argv[])
     BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
 
     TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",100,0.3,1.6);	
-    TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
-    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,4,true,11,2000,1000);
-    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,4,true,11,600,500);	
+    TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,5.5);
+    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",100,0.1,5.5,true,11,2000,1000);
+    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",100,0.1,5.5,true,11,600,500);	
 
     NaFfits->SetUpBadEventSimulator(NaFBadEvSimulator);
     Aglfits->SetUpBadEventSimulator(AglBadEvSimulator);

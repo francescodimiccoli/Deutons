@@ -161,7 +161,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     
     /////////////////////////////// RICH ////////////////////////////////////
 
-    vars->BetaRICH_new      = ntpRich->beta;
+    vars->BetaRICH_new      = ntpRich->beta_refit;
     vars->RICHmask_new      = RICHmaskConverter();
     vars->Richtotused       = ntpRich->nhit_used;
     vars->RichPhEl          = ntpRich->np_exp_uncorr/ntpRich->np;

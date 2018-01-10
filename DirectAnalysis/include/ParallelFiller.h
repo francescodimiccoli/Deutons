@@ -1,10 +1,14 @@
 #ifndef PARALLELFILER_H
 #define PARALLELFILER_H
 
+#include <TF1.h>
+#include "Globals.h"
 #include "BadEventSimulator.h"
+#include "binning.h"
 #include "Livetime.h"
 #include "filesaver.h"
 #include "DBarReader.h"
+
 
 template <class T> 
 class ParallelFiller{

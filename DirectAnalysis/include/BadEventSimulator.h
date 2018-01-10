@@ -1,9 +1,12 @@
 #ifndef BADEVENT_H
 #define BADEVENT_H
 
+#include "TF1.h"
+#include "TH1.h"
+#include "TH2.h"
 #include "Cuts.h"
 #include "Variables.hpp"
-
+#include "TRandom3.h"
 
 class BadEventSimulator{
 	private:

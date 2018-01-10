@@ -1,3 +1,6 @@
+#ifndef  DBARREAD_H
+#define  DBARREAD_H
+ 
 #include "TTree.h"
 #include "Ntp.h"
 
@@ -34,6 +37,6 @@ public:
     int GetTreeEntries(){return Tree->GetEntries();}; 	
 };
 
-
+#endif
 
 

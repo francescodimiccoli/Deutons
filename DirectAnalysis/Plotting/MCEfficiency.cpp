@@ -22,7 +22,6 @@
 #include "TKey.h"
 #include "TFractionFitter.h"
 
-#include "../../Ntuple-making/Commonglobals.cpp"
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 #include "../include/filesaver.h"

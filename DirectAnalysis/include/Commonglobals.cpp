@@ -2,6 +2,8 @@
 #define COMMONGLOBALS
 
 #include "TSpline.h"
+#include "TFile.h"
+#include "TH1.h" 
 
 using namespace std;
 int Ev_Num;
