@@ -5,13 +5,13 @@ print "Printing LSF scripts for Analysis...\n\n";
 chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 print "Printed: Work Dir. = ".$workdir."\n\n";
 $njobs=300;
-
+$outdir="AnalysisPlots";
 #creating sum scripts and output directory
 #
 
 system ("perl SumInputFilesScripts.pl $ARGV[0] $ARGV[1] $njobs");
-system ("rm  $workdir/AnalysisFiles/$ARGV[0]-$ARGV[1]/Result.root");
-system ("mkdir $workdir/AnalysisFiles/$ARGV[0]-$ARGV[1]");
+system ("rm  $workdir/$outdir/$ARGV[0]-$ARGV[1]/Result.root");
+system ("mkdir $workdir/$outdir/$ARGV[0]-$ARGV[1]");
 system ("rm -r $workdir/logs/$ARGV[0]-$ARGV[1]");
 system ("mkdir $workdir/logs/$ARGV[0]-$ARGV[1]");
 
@@ -25,8 +25,8 @@ for($j=0;$j<$njobs;$j++)
 			export WORKDIR=$workdir;
 			source \$WORKDIR/../amsvar_cvmfs.sh;\n";
 
-		print OUT  "\$WORKDIR/CountsExtraction_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt   \$WORKDIR/AnalysisFiles/$ARGV[0]-$ARGV[1]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]-$ARGV[1]/log$j.log;\n\n";
-		print OUT  "\$WORKDIR/MCEfficiency_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt   \$WORKDIR/AnalysisFiles/$ARGV[0]-$ARGV[1]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]-$ARGV[1]/log$j.log;\n\n";
+		print OUT  "\$WORKDIR/Distributions_Plotter \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt   \$WORKDIR/$outdir/$ARGV[0]-$ARGV[1]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]-$ARGV[1]/log$j.log;\n\n";
+#		print OUT  "\$WORKDIR/MCEfficiency_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt   \$WORKDIR/$outdir/$ARGV[0]-$ARGV[1]/Result$j.root 1 >> \$WORKDIR/logs/$ARGV[0]-$ARGV[1]/log$j.log;\n\n";
 
 
 

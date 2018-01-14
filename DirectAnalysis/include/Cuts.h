@@ -26,6 +26,7 @@ bool IsFragmentedDfromHeMC (Variables * vars);
 bool IsFragmentedTMC 	   (Variables * vars); 
 bool IsPureDMC 		   (Variables * vars); 
 bool IsFragmentedPfromDMC  (Variables * vars); 
+bool IsFragment		   (Variables * vars);
 
 bool L1LooseCharge1(Variables * vars) ;
 bool IsPrimary	   (Variables * vars);

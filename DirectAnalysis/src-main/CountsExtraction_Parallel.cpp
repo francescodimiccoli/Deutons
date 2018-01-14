@@ -61,32 +61,9 @@ int main(int argc, char * argv[])
     TTree *TreeDT = NULL;//(TTree *)fileDT->Get("parametri_geo");
 
     cout<<"****************************** BINS ***************************************"<<endl;
-
-        SetBins();
-
-        PRB.Print();
-
-        cout<<"**TOF**"<<endl;
-        ToFDB.Print();
-
-        cout<<"**NaF**"<<endl;
-        NaFPB.Print();
-
-        cout<<"**Agl**"<<endl;
-        AglDB.Print();
-
-        ToFDB.UseBetaEdges();
-        NaFDB.UseBetaEdges();
-        AglDB.UseBetaEdges();
-
-        PRB.UseREdges();
-
-
-        cout<<endl;
-
+    SetUpUsualBinning();
 
     cout<<"****************************** VARIABLES ***************************************"<<endl;
-
     Variables * vars = new Variables();
     TF1 * HeContTOF=0x0;
     TF1 * HeContNaF=0x0;

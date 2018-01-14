@@ -19,15 +19,17 @@ class ParallelFiller{
     private:
     std::vector<T> Objects2beFilled;
     std::vector<GetFillinVariable>  FillinVariables;
+    std::vector<GetFillinVariable>  SecondFillinVariables;
     std::vector<GetDiscrimVariable> DiscrimVariables;
     std::vector<std::string> 	Cuts;
     bool Refill = true;	
 
     public:
-    void AddObject2beFilled(T Object,GetFillinVariable var=0x0, GetDiscrimVariable discr_var=0x0,std::string cut=""){
+    void AddObject2beFilled(T Object,GetFillinVariable var=0x0, GetDiscrimVariable discr_var=0x0,std::string cut="",GetFillinVariable second_var=0x0){
         Objects2beFilled.push_back(Object);
         FillinVariables.push_back(var);
         DiscrimVariables.push_back(discr_var);
+	SecondFillinVariables.push_back(second_var);
         Cuts.push_back(cut);
         return;
     }
@@ -99,6 +101,20 @@ class ParallelFiller{
         }
     }
 
+    void LoopOnGeneric(DBarReader reader, Variables * vars){
+        if(!Refill) return;
+        cout<<" Generic Filling ..."<< endl;
+        for(int i=0;i<reader.GetTreeEntries()/FRAC;i++){
+            UpdateProgressBar(i, reader.GetTreeEntries()/FRAC);
+            reader.FillVariables(i,vars);
+            vars->Update();
+            //vars->PrintCurrentState();
+            for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
+                if(SecondFillinVariables[nobj]) Objects2beFilled[nobj]->FillEventByEventScatter(vars,FillinVariables[nobj],SecondFillinVariables[nobj],DiscrimVariables[nobj]);
+		else Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+        }
+    }
+    
     void ExposureTimeFilling(TTree * treeDT, Variables * vars,FileSaver finalhistos){
         if(!Refill) return;
         cout<<" Exposure Time Filling ..."<< endl;

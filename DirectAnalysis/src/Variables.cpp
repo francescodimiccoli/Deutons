@@ -108,6 +108,7 @@ void Variables::ResetVariables(){
     qL1                = 0;
     qL1Status          = 0;
     qInner             = 0;
+    qL2                = 0;	
 
     // TOF
     Beta               = 0;
@@ -172,6 +173,7 @@ void Variables::ReadBranches(TTree * tree){
 	tree->SetBranchAddress("hitbits"	 ,&hitbits);  
 	tree->SetBranchAddress("qL1"		 ,&qL1);  
 	tree->SetBranchAddress("qL1Status"      ,&qL1Status);
+	tree->SetBranchAddress("qL2"             ,&qL2);
 	tree->SetBranchAddress("qInner"	 ,&qInner);  
 	tree->SetBranchAddress("qUtof"		 ,&qUtof);  
 	tree->SetBranchAddress("qLtof"		 ,&qLtof);  
@@ -340,8 +342,13 @@ float GetUtofQ	(Variables * vars) {return vars->qUtof; }
 float GetLtofQ	(Variables * vars) {return vars->qLtof; }
 float GetInnerQ	(Variables * vars) {return vars->qInner;}
 float GetL1Q (Variables * vars) {return vars->qL1;}
+float GetL2Q (Variables * vars) {return vars->qL2;}
+float GetL1InnerNoL2Q (Variables * vars) {return vars->qL1InnerNoL2;}
 int   GetPIDatL1 (Variables * vars) {return static_cast<int> ((vars->MCClusterGeantPids)&255);}
 int   GetPIDatL2 (Variables * vars) {return static_cast<int> ((vars->MCClusterGeantPids>>8)&255);}
 int   GetPIDatL3 (Variables * vars) {return static_cast<int> ((vars->MCClusterGeantPids>>16)&255);}
+float GetTRDePLikRatio    (Variables * vars) {return vars->TRDePLikRatio;}
+float GetTRDEdepovPath    (Variables * vars) {return vars->TRDEdepovPath;}
+
 
 

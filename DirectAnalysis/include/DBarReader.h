@@ -3,7 +3,7 @@
  
 #include "TTree.h"
 #include "Ntp.h"
-
+#include "Variables.hpp"
 // Forward-declare Variable struct
 class Variable;
 

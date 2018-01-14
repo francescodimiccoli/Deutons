@@ -134,9 +134,11 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
     vars->qL1               = ntpTracker->q_lay[1][0];
     vars->qL1Status         = ntpTracker->q_lay_status[1][0];
+    vars->qL2               = ntpTracker->q_lay[1][1];
     vars->qInner            = ntpTracker->q_inn;
     vars->clustertottrack   = ntpHeader->ntrrechit;
     vars->clustertrack      = countBits(vars->hitbits);
+    vars->qL1InnerNoL2	    = (ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0])/7;	
 
     vars->trtrack_edep = new std::vector<float>;
     vars->trtot_edep   = new std::vector<float>;
@@ -158,7 +160,9 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     for(int il=0;il<4;il++) {
         vars->Endep->push_back(ntpTof->edep[il][0]);
     }
-    
+    /////////////////////////////// TRD ////////////////////////////////////
+    vars->TRDePLikRatio = ntpTrd->trdk_like_ep[0];	    
+    vars->TRDEdepovPath = ntpTrd->trdk_ampl[5]/ntpTrd->trdk_path[5];
     /////////////////////////////// RICH ////////////////////////////////////
 
     vars->BetaRICH_new      = ntpRich->beta_refit;

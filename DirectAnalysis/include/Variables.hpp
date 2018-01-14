@@ -61,6 +61,8 @@ struct Variables{
     
     // Tracker Charge
     float      qL1;
+    float      qL2;
+    float      qL1InnerNoL2;	   
     float      qL1Status;
     float      qInner;
 
@@ -71,6 +73,9 @@ struct Variables{
     float      qUtof;
     float      qLtof;
 
+    // TRD
+    float	TRDePLikRatio;
+    float       TRDEdepovPath;		
     // RICH 
     float      BetaRICH_new;
     int        Richtotused;
@@ -79,7 +84,7 @@ struct Variables{
     float      RICHprob;
     int        RICHPmts;
     float      RICHcollovertotal;
-    int        RICHgetExpected;
+int        RICHgetExpected;
 
     //MC vars
     float      Momento_gen;
@@ -156,6 +161,13 @@ float GetUtofQ	(Variables * vars);
 float GetLtofQ	(Variables * vars);
 float GetInnerQ	(Variables * vars);
 float GetL1Q    (Variables * vars);
+float GetL2Q    (Variables * vars);
+float GetInnerL1NoL2Q    (Variables * vars);
+
+float GetTRDePLikRatio    (Variables * vars);
+float GetTRDEdepovPath    (Variables * vars);
+
+
 int   GetPIDatL1 (Variables * vars);
 int   GetPIDatL2 (Variables * vars);
 int   GetPIDatL3 (Variables * vars);
