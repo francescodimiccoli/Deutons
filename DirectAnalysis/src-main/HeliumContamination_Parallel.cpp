@@ -1,8 +1,8 @@
 #include <bitset>
 #include "TROOT.h"
-#include "TTree.h"
+#include "TNtuple.h"
 #include <TSpline.h>
-#include "../../include/binning.h"
+#include "../include/binning.h"
 #include "TFile.h"
 #include "TH1.h"
 #include "TF1.h"
@@ -17,21 +17,18 @@
 #include "TGraphErrors.h"
 #include "TFractionFitter.h"
 #include "TRandom3.h"
-
-#include "../include/GlobalBinning.h"
-
-#include "../include/Commonglobals.cpp"
+#include "TChain.h"
+#include "Globals.h"
+#include "../include/InputFileReader.h"
 
 #include "../include/Variables.hpp"
-#include "../include/BetaSmearing.h"
 #include "../include/Cuts.h"
 #include "../include/ParallelFiller.h"
 
 #include "../include/filesaver.h"
-
-#include "../include/Efficiency.h"
+#include "Efficiency.h"
 #include "../include/TemplateFITbetasmear.h"
-#include "../include/ChargeFitter.h"
+#include "ChargeFitter.h"
 
 void ExtractContaminationWeight(TemplateFIT * HeContTemplate, FileSaver finalResults);
 
@@ -39,139 +36,110 @@ int main(int argc, char * argv[])
 {
 
 
-        cout<<"****************************** FILES OPENING ***************************************"<<endl;
+      cout<<"****************************** FILES OPENING ***************************************"<<endl;
 
-	
-        string INPUT1(argv[1]);
-        string INPUT2(argv[2]);
-        string OUTPUT(argv[3]);
+	TH1::SetDefaultSumw2();     	
+	cout<<"****************************** FILES OPENING ***************************************"<<endl;
+
+	string INPUT1(argv[1]);
+	string INPUT2(argv[2]);
+	string OUTPUT(argv[3]);
 
 	string refill="";
 	if(argc > 4 ) 	refill = argv[4];	
-	
+
 	bool Refill = false;
 	if(refill!="") Refill=true;
 
-        FileSaver finalHistos;
-        finalHistos.setName(OUTPUT.c_str());
-        bool checkfile = finalHistos.CheckFile();
-	if(!checkfile) Refill=true;
+	TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
+	TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
+
+	FileSaver finalHistos;
+	finalHistos.setName(OUTPUT.c_str());
 
 	FileSaver finalResults;
-        finalResults.setName((OUTPUT+"_Results").c_str());
-
-
-        TFile *fileDT =TFile::Open(INPUT1.c_str());
-        TFile *fileMC =TFile::Open(INPUT2.c_str());
-
-        TTree *treeMC = (TTree *)fileMC->Get("parametri_geo");
-        TTree *treeDT = (TTree *)fileDT->Get("parametri_geo");
-
-
-	cout<<"****************************** BINS ***************************************"<<endl;
-
-        SetBins();
-
-        PRB.Print();
-
-        cout<<"**TOF**"<<endl;
-        ToFDB.Print();
-
-        cout<<"**NaF**"<<endl;
-        NaFPB.Print();
-
-        cout<<"**Agl**"<<endl;
-        AglDB.Print();
-
-        ToFDB.UseBetaEdges();
-        NaFDB.UseBetaEdges();
-        AglDB.UseBetaEdges();
-
-        PRB.UseREdges();
-
-
-        cout<<endl;
-
+    	finalResults.setName((OUTPUT+"_Results").c_str());
+	
+	bool checkfile = finalHistos.CheckFile();
 
 	cout<<"****************************** VARIABLES ***************************************"<<endl;
 
         Variables * vars = new Variables;
 
-	cout<<"****************************** ANALYIS ******************************************"<<endl;
-/*
-	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.8,1);
-        BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1);
-
-
-	TemplateFIT * HeContTemplate= new TemplateFIT("HeContTemplate",ToFDB,"IsPreselected&LikelihoodCut&DistanceCut",100,0.1,4);
-        if((!checkfile)||Refill){
-                HeContTemplate->Fill(treeMC,treeDT,vars,GetRecMassTOF,GetBetaTOF);
-                HeContTemplate->DisableFit();
-                HeContTemplate->Save(finalHistos);
-        }
-        else { HeContTemplate= new TemplateFIT(finalHistos,"HeContTemplate",ToFDB);
-                HeContTemplate->ExtractCounts(finalHistos);
-                HeContTemplate->SaveFitResults(finalResults);
-        	ExtractContaminationWeight(HeContTemplate,finalResults);
-	}
-*/	
+	cout<<"****************************** BINS ***************************************"<<endl;
+	SetUpUsualBinning();
 	
+	cout<<"****************************** ANALYIS ******************************************"<<endl;
+	
+	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
+    	BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
+
+
+	/*
 	Efficiency * TestReweigthingP  = new Efficiency(finalHistos,"TestReweigthingP","TestReweigthingP",PRB,"IsProtonMC" ,"IsProtonMC");
 	Efficiency * TestReweigthingHe = new Efficiency(finalHistos,"TestReweigthingHe","TestReweigthingHe",PRB,"IsHeliumMC" ,"IsHeliumMC");
-
 
 	ParallelFiller<Efficiency *> Filler1;
 	Filler1.AddObject2beFilled(TestReweigthingP,GetRigidity,GetRigidity);
 	Filler1.AddObject2beFilled(TestReweigthingHe,GetRigidity,GetRigidity);
 	Filler1.ReinitializeAll(false);
 	//main loop
-	Filler1.LoopOnMC(treeMC,vars);
+	Filler1.LoopOnMC(DBarReader(chainMC, true),vars);
 	
 	TestReweigthingP ->Save(finalHistos);
 	TestReweigthingHe->Save(finalHistos);
 	
 	TestReweigthingP ->Save(finalResults);
 	TestReweigthingHe->Save(finalResults);
+	*/
+
+	ChargeFitter * HeContTOF = new ChargeFitter(finalHistos,"HeContTOF",ToFDB,"IsPositive&IsPreselectedInner","IsPositive&IsPreselected&IsClearQ1ExceptL2","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2","IsPositive&IsPreselectedHe&LikelihoodCut&DistanceCut","IsPositive&IsPreselected&LikelihoodCut&DistanceCut",300,0,4);
+	ChargeFitter * HeContNaF = new ChargeFitter(finalHistos,"HeContNaF",NaFDB,"IsPositive&IsPreselectedInner&IsFromNaF&RICHBDTCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromNaF&RICHBDTCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromNaF&RICHBDTCut","IsPositive&IsPreselectedHe&LikelihoodCut&DistanceCut&IsFromNaF&RICHBDTCut","IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&RICHBDTCut",300,0,4);
+	ChargeFitter * HeContAgl = new ChargeFitter(finalHistos,"HeContAgl",AglDB,"IsPositive&IsPreselectedInner&IsFromAgl&RICHBDTCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromAgl&RICHBDTCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromAgl&RICHBDTCut","IsPositive&IsPreselectedHe&LikelihoodCut&DistanceCut&IsFromAgl&RICHBDTCut","IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&RICHBDTCut",300,0,4);
 
 
+	ChargeFitter * HeContTOFCheck[10];
+	for(int i=0;i<10;i++){
+		 std::string basename = "HeContCheck" + to_string(i);
+		 std::string FragmentCut = "IsPositive&LikelihoodCut&DistanceCut&IsPreselectedHe" + to_string(i);
+		 HeContTOFCheck[i] = new ChargeFitter(finalHistos,basename,ToFDB,"IsPositive&IsPreselectedInner","IsPositive&IsPreselected&IsClearQ1ExceptL2","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2",FragmentCut,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut",300,0,4);
+	}
 
 
-	ChargeFitter * L1Charge = new ChargeFitter(finalHistos,"L1Charge","HeliumContamination",PRB,"IsPreselectedInner","InnerAndL1Charge2");
-	L1Charge->Fill(treeMC,treeDT,vars,GetL1Q,GetRigidity,Refill);
-	L1Charge->Save(finalHistos);
-	L1Charge->ModelBefores();
-	L1Charge->Eval_Efficiency();
-	L1Charge->SaveResults(finalResults);
+	HeContNaF->SetUpBadEventSimulator(NaFBadEvSimulator);
+	HeContAgl->SetUpBadEventSimulator(AglBadEvSimulator);
+
+	ParallelFiller<ChargeFitter *> Filler2;
+	Filler2.AddObject2beFilled(HeContTOF,GetBetaTOF,GetLoweredBetaTOF);
+	Filler2.AddObject2beFilled(HeContNaF,GetBetaRICH,GetLoweredBetaNaF);
+	Filler2.AddObject2beFilled(HeContAgl,GetBetaRICH,GetLoweredBetaAgl);
+	for(int i=0;i<10;i++) Filler2.AddObject2beFilled(HeContTOFCheck[i],GetBetaTOF,GetLoweredBetaTOF);
+	Filler2.ReinitializeAll(Refill);
+	//main loops
+	//Filler2.LoopOnData(DBarReader(chainDT, false),vars);
+	Filler2.LoopOnMC(DBarReader(chainMC, true),vars);
+
+	HeContTOF->Save(finalHistos);
+	HeContNaF->Save(finalHistos);
+	HeContAgl->Save(finalHistos);
+	for(int i=0;i<10;i++) HeContTOFCheck[i]->Save(finalHistos);
+
+	HeContTOF->FitDistributions(0.8, 2.7);
+	HeContNaF->FitDistributions(0.8, 2.7);
+	HeContAgl->FitDistributions(0.8, 2.7);
+	for(int i=0;i<10;i++) HeContTOFCheck[i]->FitDistributions(0.8, 2.7);
+
+	HeContTOF->CreateFragmentsMass(1.75);
+	HeContNaF->CreateFragmentsMass(1.75);
+	HeContAgl->CreateFragmentsMass(1.75);
+	for(int i=0;i<10;i++) HeContTOFCheck[i]->CreateFragmentsMass(1.65+0.05*i);
+
+	HeContTOF->SaveResults(finalResults);
+	HeContNaF->SaveResults(finalResults);
+	HeContAgl->SaveResults(finalResults);
+	for(int i=0;i<10;i++) HeContTOFCheck[i]->SaveResults(finalResults);
 
 	return 0;
 }
 
-
-void ExtractContaminationWeight(TemplateFIT * HeContTemplate, FileSaver finalResults){
-	
-	TH1F * ContWeights = new TH1F("ContWeights","ContWeights",HeContTemplate->GetBinning().size(),0,HeContTemplate->GetBinning().size());
-	TGraphErrors * ContWeightsFit = new TGraphErrors();
-	TF1 * Model = new TF1("Model","pol3",0,1.1);
-
-	for(int i=0;i<ContWeights->GetNbinsX();i++)
-		if(HeContTemplate->GetHeContaminationWeight(i)<0.024){
-			ContWeights->SetBinContent(i+1,HeContTemplate->GetHeContaminationWeight(i));
-			ContWeights->SetBinError(i+1,HeContTemplate->GetHeContaminationErr(i));
-			ContWeightsFit->SetPoint(i,HeContTemplate->GetBinning().BetaBinCent(i),HeContTemplate->GetHeContaminationWeight(i));
-			ContWeightsFit->SetPointError(i,0,HeContTemplate->GetHeContaminationErr(i));
-		}
-
-	ContWeightsFit->SetMarkerColor(3);
-	ContWeightsFit->Fit("Model","","",0.52,0.79);
-	
-
-	finalResults.Add(ContWeights);
-	finalResults.Add(ContWeightsFit);
-	finalResults.Add(Model);
-
-	finalResults.writeObjsInFolder(HeContTemplate->GetName().c_str());	
-	return;
-}
-
-	
 

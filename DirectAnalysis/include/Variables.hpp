@@ -4,6 +4,8 @@
 #include "reweight.h"
 #include <TMVA/Reader.h>
 #include <TMVA/Tools.h>
+#include "Globals.h"
+#include "TF1.h"
 
 using namespace std;
 
@@ -58,12 +60,14 @@ struct Variables{
     float      Chisquare_y;
     float      Chisquare_L1_y;
     int        hitbits;
-    
+    int        FiducialVolume;	 	    
+
     // Tracker Charge
     float      qL1;
     float      qL2;
     float      qL1InnerNoL2;	   
     float      qL1Status;
+    float      qL2Status;
     float      qInner;
 
     // TOF
@@ -72,10 +76,17 @@ struct Variables{
     float      Beta_pre; // ?
     float      qUtof;
     float      qLtof;
+    float      TOFchisq_s;
+    float      TOFchisq_t;	
+    float      NBadTOF;
 
     // TRD
-    float	TRDePLikRatio;
     float       TRDEdepovPath;		
+    float 	TRDLikP;
+    float 	TRDLikD;
+    float 	TRDLike;
+    float	EdepTRD;
+	
     // RICH 
     float      BetaRICH_new;
     int        Richtotused;
@@ -83,8 +94,17 @@ struct Variables{
     float      RichPhEl;
     float      RICHprob;
     int        RICHPmts;
+    float      RICHPmts_float;	
     float      RICHcollovertotal;
-int        RICHgetExpected;
+    int        RICHgetExpected;
+    float      RICHgetExpected_float; 
+
+   float RICHLipBetaConsistency =0;
+   float RICHTOFBetaConsistency =0;	
+   float RICHChargeConsistency  =0;	
+   float tot_hyp_p_uncorr	=0;
+   float Bad_ClusteringRICH     =0;
+   float NSecondariesRICHrich   =0;	    
 
     //MC vars
     float      Momento_gen;
@@ -118,7 +138,6 @@ int        RICHgetExpected;
     float EdepTOFU=0;
     float EdepTOFD=0;
     float EdepTrack=0;	
-    float EdepTRD=0;
     float EdepL1=0;	
 
     TMVA::Reader *readerTOF;
@@ -129,12 +148,17 @@ int        RICHgetExpected;
 
     void ResetVariables();
     void ReadBranches(TTree * tree);
+    void RegisterBranches(TTree * tree);
+    void RegisterTemplatesBranches(TTree * tree);
     void Update();
     void PrintCurrentState();
     void BDTreader();
     void Eval_Discriminants();
     inline bool IsFromNaF     (){ return (((int)joinCutmask>>11)==512&&BetaRICH_new>0);}
     inline bool IsFromAgl     (){ return (((int)joinCutmask>>11)==0&&BetaRICH_new>0);}
+    inline bool IsFromNaF_nosel     (){ return ((((int)joinCutmask>>11)&512)==512&&BetaRICH_new>0);}
+    inline bool IsFromAgl_nosel     (){ return ((((int)joinCutmask>>11)&512)==0&&BetaRICH_new>0);}
+
 };
 
 float GetInverseRigidity (Variables * vars); 
@@ -164,13 +188,21 @@ float GetL1Q    (Variables * vars);
 float GetL2Q    (Variables * vars);
 float GetInnerL1NoL2Q    (Variables * vars);
 
-float GetTRDePLikRatio    (Variables * vars);
 float GetTRDEdepovPath    (Variables * vars);
+float GetTRDePLikRatio    (Variables * vars); 
+float GetTRDDPLikRatio    (Variables * vars); 
+
+float GetTOFSpatialChi (Variables * vars); 
+float GetTOFTimeChi (Variables * vars); 
+
 
 
 int   GetPIDatL1 (Variables * vars);
 int   GetPIDatL2 (Variables * vars);
 int   GetPIDatL3 (Variables * vars);
 
+float GetLoweredBetaTOF  (Variables * vars);
+float GetLoweredBetaNaF  (Variables * vars);
+float GetLoweredBetaAgl  (Variables * vars);
 
 #endif

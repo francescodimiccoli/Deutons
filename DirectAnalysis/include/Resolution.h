@@ -28,6 +28,8 @@
 #include "Variables.hpp"
 #include "Cuts.h"
 
+#include "DBarReader.h"
+
 using namespace std;
 
 class Resolution{
@@ -98,6 +100,7 @@ class Resolution{
 
 		void Fill(TTree * tree);	
 		void Fill(TTree * tree, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
+		void Fill(DBarReader reader, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
 		void FillEventByEvent(float var, float discr_var, bool cut);
 		void Save(FileSaver finalhisto,bool recreate=false);
 		void Normalize();
@@ -159,6 +162,19 @@ void Resolution::Fill(TTree * tree, Variables * vars, float (*var) (Variables * 
 
 		UpdateProgressBar(i, tree->GetEntries());
 		tree->GetEvent(i);
+                vars->Update();
+		FillEventByEvent( var(vars), discr_var(vars),ApplyCuts(cut,vars));
+	}
+	return;
+}
+
+void Resolution::Fill(DBarReader reader, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) ){
+
+	cout<<basename.c_str()<<" Filling ..."<< endl;
+	for(int i=0;i<reader.GetTreeEntries();i++){
+
+		UpdateProgressBar(i, reader.GetTreeEntries());
+	        reader.FillVariables(i,vars);
                 vars->Update();
 		FillEventByEvent( var(vars), discr_var(vars),ApplyCuts(cut,vars));
 	}
@@ -300,7 +316,7 @@ bool Resolution::CheckHistos(){
 }
 
 bool ReadCalibration(){ 
- 
+/* 
         cout<<"****************** CALIB. READING **************************"<<endl; 
         string nomecal=("/storage/gpfs_ams/ams/users/fdimicco/Deutons/DirectAnalysis/include/CalibTRD.root"); 
         FileSaver Calibration;   
@@ -318,7 +334,7 @@ bool ReadCalibration(){
         cout<<"TRD spline: "<<EdepTRDbeta<<endl; 
  
         return checkfile; 
- 
+ */
 } 
  
 

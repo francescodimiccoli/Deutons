@@ -20,7 +20,7 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TRandom3.h"
-#include "../include/GlobalBinning.h"
+#include "../include/Globals.h"
 
 using namespace std;
 
@@ -73,6 +73,9 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 
 	Distribution->SetLineColor(color);
 	Distribution->SetLineWidth(thickline);
+
+//	Distribution->SetFillColor(color);
+//	Distribution->SetFillStyle(3002);
 
 	Distribution->SetStats(false);
 	Distribution->SetTitle("");
@@ -248,6 +251,58 @@ void PlotTH2F(TVirtualPad * c, TH2F * Distribution, std::string Xaxis, std::stri
 	Distribution->Draw((options+"same").c_str());
 
 	return;
+}
+
+void PlotGraph(TVirtualPad * c,TGraphErrors * graph,std::string Xaxis, std::string Yaxis, int color,std::string options, float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname="",int dotstyle=8,bool skipleg=false) {
+
+	c -> cd();
+	gPad-> SetTickx();
+	gPad-> SetTicky();
+	gPad-> SetGridx();
+	gPad-> SetGridy();
+
+
+	graph->SetLineColor(color);
+	graph->SetMarkerColor(color);
+	graph->SetMarkerStyle(dotstyle);
+	graph->SetMarkerSize(3);
+	graph->SetLineWidth(5);
+
+	if(xmin!=-1) graph->GetXaxis()->SetRangeUser(xmin,xmax);
+	if(ymin!=-1) graph->GetYaxis()->SetRangeUser(ymin,ymax);
+	TH2F * Frame = (TH2F*) gPad->FindObject("Frame");
+
+	if(Frame){
+		TLegend * leg = (TLegend*) gPad->FindObject("leg");
+		leg->SetName("leg");
+
+		graph->Draw((options+"same").c_str());	
+		if(legendname=="")leg->AddEntry(graph,graph->GetName(),"l");
+		else leg->AddEntry(graph,legendname.c_str(),"l");
+		leg->SetLineWidth(3);
+		leg->SetFillColor(0);
+		leg->Draw("same");
+	}
+	else{
+
+		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
+		Frame->Draw();
+		graph->Draw((options+"same").c_str());
+
+		TLegend * leg = new TLegend(0.6,0.95,0.95,0.7);
+		leg->SetName("leg");
+
+		if(legendname=="") leg->AddEntry(graph,graph->GetName(),"P");             
+		else if(!skipleg) leg->AddEntry(graph,legendname.c_str(),"P");
+		leg->SetLineWidth(3);
+		leg->SetFillColor(0);
+		leg->SetTextFont(32);
+		leg->Draw("same");		
+
+	}
+
+	return;
+
 }
 
 

@@ -18,8 +18,8 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TRandom3.h"
-#include "../include/GlobalBinning.h"
 #include "TKey.h"
+#include "../include/Globals.h"
 #include "TFractionFitter.h"
 
 #include "../include/Variables.hpp"
@@ -27,7 +27,6 @@
 #include "../include/filesaver.h"
 
 #include "../include/FitError.h"
-#include "../include/Resolution.h"
 #include "../include/Efficiency.h"
 
 #include "../include/PlottingFunctions.h"
@@ -90,6 +89,9 @@ int main(int argc, char * argv[]){
 	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency");
 	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency");
 
+	AllRangesEfficiency * RICH_PQual = new AllRangesEfficiency(finalHistos,"RICHEff_PQual","RICHQualEfficiency");
+	AllRangesEfficiency * RICH_DQual = new AllRangesEfficiency(finalHistos,"RICHEff_DQual","RICHQualEfficiency");
+
 
 
 
@@ -97,36 +99,36 @@ int main(int argc, char * argv[]){
         c1->SetCanvasSize(2000,1500);
 
 	// Fix Legend	
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,0,1,"TOF range",8);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Preselections_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,0,1,"NaF range",22);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Preselections_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,0,1,"Agl range",29);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"TOF range",8);
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Preselections_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"NaF range",22);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Preselections_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"Agl range",29);
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,0,1,"Basic + Clean-Event",8);
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)FullSet_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,0,1,"Full Set (Basic + Clean-Event + Quality)",24);	
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"Basic + Clean-Event",8);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)FullSet_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"Full Set (Basic + Clean-Event + Quality)",24);	
 	
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons",8);
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"Protons",8);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons",8);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons",8);
 	
 
 	//
 		
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"TOF range",8,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Preselections_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"NaF range",22,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Preselections_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"Agl range",29,true);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"TOF range",8,true);
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Preselections_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"NaF range",22,true);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Preselections_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Agl range",29,true);
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons TOF",8,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Preselections_D->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons NaF",22,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Preselections_D->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons Agl",29,true);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons TOF",8,true);
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Preselections_D->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons NaF",22,true);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Preselections_D->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons Agl",29,true);
 	
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)FullSet_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"Protons TOF",24,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)FullSet_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"Protons NaF",26,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)FullSet_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"Protons Agl",30,true);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)FullSet_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons TOF",24,true);
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)FullSet_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons NaF",26,true);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)FullSet_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons Agl",30,true);
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)FullSet_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons TOF",24,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)FullSet_D->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons NaF",26,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)FullSet_D->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons Agl",30,true);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)FullSet_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons TOF",24,true);
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)FullSet_D->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons NaF",26,true);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)FullSet_D->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons Agl",30,true);
 
 		
 	Plots.Add(c1);
@@ -136,21 +138,21 @@ int main(int argc, char * argv[]){
         c2->SetCanvasSize(2000,1500);
 
 	//fix legend
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Quality_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,0,1,"TOF range",8);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Quality_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,0,1,"NaF range",22);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Quality_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,0,1,"Agl range",29);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Quality_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"TOF range",8);
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Quality_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"NaF range",22);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Quality_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"Agl range",29);
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Quality_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"Protons",8);
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Quality_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons",8);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Quality_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons",8);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Quality_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons",8);
 	//	
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Quality_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"TOF range",8,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Quality_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"NaF range",22,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Quality_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,0,1,"Agl range",29,true);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Quality_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"TOF range",8,true);
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Quality_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"NaF range",22,true);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Quality_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Agl range",29,true);
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Quality_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons TOF",8,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Quality_D->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons NaF",22,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Quality_D->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,0,1,"Deutons Agl",29,true);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Quality_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons TOF",8,true);
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Quality_D->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons NaF",22,true);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Quality_D->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons Agl",29,true);
 	
 	Plots.Add(c2);
 	Plots.writeObjsInFolder("Efficiencies");
@@ -173,6 +175,26 @@ int main(int argc, char * argv[]){
 	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)RICH_D->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.5,10,0,0.9,"Deutons Agl",29,true);
 	
 	Plots.Add(c3);
+	Plots.writeObjsInFolder("Efficiencies");
+
+	TCanvas * c4 = new TCanvas(" RICH Quality Efficiency"); 
+        c4->SetCanvasSize(2000,1500);
+
+	//fix legend
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)RICH_PQual->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.5,10,0,0.9,"NaF range",22);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)RICH_PQual->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.5,10,0,0.9,"Agl range",29);
+
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)RICH_PQual->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.5,10,0,0.9,"Protons",8);
+	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)RICH_DQual->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.5,10,0,0.9,"Deutons",8);
+	//
+
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)RICH_PQual->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.5,10,0,0.9,"NaF range",22,true);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)RICH_PQual->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.5,10,0,0.9,"Agl range",29,true);
+
+	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)RICH_DQual->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.5,10,0,0.9,"Deutons NaF",22,true);
+	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)RICH_DQual->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.5,10,0,0.9,"Deutons Agl",29,true);
+	
+	Plots.Add(c4);
 	Plots.writeObjsInFolder("Efficiencies");
 
 

@@ -52,7 +52,7 @@ int main(int argc, char * argv[])
 
    std::string IsPreselected = "rig[0]>0&&(trigpatt&0x2)!=0&&chisqcn<10&&chisqtn<10&&rig[4]!=0.0&&chisqn[1][0] < 10&&chisqn[1][1] < 10&&nparticle==1&&flag==0";
    
-   //IsPreselected = IsPreselected + "&&" + minTOF;
+   IsPreselected = IsPreselected + "&&" + minTOF;
 	
     //Preselection cuts
     std::string signalCut    = "q_lay[1][0]>0&&beta>0.4&&beta<0.77&&(rig[1]/beta)*(1-beta^2)^0.5>1.7&&mass>1&&mass<2";

@@ -20,10 +20,10 @@ void DBarReader::Init(){
 
 
 UInt_t DBarReader::getPackedLayers_1to4() {
-    UInt_t id1 = ntpMCHeader->hitGeantID[0];
-    UInt_t id2 = ntpMCHeader->hitGeantID[1];
-    UInt_t id3 = ntpMCHeader->hitGeantID[2];
-    UInt_t id4 = ntpMCHeader->hitGeantID[3];
+    UInt_t id1 = ntpMCHeader->hit_pid[0];
+    UInt_t id2 = ntpMCHeader->hit_pid[1];
+    UInt_t id3 = ntpMCHeader->hit_pid[2];
+    UInt_t id4 = ntpMCHeader->hit_pid[3];
 
     id1 = id1 < 127 ? id1 : 0;
     id2 = id2 < 127 ? id2 : 0;
@@ -43,10 +43,10 @@ int countBits(int n) {
 }
 
 bool DBarReader::minTOF(){
-    return ( ntpTof->flagp[0] == 0 ) &&
-           ( ntpTof->flagp[1] == 0 ) &&
-           ( ntpTof->flagp[2] == 0 ) &&
-           ( ntpTof->flagp[3] == 0 ) ;
+   return  ((ntpTof->flagp[0]>>2)==0)&&
+	   ((ntpTof->flagp[1]>>2)==0)&&
+	   ((ntpTof->flagp[2]>>2)==0)&&
+	   ((ntpTof->flagp[3]>>2)==0);	
 }
 
 bool DBarReader::goldenTOF(){
@@ -57,10 +57,14 @@ bool DBarReader::goldenTOF(){
 }
 
 int DBarReader::RICHmaskConverter(){
-    if(ntpRich->selection<0) return -ntpRich->selection;
-    else if(ntpRich->selection==1) return 512;
-    else return 0;
+    int richMASK;
+    if(ntpRich->selection<0) richMASK = -ntpRich->selection;
+    else richMASK = 0;
+    if(ntpRich->is_naf) richMASK=richMASK|512;
+    return richMASK;
 }
+
+
 
 
 void DBarReader::FillVariables(int NEvent, Variables * vars){
@@ -70,8 +74,8 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->ResetVariables();
 
     ////////////////////// EVENT INFORMATION ///////////////////////////////////////
-    vars->Run               = ntpHeader->run;
-    vars->Event             = ntpHeader->event;
+   // vars->Run               = ntpHeader->run;
+    //vars->Event             = ntpHeader->event;
     vars->NEvent            = NEvent;
     vars->U_time            = ntpHeader->utc_time; 
     vars->Livetime          = ntpHeader->livetime;
@@ -89,19 +93,19 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->NTrackHits        = ntpHeader->ntrrechit;
     vars->NTracks           = ntpHeader->ntrtrack;
     vars->NTRDclusters      = ntpHeader->ntrdcluster;
-    vars->NTRDSegments      = ntpHeader->ntrdsegment;
+    vars->NTRDSegments      = ntpHeader->ntrdsegment[1];
 
     ////////////////////// MONTE CARLO INFO ////////////////////////////////////////
     if(isMC) {
-        vars->Charge_gen   = ntpMCHeader->charge;
-        vars->Massa_gen     = ntpMCHeader->mass;
-        vars->Momento_gen = ntpMCHeader->momentum[0];
-        vars->GenX = ntpMCHeader->coo[0][0];  vars->GenPX = ntpMCHeader->dir[0];;
-        vars->GenY = ntpMCHeader->coo[0][1];  vars->GenPY = ntpMCHeader->dir[1];;
-        vars->GenZ = ntpMCHeader->coo[0][2];  vars->GenPZ = ntpMCHeader->dir[2];;
-        vars->MCClusterGeantPids = getPackedLayers_1to4();
+	    vars->Charge_gen   = ntpMCHeader->charge;
+	    vars->Massa_gen     = ntpMCHeader->mass;
+	    vars->Momento_gen = ntpMCHeader->momentum[0];
+	    vars->GenX = ntpMCHeader->coo[0][0];  vars->GenPX = ntpMCHeader->dir[0];;
+	    vars->GenY = ntpMCHeader->coo[0][1];  vars->GenPY = ntpMCHeader->dir[1];;
+	    vars->GenZ = ntpMCHeader->coo[0][2];  vars->GenPZ = ntpMCHeader->dir[2];;
+	    vars->MCClusterGeantPids = getPackedLayers_1to4();
     }    
-   
+
     /////////////////////////////////// UNBIAS ////////////////////////////////////////
     vars->PhysBPatt = ntpHeader->sublvl1;
     vars->JMembPatt = ntpHeader->trigpatt;
@@ -131,10 +135,12 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->Chisquare_y       = ntpTracker->chisqn[1][1]; // 1 = Inner      , 1 = Y side
     vars->Chisquare_L1_y    = ntpTracker->chisqn[4][1]; // 4 = L1 + Inner , 1 = Y side
     vars->hitbits           = ntpTracker->pattxy; 
+    vars->FiducialVolume    = ntpTracker->GetPatternInsideTracker();   
 
     vars->qL1               = ntpTracker->q_lay[1][0];
     vars->qL1Status         = ntpTracker->q_lay_status[1][0];
     vars->qL2               = ntpTracker->q_lay[1][1];
+    vars->qL2Status         = ntpTracker->q_lay_status[1][1];
     vars->qInner            = ntpTracker->q_inn;
     vars->clustertottrack   = ntpHeader->ntrrechit;
     vars->clustertrack      = countBits(vars->hitbits);
@@ -158,22 +164,47 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     
     vars->Endep = new std::vector<float>;
     for(int il=0;il<4;il++) {
-        vars->Endep->push_back(ntpTof->edep[il][0]);
+       //cout<<vars->Endep<<endl; 
+       vars->Endep->push_back(ntpTof->edep[il][0]);
     }
+    vars->TOFchisq_s = ntpTof->chisqcn;
+    vars->TOFchisq_t = ntpTof->chisqtn;
+    vars->NBadTOF    = 0;
+    for(int il=0;il<4;il++) { 
+	if(ntpTof->flagp[il]!=0) vars->NBadTOF++;
+    }	
     /////////////////////////////// TRD ////////////////////////////////////
-    vars->TRDePLikRatio = ntpTrd->trdk_like_ep[0];	    
-    vars->TRDEdepovPath = ntpTrd->trdk_ampl[5]/ntpTrd->trdk_path[5];
-    /////////////////////////////// RICH ////////////////////////////////////
+    vars->TRDLike= ntpTrd->trdk_like_e[0];
+    vars->TRDLikP= ntpTrd->trdk_like_p[0];
+    vars->TRDLikD= ntpTrd->trdk_like_d[0];	    
+    float Edep=0;
+    float path=0;
+    for(int il=0;il<20;il++) {		
+	Edep+=ntpTrd->trdk_ampl[il];
+	path+=ntpTrd->trdk_path[il];
+    }
+    vars->TRDEdepovPath = Edep/path;
+    vars->EdepTRD = Edep;	
 
-    vars->BetaRICH_new      = ntpRich->beta_refit;
+    /////////////////////////////// RICH ////////////////////////////////////
+    vars->BetaRICH_new      = ntpRich->beta_corrected;
     vars->RICHmask_new      = RICHmaskConverter();
-    vars->Richtotused       = ntpRich->nhit_used;
-    vars->RichPhEl          = ntpRich->np_exp_uncorr/ntpRich->np;
+    vars->Richtotused       = ntpHeader->nrichhit-ntpRich->nhit;
+    if(ntpRich->np_uncorr>0) vars->RichPhEl = ntpRich->np_exp_uncorr/ntpRich->np_uncorr; else vars->RichPhEl = 0;
     vars->RICHprob          = ntpRich->prob;
     vars->RICHPmts          = ntpRich->npmt;
-    vars->RICHcollovertotal = ntpRich->np_exp_uncorr/ntpRich->tot_p;
+    if(ntpRich->tot_p_uncorr>0) vars->RICHcollovertotal = ntpRich->np_uncorr/ntpRich->tot_p_uncorr; else vars->RICHcollovertotal=0;
     vars->RICHgetExpected   = ntpRich->np_exp_uncorr;
 
+    vars->RICHLipBetaConsistency = fabs(ntpRich->lip_beta-ntpRich->beta_corrected);	
+    vars->RICHTOFBetaConsistency = fabs(ntpRich->beta_corrected - ntpTof->beta)/ntpRich->beta_corrected;
+    vars->RICHChargeConsistency  = ntpRich->q_consistency;
+    vars->tot_hyp_p_uncorr	 = ntpRich->tot_hyp_p_uncorr[1]; 	
+    vars->Bad_ClusteringRICH=0;
+	 for (int is=0; is<10; is++) if ((ntpRich->clus_mean[is]-ntpRich->beta)>0.01) vars->Bad_ClusteringRICH++;
+    vars->NSecondariesRICHrich=0;
+	 for (int is=0; is< 5; is++) if ((ntpRich->pmt_np_uncorr[is]>5)&&(ntpRich->pmt_dist[is]>3.5)) vars->NSecondariesRICHrich++;
+ 
 }
 
 DBarReader::DBarReader(TTree * tree, bool _isMC) {

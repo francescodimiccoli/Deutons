@@ -48,7 +48,9 @@ bool TemplatesMassCut(Variables * vars);
 bool ControlSampleMassCut(Variables * vars);
 
 bool IsNegativeCharged (Variables * vars); 
+bool IsPositiveCharged (Variables * vars);
 
+bool IsGoodL1Status(Variables * vars);
 
 bool Qualitycut(Variables * vars, float cutvariable, float cutTOF, float cutNaF, float cutAgl);
 

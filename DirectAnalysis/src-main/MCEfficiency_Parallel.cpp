@@ -33,7 +33,7 @@
 int main(int argc, char * argv[])
 {
 
-
+	TH1::SetDefaultSumw2();
         cout<<"****************************** FILES OPENING ***************************************"<<endl;
 
         string INPUT1(argv[1]);
@@ -53,8 +53,8 @@ int main(int argc, char * argv[])
 	FileSaver finalResults;
         finalResults.setName((OUTPUT+"_Results").c_str());
 
-	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-    	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+	TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
+    	TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
 
 
 	cout<<"****************************** BINS ***************************************"<<endl;
@@ -92,32 +92,105 @@ int main(int argc, char * argv[])
 	//Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsProtonMC&IsPreselected&DistanceCut&LikelihoodCut");
 
 
-	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency","IsProtonMC","IsProtonMC","IsProtonMC","IsProtonMC&IsPreselected","IsProtonMC&IsPreselected&IsFromNaF","IsProtonMC&IsPreselected&IsFromAgl",Refill);
-	AllRangesEfficiency * Quality_P       = new AllRangesEfficiency(finalHistos,"QualEff_P","QualityEfficiency"     ,"IsProtonMC&IsPreselected","IsProtonMC&IsPreselected&DistanceCut&LikelihoodCut&TemplatesMassCut",Refill);
-        AllRangesEfficiency * FullSet_P      = new AllRangesEfficiency(finalHistos,"FullsetEff_P","FullsetEfficiency"  ,"","",Refill);
+	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency",
+	"IsProtonMC",			      
+	"IsProtonMC",			   	      
+	"IsProtonMC",
+	"IsProtonMC&IsPositive&IsPreselected",
+	"IsProtonMC&IsPositive&IsPreselected&IsFromNaF",
+	"IsProtonMC&IsPositive&IsPreselected&IsFromAgl",
+	Refill);
+
+	AllRangesEfficiency * Quality_P       = new AllRangesEfficiency(finalHistos,"QualEff_P","QualityEfficiency",
+	"IsProtonMC&IsPositive&IsPreselected",
+	"IsProtonMC&IsPositive&IsPreselected&IsFromNaF",
+	"IsProtonMC&IsPositive&IsPreselected&IsFromAgl",
+	"IsProtonMC&IsPositive&IsPreselected&DistanceCut&LikelihoodCut",
+	"IsProtonMC&IsPositive&IsPreselected&IsFromNaF&DistanceCut&LikelihoodCut&RICHBDTCut",
+	"IsProtonMC&IsPositive&IsPreselected&IsFromAgl&DistanceCut&LikelihoodCut&RICHBDTCut"
+	,Refill);
+        
+	AllRangesEfficiency * FullSet_P      = new AllRangesEfficiency(finalHistos,"FullsetEff_P","FullsetEfficiency",
+	"",
+	"",
+	Refill);
 
 
-	AllRangesEfficiency * Preselections_D = new AllRangesEfficiency(finalHistos,"PresEff_D","PreselectionEfficiency","IsDeutonMC","IsDeutonMC","IsDeutonMC","IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected&IsFromNaF","IsDeutonMC&IsPreselected&IsFromAgl",Refill);
-	AllRangesEfficiency * Quality_D       = new AllRangesEfficiency(finalHistos,"QualEff_D","QualityEfficiency"     ,"IsDeutonMC&IsPreselected","IsDeutonMC&IsPreselected&DistanceCut&LikelihoodCut&TemplatesMassCut",Refill);
-        AllRangesEfficiency * FullSet_D       = new AllRangesEfficiency(finalHistos,"FullsetEff_D","FullsetEfficiency"  ,"","",Refill);
+	AllRangesEfficiency * Preselections_D = new AllRangesEfficiency(finalHistos,"PresEff_D","PreselectionEfficiency",
+	"IsDeutonMC",			      
+	"IsDeutonMC",
+	"IsDeutonMC",
+	"IsDeutonMC&IsPositive&IsPreselected",
+	"IsDeutonMC&IsPositive&IsPreselected&IsFromNaF",
+	"IsDeutonMC&IsPositive&IsPreselected&IsFromAgl",
+	Refill);
+
+	AllRangesEfficiency * Quality_D       = new AllRangesEfficiency(finalHistos,"QualEff_D","QualityEfficiency",
+	"IsDeutonMC&IsPositive&IsPreselected",
+	"IsDeutonMC&IsPositive&IsPreselected&IsFromNaF",
+	"IsDeutonMC&IsPositive&IsPreselected&IsFromAgl",
+	"IsDeutonMC&IsPositive&IsPreselected&DistanceCut&LikelihoodCut",
+	"IsDeutonMC&IsPositive&IsPreselected&IsFromNaF&DistanceCut&LikelihoodCut&RICHBDTCut",
+	"IsDeutonMC&IsPositive&IsPreselected&IsFromAgl&DistanceCut&LikelihoodCut&RICHBDTCut",
+	Refill);
+        
+	AllRangesEfficiency * FullSet_D       = new AllRangesEfficiency(finalHistos,"FullsetEff_D","FullsetEfficiency"  ,
+	"",
+	"",
+	Refill);
+
+	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut",	     
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl",
+	Refill);
+	
+	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl",
+	Refill);
+
+	AllRangesEfficiency * RICH_PQual = new AllRangesEfficiency(finalHistos,"RICHEff_PQual","RICHQualEfficiency",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF&RICHBDTCut",
+	"IsProtonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl&RICHBDTCut",
+	Refill);
+	
+	AllRangesEfficiency * RICH_DQual = new AllRangesEfficiency(finalHistos,"RICHEff_DQual","RICHQualEfficiency",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF&RICHBDTCut",
+	"IsDeutonMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl&RICHBDTCut",
+	Refill);
 
 
-	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency","IsProtonMC&IsMinimumBias","IsProtonMC&IsMinimumBias","IsProtonMC&IsMinimumBias","IsProtonMC&IsMinimumBias","IsProtonMC&IsMinimumBias&IsFromNaF","IsProtonMC&IsMinimumBias&IsFromAgl",Refill);
-	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias","IsDeutonMC&IsMinimumBias&IsFromNaF","IsDeutonMC&IsMinimumBias&IsFromAgl",Refill);
 
+	//	RigBinFullSetEff->Fill(treeMC,vars,GetGenMomentum,Refill);
 
-//	RigBinFullSetEff->Fill(treeMC,vars,GetGenMomentum,Refill);
-
-		ParallelFiller<AllRangesEfficiency *> Filler;
-		Filler.AddObject2beFilled(Preselections_P,GetBetaGen,GetBetaGen);
-		Filler.AddObject2beFilled(Quality_P	 ,GetBetaGen,GetBetaGen);
-		Filler.AddObject2beFilled(Preselections_D,GetBetaGen,GetBetaGen);
-		Filler.AddObject2beFilled(Quality_D	 ,GetBetaGen,GetBetaGen);
-		Filler.AddObject2beFilled(RICH_D	 ,GetBetaGen,GetBetaGen);
-		Filler.AddObject2beFilled(RICH_P	 ,GetBetaGen,GetBetaGen);
-		Filler.ReinitializeAll(Refill);
-		//main loop
-		Filler.LoopOnMC(DBarReader(chainMC, true ),vars);
+	ParallelFiller<AllRangesEfficiency *> Filler;
+	Filler.AddObject2beFilled(Preselections_P,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Quality_P	 ,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Preselections_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Quality_D	 ,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICH_D	 ,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICH_P	 ,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICH_DQual	 ,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICH_PQual	 ,GetBetaGen,GetBetaGen);
+	Filler.ReinitializeAll(Refill);
+	//main loop
+	Filler.LoopOnMC(DBarReader(chainMC, true ),vars);
 
 	FullSet_P 	->CloneEfficiency(Preselections_P);
 	FullSet_D       ->CloneEfficiency(Preselections_D);
@@ -130,6 +203,8 @@ int main(int argc, char * argv[])
 	Quality_D       ->Save(finalHistos);
 	RICH_P 	->Save(finalHistos);
 	RICH_D       ->Save(finalHistos);
+	RICH_PQual 	->Save(finalHistos);
+	RICH_DQual      ->Save(finalHistos);
 	FullSet_P 	->Save(finalHistos);
 	FullSet_D       ->Save(finalHistos);
 
@@ -141,6 +216,9 @@ int main(int argc, char * argv[])
         Quality_D       ->Eval_Efficiency();
 	RICH_P	        ->Eval_Efficiency();
         RICH_D  	->Eval_Efficiency();
+	RICH_PQual      ->Eval_Efficiency();
+        RICH_DQual  	->Eval_Efficiency();
+	
 	FullSet_P       ->Eval_Efficiency();
         FullSet_D       ->Eval_Efficiency();
 	FullSet_P 	->ComposeEfficiency(Quality_P);
@@ -155,6 +233,9 @@ int main(int argc, char * argv[])
 	Quality_D       ->SaveResults(finalResults);
 	RICH_P 		->SaveResults(finalResults);
 	RICH_D 		->SaveResults(finalResults);
+	RICH_PQual 	->SaveResults(finalResults);
+	RICH_DQual      ->SaveResults(finalResults);
+	
 	FullSet_P 	->SaveResults(finalResults);
 	FullSet_D 	->SaveResults(finalResults);
 

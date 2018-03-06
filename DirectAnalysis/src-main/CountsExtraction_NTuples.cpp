@@ -46,12 +46,8 @@ int main(int argc, char * argv[])
     bool Refill = false;
     if(refill!="") Refill=true;
     
-   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
-   //TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
-//   TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
- //  TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
-  TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
-   TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
+    TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
+    TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
 
     FileSaver finalHistos;
     finalHistos.setName(OUTPUT.c_str());
@@ -62,7 +58,7 @@ int main(int argc, char * argv[])
 
     bool checkfile = finalHistos.CheckFile();
 
-    TTree *TreeDT = NULL;
+    TTree *TreeDT = NULL;//(TTree *)fileDT->Get("parametri_geo");
 
     cout<<"****************************** BINS ***************************************"<<endl;
     SetUpUsualBinning();
@@ -83,15 +79,15 @@ int main(int argc, char * argv[])
     BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
     BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
 
-    TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",60,0.3,1.6);	
-    TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut",60,0.1,4.5);
-    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&RICHBDTCut",60,0.1,4.5,true,11,2000,1000);
-    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&RICHBDTCut",60,0.1,4.5,true,11,600,500);	
+    TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",100,0.3,1.6);	
+    TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut",100,0.1,5.5);
+    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&RICHBDTCut",100,0.1,5.5,true,11,2000,1000);
+    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&RICHBDTCut",100,0.1,5.5,true,11,600,500);	
 
     NaFfits->SetUpBadEventSimulator(NaFBadEvSimulator);
     Aglfits->SetUpBadEventSimulator(AglBadEvSimulator);
-    //NaFfits->SetFitWithNoiseMode();
-    //Aglfits->SetFitWithNoiseMode();
+    NaFfits->SetFitWithNoiseMode();
+    Aglfits->SetFitWithNoiseMode();
 
 
     if((!checkfile)||Refill){
@@ -137,6 +133,7 @@ int main(int argc, char * argv[])
         SmearingCheck->SaveFitResults(finalResults);
 */
         //TOFfits->DisableFit();
+        //TOFfits->RebinAll();	
         TOFfits->SetHeliumContamination(HeContTOF);				
         TOFfits->ExtractCounts(finalHistos);	
         TOFfits->SaveFitResults(finalResults);

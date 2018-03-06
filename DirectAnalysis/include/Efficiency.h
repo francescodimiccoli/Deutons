@@ -154,7 +154,6 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 
 	if(bins.IsUsingBetaEdges()) kbin = bins.GetBin(beta);
 	else kbin =bins.GetBin(discr_var(vars));
-
 	if(kbin>0){
 			if(ApplyCuts(cut_before,vars)) before->Fill(kbin,vars->mcweight);
 			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,vars->mcweight);

@@ -38,7 +38,7 @@ struct TFit {
    float ContribP,ContribD,ContribHe;
    float errP,errD,errHe;
    float fitrangemin = 0.6;
-   float fitrangemax = 3.5;
+   float fitrangemax = 4;
 		
    TFractionFitter *Tfit;
    int Tfit_outcome=-1;
@@ -138,7 +138,7 @@ class TemplateFIT {
 
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=120,float shift=60,TH1F * ExposureTime=0x0){
+	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=80,float shift=40,TH1F * ExposureTime=0x0){
 		
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
@@ -193,7 +193,7 @@ class TemplateFIT {
 		systpar.shift=shift;
 		systpar.steps=steps;
 
-		SetFitConstraints(0.0001,1,0.0001,1,0.0001,1);
+		SetFitConstraints(0.0001,1,0.0001,1,0.000085,0.0012);
 	}
 
 	//reading constructor
@@ -221,6 +221,7 @@ class TemplateFIT {
 					fit->Templ_He=  (TH1F *)file->Get(nameHe.c_str());
 					fit->Data    =  (TH1F *)file->Get(named.c_str());
 					fit->DataPrim=  (TH1F *)file->Get(namedprim.c_str());
+
 					fits[bin][i].push_back(fit);
 				}
 			}
@@ -259,7 +260,7 @@ class TemplateFIT {
 		MCHeContRatio = (TH1F*) File.Get((basename+"/Fit Results/HeliumContamination/MC Expected He over P").c_str());
 		if(!MCHeContRatio) MCHeContRatio = Eval_MCHeContRatio("MC Expected He over P");
 
-		SetFitConstraints(0.0001,1,0.0001,1,0.0001,0.1);
+		SetFitConstraints(0.0001,1,0.0001,1,0.000085,0.0012);
 
 	}
 
@@ -306,7 +307,7 @@ class TemplateFIT {
 	TH1F * GetStatError(){ return StatError;}
 	TH1F * GetSystError() { return SystError;}	
 	Binning  GetBinning() {return bins;}
-	
+	void  RebinAll(int f=2);	
 	float GetHeContaminationWeight(int bin) { return fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->ContribHe; }
 	float GetHeContaminationErr   (int bin) { return fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->errHe; }
 
@@ -401,15 +402,14 @@ float TemplateFIT::SmearBeta(float Beta, float stepsigma, float stepshift,float 
 void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)){
 
 	std::string cutP=cut+"&IsProtonMC";
-	//std::string cutD=cut+"&IsPureDMC";
-	//std::string cutHe=cut+"&IsFragmentedTMC";
-	std::string cutD=cut+"&IsDeutonMC";
-	std::string cutHe=cut+"&IsHeliumMC";
+	std::string cutD=cut+"&IsPureDMC";
+	std::string cutHe=cut+"&IsFragmentedTMC";
+	//std::string cutD=cut+"&IsDeutonMC";
+	//std::string cutHe=cut+"&IsHeliumMC";
 
 
 	cutHe.erase(cutHe.find("IsPreselected&"),14);
 	cutHe = "IsPreselectedInner&" + cutHe;  //releasing cut for more stat. in Tritium templates
-
 
 	if((ApplyCuts(cutP,vars)||ApplyCuts(cutD,vars)||ApplyCuts(cutHe,vars))){
 		for(int i=0;i<systpar.steps;i++)
@@ -649,7 +649,7 @@ void TemplateFIT::SetFitRangeByQuantiles(float quant_min,float quant_max){
 
 void Pre_Scale(TH1F * PHisto,TH1F * DHisto, TH1F * HeHisto){
 	if(DHisto>0&&PHisto>0) DHisto->Scale(0.02*PHisto->Integral());
-	if(HeHisto>0&&PHisto>0) HeHisto->Scale(0.01*PHisto->Integral());
+	if(HeHisto>0&&PHisto>0) HeHisto->Scale(0.1*PHisto->Integral());
 	return;
 }
 
@@ -657,17 +657,19 @@ void Pre_Scale(TH1F * PHisto,TH1F * DHisto, TH1F * HeHisto){
 void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constrain_min[], float constrain_max[], TF1 * HeCont=0x0, float bincenter=1){
 
 	Pre_Scale(Fit ->  Templ_P,Fit ->  Templ_D,Fit ->  Templ_He);
+
 	TObjArray *Tpl;
 	Tpl = new TObjArray(2);
 	if(Fit ->  Templ_P)  if(Fit ->  Templ_P ->GetEntries()>0) Tpl -> Add( Fit ->  Templ_P );
 	if(Fit ->  Templ_D)  if(Fit ->  Templ_D ->GetEntries()>0) Tpl -> Add( Fit ->  Templ_D );
 	if(Fit ->  Templ_He) if(Fit ->  Templ_He->GetEntries()>0) Tpl -> Add( Fit ->  Templ_He);
-	
+
 	float min=fitrangemin;
 	float max=fitrangemax;
 
 	bool fitcondition = (Fit -> Data->Integral()>500)&&(Fit -> Templ_P->Integral()>50) &&(Fit -> Templ_D->Integral()>50);
-
+		
+	
 	if(fitcondition) { 
 		Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
 		Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(min), Fit -> Data -> FindBin(max));
@@ -675,7 +677,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 		Fit -> Tfit -> Constrain(1, constrain_min[0] ,constrain_max[0]);
                 Fit -> Tfit -> Constrain(2, constrain_min[1] ,constrain_max[1]);
 		if(Fit ->  Templ_He) {
-			if(Fit ->  Templ_He -> Integral()>500)
+			if(Fit ->  Templ_He -> Integral()>50)
 				if(HeCont) Fit -> Tfit -> Constrain(3,0.4*HeCont->Eval(bincenter),1.6*HeCont->Eval(bincenter));
 				else Fit -> Tfit -> Constrain(3, constrain_min[2] ,constrain_max[2]);	 
 			else Fit -> Tfit -> Constrain(3, 0.000001 ,0.0000011);
@@ -748,6 +750,19 @@ float EvalFitProbability(float chi){
 	return CumulativeChiSquare->Integral(chi,100);
 }
 
+void  TemplateFIT::RebinAll(int f){
+	for(int bin=0;bin<bins.size();bin++){
+	 for(int sigma=0;sigma<systpar.steps;sigma++)
+		 for(int shift=0;shift<systpar.steps;shift++){
+			cout<<bin<<" "<<sigma<<" "<<shift<<" "<< fits[bin][sigma][shift] -> DataPrim->GetNbinsX()<<endl;
+			 fits[bin][sigma][shift] ->  Templ_P->Rebin(f);
+			 fits[bin][sigma][shift] ->  Templ_D->Rebin(f);
+			 fits[bin][sigma][shift] ->  Templ_He->Rebin(f);
+			 fits[bin][sigma][shift] -> Data->Rebin(f);
+			 fits[bin][sigma][shift] -> DataPrim->Rebin(f);			
+		 }
+	}
+};
 
 void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 
@@ -759,6 +774,14 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 		for(int sigma=0;sigma<systpar.steps;sigma++){
 			for(int shift=0;shift<systpar.steps;shift++){
 				cout<<fits[bin][sigma][shift]<<endl;
+
+				//TEMPORARY
+			/*		fits[bin][sigma][shift]->  Templ_P->Rebin(2);
+					fits[bin][sigma][shift] ->  Templ_D->Rebin(2);
+					fits[bin][sigma][shift] ->  Templ_He->Rebin(2);
+					fits[bin][sigma][shift] -> Data->Rebin(2);
+					fits[bin][sigma][shift] -> DataPrim->Rebin(2);
+			*/		
 				if(!fitDisabled) {
 					Do_TemplateFIT(fits[bin][sigma][shift],fits[bin][sigma][shift]->fitrangemin,fits[bin][sigma][shift]->fitrangemax,
 					constrainmin,constrainmax,HeContModel,bins.BetaBinCent(bin));

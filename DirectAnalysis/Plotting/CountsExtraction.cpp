@@ -18,18 +18,16 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TRandom3.h"
-#include "../include/GlobalBinning.h"
+#include "../include/Globals.h"
 #include "TKey.h"
 #include "TFractionFitter.h"
 
-#include "../include/Commonglobals.cpp"
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 #include "../include/filesaver.h"
 #include "../include/TemplateFITbetasmear.h"
 
 #include "../include/FitError.h"
-#include "../include/Resolution.h"
 #include "../include/PlottingFunctions.h"
 
 int colorbase = 55;
@@ -98,12 +96,12 @@ int main(int argc, char * argv[]){
 
         cout<<"****************************** PLOTTING FITS ***************************************"<<endl;
 
-	TemplateFIT * SmearingCheck = new TemplateFIT(finalHistos,"SmearingCheck",PRB);
+//	TemplateFIT * SmearingCheck = new TemplateFIT(finalHistos,"SmearingCheck",PRB);
 	TemplateFIT * ToFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
 	TemplateFIT * NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB);
 	TemplateFIT * Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB);
 
-	DrawFits(SmearingCheck,finalHistos,Plots,false,true);
+//	DrawFits(SmearingCheck,finalHistos,Plots,false,true);
 	DrawFits(ToFfits,finalHistos,Plots);
 	DrawFits(NaFfits,finalHistos,Plots,true);
 	DrawFits(Aglfits,finalHistos,Plots,true);
@@ -115,7 +113,7 @@ int main(int argc, char * argv[]){
 	TCanvas * c4 = new TCanvas("Deuteron Counts");
 	c4->SetCanvasSize(2000,1500);
 
-	std::string pathresCheck = (SmearingCheck->GetName() + "/Fit Results/");
+//	std::string pathresCheck = (SmearingCheck->GetName() + "/Fit Results/");
 	std::string pathresTOF   = (ToFfits->GetName() + "/Fit Results/");
 	std::string pathresNaF   = (NaFfits->GetName() + "/Fit Results/");
 	std::string pathresAgl   = (Aglfits->GetName() + "/Fit Results/");
@@ -254,7 +252,7 @@ int main(int argc, char * argv[]){
 	DrawParameters(finalHistos,Plots,pathresAgl,AglDB,"Parameters Agl","Measured #beta","[rad/10^{4}]",0.95,1.005,-230,230,-150,400);
 
 
-
+/*
 	TCanvas * c8 = new TCanvas("Chi Square - Smearing Check");
         c8->SetCanvasSize(5000,1000);
 
@@ -269,7 +267,7 @@ int main(int argc, char * argv[]){
         Plots.writeObjsInFolder("Results");
 
 	DrawParameters(finalHistos,Plots,pathresCheck,PRB,"Parameters Check","Measured Rig [GV]","[ps]",0.5,120,-150,150,-40,180);
-
+*/
 	return 0;
 }
 
@@ -399,7 +397,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		if(Fits.size()>0) { PlotDistribution(gPad, Fits[0],"Reconstructed Mass [gev/c^2]","counts",6,"same",1,1e5,4,"Fraction Fit");
 				     PlotDistribution(gPad, Sum,"Reconstructed Mass [gev/c^2]","counts",1,"same",1,1e5,4,"Sum of Contributions");	
 		}
-
+		cout<<"Frazione Trizio: "<<TemplatesHe[1]->Integral()/Datas[0]->Integral()<<endl;
 		Plots.Add(c3);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
 

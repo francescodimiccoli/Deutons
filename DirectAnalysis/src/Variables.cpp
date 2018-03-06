@@ -19,41 +19,38 @@ void Variables::BDTreader()
 {
 	TMVA::Tools::Instance();
 	readerTOF = new TMVA::Reader( "V:Color:!Silent" );
-	readerTOF->AddVariable("NAnticluster", &NAnticluster_float);
-	readerTOF->AddVariable("Chisquare",&Chisquare);
-	readerTOF->AddVariable("layernonusati := 7 - (hitbits&1) - (hitbits&2)*1/2 - (hitbits&4)*1/4 - (hitbits&8)*1/8 - (hitbits&16)*1/16 - (hitbits&32)*1/32 - (hitbits&64)*1/64",&Layernonusati);
-	readerTOF->AddVariable("NTofUsed := NTofClusters - NTofClustersusati",&NTofUsed);
-	readerTOF->AddVariable("diffR := TMath::Abs(Rup-Rdown)/R",&diffR);
-	readerTOF->AddVariable("TOF_Up_Down := TMath::Abs(TOFEndep[2]+TOFEndep[3]-TOFEndep[0]-TOFEndep[1])", &TOF_Up_Down);
-	readerTOF->BookMVA("BDTmethod", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityTOF_BDT.weights.xml");
-	readerTOF->BookMVA("TMVA::Types::kLikelihood", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityTOF_Likelihood.weights.xml");
 
 	TMVA::Tools::Instance();
 	readerNaF = new TMVA::Reader( "V:Color:!Silent" );
-	readerNaF->AddVariable("NAnticluster", &NAnticluster_float);
-	readerNaF->AddVariable("Chisquare",&Chisquare);
-	readerNaF->AddVariable("layernonusati := 7 - (hitbits&1) - (hitbits&2)*1/2 - (hitbits&4)*1/4 - (hitbits&8)*1/8 - (hitbits&16)*1/16 - (hitbits&32)*1/32 - (hitbits&64)*1/64",&Layernonusati);
-	readerNaF->AddVariable("NTofUsed := NTofClusters - NTofClustersusati",&NTofUsed);
-	readerNaF->AddVariable("diffR := TMath::Abs(Rup-Rdown)/R",&diffR);
-	readerNaF->AddVariable("TOF_Up_Down := TMath::Abs(TOFEndep[2]+TOFEndep[3]-TOFEndep[0]-TOFEndep[1])", &TOF_Up_Down);
-	readerNaF->AddVariable("Richtotused",&Richtotused_float);
-	readerNaF->AddVariable("RichPhEl", &RichPhEl);
-	readerNaF->BookMVA("BDTmethod", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityNaF_BDT.weights.xml");
-	readerNaF->BookMVA("TMVA::Types::kLikelihood", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityNaF_Likelihood.weights.xml");
+	readerNaF->AddVariable("Richtotused",&Richtotused_float);	
+    	readerNaF->AddVariable("RichPhEl",&RichPhEl);
+    	readerNaF->AddVariable("RICHprob",&RICHprob);
+    	readerNaF->AddVariable("RICHcollovertotal",&RICHcollovertotal);
+     	readerNaF->AddVariable("RICHLipBetaConsistency",&RICHLipBetaConsistency);  
+    	readerNaF->AddVariable("RICHTOFBetaConsistency",&RICHTOFBetaConsistency);  
+    	readerNaF->AddVariable("RICHChargeConsistency",&RICHChargeConsistency);
+	readerNaF->AddVariable("RICHPmts",&RICHPmts_float);
+   	readerNaF->AddVariable("RICHgetExpected",&RICHgetExpected_float);
+    	readerNaF->AddVariable("tot_hyp_p_uncorr",&tot_hyp_p_uncorr);
+    	readerNaF->AddVariable("Bad_ClusteringRICH",&Bad_ClusteringRICH);
+    	readerNaF->AddVariable("NSecondariesRICHrich",&NSecondariesRICHrich);
+	readerNaF->BookMVA("BDTmethod", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/Def/QualityNaF_BDT.weights.xml");
 
 	TMVA::Tools::Instance();
 	readerAgl = new TMVA::Reader( "V:Color:!Silent" );
-	readerAgl->AddVariable("NAnticluster", &NAnticluster_float);
-	readerAgl->AddVariable("Chisquare",&Chisquare);
-	readerAgl->AddVariable("layernonusati := 7 - (hitbits&1) - (hitbits&2)*1/2 - (hitbits&4)*1/4 - (hitbits&8)*1/8 - (hitbits&16)*1/16 - (hitbits&32)*1/32 - (hitbits&64)*1/64",&Layernonusati);
-	readerAgl->AddVariable("NTofUsed := NTofClusters - NTofClustersusati",&NTofUsed);
-	readerAgl->AddVariable("diffR := TMath::Abs(Rup-Rdown)/R",&diffR);
-	readerAgl->AddVariable("TOF_Up_Down := TMath::Abs(TOFEndep[2]+TOFEndep[3]-TOFEndep[0]-TOFEndep[1])", &TOF_Up_Down);
-	readerAgl->AddVariable("Richtotused",&Richtotused_float);
-	readerAgl->AddVariable("RichPhEl", &RichPhEl);
-	readerAgl->BookMVA("BDTmethod", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityNaF_BDT.weights.xml");
-	readerAgl->BookMVA("TMVA::Types::kLikelihood", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/weights/QualityNaF_Likelihood.weights.xml");
-
+    	readerAgl->AddVariable("Richtotused",&Richtotused_float);	
+    	readerAgl->AddVariable("RichPhEl",&RichPhEl);
+    	readerAgl->AddVariable("RICHprob",&RICHprob);
+    	readerAgl->AddVariable("RICHcollovertotal",&RICHcollovertotal);
+     	readerAgl->AddVariable("RICHLipBetaConsistency",&RICHLipBetaConsistency);  
+    	readerAgl->AddVariable("RICHTOFBetaConsistency",&RICHTOFBetaConsistency);  
+    	readerAgl->AddVariable("RICHChargeConsistency",&RICHChargeConsistency);
+	readerAgl->AddVariable("RICHPmts",&RICHPmts_float);
+   	readerAgl->AddVariable("RICHgetExpected",&RICHgetExpected_float);
+    	readerAgl->AddVariable("tot_hyp_p_uncorr",&tot_hyp_p_uncorr);
+    	readerAgl->AddVariable("Bad_ClusteringRICH",&Bad_ClusteringRICH);
+    	readerAgl->AddVariable("NSecondariesRICHrich",&NSecondariesRICHrich);
+	readerAgl->BookMVA("BDTmethod", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/Def/QualityAgl_BDT.weights.xml");
 }
 
 void Variables::ResetVariables(){
@@ -103,10 +100,12 @@ void Variables::ResetVariables(){
     Chisquare_y        = 0;
     Chisquare_L1_y     = 0;
     hitbits            = 0;
-    
+    FiducialVolume     = 0;	   
+ 
     // Tracker Charge
     qL1                = 0;
     qL1Status          = 0;
+    qL2Status          = 0;
     qInner             = 0;
     qL2                = 0;	
 
@@ -116,6 +115,9 @@ void Variables::ResetVariables(){
     Beta_pre           = 0;
     qUtof              = 0;
     qLtof              = 0;
+    TOFchisq_s	=0;
+    TOFchisq_t	=0;	
+    NBadTOF     =0; 	
 
     // RICH 
     BetaRICH_new           = 0;
@@ -126,7 +128,21 @@ void Variables::ResetVariables(){
     RICHPmts               = 0;
     RICHcollovertotal      = 0;
     RICHgetExpected        = 0;
+    	
+    RICHLipBetaConsistency =0;
+    RICHTOFBetaConsistency =0;	
+    RICHChargeConsistency  =0;	
+    tot_hyp_p_uncorr	   =0;
+    Bad_ClusteringRICH     =0;
+    NSecondariesRICHrich   =0;	    
 
+    //TRD
+    TRDEdepovPath=0;
+    TRDLikP=0;
+    TRDLikD=0;
+    TRDLike=0;
+    EdepTRD=0;
+	
     //MC vars
     Momento_gen            = 0;
     Massa_gen              = 0;
@@ -135,11 +151,16 @@ void Variables::ResetVariables(){
     Charge_gen             = 0;
     GenX  = 0; GenY  = 0; GenZ  = 0;
     GenPX = 0; GenPY = 0; GenPZ = 0;
+
+    //Quality Discr.
+    BDTDiscr = -1;
+    Likelihood = -1;
+
+
 }
 
 
 void Variables::ReadBranches(TTree * tree){
-
 	tree->SetBranchAddress("U_time"	 ,&U_time);
 	tree->SetBranchAddress("NTracks"        ,&NTracks);
 	tree->SetBranchAddress("Latitude"	 ,&Latitude);
@@ -147,14 +168,14 @@ void Variables::ReadBranches(TTree * tree){
 	tree->SetBranchAddress("StoermerRcutoff",&Rcutoff);
 	tree->SetBranchAddress("Livetime"	 ,&Livetime);
 	tree->SetBranchAddress("PhysBPatt"	 ,&PhysBPatt);
-	tree->SetBranchAddress("R"		 ,&R_pre);
-	tree->SetBranchAddress("BetaRaw"	 ,&Beta_pre);
+	tree->SetBranchAddress("R"		 ,&R);
+	tree->SetBranchAddress("BetaR"	 ,&BetaR);
 	tree->SetBranchAddress("CUTMASK"	 ,&CUTMASK);
 	tree->SetBranchAddress("trtrack_edep"	 ,&trtrack_edep);
 	tree->SetBranchAddress("trtot_edep"	 ,&trtot_edep);
 	tree->SetBranchAddress("TOFEndep"	 ,&Endep);
 	tree->SetBranchAddress("EdepTRD"	 ,&EdepTRD);
-	tree->SetBranchAddress("BetaRICH"	 ,&BetaRICH_new);
+	tree->SetBranchAddress("BetaRICH_new"	 ,&BetaRICH_new);
 	tree->SetBranchAddress("RICHmask"	 ,&RICHmask_new);
 	tree->SetBranchAddress("EnergyECAL"	 ,&EdepECAL);
 	tree->SetBranchAddress("NAnticluster"	 ,&NAnticluster);
@@ -164,29 +185,174 @@ void Variables::ReadBranches(TTree * tree){
 	tree->SetBranchAddress("Rdown"		 ,&Rdown);
 	tree->SetBranchAddress("R"		 ,&R);
 	tree->SetBranchAddress("Chisquare"	 ,&Chisquare);
-	tree->SetBranchAddress("BetaHR"	 ,&Beta);
-	tree->SetBranchAddress("BetaOld"	 ,&BetaR);
+	tree->SetBranchAddress("Beta"	 ,&Beta);
+	tree->SetBranchAddress("NBadTOF"  ,&NBadTOF);
 	tree->SetBranchAddress("NTrackHits"	 ,&NTrackHits );                  
-	tree->SetBranchAddress("Richtotused"	 ,&Richtotused );  
+	tree->SetBranchAddress("Richtotused"	 ,&Richtotused_float );  
 	tree->SetBranchAddress("RichPhEl"	 ,&RichPhEl);  
 	tree->SetBranchAddress("R_L1"		 ,&R_L1);  
 	tree->SetBranchAddress("hitbits"	 ,&hitbits);  
 	tree->SetBranchAddress("qL1"		 ,&qL1);  
 	tree->SetBranchAddress("qL1Status"      ,&qL1Status);
+	tree->SetBranchAddress("qL2Status"      ,&qL2Status);
 	tree->SetBranchAddress("qL2"             ,&qL2);
 	tree->SetBranchAddress("qInner"	 ,&qInner);  
 	tree->SetBranchAddress("qUtof"		 ,&qUtof);  
 	tree->SetBranchAddress("qLtof"		 ,&qLtof);  
 	tree->SetBranchAddress("RICHprob",&RICHprob);
-	tree->SetBranchAddress("RICHPmts",&RICHPmts);
+	tree->SetBranchAddress("RICHPmts",&RICHPmts_float);
 	tree->SetBranchAddress("RICHcollovertotal",&RICHcollovertotal);
-	tree->SetBranchAddress("RICHgetExpected",&RICHgetExpected);
+	tree->SetBranchAddress("RICHgetExpected",&RICHgetExpected_float);
+	tree->SetBranchAddress("RICHLipBetaConsistency"		 ,&RICHLipBetaConsistency);  
+	tree->SetBranchAddress("RICHTOFBetaConsistency"		 ,&RICHTOFBetaConsistency);  
+	tree->SetBranchAddress("RICHChargeConsistency",&RICHChargeConsistency);
+	tree->SetBranchAddress("tot_hyp_p_uncorr",&tot_hyp_p_uncorr);
+	tree->SetBranchAddress("Bad_ClusteringRICH",&Bad_ClusteringRICH);
+	tree->SetBranchAddress("NSecondariesRICHrich",&NSecondariesRICHrich);
 
-	tree->SetBranchAddress("GenMomentum"	 ,&Momento_gen);  
+	tree->SetBranchAddress("TOFchisq_t",&TOFchisq_t);
+	tree->SetBranchAddress("TOFchisq_s",&TOFchisq_s);
+
+	tree->SetBranchAddress("TRDEdepovPath",&TRDEdepovPath);
+	tree->SetBranchAddress("TRDLikP",&TRDLikP);
+	tree->SetBranchAddress("TRDLikD",&TRDLikD);
+	tree->SetBranchAddress("TRDLike",&TRDLike);
+	tree->SetBranchAddress("FiducialVolume",&FiducialVolume);
+
+	tree->SetBranchAddress("Momentum"	 ,&Momento_gen);  
 	tree->SetBranchAddress("GenMass"	 ,&Massa_gen);  		
 	tree->SetBranchAddress("MCClusterGeantPids",&MCClusterGeantPids); 	
+	
+	// Derived Variables
+	tree->SetBranchAddress("EdepTrack",&EdepTrack);
+	tree->SetBranchAddress("EdepTOFU",&EdepTOFU);
+	tree->SetBranchAddress("EdepTOFD",&EdepTOFD);
+
+	tree->SetBranchAddress("joinCutmask",&joinCutmask);
+	tree->SetBranchAddress("diffR",&diffR);
+	tree->SetBranchAddress("TOF_Up_Down",&TOF_Up_Down);
+	tree->SetBranchAddress("Layernonusati",&Layernonusati);
+	tree->SetBranchAddress("NTofUsed",&NTofUsed);
+	tree->SetBranchAddress("NAnticluster_float",&NAnticluster_float);
+	tree->SetBranchAddress("RICHgetExpected_float",&RICHgetExpected_float);
+        tree->SetBranchAddress("RICHPmts_float",&RICHPmts_float);
+
+	tree->SetBranchAddress("BDTDiscr",&BDTDiscr);
+	tree->SetBranchAddress("Likelihood",&Likelihood);
+	tree->SetBranchAddress("U_time",&U_time);
+	tree->SetBranchAddress("mcweight",&mcweight);
 
 }
+
+void Variables::RegisterTemplatesBranches(TTree * tree){
+	tree->Branch("U_time"        ,&U_time);
+	tree->Branch("StoermerRcutoff",&Rcutoff);
+	tree->Branch("Livetime"        ,&Livetime);
+	tree->Branch("R"               ,&R);
+	tree->Branch("Beta"               ,&Beta);
+	tree->Branch("BetaRICH_new"    ,&BetaRICH_new);
+	tree->Branch("GenMass"         ,&Massa_gen);
+        tree->Branch("U_time",&U_time);
+	tree->Branch("Latitude",&Latitude);
+        tree->Branch("mcweight",&mcweight);
+	tree->Branch("joinCutmask",&joinCutmask);
+	tree->Branch("qL1"		 ,&qL1);  
+	tree->Branch("qL1Status"      ,&qL1Status);
+	tree->Branch("qL2Status"      ,&qL2Status);
+	tree->Branch("qL2"             ,&qL2);
+	tree->Branch("qInner"	 	,&qInner);  
+	tree->Branch("qUtof"		 ,&qUtof);  
+	tree->Branch("qLtof"		 ,&qLtof);  
+	tree->Branch("BDTDiscr",&BDTDiscr);
+	tree->Branch("Likelihood",&Likelihood);
+}		
+
+void Variables::RegisterBranches(TTree * tree){
+
+	tree->Branch("U_time"	 ,&U_time);
+	tree->Branch("NTracks"        ,&NTracks);
+	tree->Branch("Latitude"	 ,&Latitude);
+	tree->Branch("Rcutoff35"	 ,&IGRFRcutoff);
+	tree->Branch("StoermerRcutoff",&Rcutoff);
+	tree->Branch("Livetime"	 ,&Livetime);
+	tree->Branch("PhysBPatt"	 ,&PhysBPatt);
+	tree->Branch("R"		 ,&R);
+	tree->Branch("BetaR"	 ,&BetaR);
+	tree->Branch("CUTMASK"	 ,&CUTMASK);
+	tree->Branch("trtrack_edep"	 ,&trtrack_edep);
+	tree->Branch("trtot_edep"	 ,&trtot_edep);
+	tree->Branch("TOFEndep"	 ,&Endep);
+	tree->Branch("EdepTRD"	 ,&EdepTRD);
+	tree->Branch("BetaRICH_new"	 ,&BetaRICH_new);
+	tree->Branch("RICHmask"	 ,&RICHmask_new);
+	tree->Branch("EnergyECAL"	 ,&EdepECAL);
+	tree->Branch("NAnticluster"	 ,&NAnticluster);
+	tree->Branch("NTofClusters"	 ,&NTofClusters);
+	tree->Branch("NTofClustersusati",&NTofClustersusati);
+	tree->Branch("Rup"		 ,&Rup);
+	tree->Branch("Rdown"		 ,&Rdown);
+	tree->Branch("R"		 ,&R);
+	tree->Branch("Chisquare"	 ,&Chisquare);
+	tree->Branch("Beta"	 ,&Beta);
+	tree->Branch("NBadTOF"  ,&NBadTOF);
+	tree->Branch("NTrackHits"	 ,&NTrackHits );                  
+	tree->Branch("Richtotused"	 ,&Richtotused_float );  
+	tree->Branch("RichPhEl"	 ,&RichPhEl);  
+	tree->Branch("R_L1"		 ,&R_L1);  
+	tree->Branch("hitbits"	 ,&hitbits);  
+	tree->Branch("qL1"		 ,&qL1);  
+	tree->Branch("qL1Status"      ,&qL1Status);
+	tree->Branch("qL2Status"      ,&qL2Status);
+	tree->Branch("qL2"             ,&qL2);
+	tree->Branch("qInner"	 ,&qInner);  
+	tree->Branch("qUtof"		 ,&qUtof);  
+	tree->Branch("qLtof"		 ,&qLtof);  
+	tree->Branch("RICHprob",&RICHprob);
+	tree->Branch("RICHPmts",&RICHPmts_float);
+	tree->Branch("RICHcollovertotal",&RICHcollovertotal);
+	tree->Branch("RICHgetExpected",&RICHgetExpected_float);
+	tree->Branch("RICHLipBetaConsistency"		 ,&RICHLipBetaConsistency);  
+	tree->Branch("RICHTOFBetaConsistency"		 ,&RICHTOFBetaConsistency);  
+	tree->Branch("RICHChargeConsistency",&RICHChargeConsistency);
+	tree->Branch("tot_hyp_p_uncorr",&tot_hyp_p_uncorr);
+	tree->Branch("Bad_ClusteringRICH",&Bad_ClusteringRICH);
+	tree->Branch("NSecondariesRICHrich",&NSecondariesRICHrich);
+
+	tree->Branch("TOFchisq_t",&TOFchisq_t);
+	tree->Branch("TOFchisq_s",&TOFchisq_s);
+
+	tree->Branch("TRDEdepovPath",&TRDEdepovPath);
+	tree->Branch("TRDLikP",&TRDLikP);
+	tree->Branch("TRDLikD",&TRDLikD);
+	tree->Branch("TRDLike",&TRDLike);
+	tree->Branch("FiducialVolume",&FiducialVolume);
+
+	tree->Branch("Momentum"	 ,&Momento_gen);  
+	tree->Branch("GenMass"	 ,&Massa_gen);  		
+	tree->Branch("MCClusterGeantPids",&MCClusterGeantPids); 	
+
+	// Derived Variables
+	tree->Branch("EdepTrack",&EdepTrack);
+	tree->Branch("EdepTOFU",&EdepTOFU);
+	tree->Branch("EdepTOFD",&EdepTOFD);
+
+	tree->Branch("joinCutmask",&joinCutmask);
+	tree->Branch("diffR",&diffR);
+	tree->Branch("TOF_Up_Down",&TOF_Up_Down);
+	tree->Branch("Layernonusati",&Layernonusati);
+	tree->Branch("NTofUsed",&NTofUsed);
+	tree->Branch("NAnticluster_float",&NAnticluster_float);
+	tree->Branch("RICHgetExpected_float",&RICHgetExpected_float);
+        tree->Branch("RICHPmts_float",&RICHPmts_float);
+
+	tree->Branch("BDTDiscr",&BDTDiscr);
+	tree->Branch("Likelihood",&Likelihood);
+	tree->Branch("U_time",&U_time);
+	tree->Branch("mcweight",&mcweight);
+
+}
+
+
 
 void Variables::Update(){
 
@@ -212,6 +378,9 @@ void Variables::Update(){
     NTofUsed = NTofClusters - NTofClustersusati;
     NAnticluster_float = NAnticluster;
     Richtotused_float= Richtotused;
+    RICHPmts_float = (float)RICHPmts;
+    RICHgetExpected_float = (float) RICHgetExpected;	
+
 
     Eval_Discriminants();
 
@@ -292,16 +461,11 @@ void Variables::PrintCurrentState(){
 
 void Variables::Eval_Discriminants(){
 
-	BDTDiscr = readerTOF->EvaluateMVA("BDTmethod");
-	Likelihood = readerTOF->EvaluateMVA("TMVA::Types::kLikelihood");
-	if(IsFromNaF()) {
-		BDTDiscr = readerNaF->EvaluateMVA("BDTmethod");
-		Likelihood = readerNaF->EvaluateMVA("TMVA::Types::kLikelihood");
-	}
-	if(IsFromAgl()) {
-		BDTDiscr = readerAgl->EvaluateMVA("BDTmethod");
-		Likelihood = readerAgl->EvaluateMVA("TMVA::Types::kLikelihood");
-	}
+	Likelihood = 1;//readerTOF->EvaluateMVA("TMVA::Types::kLikelihood");
+
+	if(IsFromNaF()) BDTDiscr = readerNaF->EvaluateMVA("BDTmethod");
+	if(IsFromAgl()) BDTDiscr = readerAgl->EvaluateMVA("BDTmethod");
+	
 	return;
 }
 
@@ -347,8 +511,32 @@ float GetL1InnerNoL2Q (Variables * vars) {return vars->qL1InnerNoL2;}
 int   GetPIDatL1 (Variables * vars) {return static_cast<int> ((vars->MCClusterGeantPids)&255);}
 int   GetPIDatL2 (Variables * vars) {return static_cast<int> ((vars->MCClusterGeantPids>>8)&255);}
 int   GetPIDatL3 (Variables * vars) {return static_cast<int> ((vars->MCClusterGeantPids>>16)&255);}
-float GetTRDePLikRatio    (Variables * vars) {return vars->TRDePLikRatio;}
+float GetTRDePLikRatio    (Variables * vars) {return vars->TRDLikP/vars->TRDLike;}
+float GetTRDDPLikRatio    (Variables * vars) {return vars->TRDLikD/vars->TRDLikP;}
+
+float GetTOFSpatialChi (Variables * vars) {return vars->TOFchisq_s;}
+float GetTOFTimeChi (Variables * vars) {return vars->TOFchisq_t;}
+
+
 float GetTRDEdepovPath    (Variables * vars) {return vars->TRDEdepovPath;}
 
+float GetLoweredBetaTOF  (Variables * vars) {	
+	ResponseTOF->SetParameter(0,0.00347548);
+	ResponseTOF->SetParameter(1,5.8474);
+	return ResponseTOF->Eval(vars->Beta);				
+}
+
+float GetLoweredBetaNaF  (Variables * vars) {	
+	ResponseNaF->SetParameter(0,-0.000859132);
+	ResponseNaF->SetParameter(1,-30.5065);
+	return ResponseNaF->Eval(vars->BetaRICH_new);	
+}
+
+float GetLoweredBetaAgl  (Variables * vars) {	
+	ResponseAgl->SetParameter(0,4.28781e-05);
+	ResponseAgl->SetParameter(1,67.8521);
+
+	return ResponseAgl->Eval(vars->BetaRICH_new);				
+}
 
 
