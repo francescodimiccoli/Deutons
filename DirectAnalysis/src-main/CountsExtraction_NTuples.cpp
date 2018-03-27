@@ -134,14 +134,15 @@ int main(int argc, char * argv[])
 */
         //TOFfits->DisableFit();
         //TOFfits->RebinAll();	
-        TOFfits->SetHeliumContamination(HeContTOF);				
+       	TOFfits->SetFitConstraints(0.9,1,0.015,0.06,0.0001,0.3);
+	TOFfits->SetHeliumContamination(HeContTOF);				
         TOFfits->ExtractCounts(finalHistos);	
         TOFfits->SaveFitResults(finalResults);
 
         NaFfits->SetFitRange(0.6,5);
       //        NaFfits->DisableFit();
        NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.3);
-	 NaFfits->SetHeliumContamination(HeContNaF);
+	NaFfits->SetHeliumContamination(HeContNaF);
         NaFfits->ExtractCounts(finalHistos);
         NaFfits->SaveFitResults(finalResults);
 

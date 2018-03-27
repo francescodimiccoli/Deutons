@@ -32,10 +32,8 @@ class BadEventSimulator{
 	void  LoadEvent(Variables * vars) {if(ApplyCuts(simulatorcut,vars)) EvNum++; return;};
 	float SimulateBadEvents(float Beta) {
 		if(EvNum%BadEventsFrequency==0) { 
-		//	BadEvPDF->SetParameter(0,1/(Beta*(Beta-badrangemin)));
-		//	BadEvPDF->SetParameter(1,-badrangemin/(Beta*(Beta-badrangemin)));
-			BadEvPDF->SetParameter(0,1/(1-badrangemin));
-			BadEvPDF->SetParameter(1,badrangemin/(1-badrangemin));
+			BadEvPDF->SetParameter(0,1/(Beta*(Beta-badrangemin)));
+			BadEvPDF->SetParameter(1,-badrangemin/(Beta*(Beta-badrangemin)));
 
 
 			float x=Beta;

@@ -195,7 +195,7 @@ float GetTRDDPLikRatio    (Variables * vars);
 float GetTOFSpatialChi (Variables * vars); 
 float GetTOFTimeChi (Variables * vars); 
 
-
+float GetRICHBDT(Variables * vars);
 
 int   GetPIDatL1 (Variables * vars);
 int   GetPIDatL2 (Variables * vars);
@@ -204,5 +204,5 @@ int   GetPIDatL3 (Variables * vars);
 float GetLoweredBetaTOF  (Variables * vars);
 float GetLoweredBetaNaF  (Variables * vars);
 float GetLoweredBetaAgl  (Variables * vars);
-
+float GetRICHBDT(Variables* vars);
 #endif

@@ -29,6 +29,7 @@ Binning AglPB(proton);
 Binning DRB(deuton);
 Binning PRB(proton);
 
+Binning ForAcceptance(proton);
 
 //resolution binning
 Binning ToFResB(deuton);
@@ -49,12 +50,13 @@ void SetBins(){
 
 	DRB.setBinsFromRigidity(nbinsr, 0.5, 100); 
 	PRB.setBinsFromRigidity(nbinsr, 0.5, 100);
+	ForAcceptance.setBinsFromRigidity(2*nbinsr,0.5,250);
 
 	float ekmin=0.15, ekmax=1;
 	ToFDB.setBinsFromEkPerMass (nbinsToF, ekmin, ekmax);
 	ToFPB.setBinsFromEkPerMass(nbinsToF, ekmin, ekmax);
 
-	ekmin=0.666, ekmax=4.025;
+	ekmin=0.666, ekmax=4.023;
 	NaFDB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
 	NaFPB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
 
@@ -88,9 +90,9 @@ void SetUpUsualBinning(){
 	cout<<"**Agl**"<<endl;
 	AglDB.Print();
 
-	ToFPB.UseREdges();
-	NaFPB.UseREdges();
-	AglPB.UseREdges();
+	ToFPB.UseBetaEdges();
+	NaFPB.UseBetaEdges();
+	AglPB.UseBetaEdges();
 
 	ToFDB.UseBetaEdges();
 	NaFDB.UseBetaEdges();
@@ -98,7 +100,7 @@ void SetUpUsualBinning(){
 
 
 	PRB.UseREdges();
-
+	ForAcceptance.UseREdges();
 	cout<<endl;
 	return;
 }

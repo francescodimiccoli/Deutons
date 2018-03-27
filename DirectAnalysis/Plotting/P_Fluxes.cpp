@@ -18,11 +18,10 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TRandom3.h"
-#include "../include/GlobalBinning.h"
+#include "../include/Globals.h"
 #include "TKey.h"
 #include "TFractionFitter.h"
 
-#include "../../Ntuple-making/Commonglobals.cpp"
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 #include "../include/filesaver.h"
@@ -205,7 +204,7 @@ int main(int argc, char * argv[]){
         gPad->SetGridy();
 
 
-	TSpline3 *AMSFlux = GetFluxSpline(P_Graphs[1]);
+	/*TSpline3 *AMSFlux = GetFluxSpline(P_Graphs[1]);
 	AMSFlux->SetLineColor(2);
 	AMSFlux->SetLineWidth(2);
 	
@@ -216,7 +215,7 @@ int main(int argc, char * argv[]){
 	
 	Plots.Add(c3);
 	Plots.writeObjsInFolder("Fluxes");
-
+*/
 
 	return 0;
 }

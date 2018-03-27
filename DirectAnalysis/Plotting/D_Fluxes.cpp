@@ -18,11 +18,10 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TRandom3.h"
-#include "../include/GlobalBinning.h"
+#include "../include/Globals.h"
 #include "TKey.h"
 #include "TFractionFitter.h"
 
-#include "../../Ntuple-making/Commonglobals.cpp"
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 #include "../include/filesaver.h"
@@ -246,9 +245,9 @@ int main(int argc, char * argv[]){
 
 	cout<<DPRatioTOF<<endl;
 
-	PlotTH1FintoGraph(gPad,ToFDB, DPRatioTOF ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.07,"This Work (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFDB, DPRatioNaF ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.07,"This Work (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglDB, DPRatioAgl ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.07,"This Work (Agl)",29);
+	PlotTH1FintoGraph(gPad,ToFDB, DPRatioTOF ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.12,"This Work (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFDB, DPRatioNaF ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.12,"This Work (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglDB, DPRatioAgl ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.12,"This Work (Agl)",29);
 
 	galprop3DP->Draw("sameC");
         galprop3DP2->Draw("sameC");

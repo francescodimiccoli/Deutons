@@ -2,8 +2,9 @@
 #define  DBARREAD_H
  
 #include "TTree.h"
-#include "Ntp.h"
+#include "../../data_reduction/include/Ntp.h"
 #include "Variables.hpp"
+
 // Forward-declare Variable struct
 class Variable;
 

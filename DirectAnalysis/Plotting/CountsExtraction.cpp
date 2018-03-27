@@ -21,6 +21,7 @@
 #include "../include/Globals.h"
 #include "TKey.h"
 #include "TFractionFitter.h"
+#include "TPaveLabel.h"
 
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
@@ -29,6 +30,13 @@
 
 #include "../include/FitError.h"
 #include "../include/PlottingFunctions.h"
+#include <sstream>
+
+std::string Convert (float number){
+    std::ostringstream buff;
+    buff<<number;
+    return buff.str();   
+}
 
 int colorbase = 55;
 std::vector<TH1F*> GetListOfTemplates(TFile * file,std::string path){
@@ -48,6 +56,21 @@ std::vector<TH1F*> GetListOfTemplates(TFile * file,std::string path){
 	return Templates;
 
 
+}
+
+void NormalizeResiduals(TH1F *ratio){
+	for (int i=0;i<ratio->GetNbinsX();i++){
+		if(ratio->GetBinError(i+1)>0) { ratio->SetBinContent(i+1,ratio->GetBinContent(i+1)/ratio->GetBinError(i+1));
+					        ratio->SetBinError(i+1,1);
+						}	
+		else  ratio->SetBinContent(i+1,0);	
+	}
+}
+void CleanResiduals(TH1F *Ratio,TH1F *MC,TH1F * Datas){
+	for (int i=0;i<Ratio->GetNbinsX();i++){
+		if(Datas->GetBinContent(i+1)==0||MC->GetBinContent(i+1)==0)
+			Ratio->SetBinContent(i+1,-9999);
+	}
 }
 
 void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binning bins, std::string title,std::string x, std::string x_udm,float xmin, float xmax,float y1min,float y1max,float y2min,float y2max);
@@ -103,9 +126,9 @@ int main(int argc, char * argv[]){
 
 //	DrawFits(SmearingCheck,finalHistos,Plots,false,true);
 	DrawFits(ToFfits,finalHistos,Plots);
-	DrawFits(NaFfits,finalHistos,Plots,true);
-	DrawFits(Aglfits,finalHistos,Plots,true);
-
+	DrawFits(NaFfits,finalHistos,Plots);
+	DrawFits(Aglfits,finalHistos,Plots);
+//
 
 
 	cout<<"****************************** RESULTS ***************************************"<<endl;
@@ -113,7 +136,7 @@ int main(int argc, char * argv[]){
 	TCanvas * c4 = new TCanvas("Deuteron Counts");
 	c4->SetCanvasSize(2000,1500);
 
-//	std::string pathresCheck = (SmearingCheck->GetName() + "/Fit Results/");
+	//std::string pathresCheck = (SmearingCheck->GetName() + "/Fit Results/");
 	std::string pathresTOF   = (ToFfits->GetName() + "/Fit Results/");
 	std::string pathresNaF   = (NaFfits->GetName() + "/Fit Results/");
 	std::string pathresAgl   = (Aglfits->GetName() + "/Fit Results/");
@@ -315,6 +338,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 	std::string pathtemplP= (FIT->GetName() + "/Fit Results/ScaledTemplatesP");
 	std::string pathtemplD= (FIT->GetName() + "/Fit Results/ScaledTemplatesD");	
 	std::string pathtemplHe=(FIT->GetName() + "/Fit Results/ScaledTemplatesHe");	
+	std::string pathtemplNoise=(FIT->GetName() + "/Fit Results/ScaledTemplatesNoise");	
 
 	std::string pathfit   = (FIT->GetName() + "/Fit Results/FractionFits");
 	std::string pathtrans = (FIT->GetName() + "/Fit Results/TrasnferFunctions");
@@ -322,18 +346,30 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 	
 	TFile * infile = finalHistos.GetFile();	
 
+	TCanvas * CollectiveView = new TCanvas("Summary 1 ");
+	CollectiveView->Divide(FIT->GetBinning().size()/3,3);
+	CollectiveView->SetCanvasSize(3000,2000);
+
+	TCanvas * CollectiveView2 = new TCanvas("Summary 2 ");
+	CollectiveView2->Divide(FIT->GetBinning().size()/3,3);
+	CollectiveView2->SetCanvasSize(3000,2000);
+
+
 
 	for(int i=1; i<FIT->GetBinning().size();i++){
 		
 		std::string pathbinP    = pathtemplP + "/Bin"+to_string(i);
 		std::string pathbinD    = pathtemplD + "/Bin"+to_string(i);
 		std::string pathbinHe   = pathtemplHe+ "/Bin"+to_string(i);
+		std::string pathbinNoise   = pathtemplNoise+ "/Bin"+to_string(i);
 		std::string pathbindata = pathdata   + "/Bin"+to_string(i);
 		std::string pathbinfit  = pathfit    + "/Bin"+to_string(i);
 
 		std::vector<TH1F*> TemplatesP=GetListOfTemplates(infile, pathbinP);
 		std::vector<TH1F*> TemplatesD=GetListOfTemplates(infile, pathbinD);		
 		std::vector<TH1F*> TemplatesHe=GetListOfTemplates(infile, pathbinHe);		
+		std::vector<TH1F*> TemplatesNoise=GetListOfTemplates(infile, pathbinNoise);		
+
 		std::vector<TH1F*> Datas     =GetListOfTemplates(infile, pathbindata);
 		std::vector<TH1F*> Fits      =GetListOfTemplates(infile, pathbinfit);
 		std::vector<TH1F*> Transfer  =GetListOfTemplates(infile, pathtrans);
@@ -343,12 +379,21 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 		TCanvas * c1 = new TCanvas("Modified Templates");
 		c1->SetCanvasSize(2000,1500);
+		std::string bintitle = ("Kin. Energy: " + Convert(FIT->GetBinning().EkPerMassBinCent(i)) + " GeV/n");
+		TPaveLabel* title = new TPaveLabel(0.35,0.94,0.6,0.97,bintitle.c_str(),"brndc");
+		title->SetFillColor(0);
+		title->SetLineColor(0);
+		title->SetShadowColor(0);
+		title->SetTextColor(1);
+		title->SetTextFont(22);
+		title->SetTextSize(2.5);
 
 		for(int j=TemplatesP.size()-1;j>=0;j--){
 			if(j==0) PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",1,"same",1,TemplatesP[j]->GetBinContent(TemplatesP[j]->GetMaximumBin())*1.13,10);
 			else     PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",colorbase + j,"same",1,TemplatesP[j]->GetBinContent(TemplatesP[j]->GetMaximumBin())*1.13,7,"",false,false,true);		
 		}
-	
+		c1->cd();
+		
 		Plots.Add(c1);
 		Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());	
 
@@ -366,47 +411,84 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
                 	//PlotDistribution(gPad, TemplatesHe[j],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,1e5,1,"",false,false,true);
 		}
 		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"ePsame",1,1e5,3,"ISS data",false,true);
+		c2->cd();
 	
-
-
 		Plots.Add(c2);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
 		
 		
 		TCanvas * c3 = new TCanvas("Template Fits");
                 c3->SetCanvasSize(2000,1500);
+		title->Draw();		
+		TPad * c3_up = new TPad("upperPad", "upperPad",0.0,0.3,1.0,1.0);
+	        c3_up->Draw();
+
+        	TPad * c3_do = new TPad("lowerPad", "lowerPad",0.0,0.0,1.0,0.3);
+        	c3_do->Draw();
+
+		c3_up->cd();
 		gPad->SetLogy();
+		
+		//TemplatesHe[1]->Scale(100);
 		TH1F * Sum = (TH1F*) TemplatesP[1]->Clone();
 		Sum->Add(TemplatesD[1]);
 		Sum->Add(TemplatesHe[1]);
+		if(IsFitNoise) Sum->Add(TemplatesNoise[1]);
 
-		PlotDistribution(gPad, TemplatesP[0] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,2,"Original Protons MC Template");
-		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[0] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,2,"Original Deuterons MC Template");
-		if(!IsFitNoise) if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,1e5,2,"Original He Fragm. MC Template");
-		PlotDistribution(gPad, TemplatesP[1] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,10,"Best #chi^{2} Protons MC Template");
-		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[1] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,10,"Best #chi^{2} Deuterons MC Template");
-		if(!IsSmearingCheck)
-		if(!IsFitNoise) PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,1e5,10,"Best #chi^{2} he Fragm. MC Template");
-		else {
-			TH1F * NoiseD = CreateNoiseD(TemplatesHe[1],TemplatesP[1],TemplatesD[1]);
-			PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^2]","Counts",kRed-9,"same",1e-1,1e5,10,"Noise P Template",true);
-			PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^2]","Counts",kBlue-7,"same",1e-1,1e5,10,"Noise D Template",true);
+		//PlotDistribution(gPad, TemplatesP[0] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,2,"Original Protons MC Template");
+		//if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[0] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,2,"Original Deuterons MC Template");
+	//	if(!IsFitNoise) if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,1e5,2,"Original He Fragm. MC Template");
+		PlotDistribution(gPad, TemplatesP[1] ,"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",2,"esame",8,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,10,"Best #chi^{2} Protons MC Template");
+		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[1] ,"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",4,"esame",8,1e5,10,"Best #chi^{2} Deuterons MC Template");
+		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",3,"esame",8,1e5,10,"Best #chi^{2} Tritium MC Template");
+		if(IsFitNoise) {
+			TH1F * NoiseD = CreateNoiseD(TemplatesNoise[1],TemplatesP[1],TemplatesD[1]);
+			PlotDistribution(gPad, TemplatesNoise[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",kRed-9,"esame",1e-1,1e5,10,"Noise P Template",true);
+			PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^{2}]","Counts",kBlue-7,"esame",1e-1,1e5,10,"Noise D Template",true);
 		}		
-
-		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^2]","Counts",1,"ePsame",1,1e5,3,"ISS data",false,true);
-		if(Fits.size()>0) { PlotDistribution(gPad, Fits[0],"Reconstructed Mass [gev/c^2]","counts",6,"same",1,1e5,4,"Fraction Fit");
-				     PlotDistribution(gPad, Sum,"Reconstructed Mass [gev/c^2]","counts",1,"same",1,1e5,4,"Sum of Contributions");	
+		
+		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",1,"ePsame",8,1e5,3,"ISS data",false,true);
+		if(Fits.size()>0) { PlotDistribution(gPad, Fits[0],"Reconstructed Mass [Gev/c^{2}]","counts",6,"same",1,1e5,4,"Fraction Fit");
+				     PlotDistribution(gPad, Sum,"Reconstructed Mass [Gev/c^{2}]","counts",1,"esame",8,1e5,6,"Sum of Contributions");	
 		}
-		cout<<"Frazione Trizio: "<<TemplatesHe[1]->Integral()/Datas[0]->Integral()<<endl;
-		Plots.Add(c3);
+		c3_up->cd();
+		title->Draw();
+	
+		c3_do->cd();
+		TH1F * Ratio = (TH1F*) Datas[0]->Clone();
+		TH1F * Line = (TH1F*) Datas[0]->Clone();
+		TH1F * LineUp = (TH1F*) Datas[0]->Clone();
+		TH1F * LineDo = (TH1F*) Datas[0]->Clone();
+
+		Ratio->Add(Sum,-1);
+		NormalizeResiduals(Ratio);	
+		CleanResiduals(Ratio,Sum,Datas[0]);
+		for(int i=0;i<Line->GetNbinsX();i++){Line->SetBinContent(i+1,0); Line->SetBinError(i+1,0);}	
+		for(int i=0;i<Line->GetNbinsX();i++){LineUp->SetBinContent(i+1,2); Line->SetBinError(i+1,0);}	
+		for(int i=0;i<Line->GetNbinsX();i++){LineDo->SetBinContent(i+1,-2); Line->SetBinError(i+1,0);}	
+
+		PlotDistribution(gPad, Ratio,"","",1,"ePsame",-10,10,2,"Weighted Residuals",false,true);	
+		PlotDistribution(gPad, Line,"","",1,"Lsame",-10,10,7,"",false,false,true);
+		PlotDistribution(gPad, LineUp,"","",1,"Lsame",-10,10,2,"",false,false,true);
+		PlotDistribution(gPad, LineDo,"","",1,"Lsame",-10,10,2,"",false,false,true);
+		
+
+			Plots.Add(c3);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
 
+		CollectiveView->cd(i);
+		c3_up->DrawClone();
+
+		CollectiveView2->cd(i);
+		//PlotDistribution(gPad, Ratio,"","",1,"ePsame",-10,10,2,"",false,true,true);	
+		//PlotDistribution(gPad, Line,"","",1,"Lsame",-10,10,7,"",false,false,true);
+	
 		TCanvas * c5 = new TCanvas("Transfer Functions");
                 c5->SetCanvasSize(2000,1500);
 
 		for(int j=0;j<Transfer.size();j++){
 			Transfer[j]->Smooth(3);
-			PlotDistribution(gPad, Transfer[j],"Reconstructed Mass [GeV/c^2]","Prim. / (Prim. + Sec.)",j,"hist,same",0,1,7,("Bin. "+to_string(j)).c_str(),false,false);
+			PlotDistribution(gPad, Transfer[j],"Reconstructed Mass [GeV/c^{2}]","Prim. / (Prim. + Sec.)",j,"hist,same",0,1,7,("Bin. "+to_string(j)).c_str(),false,false);
 		}
 
 		Plots.Add(c5);
@@ -460,7 +542,11 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 
 	}
-
+	 Plots.Add(CollectiveView);
+         Plots.writeObjsInFolder((FIT->GetName()+"/Fits/").c_str());	
+	 Plots.Add(CollectiveView2);
+         Plots.writeObjsInFolder((FIT->GetName()+"/Fits/").c_str());	
+	
 	return;
 
 }

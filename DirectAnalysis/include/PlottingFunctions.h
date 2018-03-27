@@ -83,7 +83,7 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 
 	TF1 * fit = Distribution->GetFunction("fitfunc");
 
-	if(ymin>0&&ymax>0) Distribution->GetYaxis()->SetRangeUser(ymin,ymax);
+	if(ymin!=-1&&ymax!=-1) Distribution->GetYaxis()->SetRangeUser(ymin,ymax);
 
 	Distribution->Rebin(rebin);
 
@@ -93,35 +93,34 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 	Distribution->GetXaxis()->SetTitleSize(0.045);
 	Distribution->GetYaxis()->SetTitleSize(0.045);	
 
+	Distribution->GetXaxis()->SetLabelSize(0.045);
+	Distribution->GetYaxis()->SetLabelSize(0.035);	
+
 	Distribution->GetXaxis()->CenterTitle();
 	Distribution->GetYaxis()->CenterTitle();
 
-	Distribution->GetXaxis()->SetTitleFont(33);
-	Distribution->GetYaxis()->SetTitleFont(33); 
+	Distribution->GetXaxis()->SetTitleFont(22);
+	Distribution->GetYaxis()->SetTitleFont(22); 
 
-	Distribution->GetXaxis()->SetLabelFont(33);
-	Distribution->GetYaxis()->SetLabelFont(33); 
+	Distribution->GetXaxis()->SetLabelFont(22);
+	Distribution->GetYaxis()->SetLabelFont(22); 
 
-	Distribution->GetXaxis()->SetLabelSize(25);
-	Distribution->GetYaxis()->SetLabelSize(25); 
-                    
-	Distribution->GetXaxis()->SetTitleSize(40);
-	Distribution->GetYaxis()->SetTitleSize(40);	
-
+	Distribution->GetYaxis()->SetTitleOffset(0.8);
 
 
 	Distribution->SetMarkerColor(color);
 	Distribution->SetMarkerStyle(8);
-	Distribution->SetMarkerSize(thickline);
-
+	Distribution->SetMarkerSize(1.5);
+	if(dots) Distribution->SetMarkerSize(thickline);
 
 
 
 	if(filled){
 		Distribution->SetFillColor(color);
 		Distribution->SetFillStyle(3002);
+		Distribution->SetLineStyle(2);
 	}
-
+	if(dots) Distribution->Draw((options).c_str());
 	Distribution->Draw((options+",hist").c_str());
  	
 	if(!skipleg){
@@ -130,7 +129,7 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
 			else {
 				if(dots) leg->AddEntry(Distribution,legendname.c_str(),"p");
-				else leg->AddEntry(Distribution,legendname.c_str(),"l");
+				 leg->AddEntry(Distribution,legendname.c_str(),"l");
 			}
 
 			leg->SetTextFont(32);
@@ -138,16 +137,21 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 		}
 
 		else{
-			leg = new TLegend(0.6, 0.75,0.95,0.95);
+			TLegend *leg = new TLegend(0.5510683,0.4323081,0.8697238,0.8649037,NULL,"brNDC");
+			leg->SetBorderSize(1);
+			leg->SetTextFont(32);
+			leg->SetLineColor(1);
+			leg->SetLineStyle(1);
+			leg->SetLineWidth(0);
+			leg->SetLineColor(0);
+			leg->SetFillColor(0);
+			leg->SetFillStyle(0);
 			leg->SetName("leg");
 			if(legendname=="") leg->AddEntry(Distribution,Distribution->GetName());
 			else {
-				if(dots) leg->AddEntry(Distribution,legendname.c_str(),"p");
-				else leg->AddEntry(Distribution,legendname.c_str(),"l"); 
+				if(dots) leg->AddEntry(Distribution,legendname.c_str(),"p"); 
+				leg->AddEntry(Distribution,legendname.c_str(),"l"); 
 			}
-			leg->SetTextFont(32);
-			leg->SetLineWidth(5);
-			leg->SetFillColor(0);
 			leg->Draw("same"); 
 		}
 	}

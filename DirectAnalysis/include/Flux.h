@@ -23,7 +23,7 @@ class Flux{
 	std::string exposurename;
 	std::string geomname;
 
-	TH1F * FluxEstim;
+	TH1F * FluxEstim=0x0;
 	MCPar param;
 
 	public:
@@ -31,7 +31,7 @@ class Flux{
 
 	Flux(FileSaver File, FileSaver FileRes, std::string Basename, std::string Effname, std::string EffDir,std::string CountsName,std::string ExposureName, std::string GeomName,Binning Bins){
 		MCEfficiency = new Efficiency(FileRes,Effname,EffDir,Bins);
-		Counts = (TH1F *) FileRes.Get((CountsName).c_str());	 
+		if(FileRes.CheckFile()) Counts = (TH1F *) FileRes.Get((CountsName).c_str());	 
 		ExposureTime = (TH1F *) File.Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
 		Geom_Acceptance = (TH1F *) File.Get(("Fluxes/"+Basename+"/"+GeomName).c_str());
 		Triggers = (TH1F *) File.Get(("Fluxes/"+Basename+"/Triggers").c_str());
@@ -43,18 +43,19 @@ class Flux{
 	}
 	Flux(FileSaver FileRes, std::string Basename, std::string Effname, std::string EffDir,std::string CountsName,std::string ExposureName, std::string GeomName, Binning Bins){
 		MCEfficiency = new Efficiency(FileRes,Effname,EffDir,Bins);
-		Counts = (TH1F *) FileRes.Get((CountsName).c_str());
-		ExposureTime = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
-		Geom_Acceptance = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+GeomName).c_str());
-		FluxEstim = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str());
-		
+		if(FileRes.CheckFile()) {
+			Counts = (TH1F *) FileRes.Get((CountsName).c_str());
+			ExposureTime = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
+			Geom_Acceptance = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+GeomName).c_str());
+			FluxEstim = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str());
+		}
 		bins = Bins;		
 		basename = Basename;
 	}
 	bool ReinitializeHistos(bool refill) {
 		if(!ExposureTime||!Triggers||!Geom_Acceptance||refill) { 
 			ExposureTime = new TH1F(exposurename.c_str(),exposurename.c_str(),bins.size(),0,bins.size());
-                	Triggers = new TH1F("Triggers","Triggers",PRB.size(),0,PRB.size());
+                	Triggers = new TH1F("Triggers","Triggers",ForAcceptance.size(),0,ForAcceptance.size());
 			Geom_Acceptance = new TH1F(geomname.c_str(),geomname.c_str(),bins.size(),0,bins.size());
 			Counts=0x0;
 			return false;
@@ -94,14 +95,17 @@ void Flux::ApplyEfficCorr(TH1F * Correction){
 
 void Flux::Eval_Flux(){
 	cout<<"Counts "<<Counts<<endl;
-	if(Counts) FluxEstim = (TH1F *) Counts->Clone();
-	else FluxEstim = new TH1F("dummy","dummy",bins.size(),0,bins.size());
-	cout<<"Flux: "<<MCEfficiency->GetEfficiency()->GetEntries()<<endl;
+	
+	if(Counts>0) {cout<<"1"<<endl;	FluxEstim = (TH1F *) Counts->Clone();
+	}
+	else { FluxEstim = new TH1F("dummy","dummy",10,0,10);
+	return;
+	}
+//	cout<<"Flux: "<<MCEfficiency->GetEfficiency()->GetEntries()<<endl;
 	FluxEstim -> SetName((basename+"_Flux").c_str());
 	FluxEstim -> SetTitle((basename+"_Flux").c_str());
 
 	FluxEstim -> Sumw2();
-
 	FluxEstim -> Divide(MCEfficiency->GetEfficiency());
 	if(ExposureTime) FluxEstim -> Divide(ExposureTime);
 	
@@ -109,8 +113,10 @@ void Flux::Eval_Flux(){
 		float totaltriggers = Triggers->Integral();
 		for(int i=0;i<bins.size();i++){
 			float gen_bins= totaltriggers*(pow(param.Trigrate,-1))*(log(bins.RigBins()[i+1])-log(bins.RigBins()[i]))/(log(param.Rmax)-log(param.Rmin)); 
-			Geom_Acceptance -> SetBinContent(i+1,Geom_Acceptance -> GetBinContent(i+1)/gen_bins); 			
-			Geom_Acceptance -> SetBinError(i+1,pow(Geom_Acceptance -> GetBinContent(i+1),0.5)/gen_bins); 			
+			if(Geom_Acceptance -> GetBinContent(i+1)>0){
+				Geom_Acceptance -> SetBinContent(i+1,Geom_Acceptance -> GetBinContent(i+1)/gen_bins); 			
+				Geom_Acceptance -> SetBinError(i+1,pow(Geom_Acceptance -> GetBinContent(i+1),0.5)/gen_bins); 			
+				}
 			}
 		 Geom_Acceptance -> Sumw2();
 		 Geom_Acceptance -> Scale(47.78);
@@ -134,7 +140,7 @@ void Flux::Eval_GeomAcceptance(TTree * treeMC,FileSaver finalhistos,std::string 
 
 	if((!Geom_Acceptance||!Triggers||refill)){
 			Geom_Acceptance = new TH1F(geomname.c_str(),geomname.c_str(),bins.size(),0,bins.size());
-			Triggers = new TH1F("Triggers","Triggers",PRB.size(),0,PRB.size());		
+			Triggers = new TH1F("Triggers","Triggers",ForAcceptance.size(),0,ForAcceptance.size());		
 			Variables * vars = new Variables;
 
 			vars->ReadBranches(treeMC);
@@ -147,7 +153,7 @@ void Flux::Eval_GeomAcceptance(TTree * treeMC,FileSaver finalhistos,std::string 
 				if(!IsRigBin) kbin=bins.GetBin(GetBetaGen(vars));
 				else	      kbin=bins.GetBin(GetGenMomentum(vars));
 				if(ApplyCuts(cut,vars)&&kbin>0) Geom_Acceptance->Fill(kbin);
-				kbin=PRB.GetBin(GetGenMomentum(vars));
+				kbin=ForAcceptance.GetBin(GetGenMomentum(vars));
 				if(ApplyCuts(cut,vars)&&kbin>0) Triggers->Fill(kbin);
 			}
 			/*
@@ -155,7 +161,7 @@ void Flux::Eval_GeomAcceptance(TTree * treeMC,FileSaver finalhistos,std::string 
 			if(!IsRigBin) Geom->Fill(RawMC, vars,GetBetaGen,true);
 			else Geom->Fill(RawMC, vars,GetGenMomentum,true);
 
-			Efficiency * Trig = new Efficiency(finalhistos,"","",PRB,cut.c_str() ,cut.c_str());
+			Efficiency * Trig = new Efficiency(finalhistos,"","",ForAcceptance,cut.c_str() ,cut.c_str());
 			Trig->Fill(RawMC, vars,GetGenMomentum,true);
 
 			Geom_Acceptance = (TH1F *)Geom->GetBefore()->Clone();

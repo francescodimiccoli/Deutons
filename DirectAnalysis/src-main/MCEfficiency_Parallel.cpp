@@ -53,8 +53,8 @@ int main(int argc, char * argv[])
 	FileSaver finalResults;
         finalResults.setName((OUTPUT+"_Results").c_str());
 
-	TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
-    	TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
+	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+    	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
 
 
 	cout<<"****************************** BINS ***************************************"<<endl;
@@ -89,7 +89,7 @@ int main(int argc, char * argv[])
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
 
-	//Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsProtonMC&IsPreselected&DistanceCut&LikelihoodCut");
+	Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsProtonMC&IsPreselected&DistanceCut&LikelihoodCut");
 
 
 	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency",
@@ -177,7 +177,7 @@ int main(int argc, char * argv[])
 
 
 
-	//	RigBinFullSetEff->Fill(treeMC,vars,GetGenMomentum,Refill);
+	RigBinFullSetEff->Fill(DBarReader(chainMC, true ),vars,GetGenMomentum,Refill);
 
 	ParallelFiller<AllRangesEfficiency *> Filler;
 	Filler.AddObject2beFilled(Preselections_P,GetBetaGen,GetBetaGen);
@@ -196,7 +196,7 @@ int main(int argc, char * argv[])
 	FullSet_D       ->CloneEfficiency(Preselections_D);
 
 
-//	RigBinFullSetEff->Save(finalHistos);	
+	RigBinFullSetEff->Save(finalHistos);	
 	Preselections_P	->Save(finalHistos);
         Quality_P       ->Save(finalHistos);
 	Preselections_D ->Save(finalHistos);
@@ -209,7 +209,7 @@ int main(int argc, char * argv[])
 	FullSet_D       ->Save(finalHistos);
 
 
-//	RigBinFullSetEff->Eval_Efficiency();
+	RigBinFullSetEff->Eval_Efficiency();
 	Preselections_P	->Eval_Efficiency();
         Quality_P       ->Eval_Efficiency();
         Preselections_D ->Eval_Efficiency();
@@ -226,7 +226,7 @@ int main(int argc, char * argv[])
 	FullSet_P       ->Eval_FittedEfficiency();
         FullSet_D       ->Eval_FittedEfficiency();
 
-//	RigBinFullSetEff->SaveResults(finalResults);
+	RigBinFullSetEff->SaveResults(finalResults);
 	Preselections_P	->SaveResults(finalResults);
 	Quality_P       ->SaveResults(finalResults);
 	Preselections_D ->SaveResults(finalResults);

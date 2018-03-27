@@ -222,6 +222,7 @@ void Variables::ReadBranches(TTree * tree){
 	tree->SetBranchAddress("Momentum"	 ,&Momento_gen);  
 	tree->SetBranchAddress("GenMass"	 ,&Massa_gen);  		
 	tree->SetBranchAddress("MCClusterGeantPids",&MCClusterGeantPids); 	
+	tree->SetBranchAddress("PrescaleFactor", &PrescaleFactor);
 	
 	// Derived Variables
 	tree->SetBranchAddress("EdepTrack",&EdepTrack);
@@ -265,6 +266,8 @@ void Variables::RegisterTemplatesBranches(TTree * tree){
 	tree->Branch("qLtof"		 ,&qLtof);  
 	tree->Branch("BDTDiscr",&BDTDiscr);
 	tree->Branch("Likelihood",&Likelihood);
+	tree->Branch("PrescaleFactor", &PrescaleFactor);
+	tree->Branch("MCClusterGeantPids",&MCClusterGeantPids); 
 }		
 
 void Variables::RegisterBranches(TTree * tree){
@@ -317,6 +320,7 @@ void Variables::RegisterBranches(TTree * tree){
 	tree->Branch("tot_hyp_p_uncorr",&tot_hyp_p_uncorr);
 	tree->Branch("Bad_ClusteringRICH",&Bad_ClusteringRICH);
 	tree->Branch("NSecondariesRICHrich",&NSecondariesRICHrich);
+	tree->Branch("PrescaleFactor", &PrescaleFactor);
 
 	tree->Branch("TOFchisq_t",&TOFchisq_t);
 	tree->Branch("TOFchisq_s",&TOFchisq_s);
@@ -539,4 +543,4 @@ float GetLoweredBetaAgl  (Variables * vars) {
 	return ResponseAgl->Eval(vars->BetaRICH_new);				
 }
 
-
+float GetRICHBDT(Variables* vars) {	return vars->BDTDiscr;}

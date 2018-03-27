@@ -17,10 +17,9 @@
 #include "TGraphErrors.h"
 #include "TFractionFitter.h"
 #include "TRandom3.h"
-
-#include "../include/GlobalBinning.h"
-
-#include "../include/Commonglobals.cpp"
+#include "TChain.h"
+#include "../include/InputFileReader.h"
+#include "../include/Globals.h"
 
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
@@ -60,53 +59,25 @@ int main(int argc, char * argv[])
         finalResults.setName((OUTPUT+"_Results").c_str());
 
 
-        TFile *fileDT =TFile::Open(INPUT1.c_str());
-        TFile *fileMC =TFile::Open(INPUT2.c_str());
-
-        TTree *treeMC = (TTree *)fileMC->Get("parametri_geo");
-        TTree *treeDT = (TTree *)fileDT->Get("parametri_geo");
-
-
+	TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
+   	//TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
+   	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+   	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+ 
 	cout<<"****************************** BINS ***************************************"<<endl;
-
-        SetBins();
-
-        PRB.Print();
-
-        cout<<"**TOF**"<<endl;
-        ToFDB.Print();
-
-        cout<<"**NaF**"<<endl;
-        NaFPB.Print();
-
-        cout<<"**Agl**"<<endl;
-        AglDB.Print();
-
-        ToFDB.UseBetaEdges();
-        NaFDB.UseBetaEdges();
-        AglDB.UseBetaEdges();
-	ToFPB.UseBetaEdges();
-        NaFPB.UseBetaEdges();
-        AglPB.UseBetaEdges();
-
-	PRB.UseREdges();
-
-
-        cout<<endl;
-
+	SetUpUsualBinning();
 
 	cout<<"****************************** VARIABLES ***************************************"<<endl;
 
         Variables * vars = new Variables;
 
 	cout<<"****************************** EFFICIENCY CORR. READING  ******************************************"<<endl;
-
+/*
 	EffCorr * HEPPresEffCorr = new EffCorr(finalResults,"HEPPresEffCorr","HEPPresEffCorr",PRB,"PresControlSample","PresControlSample&IsPreselected","","IsProtonMC");
 	EffCorr * HEPQualEffCorr = new EffCorr(finalResults,"HEPQualEffCorr","HEPQualEffCorr",PRB,"ControlSample","ControlSample&DistanceCut&LikelihoodCut","","IsProtonMC");
 	
 	EffCorr * RICHEffCorr_NaF = new EffCorr(finalResults,"RICHCorrection_NaF","RICH Eff. Corr",NaFPB,"ControlSample","ControlSample&IsFromNaF","","IsProtonMC");
-	EffCorr * RICHEffCorr_Agl = new EffCorr(finalResults,"RICHCorrection_Agl","RICH Eff. Corr",AglPB,"ControlSample","ControlSample&IsFromAgl","","IsProtonMC");
-/*
+	EffCorr * RICHEffCorr_Agl = new EffCorr(finalResults,"RICHCorrection_Agl","RICH Eff. Corr",AglPB,"ControlSample","ControlSample&IsFromAgl","","IsProtonMC");*
 	EffCorrTemplate* DistCorr_TOF = new EffCorrTemplate(finalResults,"DistanceCorrTOF","Quality Eff. Corr",ToFDB,"ControlSample","ControlSample&DistanceCut","","");	
 	EffCorrTemplate* DistCorr_NaF = new EffCorrTemplate(finalResults,"DistanceCorrNaF","Quality Eff. Corr",NaFDB,"ControlSample&IsFromNaF","ControlSample&IsFromNaF&DistanceCut","","",true);	
 	EffCorrTemplate* DistCorr_Agl = new EffCorrTemplate(finalResults,"DistanceCorrAgl","Quality Eff. Corr",AglDB,"ControlSample&IsFromAgl","ControlSample&IsFromAgl&DistanceCut","","",true);	
@@ -140,18 +111,18 @@ int main(int argc, char * argv[])
 		Filler.AddObject2beFilled(HEPFlux,GetGenMomentum,GetGenMomentum,"IsProtonMC");
 		Filler.ReinitializeAll(Refill);
 		//main loops
-		Filler.ExposureTimeFilling(treeDT,vars,finalHistos);
-		Filler.LoopOnMCForGenAcceptance(treeMC,vars,finalHistos);		
+		Filler.ExposureTimeFilling(DBarReader(chainDT, false ),vars,finalHistos);
+		Filler.LoopOnMCForGenAcceptance(DBarReader(chainMC, true ),vars,finalHistos);		
 
 	cout<<"************* D FLUX ************"<<endl;
 
-	DFluxTOF->Set_MCPar(0.5,20,0.0242236931);	
-	DFluxNaF->Set_MCPar(0.5,20,0.0242236931);	
-	DFluxAgl->Set_MCPar(0.5,20,0.0242236931);	
-
+	DFluxTOF->Set_MCPar(0.5,200,0.0242236931);	
+	DFluxNaF->Set_MCPar(0.5,200,0.0242236931);	
+	DFluxAgl->Set_MCPar(0.5,200,0.0242236931);	
+/*
 	DFluxNaF->ApplyEfficCorr(RICHEffCorr_NaF->GetGlobCorrection());
 	DFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl->GetGlobCorrection());
-/*
+
 	DFluxTOF->ApplyEfficCorr(DistCorr_TOF->GetGlobCorrection_D());
 	DFluxNaF->ApplyEfficCorr(DistCorr_NaF->GetGlobCorrection_D());
 	DFluxAgl->ApplyEfficCorr(DistCorr_Agl->GetGlobCorrection_D());
@@ -179,8 +150,8 @@ int main(int argc, char * argv[])
 //	HEPFlux -> ApplyEfficCorr(HEPPresEffCorr->GetGlobCorrection());
 //	HEPFlux -> ApplyEfficCorr(HEPQualEffCorr->GetGlobCorrection());
 	
-	PFluxNaF->ApplyEfficCorr(RICHEffCorr_NaF->GetGlobCorrection());
-	PFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl->GetGlobCorrection());
+//	PFluxNaF->ApplyEfficCorr(RICHEffCorr_NaF->GetGlobCorrection());
+//	PFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl->GetGlobCorrection());
 /*	
 	PFluxTOF->ApplyEfficCorr(DistCorr_TOF->GetGlobCorrection_P());
 	PFluxNaF->ApplyEfficCorr(DistCorr_NaF->GetGlobCorrection_P());

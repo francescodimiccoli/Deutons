@@ -75,9 +75,9 @@ int main(int argc, char * argv[])
 		vars->Update();
 		if(ApplyCuts("IsPreselectedInner",vars)) measure_stuff->Fill();
 		if(
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut",vars)&&vars->Beta<0.87)||
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&RICHBDTCut",vars))||	
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&RICHBDTCut",vars))	
+			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut",vars))||
+			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",vars))||	
+			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",vars))	
 		)		
 			   template_stuff->Fill();	
 	}
@@ -94,9 +94,9 @@ int main(int argc, char * argv[])
 		vars->Update();
 		if(ApplyCuts("IsPreselectedInner",vars)) measure_stuffMC->Fill();
 		if(
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut",vars)&&vars->Beta<0.87)||
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&RICHBDTCut",vars))||	
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&RICHBDTCut",vars))	
+			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut",vars))||
+			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",vars))||	
+			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",vars))	
 		)		
 			   template_stuffMC->Fill();	
 	}

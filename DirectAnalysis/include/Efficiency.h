@@ -65,6 +65,7 @@ class Efficiency{
 
 	bool ReinitializeHistos(bool refill);
 	void Fill( TTree * treeMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
+	void Fill(DBarReader readerMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill);
 	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
 	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
 
@@ -138,6 +139,26 @@ void Efficiency::Fill(TTree * tree, Variables * vars, float (*discr_var) (Variab
 			FillEventByEventMC(vars,discr_var,discr_var);
 			}
 		else	       FillEventByEventData(vars,discr_var,discr_var);	
+	}
+
+	return;
+}
+
+void Efficiency::Fill(DBarReader readerMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill){
+        if(ReinitializeHistos(refill)) return;
+	if(readerMC.GetTree()->GetNbranches()>11) {Fill(readerMC.GetTree(),vars,discr_var,refill); return;}	
+        cout<<basename.c_str()<<" Filling ..."<< endl;
+	for(int i=0;i<readerMC.GetTreeEntries();i++){
+		if(i%(int)FRAC!=0) continue; // WTF ?!
+		UpdateProgressBar(i, readerMC.GetTreeEntries());
+		readerMC.FillVariables(i,vars);
+		vars->Update();
+
+		if(IsMC(vars)) {
+			if(BadEvSim) BadEvSim->LoadEvent(vars);
+			FillEventByEventMC(vars,discr_var,discr_var);
+		}
+		else           FillEventByEventData(vars,discr_var,discr_var);
 	}
 
 	return;
