@@ -416,33 +416,41 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	Graph->SetMarkerColor(color);
 
 	TH2F * Frame = (TH2F*) gPad->FindObject("Frame");	
-
+		
 	if(Frame){
 		Graph->Draw(options.c_str());
-                TLegend * leg = (TLegend*) gPad->FindObject("leg");
+		TLegend * leg = (TLegend*) gPad->FindObject("leg");
 		if(legendname=="")leg->AddEntry(Graph,Values->GetName(),"P");
-                else if(!skipleg) leg->AddEntry(Graph,legendname.c_str(),"P");
-                leg->SetLineWidth(3);
-                leg->SetFillColor(0);
-                 leg->SetTextFont(32);
+		else if(!skipleg) leg->AddEntry(Graph,legendname.c_str(),"P");
+		leg->SetLineWidth(3);
+		leg->SetFillColor(0);
+		leg->SetTextFont(32);
 		leg->Draw("same");
-	
+
 	}
 
 	else{
 
 		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
 		Frame->Draw();
-        	Graph->Draw((options+"same").c_str());
-	
-		TLegend * leg = new TLegend(0.6,0.95,0.95,0.7);
+		Graph->Draw((options+"same").c_str());
+
+		TLegend * leg = new TLegend(0.6,0.9,0.95,0.6);
 		leg->SetName("leg");
+		leg->SetBorderSize(0);
+		leg->SetTextFont(32);
+		leg->SetLineColor(1);
+		leg->SetLineStyle(1);
+		leg->SetLineWidth(0);
+		leg->SetLineColor(0);
+		leg->SetFillColor(0);
+		leg->SetFillStyle(0);
 
 		if(legendname=="") leg->AddEntry(Graph,Values->GetName(),"P");             
 		else if(!skipleg) leg->AddEntry(Graph,legendname.c_str(),"P");
 		leg->SetLineWidth(3);
 		leg->SetFillColor(0);
-		 leg->SetTextFont(32);
+		leg->SetTextFont(32);
 		leg->Draw("same");		
 
 	}

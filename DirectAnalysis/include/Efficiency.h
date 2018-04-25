@@ -3,6 +3,8 @@
 
 #include "BetaSmearing.h"
 #include "Cuts.h"
+#include "DBarReader.h"
+
 class Efficiency{
 
 	private:
@@ -91,9 +93,22 @@ class Efficiency{
 };
 
 void Efficiency::ComposeEfficiency(Efficiency * Second){
+	TH1F * after1= (TH1F*) after->Clone();
+	TH1F * after2= (TH1F*) (TH1F*) Second->GetAfter()->Clone();
+
+	if(after1->GetEntries()>after2->GetEntries()){
+		after = (TH1F*) Second->GetAfter()->Clone();
+	}
+	else{
+		before = (TH1F*) Second->GetBefore()->Clone();
+	}
+
 	if(Eff){
 		Eff->Sumw2();
 		if(Second->GetEfficiency()) Eff->Multiply(Second->GetEfficiency());
+	}
+	else {
+		Eval_Efficiency();	
 	}
 	return;
 }

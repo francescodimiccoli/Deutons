@@ -4,14 +4,24 @@ using namespace std;
 
 std::vector<float> LatEdges={0.0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.2};
 
+bool IsPhysTrig    (Variables * vars){ return ((int)vars->joinCutmask&1)==1;}
+
 bool IsProtonMC    (Variables * vars){ return (vars->Massa_gen<1&&vars->Massa_gen>0);}
 bool IsDeutonMC    (Variables * vars){ return (vars->Massa_gen<2&&vars->Massa_gen>1);}
-bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_gen>1);}
+bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>3&&vars->Massa_gen>1);}
+bool IsTritiumMC   (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_gen<3);}
 
-bool IsFragmentedPfromHeMC (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
-bool IsFragmentedDfromHeMC (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==45&&(GetPIDatL3(vars))==45;}
-bool IsFragmentedTMC 	   (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==46&&(GetPIDatL3(vars))==46;}
-bool IsPureDMC 		   (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDatL2(vars))==45&&(GetPIDatL3(vars))==45;}
+bool IsFragmentedPfromHeMC (Variables * vars) {return IsPhysTrig(vars)&&IsHeliumMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
+bool IsFragmentedDfromHeMC (Variables * vars) {return IsPhysTrig(vars)&&IsHeliumMC(vars)&&(GetPIDatL2(vars))==45&&(GetPIDatL3(vars))==45;}
+bool IsFragmentedTMC 	   (Variables * vars) {return IsPhysTrig(vars)&&IsHeliumMC(vars)&&(GetPIDatL2(vars))==46&&(GetPIDatL3(vars))==46;}
+bool IsPureDMC 		   (Variables * vars) {return IsPhysTrig(vars)&&IsDeutonMC(vars)&&(GetPIDatL2(vars))==45&&(GetPIDatL3(vars))==45;}
+bool IsPurePMC 		   (Variables * vars) {return IsPhysTrig(vars)&&IsProtonMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
+bool IsPureTMC 		   (Variables * vars) {return IsPhysTrig(vars)&&IsTritiumMC(vars)&&(GetPIDatL2(vars))==46&&(GetPIDatL3(vars))==46;}
+
+bool IsFragmentedDMC 	   (Variables * vars) {return !(IsPureDMC(vars));}
+bool IsFragmentedPMC 	   (Variables * vars) {return !(IsPurePMC(vars));}
+
+
 bool IsFragmentedPfromDMC  (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
 bool IsFragment	           (Variables * vars) {return (vars->qL1>1.7 && IsPreselectedInner (vars));}
 bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0 && vars->qL1<2);} 
@@ -121,14 +131,23 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 	bool IsPassed = true;
 	for(int i=0;i<spl.size();i++){
 		if(spl[i]=="") 		     IsPassed=IsPassed;
+		if(spl[i]=="IsPhysTrig"    ) IsPassed=IsPassed && IsPhysTrig    (Vars);
 		if(spl[i]=="IsProtonMC"	   ) IsPassed=IsPassed && IsProtonMC    (Vars);
 		if(spl[i]=="IsDeutonMC"	   ) IsPassed=IsPassed && IsDeutonMC    (Vars);
 		if(spl[i]=="IsHeliumMC"	   ) IsPassed=IsPassed && IsHeliumMC    (Vars);
+		if(spl[i]=="IsTritiumMC"   ) IsPassed=IsPassed && IsTritiumMC    (Vars);
+
 
 		if(spl[i]=="IsFragmentedPfromHeMC") IsPassed=IsPassed && IsFragmentedPfromHeMC    (Vars);
 		if(spl[i]=="IsFragmentedDfromHeMC") IsPassed=IsPassed && IsFragmentedDfromHeMC    (Vars);
 		if(spl[i]=="IsFragmentedTMC") 	    IsPassed=IsPassed && IsFragmentedTMC    (Vars);
 		if(spl[i]=="IsPureDMC") 	    IsPassed=IsPassed && IsPureDMC    (Vars);
+		if(spl[i]=="IsPurePMC") 	    IsPassed=IsPassed && IsPurePMC    (Vars);
+		if(spl[i]=="IsPureTMC") 	    IsPassed=IsPassed && IsPureTMC    (Vars);
+		
+		if(spl[i]=="IsFragmentedDMC") 	    IsPassed=IsPassed && IsFragmentedDMC    (Vars);
+		if(spl[i]=="IsFragmentedPMC") 	    IsPassed=IsPassed && IsFragmentedPMC    (Vars);
+		
 		if(spl[i]=="IsFragmentedPfromDMC")  IsPassed=IsPassed && IsFragmentedPfromDMC    (Vars);
 		if(spl[i]=="IsFragment")  	    IsPassed=IsPassed && IsFragment	(Vars);
 		if(spl[i]=="IsGoodL1Status")            IsPassed=IsPassed && IsGoodL1Status     (Vars);

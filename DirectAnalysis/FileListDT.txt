@@ -1,3 +1,1 @@
-/eos/ams/group/dbar/release_1507300526/neg/ISS.B950/pass6//1333281082.root
-/eos/ams/group/dbar/release_1507300526/neg/ISS.B950/pass6//1333282412.root
-/eos/ams/group/dbar/release_1507300526/neg/ISS.B950/pass6//1333283817.root
+/eos/ams/user/f/fdimicco/AnalysisNTuples/1305944557-1494599304/Result92.root

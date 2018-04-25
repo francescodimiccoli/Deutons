@@ -47,8 +47,15 @@ struct TFit {
    
    float DCounts=0;
    float PCounts=0;
+   float TCounts=0;
+
+
    float ChiSquare=500;			
-   float StatErr=0;	
+   
+   float StatErrP=0;
+   float StatErrD=0;
+   float StatErrT=0;
+	
 
    TH1F * Templ_DPrim;
    TH1F * Templ_PPrim;
@@ -102,12 +109,17 @@ class TemplateFIT {
 	TH1F * MCHeContRatio;
 	TH1F * MeasuredHeContRatio;
 
-	TH1F * StatError;
+	TH1F * StatErrorP;
+	TH1F * StatErrorD;
+	TH1F * StatErrorT;
+	
 	TH1F * SystError;
 	TH1F * HeContError;
 
 	TH1F * ProtonCounts;
 	TH1F * DeuteronCounts;
+	TH1F * TritiumCounts;
+
 
 	TH1F * ProtonCountsPrim;
 	TH1F * DeuteronCountsPrim;
@@ -140,7 +152,7 @@ class TemplateFIT {
 
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=60,float shift=40,TH1F * ExposureTime=0x0){
+	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=60,float shift=60,TH1F * ExposureTime=0x0){
 		
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
@@ -174,11 +186,16 @@ class TemplateFIT {
 		cutprimary=Cut+"&IsPrimary";
 		bins=Bins;
 		
-		StatError  = new TH1F("StatError","StatError",bins.size(),0,bins.size()) ;
+		StatErrorP  = new TH1F("StatErrorP","StatErrorP",bins.size(),0,bins.size()) ;
+		StatErrorD  = new TH1F("StatErrorD","StatErrorD",bins.size(),0,bins.size()) ;
+		StatErrorT  = new TH1F("StatErrorT","StatErrorT",bins.size(),0,bins.size()) ;
+
         	SystError  = new TH1F("SystError","SystError",bins.size(),0,bins.size()) ;
 
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+		TritiumCounts  = new TH1F("Tritium Counts","Tritium Counts",bins.size(),0,bins.size()) ;
+
 
 		ProtonCountsPrim    = new TH1F("Primary Proton Counts","Primary Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCountsPrim  = new TH1F("Primary Deuteron Counts","Primary Deuteron Counts",bins.size(),0,bins.size()) ;
@@ -203,7 +220,7 @@ class TemplateFIT {
 
 	//reading constructor
 
-	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=11,float sigma=60,float shift=40,TH1F * ExposureTime=0x0){
+	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=11,float sigma=60,float shift=60,TH1F * ExposureTime=0x0){
 
 		TFile * file = File.GetFile();
 
@@ -240,12 +257,17 @@ class TemplateFIT {
 
 		bins=Bins; 
 
-		StatError  = new TH1F("StatError","StatError",bins.size(),0,bins.size()) ;
+		StatErrorP  = new TH1F("StatErrorP","StatErrorP",bins.size(),0,bins.size()) ;
+		StatErrorD  = new TH1F("StatErrorD","StatErrorD",bins.size(),0,bins.size()) ;
+		StatErrorT  = new TH1F("StatErrorT","StatErrorT",bins.size(),0,bins.size()) ;
+
 		SystError  = new TH1F("SystError","SystError",bins.size(),0,bins.size()) ;
 
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
 		DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+		TritiumCounts    = new TH1F("Tritium Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 	
+
 		ProtonCountsPrim    = new TH1F("Primary Proton Counts","Primary Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCountsPrim  = new TH1F("Primary Deuteron Counts","Primary Deuteron Counts",bins.size(),0,bins.size()) ;
 	
@@ -314,7 +336,10 @@ class TemplateFIT {
 	void SetLatitudeReweighter(LatReweighter * weighter) { Latweighter = weighter;}
 	void Eval_ContError();
 	std::string GetName(){return basename;}
-	TH1F * GetStatError(){ return StatError;}
+	TH1F * GetStatErrorP(){ return StatErrorP;}
+	TH1F * GetStatErrorD(){ return StatErrorD;}
+	TH1F * GetStatErrorT(){ return StatErrorT;}
+
 	TH1F * GetSystError() { return SystError;}	
 	Binning  GetBinning() {return bins;}
 	void  RebinAll(int f=2);	
@@ -417,7 +442,7 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 
 	std::string cutP=cut+"&IsProtonMC";
 	std::string cutD=cut+"&IsPureDMC";
-	std::string cutHe=cut+"&IsFragmentedTMC";
+	std::string cutHe=cut+"&IsPureTMC";
 	//std::string cutD=cut+"&IsDeutonMC";
 	//std::string cutHe=cut+"&IsHeliumMC";
 
@@ -648,10 +673,13 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 
 	finalhisto.Add(BestFitSigma);
 	finalhisto.Add(BestFitShift);
-	finalhisto.Add(StatError);
+	finalhisto.Add(StatErrorP);
+	finalhisto.Add(StatErrorD);
+	finalhisto.Add(StatErrorT);
 	finalhisto.Add(SystError);
 	finalhisto.Add(ProtonCounts);
 	finalhisto.Add(DeuteronCounts);
+	finalhisto.Add(TritiumCounts);
 	finalhisto.Add(ProtonCountsPrim);
 	finalhisto.Add(DeuteronCountsPrim);
 
@@ -745,7 +773,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
                 Fit -> Tfit -> Constrain(2, constrain_min[1] ,constrain_max[1]);
 	 	Fit -> Tfit -> Constrain(3, constrain_min[2] ,constrain_max[2]);
 		if(highmasstailconstrain) 
-			Fit -> Tfit -> Constrain(3, 0.1*CalculateAmountOfHighMassComponent(Fit -> Data,Fit ->  Templ_P,Fit ->  Templ_Noise,3.1,constrain_min[2]),1.2*CalculateAmountOfHighMassComponent(Fit -> Data,Fit ->  Templ_P,Fit ->  Templ_Noise,3.1,constrain_max[2]));	 
+			Fit -> Tfit -> Constrain(3, 0.1*CalculateAmountOfHighMassComponent(Fit -> Data,Fit ->  Templ_P,Fit ->  Templ_Noise,3.3,constrain_min[2]),1.2*CalculateAmountOfHighMassComponent(Fit -> Data,Fit ->  Templ_P,Fit ->  Templ_Noise,3.1,constrain_max[2]));	 
 	        if(isfitnoise&&highmasstailconstrain) 
 			Fit -> Tfit -> Constrain(4, 0.1*CalculateAmountOfHighMassComponent(Fit -> Data,Fit ->  Templ_P,Fit ->  Templ_Noise,4.5,0.001),1.2*CalculateAmountOfHighMassComponent(Fit -> Data,Fit ->  Templ_P,Fit ->  Templ_Noise,4.5,0.001));	 
 			
@@ -809,11 +837,16 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			float Cov01=0;
 
 			Cov01= Fit -> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
-			Fit -> StatErr = pow(pow(w2*e2,2)+pow(w1*e1,2)-2*Cov01*w1*w2,0.5);
+			Fit -> StatErrP = e1;
+			Fit -> StatErrD = e2;
+			Fit -> StatErrT = e3;
 
 			Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Tfit -> GetNDF());
 			Fit -> DCounts = Fit ->  Templ_D -> Integral();
 			Fit -> PCounts = Fit ->  Templ_P -> Integral();
+			Fit -> TCounts = Fit ->  Templ_He -> Integral();
+
+
 		}
 		else{
 			Fit ->wheightP= 0;
@@ -825,7 +858,9 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 
 float EvalFitProbability(float chi){
 	TF1 * CumulativeChiSquare=new TF1("Chi","exp(-x)*x^-0.5",0.001,10);
-	return CumulativeChiSquare->Integral(chi,100);
+	if(chi>0)
+		return CumulativeChiSquare->Integral(chi,100);
+	else return 0;
 }
 
 void  TemplateFIT::RebinAll(int f){
@@ -876,16 +911,17 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 					else { 
 						fits[bin][sigma][shift]->PCountsPrim = fits[bin][sigma][shift]->DataPrim->Integral();
 						fits[bin][sigma][shift]->PCounts     = fits[bin][sigma][shift]->DataPrim->Integral();
+						fits[bin][sigma][shift]->TCounts     = fits[bin][sigma][shift]->DataPrim->Integral();
 					}
 				}
 			}
 		}
-
 		// Histograms for systematic error evaluation
 		TH2F * dcountsspread = new TH2F(("DCountsSpread Bin " +to_string(bin)).c_str(),("DCountsSpread Bin " +to_string(bin)).c_str(),systpar.steps,0,2*systpar.sigma,systpar.steps,-systpar.shift,systpar.shift);
 		TH2F * tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)).c_str(),systpar.steps,0,2*systpar.sigma,systpar.steps,-systpar.shift,systpar.shift);
 		TH1F * weighteddcounts  = new TH1F(("Weighted Counts Bin " +to_string(bin)).c_str(),("Weighted Counts Bin " +to_string(bin)).c_str(),35,0.4*fits[bin][0][4]->DCounts,1.7*fits[bin][0][4]->DCounts);
 		BestChi * MinimumChi = new BestChi();
+
 
 
 		for(int sigma=0;sigma<systpar.steps;sigma++){
@@ -894,14 +930,16 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 				if(fits[bin][sigma][shift]->ChiSquare>0)
 					tfitchisquare->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->ChiSquare);
 				else  tfitchisquare->SetBinContent(sigma+1,shift+1,500);
-
-				if(	fits[bin][sigma][shift]->DCounts>0.1*fits[bin][0][4]->DCounts &&
-						fits[bin][sigma][shift]->DCounts<2*fits[bin][0][4]->DCounts  )
-
-					weighteddcounts -> Fill(fits[bin][sigma][shift]->DCounts,EvalFitProbability(fits[bin][sigma][shift]->ChiSquare));
+				if(fits[bin][sigma][shift]->DCounts&&fits[bin][0][4]->DCounts){
+					if(	fits[bin][sigma][shift]->DCounts>0.1*fits[bin][0][4]->DCounts &&
+							fits[bin][sigma][shift]->DCounts<2*fits[bin][0][4]->DCounts  ){
+							weighteddcounts -> Fill(fits[bin][sigma][shift]->DCounts,EvalFitProbability(fits[bin][sigma][shift]->ChiSquare));
+						}
+				}
+				cout<<sigma<<" "<<shift<<endl;
 			}
 		}
-
+		
 		MinimumChi->FindMinimum(tfitchisquare);	
 
 
@@ -913,6 +951,7 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 
 	}
 
+	
 	EvalFinalParameters();
 	EvalFinalErrors();
 	CalculateFinalPDCounts();	
@@ -952,9 +991,13 @@ void TemplateFIT::EvalFinalErrors(){
 	for(int bin=0;bin<bins.size();bin++){
 
 		if(fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts>0){
-			StatError -> SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->StatErr);
+			StatErrorP -> SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->StatErrP);
+			StatErrorD -> SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->StatErrD);
+			StatErrorT -> SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->StatErrT);
 			SystError -> SetBinContent(bin+1,WeightedDCounts[bin]->GetStdDev()/fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts);
-			StatError -> SetBinError(bin+1,0);
+			StatErrorP -> SetBinError(bin+1,0);
+			StatErrorD -> SetBinError(bin+1,0);
+			StatErrorT -> SetBinError(bin+1,0);
 			SystError -> SetBinError(bin+1,0);
 		}
 
@@ -969,48 +1012,46 @@ void TemplateFIT::CalculateFinalPDCounts(){
 	HeContError = new TH1F ("HeContError","HeContError",bins.size(),0,bins.size());	
 	MeasuredHeContRatio = new TH1F("Measured He over P","Measured He over P",bins.size(),0,bins.size());
 	Eval_ContError();
-	StatError -> Smooth(1);
+	StatErrorP -> Smooth(1);
+	StatErrorD -> Smooth(1);
+	StatErrorT -> Smooth(1);
+
 	SystError -> Smooth(1);
 
 	for(int bin=0;bin<bins.size();bin++){
 
-		float toterr= pow(pow(StatError -> GetBinContent(bin+1),2) + pow(SystError -> GetBinContent(bin+1),2) + pow(HeContError -> GetBinContent(bin+1),2),0.5);
+		float staterrP= StatErrorP -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
+		float staterrD= StatErrorD -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
+		float staterrT= StatErrorT -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
+
+		float systerrP= SystError -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
+		float systerrD= SystError -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts;
+		float systerrT= SystError -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
+
 
 		float CountsP      = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
 		float CountsD      = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts;
+		float CountsT      = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
 		float CountsP_prim = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCountsPrim;
 		float CountsD_prim = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim;
 
-		float ErrCountsP      = toterr*CountsP;
-		float ErrCountsD      = toterr*CountsD;
-		float ErrCountsP_prim = toterr*CountsP_prim;
-		float ErrCountsD_prim = toterr*CountsP_prim;
-
-		if(IsFitNoise){
-			CountsP += fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_Noise->Integral();
-			CountsD += (CountsD/CountsP)*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_Noise->Integral();
-			ErrCountsP = toterr*CountsP;
-			ErrCountsP_prim = toterr*CountsP_prim;
-			toterr = pow(toterr,2)	- pow(HeContError -> GetBinContent(bin+1),2);
-			toterr += pow(0.1*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_Noise->Integral(37,62)/CountsD,2);
-			toterr = pow(toterr,0.5);
-			ErrCountsD = toterr*CountsD;
-			ErrCountsD_prim = toterr*CountsP_prim;		
-		}
-
 		ProtonCounts->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts);
-		ProtonCounts->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts);
+		ProtonCounts->SetBinError(bin+1,pow(pow(staterrP,2)+pow(systerrP,2),0.5));
 
 		DeuteronCounts->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts);
-		DeuteronCounts->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts);		
+		DeuteronCounts->SetBinError(bin+1,pow(pow(staterrD,2)+pow(systerrD,2),0.5));		
+
+		TritiumCounts->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts);
+		TritiumCounts->SetBinError(bin+1,pow(pow(staterrT,2)+pow(systerrT,2),0.5));		
+
 
 		if(fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCountsPrim>0){
 			ProtonCountsPrim->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCountsPrim);
-			ProtonCountsPrim->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCountsPrim);
+			ProtonCountsPrim->SetBinError(bin+1,pow(pow(staterrP,2)+pow(systerrP,2),0.5));
 		}
 		if(fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim>0){
 			DeuteronCountsPrim->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim);
-			DeuteronCountsPrim->SetBinError(bin+1,toterr*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim);		
+			DeuteronCountsPrim->SetBinError(bin+1,pow(pow(staterrD,2)+pow(systerrD,2),0.5));		
 		}
 	}	
 
@@ -1031,17 +1072,6 @@ TH1F * TemplateFIT::Eval_MCHeContRatio(std::string name){
 
 void TemplateFIT::Eval_ContError(){
 
-	for(int bin=0;bin<bins.size();bin++){
-		TH1F * HeliumCounts = (TH1F*) fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_He->Clone();
-		TH1F * DeuteronCounts = (TH1F*) fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_D->Clone();
-		TH1F * ProtonCounts = (TH1F*) fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_P->Clone();
-		if(DeuteronCounts->Integral()>0)
-		HeContError->SetBinContent(bin+1,0.2*HeliumCounts->Integral(HeliumCounts->FindBin(1.5),HeliumCounts->GetNbinsX())/DeuteronCounts->Integral());
-		if(ProtonCounts->Integral()>0)
-			MeasuredHeContRatio->SetBinContent(bin+1,HeliumCounts->Integral()/ProtonCounts->Integral());
-			float toterr= pow(pow(StatError -> GetBinContent(bin+1),2) + pow(SystError -> GetBinContent(bin+1),2) ,0.5);
-			MeasuredHeContRatio->SetBinError(bin+1,toterr*HeliumCounts->Integral()/ProtonCounts->Integral());
-	}
 	return;
 }
 #endif

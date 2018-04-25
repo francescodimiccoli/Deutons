@@ -1,6 +1,8 @@
-#usr/bin/perl
+#!/usr/bin/perl
 
+use warnings;
 chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
+#chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
 $datapath  = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/neg/ISS.B950/pass6";
@@ -13,7 +15,7 @@ $mcT_path  = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/full/T.B1059/t.pl1.0
 $out_path  = "/eos/ams/user/f/fdimicco/";
 
 #$ntuplepath  = "/eos/ams/group/dbar/TrentoNTuples/$ARGV[0]-$ARGV[1]";
-$ntuplepath  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/$ARGV[0]-$ARGV[1]";
+$ntuplepath  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/$ARGV[0]-$ARGV[1]/Ntuples";
 
 
 

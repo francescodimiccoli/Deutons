@@ -147,6 +147,9 @@ int main(int argc, char * argv[]){
 	TH1F * PCountsTOF = (TH1F*) finalHistos.Get((pathresTOF+"Proton Counts").c_str());
 	TH1F * PCountsNaF = (TH1F*) finalHistos.Get((pathresNaF+"Proton Counts").c_str());
 	TH1F * PCountsAgl = (TH1F*) finalHistos.Get((pathresAgl+"Proton Counts").c_str());
+	TH1F * TCountsTOF = (TH1F*) finalHistos.Get((pathresTOF+"Tritium Counts").c_str());
+	TH1F * TCountsNaF = (TH1F*) finalHistos.Get((pathresNaF+"Tritium Counts").c_str());
+	TH1F * TCountsAgl = (TH1F*) finalHistos.Get((pathresAgl+"Tritium Counts").c_str());
 	
 	TH1F * DCountsPrimTOF = (TH1F*) finalHistos.Get((pathresTOF+"Primary Deuteron Counts").c_str());
 	TH1F * DCountsPrimNaF = (TH1F*) finalHistos.Get((pathresNaF+"Primary Deuteron Counts").c_str());
@@ -175,43 +178,77 @@ int main(int argc, char * argv[]){
 	TH1F * RatioAgl = (TH1F*)DCountsAgl->Clone();
 	RatioAgl->Divide(PCountsAgl);
 
-	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"d/P Counts ratio (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"d/P Counts ratio (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"d/P Counts ratio (Agl)",29);
+	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"D/P Counts ratio (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"D/P Counts ratio (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"D/P Counts ratio (Agl)",29);
 
 
 	Plots.Add(c5);
 	Plots.writeObjsInFolder("Results");
 
+	TCanvas * c5_ = new TCanvas("T/D Raw Counts ratio");
+        c5_->SetCanvasSize(2000,1500);
 	
+	TH1F * RatioTOF_T = (TH1F*)TCountsTOF->Clone();
+	RatioTOF_T->Divide(DCountsTOF);
+	TH1F * RatioNaF_T = (TH1F*)TCountsNaF->Clone();
+	RatioNaF_T->Divide(DCountsNaF);
+	TH1F * RatioAgl_T = (TH1F*)TCountsAgl->Clone();
+	RatioAgl_T->Divide(DCountsAgl);
+
+
+	for(int i=0;i<ToFDB.size();i++) cout<<"Tritium: "<<RatioTOF_T->GetBinContent(i+1)<<endl;
+	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglDB, RatioAgl_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (Agl)",29);
+
+
+	Plots.Add(c5_);
+	Plots.writeObjsInFolder("Results");
+
+
 	TCanvas * c6 = new TCanvas("Uncertainty Break-down");
         c6->SetCanvasSize(5000,1000);
 	c6->Divide(3,1);
 
-	TH1F * StatErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"StatError").c_str());
-        TH1F * SystErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"SystError").c_str());
+	TH1F * StatErrTOFP = (TH1F*) finalHistos.Get((pathresTOF+"StatErrorP").c_str());
+       	TH1F * StatErrTOFD = (TH1F*) finalHistos.Get((pathresTOF+"StatErrorD").c_str());
+       	TH1F * StatErrTOFT = (TH1F*) finalHistos.Get((pathresTOF+"StatErrorT").c_str());
+	TH1F * SystErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"SystError").c_str());
 	TH1F * HeCoErrTOF = (TH1F*) finalHistos.Get((pathresTOF+"HeliumContamination/HeContError").c_str());
-	TH1F * StatErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"StatError").c_str());
+	
+	TH1F * StatErrNaFP = (TH1F*) finalHistos.Get((pathresNaF+"StatErrorP").c_str());
+       	TH1F * StatErrNaFD = (TH1F*) finalHistos.Get((pathresNaF+"StatErrorD").c_str());
+       	TH1F * StatErrNaFT = (TH1F*) finalHistos.Get((pathresNaF+"StatErrorT").c_str());
         TH1F * SystErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"SystError").c_str());
 	TH1F * HeCoErrNaF = (TH1F*) finalHistos.Get((pathresNaF+"HeliumContamination/HeContError").c_str());
-	TH1F * StatErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"StatError").c_str());
+
+	TH1F * StatErrAglP = (TH1F*) finalHistos.Get((pathresAgl+"StatErrorP").c_str());
+       	TH1F * StatErrAglD = (TH1F*) finalHistos.Get((pathresAgl+"StatErrorD").c_str());
+       	TH1F * StatErrAglT = (TH1F*) finalHistos.Get((pathresAgl+"StatErrorT").c_str());
         TH1F * SystErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"SystError").c_str());
 	TH1F * HeCoErrAgl = (TH1F*) finalHistos.Get((pathresAgl+"HeliumContamination/HeContError").c_str());
 	
-	TH1F * TotErrTOF  = (TH1F *)StatErrTOF->Clone();
-	TH1F * TotErrNaF  = (TH1F *)StatErrNaF->Clone();
-	TH1F * TotErrAgl  = (TH1F *)StatErrAgl->Clone();
+	TH1F * TotErrTOF  = (TH1F *)StatErrTOFP->Clone();
+	TH1F * TotErrNaF  = (TH1F *)StatErrNaFP->Clone();
+	TH1F * TotErrAgl  = (TH1F *)StatErrAglP->Clone();
 	
 	for(int bin=0;bin<DCountsTOF->GetNbinsX();bin++) {
 		if(DCountsTOF->GetBinContent(bin+1)>0){
+			StatErrTOFD->SetBinContent(bin+1,StatErrTOFD->GetBinContent(bin+1)*PCountsTOF->GetBinError(bin+1)/DCountsTOF->GetBinError(bin+1));
+			StatErrTOFD->SetBinError(bin+1,0);
 			TotErrTOF->SetBinContent(bin+1,DCountsTOF->GetBinError(bin+1)/DCountsTOF->GetBinContent(bin+1));
 			TotErrTOF->SetBinError(bin+1,0);
 		}
 		if(DCountsNaF->GetBinContent(bin+1)>0){	
+			StatErrNaFD->SetBinContent(bin+1,StatErrNaFD->GetBinContent(bin+1)*PCountsNaF->GetBinError(bin+1)/DCountsNaF->GetBinError(bin+1));
+			StatErrNaFD->SetBinError(bin+1,0);
 			TotErrNaF->SetBinContent(bin+1,DCountsNaF->GetBinError(bin+1)/DCountsNaF->GetBinContent(bin+1));
 			TotErrNaF->SetBinError(bin+1,0);
 		}
 		if(DCountsAgl->GetBinContent(bin+1)>0){	
+			StatErrAglD->SetBinContent(bin+1,StatErrAglD->GetBinContent(bin+1)*PCountsAgl->GetBinError(bin+1)/DCountsAgl->GetBinError(bin+1));
+                        StatErrAglD->SetBinError(bin+1,0);
 			TotErrAgl->SetBinContent(bin+1,DCountsAgl->GetBinError(bin+1)/DCountsAgl->GetBinContent(bin+1));
 			TotErrAgl->SetBinError(bin+1,0);
 		}	
@@ -222,17 +259,17 @@ int main(int argc, char * argv[]){
 	c6->cd(1);
 	PlotDistribution(gPad,TotErrTOF ,"TOF Range Bin","Relative error",2,"same",1e-4,1.1,10,"T. Fit Total Error");
 	PlotDistribution(gPad,SystErrTOF,"TOF Range Bin","Relative error",4,"same",1e-4,1.1,4,"T. Fit Systematic Error");
-	PlotDistribution(gPad,StatErrTOF,"TOF Range Bin","Relative error",1,"same",1e-4,1.1,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,StatErrTOFD,"TOF Range Bin","Relative error",1,"same",1e-4,1.1,4,"T. Fit Statistical Error");
 	PlotDistribution(gPad,HeCoErrTOF,"TOF Range Bin","Relative error",3,"same",1e-4,1.1,4,"Helium Fragm. Error");
 	c6->cd(2);
 	PlotDistribution(gPad,TotErrNaF ,"NaF Range Bin","Relative error",2,"same",1e-4,1.1,10,"T. Fit Total Error");
 	PlotDistribution(gPad,SystErrNaF,"NaF Range Bin","Relative error",4,"same",1e-4,1.1,4,"T. Fit Systematic Error");
-	PlotDistribution(gPad,StatErrNaF,"NaF Range Bin","Relative error",1,"same",1e-4,1.1,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,StatErrNaFD,"NaF Range Bin","Relative error",1,"same",1e-4,1.1,4,"T. Fit Statistical Error");
 	PlotDistribution(gPad,HeCoErrNaF,"NaF Range Bin","Relative error",3,"same",1e-4,1.1,4,"Helium Fragm. Error");
 	c6->cd(3);
 	PlotDistribution(gPad,TotErrAgl ,"Agl Range Bin","Relative error",2,"same",1e-4,1.1,10,"T. Fit Total Error");
 	PlotDistribution(gPad,SystErrAgl,"Agl Range Bin","Relative error",4,"same",1e-4,1.1,4,"T. Fit Systematic Error");
-	PlotDistribution(gPad,StatErrAgl,"Agl Range Bin","Relative error",1,"same",1e-4,1.1,4,"T. Fit Statistical Error");
+	PlotDistribution(gPad,StatErrAglD,"Agl Range Bin","Relative error",1,"same",1e-4,1.1,4,"T. Fit Statistical Error");
 	PlotDistribution(gPad,HeCoErrAgl,"Agl Range Bin","Relative error",3,"same",1e-4,1.1,4,"Helium Fragm. Error");
 
 	Plots.Add(c6);

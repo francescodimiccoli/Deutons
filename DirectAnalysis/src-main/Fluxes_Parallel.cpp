@@ -88,15 +88,15 @@ int main(int argc, char * argv[])
 	
 	cout<<"****************************** FLUXES EVALUATION ******************************************"<<endl;
 	
-	Flux * DFluxTOF = new Flux(finalHistos,finalResults, "DFluxTOF", "FullsetEff_D_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Deuteron Counts","ExposureTOF","Gen. Acceptance",ToFDB);
-	Flux * DFluxNaF = new Flux(finalHistos,finalResults, "DFluxNaF", "FullsetEff_D_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF","Gen. Acceptance",NaFDB);
-	Flux * DFluxAgl = new Flux(finalHistos,finalResults, "DFluxAgl", "FullsetEff_D_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl","Gen. Acceptance",AglDB);
+	Flux * DFluxTOF = new Flux(finalHistos,finalResults, "DFluxTOF", "FullsetTOTEff_D_TOF","FullsetTOTEfficiency","TOFfits/Fit Results/Primary Deuteron Counts","ExposureTOF","Gen. Acceptance",ToFDB);
+	Flux * DFluxNaF = new Flux(finalHistos,finalResults, "DFluxNaF", "FullsetTOTEff_D_NaF","FullsetTOTEfficiency","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF","Gen. Acceptance",NaFDB);
+	Flux * DFluxAgl = new Flux(finalHistos,finalResults, "DFluxAgl", "FullsetTOTEff_D_Agl","FullsetTOTEfficiency","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl","Gen. Acceptance",AglDB);
 
 	Flux * HEPFlux  = new Flux(finalHistos,finalResults,"PFluxHE", "RigBinFullSetEff","RigBinFullSetEff","HEPCounts/HEPCounts/HEPCounts","HEExposure","Gen. Acceptance",PRB);
 
-	Flux * PFluxTOF = new Flux(finalHistos,finalResults, "PFluxTOF", "FullsetEff_P_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF","Gen. Acceptance",ToFPB);
-	Flux * PFluxNaF = new Flux(finalHistos,finalResults, "PFluxNaF", "FullsetEff_P_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF","Gen. Acceptance",NaFPB);
-	Flux * PFluxAgl = new Flux(finalHistos,finalResults, "PFluxAgl", "FullsetEff_P_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl","Gen. Acceptance",AglPB);
+	Flux * PFluxTOF = new Flux(finalHistos,finalResults, "PFluxTOF", "FullsetTOTEff_P_TOF","FullsetTOTEfficiency","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF","Gen. Acceptance",ToFPB);
+	Flux * PFluxNaF = new Flux(finalHistos,finalResults, "PFluxNaF", "FullsetTOTEff_P_NaF","FullsetTOTEfficiency","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF","Gen. Acceptance",NaFPB);
+	Flux * PFluxAgl = new Flux(finalHistos,finalResults, "PFluxAgl", "FullsetTOTEff_P_Agl","FullsetTOTEfficiency","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl","Gen. Acceptance",AglPB);
 
 
 	cout<<"********** EXPOSURE TIME & GEOM. ACCEPT. ********"<<endl;

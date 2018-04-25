@@ -31,6 +31,7 @@
 #include "../include/PlottingFunctions.h"
 
 int colorbase = 55;
+float minscan =1.65;
 std::vector<TH1F*> GetListOfTemplates(TFile * file,std::string path){
 
         std::vector<TH1F*> Templates;
@@ -133,11 +134,11 @@ void DrawFragmentsCheck(TFile * file, std::string basename, Binning Bins, FileSa
 		}
 		for(int i=0;i<10;i++) {
 			SumRatio[i]=(TH1F*)SumData[i]->Clone();
-			SumRatio[i]->Divide(SumData[0]);
+			SumRatio[i]->Divide(SumData[9]);
 		}
 		for(int i=0;i<10;i++){ 
-			PlotDistribution(pad1, SumData[i] ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",i+1,"ePsame",-SumData[i]->GetBinContent(SumData[i]->GetMaximumBin())*2.33,SumData[i]->GetBinContent(SumData[i]->GetMaximumBin())*2.33,3,("Cut: qL1>"+to_string(1.65+i*0.05)));
-			PlotDistribution(pad2, SumRatio[i] ,"Reconstructed Mass [GeV/c{^2}]","Ratio",i+1,"e4Psame",0.,2.5,2,("Cut: qL1>"+to_string(1.65+i*0.05)));
+			PlotDistribution(pad1, SumData[i] ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",i,"ePsame",-SumData[i]->GetBinContent(SumData[i]->GetMaximumBin())*2.33,SumData[i]->GetBinContent(SumData[i]->GetMaximumBin())*2.33,3,("Cut: qL1>"+to_string(minscan+i*0.05)));
+			PlotDistribution(pad2, SumRatio[i] ,"Reconstructed Mass [GeV/c{^2}]","Ratio",i,"ePsame",0.,2.5,2,("Cut: qL1>"+to_string(minscan+i*0.05)));
 		}
 	
 		TCanvas * c4 = new TCanvas("Fragments Test Ratios");
@@ -147,16 +148,16 @@ void DrawFragmentsCheck(TFile * file, std::string basename, Binning Bins, FileSa
 		TGraphErrors * DOverT = new TGraphErrors();
 		TGraphErrors * Talone = new TGraphErrors();
 
-		for(int i=0;i<10;i++) { TOverP->SetPoint(i,(1.65+i*0.05),(T[i]/P[i])/(T[0]/P[0]));
+		for(int i=0;i<10;i++) { TOverP->SetPoint(i,(minscan+i*0.05),(T[i]/P[i])/(T[0]/P[0]));
 				       TOverP->SetPointError(i,0,pow(1/P[i]+1/T[i],0.5)*(T[i]/P[i])/(T[0]/P[0]));
 				     } 
-		for(int i=0;i<10;i++) { DOverP->SetPoint(i,(1.65+i*0.05),(D[i]/P[i])/(D[0]/P[0]));
+		for(int i=0;i<10;i++) { DOverP->SetPoint(i,(minscan+i*0.05),(D[i]/P[i])/(D[0]/P[0]));
 				       DOverP->SetPointError(i,0,pow(1/P[i]+1/D[i],0.5)*(D[i]/P[i])/(D[0]/P[0]));
 				     } 
-		for(int i=0;i<10;i++) { DOverT->SetPoint(i,(1.65+i*0.05),(D[i]/T[i])/(D[0]/T[0]));
+		for(int i=0;i<10;i++) { DOverT->SetPoint(i,(minscan+i*0.05),(D[i]/T[i])/(D[0]/T[0]));
 				       DOverT->SetPointError(i,0,pow(1/T[i]+1/D[i],0.5)*(D[i]/T[i])/(D[0]/T[0]));
 				     } 
-		for(int i=0;i<10;i++) { Talone->SetPoint(i,(1.65+i*0.05),(T[i]/T[0]));
+		for(int i=0;i<10;i++) { Talone->SetPoint(i,(minscan+i*0.05),(T[i]/T[0]));
 				       Talone->SetPointError(i,0,pow(1/T[i],0.5)*T[i]/T[0]);
 				     } 
 	

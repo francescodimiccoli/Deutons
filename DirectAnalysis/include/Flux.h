@@ -120,7 +120,7 @@ void Flux::Eval_Flux(){
 			}
 		 Geom_Acceptance -> Sumw2();
 		 Geom_Acceptance -> Scale(47.78);
-		 FluxEstim -> Divide(Geom_Acceptance);
+		 //FluxEstim -> Divide(Geom_Acceptance);
 		}
 
 	for(int i=0;i<bins.size();i++){

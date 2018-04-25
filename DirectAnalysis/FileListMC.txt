@@ -1,3 +1,1 @@
-/eos/ams/group/dbar/release_1507300526/full/Pr.B1116/pr.pl1.l1.054000.3_00//201330234.root
-/eos/ams/group/dbar/release_1507300526/full/D.B1081/d.pl1.l1.0_5200.2_01//673372670.root
-/eos/ams/group/dbar/release_1507300526/full/He.B1116/he4.pl1.l1.24000.3_02//469800445.root
+/eos/ams/user/f/fdimicco/AnalysisNTuples/1305944557-1494599304/Result123.root

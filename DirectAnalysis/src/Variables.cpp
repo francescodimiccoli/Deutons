@@ -209,7 +209,7 @@ void Variables::ReadBranches(TTree * tree){
 	tree->SetBranchAddress("tot_hyp_p_uncorr",&tot_hyp_p_uncorr);
 	tree->SetBranchAddress("Bad_ClusteringRICH",&Bad_ClusteringRICH);
 	tree->SetBranchAddress("NSecondariesRICHrich",&NSecondariesRICHrich);
-
+	tree->SetBranchAddress("qL1InnerNoL2",&qL1InnerNoL2);
 	tree->SetBranchAddress("TOFchisq_t",&TOFchisq_t);
 	tree->SetBranchAddress("TOFchisq_s",&TOFchisq_s);
 
@@ -307,6 +307,7 @@ void Variables::RegisterBranches(TTree * tree){
 	tree->Branch("qL1Status"      ,&qL1Status);
 	tree->Branch("qL2Status"      ,&qL2Status);
 	tree->Branch("qL2"             ,&qL2);
+	tree->Branch("qL1InnerNoL2",&qL1InnerNoL2);
 	tree->Branch("qInner"	 ,&qInner);  
 	tree->Branch("qUtof"		 ,&qUtof);  
 	tree->Branch("qLtof"		 ,&qLtof);  

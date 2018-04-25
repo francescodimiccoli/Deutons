@@ -113,7 +113,8 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     bool goodChi2 = (ntpTracker->chisqn[1][0] < 10) && 
                     (ntpTracker->chisqn[1][1] < 10);
     
-    if( (ntpHeader->trigpatt & 0x2) != 0   )  vars->CUTMASK |= 1 << 0;
+    //if( (ntpHeader->trigpatt & 0x2) != 0   )  vars->CUTMASK |= 1 << 0;
+    if((vars->PhysBPatt>>1)>0        )   vars->CUTMASK |= 1 << 0;
     if( minTOF()                          )  vars->CUTMASK |= 1 << 1;
     if( ntpTrd->nseg ==2                   )  vars->CUTMASK |= 1 << 2;
     if( ntpTracker->rig[0] != 0.0          )  vars->CUTMASK |= 1 << 3;

@@ -110,11 +110,13 @@ void ChargeFitter::FillEventByEventData(Variables * vars, float (*var) (Variable
 		}
 	
 	kbin =  bins.GetBin(discr_var(vars)); //filling with beta @L1
-	if(ApplyCuts(CutTempl1,vars)&&kbin>0)
-                TemplatesQ1[kbin]->Fill(GetL2Q(vars),vars->PrescaleFactor);
+	if(ApplyCuts(CutTempl1,vars)&&kbin>0){
+  	      TemplatesQ1[kbin]->Fill(GetL2Q(vars),vars->PrescaleFactor);
+	}
 	if(ApplyCuts(CutTempl2,vars)&&kbin>0)
                 TemplatesQ2[kbin]->Fill(GetL2Q(vars),vars->PrescaleFactor);
 }
+
 
 void ChargeFitter::FillEventByEventMC(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)){
 	int kbin;
@@ -132,7 +134,6 @@ void ChargeFitter::FillEventByEventMC(Variables * vars, float (*var) (Variables 
 	CutTempl2MC = CutTempl2MC + "&IsHeliumMC";
 	if(ApplyCuts(CutTempl2MC,vars)&&kbin>0)
                 TemplatesQ2MC[kbin]->Fill(GetL2Q(vars),vars->PrescaleFactor);	
-	
 }
 
 
@@ -205,7 +206,7 @@ void ChargeFitter::FitDistributions(float rangemin, float rangemax){
 
 void ChargeFitter::CreateFragmentsMass(float cutmin){
 	for(int bin=2; bin<bins.size();bin++){
-		float falsefragments = TemplatesQ1[bin]->Integral(TemplatesQ1[bin]->FindBin(cutmin)-1,TemplatesQ1[bin]->FindBin(2.3));
+		float falsefragments = TemplatesQ1[bin]->Integral(TemplatesQ1[bin]->FindBin(cutmin)+1,TemplatesQ1[bin]->FindBin(2.3)+1);
 		Q1Mass[bin]->Scale((1/Q1Mass[bin]->Integral())*falsefragments);
 		RawFragments[bin]->Add(Q1Mass[bin],-1);
 	}	

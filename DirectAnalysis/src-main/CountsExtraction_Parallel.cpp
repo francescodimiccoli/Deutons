@@ -154,13 +154,13 @@ int main(int argc, char * argv[])
 	TOFfits->SetHeliumContamination(HeContTOF);
 	TOFfits->ExtractCounts(finalHistos);	
         TOFfits->SaveFitResults(finalResults);
-/*
+
         NaFfits->SetFitRange(0.6,5);
         //NaFfits->DisableFit();
         NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005,true);
 	NaFfits->SetHeliumContamination(HeContNaF);
         NaFfits->ExtractCounts(finalHistos);
-        NaFfits->SaveFitResults(finalResults);
+	NaFfits->SaveFitResults(finalResults);
 
         Aglfits->SetFitRange(0.6,5);
         // Aglfits->DisableFit();
@@ -169,7 +169,7 @@ int main(int argc, char * argv[])
         Aglfits->SetHeliumContamination(HeContAgl);
   	Aglfits->ExtractCounts(finalHistos);
         Aglfits->SaveFitResults(finalResults);	
- */	
+ 	
     }
 
     ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false),PRB,GetRigidity,"HEPCounts","IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsPrimary",Refill);

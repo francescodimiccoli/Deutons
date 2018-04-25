@@ -8,7 +8,7 @@ exeplot = PrettyPlotting
 #file to compile
 CC = Resolution_Calibrations.cpp
 CCplot = PrettyPlotting.cpp
-GCC = ../DirectAnalysis/include/GCR_data.cpp
+GCC = ../DirectAnalysis/src/GCR_data.cpp
 #root libs
 rootlibs=`root-config --libs --cflags` 
 all:

@@ -53,6 +53,9 @@ int main(int argc, char * argv[])
 
 	TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
 	TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
+//	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+//	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+
 
 	FileSaver finalHistos;
 	finalHistos.setName(OUTPUT.c_str());
@@ -116,7 +119,7 @@ int main(int argc, char * argv[])
 	for(int i=0;i<10;i++) Filler2.AddObject2beFilled(HeContTOFCheck[i],GetBetaTOF,GetLoweredBetaTOF);
 	Filler2.ReinitializeAll(Refill);
 	//main loops
-	//Filler2.LoopOnData(DBarReader(chainDT, false),vars);
+	Filler2.LoopOnData(DBarReader(chainDT, false),vars);
 	Filler2.LoopOnMC(DBarReader(chainMC, true),vars);
 
 	HeContTOF->Save(finalHistos);
@@ -124,10 +127,10 @@ int main(int argc, char * argv[])
 	HeContAgl->Save(finalHistos);
 	for(int i=0;i<10;i++) HeContTOFCheck[i]->Save(finalHistos);
 
-	HeContTOF->FitDistributions(0.8, 2.7);
-	HeContNaF->FitDistributions(0.8, 2.7);
-	HeContAgl->FitDistributions(0.8, 2.7);
-	for(int i=0;i<10;i++) HeContTOFCheck[i]->FitDistributions(0.8, 2.7);
+	HeContTOF->FitDistributions(0.8, 2.3);
+	HeContNaF->FitDistributions(0.8, 2.3);
+	HeContAgl->FitDistributions(0.8, 2.3);
+	for(int i=0;i<10;i++) HeContTOFCheck[i]->FitDistributions(0.8, 2.3);
 
 	HeContTOF->CreateFragmentsMass(1.75);
 	HeContNaF->CreateFragmentsMass(1.75);
