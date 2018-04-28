@@ -41,6 +41,7 @@ bool IsPreselectedHeStep (Variables * vars,int step){
 bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->EdepL1>0||vars->qL1>0)&&vars->R!=0&&IsGoodL1Status(vars));}
 bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->EdepL1>0||vars->qL1>0)&&vars->R!=0&&L1LooseCharge1(vars)&&IsGoodL1Status(vars));}
 bool IsMinimumBias (Variables * vars){ return (((int)vars->joinCutmask&139)==139&&(vars->EdepL1>0||vars->qL1>0)&&vars->R!=0)&&L1LooseCharge1(vars);}
+bool IsBasic(Variables * vars) { return (((int)vars->joinCutmask&11)==11);}
 
 bool IsFromNaF     (Variables * vars){ return vars->IsFromNaF();}
 bool IsFromAgl     (Variables * vars){ return vars->IsFromAgl();}
@@ -163,9 +164,11 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsPreselected" ) IsPassed=IsPassed && IsPreselected (Vars); 
 		if(spl[i]=="IsPreselectedInner" ) IsPassed=IsPassed && IsPreselectedInner (Vars);
 		if(spl[i]=="IsPreselectedHe" ) IsPassed=IsPassed && IsPreselectedHe (Vars);
+		if(spl[i]=="IsBasic" ) IsPassed=IsPassed && IsBasic (Vars);
 		for(int j=0;j<10;j++) 
 			if(spl[i]==("IsPreselectedHe"+to_string(j)) )  IsPassed=IsPassed && IsPreselectedHeStep (Vars,j);
 		if(spl[i]=="IsMinimumBias" ) IsPassed=IsPassed && IsMinimumBias (Vars); 
+
 		if(spl[i]=="IsOnlyFromToF" ) IsPassed=IsPassed && IsOnlyFromToF (Vars);
 		if(spl[i]=="IsFromNaF"	   ) IsPassed=IsPassed && IsFromNaF     (Vars);
 		if(spl[i]=="IsFromAgl"	   ) IsPassed=IsPassed && IsFromAgl     (Vars);

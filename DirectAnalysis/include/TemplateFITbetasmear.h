@@ -395,6 +395,26 @@ void TemplateFIT::FillEventByEventData(Variables * vars, float (*var) (Variables
 
 	int kbin;
 	kbin = 	bins.GetBin(discr_var(vars));
+
+/*	if(vars->BDTDiscr>0){
+		cout<<"===================================="<<endl;
+		cout<<"Event: "			<<vars->Event<<endl;
+		cout<<"RICHprob: "		<<vars->RICHprob<<endl;
+		cout<<"RICHPmts: "		<<vars->RICHPmts<<endl;
+		cout<<"RICHgetExpected: "	<<vars->RICHgetExpected<<endl;
+		cout<<"tot_hyp_p_uncorr: "	<<vars->tot_hyp_p_uncorr<<endl;
+		cout<<"Richtotused: "	  	<<vars->Richtotused<<endl;
+		cout<<"RichPhEl: "		<<vars->RichPhEl<<endl;
+		cout<<"RICHcollovertotal: "	<<vars->RICHcollovertotal<<endl;
+		cout<<"RICHLipBetaConsistency: "<<vars->RICHLipBetaConsistency<<endl;
+		cout<<"RICHTOFBetaConsistency: "<<vars->RICHTOFBetaConsistency<<endl;
+		cout<<"RICHprob: "		<<vars->RICHprob<<endl;
+		cout<<"RICHChargeConsistency: "	<<vars->RICHChargeConsistency<<endl;
+		cout<<"Bad_ClusteringRICH: "	<<vars->Bad_ClusteringRICH<<endl;
+		cout<<"NSecondariesRICHrich: "	<<vars->NSecondariesRICHrich<<endl;
+		cout<<"BDT result: "		<<vars->BDTDiscr<<endl;
+		cout<<"===================================="<<endl;
+	}*/
 	if(ApplyCuts(cut,vars)&&kbin>0){
 		//cout<<"Bin; "<<kbin<<endl;
 		//
@@ -746,6 +766,24 @@ float CalculateAmountOfHighMassComponent(TH1F * Data, TH1F* First, TH1F * Third,
 		return base_constrain;
 }
 
+float GetChiSquare(TH1 * Result, TH1 * Data, float min, float max){
+
+	int binmin = Data->FindBin(min);
+	int binmax = Data->FindBin(max);
+	float chi = 0;
+	float err = 0;
+	for(int i=binmin; i<binmax; i++){
+		err = pow(pow(Data->GetBinError(i+1),2) + pow(Result->GetBinError(i+1),2),0.5);
+		if(err>0)
+			chi += pow((Data->GetBinContent(i+1) - Result->GetBinContent(i+1)),2)/pow(err,2);
+	}
+	chi /= ((binmax-binmin)-3);
+	cout<<"chi: "<<chi<<endl;
+	return chi;
+
+}
+
+
 void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constrain_min[], float constrain_max[], bool isfitnoise, bool highmasstailconstrain ){
 
 	Pre_Scale(Fit->Data, Fit ->  Templ_P,Fit ->  Templ_D,Fit ->  Templ_He);
@@ -827,7 +865,6 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			Fit->wheightHe= w3*itot/i3;
 			Fit->wheightNoise= w4*itot/i4;
 
-
 			cout<<w1<<" "<<w2<<" "<<w3<<" "<<w4<<endl;
 
 			Fit ->  Templ_P  -> Scale(Fit ->wheightP);
@@ -837,11 +874,18 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			float Cov01=0;
 
 			Cov01= Fit -> Tfit->GetFitter()->GetCovarianceMatrixElement(0,1);
+
+			TH1F * Sum = (TH1F *)Fit ->  Templ_P->Clone();
+			Sum -> Add(Fit ->  Templ_D);
+			Sum -> Add(Fit ->  Templ_He);
+			if(isfitnoise) Sum -> Add(Fit ->  Templ_Noise);			
+
 			Fit -> StatErrP = e1;
 			Fit -> StatErrD = e2;
 			Fit -> StatErrT = e3;
-
-			Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Tfit -> GetNDF());
+			
+		//	Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Tfit -> GetNDF());
+			Fit -> ChiSquare = GetChiSquare(Sum,Fit->Data,min,max);
 			Fit -> DCounts = Fit ->  Templ_D -> Integral();
 			Fit -> PCounts = Fit ->  Templ_P -> Integral();
 			Fit -> TCounts = Fit ->  Templ_He -> Integral();

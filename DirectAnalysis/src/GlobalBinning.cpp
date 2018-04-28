@@ -3,7 +3,7 @@
 
 int Ev_Num;
 int Timebeg;
-float FRAC = 10;
+float FRAC = 1;
 
 int nbinsr=43;
 int nbinsToF=18;

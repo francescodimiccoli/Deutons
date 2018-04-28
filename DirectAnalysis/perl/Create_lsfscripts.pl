@@ -6,8 +6,8 @@ print "Printing LSF scripts for Analysis...\n\n";
 chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 $njobs=$ARGV[2];
-$outdir="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisFiles";
-#$outdir="/eos/ams/user/f/fdimicco/AnalysisNTuples";
+#$outdir="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisFiles";
+$outdir="/eos/ams/user/f/fdimicco/AnalysisNTuples";
 #creating sum scripts and output directory
 #
 
@@ -36,13 +36,13 @@ system ("mkdir $outdir/../logs/$ARGV[0]-$ARGV[1]");
 
 print "Creating job files...";
 
-$bookntuples=0;
+$bookntuples=1;
 $bookplots=0;
 $booklat=0;
-$bookhecont=1;
-$bookeff=1;
-$bookcounts=1;
-$bookflux=1;
+$bookhecont=0;
+$bookeff=0;
+$bookcounts=0;
+$bookflux=0;
 
 for($j=0;$j<$njobs;$j++)
 {
@@ -127,7 +127,7 @@ for($k=0;$k<3;$k++){
 		$jobs = `bjobs -q $queue| wc -l`;
 		$check;
 		$control=0;
-		while($jobs<350 and $joblaunched<$njobs) {
+		while($jobs<500 and $joblaunched<$njobs) {
 
 			$control=0;
 			if($bookntuples) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$joblaunched.root| awk '{print\$5}'`; if($check<1000) {print $check; $control=1}} 

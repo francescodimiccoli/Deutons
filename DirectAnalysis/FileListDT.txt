@@ -1,1 +1,1 @@
-/eos/ams/user/f/fdimicco/AnalysisNTuples/1305944557-1494599304/Result92.root
+/eos/ams/group/dbar/release_v4/e1_vdev_180213/neg/ISS.B950/pass6/1328433997.root

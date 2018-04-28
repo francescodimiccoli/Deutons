@@ -127,19 +127,28 @@ int main(int argc, char * argv[])
 	"IsPureDMC",
 	Refill);
 
-	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency",
+	AllRangesEfficiency * Basic_P = new AllRangesEfficiency(finalHistos,"BasicEff_P","BasicEfficiency",
 	"IsPurePMC",			      
 	"IsPurePMC",			   	      
 	"IsPurePMC",
+	"IsPurePMC&IsPositive&IsBasic",
+	"IsPurePMC&IsPositive&IsBasic",
+	"IsPurePMC&IsPositive&IsBasic",
+	Refill);
+
+	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency",
+	"IsPurePMC&IsPositive&IsBasic",			      
+	"IsPurePMC&IsPositive&IsBasic",			   	      
+	"IsPurePMC&IsPositive&IsBasic",
 	"IsPurePMC&IsPositive&IsPreselected",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF_nosel",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl_nosel",
 	Refill);
 
 	AllRangesEfficiency * Quality_P       = new AllRangesEfficiency(finalHistos,"QualEff_P","QualityEfficiency",
 	"IsPurePMC&IsPositive&IsPreselected",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF_nosel",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl_nosel",
 	"IsPurePMC&IsPositive&IsPreselected&DistanceCut&LikelihoodCut",
 	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF&DistanceCut&LikelihoodCut&RICHBDTCut",
 	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl&DistanceCut&LikelihoodCut&RICHBDTCut"
@@ -150,19 +159,28 @@ int main(int argc, char * argv[])
 	"",
 	Refill);
 
-	AllRangesEfficiency * Preselections_D = new AllRangesEfficiency(finalHistos,"PresEff_D","PreselectionEfficiency",
+	AllRangesEfficiency * Basic_D = new AllRangesEfficiency(finalHistos,"BasicEff_D","BasicEfficiency",
 	"IsPureDMC",			      
+	"IsPureDMC",			   	      
 	"IsPureDMC",
-	"IsPureDMC",
+	"IsPureDMC&IsPositive&IsBasic",
+	"IsPureDMC&IsPositive&IsBasic",
+	"IsPureDMC&IsPositive&IsBasic",
+	Refill);
+
+	AllRangesEfficiency * Preselections_D = new AllRangesEfficiency(finalHistos,"PresEff_D","PreselectionEfficiency",
+	"IsPureDMC&IsPositive&IsBasic",			      
+	"IsPureDMC&IsPositive&IsBasic",
+	"IsPureDMC&IsPositive&IsBasic",
 	"IsPureDMC&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF_nosel",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl_nosel",
 	Refill);
 
 	AllRangesEfficiency * Quality_D       = new AllRangesEfficiency(finalHistos,"QualEff_D","QualityEfficiency",
 	"IsPureDMC&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF_nosel",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl_nosel",
 	"IsPureDMC&IsPositive&IsPreselected&DistanceCut&LikelihoodCut",
 	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF&DistanceCut&LikelihoodCut&RICHBDTCut",
 	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl&DistanceCut&LikelihoodCut&RICHBDTCut",
@@ -174,21 +192,21 @@ int main(int argc, char * argv[])
 	Refill);
 
 	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut",	     
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl",
+	"IsPurePMC&IsPositive&IsPreselected",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF_nosel",	     
+	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl_nosel",
+	"IsPurePMC&IsPositive&IsPreselected",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl",
 	Refill);
 	
 	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency",
-	"IsPureDM&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl",
+	"IsPureDM&IsPositive&IsPreselected",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF_nosel",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl_nosel",
+	"IsPureDMC&IsPositive&IsPreselected",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl",
 	Refill);
 
 	AllRangesEfficiency * RICH_PQual = new AllRangesEfficiency(finalHistos,"RICHEff_PQual","RICHQualEfficiency",
@@ -219,6 +237,36 @@ int main(int argc, char * argv[])
 	"",
 	Refill);
 
+	//efficiency cascade
+	AllRangesEfficiency * CascadeTrigg = new AllRangesEfficiency(finalHistos,"CascadeTrigg","CascadeTrigg",
+        "",
+        "",
+	Refill);
+
+ 	AllRangesEfficiency * CascadeFragm = new AllRangesEfficiency(finalHistos,"CascadeFragm","CascadeFragm",
+        "",
+        "",
+	Refill);
+
+ 	AllRangesEfficiency * CascadeBasic = new AllRangesEfficiency(finalHistos,"CascadeBasic","CascadeBasic",
+        "",
+        "",
+        Refill);
+
+ 	AllRangesEfficiency * CascadeGolden = new AllRangesEfficiency(finalHistos,"CascadeGolden","CascadeGolden",
+        "",
+        "",
+	Refill);
+	
+	AllRangesEfficiency * CascadeGoldenRICH = new AllRangesEfficiency(finalHistos,"CascadeGoldenRICH","CascadeGoldenRICH",
+        "",
+        "",
+	Refill);
+	
+	AllRangesEfficiency * CascadeQuality = new AllRangesEfficiency(finalHistos,"CascadeQuality","CascadeQuality",
+        "",
+        "",
+	Refill);
 
 
 	//RigBinFullSetEff->Fill(DBarReader(chainMC, true ),vars,GetGenMomentum,Refill);
@@ -228,8 +276,10 @@ int main(int argc, char * argv[])
         Filler.AddObject2beFilled(Trigger_D,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(Fragmentation_P,GetBetaGen,GetBetaGen);
         Filler.AddObject2beFilled(Fragmentation_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Basic_P,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(Preselections_P,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(Quality_P	 ,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Basic_D,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(Preselections_D,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(Quality_D	 ,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(RICH_D	 ,GetBetaGen,GetBetaGen);
@@ -251,12 +301,14 @@ int main(int argc, char * argv[])
 	Fragmentation_D ->Save(finalHistos);	
 	Fragmentation_P	->Save(finalHistos);
 	RigBinFullSetEff->Save(finalHistos);	
+	Basic_P		->Save(finalHistos);
+	Basic_D         ->Save(finalHistos);
 	Preselections_P	->Save(finalHistos);
         Quality_P       ->Save(finalHistos);
 	Preselections_D ->Save(finalHistos);
 	Quality_D       ->Save(finalHistos);
-	RICH_P 	->Save(finalHistos);
-	RICH_D       ->Save(finalHistos);
+	RICH_P 		->Save(finalHistos);
+	RICH_D       	->Save(finalHistos);
 	RICH_PQual 	->Save(finalHistos);
 	RICH_DQual      ->Save(finalHistos);
 	FullSet_P 	->Save(finalHistos);
@@ -267,6 +319,8 @@ int main(int argc, char * argv[])
 	Fragmentation_D ->Eval_Efficiency();	
 	Fragmentation_P	->Eval_Efficiency();
 	RigBinFullSetEff->Eval_Efficiency();
+	Basic_D         ->Eval_Efficiency();
+	Basic_P         ->Eval_Efficiency();
 	Preselections_P	->Eval_Efficiency();
         Quality_P       ->Eval_Efficiency();
         Preselections_D ->Eval_Efficiency();
@@ -292,11 +346,48 @@ int main(int argc, char * argv[])
 	FullSetTOT_D      ->ComposeEfficiency(FullSet_D);
 
 
+	//cascade
+	CascadeTrigg		->CloneEfficiency(Trigger_D);	
+	CascadeFragm		->CloneEfficiency(Trigger_D);	
+	CascadeBasic		->CloneEfficiency(Trigger_D);	
+	CascadeGolden		->CloneEfficiency(Trigger_D);	
+	CascadeGoldenRICH	->CloneEfficiency(Trigger_D);	
+	CascadeQuality		->CloneEfficiency(Trigger_D);	
+
+	CascadeTrigg		->Eval_Efficiency();	
+	CascadeFragm		->Eval_Efficiency();	
+	CascadeBasic		->Eval_Efficiency();	
+	CascadeGolden		->Eval_Efficiency();	
+	CascadeGoldenRICH	->Eval_Efficiency();	
+	CascadeQuality		->Eval_Efficiency();	
+
+	CascadeFragm		->ComposeEfficiency(Fragmentation_D);	
+	CascadeBasic		->ComposeEfficiency(Fragmentation_D);	
+	CascadeGolden		->ComposeEfficiency(Fragmentation_D);	
+	CascadeGoldenRICH	->ComposeEfficiency(Fragmentation_D);	
+	CascadeQuality		->ComposeEfficiency(Fragmentation_D);	
+
+	CascadeBasic		->ComposeEfficiency(Basic_D);	
+	CascadeGolden		->ComposeEfficiency(Basic_D);	
+	CascadeGoldenRICH	->ComposeEfficiency(Basic_D);	
+	CascadeQuality		->ComposeEfficiency(Basic_D);	
+
+	CascadeGolden		->ComposeEfficiency(Preselections_D);	
+	CascadeGoldenRICH	->ComposeEfficiency(Preselections_D);	
+	CascadeQuality		->ComposeEfficiency(Preselections_D);	
+
+	CascadeGoldenRICH	->ComposeEfficiency(RICH_D);	
+
+	CascadeQuality		->ComposeEfficiency(Quality_D);	
+
+
 	Trigger_D	->SaveResults(finalResults);	
 	Trigger_P	->SaveResults(finalResults);	
 	Fragmentation_D ->SaveResults(finalResults);	
 	Fragmentation_P	->SaveResults(finalResults);	
 	RigBinFullSetEff->SaveResults(finalResults);
+	Basic_P		->SaveResults(finalResults);
+	Basic_D		->SaveResults(finalResults);
 	Preselections_P	->SaveResults(finalResults);
 	Quality_P       ->SaveResults(finalResults);
 	Preselections_D ->SaveResults(finalResults);
@@ -310,6 +401,16 @@ int main(int argc, char * argv[])
 	FullSet_D 	->SaveResults(finalResults);
 	FullSetTOT_P 	->SaveResults(finalResults);
 	FullSetTOT_D 	->SaveResults(finalResults);
+
+	CascadeTrigg		->SaveResults(finalResults);		
+	CascadeFragm		->SaveResults(finalResults);
+	CascadeBasic		->SaveResults(finalResults);
+	CascadeGolden		->SaveResults(finalResults);
+	CascadeGoldenRICH	->SaveResults(finalResults);
+	CascadeQuality		->SaveResults(finalResults);
+
+
+
 
 
 	return 0;

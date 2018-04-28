@@ -47,10 +47,10 @@ int main(int argc, char * argv[])
     bool Refill = false;
     if(refill!="") Refill=true;
     
-   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-   //TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
-  TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
-  TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
+   TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+   TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+//  TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
+//  TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
   //TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
 

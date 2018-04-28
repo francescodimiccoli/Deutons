@@ -14,6 +14,7 @@ private:
     bool isMC;
     TTree * Tree;	
 
+    NtpSHeader    *ntpSHeader; 
     NtpHeader     *ntpHeader; 
     NtpMCHeader   *ntpMCHeader;          
     NtpTrd        *ntpTrd;

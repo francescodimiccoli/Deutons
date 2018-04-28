@@ -154,10 +154,10 @@ struct Variables{
     void PrintCurrentState();
     void BDTreader();
     void Eval_Discriminants();
-    inline bool IsFromNaF     (){ return (((int)joinCutmask>>11)==512&&BetaRICH_new>0);}
+    inline bool IsFromNaF     (){ return (((int)joinCutmask>>11)==1024&&BetaRICH_new>0);}
     inline bool IsFromAgl     (){ return (((int)joinCutmask>>11)==0&&BetaRICH_new>0);}
-    inline bool IsFromNaF_nosel     (){ return ((((int)joinCutmask>>11)&512)==512&&BetaRICH_new>0);}
-    inline bool IsFromAgl_nosel     (){ return ((((int)joinCutmask>>11)&512)==0&&BetaRICH_new>0);}
+    inline bool IsFromNaF_nosel     (){ return ((((int)joinCutmask>>11)&1921)==1024&&BetaRICH_new>0);}
+    inline bool IsFromAgl_nosel     (){ return ((((int)joinCutmask>>11)&1921)==0&&BetaRICH_new>0);}
 
 };
 

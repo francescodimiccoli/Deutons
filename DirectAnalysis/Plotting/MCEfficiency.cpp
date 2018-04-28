@@ -82,6 +82,7 @@ int main(int argc, char * argv[]){
 
 	AllRangesEfficiency * Trigger_P       = new AllRangesEfficiency(finalHistos,"Trigger_P","Trigger");
 	AllRangesEfficiency * Fragmentation_P = new AllRangesEfficiency(finalHistos,"Fragmentation_P","Fragmentation");
+	AllRangesEfficiency * Basic_P 	      = new AllRangesEfficiency(finalHistos,"BasicEff_P","BasicEfficiency");
 	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency");
 	AllRangesEfficiency * Quality_P       = new AllRangesEfficiency(finalHistos,"QualEff_P","QualityEfficiency"     );
         AllRangesEfficiency * FullSet_P      = new AllRangesEfficiency(finalHistos,"FullsetEff_P","FullsetEfficiency"   );
@@ -90,6 +91,7 @@ int main(int argc, char * argv[]){
 
 	AllRangesEfficiency * Trigger_D       = new AllRangesEfficiency(finalHistos,"Trigger_D","Trigger");
 	AllRangesEfficiency * Fragmentation_D = new AllRangesEfficiency(finalHistos,"Fragmentation_D","Fragmentation");
+	AllRangesEfficiency * Basic_D 	      = new AllRangesEfficiency(finalHistos,"BasicEff_D","BasicEfficiency");
 	AllRangesEfficiency * Preselections_D = new AllRangesEfficiency(finalHistos,"PresEff_D","PreselectionEfficiency");
 	AllRangesEfficiency * Quality_D       = new AllRangesEfficiency(finalHistos,"QualEff_D","QualityEfficiency"     );
         AllRangesEfficiency * FullSet_D       = new AllRangesEfficiency(finalHistos,"FullsetEff_D","FullsetEfficiency"  );
@@ -164,6 +166,16 @@ int main(int argc, char * argv[]){
 
 	Plots.Add(c);
 	Plots.writeObjsInFolder("Efficiencies");
+
+	//basic.
+	TCanvas * d_ = new TCanvas(" Basic Efficiency"); 
+        d_->SetCanvasSize(2000,1500);
+
+	DrawEfficiencyComparison(Basic_P,Basic_D);
+
+	Plots.Add(d_);
+	Plots.writeObjsInFolder("Efficiencies");
+
 
 	//presel.
 	TCanvas * d = new TCanvas(" Preselection Efficiency"); 

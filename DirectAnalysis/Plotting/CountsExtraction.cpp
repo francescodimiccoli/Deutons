@@ -235,19 +235,19 @@ int main(int argc, char * argv[]){
 	
 	for(int bin=0;bin<DCountsTOF->GetNbinsX();bin++) {
 		if(DCountsTOF->GetBinContent(bin+1)>0){
-			StatErrTOFD->SetBinContent(bin+1,StatErrTOFD->GetBinContent(bin+1)*PCountsTOF->GetBinError(bin+1)/DCountsTOF->GetBinError(bin+1));
+			StatErrTOFD->SetBinContent(bin+1,StatErrTOFD->GetBinContent(bin+1)*PCountsTOF->GetBinContent(bin+1)/DCountsTOF->GetBinContent(bin+1));
 			StatErrTOFD->SetBinError(bin+1,0);
 			TotErrTOF->SetBinContent(bin+1,DCountsTOF->GetBinError(bin+1)/DCountsTOF->GetBinContent(bin+1));
 			TotErrTOF->SetBinError(bin+1,0);
 		}
 		if(DCountsNaF->GetBinContent(bin+1)>0){	
-			StatErrNaFD->SetBinContent(bin+1,StatErrNaFD->GetBinContent(bin+1)*PCountsNaF->GetBinError(bin+1)/DCountsNaF->GetBinError(bin+1));
+			StatErrNaFD->SetBinContent(bin+1,StatErrNaFD->GetBinContent(bin+1)*PCountsNaF->GetBinContent(bin+1)/DCountsNaF->GetBinContent(bin+1));
 			StatErrNaFD->SetBinError(bin+1,0);
 			TotErrNaF->SetBinContent(bin+1,DCountsNaF->GetBinError(bin+1)/DCountsNaF->GetBinContent(bin+1));
 			TotErrNaF->SetBinError(bin+1,0);
 		}
 		if(DCountsAgl->GetBinContent(bin+1)>0){	
-			StatErrAglD->SetBinContent(bin+1,StatErrAglD->GetBinContent(bin+1)*PCountsAgl->GetBinError(bin+1)/DCountsAgl->GetBinError(bin+1));
+			StatErrAglD->SetBinContent(bin+1,StatErrAglD->GetBinContent(bin+1)*PCountsAgl->GetBinContent(bin+1)/DCountsAgl->GetBinContent(bin+1));
                         StatErrAglD->SetBinError(bin+1,0);
 			TotErrAgl->SetBinContent(bin+1,DCountsAgl->GetBinError(bin+1)/DCountsAgl->GetBinContent(bin+1));
 			TotErrAgl->SetBinError(bin+1,0);

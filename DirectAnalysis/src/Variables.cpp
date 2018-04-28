@@ -371,7 +371,7 @@ void Variables::Update(){
     joinCutmask=0;
     mcweight=0;
 
-    RICHmask_new=(RICHmask_new&1023);
+    RICHmask_new=(RICHmask_new&2047);
     joinCutmask=CUTMASK;
     joinCutmask=CUTMASK|(1<<10);
     joinCutmask=(int)joinCutmask|((RICHmask_new)<<11);	
@@ -385,7 +385,6 @@ void Variables::Update(){
     Richtotused_float= Richtotused;
     RICHPmts_float = (float)RICHPmts;
     RICHgetExpected_float = (float) RICHgetExpected;	
-
 
     Eval_Discriminants();
 

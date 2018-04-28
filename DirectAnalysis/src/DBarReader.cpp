@@ -7,6 +7,7 @@
 
 void DBarReader::Init(){
 
+    ntpSHeader    = new NtpSHeader(); 
     ntpHeader     = new NtpHeader(); 
     ntpMCHeader   = new NtpMCHeader();          
     ntpTrd        = new NtpTrd();
@@ -60,7 +61,7 @@ int DBarReader::RICHmaskConverter(){
     int richMASK;
     if(ntpRich->selection<0) richMASK = -ntpRich->selection;
     else richMASK = 0;
-    if(ntpRich->is_naf) richMASK=richMASK|512;
+    if(ntpRich->is_naf) richMASK=richMASK|1024;;
     return richMASK;
 }
 
@@ -75,7 +76,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
     ////////////////////// EVENT INFORMATION ///////////////////////////////////////
    // vars->Run               = ntpHeader->run;
-    //vars->Event             = ntpHeader->event;
+    vars->Event             = ntpSHeader->event;
     vars->NEvent            = NEvent;
     vars->U_time            = ntpHeader->utc_time; 
     vars->Livetime          = ntpHeader->livetime;
@@ -121,7 +122,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
     if( goldenTOF()                       )  vars->CUTMASK |= 1 << 5;  
                                                                 // 6
-    if( ntpHeader->nparticle == 1          )  vars->CUTMASK |= 1 << 7;
+    if( ntpHeader->nparticle == 1  && vars->NTracks == 1 )  vars->CUTMASK |= 1 << 7;
     if( ntpTracker->rig[4] != 0.0          )  vars->CUTMASK |= 1 << 8;
 
     /////////////////////////////// TRACKER ////////////////////////////////////
@@ -211,7 +212,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 DBarReader::DBarReader(TTree * tree, bool _isMC) {
     Init();
     Tree = tree;
-
+    Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
     Tree->SetBranchAddress( "Header"  , &ntpHeader     );
     Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
     Tree->SetBranchAddress( "Tof"     , &ntpTof        );
