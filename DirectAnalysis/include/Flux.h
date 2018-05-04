@@ -16,6 +16,7 @@ class Flux{
 	Efficiency * MCEfficiency;
 	TH1F * Counts=0x0;
 	TH1F * Geom_Acceptance=0x0;
+	TH1F * Eff_Acceptance=0x0;
 	TH1F * Triggers=0x0;
 	TH1F * ExposureTime=0x0;
 	Binning bins;
@@ -25,6 +26,10 @@ class Flux{
 
 	TH1F * FluxEstim=0x0;
 	MCPar param;
+
+	TH1F * Acc_StatErr=0x0;
+	TH1F * Acc_SystErr=0x0;
+	TH1F * Counts_Err=0x0;
 
 	public:
 
@@ -47,6 +52,10 @@ class Flux{
 			Counts = (TH1F *) FileRes.Get((CountsName).c_str());
 			ExposureTime = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
 			Geom_Acceptance = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+GeomName).c_str());
+			Eff_Acceptance = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/Effective Acceptance").c_str());	
+			Acc_StatErr= (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/Acceptance Stat. Error").c_str());
+			Acc_SystErr= (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/Acceptance Syst. Error").c_str());
+			Counts_Err= (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/Counts Error").c_str());
 			FluxEstim = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str());
 		}
 		bins = Bins;		
@@ -76,6 +85,11 @@ class Flux{
 	TH1F * GetFlux(){return FluxEstim;}
 	TH1F * GetTriggerCounts() {return Triggers;}
 	TH1F * GetGenAcceptance(){return Geom_Acceptance;}
+	TH1F * GetEffAcceptance(){return Eff_Acceptance;}
+
+	TH1F * GetAcc_StatErr() { return  Acc_StatErr;}
+	TH1F * GetAcc_SystErr()	{return Acc_SystErr;}
+	TH1F * GetCounts_Err() {return Counts_Err;}
 
 	TH1F * Eval_FluxRatio(Flux * Denominator,std::string name);
 };
@@ -96,17 +110,37 @@ void Flux::ApplyEfficCorr(TH1F * Correction){
 void Flux::Eval_Flux(){
 	cout<<"Counts "<<Counts<<endl;
 	
-	if(Counts>0) {cout<<"1"<<endl;	FluxEstim = (TH1F *) Counts->Clone();
+	if(Counts>0) {			FluxEstim = (TH1F *) Counts->Clone();
+					Counts_Err  = (TH1F *) Counts->Clone();
+					for(int i=0;i<Counts_Err->GetNbinsX();i++) {
+						if(Counts_Err->GetBinContent(i+1)>0&&Counts_Err->GetBinError(i+1)>0)
+							Counts_Err->SetBinContent(i+1,Counts_Err->GetBinError(i+1)/Counts_Err->GetBinContent(i+1));
+						else Counts_Err->SetBinContent(i+1,0);	
+						Counts_Err->SetBinError(i+1,0);
+					}
+					Counts_Err->SetName("Counts Error");
+        				Counts_Err->SetTitle("Counts Error");
+
 	}
 	else { FluxEstim = new TH1F("dummy","dummy",10,0,10);
 	return;
 	}
-//	cout<<"Flux: "<<MCEfficiency->GetEfficiency()->GetEntries()<<endl;
+	cout<<"Flux: "<<MCEfficiency->GetEfficiency()<<endl;
 	FluxEstim -> SetName((basename+"_Flux").c_str());
 	FluxEstim -> SetTitle((basename+"_Flux").c_str());
 
 	FluxEstim -> Sumw2();
 	FluxEstim -> Divide(MCEfficiency->GetEfficiency());
+	
+	if(MCEfficiency->GetStat_Error()){	
+		Acc_StatErr = (TH1F *) MCEfficiency->GetStat_Error()->Clone();
+		Acc_SystErr = (TH1F *) MCEfficiency->GetSyst_Error()->Clone();
+		Acc_StatErr->SetName("Acceptance Stat. Error");
+		Acc_StatErr->SetTitle("Acceptance Stat. Error");	
+		Acc_SystErr->SetName("Acceptance Syst. Error");
+		Acc_SystErr->SetTitle("Acceptance Syst. Error");	
+	}
+
 	if(ExposureTime) FluxEstim -> Divide(ExposureTime);
 	
 	if(Geom_Acceptance){
@@ -120,8 +154,15 @@ void Flux::Eval_Flux(){
 			}
 		 Geom_Acceptance -> Sumw2();
 		 Geom_Acceptance -> Scale(47.78);
-		 //FluxEstim -> Divide(Geom_Acceptance);
-		}
+		 FluxEstim -> Divide(Geom_Acceptance);
+	
+	         Eff_Acceptance = (TH1F *) Geom_Acceptance->Clone();
+		 Eff_Acceptance->SetName("Effective Acceptance");
+		 Eff_Acceptance->SetTitle("Effective Acceptance");		
+
+		
+	}
+	Eff_Acceptance->Multiply(MCEfficiency->GetEfficiency());
 
 	for(int i=0;i<bins.size();i++){
 		FluxEstim->SetBinError(i+1,FluxEstim->GetBinError(i+1)/(bins.EkPerMasBins()[i+1]-bins.EkPerMasBins()[i]));
@@ -134,8 +175,13 @@ void Flux::SaveResults(FileSaver finalhistos){
 	finalhistos.Add(FluxEstim); 	
 	finalhistos.Add(ExposureTime);
 	finalhistos.Add(Geom_Acceptance);
+	finalhistos.Add(Eff_Acceptance);
+	if(Acc_StatErr) finalhistos.Add(Acc_StatErr);
+	if(Acc_SystErr) finalhistos.Add(Acc_SystErr);
+	if(Counts_Err) finalhistos.Add(Counts_Err);
 	finalhistos.writeObjsInFolder(("Fluxes/"+basename).c_str());
 }
+
 void Flux::Eval_GeomAcceptance(TTree * treeMC,FileSaver finalhistos,std::string cut,bool refill, bool IsRigBin){
 
 	if((!Geom_Acceptance||!Triggers||refill)){
@@ -214,6 +260,13 @@ TH1F * Flux::Eval_FluxRatio(Flux * Denominator,std::string name){
 	Numerator->Sumw2();
 
 	Numerator->Divide(Denominator->GetFlux());
+	for(int i=0;i<Numerator->GetNbinsX();i++){
+		float A = FluxEstim -> GetBinContent(i+1);
+		float B = Denominator->GetFlux() -> GetBinContent(i+1);	
+		float sigA = FluxEstim -> GetBinError(i+1);
+		float sigB = Denominator->GetFlux() -> GetBinError(i+1);	
+		Numerator->SetBinError(i+1,pow(pow(sigA/A,2)+pow(sigB/B,2)+2*sigA/A*sigB/B,0.5)*A/B);
+	}
 
 	return Numerator;
 }

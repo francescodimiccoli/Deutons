@@ -141,14 +141,14 @@ int main(int argc, char * argv[])
 	"IsPurePMC&IsPositive&IsBasic",			   	      
 	"IsPurePMC&IsPositive&IsBasic",
 	"IsPurePMC&IsPositive&IsPreselected",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF_nosel",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl_nosel",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl",
 	Refill);
 
 	AllRangesEfficiency * Quality_P       = new AllRangesEfficiency(finalHistos,"QualEff_P","QualityEfficiency",
 	"IsPurePMC&IsPositive&IsPreselected",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF_nosel",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl_nosel",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF",
+	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl",
 	"IsPurePMC&IsPositive&IsPreselected&DistanceCut&LikelihoodCut",
 	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF&DistanceCut&LikelihoodCut&RICHBDTCut",
 	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl&DistanceCut&LikelihoodCut&RICHBDTCut"
@@ -173,14 +173,14 @@ int main(int argc, char * argv[])
 	"IsPureDMC&IsPositive&IsBasic",
 	"IsPureDMC&IsPositive&IsBasic",
 	"IsPureDMC&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF_nosel",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl_nosel",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl",
 	Refill);
 
 	AllRangesEfficiency * Quality_D       = new AllRangesEfficiency(finalHistos,"QualEff_D","QualityEfficiency",
 	"IsPureDMC&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF_nosel",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl_nosel",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF",
+	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl",
 	"IsPureDMC&IsPositive&IsPreselected&DistanceCut&LikelihoodCut",
 	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF&DistanceCut&LikelihoodCut&RICHBDTCut",
 	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl&DistanceCut&LikelihoodCut&RICHBDTCut",
@@ -193,8 +193,8 @@ int main(int argc, char * argv[])
 
 	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency",
 	"IsPurePMC&IsPositive&IsPreselected",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF_nosel",	     
-	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl_nosel",
+	"IsPurePMC&IsPositive&IsPreselected",	     
+	"IsPurePMC&IsPositive&IsPreselected",
 	"IsPurePMC&IsPositive&IsPreselected",
 	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF",
 	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl",
@@ -202,8 +202,8 @@ int main(int argc, char * argv[])
 	
 	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency",
 	"IsPureDM&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF_nosel",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl_nosel",
+	"IsPureDMC&IsPositive&IsPreselected",
+	"IsPureDMC&IsPositive&IsPreselected",
 	"IsPureDMC&IsPositive&IsPreselected",
 	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF",
 	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl",
@@ -345,7 +345,11 @@ int main(int argc, char * argv[])
 	FullSetTOT_P      ->ComposeEfficiency(FullSet_P);
 	FullSetTOT_D      ->ComposeEfficiency(FullSet_D);
 
-
+	FullSetTOT_P      ->Eval_StatError();
+        FullSetTOT_D      ->Eval_StatError();
+	FullSetTOT_P      ->Eval_SystError(FullSet_P,FullSet_D);
+        FullSetTOT_D      ->Eval_SystError(FullSet_P,FullSet_D);
+	
 	//cascade
 	CascadeTrigg		->CloneEfficiency(Trigger_D);	
 	CascadeFragm		->CloneEfficiency(Trigger_D);	

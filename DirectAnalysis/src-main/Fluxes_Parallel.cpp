@@ -34,6 +34,8 @@
 //#include "../include/EffCorrTemplate.h"
 
 
+//MC parameters taken from /cvmfs/ams.cern.ch/Offline/AMSDataDir/DataManagement/DataSetsDesc
+
 int main(int argc, char * argv[])
 {
 
@@ -59,9 +61,9 @@ int main(int argc, char * argv[])
         finalResults.setName((OUTPUT+"_Results").c_str());
 
 
-	TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
+	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
    	//TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
-   	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+   	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
    	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
  
 	cout<<"****************************** BINS ***************************************"<<endl;
@@ -116,22 +118,13 @@ int main(int argc, char * argv[])
 
 	cout<<"************* D FLUX ************"<<endl;
 
-	DFluxTOF->Set_MCPar(0.5,200,0.0242236931);	
-	DFluxNaF->Set_MCPar(0.5,200,0.0242236931);	
-	DFluxAgl->Set_MCPar(0.5,200,0.0242236931);	
-/*
-	DFluxNaF->ApplyEfficCorr(RICHEffCorr_NaF->GetGlobCorrection());
-	DFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl->GetGlobCorrection());
+	DFluxTOF->Set_MCPar(0.5,200,0.009014888);	
+	DFluxNaF->Set_MCPar(0.5,200,0.009014888);	
+	DFluxAgl->Set_MCPar(0.5,200,0.009014888);	
 
-	DFluxTOF->ApplyEfficCorr(DistCorr_TOF->GetGlobCorrection_D());
-	DFluxNaF->ApplyEfficCorr(DistCorr_NaF->GetGlobCorrection_D());
-	DFluxAgl->ApplyEfficCorr(DistCorr_Agl->GetGlobCorrection_D());
+	//DFluxNaF->ApplyEfficCorr(RICHEffCorr_NaF->GetGlobCorrection());
+	//DFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl->GetGlobCorrection());
 
-	DFluxTOF->ApplyEfficCorr(LikCorr_TOF->GetGlobCorrection_D());
-	DFluxNaF->ApplyEfficCorr(LikCorr_NaF->GetGlobCorrection_D());
-	DFluxAgl->ApplyEfficCorr(LikCorr_Agl->GetGlobCorrection_D());
-
-*/
 	DFluxTOF-> Eval_Flux();
         DFluxNaF-> Eval_Flux();
         DFluxAgl-> Eval_Flux();
@@ -142,25 +135,14 @@ int main(int argc, char * argv[])
 
 	cout<<"************* P FLUX ************"<<endl;
 
-	HEPFlux ->Set_MCPar(0.5,100,0.0308232619);	
-	PFluxTOF->Set_MCPar(0.5,100,0.0308232619);	
-	PFluxNaF->Set_MCPar(0.5,100,0.0308232619);	
-	PFluxAgl->Set_MCPar(0.5,100,0.0308232619);	
-
-//	HEPFlux -> ApplyEfficCorr(HEPPresEffCorr->GetGlobCorrection());
-//	HEPFlux -> ApplyEfficCorr(HEPQualEffCorr->GetGlobCorrection());
+	HEPFlux ->Set_MCPar(0.5,100,0.00856558);	
+	PFluxTOF->Set_MCPar(0.5,100,0.00856558);	
+	PFluxNaF->Set_MCPar(0.5,100,0.00856558);	
+	PFluxAgl->Set_MCPar(0.5,100,0.00856558);	
 	
 //	PFluxNaF->ApplyEfficCorr(RICHEffCorr_NaF->GetGlobCorrection());
 //	PFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl->GetGlobCorrection());
-/*	
-	PFluxTOF->ApplyEfficCorr(DistCorr_TOF->GetGlobCorrection_P());
-	PFluxNaF->ApplyEfficCorr(DistCorr_NaF->GetGlobCorrection_P());
-	PFluxAgl->ApplyEfficCorr(DistCorr_Agl->GetGlobCorrection_P());
 
-	PFluxTOF->ApplyEfficCorr(LikCorr_TOF->GetGlobCorrection_P());
-	PFluxNaF->ApplyEfficCorr(LikCorr_NaF->GetGlobCorrection_P());
-	PFluxAgl->ApplyEfficCorr(LikCorr_Agl->GetGlobCorrection_P());
-*/
 	HEPFlux -> Eval_Flux();
 	PFluxTOF-> Eval_Flux();
         PFluxNaF-> Eval_Flux();

@@ -111,6 +111,18 @@ struct AllRangesEfficiency{
 	}
 
 
+	void Eval_StatError(){
+		EffTOF->Eval_StatError();
+		EffNaF->Eval_StatError();
+		EffAgl->Eval_StatError();
+	} 
+	void Eval_SystError( AllRangesEfficiency * First, AllRangesEfficiency * Second){
+		EffTOF->Eval_SystError(First->EffTOF,Second->EffTOF);
+		EffNaF->Eval_SystError(First->EffNaF,Second->EffNaF);
+		EffAgl->Eval_SystError(First->EffAgl,Second->EffAgl);
+	}
+
+
 };
 
 

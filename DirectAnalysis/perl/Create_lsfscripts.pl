@@ -6,8 +6,8 @@ print "Printing LSF scripts for Analysis...\n\n";
 chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 $njobs=$ARGV[2];
-#$outdir="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisFiles";
-$outdir="/eos/ams/user/f/fdimicco/AnalysisNTuples";
+$outdir="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisFiles";
+#$outdir="/eos/ams/user/f/fdimicco/AnalysisNTuples";
 #creating sum scripts and output directory
 #
 
@@ -36,12 +36,12 @@ system ("mkdir $outdir/../logs/$ARGV[0]-$ARGV[1]");
 
 print "Creating job files...";
 
-$bookntuples=1;
+$bookntuples=0;
 $bookplots=0;
 $booklat=0;
 $bookhecont=0;
 $bookeff=0;
-$bookcounts=0;
+$bookcounts=1;
 $bookflux=0;
 
 for($j=0;$j<$njobs;$j++)
@@ -90,14 +90,14 @@ for($j=0;$j<$njobs;$j++)
 			if($bookcounts){
 
 				print OUT "xrdcp -f $outdir/$ARGV[0]-$ARGV[1]/Counts/Counts$j.root /tmp/fdimicco/;\n";
-				print OUT  "\$WORKDIR/CountsExtraction_Parallel \$WORKDIR/InputNtupleLists/FileListDT$j.txt \$WORKDIR/InputNtupleLists/FileListMC$j.txt  /tmp/fdimicco/Counts$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
+				print OUT  "\$WORKDIR/CountsExtraction_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Counts$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/Counts$j.root $outdir/$ARGV[0]-$ARGV[1]/Counts;\n";
 			}	
 			
 			if($bookflux){
 
 				print OUT "xrdcp -f $outdir/$ARGV[0]-$ARGV[1]/Fluxes/Fluxes$j.root /tmp/fdimicco/;\n";
-				print OUT  "\$WORKDIR/Fluxes_Parallel \$WORKDIR/InputNtupleLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Fluxes$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
+				print OUT  "\$WORKDIR/Fluxes_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Fluxes$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/Fluxes$j.root $outdir/$ARGV[0]-$ARGV[1]/Fluxes;\n";
 			}
 			

@@ -123,7 +123,10 @@ void DrawFragmentsCheck(TFile * file, std::string basename, Binning Bins, FileSa
 		float T[10];
 
 		for(int i=0;i<10;i++){
-			P[i]=SumData[i]->Integral(SumData[i]->FindBin(0.1),SumData[i]->FindBin(1.2));
+		//	P[i]=SumData[i]->Integral(SumData[i]->FindBin(0.1),SumData[i]->FindBin(1.2));
+		//	D[i]=SumData[i]->Integral(SumData[i]->FindBin(1.5),SumData[i]->FindBin(2.2));
+		//	T[i]=SumData[i]->Integral(SumData[i]->FindBin(2.7),SumData[i]->FindBin(3.7));
+			P[i]=SumData[i]->Integral(SumData[i]->FindBin(0.4),SumData[i]->FindBin(1.2));
 			D[i]=SumData[i]->Integral(SumData[i]->FindBin(1.5),SumData[i]->FindBin(2.2));
 			T[i]=SumData[i]->Integral(SumData[i]->FindBin(2.7),SumData[i]->FindBin(3.7));
 		}
@@ -146,7 +149,11 @@ void DrawFragmentsCheck(TFile * file, std::string basename, Binning Bins, FileSa
 		TGraphErrors * TOverP = new TGraphErrors();
 		TGraphErrors * DOverP = new TGraphErrors();
 		TGraphErrors * DOverT = new TGraphErrors();
+		TGraphErrors * Palone = new TGraphErrors();
+		TGraphErrors * Dalone = new TGraphErrors();
 		TGraphErrors * Talone = new TGraphErrors();
+
+
 
 		for(int i=0;i<10;i++) { TOverP->SetPoint(i,(minscan+i*0.05),(T[i]/P[i])/(T[0]/P[0]));
 				       TOverP->SetPointError(i,0,pow(1/P[i]+1/T[i],0.5)*(T[i]/P[i])/(T[0]/P[0]));
@@ -157,24 +164,35 @@ void DrawFragmentsCheck(TFile * file, std::string basename, Binning Bins, FileSa
 		for(int i=0;i<10;i++) { DOverT->SetPoint(i,(minscan+i*0.05),(D[i]/T[i])/(D[0]/T[0]));
 				       DOverT->SetPointError(i,0,pow(1/T[i]+1/D[i],0.5)*(D[i]/T[i])/(D[0]/T[0]));
 				     } 
+			for(int i=0;i<10;i++) { Palone->SetPoint(i,(minscan+i*0.05),(P[i]/T[i]));
+				       Palone->SetPointError(i,0,pow(1/P[i],0.5)*P[i]/T[i]);
+				     } 
+		for(int i=0;i<10;i++) { Dalone->SetPoint(i,(minscan+i*0.05),(D[i]/T[i]));
+				       Dalone->SetPointError(i,0,pow(1/D[i],0.5)*D[i]/T[i]);
+				     } 
 		for(int i=0;i<10;i++) { Talone->SetPoint(i,(minscan+i*0.05),(T[i]/T[0]));
 				       Talone->SetPointError(i,0,pow(1/T[i],0.5)*T[i]/T[0]);
 				     } 
-	
 
-	
 		PlotGraph(gPad,TOverP,"Cut Value","Fragments Ratio",2,"PL",1.5,2.3,1e-6,1.5,"T over P");;
 		PlotGraph(gPad,DOverP,"Cut Value","Fragments Ratio",1,"PLsame",1.5,2.3,1e-6,1.5,"D over P");;
 		PlotGraph(gPad,DOverT,"Cut Value","Fragments Ratio",4,"PLsame",1.5,2.3,1e-6,1.5,"D over T");;
 	
 		TCanvas * c5 = new TCanvas("Tritium over L1 Cut");
                 c5->SetCanvasSize(2000,1500);
-		PlotGraph(gPad,Talone,"Cut Value","Counts with Mass>2.5 (over first)",3,"PLsame",1.5,2.3,1e-6,1.5,"Secondary Tritium");;	
+		
+		PlotGraph(gPad,Talone,"Cut Value","Counts (over first)",3,"PLsame",1.5,2.3,1e-6,1.5,"He->T");;	
+
+		TCanvas * c6 = new TCanvas("Fragments Ratio Evolution");
+                c6->SetCanvasSize(2000,1500);
+		PlotGraph(gPad,Palone,"Cut Value","Counts (over tritium)",2,"PLsame",1.5,2.3,1e-6,1e2,"He->P/He->T");;	
+		PlotGraph(gPad,Dalone,"Cut Value","Counts (over tritium)",4,"PLsame",1.5,2.3,1e-6,1e2,"He->D/He->T");;	
 
 		Plots.Add(c3);
 		Plots.Add(c4);
 		Plots.Add(c5);
-                Plots.writeObjsInFolder("FragmentationCheck");
+               	Plots.Add(c6);
+		Plots.writeObjsInFolder("FragmentationCheck");
 }
 
 void DrawBranching(TFile * file, std::string basename, Binning Bins, FileSaver Plots){
@@ -242,6 +260,8 @@ void DrawBranching(TFile * file, std::string basename, Binning Bins, FileSaver P
         PlotDistribution(gPad, SumMC ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",3,"same",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,6,"Helium MC");	
 	Plots.Add(c4);	
 	Plots.writeObjsInFolder((basename + "/BranchingRatio").c_str());
+
+
 }
 
 

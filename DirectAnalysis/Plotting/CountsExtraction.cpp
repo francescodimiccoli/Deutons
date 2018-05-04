@@ -232,6 +232,14 @@ int main(int argc, char * argv[]){
 	TH1F * TotErrTOF  = (TH1F *)StatErrTOFP->Clone();
 	TH1F * TotErrNaF  = (TH1F *)StatErrNaFP->Clone();
 	TH1F * TotErrAgl  = (TH1F *)StatErrAglP->Clone();
+
+	HeCoErrTOF->Divide(DCountsTOF);
+	HeCoErrNaF->Divide(DCountsNaF);
+	HeCoErrAgl->Divide(DCountsAgl);
+
+
+
+
 	
 	for(int bin=0;bin<DCountsTOF->GetNbinsX();bin++) {
 		if(DCountsTOF->GetBinContent(bin+1)>0){

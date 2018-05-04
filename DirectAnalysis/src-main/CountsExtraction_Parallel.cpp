@@ -47,10 +47,10 @@ int main(int argc, char * argv[])
     bool Refill = false;
     if(refill!="") Refill=true;
     
-   TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-   TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
-//  TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
-//  TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
+  TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+  TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+  //TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
+  //TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
   //TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
 
@@ -159,7 +159,7 @@ int main(int argc, char * argv[])
         //NaFfits->DisableFit();
         NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005,true);
 	NaFfits->SetHeliumContamination(HeContNaF);
-        NaFfits->ExtractCounts(finalHistos);
+       NaFfits->ExtractCounts(finalHistos);
 	NaFfits->SaveFitResults(finalResults);
 
         Aglfits->SetFitRange(0.6,5);

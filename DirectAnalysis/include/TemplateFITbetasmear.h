@@ -81,15 +81,18 @@ struct BestChi {
 	int i=0;
 	int j=0;
 	float chimin=0;
-	void FindMinimum(TH2F * Histo) {
+	void FindMinimum(TH2F * Histo, TH2F * relerr) {
+		float meanErr = relerr->Integral()/(Histo->GetNbinsY()*Histo->GetNbinsX());
 		float Best = 9999999;
 		for(int x=0;x<Histo->GetNbinsX();x++)
 			for(int y=0;y<Histo->GetNbinsY();y++)
 				if(Histo->GetBinContent(x+1,y+1)<Best){
-					Best=Histo->GetBinContent(x+1,y+1);
-				        i=x;
-					j=y;
-					chimin=Best;	
+					if(relerr->GetBinContent(x+1,y+1)<2*meanErr){
+						Best=Histo->GetBinContent(x+1,y+1);
+						i=x;
+						j=y;
+						chimin=Best;	
+					}
 				}
 	}
 };
@@ -103,6 +106,7 @@ class TemplateFIT {
 
 
 	std::vector<TH2F *> DCountsSpread;
+	std::vector<TH2F *> DErrSpread;
 	std::vector<TH1F *> WeightedDCounts;
 	std::vector<TH2F *> TFitChisquare;
 	TF1 * HeContModel=0x0;
@@ -677,6 +681,11 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 		finalhisto.writeObjsInFolder((basename+"/Fit Results/Spreads/DCounts").c_str());
 	}
 	for(int i=0;i<bins.size();i++){
+		finalhisto.Add(DErrSpread[i]);
+		finalhisto.writeObjsInFolder((basename+"/Fit Results/Spreads/DErrs").c_str());
+	}
+	
+	for(int i=0;i<bins.size();i++){
 		finalhisto.Add(TFitChisquare[i]);
 		finalhisto.writeObjsInFolder((basename+"/Fit Results/Spreads/ChiSquare").c_str());	
 	}
@@ -865,7 +874,9 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			Fit->wheightHe= w3*itot/i3;
 			Fit->wheightNoise= w4*itot/i4;
 
-			cout<<w1<<" "<<w2<<" "<<w3<<" "<<w4<<endl;
+			cout<<"fract: "<<w1<<" "<<w2<<" "<<w3<<" "<<w4<<endl;
+			cout<<"err: "  <<e1<<" "<<e2<<" "<<e3<<" "<<e4<<endl;
+
 
 			Fit ->  Templ_P  -> Scale(Fit ->wheightP);
 			Fit ->  Templ_D  -> Scale(Fit ->wheightD);
@@ -962,6 +973,7 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 		}
 		// Histograms for systematic error evaluation
 		TH2F * dcountsspread = new TH2F(("DCountsSpread Bin " +to_string(bin)).c_str(),("DCountsSpread Bin " +to_string(bin)).c_str(),systpar.steps,0,2*systpar.sigma,systpar.steps,-systpar.shift,systpar.shift);
+		TH2F * derrspread = new TH2F(("DerrSpread Bin " +to_string(bin)).c_str(),("DerrSpread Bin " +to_string(bin)).c_str(),systpar.steps,0,2*systpar.sigma,systpar.steps,-systpar.shift,systpar.shift);
 		TH2F * tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)).c_str(),systpar.steps,0,2*systpar.sigma,systpar.steps,-systpar.shift,systpar.shift);
 		TH1F * weighteddcounts  = new TH1F(("Weighted Counts Bin " +to_string(bin)).c_str(),("Weighted Counts Bin " +to_string(bin)).c_str(),35,0.4*fits[bin][0][4]->DCounts,1.7*fits[bin][0][4]->DCounts);
 		BestChi * MinimumChi = new BestChi();
@@ -971,6 +983,7 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 		for(int sigma=0;sigma<systpar.steps;sigma++){
 			for(int shift=0;shift<systpar.steps;shift++){
 				dcountsspread->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->DCounts);
+				derrspread->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->StatErrD);///(fits[bin][sigma][shift]->DCounts/fits[bin][sigma][shift]->PCounts));
 				if(fits[bin][sigma][shift]->ChiSquare>0)
 					tfitchisquare->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->ChiSquare);
 				else  tfitchisquare->SetBinContent(sigma+1,shift+1,500);
@@ -984,11 +997,12 @@ void TemplateFIT::ExtractCounts(FileSaver finalhisto){
 			}
 		}
 		
-		MinimumChi->FindMinimum(tfitchisquare);	
+		MinimumChi->FindMinimum(tfitchisquare,derrspread);	
 
 
 		BestChiSquare.push_back(MinimumChi);			
 		DCountsSpread.push_back(dcountsspread);
+		DErrSpread.push_back(derrspread);
 		TFitChisquare.push_back(tfitchisquare);
 		WeightedDCounts.push_back(weighteddcounts);
 
@@ -1064,38 +1078,43 @@ void TemplateFIT::CalculateFinalPDCounts(){
 
 	for(int bin=0;bin<bins.size();bin++){
 
-		float staterrP= StatErrorP -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
+	float staterrP= StatErrorP -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
 		float staterrD= StatErrorD -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
 		float staterrT= StatErrorT -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
+	
+		float conterrP= 0.3 * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
+		float conterrD= 0.3 * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
+		float conterrT= 0.3 * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
 
 		float systerrP= SystError -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
 		float systerrD= SystError -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts;
 		float systerrT= SystError -> GetBinContent(bin+1) * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
 
-
-		float CountsP      = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts;
-		float CountsD      = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts;
+		float CountsP      = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts - 8.5 * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
+		float CountsD      = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts - 1.5 * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
 		float CountsT      = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
-		float CountsP_prim = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCountsPrim;
-		float CountsD_prim = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim;
+		float CountsP_prim = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCountsPrim - 8.5 * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
+		float CountsD_prim = fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim - 1.5 * fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts;
+
+		HeContError -> SetBinContent(bin+1,conterrD);
 
 		ProtonCounts->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCounts);
-		ProtonCounts->SetBinError(bin+1,pow(pow(staterrP,2)+pow(systerrP,2),0.5));
+		ProtonCounts->SetBinError(bin+1,pow(pow(staterrP,2)+pow(systerrP,2)+pow(conterrP,2),0.5));
 
 		DeuteronCounts->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts);
-		DeuteronCounts->SetBinError(bin+1,pow(pow(staterrD,2)+pow(systerrD,2),0.5));		
+		DeuteronCounts->SetBinError(bin+1,pow(pow(staterrD,2)+pow(systerrD,2)+pow(conterrD,2),0.5));		
 
 		TritiumCounts->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->TCounts);
-		TritiumCounts->SetBinError(bin+1,pow(pow(staterrT,2)+pow(systerrT,2),0.5));		
+		TritiumCounts->SetBinError(bin+1,pow(pow(staterrT,2)+pow(systerrT,2)+pow(conterrT,2),0.5));		
 
 
 		if(fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCountsPrim>0){
 			ProtonCountsPrim->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->PCountsPrim);
-			ProtonCountsPrim->SetBinError(bin+1,pow(pow(staterrP,2)+pow(systerrP,2),0.5));
+			ProtonCountsPrim->SetBinError(bin+1,pow(pow(staterrP,2)+pow(systerrP,2)+pow(conterrP,2),0.5) * ProtonCountsPrim->GetBinContent(bin+1)/ProtonCounts->GetBinContent(bin+1) );
 		}
 		if(fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim>0){
 			DeuteronCountsPrim->SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCountsPrim);
-			DeuteronCountsPrim->SetBinError(bin+1,pow(pow(staterrD,2)+pow(systerrD,2),0.5));		
+			DeuteronCountsPrim->SetBinError(bin+1,pow(pow(staterrD,2)+pow(systerrD,2)+pow(conterrD,2),0.5)* DeuteronCountsPrim->GetBinContent(bin+1)/DeuteronCounts->GetBinContent(bin+1) );		
 		}
 	}	
 

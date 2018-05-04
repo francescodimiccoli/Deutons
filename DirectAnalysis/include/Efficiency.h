@@ -22,6 +22,9 @@ class Efficiency{
 	std::string directory;
 	bool fitrequested=false;
 	BadEventSimulator * BadEvSim=0x0;
+
+	TH1F * Stat_Error=0x0;
+	TH1F * Syst_Error=0x0;
 	
 	bool Refill = true;
 	public:
@@ -63,7 +66,9 @@ class Efficiency{
 		before =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_before").c_str());
                 after  =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_after").c_str());
                 Eff    =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
-        }
+        	Stat_Error = (TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_Stat_Error").c_str());
+		Syst_Error = (TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_Syst_Error").c_str());
+	}
 
 	bool ReinitializeHistos(bool refill);
 	void Fill( TTree * treeMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
@@ -82,15 +87,50 @@ class Efficiency{
 
 	void CloneEfficiency(Efficiency * Second);
 	void ComposeEfficiency(Efficiency * Second);
+	void Eval_StatError();
+	void Eval_SystError(Efficiency * First,  Efficiency * Second);
 	
 	TH1 * GetEfficiency() {return Eff;}
 	TGraphErrors * GetFittedEfficiency() {return FittedEff;}
 	TH1 * GetBefore()     {return before;}
 	TH1 * GetAfter()      {return after;}
 
+	TH1F * GetSyst_Error() {return Syst_Error;}
+	TH1F * GetStat_Error() {return Stat_Error;}
+
 	std::string GetCut_Before()	{return cut_before;}	
 	std::string GetCut_After()	{return cut_after;}
 };
+
+void Efficiency::Eval_StatError(){
+	Stat_Error = (TH1F *) Eff->Clone();
+	Stat_Error->SetName((basename+"_Stat_Error").c_str());
+	Stat_Error->SetTitle((basename+"_Stat_Error").c_str());
+	for(int i=0; i<Stat_Error->GetNbinsX();i++){
+		if(Eff->GetBinContent(i+1)>0)
+			Stat_Error->SetBinContent(i+1,Eff->GetBinError(i+1)/Eff->GetBinContent(i+1));
+			Stat_Error->SetBinError(i+1,0);
+	}
+};
+
+void Efficiency::Eval_SystError(Efficiency * First,  Efficiency * Second){
+	Syst_Error = (TH1F *) Eff->Clone();
+	Syst_Error->SetName((basename+"_Syst_Error").c_str());
+	Syst_Error->SetTitle((basename+"_Syst_Error").c_str());
+	TH1F * A = (TH1F *) First->GetEfficiency()->Clone();
+	TH1F * B = (TH1F *) Second->GetEfficiency()->Clone();
+	A->Smooth(2);
+	B->Smooth(2);
+        for(int i=0; i<Syst_Error->GetNbinsX();i++){
+		if(Second->GetEfficiency()->GetBinContent(i+1)>0){
+		
+                	Syst_Error->SetBinContent(i+1,fabs(1 - A->GetBinContent(i+1)/B->GetBinContent(i+1))/pow(3,0.5));
+                	Syst_Error->SetBinError(i+1,0);
+			Eff->SetBinError(i+1, pow(pow(Stat_Error->GetBinContent(i+1),2) + pow(Syst_Error->GetBinContent(i+1),2),0.5)*Eff->GetBinContent(i+1) );
+		}
+	}
+};
+
 
 void Efficiency::ComposeEfficiency(Efficiency * Second){
 	TH1F * after1= (TH1F*) after->Clone();
@@ -218,6 +258,8 @@ void Efficiency::FillEventByEventData(Variables * vars, float (*var) (Variables 
 void Efficiency::Save(FileSaver finalhistos){
 	finalhistos.Add(before);
 	finalhistos.Add(after); 	
+ 	if(Stat_Error) finalhistos.Add(Stat_Error);
+	if(Syst_Error) finalhistos.Add(Syst_Error);
         finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());
 }
 
@@ -250,6 +292,8 @@ void Efficiency::Eval_FittedEfficiency(){
 
 void Efficiency::SaveResults(FileSaver finalhistos){
 	finalhistos.Add(Eff); 	
+ 	if(Stat_Error) finalhistos.Add(Stat_Error);
+	if(Syst_Error) finalhistos.Add(Syst_Error);
 	finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());
 	if(fitrequested){
 		cout<<FittedEff<<endl;
