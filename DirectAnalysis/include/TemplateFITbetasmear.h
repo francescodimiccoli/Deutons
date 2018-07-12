@@ -3,6 +3,8 @@
 
 #include "BadEventSimulator.h"
 #include "LatReweighter.h" 
+#include "Livetime.h"
+
 
 using namespace std;
 
@@ -142,7 +144,7 @@ class TemplateFIT {
 
 	std::string basename;
 
-	TH1F * Exposure_Time;
+	TH1F * ExposureTime;
 	LatReweighter * Latweighter = new LatReweighter("LatWeights","",500,0,150);
 
 	Systpar systpar;
@@ -153,10 +155,11 @@ class TemplateFIT {
 	float constrainmin[3];
 	float constrainmax[3];
 	bool highmassconstrain=false;
+	int ActualTime=0;
 
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=60,float shift=60,TH1F * ExposureTime=0x0){
+	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=60,float shift=60){
 		
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
@@ -200,7 +203,7 @@ class TemplateFIT {
         	DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		TritiumCounts  = new TH1F("Tritium Counts","Tritium Counts",bins.size(),0,bins.size()) ;
 
-
+		ExposureTime = new TH1F("Exposure Time","Exposure Time",bins.size(),0,bins.size());
 		ProtonCountsPrim    = new TH1F("Primary Proton Counts","Primary Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCountsPrim  = new TH1F("Primary Deuteron Counts","Primary Deuteron Counts",bins.size(),0,bins.size()) ;
 	
@@ -211,7 +214,6 @@ class TemplateFIT {
 		BestChiSquares     = new TH1F("Best ChiSquare","Best ChiSquare",bins.size(),0,bins.size()) ;
         	OriginalChiSquares = new TH1F("Original ChiSquare","Original CHiSquare",bins.size(),0,bins.size()) ;
 
-		Exposure_Time=(TH1F*)ExposureTime;
 
 		isrich = IsRich;
 
@@ -224,7 +226,7 @@ class TemplateFIT {
 
 	//reading constructor
 
-	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=11,float sigma=60,float shift=60,TH1F * ExposureTime=0x0){
+	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=11,float sigma=60,float shift=60){
 
 		TFile * file = File.GetFile();
 
@@ -270,7 +272,7 @@ class TemplateFIT {
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
 		DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		TritiumCounts    = new TH1F("Tritium Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
-	
+		ExposureTime = new TH1F("Exposure Time","Exposure Time",bins.size(),0,bins.size());	
 
 		ProtonCountsPrim    = new TH1F("Primary Proton Counts","Primary Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCountsPrim  = new TH1F("Primary Deuteron Counts","Primary Deuteron Counts",bins.size(),0,bins.size()) ;
@@ -283,8 +285,6 @@ class TemplateFIT {
         	OriginalChiSquares = new TH1F("Original ChiSquare","Original CHiSquare",bins.size(),0,bins.size()) ;
 
 		isrich=IsRich;
-
-		Exposure_Time=(TH1F*)ExposureTime;
 
 		systpar.sigma=sigma;
 		systpar.shift=shift;
@@ -399,26 +399,10 @@ void TemplateFIT::FillEventByEventData(Variables * vars, float (*var) (Variables
 
 	int kbin;
 	kbin = 	bins.GetBin(discr_var(vars));
-
-/*	if(vars->BDTDiscr>0){
-		cout<<"===================================="<<endl;
-		cout<<"Event: "			<<vars->Event<<endl;
-		cout<<"RICHprob: "		<<vars->RICHprob<<endl;
-		cout<<"RICHPmts: "		<<vars->RICHPmts<<endl;
-		cout<<"RICHgetExpected: "	<<vars->RICHgetExpected<<endl;
-		cout<<"tot_hyp_p_uncorr: "	<<vars->tot_hyp_p_uncorr<<endl;
-		cout<<"Richtotused: "	  	<<vars->Richtotused<<endl;
-		cout<<"RichPhEl: "		<<vars->RichPhEl<<endl;
-		cout<<"RICHcollovertotal: "	<<vars->RICHcollovertotal<<endl;
-		cout<<"RICHLipBetaConsistency: "<<vars->RICHLipBetaConsistency<<endl;
-		cout<<"RICHTOFBetaConsistency: "<<vars->RICHTOFBetaConsistency<<endl;
-		cout<<"RICHprob: "		<<vars->RICHprob<<endl;
-		cout<<"RICHChargeConsistency: "	<<vars->RICHChargeConsistency<<endl;
-		cout<<"Bad_ClusteringRICH: "	<<vars->Bad_ClusteringRICH<<endl;
-		cout<<"NSecondariesRICHrich: "	<<vars->NSecondariesRICHrich<<endl;
-		cout<<"BDT result: "		<<vars->BDTDiscr<<endl;
-		cout<<"===================================="<<endl;
-	}*/
+	if((int)vars->U_time!=ActualTime) {
+		UpdateZoneLivetime(vars->Livetime,vars->Rcutoff,ExposureTime,bins);
+		ActualTime=vars->U_time;
+	}
 	if(ApplyCuts(cut,vars)&&kbin>0){
 		//cout<<"Bin; "<<kbin<<endl;
 		//
@@ -471,8 +455,8 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 	//std::string cutHe=cut+"&IsHeliumMC";
 
 
-	cutHe.erase(cutHe.find("IsPreselected&"),14);
-	cutHe = "IsPreselectedInner&" + cutHe;  //releasing cut for more stat. in Tritium templates
+	cutHe.erase(cutHe.find("IsMinimumBias&IsLooseCharge1&"),14);
+	cutHe = "IsMinimumBias&" + cutHe;  //releasing cut for more stat. in Tritium templates
 
 	if((ApplyCuts(cutP,vars)||ApplyCuts(cutD,vars)||ApplyCuts(cutHe,vars))){
 		for(int i=0;i<systpar.steps;i++)
@@ -537,6 +521,9 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 
 
 void TemplateFIT::Save(FileSaver finalhisto,bool recreate){
+
+	finalhisto.Add(ExposureTime);
+	finalhisto.writeObjsInFolder((basename + "/ExposureTime").c_str(),recreate);	
 
 	for(int bin=0;bin<bins.size();bin++){ 
 		finalhisto.Add(fits[bin][0][5]->Data);
@@ -782,9 +769,10 @@ float GetChiSquare(TH1 * Result, TH1 * Data, float min, float max){
 	float chi = 0;
 	float err = 0;
 	for(int i=binmin; i<binmax; i++){
-		err = pow(pow(Data->GetBinError(i+1),2) + pow(Result->GetBinError(i+1),2),0.5);
-		if(err>0)
+		if(Data->GetBinContent(i+1)>0&&Result->GetBinContent(i+1)>0){
+			err = pow(pow(Data->GetBinError(i+1),2) + pow(Result->GetBinError(i+1),2),0.5);
 			chi += pow((Data->GetBinContent(i+1) - Result->GetBinContent(i+1)),2)/pow(err,2);
+		}
 	}
 	chi /= ((binmax-binmin)-3);
 	cout<<"chi: "<<chi<<endl;
@@ -895,7 +883,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			Fit -> StatErrD = e2;
 			Fit -> StatErrT = e3;
 			
-		//	Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Tfit -> GetNDF());
+	//		Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Tfit -> GetNDF());
 			Fit -> ChiSquare = GetChiSquare(Sum,Fit->Data,min,max);
 			Fit -> DCounts = Fit ->  Templ_D -> Integral();
 			Fit -> PCounts = Fit ->  Templ_P -> Integral();
@@ -1052,7 +1040,7 @@ void TemplateFIT::EvalFinalErrors(){
 			StatErrorP -> SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->StatErrP);
 			StatErrorD -> SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->StatErrD);
 			StatErrorT -> SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->StatErrT);
-			SystError -> SetBinContent(bin+1,WeightedDCounts[bin]->GetStdDev()/fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts);
+			SystError -> SetBinContent(bin+1,WeightedDCounts[bin]->GetStdDev()/fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->ChiSquare);
 			StatErrorP -> SetBinError(bin+1,0);
 			StatErrorD -> SetBinError(bin+1,0);
 			StatErrorT -> SetBinError(bin+1,0);

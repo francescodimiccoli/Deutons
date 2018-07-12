@@ -105,6 +105,36 @@ void SetUpUsualBinning(){
 	return;
 }
 
+void SetUpEffCorrBinning(){
+
+	SetBins();
+
+	PRB.Print();
+
+	cout<<"**TOF**"<<endl;
+	ToFDB.Print();
+
+	cout<<"**NaF**"<<endl;
+	NaFPB.Print();
+
+	cout<<"**Agl**"<<endl;
+	AglDB.Print();
+
+	ToFPB.UseREdges();
+	NaFPB.UseREdges();
+	AglPB.UseREdges();
+
+	ToFDB.UseBetaEdges();
+	NaFDB.UseBetaEdges();
+	AglDB.UseBetaEdges();
+
+
+	PRB.UseREdges();
+	ForAcceptance.UseREdges();
+	cout<<endl;
+	return;
+}
+
 
 void UpdateProgressBar(int currentevent, int totalentries)
 {

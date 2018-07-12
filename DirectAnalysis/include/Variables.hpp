@@ -6,13 +6,26 @@
 #include <TMVA/Tools.h>
 #include "Globals.h"
 #include "TF1.h"
+#include "TSpline.h"
 
 using namespace std;
+
+
 
 struct Variables{
 
     Reweighter reweighter;
     Reweighter reweighterHe;
+
+   static Double_t ChiXcut_X[];
+   static Double_t ChiXcut_Y[];
+   static Double_t ChiYcut_X[];
+   static Double_t ChiYcut_Y[];
+
+    TSpline3 * Chi2Xcut; 	
+    TSpline3 * Chi2Ycut; 	
+
+
 
     // Event info
     int        Run;
@@ -30,6 +43,12 @@ struct Variables{
     float      Rcutoff;
     float      IGRFRcutoff;
 
+    //RTI
+    int good_RTI;
+    float       Rcutoff_RTI;
+    int isinsaa;
+    float	Livetime_RTI;
+
     // Bit fields
     int        JMembPatt;
     int        PhysBPatt;
@@ -37,16 +56,15 @@ struct Variables{
     int        RICHmask_new;
 
     // Counts
-    float      NAnticluster_float;
-    int        NTofClusters;
-    int        NTofClustersusati;
+    float        NTofClusters;
+    float        NTofClustersusati;
     float      NTofUsed=0;  // ? 
-    int        NTRDclusters;
-    int        NAnticluster;
-    int        NTRDSegments;
-    int        NTrackHits;                             
-    int        clustertrack;
-    int        clustertottrack;
+    float        NTRDclusters;
+    float        NAnticluster;
+    float        NTRDSegments;
+    float        NTrackHits;                             
+    float        clustertrack;
+    float        clustertottrack;
 
 
     // Track
@@ -55,12 +73,13 @@ struct Variables{
     float      Rdown;
     float      R;
     float      R_L1;
+    float      R_noMS;
     float      Chisquare;
     float      Chisquare_L1;
     float      Chisquare_y;
     float      Chisquare_L1_y;
     int        hitbits;
-    int        FiducialVolume;	 	    
+    float        FiducialVolume;	 	    
 
     // Tracker Charge
     float      qL1;
@@ -89,15 +108,12 @@ struct Variables{
 	
     // RICH 
     float      BetaRICH_new;
-    int        Richtotused;
-    float      Richtotused_float=0;
+    float        Richtotused;
     float      RichPhEl;
     float      RICHprob;
-    int        RICHPmts;
-    float      RICHPmts_float;	
+    float        RICHPmts;
     float      RICHcollovertotal;
-    int        RICHgetExpected;
-    float      RICHgetExpected_float; 
+    float        RICHgetExpected;
 
    float RICHLipBetaConsistency =0;
    float RICHTOFBetaConsistency =0;	
@@ -105,6 +121,12 @@ struct Variables{
    float tot_hyp_p_uncorr	=0;
    float Bad_ClusteringRICH     =0;
    float NSecondariesRICHrich   =0;	    
+   float HitHValldir =0;
+   float HitHVallrefl=0;
+   float HitHVoutdir=0;
+   float HitHVoutrefl=0;   
+   float HVBranchCheck=0;
+
 
     //MC vars
     float      Momento_gen;
@@ -156,8 +178,8 @@ struct Variables{
     void Eval_Discriminants();
     inline bool IsFromNaF     (){ return (((int)joinCutmask>>11)==1024&&BetaRICH_new>0);}
     inline bool IsFromAgl     (){ return (((int)joinCutmask>>11)==0&&BetaRICH_new>0);}
-    inline bool IsFromNaF_nosel     (){ return ((((int)joinCutmask>>11)&1921)==1024&&BetaRICH_new>0);}
-    inline bool IsFromAgl_nosel     (){ return ((((int)joinCutmask>>11)&1921)==0&&BetaRICH_new>0);}
+    inline bool IsFromNaF_nosel     (){ return ((((int)joinCutmask>>11)&1024/*1921*/)==1024&&BetaRICH_new>0);}
+    inline bool IsFromAgl_nosel     (){ return ((((int)joinCutmask>>11)&1024)==0&&BetaRICH_new>0);}
 
 };
 
@@ -194,6 +216,9 @@ float GetTRDDPLikRatio    (Variables * vars);
 
 float GetTOFSpatialChi (Variables * vars); 
 float GetTOFTimeChi (Variables * vars); 
+float GetRupdown (Variables * vars);
+float GetChisquareX(Variables * vars);
+float GetChisquareY(Variables * vars);
 
 float GetRICHBDT(Variables * vars);
 
@@ -205,4 +230,6 @@ float GetLoweredBetaTOF  (Variables * vars);
 float GetLoweredBetaNaF  (Variables * vars);
 float GetLoweredBetaAgl  (Variables * vars);
 float GetRICHBDT(Variables* vars);
+
+
 #endif

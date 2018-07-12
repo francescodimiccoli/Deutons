@@ -36,7 +36,8 @@ class Efficiency{
 		cut_before=Cut_before;
 		cut_after=Cut_after;
 		directory=Directory;
-		
+
+		ReadFile();		
 		before = new TH1F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size());
 		after  = new TH1F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size());
 	};
@@ -49,6 +50,7 @@ class Efficiency{
 		cut_after=Cut_after;
 		directory=Directory;
 		
+		ReadFile();
 		before = new TH2F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size(),LatZones.size()-1,0,LatZones.size()-1);
 		after  = new TH2F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size(),LatZones.size()-1,0,LatZones.size()-1);
 	};
@@ -193,7 +195,7 @@ void Efficiency::Fill(TTree * tree, Variables * vars, float (*discr_var) (Variab
 			if(BadEvSim) BadEvSim->LoadEvent(vars);		
 			FillEventByEventMC(vars,discr_var,discr_var);
 			}
-		else	       FillEventByEventData(vars,discr_var,discr_var);	
+		else	     { FillEventByEventData(vars,discr_var,discr_var);};	
 	}
 
 	return;
@@ -231,7 +233,9 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 	if(bins.IsUsingBetaEdges()) kbin = bins.GetBin(beta);
 	else kbin =bins.GetBin(discr_var(vars));
 	if(kbin>0){
-			if(ApplyCuts(cut_before,vars)) { before->Fill(kbin,vars->mcweight);}
+			if(ApplyCuts(cut_before,vars))
+			 before->Fill(kbin,vars->mcweight);
+			
 			if(ApplyCuts(cut_after ,vars)) { after ->Fill(kbin,vars->mcweight);}
 	}
 	return;
@@ -243,12 +247,12 @@ void Efficiency::FillEventByEventData(Variables * vars, float (*var) (Variables 
 	int kbin =bins.GetBin(discr_var(vars));
 	if(kbin>0){
 		if(after->GetNbinsY()==1){
-			if(ApplyCuts(cut_before,vars)) before->Fill(kbin);
-			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin);
+			if(ApplyCuts(cut_before,vars)) before->Fill(kbin,vars->PrescaleFactor);
+			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,vars->PrescaleFactor);
 		}
 		else{
-			if(ApplyCuts(cut_before,vars)) before->Fill(kbin,GetLatitude(vars));
-			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,GetLatitude(vars));
+			if(ApplyCuts(cut_before,vars)) ((TH2*)before)->Fill(kbin,GetLatitude(vars),vars->PrescaleFactor);
+			if(ApplyCuts(cut_after ,vars)) ((TH2*)after) ->Fill(kbin,GetLatitude(vars),vars->PrescaleFactor);
 		}
 
 	}
@@ -258,8 +262,8 @@ void Efficiency::FillEventByEventData(Variables * vars, float (*var) (Variables 
 void Efficiency::Save(FileSaver finalhistos){
 	finalhistos.Add(before);
 	finalhistos.Add(after); 	
- 	if(Stat_Error) finalhistos.Add(Stat_Error);
-	if(Syst_Error) finalhistos.Add(Syst_Error);
+ //	if(Stat_Error) finalhistos.Add(Stat_Error);
+//	if(Syst_Error) finalhistos.Add(Syst_Error);
         finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());
 }
 
@@ -292,8 +296,8 @@ void Efficiency::Eval_FittedEfficiency(){
 
 void Efficiency::SaveResults(FileSaver finalhistos){
 	finalhistos.Add(Eff); 	
- 	if(Stat_Error) finalhistos.Add(Stat_Error);
-	if(Syst_Error) finalhistos.Add(Syst_Error);
+ 	//if(Stat_Error) finalhistos.Add(Stat_Error);
+	//if(Syst_Error) finalhistos.Add(Syst_Error);
 	finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());
 	if(fitrequested){
 		cout<<FittedEff<<endl;

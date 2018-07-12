@@ -16,7 +16,7 @@ int main(int argc, char * argv[])
     //Processing input options
     int c;
     std::string outFname;
-    outFname = std::string("QualityAgl.root");
+    outFname = std::string("QualityNaF.root");
 
     // Open  input files, get the trees
     TChain *mc = InputFileReader("FileListNtuples_ext.txt","parametri_geo");
@@ -32,7 +32,7 @@ int main(int argc, char * argv[])
 
     //Creating the factory
     TFile *   ldFile = new TFile(outFname.c_str(),"RECREATE");
-    TMVA::Factory * factory = new TMVA::Factory("QualityAgl", ldFile, options.c_str());
+    TMVA::Factory * factory = new TMVA::Factory("QualityNaF", ldFile, options.c_str());
 
     //Preparing variables 
     //general
@@ -60,11 +60,22 @@ int main(int argc, char * argv[])
     factory->AddVariable("Bad_ClusteringRICH");
     factory->AddVariable("NSecondariesRICHrich");
 
+    //factory->AddVariable("HitHValldir"); 
+    //factory->AddVariable("HitHVallrefl");  	
+    
+    //factory->AddVariable("HVBranchCheck:= (HitHValldir - HitHVoutdir) - (HitHVallrefl - HitHVoutrefl)");    
+
+    factory->AddVariable("HitHVoutdir"); 
+    factory->AddVariable("HitHVoutrefl");
+
+    //Spectator Variables
+    factory->AddSpectator("R", 'F');
+    factory->AddSpectator("BetaRICH_new", 'F');	
 
     //Preselection cuts
     std::string PreSelection    = "qL1>0&&(joinCutmask&187)==187&&qL1<1.75&&R>0";
     std::string ChargeCut 	= "qUtof>0.8&&qUtof<1.3&&qLtof>0.8&&qLtof<1.3";
-    std::string VelocityCut 	= /*"Beta<0.8";*/"((joinCutmask>>11))==0&&BetaRICH_new>0&&BetaRICH_new<0.99";
+    std::string VelocityCut 	= /*"Beta<0.8";*/"((joinCutmask>>11))==1024&&BetaRICH_new>0&&BetaRICH_new<0.975";
     std::string signalCut 	= /*"(R/Beta)*(1-Beta^2)^0.5>1.65&&GenMass>1&&GenMass<2";*/"(R/BetaRICH_new)*(1-BetaRICH_new^2)^0.5>0.5&&(R/BetaRICH_new)*(1-BetaRICH_new^2)^0.5<1.5";	
     std::string bkgndCut 	= /*"(R/Beta)*(1-Beta^2)^0.5>1.65&&GenMass>0&&GenMass<1";*/"(R/BetaRICH_new)*(1-BetaRICH_new^2)^0.5>3";		 
 

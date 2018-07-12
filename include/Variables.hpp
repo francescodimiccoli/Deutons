@@ -4,8 +4,10 @@ struct Variables{
         float 	   Latitude;
         float 	   Rcutoff;
 	float 	   IGRFRcutoff;
+        float	   Rcutof_RTI;
         float      Livetime;
-        int      PhysBPatt;
+        float	   Livetime_RTI;
+	int      PhysBPatt;
         float      R_pre;
         float      Beta_pre;
         int        CUTMASK;

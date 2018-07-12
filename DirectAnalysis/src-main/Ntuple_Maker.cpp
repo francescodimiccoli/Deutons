@@ -42,6 +42,8 @@ int main(int argc, char * argv[])
 	string INPUT2(argv[2]);
 	string INPUT3(argv[3]);
 
+	TChain * chain_RTI = InputFileReader(INPUT1.c_str(),"RTI");
+
 	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
 	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
 
@@ -51,36 +53,41 @@ int main(int argc, char * argv[])
 	SetUpUsualBinning();
 
 	
-	Variables * vars = new Variables;
+	Variables * vars = new Variables();
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 	
 	TFile * File = new TFile(INPUT3.c_str(), "RECREATE");
 
         TTree * measure_stuff= new TTree("parametri_geo","parametri_geo");
-	TTree * measure_stuffMC= new TTree("parametri_MC","parametri_MC");
-	TTree * template_stuff  = new TTree("template_stuff","template_stuff");
-	TTree * template_stuffMC= new TTree("template_stuffMC","template_stuffMC");
-
-
+	TTree * template_stuff= new TTree("template_stuff","template_stuff");
+	
 	vars->RegisterBranches(measure_stuff);
 	vars->RegisterTemplatesBranches(template_stuff);
 
-	DBarReader readerDT(chainDT, false);
+	DBarReader readerDT(chainDT, false,chain_RTI);
 
 	for(int i=0;i<readerDT.GetTreeEntries()/FRAC;i++){
 		UpdateProgressBar(i, readerDT.GetTreeEntries()/FRAC);
 		//if(i%(int)FRAC!=0) continue;
 		readerDT.FillVariables(i,vars);
 		vars->Update();
-		if(ApplyCuts("IsPreselectedInner",vars)) measure_stuff->Fill();
+		if(ApplyCuts("IsPositive&IsMinimumBias",vars)) measure_stuff->Fill();
 		if(
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut",vars))||
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",vars))||	
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",vars))	
+			(ApplyCuts("IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",vars))||
+			(ApplyCuts("IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",vars))||	
+			(ApplyCuts("IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",vars))	
 		)		
-			   template_stuff->Fill();	
+		template_stuff->Fill();	
 	}
+	File->Write();
+	File->Close();
+		
+	/*
+	TFile * File2 = new TFile((INPUT3+"_MC").c_str(), "RECREATE");
+
+	TTree * measure_stuffiMC= new TTree("parametri_MC","parametri_MC");
+	TTree * template_stuffMC= new TTree("template_stuffMC","template_stuffMC");
 		
 	vars->RegisterBranches(measure_stuffMC);
 	vars->RegisterTemplatesBranches(template_stuffMC);
@@ -92,17 +99,17 @@ int main(int argc, char * argv[])
 		if(i%(int)FRAC!=0) continue;
 		readerMC.FillVariables(i,vars);
 		vars->Update();
-		if(ApplyCuts("IsPreselectedInner",vars)) measure_stuffMC->Fill();
+		if(ApplyCuts("IsPositive&IsMinimumBias",vars)) measure_stuffMC->Fill();
 		if(
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut",vars))||
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",vars))||	
-			(ApplyCuts("IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",vars))	
+			(ApplyCuts("IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",vars))||
+			(ApplyCuts("IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",vars))||	
+			(ApplyCuts("IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",vars))	
 		)		
 			   template_stuffMC->Fill();	
 	}
-	
-	File->Write();
-	File->Close();
+	File2->Write();
+	File2->Close();
+	*/
 
 	return 0;
 }

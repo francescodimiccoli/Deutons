@@ -13,7 +13,9 @@ class DBarReader {
 private:
     bool isMC;
     TTree * Tree;	
+    TTree * Tree_RTI=0x0;
 
+    RTIInfo 	  *rtiInfo; 	
     NtpSHeader    *ntpSHeader; 
     NtpHeader     *ntpHeader; 
     NtpMCHeader   *ntpMCHeader;          
@@ -34,7 +36,9 @@ private:
 
 public:
 
+    DBarReader(TTree * f, bool isMC,TTree * f_RTI);
     DBarReader(TTree * f, bool isMC);
+    
     void FillVariables(int NEvent, Variables * vars);
     int GetTreeEntries(){return Tree->GetEntries();}; 	
     TTree * GetTree() {return Tree;}

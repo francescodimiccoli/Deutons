@@ -53,8 +53,8 @@ class EffCorrTemplate: public EffCorr{
 	bool Refill = false;
 	public:
 
-	EffCorrTemplate(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,bool IsRICH=false):
-	EffCorr(File,Basename,Directory,Bins,Cut_before,Cut_after,Cut_Data,Cut_MC){
+	EffCorrTemplate(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,std::string Cut_MC2,std::string Cut_nopid,bool IsRICH=false):
+	EffCorr(File,Basename,Directory,Bins,Cut_before,Cut_after,Cut_Data,Cut_MC,Cut_MC2,Cut_nopid){
 		for(int bin=0;bin<Bins.size();bin++){
 			
 			std::string name = (Basename+"_MC_Before_"+to_string(bin));
@@ -238,8 +238,8 @@ void EffCorrTemplate::FillEventByEventData(Variables * vars, float (*var) (Varia
 	if(!Refill) return;
 	int kbin;
 	kbin = 	bins.GetBin(discr_var(vars));
-	if(ApplyCuts((cut_before+"&"+cut_data).c_str(),vars)&&kbin>0)		{BeforeData[GetLatitude(vars)][kbin]->Fill(var(vars));  BeforeDataGlob[kbin]->Fill(var(vars));}
-	if(ApplyCuts((cut_after +"&"+cut_data).c_str(),vars)&&kbin>0)		{AfterData[GetLatitude(vars)][kbin]->Fill(var(vars));   AfterDataGlob[kbin]->Fill(var(vars));}
+	if(ApplyCuts((cut_before+"&"+cut_data).c_str(),vars)&&kbin>0)		{BeforeData[GetLatitude(vars)][kbin]->Fill(var(vars),vars->PrescaleFactor);  BeforeDataGlob[kbin]->Fill(var(vars),vars->PrescaleFactor);}
+	if(ApplyCuts((cut_after +"&"+cut_data).c_str(),vars)&&kbin>0)		{AfterData[GetLatitude(vars)][kbin]->Fill(var(vars),vars->PrescaleFactor);   AfterDataGlob[kbin]->Fill(var(vars),vars->PrescaleFactor);}
 	return;	
 
 }
@@ -253,10 +253,10 @@ void EffCorrTemplate::FillEventByEventMC(Variables * vars, float (*var) (Variabl
 
 	int kbin =  bins.GetBin(betasmear);
 	float mass = vars->R/betasmear * pow((1-pow(betasmear,2)),0.5);
-	if(ApplyCuts((cut_before+"&"+cut_MC +"&IsProtonMC").c_str(),vars)&&kbin>0)  BeforeMC_P[kbin] ->Fill(mass,vars->mcweight);		
-	if(ApplyCuts((cut_after +"&"+cut_MC +"&IsProtonMC").c_str(),vars)&&kbin>0)  AfterMC_P[kbin]  ->Fill(mass,vars->mcweight);
-	if(ApplyCuts((cut_before+"&"+cut_MC +"&IsDeutonMC").c_str(),vars)&&kbin>0)  BeforeMC_D[kbin] ->Fill(mass,vars->mcweight);		
-	if(ApplyCuts((cut_after +"&"+cut_MC +"&IsDeutonMC").c_str(),vars)&&kbin>0)  AfterMC_D[kbin]  ->Fill(mass,vars->mcweight);
+	if(ApplyCuts((cut_before+"&"+cut_MC +"&IsPurePMC").c_str(),vars)&&kbin>0)  BeforeMC_P[kbin] ->Fill(mass,vars->mcweight);		
+	if(ApplyCuts((cut_after +"&"+cut_MC +"&IsPurePMC").c_str(),vars)&&kbin>0)  AfterMC_P[kbin]  ->Fill(mass,vars->mcweight);
+	if(ApplyCuts((cut_before+"&"+cut_MC +"&IsPureDMC").c_str(),vars)&&kbin>0)  BeforeMC_D[kbin] ->Fill(mass,vars->mcweight);		
+	if(ApplyCuts((cut_after +"&"+cut_MC +"&IsPureDMC").c_str(),vars)&&kbin>0)  AfterMC_D[kbin]  ->Fill(mass,vars->mcweight);
 
 	return;	
 }
@@ -306,10 +306,7 @@ TH1F * EvalEfficiency(TH1F * MCEfficiency,std::vector<TH1F*> Before,std::vector<
 }
 
 float GetStatError(TFit * FitAfter,TFit * FitBefore){
-	float stat_error;
-	stat_error= pow(FitBefore->Templ_P->Integral()/FitBefore->StatErr,-2);
-	stat_error+=pow(FitAfter->Templ_P->Integral()/FitAfter->StatErr,-2);
-	stat_error+=(2/(FitAfter->Templ_P->Integral()*FitBefore->Templ_P->Integral()))*FitAfter->StatErr*FitBefore->StatErr;
+	float stat_error=0;
 	return pow(stat_error,0.5);	
 
 }
@@ -342,8 +339,8 @@ void EffCorrTemplate::Eval_Efficiencies(){
 	float constrainmin[3] = {0.0001,0.0001,0.0001};
 	float constrainmax[3] = {1,1,1};
 	for(int bin=0;bin<bins.size();bin++){
-		Do_TemplateFIT(FitBefore[10][bin],0.1,3,constrainmin,constrainmax);
-		Do_TemplateFIT(FitAfter [10][bin],0.1,3,constrainmin,constrainmax);
+		Do_TemplateFIT(FitBefore[10][bin],0.1,3,constrainmin,constrainmax,false,false);
+		Do_TemplateFIT(FitAfter [10][bin],0.1,3,constrainmin,constrainmax,false,false);
 	
 		if(FitBefore[10][bin]->Tfit_outcome==0&&FitAfter[10][bin]->Tfit_outcome==0){ 
 			GlobEfficiency_P->SetBinContent(bin+1,FitAfter[10][bin]->Templ_P->Integral()/FitBefore[10][bin]->Templ_P->Integral());	

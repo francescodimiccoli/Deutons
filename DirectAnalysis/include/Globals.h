@@ -57,5 +57,5 @@ extern TF1 * ResponseAgl ;
 void UpdateProgressBar(int currentevent, int totalentries);
 void SetBins();
 void SetUpUsualBinning();
-
+void SetUpEffCorrBinning();
 #endif

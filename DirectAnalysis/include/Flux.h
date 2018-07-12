@@ -77,6 +77,7 @@ class Flux{
 	void ApplyEfficCorr(TH1F * Correction);
 	void Eval_Flux();
 	void SaveResults(FileSaver finalhistos);
+	void ChangeName (std::string newname) {basename = newname; return;}
 	Binning GetBins(){return bins;}
 	std::string GetName(){return basename;}
 
@@ -101,7 +102,7 @@ void Flux::Set_MCPar(float rmin, float rmax, float trigrate){
 }
 
 void Flux::ApplyEfficCorr(TH1F * Correction){
-	cout<<"Correction: "<<basename<<" "<<Correction<<endl;
+	cout<<"Correction: "<<basename<<" "<<Correction->GetEntries()<<endl;
 	MCEfficiency->GetEfficiency()->Multiply(Correction);
 	return;
 }
@@ -153,7 +154,7 @@ void Flux::Eval_Flux(){
 				}
 			}
 		 Geom_Acceptance -> Sumw2();
-		 Geom_Acceptance -> Scale(47.78);
+		 Geom_Acceptance -> Scale(47.78*2);
 		 FluxEstim -> Divide(Geom_Acceptance);
 	
 	         Eff_Acceptance = (TH1F *) Geom_Acceptance->Clone();

@@ -25,7 +25,8 @@
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 #include "../include/ParallelFiller.h"
-
+#include "../include/Efficiency.h"
+#
 #include "../include/filesaver.h"
 #include "../include/TemplateFITbetasmear.h"
 
@@ -47,10 +48,10 @@ int main(int argc, char * argv[])
     bool Refill = false;
     if(refill!="") Refill=true;
     
-  TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-  TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
-  //TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
-  //TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
+  TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
+  TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
+  //TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+  //TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
   //TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
 
@@ -90,12 +91,15 @@ int main(int argc, char * argv[])
     BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
     BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
 
-  //  TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",60,0.3,1.6);	
-    TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",150,0.4,7.5);
-    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&RICHBDTCut",60,0.4,5,true,11,400,200);
-    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&RICHBDTCut",60,0.4,5,true,11,110,80);	
+    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false),PRB,GetRigidity,"HEPCounts","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1",Refill);
 
-  //  SmearingCheck->SetLatitudeReweighter(weighter);
+
+  //  TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",60,0.3,1.6);	
+    TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF"       ,150,0.4,7.5);
+    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",60,0.4,5,true,11,400,200);
+    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsFromAgl&RICHBDTCut",60,0.4,5,true,11,110,80);	
+
+  // SmearingCheck->SetLatitudeReweighter(weighter);
     TOFfits->SetLatitudeReweighter(weighter);	
     NaFfits->SetLatitudeReweighter(weighter);	
     Aglfits->SetLatitudeReweighter(weighter);	
@@ -172,41 +176,34 @@ int main(int argc, char * argv[])
  	
     }
 
-    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false),PRB,GetRigidity,"HEPCounts","IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsPrimary",Refill);
-
-    return 0;
+      return 0;
 }
 
 
 void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, DBarReader readerDT, Binning Bins,float (*discr_var) (Variables * vars),std::string name,std::string cut, bool refill){
 
-	TH1F * Counts;
-	if(refill){
-		Counts = new TH1F(name.c_str(),name.c_str(),Bins.size(),0,Bins.size());
-		cout<<name.c_str()<<" Filling ... "<< endl;
-		Variables * vars = new Variables;
-		vars->ReadBranches(readerDT.GetTree());	
-		for(int i=0;i<readerDT.GetTreeEntries()/FRAC;i++){
-			UpdateProgressBar(i, readerDT.GetTreeEntries()/FRAC);
-			vars->ResetVariables();	
-			
-			readerDT.GetTree()->GetEvent(i);
-			int kbin;
-			kbin = 	Bins.GetBin(discr_var(vars));
-			if(ApplyCuts(cut.c_str(),vars)&&kbin>0)
-				Counts->Fill(kbin,vars->PrescaleFactor);
-		}
-	}
-	else Counts = (TH1F*) finalhistos.Get((name + "/" + name+ "/" + name).c_str());
-	
-      if(Counts){
-		finalhistos.Add(Counts);
-      		finalhistos.writeObjsInFolder((name + "/" + name).c_str());
+	Variables * vars = new Variables();
+	Efficiency * Counts = new Efficiency(finalhistos,"HEPCounts","HEPCounts",Bins,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
 
-      		finalResults.Add(Counts);
+	ParallelFiller<Efficiency *> Filler;
+	Filler.AddObject2beFilled(Counts,GetRigidity,GetRigidity); 
+	Filler.ReinitializeAll(refill);
+
+	Filler.LoopOnData(readerDT,vars);
+		
+	Counts->Save(finalhistos);
+      
+	TH1F * Counts_P = (TH1F*) Counts->GetBefore();
+	Counts_P->SetName(name.c_str());
+	Counts_P->SetTitle(name.c_str());
+
+	if(Counts_P){
+      		finalResults.Add(Counts_P);
       		finalResults.writeObjsInFolder((name + "/" + name).c_str());
 	}
-      return;	
+
+ 
+	return;	
 }
 	
 

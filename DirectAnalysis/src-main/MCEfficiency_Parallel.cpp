@@ -84,336 +84,478 @@ int main(int argc, char * argv[])
 
 	cout<<"****************************** VARIABLES ***************************************"<<endl;
 
-        Variables * vars = new Variables;
+        Variables * vars = new Variables();
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
 
-	Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsProtonMC&IsPreselected&DistanceCut&LikelihoodCut");
+	Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1");
 
-        AllRangesEfficiency * Trigger_P = new AllRangesEfficiency(finalHistos,"Trigger_P","Trigger",
-        "IsProtonMC",
-        "IsProtonMC",
-        "IsProtonMC",
-        "IsProtonMC&IsPhysTrig",
-        "IsProtonMC&IsPhysTrig",
-        "IsProtonMC&IsPhysTrig",
-        Refill);
+     	AllRangesEfficiency * FullSetTOT_P = new AllRangesEfficiency(finalHistos,"FullSetTOT_P","FullSetTOT",
+	"IsProtonMC",			      
+	"IsProtonMC",			   	      
+	"IsProtonMC",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	Refill);
 
-        AllRangesEfficiency * Trigger_D = new AllRangesEfficiency(finalHistos,"Trigger_D","Trigger",
-        "IsDeutonMC",
-        "IsDeutonMC",
-        "IsDeutonMC",
-        "IsDeutonMC&IsPhysTrig",
-        "IsDeutonMC&IsPhysTrig",
-        "IsDeutonMC&IsPhysTrig",
-        Refill);
+	AllRangesEfficiency * FullSetTOT_D = new AllRangesEfficiency(finalHistos,"FullSetTOT_D","FullSetTOT",
+	"IsDeutonMC",			      
+	"IsDeutonMC",			   	      
+	"IsDeutonMC",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	Refill);
 
-	AllRangesEfficiency * Fragmentation_P = new AllRangesEfficiency(finalHistos,"Fragmentation_P","Fragmentation",
+	AllRangesEfficiency * Baseline_P = new AllRangesEfficiency(finalHistos,"Baseline_P","Baseline",
+	"IsProtonMC",			      
+	"IsProtonMC",			   	      
+	"IsProtonMC",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	Refill);
+
+	AllRangesEfficiency * Baseline_D = new AllRangesEfficiency(finalHistos,"Baseline_D","Baseline",
+	"IsDeutonMC",			      
+	"IsDeutonMC",			   	      
+	"IsDeutonMC",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	Refill);
+
+	Efficiency * Cascade1 = new Efficiency(finalHistos,"Cascade1","Cascade1",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias");
+	Efficiency * Cascade2 = new Efficiency(finalHistos,"Cascade2","Cascade2",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1");
+	Efficiency * Cascade3 = new Efficiency(finalHistos,"Cascade3","Cascade3",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning");
+	Efficiency * Cascade4 = new Efficiency(finalHistos,"Cascade4","Cascade4",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime");
+	Efficiency * Cascade5 = new Efficiency(finalHistos,"Cascade5","Cascade5",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF");
+	Efficiency * Cascade6 = new Efficiency(finalHistos,"Cascade6","Cascade6",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl");
+	Efficiency * Cascade7 = new Efficiency(finalHistos,"Cascade7","Cascade7",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut");
+	Efficiency * Cascade8 = new Efficiency(finalHistos,"Cascade8","Cascade8",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut");
+
+	AllRangesEfficiency * Trigger_P_PID = new AllRangesEfficiency(finalHistos,"Trigger_P_PID","Trigger",
+	"IsPurePMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
+	"IsPurePMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	Refill);
+
+	AllRangesEfficiency * Trigger_D_PID = new AllRangesEfficiency(finalHistos,"Trigger_D_PID","Trigger",
+	"IsPureDMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
+	"IsPureDMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	Refill);
+
+	AllRangesEfficiency * MinimBias_P_PID = new AllRangesEfficiency(finalHistos,"MinimBias_P_PID","MinimBias",
+	"IsPurePMC&IsPhysTrig",			      
+	"IsPurePMC&IsPhysTrig",			   	      
+	"IsPurePMC&IsPhysTrig",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	Refill);
+
+	AllRangesEfficiency * MinimBias_D_PID = new AllRangesEfficiency(finalHistos,"MinimBias_D_PID","MinimBias",
+	"IsPureDMC&IsPhysTrig",			      
+	"IsPureDMC&IsPhysTrig",			   	      
+	"IsPureDMC&IsPhysTrig",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	Refill);
+
+	AllRangesEfficiency * Cleaning_P_PID = new AllRangesEfficiency(finalHistos,"Cleaning_P_PID","Cleaning",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
+	Refill);
+
+	AllRangesEfficiency * Cleaning_D_PID = new AllRangesEfficiency(finalHistos,"Cleaning_D_PID","Cleaning",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
+	Refill);
+
+	AllRangesEfficiency * RICH_P_PID = new AllRangesEfficiency(finalHistos,"RICH_P_PID","RICH",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+	Refill);
+
+	AllRangesEfficiency * RICH_D_PID = new AllRangesEfficiency(finalHistos,"RICH_D_PID","RICH",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+	Refill);
+
+	AllRangesEfficiency * RICHQual_P_PID = new AllRangesEfficiency(finalHistos,"RICHQual_P_PID","RICHQual",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	Refill);
+
+	AllRangesEfficiency * RICHQual_D_PID = new AllRangesEfficiency(finalHistos,"RICHQual_D_PID","RICHQual",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	Refill);
+
+	AllRangesEfficiency * GoldenTOF_P_PID = new AllRangesEfficiency(finalHistos,"GoldenTOF_P_PID","GoldenTOF",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	Refill);
+
+	AllRangesEfficiency * GoldenTOF_D_PID = new AllRangesEfficiency(finalHistos,"GoldenTOF_D_PID","GoldenTOF",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	Refill);
+
+
+	AllRangesEfficiency * Trigger_P = new AllRangesEfficiency(finalHistos,"Trigger_P","Trigger",
+	"IsProtonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
+	"IsProtonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	Refill);
+
+	AllRangesEfficiency * Trigger_D = new AllRangesEfficiency(finalHistos,"Trigger_D","Trigger",
+	"IsDeutonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	Refill);
+
+	AllRangesEfficiency * MinimBias_P = new AllRangesEfficiency(finalHistos,"MinimBias_P","MinimBias",
 	"IsProtonMC&IsPhysTrig",			      
 	"IsProtonMC&IsPhysTrig",			   	      
 	"IsProtonMC&IsPhysTrig",
-	"IsPurePMC",			      
-	"IsPurePMC",			   	      
-	"IsPurePMC",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
 	Refill);
 
-	AllRangesEfficiency * Fragmentation_D = new AllRangesEfficiency(finalHistos,"Fragmentation_D","Fragmentation",
+	AllRangesEfficiency * MinimBias_D = new AllRangesEfficiency(finalHistos,"MinimBias_D","MinimBias",
 	"IsDeutonMC&IsPhysTrig",			      
 	"IsDeutonMC&IsPhysTrig",			   	      
 	"IsDeutonMC&IsPhysTrig",
-	"IsPureDMC",			      
-	"IsPureDMC",			   	      
-	"IsPureDMC",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
 	Refill);
 
-	AllRangesEfficiency * Basic_P = new AllRangesEfficiency(finalHistos,"BasicEff_P","BasicEfficiency",
-	"IsPurePMC",			      
-	"IsPurePMC",			   	      
-	"IsPurePMC",
-	"IsPurePMC&IsPositive&IsBasic",
-	"IsPurePMC&IsPositive&IsBasic",
-	"IsPurePMC&IsPositive&IsBasic",
+	AllRangesEfficiency * Cleaning_P = new AllRangesEfficiency(finalHistos,"Cleaning_P","Cleaning",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
 	Refill);
 
-	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency",
-	"IsPurePMC&IsPositive&IsBasic",			      
-	"IsPurePMC&IsPositive&IsBasic",			   	      
-	"IsPurePMC&IsPositive&IsBasic",
-	"IsPurePMC&IsPositive&IsPreselected",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl",
+	AllRangesEfficiency * Cleaning_D = new AllRangesEfficiency(finalHistos,"Cleaning_D","Cleaning",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
 	Refill);
 
-	AllRangesEfficiency * Quality_P       = new AllRangesEfficiency(finalHistos,"QualEff_P","QualityEfficiency",
-	"IsPurePMC&IsPositive&IsPreselected",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl",
-	"IsPurePMC&IsPositive&IsPreselected&DistanceCut&LikelihoodCut",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF&DistanceCut&LikelihoodCut&RICHBDTCut",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl&DistanceCut&LikelihoodCut&RICHBDTCut"
-	,Refill);
-        
-	AllRangesEfficiency * FullSet_P      = new AllRangesEfficiency(finalHistos,"FullsetEff_P","FullsetEfficiency",
-	"",
-	"",
+	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICH_P","RICH",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
 	Refill);
 
-	AllRangesEfficiency * Basic_D = new AllRangesEfficiency(finalHistos,"BasicEff_D","BasicEfficiency",
-	"IsPureDMC",			      
-	"IsPureDMC",			   	      
-	"IsPureDMC",
-	"IsPureDMC&IsPositive&IsBasic",
-	"IsPureDMC&IsPositive&IsBasic",
-	"IsPureDMC&IsPositive&IsBasic",
+	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICH_D","RICH",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
 	Refill);
 
-	AllRangesEfficiency * Preselections_D = new AllRangesEfficiency(finalHistos,"PresEff_D","PreselectionEfficiency",
-	"IsPureDMC&IsPositive&IsBasic",			      
-	"IsPureDMC&IsPositive&IsBasic",
-	"IsPureDMC&IsPositive&IsBasic",
-	"IsPureDMC&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl",
+	AllRangesEfficiency * RICHQual_P = new AllRangesEfficiency(finalHistos,"RICHQual_P","RICHQual",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
 	Refill);
 
-	AllRangesEfficiency * Quality_D       = new AllRangesEfficiency(finalHistos,"QualEff_D","QualityEfficiency",
-	"IsPureDMC&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl",
-	"IsPureDMC&IsPositive&IsPreselected&DistanceCut&LikelihoodCut",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF&DistanceCut&LikelihoodCut&RICHBDTCut",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl&DistanceCut&LikelihoodCut&RICHBDTCut",
-	Refill);
-        
-	AllRangesEfficiency * FullSet_D       = new AllRangesEfficiency(finalHistos,"FullsetEff_D","FullsetEfficiency"  ,
-	"",
-	"",
+	AllRangesEfficiency * RICHQual_D = new AllRangesEfficiency(finalHistos,"RICHQual_D","RICHQual",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
 	Refill);
 
-	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency",
-	"IsPurePMC&IsPositive&IsPreselected",
-	"IsPurePMC&IsPositive&IsPreselected",	     
-	"IsPurePMC&IsPositive&IsPreselected",
-	"IsPurePMC&IsPositive&IsPreselected",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromNaF",
-	"IsPurePMC&IsPositive&IsPreselected&IsFromAgl",
-	Refill);
-	
-	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency",
-	"IsPureDM&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromNaF",
-	"IsPureDMC&IsPositive&IsPreselected&IsFromAgl",
+	AllRangesEfficiency * GoldenTOF_P = new AllRangesEfficiency(finalHistos,"GoldenTOF_P","GoldenTOF",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
 	Refill);
 
-	AllRangesEfficiency * RICH_PQual = new AllRangesEfficiency(finalHistos,"RICHEff_PQual","RICHQualEfficiency",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF&RICHBDTCut",
-	"IsPurePMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl&RICHBDTCut",
-	Refill);
-	
-	AllRangesEfficiency * RICH_DQual = new AllRangesEfficiency(finalHistos,"RICHEff_DQual","RICHQualEfficiency",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut&IsFromNaF&RICHBDTCut",
-	"IsPureDMC&IsPositive&IsPreselected&LikelihoodCut&IsFromAgl&RICHBDTCut",
+	AllRangesEfficiency * GoldenTOF_D = new AllRangesEfficiency(finalHistos,"GoldenTOF_D","GoldenTOF",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
 	Refill);
 
-	AllRangesEfficiency * FullSetTOT_P       = new AllRangesEfficiency(finalHistos,"FullsetTOTEff_P","FullsetTOTEfficiency"  ,
-	"",
-	"",
+	AllRangesEfficiency * Fragmentation_P = new AllRangesEfficiency(finalHistos,"Fragmentation_P","Fragmentation",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",
 	Refill);
 
-	AllRangesEfficiency * FullSetTOT_D       = new AllRangesEfficiency(finalHistos,"FullsetTOTEff_D","FullsetTOTEfficiency"  ,
-	"",
-	"",
-	Refill);
-
-	//efficiency cascade
-	AllRangesEfficiency * CascadeTrigg = new AllRangesEfficiency(finalHistos,"CascadeTrigg","CascadeTrigg",
-        "",
-        "",
-	Refill);
-
- 	AllRangesEfficiency * CascadeFragm = new AllRangesEfficiency(finalHistos,"CascadeFragm","CascadeFragm",
-        "",
-        "",
-	Refill);
-
- 	AllRangesEfficiency * CascadeBasic = new AllRangesEfficiency(finalHistos,"CascadeBasic","CascadeBasic",
-        "",
-        "",
-        Refill);
-
- 	AllRangesEfficiency * CascadeGolden = new AllRangesEfficiency(finalHistos,"CascadeGolden","CascadeGolden",
-        "",
-        "",
-	Refill);
-	
-	AllRangesEfficiency * CascadeGoldenRICH = new AllRangesEfficiency(finalHistos,"CascadeGoldenRICH","CascadeGoldenRICH",
-        "",
-        "",
-	Refill);
-	
-	AllRangesEfficiency * CascadeQuality = new AllRangesEfficiency(finalHistos,"CascadeQuality","CascadeQuality",
-        "",
-        "",
+	AllRangesEfficiency * Fragmentation_D = new AllRangesEfficiency(finalHistos,"Fragmentation_D","Fragmentation",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
 	Refill);
 
 
-	//RigBinFullSetEff->Fill(DBarReader(chainMC, true ),vars,GetGenMomentum,Refill);
+	RigBinFullSetEff->Fill(DBarReader(chainMC, true ),vars,GetGenMomentum,Refill);
+
+	ParallelFiller<Efficiency *> Filler_;
+	Filler_.AddObject2beFilled(Cascade1,GetGenMomentum,GetGenMomentum);
+	Filler_.AddObject2beFilled(Cascade2,GetGenMomentum,GetGenMomentum);
+	Filler_.AddObject2beFilled(Cascade3,GetGenMomentum,GetGenMomentum);
+	Filler_.AddObject2beFilled(Cascade4,GetGenMomentum,GetGenMomentum);
+	Filler_.AddObject2beFilled(Cascade5,GetGenMomentum,GetGenMomentum);
+	Filler_.AddObject2beFilled(Cascade6,GetGenMomentum,GetGenMomentum);
+	Filler_.AddObject2beFilled(Cascade7,GetGenMomentum,GetGenMomentum);
+	Filler_.AddObject2beFilled(Cascade8,GetGenMomentum,GetGenMomentum);
+	Filler_.ReinitializeAll(Refill);
+
+	//main loop
+	Filler_.LoopOnMC(DBarReader(chainMC, true ),vars);
+
 
 	ParallelFiller<AllRangesEfficiency *> Filler;
+	Filler.AddObject2beFilled(FullSetTOT_P,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(FullSetTOT_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Baseline_P,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Baseline_D,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(Trigger_P,GetBetaGen,GetBetaGen);
-        Filler.AddObject2beFilled(Trigger_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Trigger_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(MinimBias_P,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(MinimBias_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Cleaning_P,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Cleaning_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICH_P,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICH_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICHQual_P,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICHQual_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(GoldenTOF_P,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(GoldenTOF_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Trigger_P_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Trigger_D_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(MinimBias_P_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(MinimBias_D_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Cleaning_P_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Cleaning_D_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICH_P_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICH_D_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICHQual_P_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(RICHQual_D_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(GoldenTOF_P_PID,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(GoldenTOF_D_PID,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(Fragmentation_P,GetBetaGen,GetBetaGen);
-        Filler.AddObject2beFilled(Fragmentation_D,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(Basic_P,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(Preselections_P,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(Quality_P	 ,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(Basic_D,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(Preselections_D,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(Quality_D	 ,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(RICH_D	 ,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(RICH_P	 ,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(RICH_DQual	 ,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(RICH_PQual	 ,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Fragmentation_D,GetBetaGen,GetBetaGen);
 	Filler.ReinitializeAll(Refill);
+
+
 	//main loop
 	Filler.LoopOnMC(DBarReader(chainMC, true ),vars);
 
-	FullSetTOT_P 	->CloneEfficiency(Trigger_P);
-	FullSetTOT_D    ->CloneEfficiency(Trigger_D);
-
-	FullSet_P 	->CloneEfficiency(Preselections_P);
-	FullSet_D       ->CloneEfficiency(Preselections_D);
-
-	Trigger_D ->Save(finalHistos);	
-	Trigger_P ->Save(finalHistos);
-	Fragmentation_D ->Save(finalHistos);	
+	RigBinFullSetEff->Save(finalHistos);
+	FullSetTOT_P 	->Save(finalHistos);
+	FullSetTOT_D 	->Save(finalHistos);
+	Baseline_P 	->Save(finalHistos);
+	Baseline_D 	->Save(finalHistos);
+	Cascade1  	->Save(finalHistos);
+	Cascade2  	->Save(finalHistos);
+	Cascade3 	->Save(finalHistos);
+	Cascade4 	->Save(finalHistos);
+	Cascade5 	->Save(finalHistos);
+	Cascade6 	->Save(finalHistos);
+	Cascade7 	->Save(finalHistos);
+	Cascade8 	->Save(finalHistos);
+	Trigger_P 	->Save(finalHistos);
+	Trigger_D 	->Save(finalHistos);
+	MinimBias_P 	->Save(finalHistos);
+	MinimBias_D 	->Save(finalHistos);
+	Cleaning_P 	->Save(finalHistos);
+	Cleaning_D 	->Save(finalHistos);
+	RICH_P 	->Save(finalHistos);
+	RICH_D 	->Save(finalHistos);
+	RICHQual_P 	->Save(finalHistos);
+	RICHQual_D 	->Save(finalHistos);
+	GoldenTOF_P	->Save(finalHistos);
+	GoldenTOF_D	->Save(finalHistos);
+	Trigger_P_PID 	->Save(finalHistos);
+	Trigger_D_PID 	->Save(finalHistos);
+	MinimBias_P_PID 	->Save(finalHistos);
+	MinimBias_D_PID 	->Save(finalHistos);
+	Cleaning_P_PID 	->Save(finalHistos);
+	Cleaning_D_PID 	->Save(finalHistos);
+	RICH_P_PID 	->Save(finalHistos);
+	RICH_D_PID 	->Save(finalHistos);
+	RICHQual_P_PID 	->Save(finalHistos);
+	RICHQual_D_PID 	->Save(finalHistos);
+	GoldenTOF_P_PID	->Save(finalHistos);
+	GoldenTOF_D_PID	->Save(finalHistos);
 	Fragmentation_P	->Save(finalHistos);
-	RigBinFullSetEff->Save(finalHistos);	
-	Basic_P		->Save(finalHistos);
-	Basic_D         ->Save(finalHistos);
-	Preselections_P	->Save(finalHistos);
-        Quality_P       ->Save(finalHistos);
-	Preselections_D ->Save(finalHistos);
-	Quality_D       ->Save(finalHistos);
-	RICH_P 		->Save(finalHistos);
-	RICH_D       	->Save(finalHistos);
-	RICH_PQual 	->Save(finalHistos);
-	RICH_DQual      ->Save(finalHistos);
-	FullSet_P 	->Save(finalHistos);
-	FullSet_D       ->Save(finalHistos);
+	Fragmentation_D ->Save(finalHistos);
 
-	Trigger_D ->Eval_Efficiency();	
-	Trigger_P	->Eval_Efficiency();
-	Fragmentation_D ->Eval_Efficiency();	
-	Fragmentation_P	->Eval_Efficiency();
+
 	RigBinFullSetEff->Eval_Efficiency();
-	Basic_D         ->Eval_Efficiency();
-	Basic_P         ->Eval_Efficiency();
-	Preselections_P	->Eval_Efficiency();
-        Quality_P       ->Eval_Efficiency();
-        Preselections_D ->Eval_Efficiency();
-        Quality_D       ->Eval_Efficiency();
-	RICH_P	        ->Eval_Efficiency();
-        RICH_D  	->Eval_Efficiency();
-	RICH_PQual      ->Eval_Efficiency();
-        RICH_DQual  	->Eval_Efficiency();
-	
-	FullSet_P       ->Eval_Efficiency();
-        FullSet_D       ->Eval_Efficiency();
-	FullSet_P 	->ComposeEfficiency(Quality_P);
-	FullSet_D       ->ComposeEfficiency(Quality_D);
-	FullSet_P       ->Eval_FittedEfficiency();
-        FullSet_D       ->Eval_FittedEfficiency();
-
-	
-	FullSetTOT_P      ->Eval_Efficiency();
-        FullSetTOT_D      ->Eval_Efficiency();
-	FullSetTOT_P      ->ComposeEfficiency(Fragmentation_P);
-	FullSetTOT_D      ->ComposeEfficiency(Fragmentation_D);
-	FullSetTOT_P      ->ComposeEfficiency(FullSet_P);
-	FullSetTOT_D      ->ComposeEfficiency(FullSet_D);
-
+	FullSetTOT_P 	->Eval_Efficiency();
+	FullSetTOT_D 	->Eval_Efficiency();
+	Baseline_P 	->Eval_Efficiency();
+	Baseline_D 	->Eval_Efficiency();
+	Cascade1  	->Eval_Efficiency();
+	Cascade2  	->Eval_Efficiency();
+	Cascade3 	->Eval_Efficiency();
+	Cascade4 	->Eval_Efficiency();
+	Cascade5 	->Eval_Efficiency();
+	Cascade6 	->Eval_Efficiency();
+	Cascade7 	->Eval_Efficiency();
+	Cascade8 	->Eval_Efficiency();
+	Trigger_P 	->Eval_Efficiency();
+	Trigger_D 	->Eval_Efficiency();
+	MinimBias_P 	->Eval_Efficiency();
+	MinimBias_D 	->Eval_Efficiency();
+	Cleaning_P 	->Eval_Efficiency();
+	Cleaning_D 	->Eval_Efficiency();
+	RICH_P 	->Eval_Efficiency();
+	RICH_D 	->Eval_Efficiency();
+	RICHQual_P 	->Eval_Efficiency();
+	RICHQual_D 	->Eval_Efficiency();
+	GoldenTOF_P	->Eval_Efficiency();
+	GoldenTOF_D     ->Eval_Efficiency();
+	Trigger_P_PID 	->Eval_Efficiency();
+	Trigger_D_PID 	->Eval_Efficiency();
+	MinimBias_P_PID 	->Eval_Efficiency();
+	MinimBias_D_PID 	->Eval_Efficiency();
+	Cleaning_P_PID 	->Eval_Efficiency();
+	Cleaning_D_PID 	->Eval_Efficiency();
+	RICH_P_PID 	->Eval_Efficiency();
+	RICH_D_PID 	->Eval_Efficiency();
+	RICHQual_P_PID 	->Eval_Efficiency();
+	RICHQual_D_PID 	->Eval_Efficiency();
+	GoldenTOF_P_PID	->Eval_Efficiency();
+	GoldenTOF_D_PID ->Eval_Efficiency();
+	Fragmentation_P->Eval_Efficiency();
+	Fragmentation_D->Eval_Efficiency();
+/*
 	FullSetTOT_P      ->Eval_StatError();
         FullSetTOT_D      ->Eval_StatError();
 	FullSetTOT_P      ->Eval_SystError(FullSet_P,FullSet_D);
         FullSetTOT_D      ->Eval_SystError(FullSet_P,FullSet_D);
 	
-	//cascade
-	CascadeTrigg		->CloneEfficiency(Trigger_D);	
-	CascadeFragm		->CloneEfficiency(Trigger_D);	
-	CascadeBasic		->CloneEfficiency(Trigger_D);	
-	CascadeGolden		->CloneEfficiency(Trigger_D);	
-	CascadeGoldenRICH	->CloneEfficiency(Trigger_D);	
-	CascadeQuality		->CloneEfficiency(Trigger_D);	
 
-	CascadeTrigg		->Eval_Efficiency();	
-	CascadeFragm		->Eval_Efficiency();	
-	CascadeBasic		->Eval_Efficiency();	
-	CascadeGolden		->Eval_Efficiency();	
-	CascadeGoldenRICH	->Eval_Efficiency();	
-	CascadeQuality		->Eval_Efficiency();	
-
-	CascadeFragm		->ComposeEfficiency(Fragmentation_D);	
-	CascadeBasic		->ComposeEfficiency(Fragmentation_D);	
-	CascadeGolden		->ComposeEfficiency(Fragmentation_D);	
-	CascadeGoldenRICH	->ComposeEfficiency(Fragmentation_D);	
-	CascadeQuality		->ComposeEfficiency(Fragmentation_D);	
-
-	CascadeBasic		->ComposeEfficiency(Basic_D);	
-	CascadeGolden		->ComposeEfficiency(Basic_D);	
-	CascadeGoldenRICH	->ComposeEfficiency(Basic_D);	
-	CascadeQuality		->ComposeEfficiency(Basic_D);	
-
-	CascadeGolden		->ComposeEfficiency(Preselections_D);	
-	CascadeGoldenRICH	->ComposeEfficiency(Preselections_D);	
-	CascadeQuality		->ComposeEfficiency(Preselections_D);	
-
-	CascadeGoldenRICH	->ComposeEfficiency(RICH_D);	
-
-	CascadeQuality		->ComposeEfficiency(Quality_D);	
-
-
-	Trigger_D	->SaveResults(finalResults);	
-	Trigger_P	->SaveResults(finalResults);	
-	Fragmentation_D ->SaveResults(finalResults);	
-	Fragmentation_P	->SaveResults(finalResults);	
-	RigBinFullSetEff->SaveResults(finalResults);
-	Basic_P		->SaveResults(finalResults);
-	Basic_D		->SaveResults(finalResults);
-	Preselections_P	->SaveResults(finalResults);
-	Quality_P       ->SaveResults(finalResults);
-	Preselections_D ->SaveResults(finalResults);
-	Quality_D       ->SaveResults(finalResults);
-	RICH_P 		->SaveResults(finalResults);
-	RICH_D 		->SaveResults(finalResults);
-	RICH_PQual 	->SaveResults(finalResults);
-	RICH_DQual      ->SaveResults(finalResults);
-	
-	FullSet_P 	->SaveResults(finalResults);
-	FullSet_D 	->SaveResults(finalResults);
 	FullSetTOT_P 	->SaveResults(finalResults);
 	FullSetTOT_D 	->SaveResults(finalResults);
+*/
 
-	CascadeTrigg		->SaveResults(finalResults);		
-	CascadeFragm		->SaveResults(finalResults);
-	CascadeBasic		->SaveResults(finalResults);
-	CascadeGolden		->SaveResults(finalResults);
-	CascadeGoldenRICH	->SaveResults(finalResults);
-	CascadeQuality		->SaveResults(finalResults);
-
-
+	RigBinFullSetEff->SaveResults(finalResults);
+	FullSetTOT_P 	->SaveResults(finalResults);
+	FullSetTOT_D 	->SaveResults(finalResults);
+	Baseline_P 	->SaveResults(finalResults);
+	Baseline_D 	->SaveResults(finalResults);
+	Cascade1  	->SaveResults(finalResults);
+	Cascade2  	->SaveResults(finalResults);
+	Cascade3 	->SaveResults(finalResults);
+	Cascade4 	->SaveResults(finalResults);
+	Cascade5 	->SaveResults(finalResults);
+	Cascade6 	->SaveResults(finalResults);
+	Cascade7 	->SaveResults(finalResults);
+	Cascade8 	->SaveResults(finalResults);
+	Trigger_P 	->SaveResults(finalResults);
+	Trigger_D 	->SaveResults(finalResults);
+	MinimBias_P 	->SaveResults(finalResults);
+	MinimBias_D 	->SaveResults(finalResults);
+	Cleaning_P 	->SaveResults(finalResults);
+	Cleaning_D 	->SaveResults(finalResults);
+	RICH_P 	->SaveResults(finalResults);
+	RICH_D 	->SaveResults(finalResults);
+	RICHQual_P 	->SaveResults(finalResults);
+	RICHQual_D 	->SaveResults(finalResults);
+	GoldenTOF_P	->SaveResults(finalResults);
+	GoldenTOF_D     ->SaveResults(finalResults);
+	Trigger_P_PID 	->SaveResults(finalResults);
+	Trigger_D_PID 	->SaveResults(finalResults);
+	MinimBias_P_PID 	->SaveResults(finalResults);
+	MinimBias_D_PID 	->SaveResults(finalResults);
+	Cleaning_P_PID 	->SaveResults(finalResults);
+	Cleaning_D_PID 	->SaveResults(finalResults);
+	RICH_P_PID 	->SaveResults(finalResults);
+	RICH_D_PID 	->SaveResults(finalResults);
+	RICHQual_P_PID 	->SaveResults(finalResults);
+	RICHQual_D_PID 	->SaveResults(finalResults);
+	GoldenTOF_P_PID	->SaveResults(finalResults);
+	GoldenTOF_D_PID ->SaveResults(finalResults);
+	Fragmentation_P->SaveResults(finalResults);
+	Fragmentation_D->SaveResults(finalResults);
 
 
 

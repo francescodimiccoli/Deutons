@@ -30,6 +30,8 @@
 
 #include "HistoBooker.h"
 
+#include "Plotter.h"
+
 int main(int argc, char * argv[])
 {
 
@@ -55,64 +57,30 @@ int main(int argc, char * argv[])
 	FileSaver finalHistos;
 	finalHistos.setName(OUTPUT.c_str());
 
+	FileSaver finalResults;
+        finalResults.setName((OUTPUT+"_Results").c_str());
+
+
 	bool checkfile = finalHistos.CheckFile();
 
 	cout<<"****************************** BINS ***************************************"<<endl;
 	SetUpUsualBinning();
 
 	cout<<"****************************** VARIABLES ***************************************"<<endl;
-	Variables * vars = new Variables;
+	Variables * vars = new Variables();
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
-	HistoBooker Booker;
 
-//	Booker.BookSingleScatter("RigvsBetaTOF",300,0,4,300,0.4,1 ,"IsPreselected&LikelihoodCut&DistanceCut",GetRigidity,GetBetaTOF,GetBetaTOF);
-//	Booker.BookSingleScatter("RigvsBetaNaF",300,1,5,300,0.7,1 ,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF",GetRigidity,GetBetaRICH,GetBetaRICH);
-//	Booker.BookSingleScatter("RigvsBetaAgl",300,2,10,300,0.9,1,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl",GetRigidity,GetBetaRICH,GetBetaRICH);
-/*
-	Booker.BookSingleScatter("NegMassvsTRDLIkTOF",300,0,4,300,-20,20 ,"IsPreselected&LikelihoodCut&DistanceCut&TofBetaSafetyCut",GetNegRecMassTOF,GetTRDePLikRatio,GetBetaTOF);
-	Booker.BookSingleScatter("NegMassvsTRDLIkNaF",300,0,4,300,-20,20 ,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&NafBetaSafetyCut",GetNegRecMassRICH,GetTRDePLikRatio,GetBetaRICH);
-	Booker.BookSingleScatter("NegMassvsTRDLIkAgl",300,0,4,300,-20,20 ,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&AglBetaSafetyCut",GetNegRecMassRICH,GetTRDePLikRatio,GetBetaRICH);
+	Plotter Plots(finalHistos,finalResults);
 
-	Booker.BookSingleHisto("MassNaF_noSel",100,0,5,"IsPositive&IsPreselected&DistanceCut&NaFBetaSafetyCut&IsFromNaF_nosel",GetRecMassRICH,GetBetaRICH);
-	Booker.BookSingleHisto("MassNaF_Sel",100,0,5,"IsPositive&IsPreselected&DistanceCut&NaFBetaSafetyCut&IsFromNaF",GetRecMassRICH,GetBetaRICH);
-	Booker.BookSingleHisto("MassNaF_Qual",100,0,5,"IsPositive&IsPreselected&DistanceCut&Likelihood&NaFBetaSafetyCut&IsFromNaF",GetRecMassRICH,GetBetaRICH);
-	Booker.BookSingleHisto("MassAgl_noSel",100,0,5,"IsPositive&IsPreselected&DistanceCut&AglBetaSafetyCut&IsFromAgl_nosel",GetRecMassRICH,GetBetaRICH);
-	Booker.BookSingleHisto("MassAgl_Sel",100,0,5,"IsPositive&IsPreselected&DistanceCut&AglBetaSafetyCut&IsFromAgl",GetRecMassRICH,GetBetaRICH);
-	Booker.BookSingleHisto("MassAgl_Qual",100,0,5,"IsPositive&IsPreselected&DistanceCut&Likelihood&AglBetaSafetyCut&IsFromAgl",GetRecMassRICH,GetBetaRICH);
-
-	Booker.BookSingleHisto("AntiDMassTOF",100,0,4,"IsPreselected&LikelihoodCut&DistanceCut&TofBetaSafetyCut",GetNegRecMassTOF);
-	Booker.BookSingleHisto("AntiDMassNaF",100,0,4,"IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&NafBetaSafetyCut",GetNegRecMassRICH);
-	Booker.BookSingleHisto("AntiDMassAgl",100,0,4,"IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&AglBetaSafetyCut",GetNegRecMassRICH);
-
+	Plots.BookMassAnalysis();
+        Plots.BookCleaningCutsAnalysis();
+        Plots.BookRichBDTAnalysis();
+        Plots.BookBetaResMatrixAnalysis();
 	
-	Booker.FillEverything(DBarReader(chainDT, false));
-	Booker.SaveEverything(finalHistos);
-*/
-	HistoBooker BookerMC;
+       if(Refill)	Plots.FillAllAnalyses(chainDT,chainMC);
+	Plots.DoAllAnalyses();
 
-	BookerMC.BookSingleScatter("BetagenvsBetaMeasTOFP",300,0.3,1,300,0.3,1,"IsPreselected&LikelihoodCut&DistanceCut&IsProtonMC",GetBetaGen,GetBetaTOF,GetBetaTOF);
-	BookerMC.BookSingleScatter("BetagenvsBetaMeasNaFP",300,0.7,1,300,0.7,1,"IsPreselected&LikelihoodCut&DistanceCut&IsProtonMC&IsFromNaF",GetBetaGen,GetBetaRICH,GetBetaRICH);
-	BookerMC.BookSingleScatter("BetagenvsBetaMeasAglP",300,0.9,1,300,0.9,1,"IsPreselected&LikelihoodCut&DistanceCut&IsProtonMC&IsFromAgl",GetBetaGen,GetBetaRICH,GetBetaRICH);
-
-	BookerMC.BookSingleScatter("BetagenvsBetaMeasTOFHe",300,0.3,1,300,0.3,1,"IsPreselectedHe&LikelihoodCut&&IsHeliumMC"	    ,GetBetaGen,GetBetaTOF,GetBetaTOF);
-	BookerMC.BookSingleScatter("BetagenvsBetaMeasNaFHe",300,0.7,1,300,0.7,1,"IsPreselectedHe&LikelihoodCut&IsHeliumMC&IsFromNaF",GetBetaGen,GetBetaRICH,GetBetaRICH);
-	BookerMC.BookSingleScatter("BetagenvsBetaMeasAglHe",300,0.9,1,300,0.9,1,"IsPreselectedHe&LikelihoodCut&IsHeliumMC&IsFromAgl",GetBetaGen,GetBetaRICH,GetBetaRICH);
-
-	BookerMC.BookSingleScatter("BetagenvsBetaMeasTOFD",300,0.3,1,300,0.3,1,"IsPreselectedHe&LikelihoodCut&&IsDeutonMC"	    ,GetBetaGen,GetBetaTOF,GetBetaTOF);
-	BookerMC.BookSingleScatter("BetagenvsBetaMeasNaFD",300,0.7,1,300,0.7,1,"IsPreselectedHe&LikelihoodCut&IsDeutonMC&IsFromNaF",GetBetaGen,GetBetaRICH,GetBetaRICH);
-	BookerMC.BookSingleScatter("BetagenvsBetaMeasAglD",300,0.9,1,300,0.9,1,"IsPreselectedHe&LikelihoodCut&IsDeutonMC&IsFromAgl",GetBetaGen,GetBetaRICH,GetBetaRICH);
-
-	BookerMC.BookSingleScatter("RICHBDTvsMassNaFP",100,0,4.5,100,-0.5,0.6,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&NaFBetaSafetyCut&IsProtonMC",GetRecMassRICH,GetRICHBDT,GetRICHBDT);
-	BookerMC.BookSingleScatter("RICHBDTvsMassAglP",100,0,4.5,100,-0.5,0.6,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&AglBetaSafetyCut&IsProtonMC",GetRecMassRICH,GetRICHBDT,GetRICHBDT);
-
-	BookerMC.BookSingleScatter("RICHBDTvsMassNaFD",100,0,4.5,100,-0.5,0.6,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&NaFBetaSafetyCut&IsDeutonMC",GetRecMassRICH,GetRICHBDT,GetRICHBDT);
-	BookerMC.BookSingleScatter("RICHBDTvsMassAglD",100,0,4.5,100,-0.5,0.6,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&AglBetaSafetyCut&IsDeutonMC",GetRecMassRICH,GetRICHBDT,GetRICHBDT);
-
-
-	BookerMC.FillEverything(DBarReader(chainMC, true));
-        BookerMC.SaveEverything(finalHistos);
-	
 	return 0;
 }
 

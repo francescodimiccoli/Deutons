@@ -24,6 +24,22 @@
 
 using namespace std;
 
+void SetCanvas(TCanvas *c1){
+ /*  gStyle->SetOptStat(0);
+   gStyle->SetOptTitle(0);
+  c1->SetFillColor(0);
+   c1->SetBorderMode(0);
+   c1->SetBorderSize(2);
+   c1->SetTickx(1);
+   c1->SetTicky(1);
+   c1->SetTopMargin(0.07666099);
+   c1->SetBottomMargin(0.120954);
+   c1->SetFrameBorderMode(0);
+   c1->SetFrameLineWidth(4);
+   c1->SetFrameBorderMode(0);
+*/
+}
+
 TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxis,std::string Yaxis){
 	
 		TH2F * Frame = new TH2F("Frame","Frame",1e3,xmin,xmax,1e3,ymin,ymax);
@@ -33,8 +49,10 @@ TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxi
 		Frame->SetStats(false);
 		Frame->SetTitle("");
 
-		Frame->GetYaxis()->SetMoreLogLabels();
-		Frame->GetXaxis()->SetMoreLogLabels();
+		Frame->SetLineWidth(4);
+
+		//Frame->GetYaxis()->SetMoreLogLabels();
+		//Frame->GetXaxis()->SetMoreLogLabels();
 
 		Frame->GetYaxis()->SetNoExponent();
 		Frame->GetXaxis()->SetNoExponent();
@@ -45,17 +63,17 @@ TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxi
 		Frame->GetXaxis()->SetTitle(Xaxis.c_str());
 		Frame->GetYaxis()->SetTitle(Yaxis.c_str());	
 
-		Frame->GetXaxis()->SetTitleFont(33);
-                Frame->GetYaxis()->SetTitleFont(33); 
+		Frame->GetXaxis()->SetTitleFont(23);
+                Frame->GetYaxis()->SetTitleFont(23); 
 
-                Frame->GetXaxis()->SetLabelFont(33);
-                Frame->GetYaxis()->SetLabelFont(33); 
+                Frame->GetXaxis()->SetLabelFont(23);
+                Frame->GetYaxis()->SetLabelFont(23); 
 
-		Frame->GetXaxis()->SetLabelSize(25);
-                Frame->GetYaxis()->SetLabelSize(25); 
+		Frame->GetXaxis()->SetLabelSize(50);
+                Frame->GetYaxis()->SetLabelSize(50); 
 
-		Frame->GetXaxis()->SetTitleSize(40);
-		Frame->GetYaxis()->SetTitleSize(40);	
+		Frame->GetXaxis()->SetTitleSize(80);
+		Frame->GetYaxis()->SetTitleSize(80);	
 
 		Frame->GetXaxis()->CenterTitle();
 		Frame->GetYaxis()->CenterTitle();
@@ -71,6 +89,7 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 	gPad-> SetTickx();
 	gPad-> SetTicky();
 
+	gPad->SetFrameLineWidth(5);
 	Distribution->SetLineColor(color);
 	Distribution->SetLineWidth(thickline);
 
@@ -138,7 +157,7 @@ void PlotDistribution(TVirtualPad * c, TH1F * Distribution, std::string Xaxis, s
 
 		else{
 			TLegend *leg = new TLegend(0.5510683,0.4323081,0.8697238,0.8649037,NULL,"brNDC");
-			leg->SetBorderSize(1);
+			leg->SetBorderSize(0);
 			leg->SetTextFont(32);
 			leg->SetLineColor(1);
 			leg->SetLineStyle(1);
@@ -235,22 +254,25 @@ void PlotTH2F(TVirtualPad * c, TH2F * Distribution, std::string Xaxis, std::stri
 
 	Distribution->SetStats(false);
 	Distribution->SetTitle("");
-
-
+	Distribution->SetLineWidth(4);
+	
 	Distribution->GetXaxis()->SetTitle(Xaxis.c_str());
 	Distribution->GetYaxis()->SetTitle(Yaxis.c_str());	
-
-	Distribution->GetXaxis()->SetTitleSize(0.045);
-	Distribution->GetYaxis()->SetTitleSize(0.045);	
 
 	Distribution->GetXaxis()->CenterTitle();
 	Distribution->GetYaxis()->CenterTitle();
 
-	Distribution->GetXaxis()->SetTitleFont(32);
-	Distribution->GetYaxis()->SetTitleFont(32); 
+	Distribution->GetXaxis()->SetTitleFont(23);
+	Distribution->GetYaxis()->SetTitleFont(23); 
 
-	Distribution->GetXaxis()->SetLabelFont(32);
-	Distribution->GetYaxis()->SetLabelFont(32); 
+	Distribution->GetXaxis()->SetLabelFont(23);
+	Distribution->GetYaxis()->SetLabelFont(23); 
+
+	Distribution->GetXaxis()->SetTitleSize(40);
+	Distribution->GetYaxis()->SetTitleSize(40);	
+	Distribution->GetXaxis()->SetLabelSize(25);
+	Distribution->GetYaxis()->SetLabelSize(25);	
+
 
 	Distribution->Draw((options+"same").c_str());
 
@@ -392,11 +414,15 @@ void PlotFunction(TVirtualPad * c, TSpline3 * Function, std::string Xaxis, std::
 	return;
 }
 
-void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname="",int dotstyle=8,bool skipleg=false){
+void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname="",int dotstyle=8,bool skipleg=false, bool cleanhigherrors=false){
 
 	c->cd();
 	c->SetTopMargin(0.1);
 	c->SetBottomMargin(0.1);
+	gPad->SetFrameLineWidth(5);
+	gPad->SetTickx();
+	gPad->SetTicky();
+	
 	TGraphErrors * Graph = new TGraphErrors();
 	int a=0;
 	for(int i=0;i<Values->GetNbinsX();i++){
@@ -404,11 +430,14 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 			if(Ekin) Graph->SetPoint(a,bins.EkPerMassBinCent(i), Values->GetBinContent(i+1));
 			else Graph->SetPoint(a,bins.GetBinCenter(i), Values->GetBinContent(i+1));
 			Graph->SetPointError(a,0,Values->GetBinError(i+1));
+			if(cleanhigherrors) if(Values->GetBinError(i+1)/Values->GetBinContent(i+1)>0.05) Graph->RemovePoint(a);
 			a++;
 		}
 	}	
 
 	Graph->SetLineColor(color);
+	Graph->SetFillColor(color);
+	Graph->SetFillStyle(3001);
 	Graph->SetLineWidth(7);
 	Graph->SetLineColor(color);
 	Graph->SetMarkerSize(3);
@@ -478,6 +507,18 @@ void PlotTH1FRatiointoGraph(TVirtualPad * c, Binning bins, TH1F * Values1, TH1F 
 
 	return;
 
+
+}
+
+void PlotRatioWithSplineintoGraph(TVirtualPad * c, Binning bins, TH1F * Values1,TSpline3 * Spline, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname1="",int dotstyle=8){
+	TH1F * Ratio1=(TH1F*) Values1->Clone();
+        Ratio1->Sumw2();
+	
+	for(int i=0;i<Values1->GetNbinsX();i++){
+		Ratio1->SetBinContent(i+1,Values1->GetBinContent(i+1)/Spline->Eval(bins.EkPerMassBinCent(i)));
+		Ratio1->SetBinError(i+1,Values1->GetBinError(i+1)/Spline->Eval(bins.EkPerMassBinCent(i)));			
+	}
+	PlotTH1FintoGraph(c,bins, Ratio1,Xaxis,Yaxis,2,Ekin,options,xmin,xmax,ymin,ymax,legendname1,dotstyle);
 
 }
 

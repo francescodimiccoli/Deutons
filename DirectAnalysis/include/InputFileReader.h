@@ -16,8 +16,10 @@ TChain * InputFileReader(std::string listfilename,std::string treename){
     		std::cout<<line.c_str()<<std::endl;
 		chain->Add(line.c_str());
 	}
+	std::cout<<"Chain: "<<chain<<std::endl;
 	std::cout<<chain->GetEntries()<<std::endl;
-	return chain;
+	if(chain->GetEntries()==0) return 0; 
+	else return chain;
 }
 
 

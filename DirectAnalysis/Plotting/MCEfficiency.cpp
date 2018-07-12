@@ -80,30 +80,47 @@ int main(int argc, char * argv[]){
 
         cout<<"****************************** PLOTTING EFFICIENCIES ***************************************"<<endl;
 
-	AllRangesEfficiency * Trigger_P       = new AllRangesEfficiency(finalHistos,"Trigger_P","Trigger");
+	AllRangesEfficiency * FullSetTOT_P = new AllRangesEfficiency(finalHistos,"FullSetTOT_P","FullSetTOT");
+
+        AllRangesEfficiency * FullSetTOT_D = new AllRangesEfficiency(finalHistos,"FullSetTOT_D","FullSetTOT");
+
+        Efficiency * Cascade1 = new Efficiency(finalHistos,"Cascade1","Cascade1",PRB);
+        Efficiency * Cascade2 = new Efficiency(finalHistos,"Cascade2","Cascade2",PRB);
+        Efficiency * Cascade3 = new Efficiency(finalHistos,"Cascade3","Cascade3",PRB);
+        Efficiency * Cascade4 = new Efficiency(finalHistos,"Cascade4","Cascade4",PRB);
+        Efficiency * Cascade5 = new Efficiency(finalHistos,"Cascade5","Cascade5",PRB);
+        Efficiency * Cascade6 = new Efficiency(finalHistos,"Cascade6","Cascade6",PRB);
+        Efficiency * Cascade7 = new Efficiency(finalHistos,"Cascade7","Cascade7",PRB);
+        Efficiency * Cascade8 = new Efficiency(finalHistos,"Cascade8","Cascade8",PRB);
+
+        AllRangesEfficiency * Trigger_P = new AllRangesEfficiency(finalHistos,"Trigger_P","Trigger");
+        AllRangesEfficiency * Trigger_D = new AllRangesEfficiency(finalHistos,"Trigger_D","Trigger");
+        AllRangesEfficiency * MinimBias_P = new AllRangesEfficiency(finalHistos,"MinimBias_P","MinimBias");
+        AllRangesEfficiency * MinimBias_D = new AllRangesEfficiency(finalHistos,"MinimBias_D","MinimBias");
+        AllRangesEfficiency * Cleaning_P = new AllRangesEfficiency(finalHistos,"Cleaning_P","Cleaning");
+        AllRangesEfficiency * Cleaning_D = new AllRangesEfficiency(finalHistos,"Cleaning_D","Cleaning");
+        AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICH_P","RICH");
+        AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICH_D","RICH");
+        AllRangesEfficiency * RICHQual_P = new AllRangesEfficiency(finalHistos,"RICHQual_P","RICHQual");
+        AllRangesEfficiency * RICHQual_D = new AllRangesEfficiency(finalHistos,"RICHQual_D","RICHQual");
+	AllRangesEfficiency * GoldenTOF_P = new AllRangesEfficiency(finalHistos,"GoldenTOF_P","GoldenTOF");
+	AllRangesEfficiency * GoldenTOF_D = new AllRangesEfficiency(finalHistos,"GoldenTOF_D","GoldenTOF");
+
+	AllRangesEfficiency * Trigger_P_PID = new AllRangesEfficiency(finalHistos,"Trigger_P_PID","Trigger");
+        AllRangesEfficiency * Trigger_D_PID = new AllRangesEfficiency(finalHistos,"Trigger_D_PID","Trigger");
+        AllRangesEfficiency * MinimBias_P_PID = new AllRangesEfficiency(finalHistos,"MinimBias_P_PID","MinimBias");
+        AllRangesEfficiency * MinimBias_D_PID = new AllRangesEfficiency(finalHistos,"MinimBias_D_PID","MinimBias");
+        AllRangesEfficiency * Cleaning_P_PID = new AllRangesEfficiency(finalHistos,"Cleaning_P_PID","Cleaning");
+        AllRangesEfficiency * Cleaning_D_PID = new AllRangesEfficiency(finalHistos,"Cleaning_D_PID","Cleaning");
+        AllRangesEfficiency * RICH_P_PID = new AllRangesEfficiency(finalHistos,"RICH_P_PID","RICH");
+        AllRangesEfficiency * RICH_D_PID = new AllRangesEfficiency(finalHistos,"RICH_D_PID","RICH");
+        AllRangesEfficiency * RICHQual_P_PID = new AllRangesEfficiency(finalHistos,"RICHQual_P_PID","RICHQual");
+        AllRangesEfficiency * RICHQual_D_PID = new AllRangesEfficiency(finalHistos,"RICHQual_D_PID","RICHQual");
+	AllRangesEfficiency * GoldenTOF_P_PID = new AllRangesEfficiency(finalHistos,"GoldenTOF_P_PID","GoldenTOF");
+	AllRangesEfficiency * GoldenTOF_D_PID = new AllRangesEfficiency(finalHistos,"GoldenTOF_D_PID","GoldenTOF");
+	
 	AllRangesEfficiency * Fragmentation_P = new AllRangesEfficiency(finalHistos,"Fragmentation_P","Fragmentation");
-	AllRangesEfficiency * Basic_P 	      = new AllRangesEfficiency(finalHistos,"BasicEff_P","BasicEfficiency");
-	AllRangesEfficiency * Preselections_P = new AllRangesEfficiency(finalHistos,"PresEff_P","PreselectionEfficiency");
-	AllRangesEfficiency * Quality_P       = new AllRangesEfficiency(finalHistos,"QualEff_P","QualityEfficiency"     );
-        AllRangesEfficiency * FullSet_P      = new AllRangesEfficiency(finalHistos,"FullsetEff_P","FullsetEfficiency"   );
-	AllRangesEfficiency * FullSetTOT_P      = new AllRangesEfficiency(finalHistos,"FullsetTOTEff_P","FullsetTOTEfficiency"   );
-
-
-	AllRangesEfficiency * Trigger_D       = new AllRangesEfficiency(finalHistos,"Trigger_D","Trigger");
 	AllRangesEfficiency * Fragmentation_D = new AllRangesEfficiency(finalHistos,"Fragmentation_D","Fragmentation");
-	AllRangesEfficiency * Basic_D 	      = new AllRangesEfficiency(finalHistos,"BasicEff_D","BasicEfficiency");
-	AllRangesEfficiency * Preselections_D = new AllRangesEfficiency(finalHistos,"PresEff_D","PreselectionEfficiency");
-	AllRangesEfficiency * Quality_D       = new AllRangesEfficiency(finalHistos,"QualEff_D","QualityEfficiency"     );
-        AllRangesEfficiency * FullSet_D       = new AllRangesEfficiency(finalHistos,"FullsetEff_D","FullsetEfficiency"  );
-	AllRangesEfficiency * FullSetTOT_D    = new AllRangesEfficiency(finalHistos,"FullsetTOTEff_D","FullsetTOTEfficiency"   );
-
-
-	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICHEff_P","RICHEfficiency");
-	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICHEff_D","RICHEfficiency");
-
-	AllRangesEfficiency * RICH_PQual = new AllRangesEfficiency(finalHistos,"RICHEff_PQual","RICHQualEfficiency");
-	AllRangesEfficiency * RICH_DQual = new AllRangesEfficiency(finalHistos,"RICHEff_DQual","RICHQualEfficiency");
-
 
 
 
@@ -112,94 +129,80 @@ int main(int argc, char * argv[]){
 	gPad->SetLogy();
 	gPad->SetLogx();
 
-	// Fix Legend	
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"TOF range",8);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Preselections_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"NaF range",22);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Preselections_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"Agl range",29);
+	TH1F * Cascadehistos[8];
+	Cascadehistos[0] = (TH1F *) Cascade1 ->GetEfficiency();
+	Cascadehistos[1] = (TH1F *) Cascade2 ->GetEfficiency();
+	Cascadehistos[2] = (TH1F *) Cascade3 ->GetEfficiency();
+	Cascadehistos[3] = (TH1F *) Cascade4 ->GetEfficiency();
+	Cascadehistos[4] = (TH1F *) Cascade5 ->GetEfficiency();
+	Cascadehistos[5] = (TH1F *) Cascade6 ->GetEfficiency();
+	Cascadehistos[6] = (TH1F *) Cascade7 ->GetEfficiency();
+	Cascadehistos[7] = (TH1F *) Cascade8 ->GetEfficiency();
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"Basic + Clean-Event",8);
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)FullSet_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"Full Set (Basic + Clean-Event + Quality)",24);	
-	
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons",8);
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons",8);
-	
+	for(int i=0;i<8;i++) Cascadehistos[i]->Divide(Cascadehistos[0]);
 
-	//
-		
+	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[0],"Kinetic Energy [GeV/n.]", "Efficiency",1,true,"same",0.1,50,5e-4,1.1,"MinimumBias",8);
+	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[1],"Kinetic Energy [GeV/n.]", "Efficiency",2,true,"same",0.1,50,5e-4,1.1,"LooseQ1",8);
+	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[2],"Kinetic Energy [GeV/n.]", "Efficiency",3,true,"same",0.1,50,5e-4,1.1,"Cleaning",8);
+	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[3],"Kinetic Energy [GeV/n.]", "Efficiency",4,true,"same",0.1,50,5e-4,1.1,"Good Time",8);
+	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[4],"Kinetic Energy [GeV/n.]", "Efficiency",5,true,"same",0.1,50,5e-4,1.1,"CIEMAT NaF",8);
+	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[5],"Kinetic Energy [GeV/n.]", "Efficiency",6,true,"same",0.1,50,5e-4,1.1,"CIEMAT Agl",8);
+	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[6],"Kinetic Energy [GeV/n.]", "Efficiency",7,true,"same",0.1,50,5e-4,1.1,"BDT NaF",8);
+	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[7],"Kinetic Energy [GeV/n.]", "Efficiency",8,true,"same",0.1,50,5e-4,1.1,"BDT Agl",8);
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"TOF range",8,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Preselections_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"NaF range",22,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Preselections_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Agl range",29,true);
-
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)Preselections_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons TOF",8,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)Preselections_D->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons NaF",22,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)Preselections_D->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons Agl",29,true);
-	
-
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)FullSet_P->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons TOF",24,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)FullSet_P->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons NaF",26,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)FullSet_P->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons Agl",30,true);
-
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)FullSet_D->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons TOF",24,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)FullSet_D->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons NaF",26,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)FullSet_D->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons Agl",30,true);
-
-		
 	Plots.Add(c1);
 	Plots.writeObjsInFolder("Efficiencies");
 
 	//trigger.
 	TCanvas * c_ = new TCanvas("Trigger Efficiency"); 
-        c_->SetCanvasSize(2000,1500);
+	c_->SetCanvasSize(2000,1500);
+	c_->Divide(2,1);
 
+	c_->cd(1);
 	DrawEfficiencyComparison(Trigger_P,Trigger_D);
+	c_->cd(2);
+	DrawEfficiencyComparison(Trigger_P_PID,Trigger_D_PID);
+
 
 	Plots.Add(c_);
 	Plots.writeObjsInFolder("Efficiencies");
 
 
 	//fragm.
-	TCanvas * c = new TCanvas(" Fragmentation Efficiency"); 
-        c->SetCanvasSize(2000,1500);
-
-	DrawEfficiencyComparison(Fragmentation_P,Fragmentation_D);
+	TCanvas * c = new TCanvas(" Minimum Bias Efficiency"); 
+	c->SetCanvasSize(2000,1500);
+	c->Divide(2,1);
+	
+	c->cd(1);
+	DrawEfficiencyComparison(MinimBias_P,MinimBias_D);
+	c->cd(2);
+	DrawEfficiencyComparison(MinimBias_P_PID,MinimBias_D_PID);
 
 	Plots.Add(c);
 	Plots.writeObjsInFolder("Efficiencies");
 
 	//basic.
-	TCanvas * d_ = new TCanvas(" Basic Efficiency"); 
+	TCanvas * d_ = new TCanvas(" Cleaning Efficiency"); 
         d_->SetCanvasSize(2000,1500);
+	d_->Divide(2,1);
 
-	DrawEfficiencyComparison(Basic_P,Basic_D);
+	d_->cd(1);
+	DrawEfficiencyComparison(Cleaning_P,Cleaning_D);
+	d_->cd(2);
+	DrawEfficiencyComparison(Cleaning_P_PID,Cleaning_D_PID);
 
 	Plots.Add(d_);
-	Plots.writeObjsInFolder("Efficiencies");
-
-
-	//presel.
-	TCanvas * d = new TCanvas(" Preselection Efficiency"); 
-        d->SetCanvasSize(2000,1500);
-
-	DrawEfficiencyComparison(Preselections_P,Preselections_D);
-
-	Plots.Add(d);
-	Plots.writeObjsInFolder("Efficiencies");
-
-	//charge+BDT
-	TCanvas * c2 = new TCanvas(" Quality Efficiency"); 
-        c2->SetCanvasSize(2000,1500);
-
-	DrawEfficiencyComparison(Quality_P,Quality_D);
-
-	Plots.Add(c2);
 	Plots.writeObjsInFolder("Efficiencies");
 
 	//rich rec
 	TCanvas * c3 = new TCanvas(" RICH rec. Efficiency"); 
         c3->SetCanvasSize(2000,1500);
+	c3->Divide(2,1);
 
+	c3->cd(1);
 	DrawEfficiencyComparison(RICH_P,RICH_D);
+	c3->cd(2);
+	DrawEfficiencyComparison(RICH_P_PID,RICH_D_PID);
 	
 	Plots.Add(c3);
 	Plots.writeObjsInFolder("Efficiencies");
@@ -208,11 +211,29 @@ int main(int argc, char * argv[]){
 	//rich BDT
 	TCanvas * c4 = new TCanvas(" RICH Quality Efficiency"); 
         c4->SetCanvasSize(2000,1500);
-
-	DrawEfficiencyComparison(RICH_PQual,RICH_DQual);
+	c4->Divide(2,1);
+	
+	c4->cd(1);
+	DrawEfficiencyComparison(RICHQual_P,RICHQual_D);
+	c4->cd(2);
+	DrawEfficiencyComparison(RICHQual_P_PID,RICHQual_D_PID);
 	
 	Plots.Add(c4);
 	Plots.writeObjsInFolder("Efficiencies");
+
+	//goldenTOF	
+	TCanvas * c2 = new TCanvas("GoldenTOF Efficiency"); 
+        c2->SetCanvasSize(2000,1500);
+	c2->Divide(2,1);
+
+	c2->cd(1);
+	DrawEfficiencyComparison(GoldenTOF_P,GoldenTOF_D);
+	c2->cd(2);
+	DrawEfficiencyComparison(GoldenTOF_P_PID,GoldenTOF_D_PID);
+
+	Plots.Add(c2);
+	Plots.writeObjsInFolder("Efficiencies");
+
 
 	//global
 	TCanvas * d4 = new TCanvas("Global Efficiency"); 
@@ -223,6 +244,14 @@ int main(int argc, char * argv[]){
 	Plots.Add(d4);
 	Plots.writeObjsInFolder("Efficiencies");
 
+	//fragmentation
+	TCanvas * d4_ = new TCanvas("Deuteron Survival");
+        d4_->SetCanvasSize(2000,1500);
+
+        DrawEfficiencyComparison(Fragmentation_P,Fragmentation_D);
+
+        Plots.Add(d4_);
+        Plots.writeObjsInFolder("Efficiencies");
 
 
 	return 0;
@@ -268,9 +297,9 @@ void DrawEfficiencyComparison( AllRangesEfficiency * EffP,AllRangesEfficiency * 
 	RatioNaF ->Divide( (TH1F*)EffD->EffNaF->GetEfficiency()->Clone());
 	RatioAgl ->Divide( (TH1F*)EffD->EffAgl->GetEfficiency()->Clone());
 
-	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.4,1.7,"TOF range",8,true);
-	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.4,1.7,"NaF range",22,true);
-	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.4,1.7,"Agl range",29,true);
+	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.6,1.3,"TOF range",8,true);
+	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.6,1.3,"NaF range",22,true);
+	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.6,1.3,"Agl range",29,true);
 
 
 

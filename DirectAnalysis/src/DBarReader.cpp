@@ -7,6 +7,7 @@
 
 void DBarReader::Init(){
 
+    rtiInfo 	  = new RTIInfo();
     ntpSHeader    = new NtpSHeader(); 
     ntpHeader     = new NtpHeader(); 
     ntpMCHeader   = new NtpMCHeader();          
@@ -75,7 +76,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->ResetVariables();
 
     ////////////////////// EVENT INFORMATION ///////////////////////////////////////
-   // vars->Run               = ntpHeader->run;
+    vars->Run               = ntpSHeader->run;
     vars->Event             = ntpSHeader->event;
     vars->NEvent            = NEvent;
     vars->U_time            = ntpHeader->utc_time; 
@@ -87,6 +88,10 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
     // Stroemer cutoff is in the tracker data
     vars->Rcutoff = ntpTracker->stoermer_cutoff[0];
+    vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1];
+    vars->Livetime_RTI =   rtiInfo->lf;    
+    vars->good_RTI   = rtiInfo->good;
+    vars->isinsaa = rtiInfo->isinsaa;
 
     vars->NAnticluster      = ntpHeader->nanti;
     vars->NTofClusters      = ntpHeader->ntofh; // NOTE: That sees to be an error
@@ -111,9 +116,13 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->PhysBPatt = ntpHeader->sublvl1;
     vars->JMembPatt = ntpHeader->trigpatt;
 
-    bool goodChi2 = (ntpTracker->chisqn[1][0] < 10) && 
-                    (ntpTracker->chisqn[1][1] < 10);
+    bool goodChi2 =  (ntpTracker->chisqn[1][0] < vars->Chi2Xcut->Eval(abs(ntpTracker->rig[1])) &&
+			ntpTracker->chisqn[1][1] < vars->Chi2Ycut->Eval(abs(ntpTracker->rig[1])));	
     
+    /*bool goodChi2 =  (ntpTracker->chisqn[1][0] < 10 &&
+			ntpTracker->chisqn[1][1] < 10);	
+   */
+
     //if( (ntpHeader->trigpatt & 0x2) != 0   )  vars->CUTMASK |= 1 << 0;
     if((vars->PhysBPatt>>1)>0        )   vars->CUTMASK |= 1 << 0;
     if( minTOF()                          )  vars->CUTMASK |= 1 << 1;
@@ -131,6 +140,8 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->Rup   = ntpTracker->rig[2]; // 2 -- Upper inner tracker
     vars->Rdown = ntpTracker->rig[3]; // 3 -- Lower inner tracker
     vars->R_L1  = ntpTracker->rig[4]; // 4 -- Inner + L1
+    vars->R_noMS= ntpTracker->rig[9]; // 9 -- Inner tracker NoMS
+
 
     vars->Chisquare         = ntpTracker->chisqn[1][0]; // 1 = Inner      , 0 = X side
     vars->Chisquare_L1      = ntpTracker->chisqn[4][0]; // 4 = L1 + Inner , 0 = X side
@@ -206,19 +217,53 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 	 for (int is=0; is<10; is++) if ((ntpRich->clus_mean[is]-ntpRich->beta)>0.01) vars->Bad_ClusteringRICH++;
     vars->NSecondariesRICHrich=0;
 	 for (int is=0; is< 5; is++) if ((ntpRich->pmt_np_uncorr[is]>5)&&(ntpRich->pmt_dist[is]>3.5)) vars->NSecondariesRICHrich++;
+
+   vars->HitHValldir   =ntpRich->tot_hyp_hit_uncorr[0][0];
+   vars->HitHVallrefl  =ntpRich->tot_hyp_hit_uncorr[0][1];
+   vars->HitHVoutdir   =ntpRich->tot_hyp_hit_uncorr[1][0];
+   vars->HitHVoutrefl  =ntpRich->tot_hyp_hit_uncorr[1][1];   
+
+  
+
+
  
 }
-
-DBarReader::DBarReader(TTree * tree, bool _isMC) {
+DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI) {
     Init();
     Tree = tree;
+    Tree_RTI = tree_RTI	;   
+
     Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
     Tree->SetBranchAddress( "Header"  , &ntpHeader     );
     Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
     Tree->SetBranchAddress( "Tof"     , &ntpTof        );
     Tree->SetBranchAddress( "Tracker" , &ntpTracker    );
     Tree->SetBranchAddress( "Rich"    , &ntpRich       );
+//  Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
+//  Tree->SetBranchAddress( "Anti"   , &ntpAnti       );
+//  Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
+    if(Tree_RTI){
+	Tree_RTI->SetBranchAddress( "RTIInfo" , &rtiInfo  );		
+    	Tree_RTI->BuildIndex("SHeader.utime");
+	Tree->AddFriend(Tree_RTI);
+    }	
 
+    isMC = _isMC;
+    if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
+    cout<<"************ TOT ENTRIES ***************"<<endl;
+    cout<<Tree->GetEntries()<<endl;
+}
+
+DBarReader::DBarReader(TTree * tree, bool _isMC) {
+    Init();
+    Tree = tree;
+
+    Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
+    Tree->SetBranchAddress( "Header"  , &ntpHeader     );
+    Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
+    Tree->SetBranchAddress( "Tof"     , &ntpTof        );
+    Tree->SetBranchAddress( "Tracker" , &ntpTracker    );
+    Tree->SetBranchAddress( "Rich"    , &ntpRich       );
 //  Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
 //  Tree->SetBranchAddress( "Anti"   , &ntpAnti       );
 //  Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
@@ -228,3 +273,4 @@ DBarReader::DBarReader(TTree * tree, bool _isMC) {
     cout<<"************ TOT ENTRIES ***************"<<endl;
     cout<<Tree->GetEntries()<<endl;
 }
+

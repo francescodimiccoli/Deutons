@@ -127,6 +127,7 @@ int main(int argc, char * argv[])
 	HeContAgl->Save(finalHistos);
 	for(int i=0;i<10;i++) HeContTOFCheck[i]->Save(finalHistos);
 
+	if(!Refill) {
 	HeContTOF->FitDistributions(0.8, 2.3);
 	HeContNaF->FitDistributions(0.8, 2.3);
 	HeContAgl->FitDistributions(0.8, 2.3);
@@ -141,7 +142,7 @@ int main(int argc, char * argv[])
 	HeContNaF->SaveResults(finalResults);
 	HeContAgl->SaveResults(finalResults);
 	for(int i=0;i<10;i++) HeContTOFCheck[i]->SaveResults(finalResults);
-
+	}
 	return 0;
 }
 
