@@ -142,7 +142,7 @@ void Flux::Eval_Flux(){
 		Acc_SystErr->SetTitle("Acceptance Syst. Error");	
 	}
 
-	if(ExposureTime) FluxEstim -> Divide(ExposureTime);
+	//if(ExposureTime) FluxEstim -> Divide(ExposureTime);
 	
 	if(Geom_Acceptance){
 		float totaltriggers = Triggers->Integral();

@@ -88,6 +88,12 @@ int main(int argc, char * argv[]){
 	DrawBranching(finalHistos.GetFile(),"HeContNaF",NaFDB,Plots);
 	DrawBranching(finalHistos.GetFile(),"HeContAgl",AglDB,Plots);
 
+/*        for(int i=0;i<10;i++){
+                 std::string basename = "HeContCheck" + to_string(i);
+		 DrawBranching(finalHistos.GetFile(),basename.c_str(),ToFDB,Plots);
+	} 
+   
+*/
 	DrawFragments(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots);
 	DrawFragments(finalHistos.GetFile(),"HeContNaF",NaFDB,Plots);
 	DrawFragments(finalHistos.GetFile(),"HeContAgl",AglDB,Plots);
@@ -113,7 +119,7 @@ void DrawFragmentsCheck(TFile * file, std::string basename, Binning Bins, FileSa
 			Data.push_back(GetListOfTemplates(file, pathdatacheck[i]));	
 			cout<<"check: "<<Data[i].size()<<endl;
 			for(int bin =0; bin < Bins.size();bin++){
-				Data[i][bin]->Rebin(6);
+				//Data[i][bin]->Rebin(3);
 				if(bin==0) SumData[i] = (TH1F *)Data[i][0]->Clone();
 				else SumData[i]->Add(Data[i][bin]);
 			}
@@ -123,17 +129,14 @@ void DrawFragmentsCheck(TFile * file, std::string basename, Binning Bins, FileSa
 		float T[10];
 
 		for(int i=0;i<10;i++){
-		//	P[i]=SumData[i]->Integral(SumData[i]->FindBin(0.1),SumData[i]->FindBin(1.2));
-		//	D[i]=SumData[i]->Integral(SumData[i]->FindBin(1.5),SumData[i]->FindBin(2.2));
-		//	T[i]=SumData[i]->Integral(SumData[i]->FindBin(2.7),SumData[i]->FindBin(3.7));
-			P[i]=SumData[i]->Integral(SumData[i]->FindBin(0.4),SumData[i]->FindBin(1.2));
-			D[i]=SumData[i]->Integral(SumData[i]->FindBin(1.5),SumData[i]->FindBin(2.2));
+			P[i]=SumData[i]->Integral(SumData[i]->FindBin(0.5),SumData[i]->FindBin(1.2));
+			D[i]=SumData[i]->Integral(SumData[i]->FindBin(1.6),SumData[i]->FindBin(2.2));
 			T[i]=SumData[i]->Integral(SumData[i]->FindBin(2.7),SumData[i]->FindBin(3.7));
 		}
 
 
 		for(int i=0;i<10;i++) {
-			SumData[i]->Scale(1/SumData[i]->Integral());//GetBinContent(72));
+			SumData[i]->Scale(1/SumData[i]->Integral());
 		}
 		for(int i=0;i<10;i++) {
 			SumRatio[i]=(TH1F*)SumData[i]->Clone();
@@ -174,9 +177,9 @@ void DrawFragmentsCheck(TFile * file, std::string basename, Binning Bins, FileSa
 				       Talone->SetPointError(i,0,pow(1/T[i],0.5)*T[i]/T[0]);
 				     } 
 
-		PlotGraph(gPad,TOverP,"Cut Value","Fragments Ratio",2,"PL",1.5,2.3,1e-6,1.5,"T over P");;
-		PlotGraph(gPad,DOverP,"Cut Value","Fragments Ratio",1,"PLsame",1.5,2.3,1e-6,1.5,"D over P");;
-		PlotGraph(gPad,DOverT,"Cut Value","Fragments Ratio",4,"PLsame",1.5,2.3,1e-6,1.5,"D over T");;
+		PlotGraph(gPad,TOverP,"Cut Value","Fragments Ratio",2,"PL",1.5,2.3,0.5,2.5,"T over P");;
+		PlotGraph(gPad,DOverP,"Cut Value","Fragments Ratio",1,"PLsame",1.5,2.3,0.5,2.5,"D over P");;
+		PlotGraph(gPad,DOverT,"Cut Value","Fragments Ratio",4,"PLsame",1.5,2.3,0.5,125,"D over T");;
 	
 		TCanvas * c5 = new TCanvas("Tritium over L1 Cut");
                 c5->SetCanvasSize(2000,1500);
@@ -322,9 +325,9 @@ void DrawFragments(TFile * file, std::string basename, Binning Bins, FileSaver P
 	TCanvas * c4 = new TCanvas("Fragments Tot");
         c4->SetCanvasSize(2000,1500);
 	c4->cd();
-	
+
 	SumData->Scale(1/SumQ2Data->Integral());
-	SumMC->Scale(1/SumQ2MC->Integral());
+	SumMC->Scale(1/SumQ2Data->Integral());
 
 	PlotDistribution(gPad, SumData ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",1,"ePsame",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,3,"Data-Driven");   
         PlotDistribution(gPad, SumMC ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",3,"same",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,6,"Helium MC");	

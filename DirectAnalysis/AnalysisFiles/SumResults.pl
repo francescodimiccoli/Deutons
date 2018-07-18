@@ -27,17 +27,17 @@ for ($n=0;$n<$nparts; $n++)
 	}
 	print $command."\n";
 	print "\n";
-	system("bsub -q ams1nd $command");	
+	system("bsub -q 1nh $command");	
 }
 
 #system("hadd -f $workdir/$ARGV[0]/Result.root $workdir/$ARGV[0]/Result_P*");
 
-$jobs = `bjobs -q ams1nd| wc -l`;
-$running = `bjobs -q ams1nd|grep RUN| wc -l`;
+$jobs = `bjobs -q 1nh| wc -l`;
+$running = `bjobs -q 1nh|grep RUN| wc -l`;
 
 while($jobs>4){
-	$jobs = `bjobs -q ams1nd| wc -l`;
-	$running = `bjobs -q ams1nd|grep RUN| wc -l`;
+	$jobs = `bjobs -q 1nh| wc -l`;
+	$running = `bjobs -q 1nh|grep RUN| wc -l`;
 
 	print "jobs: ".$jobs."\n";
 	print "running: ".$running."\n";
@@ -47,12 +47,12 @@ while($jobs>4){
 
 system ("perl SumPartials.pl $ARGV[0]");
 
-$jobs = `bjobs -q ams1nd| wc -l`;
-$running = `bjobs -q ams1nd|grep RUN| wc -l`;
+$jobs = `bjobs -q 1nh| wc -l`;
+$running = `bjobs -q 1nh|grep RUN| wc -l`;
 
 while($jobs>4){
-	$jobs = `bjobs -q ams1nd| wc -l`;
-	$running = `bjobs -q ams1nd|grep RUN| wc -l`;
+	$jobs = `bjobs -q 1nh| wc -l`;
+	$running = `bjobs -q 1nh|grep RUN| wc -l`;
 
 	print "jobs: ".$jobs."\n";
 	print "running: ".$running."\n";

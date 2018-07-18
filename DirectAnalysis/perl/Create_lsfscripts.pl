@@ -43,7 +43,7 @@ system ("mkdir $outdir/../logs/$ARGV[0]-$ARGV[1]");
 
 print "Creating job files...";
 
-$bookntuples=1;
+$bookntuples=0;
 $bookplots=0;
 $booklat=0;
 $bookhecont=0;
@@ -72,8 +72,10 @@ for($j=0;$j<$njobs;$j++)
 
 			if($bookntuples){
 				print OUT "xrdcp -f $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$j.root /tmp/fdimicco/;\n";
+				print OUT "xrdcp -f $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$j.root_MC /tmp/fdimicco/;\n";
 				print OUT  "\$WORKDIR/Ntuple_Maker \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Ntuple$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/Ntuple$j.root $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples;\n";
+				print OUT "xrdcp -f /tmp/fdimicco/Ntuple$j.root_MC $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples;\n";
 			}
 		
 			if($bookplots){
@@ -167,7 +169,7 @@ for($k=0;$k<3;$k++){
 
 			if($control){
 				print "job result nr $joblaunched not found\n"; 
-				#system("bsub -q $queue -o $workdir/lsf/lsf$joblaunched.out -e $workdir/err/lsf$joblaunched.err $workdir/lsf/lsf$joblaunched.tcsh\n");
+				system("bsub -q $queue -o $workdir/lsf/lsf$joblaunched.out -e $workdir/err/lsf$joblaunched.err $workdir/lsf/lsf$joblaunched.tcsh\n");
 			}
 			else {
 				print "job $joblaunched ok\n";

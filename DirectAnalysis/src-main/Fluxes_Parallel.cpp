@@ -138,7 +138,7 @@ int main(int argc, char * argv[])
 		Filler.ReinitializeAll(Refill);
 		//main loops
 		Filler.ExposureTimeFilling_RTI(DBarReader(chainDT, false ),vars,finalHistos);
-		//Filler.LoopOnMCForGenAcceptance(DBarReader(chainMC, true ),vars,finalHistos);		
+		Filler.LoopOnMCForGenAcceptance(DBarReader(chainMC, true ),vars,finalHistos);		
 
 	cout<<"************* D FLUX ************"<<endl;
 
@@ -149,6 +149,7 @@ int main(int argc, char * argv[])
 	DummyDNaF->Set_MCPar(0.5,200,0.009014888);	
 	DummyDAgl->Set_MCPar(0.5,200,0.009014888);	
 
+
 	DFluxTOF->ApplyEfficCorr(GoodChi_TOF 	     ->GetGlobCorrection());
 	DFluxNaF->ApplyEfficCorr(GoodChi_NaF 	     ->GetGlobCorrection());
 	DFluxAgl->ApplyEfficCorr(GoodChi_Agl 	     ->GetGlobCorrection());
@@ -158,9 +159,9 @@ int main(int argc, char * argv[])
 	DFluxTOF->ApplyEfficCorr(GoodLtof_TOF 	     ->GetGlobCorrection());
 	DFluxNaF->ApplyEfficCorr(GoodLtof_NaF 	     ->GetGlobCorrection());
 	DFluxAgl->ApplyEfficCorr(GoodLtof_Agl 	     ->GetGlobCorrection());
-//	DFluxTOF->ApplyEfficCorr(Good1Track_TOF     ->GetGlobCorrection());
-//	DFluxNaF->ApplyEfficCorr(Good1Track_NaF     ->GetGlobCorrection());
-//	DFluxAgl->ApplyEfficCorr(Good1Track_Agl     ->GetGlobCorrection());
+	DFluxTOF->ApplyEfficCorr(Good1Track_TOF     ->GetGlobCorrection());
+	DFluxNaF->ApplyEfficCorr(Good1Track_NaF     ->GetGlobCorrection());
+	DFluxAgl->ApplyEfficCorr(Good1Track_Agl     ->GetGlobCorrection());
 	DFluxTOF->ApplyEfficCorr(GoodQTrack_TOF     ->GetGlobCorrection());
 	DFluxNaF->ApplyEfficCorr(GoodQTrack_NaF     ->GetGlobCorrection());
 	DFluxAgl->ApplyEfficCorr(GoodQTrack_Agl     ->GetGlobCorrection());
@@ -218,9 +219,9 @@ int main(int argc, char * argv[])
 	PFluxTOF->ApplyEfficCorr(GoodLtof_TOF 	     ->GetGlobCorrection());
 	PFluxNaF->ApplyEfficCorr(GoodLtof_NaF 	     ->GetGlobCorrection());
 	PFluxAgl->ApplyEfficCorr(GoodLtof_Agl 	     ->GetGlobCorrection());
-//	PFluxTOF->ApplyEfficCorr(Good1Track_TOF     ->GetGlobCorrection());
-//	PFluxNaF->ApplyEfficCorr(Good1Track_NaF     ->GetGlobCorrection());
-//	PFluxAgl->ApplyEfficCorr(Good1Track_Agl     ->GetGlobCorrection());
+	PFluxTOF->ApplyEfficCorr(Good1Track_TOF     ->GetGlobCorrection());
+	PFluxNaF->ApplyEfficCorr(Good1Track_NaF     ->GetGlobCorrection());
+	PFluxAgl->ApplyEfficCorr(Good1Track_Agl     ->GetGlobCorrection());
 	PFluxTOF->ApplyEfficCorr(GoodQTrack_TOF     ->GetGlobCorrection());
 	PFluxNaF->ApplyEfficCorr(GoodQTrack_NaF     ->GetGlobCorrection());
 	PFluxAgl->ApplyEfficCorr(GoodQTrack_Agl     ->GetGlobCorrection());

@@ -52,12 +52,12 @@ int main(int argc, char * argv[])
 
 	TChain * chain_RTI = InputFileReader(INPUT1.c_str(),"RTI");
 
-	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+	//TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
 	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
 	//TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
-	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
-	//TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
+	TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
+	TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
 
 	FileSaver LatWeights;
 	LatWeights.setName("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/Weights.root");
@@ -175,8 +175,8 @@ int main(int argc, char * argv[])
 
 	Filler2.ReinitializeAll(Refill);
 	//main loops 2
-	//Filler2.LoopOnMC(DBarReader(chainMC, true ),vars);
-	Filler2.LoopOnData(DBarReader(chainDT, false , chain_RTI),vars);
+	Filler2.LoopOnMC(DBarReader(chainMC, true ),vars);
+	Filler2.LoopOnData(DBarReader(chainDT, false),vars);
 
 	//saving
 	HEPPresEffCorr -> Save(finalHistos);

@@ -78,6 +78,7 @@ class ParallelFiller{
     void LoopOnMC(DBarReader readerMC, Variables * vars){
         if(!Refill) return;
         cout<<" MC Filling ..."<< endl;
+	if(!readerMC.GetTree()) return;
         if(readerMC.GetTree()->GetNbranches()>11) {LoopOnMC(readerMC.GetTree(),vars); return;}
 	else{
 	for(int i=0;i<readerMC.GetTreeEntries();i++){
@@ -113,6 +114,7 @@ class ParallelFiller{
 
     void LoopOnData(DBarReader readerDT, Variables * vars){
         if(!Refill) return;
+	if(!readerDT.GetTree()) return;
 	if(readerDT.GetTree()->GetNbranches()>11) {LoopOnData(readerDT.GetTree(),vars); return;}
         else 
 	cout<<" DATA Filling ..."<< endl;

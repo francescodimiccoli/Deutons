@@ -47,7 +47,9 @@ int main(int argc, char * argv[])
     
     bool Refill = false;
     if(refill!="") Refill=true;
-    
+   
+  TChain * chain_RTI = InputFileReader(INPUT1.c_str(),"RTI");
+ 
   TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
   TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
@@ -91,7 +93,11 @@ int main(int argc, char * argv[])
     BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
     BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
 
-    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false),PRB,GetRigidity,"HEPCounts","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1",Refill);
+    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false,chain_RTI),PRB,GetRigidity,"HEPCounts","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1",Refill);
+    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false,chain_RTI),ToFPB,GetRigidity,"TOFPCounts","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1",Refill);
+    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false,chain_RTI),NaFPB,GetRigidity,"NaFPCounts","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1",Refill);
+    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false,chain_RTI),AglPB,GetRigidity,"AglPCounts","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1",Refill);
+
 
 
   //  TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",60,0.3,1.6);	
@@ -120,8 +126,8 @@ int main(int argc, char * argv[])
         Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);
 
         //main loops
-        Filler.LoopOnMC  (DBarReader(chainMC, true ),vars);
-        Filler.LoopOnData(DBarReader(chainDT, false),vars);
+//        Filler.LoopOnMC  (DBarReader(chainMC, true ),vars);
+//        Filler.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
         //
 
 //	SmearingCheck->DisableFit();
@@ -183,7 +189,7 @@ int main(int argc, char * argv[])
 void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, DBarReader readerDT, Binning Bins,float (*discr_var) (Variables * vars),std::string name,std::string cut, bool refill){
 
 	Variables * vars = new Variables();
-	Efficiency * Counts = new Efficiency(finalhistos,"HEPCounts","HEPCounts",Bins,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
+	Efficiency * Counts = new Efficiency(finalhistos,name,name,Bins,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
 
 	ParallelFiller<Efficiency *> Filler;
 	Filler.AddObject2beFilled(Counts,GetRigidity,GetRigidity); 

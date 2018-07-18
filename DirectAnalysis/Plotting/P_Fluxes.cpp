@@ -38,7 +38,7 @@
 #include "TGraphAsymmErrors.h"
 
 TSpline3 * GetFluxSpline(TGraphAsymmErrors * Graph);
-
+TSpline3 * GetFluxSpline(TH1F * Graph, Binning bins);
 int main(int argc, char * argv[]){
         cout<<"****************************** FILES OPENING ***************************************"<<endl;
 
@@ -218,6 +218,29 @@ int main(int argc, char * argv[]){
         Plots.Add(c3);
 	Plots.writeObjsInFolder("Fluxes");
 
+	TCanvas *c3_ = new TCanvas("FullSet vs Baseline");
+	c3_->SetCanvasSize(2000,1500);
+	c3_->cd();
+        gPad->SetLogx();
+        gPad->SetLogy();
+        gPad->SetGridx();
+        gPad->SetGridy();
+
+	TSpline3 *BaseFlux = GetFluxSpline(HEPFlux->GetFlux(),PRB);
+	BaseFlux->SetLineColor(2);
+	BaseFlux->SetLineWidth(2);
+	//PlotTH1FintoGraph(gPad,PRB,   HEPFlux->GetFlux(), "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (H.E.)",24);
+	PlotRatioWithSplineintoGraph(gPad,PRB, HEPFlux->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (H.E.)",24);
+	PlotRatioWithSplineintoGraph(gPad,ToFDB, PFluxTOF->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (TOF)",8);
+	PlotRatioWithSplineintoGraph(gPad,NaFDB, PFluxNaF->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (NaF)",22);
+	PlotRatioWithSplineintoGraph(gPad,AglDB, PFluxAgl->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (Agl)",29);
+	
+
+	//AMSFlux->Draw("same");
+	 
+        Plots.Add(c3_);
+	Plots.writeObjsInFolder("Fluxes");
+
 
 	return 0;
 }
@@ -232,5 +255,16 @@ TSpline3 * GetFluxSpline(TGraphAsymmErrors * Graph){
 
 	for(int i=0; i<AMSpointnr-1; i++)	int c= Graph->GetPoint(i+1,X[i],Y[i]);
 	TSpline3 *AMSFlux = new TSpline3("AMSFlux",X,Y,AMSpointnr-1);
+	return AMSFlux;	
+}
+
+
+TSpline3 * GetFluxSpline(TH1F * Graph, Binning bins){
+
+	double X[Graph->GetNbinsX()];
+	double Y[Graph->GetNbinsX()];
+
+	for(int i=0; i<Graph->GetNbinsX(); i++){	X[i]=bins.EkPerMassBinCent(i); Y[i]=Graph->GetBinContent(i+1);}
+	TSpline3 *AMSFlux = new TSpline3("AMSFlux",X,Y,Graph->GetNbinsX());
 	return AMSFlux;	
 }

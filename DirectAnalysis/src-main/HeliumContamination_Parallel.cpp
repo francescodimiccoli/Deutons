@@ -51,10 +51,12 @@ int main(int argc, char * argv[])
 	bool Refill = false;
 	if(refill!="") Refill=true;
 
+	TChain * chain_RTI = InputFileReader(INPUT1.c_str(),"RTI");
+
 	TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
 	TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
-//	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-//	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+	//TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
 
 
 	FileSaver finalHistos;
@@ -119,7 +121,7 @@ int main(int argc, char * argv[])
 	for(int i=0;i<10;i++) Filler2.AddObject2beFilled(HeContTOFCheck[i],GetBetaTOF,GetLoweredBetaTOF);
 	Filler2.ReinitializeAll(Refill);
 	//main loops
-	Filler2.LoopOnData(DBarReader(chainDT, false),vars);
+	Filler2.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
 	Filler2.LoopOnMC(DBarReader(chainMC, true),vars);
 
 	HeContTOF->Save(finalHistos);

@@ -16,7 +16,9 @@ $out_path  = "/eos/ams/user/f/fdimicco/";
 
 #$ntuplepath  = "/eos/ams/group/dbar/TrentoNTuples/$ARGV[0]-$ARGV[1]";
 $ntuplepath    = "/eos/ams/user/f/fdimicco/AnalysisNTuples/$ARGV[0]-$ARGV[1]/Ntuples";
-$ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/1305944557-1494599304/Ntuples";
+#$ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/1305944557-1494599304/Ntuples";
+$ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/MC-MC/Ntuples";
+
 
 
 
@@ -33,7 +35,7 @@ $num_Rootuple = scalar(@Rootuple);
 chomp (@NTuple = `ls  $ntuplepath | grep -v "log" |  sed s/.root//g`);
 $num_NTuple = scalar(@NTuple);
 
-chomp (@NTupleMC = `ls  $ntuplepathMC | grep -v "log" |  sed s/.root//g`);
+chomp (@NTupleMC = `ls  $ntuplepathMC | grep -v "log"`);
 $num_NTupleMC = scalar(@NTupleMC);
 
 
@@ -104,7 +106,7 @@ for ($n=0;$n<$njobs; $n++)
 	if($ARGV[3]==1){
 		open(OUT,">","$workdir/InputNtupleLists/FileListMC$n.txt");
 		for ($j=($num_NTupleMC)/$njobs*$n ; $j<($num_NTupleMC)/$njobs*($n+1) ; $j++){
-			print OUT  "$ntuplepathMC/$NTupleMC[$j].root\n";
+			print OUT  "$ntuplepathMC/$NTupleMC[$j]\n";
 		}
 	}
 	else{
