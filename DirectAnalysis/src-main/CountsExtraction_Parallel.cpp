@@ -26,11 +26,11 @@
 #include "../include/Cuts.h"
 #include "../include/ParallelFiller.h"
 #include "../include/Efficiency.h"
-#
+
 #include "../include/filesaver.h"
 #include "../include/TemplateFITbetasmear.h"
 
-void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, DBarReader readerDT, Binning Bins,float (*discr_var) (Variables * vars),std::string name,std::string cut, bool refill);
+void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, DBarReader readerDT, bool refill);
 
 int main(int argc, char * argv[])
 {
@@ -74,8 +74,8 @@ int main(int argc, char * argv[])
     TTree *TreeDT = NULL;
 
     cout<<"****************************** BINS ***************************************"<<endl;
-    SetUpUsualBinning();
-
+	SetUpEffCorrBinning();
+    
     cout<<"****************************** VARIABLES ***************************************"<<endl;
     Variables * vars = new Variables();
     TF1 * HeContTOF=0x0;
@@ -93,10 +93,7 @@ int main(int argc, char * argv[])
     BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
     BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
 
-    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false,chain_RTI),PRB,GetRigidity,"HEPCounts","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1",Refill);
-    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false,chain_RTI),ToFPB,GetRigidity,"TOFPCounts","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1",Refill);
-    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false,chain_RTI),NaFPB,GetRigidity,"NaFPCounts","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1",Refill);
-    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false,chain_RTI),AglPB,GetRigidity,"AglPCounts","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1",Refill);
+    ExtractSimpleCountNr(finalHistos,finalResults,DBarReader(chainDT, false,chain_RTI),Refill);
 
 
 
@@ -126,8 +123,8 @@ int main(int argc, char * argv[])
         Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);
 
         //main loops
-//        Filler.LoopOnMC  (DBarReader(chainMC, true ),vars);
-//        Filler.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
+        Filler.LoopOnMC  (DBarReader(chainMC, true ),vars);
+        Filler.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
         //
 
 //	SmearingCheck->DisableFit();
@@ -186,26 +183,68 @@ int main(int argc, char * argv[])
 }
 
 
-void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, DBarReader readerDT, Binning Bins,float (*discr_var) (Variables * vars),std::string name,std::string cut, bool refill){
+void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, DBarReader readerDT, bool refill){
+
+	std::string nameHE  = "HEPCounts" ;
+	std::string nameTOF = "TOFPCounts";
+	std::string nameNaF = "NaFPCounts";
+	std::string nameAgl = "AglPCounts";
+
 
 	Variables * vars = new Variables();
-	Efficiency * Counts = new Efficiency(finalhistos,name,name,Bins,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
+	Efficiency * CountsHE = new Efficiency(finalhistos,nameHE ,nameHE ,PRB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
+	Efficiency * CountsTOF= new Efficiency(finalhistos,nameTOF,nameTOF,ToFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
+	Efficiency * CountsNaF= new Efficiency(finalhistos,nameNaF,nameNaF,NaFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
+	Efficiency * CountsAgl= new Efficiency(finalhistos,nameAgl,nameAgl,AglPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
 
 	ParallelFiller<Efficiency *> Filler;
-	Filler.AddObject2beFilled(Counts,GetRigidity,GetRigidity); 
+	Filler.AddObject2beFilled(CountsHE,GetRigidity,GetRigidity); 
+	Filler.AddObject2beFilled(CountsTOF,GetRigidity,GetRigidity); 
+	Filler.AddObject2beFilled(CountsNaF,GetRigidity,GetRigidity); 
+	Filler.AddObject2beFilled(CountsAgl,GetRigidity,GetRigidity); 
 	Filler.ReinitializeAll(refill);
 
 	Filler.LoopOnData(readerDT,vars);
 		
-	Counts->Save(finalhistos);
+	CountsHE->Save(finalhistos);
+      	CountsTOF->Save(finalhistos);
+      	CountsNaF->Save(finalhistos);
+      	CountsAgl->Save(finalhistos);
       
-	TH1F * Counts_P = (TH1F*) Counts->GetBefore();
-	Counts_P->SetName(name.c_str());
-	Counts_P->SetTitle(name.c_str());
+
+	TH1F * Counts_P = (TH1F*) CountsHE->GetBefore();
+	Counts_P->SetName(nameHE.c_str());
+	Counts_P->SetTitle(nameHE.c_str());
 
 	if(Counts_P){
       		finalResults.Add(Counts_P);
-      		finalResults.writeObjsInFolder((name + "/" + name).c_str());
+      		finalResults.writeObjsInFolder((nameHE + "/" + nameHE).c_str());
+	}
+
+	TH1F * Counts_TOFP = (TH1F*) CountsTOF->GetBefore();
+	Counts_TOFP->SetName(nameTOF.c_str());
+	Counts_TOFP->SetTitle(nameTOF.c_str());
+
+	if(Counts_TOFP){
+      		finalResults.Add(Counts_TOFP);
+      		finalResults.writeObjsInFolder((nameTOF + "/" + nameTOF).c_str());
+	}
+
+	TH1F * Counts_NaFP = (TH1F*) CountsNaF->GetBefore();
+	Counts_NaFP->SetName(nameNaF.c_str());
+	Counts_NaFP->SetTitle(nameNaF.c_str());
+
+	if(Counts_NaFP){
+      		finalResults.Add(Counts_NaFP);
+      		finalResults.writeObjsInFolder((nameNaF + "/" + nameNaF).c_str());
+	}
+	TH1F * Counts_AglP = (TH1F*) CountsAgl->GetBefore();
+	Counts_AglP->SetName(nameAgl.c_str());
+	Counts_AglP->SetTitle(nameAgl.c_str());
+
+	if(Counts_AglP){
+      		finalResults.Add(Counts_AglP);
+      		finalResults.writeObjsInFolder((nameAgl + "/" + nameAgl).c_str());
 	}
 
  

@@ -233,6 +233,7 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI) {
     Tree = tree;
     Tree_RTI = tree_RTI	;   
 
+    if(Tree){
     Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
     Tree->SetBranchAddress( "Header"  , &ntpHeader     );
     Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
@@ -252,25 +253,28 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI) {
     if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
     cout<<"************ TOT ENTRIES ***************"<<endl;
     cout<<Tree->GetEntries()<<endl;
+    }	
 }
 
 DBarReader::DBarReader(TTree * tree, bool _isMC) {
     Init();
     Tree = tree;
+    if(Tree){
+	    Tree->SetBranchAddress( "RTIInfo" , &rtiInfo  );	
+	    Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
+	    Tree->SetBranchAddress( "Header"  , &ntpHeader     );
+	    Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
+	    Tree->SetBranchAddress( "Tof"     , &ntpTof        );
+	    Tree->SetBranchAddress( "Tracker" , &ntpTracker    );
+	    Tree->SetBranchAddress( "Rich"    , &ntpRich       );
+	    //  Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
+	    //  Tree->SetBranchAddress( "Anti"   , &ntpAnti       );
+	    //  Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
 
-    Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
-    Tree->SetBranchAddress( "Header"  , &ntpHeader     );
-    Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
-    Tree->SetBranchAddress( "Tof"     , &ntpTof        );
-    Tree->SetBranchAddress( "Tracker" , &ntpTracker    );
-    Tree->SetBranchAddress( "Rich"    , &ntpRich       );
-//  Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
-//  Tree->SetBranchAddress( "Anti"   , &ntpAnti       );
-//  Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
-
-    isMC = _isMC;
-    if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
-    cout<<"************ TOT ENTRIES ***************"<<endl;
-    cout<<Tree->GetEntries()<<endl;
+	    isMC = _isMC;
+	    if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
+	    cout<<"************ TOT ENTRIES ***************"<<endl;
+	    cout<<Tree->GetEntries()<<endl;
+    }	
 }
 

@@ -48,7 +48,7 @@ $bookplots=0;
 $booklat=0;
 $bookhecont=0;
 $bookeff=0;
-$bookcounts=0;
+$bookcounts=1;
 $bookeffcorr=0;
 $bookflux=1;
 $bookinfos=0;
@@ -71,11 +71,11 @@ for($j=0;$j<$njobs;$j++)
 		
 
 			if($bookntuples){
-				print OUT "xrdcp -f $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$j.root /tmp/fdimicco/;\n";
-				print OUT "xrdcp -f $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$j.root_MC /tmp/fdimicco/;\n";
-				print OUT  "\$WORKDIR/Ntuple_Maker \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Ntuple$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
-				print OUT "xrdcp -f /tmp/fdimicco/Ntuple$j.root $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples;\n";
-				print OUT "xrdcp -f /tmp/fdimicco/Ntuple$j.root_MC $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples;\n";
+				print OUT "rm /tmp/fdimicco/*.root;\n";
+				print OUT  "\$WORKDIR/Ntuple_Maker \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/ 1 >> /tmp/fdimicco/log$j.log;\n\n";
+				print OUT "xrdcp -f /tmp/fdimicco/*.root $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples;\n";
+				print OUT "xrdcp -f /tmp/fdimicco/*.root_MC $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples;\n";
+				print OUT "touch $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$j.check;\n";
 			}
 		
 			if($bookplots){
@@ -158,7 +158,7 @@ for($k=0;$k<3;$k++){
 
 			$control=0;
 			if($bookinfos) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Infos/Infos$joblaunched.txt| awk '{print\$5}'`; if($check<1000) {print $check; $control=1}} 
-			if($bookntuples) { $check = `ls -la $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$joblaunched.root| awk '{print\$5}'`; if($check<1000) {print $check; $control=1}} 
+			if($bookntuples) { $check = `ls -la $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$joblaunched.check| awk '{print\$5}'`; if($check>=0) {print $check; $control=1}} 
 			if($bookplots) { $check = `ls -la $outdir_plots/$ARGV[0]-$ARGV[1]/Plots/Plots$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
 			if($booklat) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/LatRew/LatRew$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
 			if($bookhecont) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm/HeliumFragm$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 

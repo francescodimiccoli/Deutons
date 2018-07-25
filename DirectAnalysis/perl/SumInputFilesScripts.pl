@@ -15,7 +15,7 @@ $mcT_path  = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/full/T.B1059/t.pl1.0
 $out_path  = "/eos/ams/user/f/fdimicco/";
 
 #$ntuplepath  = "/eos/ams/group/dbar/TrentoNTuples/$ARGV[0]-$ARGV[1]";
-$ntuplepath    = "/eos/ams/user/f/fdimicco/AnalysisNTuples/$ARGV[0]-$ARGV[1]/Ntuples";
+$ntuplepath    = "/eos/ams/user/f/fdimicco/AnalysisNTuples/Data-Data/Ntuples";
 #$ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/1305944557-1494599304/Ntuples";
 $ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/MC-MC/Ntuples";
 
@@ -32,7 +32,7 @@ print "Listing All Data Files..\n";
 chomp (@Rootuple = `ls  $datapath | grep -v "log" |  sed s/.root//g`);
 $num_Rootuple = scalar(@Rootuple);
 
-chomp (@NTuple = `ls  $ntuplepath | grep -v "log" |  sed s/.root//g`);
+chomp (@NTuple = `ls  $ntuplepath | grep -v "log" |grep -v "check" |  sed s/.root//g`);
 $num_NTuple = scalar(@NTuple);
 
 chomp (@NTupleMC = `ls  $ntuplepathMC | grep -v "log"`);
@@ -53,22 +53,44 @@ for($n=0;$n<$num_Rootuple;$n++){
 	}
 }
 
+@ntuple;
+$i=0;
+
+for($n=0;$n<$num_NTuple;$n++){
+	if($NTuple[$n]>$ARGV[0]&& $NTuple[$n]<$ARGV[1]){ 
+		$ntuple[$i]=$NTuple[$n];
+		$i++;
+	}
+}
+
 $num_rootuple = scalar(@rootuple);
 print "Files in the requested period: ".$num_rootuple."\n";
+
+
+$num_ntuple = scalar(@ntuple);
+print "NTuples in the requested period: ".$num_ntuple."\n";
+
+
 
 for ($n=0;$n<$njobs; $n++)
 {
 	if($ARGV[3]==1){
 		open(OUT,">","$workdir/InputNtupleLists/FileListDT$n.txt");
-		for ($j=($num_NTuple)/$njobs*$n ; $j<($num_NTuple)/$njobs*($n+1) ; $j++){
-			print OUT  "$ntuplepath/$NTuple[$j].root\n";
+		for ($j=($num_ntuple)/$njobs*$n ; $j<($num_ntuple)/$njobs*($n+1) ; $j++){
+			if($ntuple[$j] ne "") {
+				print OUT "$ntuplepath/$ntuple[$j].root\n";
+				$ntuple[$j]="";
+			}
 		}
 	}
 	else{
 		open(OUT,">","$workdir/InputFileLists/FileListDT$n.txt");
 		for ($j=($num_rootuple)/$njobs*$n ; $j<($num_rootuple)/$njobs*($n+1) ; $j++)
 		{
-			print OUT  "$datapath/$rootuple[$j].root\n";
+			if($rootuple[$j] ne "") {	
+				print OUT  "$datapath/$rootuple[$j].root\n";
+				$rootuple[$j]="";	
+			}
 		}
 	}
 }

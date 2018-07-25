@@ -35,8 +35,13 @@
 std::string Convert (float number){
     std::ostringstream buff;
     buff<<number;
-    return buff.str();   
+    std::string output= buff.str();
+    output.erase(4,output.end()-output.begin()-4);	
+    return output;   
 }
+
+
+
 
 int colorbase = 55;
 std::vector<TH1F*> GetListOfTemplates(TFile * file,std::string path){
