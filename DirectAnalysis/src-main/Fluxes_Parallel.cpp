@@ -21,6 +21,7 @@
 #include "../include/InputFileReader.h"
 #include "../include/Globals.h"
 
+
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 #include "../include/ParallelFiller.h"
@@ -105,23 +106,22 @@ int main(int argc, char * argv[])
 	cout<<"****************************** FLUXES EVALUATION ******************************************"<<endl;
 
 	
-	Flux * DFluxTOF = new Flux(finalHistos,finalResults, "DFluxTOF", "FullSetTOT_D_TOF","FullSetTOT","TOFfits/Fit Results/Primary Deuteron Counts","ExposureTOF","Gen. Acceptance",ToFDB);
-	Flux * DFluxNaF = new Flux(finalHistos,finalResults, "DFluxNaF", "FullSetTOT_D_NaF","FullSetTOT","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF","Gen. Acceptance",NaFDB);
-	Flux * DFluxAgl = new Flux(finalHistos,finalResults, "DFluxAgl", "FullSetTOT_D_Agl","FullSetTOT","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl","Gen. Acceptance",AglDB);
+	Flux * DFluxTOF = new Flux(finalHistos,finalResults, "DFluxTOF", "FullSetTOT_D_TOF","FullSetTOT","TOFfits/Fit Results/Primary Deuteron Counts","ExposureTOF",ToFDB);
+	Flux * DFluxNaF = new Flux(finalHistos,finalResults, "DFluxNaF", "FullSetTOT_D_NaF","FullSetTOT","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF",NaFDB);
+	Flux * DFluxAgl = new Flux(finalHistos,finalResults, "DFluxAgl", "FullSetTOT_D_Agl","FullSetTOT","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl",AglDB);
 
-	Flux * HEPFlux  = new Flux(finalHistos,finalResults,"PFluxHE", "RigBinFullSetEff","RigBinFullSetEff","HEPCounts/HEPCounts/HEPCounts","HEExposure","Gen. Acceptance",PRB);
+	Flux * HEPFlux  = new Flux(finalHistos,finalResults,"PFluxHE","RigBinFullSetEff","RigBinFullSetEff","HEPCounts/HEPCounts/HEPCounts","HEExposure",PRB);
+	Flux * PFluxTOF = new Flux(finalHistos,finalResults, "PFluxTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF",ToFPB);
+	Flux * PFluxNaF = new Flux(finalHistos,finalResults, "PFluxNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF",NaFPB);
+	Flux * PFluxAgl = new Flux(finalHistos,finalResults, "PFluxAgl", "FullSetTOT_P_Agl","FullSetTOT","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl",AglPB);
 
-	Flux * PFluxTOF = new Flux(finalHistos,finalResults, "PFluxTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF","Gen. Acceptance",ToFPB);
-	Flux * PFluxNaF = new Flux(finalHistos,finalResults, "PFluxNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF","Gen. Acceptance",NaFPB);
-	Flux * PFluxAgl = new Flux(finalHistos,finalResults, "PFluxAgl", "FullSetTOT_P_Agl","FullSetTOT","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl","Gen. Acceptance",AglPB);
-
-	Flux * DummyDTOF = new Flux(finalHistos,finalResults, "DummyDTOF", "Baseline_D_TOF","Baseline","TOFfits/Fit Results/Primary Deuteron Counts","ExposureTOF","Gen. Acceptance",ToFDB);
-	Flux * DummyDNaF = new Flux(finalHistos,finalResults, "DummyDNaF", "Baseline_D_NaF","Baseline","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF","Gen. Acceptance",NaFDB);
-	Flux * DummyDAgl = new Flux(finalHistos,finalResults, "DummyDAgl", "Baseline_D_Agl","Baseline","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl","Gen. Acceptance",AglDB);
+	Flux * DummyDTOF = new Flux(finalHistos,finalResults, "DummyDTOF", "Baseline_D_TOF","Baseline","TOFfits/Fit Results/Primary Deuteron Counts","ExposureTOF",ToFDB);
+	Flux * DummyDNaF = new Flux(finalHistos,finalResults, "DummyDNaF", "Baseline_D_NaF","Baseline","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF",NaFDB);
+	Flux * DummyDAgl = new Flux(finalHistos,finalResults, "DummyDAgl", "Baseline_D_Agl","Baseline","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl",AglDB);
                                                                         
-	Flux * DummyPTOF = new Flux(finalHistos,finalResults, "DummyPTOF", "Baseline_P_TOF","Baseline","TOFPCounts/TOFPCounts/TOFPCounts","ExposureTOF","Gen. Acceptance",ToFPB);
-	Flux * DummyPNaF = new Flux(finalHistos,finalResults, "DummyPNaF", "Baseline_P_NaF","Baseline","NaFPCounts/NaFPCounts/NaFPCounts","ExposureNaF","Gen. Acceptance",NaFPB);
-	Flux * DummyPAgl = new Flux(finalHistos,finalResults, "DummyPAgl", "Baseline_P_Agl","Baseline","AglPCounts/AglPCounts/AglPCounts","ExposureAgl","Gen. Acceptance",AglPB);
+	Flux * DummyPTOF = new Flux(finalHistos,finalResults, "DummyPTOF", "Baseline_P_TOF","Baseline","TOFPCounts/TOFPCounts/TOFPCounts","ExposureTOF",ToFPB);
+	Flux * DummyPNaF = new Flux(finalHistos,finalResults, "DummyPNaF", "Baseline_P_NaF","Baseline","NaFPCounts/NaFPCounts/NaFPCounts","ExposureNaF",NaFPB);
+	Flux * DummyPAgl = new Flux(finalHistos,finalResults, "DummyPAgl", "Baseline_P_Agl","Baseline","AglPCounts/AglPCounts/AglPCounts","ExposureAgl",AglPB);
 
 
 	cout<<"********** EXPOSURE TIME & GEOM. ACCEPT. ********"<<endl;
@@ -137,20 +137,23 @@ int main(int argc, char * argv[])
 		Filler.AddObject2beFilled(DummyPTOF,GetBetaGen,GetBetaGen,"IsProtonMC");
 		Filler.AddObject2beFilled(DummyPNaF,GetBetaGen,GetBetaGen,"IsProtonMC");
 		Filler.AddObject2beFilled(DummyPAgl,GetBetaGen,GetBetaGen,"IsProtonMC");
+		Filler.AddObject2beFilled(DummyDTOF,GetBetaGen,GetBetaGen,"IsDeutonMC");
+		Filler.AddObject2beFilled(DummyDNaF,GetBetaGen,GetBetaGen,"IsDeutonMC");
+		Filler.AddObject2beFilled(DummyDAgl,GetBetaGen,GetBetaGen,"IsDeutonMC");
+
 
 		Filler.ReinitializeAll(Refill);
 		//main loops
 		Filler.ExposureTimeFilling_RTI(DBarReader(chainDT, false ),vars,finalHistos);
-		Filler.LoopOnMCForGenAcceptance(DBarReader(chainMC, true ),vars,finalHistos);		
 
 	cout<<"************* D FLUX ************"<<endl;
 
-	DFluxTOF->Set_MCPar(0.5,200,0.009014888);	
-	DFluxNaF->Set_MCPar(0.5,200,0.009014888);	
-	DFluxAgl->Set_MCPar(0.5,200,0.009014888);	
-	DummyDTOF->Set_MCPar(0.5,200,0.009014888);	
-	DummyDNaF->Set_MCPar(0.5,200,0.009014888);	
-	DummyDAgl->Set_MCPar(0.5,200,0.009014888);	
+	DFluxTOF->Set_MCPar(0.5,200,1,"D.B1081/d.pl1.l1.0_5200.2_01.info");	
+	DFluxNaF->Set_MCPar(0.5,200,1,"D.B1081/d.pl1.l1.0_5200.2_01.info");	
+	DFluxAgl->Set_MCPar(0.5,200,1,"D.B1081/d.pl1.l1.0_5200.2_01.info");	
+	DummyDTOF->Set_MCPar(0.5,200,1,"D.B1081/d.pl1.l1.0_5200.2_01.info");	
+	DummyDNaF->Set_MCPar(0.5,200,1,"D.B1081/d.pl1.l1.0_5200.2_01.info");	
+	DummyDAgl->Set_MCPar(0.5,200,1,"D.B1081/d.pl1.l1.0_5200.2_01.info");	
 
 
 	DFluxTOF->ApplyEfficCorr(GoodChi_TOF 	     ->GetGlobCorrection());
@@ -193,25 +196,17 @@ int main(int argc, char * argv[])
 	DummyDNaF->SaveResults(finalResults);
 	DummyDAgl->SaveResults(finalResults);
 
-
 	cout<<"************* P FLUX ************"<<endl;
 
-	HEPFlux ->Set_MCPar(0.5,100,0.00856558);	
-	PFluxTOF->Set_MCPar(0.5,100,0.00856558);	
-	PFluxNaF->Set_MCPar(0.5,100,0.00856558);	
-	PFluxAgl->Set_MCPar(0.5,100,0.00856558);	
-	DummyPTOF->Set_MCPar(0.5,100,0.00856558);	
-	DummyPNaF->Set_MCPar(0.5,100,0.00856558);	
-	DummyPAgl->Set_MCPar(0.5,100,0.00856558);	
+	HEPFlux ->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
+	PFluxTOF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
+	PFluxNaF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
+	PFluxAgl->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
+	DummyPTOF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
+	DummyPNaF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
+	DummyPAgl->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
 	
-	/*HEPFlux->Set_MCPar(0.5,200,0.009014888);
-	PFluxTOF->Set_MCPar(0.5,200,0.009014888);	
-	PFluxNaF->Set_MCPar(0.5,200,0.009014888);	
-	PFluxAgl->Set_MCPar(0.5,200,0.009014888);	
-	DummyPTOF->Set_MCPar(0.5,200,0.009014888);	
-	DummyPNaF->Set_MCPar(0.5,200,0.009014888);	
-	DummyPAgl->Set_MCPar(0.5,200,0.009014888);	
-*/
+
 
 	PFluxTOF->ApplyEfficCorr(GoodChi_TOF 	     ->GetGlobCorrection());
 	PFluxNaF->ApplyEfficCorr(GoodChi_NaF 	     ->GetGlobCorrection());

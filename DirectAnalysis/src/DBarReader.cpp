@@ -45,13 +45,14 @@ int countBits(int n) {
 }
 
 bool DBarReader::minTOF(){
-   return  ((ntpTof->flagp[0]>>2)==0)&&
-	   ((ntpTof->flagp[1]>>2)==0)&&
-	   ((ntpTof->flagp[2]>>2)==0)&&
-	   ((ntpTof->flagp[3]>>2)==0);	
+
+    return (ntpTof->z_nhit>=3)&&(ntpTof->z_like>0)&&((ntpTof->clsn[0]+ntpTof->clsn[2])<=4);	
+
 }
 
 bool DBarReader::goldenTOF(){
+
+    if (!((ntpTof->trk_ncl==4)&&(ntpTof->beta_patt==0)&&(ntpTof->beta_ncl==4))) return false; 
     if ( (ntpTof->flag) != 0   ) return false;
     if (  ntpTof->chisqcn > 10 || ntpTof->chisqcn < 0     ) return false;
     if (  ntpTof->chisqtn > 10 || ntpTof->chisqtn < 0     ) return false;
@@ -110,7 +111,10 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 	    vars->GenY = ntpMCHeader->coo[0][1];  vars->GenPY = ntpMCHeader->dir[1];;
 	    vars->GenZ = ntpMCHeader->coo[0][2];  vars->GenPZ = ntpMCHeader->dir[2];;
 	    vars->MCClusterGeantPids = getPackedLayers_1to4();
-    }    
+    }
+    if(!isMC) {
+   		if(((ntpHeader->trigpatt & 0x2) != 0) && ((ntpHeader->sublvl1&0x3E) ==0)) vars->PrescaleFactor*=100;
+    }	    
 
     /////////////////////////////////// UNBIAS ////////////////////////////////////////
     vars->PhysBPatt = ntpHeader->sublvl1;
@@ -124,9 +128,9 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
    */
 
     //if( (ntpHeader->trigpatt & 0x2) != 0   )  vars->CUTMASK |= 1 << 0;
-    if((vars->PhysBPatt>>1)>0        )   vars->CUTMASK |= 1 << 0;
+    if( ((ntpHeader->trigpatt & 0x2) != 0) && ((ntpHeader->sublvl1&0x3E) !=0) )      vars->CUTMASK |= 1 << 0;
     if( minTOF()                          )  vars->CUTMASK |= 1 << 1;
-    if( ntpTrd->nseg ==2                   )  vars->CUTMASK |= 1 << 2;
+    if( (ntpHeader->trigpatt & 0x2) != 0)  vars->CUTMASK |= 1 << 2;
     if( ntpTracker->rig[0] != 0.0          )  vars->CUTMASK |= 1 << 3;
     if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
     if( goldenTOF()                       )  vars->CUTMASK |= 1 << 5;  

@@ -159,8 +159,11 @@ int main(int argc, char * argv[]){
 	TH1F * DCountsPrimTOF = (TH1F*) finalHistos.Get((pathresTOF+"Primary Deuteron Counts").c_str());
 	TH1F * DCountsPrimNaF = (TH1F*) finalHistos.Get((pathresNaF+"Primary Deuteron Counts").c_str());
 	TH1F * DCountsPrimAgl = (TH1F*) finalHistos.Get((pathresAgl+"Primary Deuteron Counts").c_str());
+	TH1F * PCountsPrimTOF = (TH1F*) finalHistos.Get((pathresTOF+"Primary Proton Counts").c_str());
+	TH1F * PCountsPrimNaF = (TH1F*) finalHistos.Get((pathresNaF+"Primary Proton Counts").c_str());
+	TH1F * PCountsPrimAgl = (TH1F*) finalHistos.Get((pathresAgl+"Primary Proton Counts").c_str());
 	
-	PlotTH1FintoGraph(gPad,ToFDB, DCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (TOF)",8);
+	PlotTH1FintoGraph(gPad,ToFDB, DCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,2*DCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Deuteron Counts (TOF)",8);
 	PlotTH1FintoGraph(gPad,NaFDB, DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (NaF)",22);
 	PlotTH1FintoGraph(gPad,AglDB, DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (Agl)",29);
 
@@ -169,8 +172,22 @@ int main(int argc, char * argv[]){
 	PlotTH1FintoGraph(gPad,AglDB, DCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
 
 
+	TCanvas * c4_ = new TCanvas("Proton Counts");
+        c4_->SetCanvasSize(2000,1500);
+
+	PlotTH1FintoGraph(gPad,ToFDB, PCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,2*PCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Proton Counts (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFDB, PCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Proton Counts (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglDB, PCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Proton Counts (Agl)",29);
+
+	PlotTH1FintoGraph(gPad,ToFDB, PCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,NaFDB, PCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,AglDB, PCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
+
 	Plots.Add(c4);
+	Plots.Add(c4_);
 	Plots.writeObjsInFolder("Results");
+
+
 
 
 	TCanvas * c5 = new TCanvas("D/P Raw Counts ratio");

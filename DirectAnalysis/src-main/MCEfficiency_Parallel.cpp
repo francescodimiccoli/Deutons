@@ -89,52 +89,53 @@ int main(int argc, char * argv[])
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
 
-	Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1");
+	Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1");
 
      	AllRangesEfficiency * FullSetTOT_P = new AllRangesEfficiency(finalHistos,"FullSetTOT_P","FullSetTOT",
 	"IsProtonMC",			      
 	"IsProtonMC",			   	      
 	"IsProtonMC",
-	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
-	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
-	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
 	Refill);
 
 	AllRangesEfficiency * FullSetTOT_D = new AllRangesEfficiency(finalHistos,"FullSetTOT_D","FullSetTOT",
 	"IsDeutonMC",			      
 	"IsDeutonMC",			   	      
 	"IsDeutonMC",
-	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
-	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
-	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
 	Refill);
 
 	AllRangesEfficiency * Baseline_P = new AllRangesEfficiency(finalHistos,"Baseline_P","Baseline",
 	"IsProtonMC",			      
 	"IsProtonMC",			   	      
 	"IsProtonMC",
-	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
-	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
-	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
 	Refill);
 
 	AllRangesEfficiency * Baseline_D = new AllRangesEfficiency(finalHistos,"Baseline_D","Baseline",
 	"IsDeutonMC",			      
 	"IsDeutonMC",			   	      
 	"IsDeutonMC",
-	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
-	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
-	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
 	Refill);
 
-	Efficiency * Cascade1 = new Efficiency(finalHistos,"Cascade1","Cascade1",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias");
-	Efficiency * Cascade2 = new Efficiency(finalHistos,"Cascade2","Cascade2",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1");
-	Efficiency * Cascade3 = new Efficiency(finalHistos,"Cascade3","Cascade3",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning");
-	Efficiency * Cascade4 = new Efficiency(finalHistos,"Cascade4","Cascade4",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime");
-	Efficiency * Cascade5 = new Efficiency(finalHistos,"Cascade5","Cascade5",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF");
-	Efficiency * Cascade6 = new Efficiency(finalHistos,"Cascade6","Cascade6",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl");
-	Efficiency * Cascade7 = new Efficiency(finalHistos,"Cascade7","Cascade7",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut");
-	Efficiency * Cascade8 = new Efficiency(finalHistos,"Cascade8","Cascade8",PRB,"IsProtonMC","IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut");
+	Efficiency * Cascade0 = new Efficiency(finalHistos,"Cascade1","Cascade1",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsPhysTrig");
+	Efficiency * Cascade1 = new Efficiency(finalHistos,"Cascade1","Cascade1",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias");
+	Efficiency * Cascade2 = new Efficiency(finalHistos,"Cascade2","Cascade2",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1");
+	Efficiency * Cascade3 = new Efficiency(finalHistos,"Cascade3","Cascade3",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning");
+	Efficiency * Cascade4 = new Efficiency(finalHistos,"Cascade4","Cascade4",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime");
+	Efficiency * Cascade5 = new Efficiency(finalHistos,"Cascade5","Cascade5",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF");
+	Efficiency * Cascade6 = new Efficiency(finalHistos,"Cascade6","Cascade6",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl");
+	Efficiency * Cascade7 = new Efficiency(finalHistos,"Cascade7","Cascade7",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut");
+	Efficiency * Cascade8 = new Efficiency(finalHistos,"Cascade8","Cascade8",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut");
 
 	AllRangesEfficiency * Trigger_P_PID = new AllRangesEfficiency(finalHistos,"Trigger_P_PID","Trigger",
 	"IsPurePMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
@@ -371,25 +372,27 @@ int main(int argc, char * argv[])
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
 	Refill);
 
-
-	RigBinFullSetEff->Fill(DBarReader(chainMC, true ),vars,GetGenMomentum,Refill);
-
-	ParallelFiller<Efficiency *> Filler_;
-	Filler_.AddObject2beFilled(Cascade1,GetGenMomentum,GetGenMomentum);
-	Filler_.AddObject2beFilled(Cascade2,GetGenMomentum,GetGenMomentum);
-	Filler_.AddObject2beFilled(Cascade3,GetGenMomentum,GetGenMomentum);
-	Filler_.AddObject2beFilled(Cascade4,GetGenMomentum,GetGenMomentum);
-	Filler_.AddObject2beFilled(Cascade5,GetGenMomentum,GetGenMomentum);
-	Filler_.AddObject2beFilled(Cascade6,GetGenMomentum,GetGenMomentum);
-	Filler_.AddObject2beFilled(Cascade7,GetGenMomentum,GetGenMomentum);
-	Filler_.AddObject2beFilled(Cascade8,GetGenMomentum,GetGenMomentum);
-	Filler_.ReinitializeAll(Refill);
-
-	//main loop
-	Filler_.LoopOnMC(DBarReader(chainMC, true ),vars);
+	RigBinFullSetEff->SetNotWeightedMC();
+	FullSetTOT_P->SetNotWeightedMC();	
+	FullSetTOT_D->SetNotWeightedMC();	
+	Baseline_P->SetNotWeightedMC();	
+	Baseline_D->SetNotWeightedMC();	
 
 
-	ParallelFiller<AllRangesEfficiency *> Filler;
+	ParallelFiller<Efficiency *> Filler;
+
+	Filler.AddObject2beFilled(RigBinFullSetEff,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(Cascade0,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(Cascade1,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(Cascade2,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(Cascade3,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(Cascade4,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(Cascade5,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(Cascade6,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(Cascade7,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(Cascade8,GetGenMomentum,GetGenMomentum);
+	
+
 	Filler.AddObject2beFilled(FullSetTOT_P,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(FullSetTOT_D,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(Baseline_P,GetBetaGen,GetBetaGen);
@@ -422,7 +425,6 @@ int main(int argc, char * argv[])
 	Filler.AddObject2beFilled(Fragmentation_D,GetBetaGen,GetBetaGen);
 	Filler.ReinitializeAll(Refill);
 
-
 	//main loop
 	Filler.LoopOnMC(DBarReader(chainMC, true ),vars);
 
@@ -431,6 +433,7 @@ int main(int argc, char * argv[])
 	FullSetTOT_D 	->Save(finalHistos);
 	Baseline_P 	->Save(finalHistos);
 	Baseline_D 	->Save(finalHistos);
+	Cascade0        ->Save(finalHistos);
 	Cascade1  	->Save(finalHistos);
 	Cascade2  	->Save(finalHistos);
 	Cascade3 	->Save(finalHistos);
@@ -472,6 +475,7 @@ int main(int argc, char * argv[])
 	FullSetTOT_D 	->Eval_Efficiency();
 	Baseline_P 	->Eval_Efficiency();
 	Baseline_D 	->Eval_Efficiency();
+	Cascade0  	->Eval_Efficiency();
 	Cascade1  	->Eval_Efficiency();
 	Cascade2  	->Eval_Efficiency();
 	Cascade3 	->Eval_Efficiency();
@@ -506,22 +510,21 @@ int main(int argc, char * argv[])
 	GoldenTOF_D_PID ->Eval_Efficiency();
 	Fragmentation_P->Eval_Efficiency();
 	Fragmentation_D->Eval_Efficiency();
+
+
 /*
 	FullSetTOT_P      ->Eval_StatError();
         FullSetTOT_D      ->Eval_StatError();
 	FullSetTOT_P      ->Eval_SystError(FullSet_P,FullSet_D);
         FullSetTOT_D      ->Eval_SystError(FullSet_P,FullSet_D);
-	
-
-	FullSetTOT_P 	->SaveResults(finalResults);
-	FullSetTOT_D 	->SaveResults(finalResults);
-*/
+*/	
 
 	RigBinFullSetEff->SaveResults(finalResults);
 	FullSetTOT_P 	->SaveResults(finalResults);
 	FullSetTOT_D 	->SaveResults(finalResults);
 	Baseline_P 	->SaveResults(finalResults);
 	Baseline_D 	->SaveResults(finalResults);
+	Cascade1        ->SaveResults(finalResults);
 	Cascade1  	->SaveResults(finalResults);
 	Cascade2  	->SaveResults(finalResults);
 	Cascade3 	->SaveResults(finalResults);
@@ -556,7 +559,6 @@ int main(int argc, char * argv[])
 	GoldenTOF_D_PID ->SaveResults(finalResults);
 	Fragmentation_P->SaveResults(finalResults);
 	Fragmentation_D->SaveResults(finalResults);
-
 
 
 	return 0;

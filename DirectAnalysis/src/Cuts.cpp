@@ -49,7 +49,7 @@ bool DistanceCut   (Variables * vars){ return QualChargeCut(vars);}//(Qualitycut
 
 bool LikelihoodCut (Variables * vars){ return ((vars->BetaRICH_new<=0)||(vars->BetaRICH_new>0&&vars->BDTDiscr>0)); }
 
-bool IsMinimumBias_notrigg (Variables * vars){ return (((int)vars->joinCutmask&10)==10&&vars->R!=0);}
+bool IsMinimumBias_notrigg (Variables * vars){ return (((int)vars->joinCutmask&14)==14);}
 bool IsMinimumBias_notrack (Variables * vars){ return (((int)vars->joinCutmask&3)==3);}
 
 
@@ -57,7 +57,7 @@ bool IsMinimumBias_notrack (Variables * vars){ return (((int)vars->joinCutmask&3
 //analysis selections
 bool IsPhysTrig    (Variables * vars){ return ((int)vars->joinCutmask&1)==1;}
 bool IsMinimumBias (Variables * vars){ return (((int)vars->joinCutmask&11)==11&&vars->R!=0&&vars->Beta>0);}
-bool IsLooseCharge1 (Variables * vars) {return L1LooseCharge1(vars)&&vars->qInner>0.6&&vars->qInner<1.5&&IsGoodL1Status(vars)&&IsGoodL2Status(vars)&&(vars->EdepL1>0||vars->qL1>0);}
+bool IsLooseCharge1 (Variables * vars) {return L1LooseCharge1(vars)&&vars->qInner>0.6&&vars->qInner<1.5&&IsGoodL1Status(vars)&&IsGoodL2Status(vars)&&(vars->qL1>0);}
 bool IsCleaning	(Variables * vars) {return ( ((int)vars->joinCutmask&155)==155 &&  DistanceCut (vars)); }
 bool IsGoodTime (Variables * vars) { return ( ((int)vars->joinCutmask&32)==32);}
 bool IsFromNaF_nosel     (Variables * vars){ return vars->IsFromNaF_nosel();}
@@ -76,12 +76,12 @@ bool IsCharge1UTOF (Variables * vars) {return (vars->qUtof>0.8&&vars->qUtof<1.3)
 bool IsCharge1LTOF (Variables * vars) {return (vars->qLtof>0.8&&vars->qLtof<1.3);}
 
 //He fragm
-bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->EdepL1>0||vars->qL1>0)&&vars->R!=0&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));}
-bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->EdepL1>0||vars->qL1>0)&&L1LooseCharge1(vars)&&vars->R!=0&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));}
-bool IsPreselectedHe (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->EdepL1>0||vars->qL1>0)&&vars->R!=0&&(vars->qL1>1.75&&vars->qL1<2.3)&&IsGoodL1Status(vars))&&IsGoodL2Status(vars);}
+bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));}
+bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&L1LooseCharge1(vars)&&vars->R!=0&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));}
+bool IsPreselectedHe (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>1.75&&vars->qL1<2.3)&&IsGoodL1Status(vars))&&IsGoodL2Status(vars);}
 bool IsPreselectedHeStep (Variables * vars,int step){
 			float chargecut=1.65;
-			return (((int)vars->joinCutmask&187)==187&&(vars->EdepL1>0||vars->qL1>0)&&vars->R!=0&&(vars->qL1>(chargecut+0.05*step)&&vars->qL1<2.3)&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));
+			return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>(chargecut+0.05*step)&&vars->qL1<2.3)&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));
 }
 
 bool IsOnlyFromToF (Variables * vars){ return !((IsFromNaF(vars))||(IsFromAgl(vars)));}

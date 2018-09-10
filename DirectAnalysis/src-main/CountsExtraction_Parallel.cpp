@@ -50,10 +50,10 @@ int main(int argc, char * argv[])
    
   TChain * chain_RTI = InputFileReader(INPUT1.c_str(),"RTI");
  
-  TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
-  TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
-  //TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-  //TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+  //TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
+  //TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
+  TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+  TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
   //TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
 
@@ -99,8 +99,8 @@ int main(int argc, char * argv[])
 
   //  TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",60,0.3,1.6);	
     TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF"       ,150,0.4,7.5);
-    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",60,0.4,5,true,11,400,200);
-    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsFromAgl&RICHBDTCut",60,0.4,5,true,11,110,80);	
+    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",60,0.4,5,true,11,400,200);
+    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",60,0.4,5,true,11,110,80);	
 
   // SmearingCheck->SetLatitudeReweighter(weighter);
     TOFfits->SetLatitudeReweighter(weighter);	
@@ -164,14 +164,14 @@ int main(int argc, char * argv[])
 
         NaFfits->SetFitRange(0.6,5);
         //NaFfits->DisableFit();
-        NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005,true);
+        NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
 	NaFfits->SetHeliumContamination(HeContNaF);
-       NaFfits->ExtractCounts(finalHistos);
+        NaFfits->ExtractCounts(finalHistos);
 	NaFfits->SaveFitResults(finalResults);
 
         Aglfits->SetFitRange(0.6,5);
-        // Aglfits->DisableFit();
-	 Aglfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
+        //Aglfits->DisableFit();
+	Aglfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
 
         Aglfits->SetHeliumContamination(HeContAgl);
   	Aglfits->ExtractCounts(finalHistos);

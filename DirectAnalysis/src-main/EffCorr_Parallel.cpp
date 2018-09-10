@@ -52,12 +52,12 @@ int main(int argc, char * argv[])
 
 	TChain * chain_RTI = InputFileReader(INPUT1.c_str(),"RTI");
 
-	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-	//TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
 	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
 	//TChain * chainMC = InputFileReader(INPUT2.c_str(),"template_stuffMC");
-	TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
-	TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
+	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
+	//TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
 
 	FileSaver LatWeights;
 	LatWeights.setName("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/Weights.root");
@@ -88,9 +88,19 @@ int main(int argc, char * argv[])
 
 	EffCorr * HEPPresEffCorr = new EffCorr(finalHistos,"HEPPresEffCorr","HEPPresEffCorr",PRB,"IsPositive&IsMinimumBias&IsLooseCharge1","IsPositive&IsMinimumBias&IsLooseCharge1&IsGolden","","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * HEPQualEffCorr = new EffCorr(finalHistos,"HEPQualEffCorr","HEPQualEffCorr",PRB,"IsPositive&IsMinimumBias&IsLooseCharge1","IsPositive&IsMinimumBias&IsLooseCharge1&IsGolden","","IsPurePMC","IsPureDMC","IsDeutonMC");
-	
+
+
 	std::string before;
         std::string after;
+        before = "IsPositive&IsMinimumBias_notrigg&IsLooseCharge1";
+        after  = "IsPositive&IsMinimumBias&IsLooseCharge1";
+	EffCorr * TriggerEffCorr_HE = new EffCorr(finalHistos,"TriggerEffCorr_HE","Trigger Eff. Corr",PRB,before,after,"IsPrimary",    "IsProtonMC"    ,"IsPureDMC","IsDeutonMC"); 
+	EffCorr * TriggerEffCorr_TOF = new EffCorr(finalHistos,"TriggerEffCorr_TOF","Trigger Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsDeutonMC");
+	EffCorr * TriggerEffCorr_NaF = new EffCorr(finalHistos,"TriggerEffCorr_NaF","Trigger Eff. Corr",NaFPB,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsDeutonMC");
+	EffCorr * TriggerEffCorr_Agl = new EffCorr(finalHistos,"TriggerEffCorr_Agl","Trigger Eff. Corr",AglPB,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsDeutonMC");
+
+	before;
+        after;
         before = "IsPositive&IsMinimumBias_notrack&IsLooseCharge1&QualChargeCut_notrack";
         after  = "IsPositive&IsMinimumBias&IsLooseCharge1&QualChargeCut_notrack"; 
 	EffCorr * TrackerEffCorr_TOF = new EffCorr(finalHistos,"TrackerEffCorr_TOF","Tracker Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
@@ -149,6 +159,11 @@ int main(int argc, char * argv[])
 //	Filler2.AddObject2beFilled(HEPPresEffCorr,GetRigidity,GetRigidity);
 //	Filler2.AddObject2beFilled(HEPQualEffCorr,GetRigidity,GetRigidity);
 
+	Filler2.AddObject2beFilled(TriggerEffCorr_HE,GetRigidity,GetRigidity);
+	Filler2.AddObject2beFilled(TriggerEffCorr_TOF,GetRigidity,GetRigidity);
+	Filler2.AddObject2beFilled(TriggerEffCorr_NaF,GetRigidity,GetRigidity);	
+	Filler2.AddObject2beFilled(TriggerEffCorr_Agl,GetRigidity,GetRigidity);
+/*	
 	Filler2.AddObject2beFilled(TrackerEffCorr_TOF,GetRigidity,GetRigidity);
 	Filler2.AddObject2beFilled(TrackerEffCorr_NaF,GetRigidity,GetRigidity);	
 	Filler2.AddObject2beFilled(TrackerEffCorr_Agl,GetRigidity,GetRigidity);
@@ -172,7 +187,7 @@ int main(int argc, char * argv[])
 	Filler2.AddObject2beFilled(RICHEffCorr_Agl,GetRigidity,GetRigidity);	
 	Filler2.AddObject2beFilled(RICHQualEffCorr_NaF,GetRigidity,GetRigidity);
 	Filler2.AddObject2beFilled(RICHQualEffCorr_Agl,GetRigidity,GetRigidity);	
-
+*/
 	Filler2.ReinitializeAll(Refill);
 	//main loops 2
 	Filler2.LoopOnMC(DBarReader(chainMC, true ),vars);
@@ -181,6 +196,10 @@ int main(int argc, char * argv[])
 	//saving
 	HEPPresEffCorr -> Save(finalHistos);
 	HEPQualEffCorr -> Save(finalHistos);
+	TriggerEffCorr_HE  -> Save(finalHistos);
+	TriggerEffCorr_TOF -> Save(finalHistos);
+	TriggerEffCorr_NaF -> Save(finalHistos);
+	TriggerEffCorr_Agl -> Save(finalHistos);
 	TrackerEffCorr_TOF -> Save(finalHistos);
 	TrackerEffCorr_NaF -> Save(finalHistos);
 	TrackerEffCorr_Agl -> Save(finalHistos);
@@ -208,6 +227,10 @@ int main(int argc, char * argv[])
 	//analysis
 	HEPPresEffCorr -> Eval_Efficiencies();
 	HEPQualEffCorr -> Eval_Efficiencies();
+	TriggerEffCorr_HE  -> Eval_Efficiencies();
+	TriggerEffCorr_TOF -> Eval_Efficiencies();
+	TriggerEffCorr_NaF -> Eval_Efficiencies();
+	TriggerEffCorr_Agl -> Eval_Efficiencies();
 	TrackerEffCorr_TOF -> Eval_Efficiencies();
 	TrackerEffCorr_NaF -> Eval_Efficiencies();
 	TrackerEffCorr_Agl -> Eval_Efficiencies();
@@ -235,6 +258,10 @@ int main(int argc, char * argv[])
 
 	HEPPresEffCorr -> Eval_Corrections();
 	HEPQualEffCorr -> Eval_Corrections();
+	TriggerEffCorr_HE  -> Eval_Corrections();
+	TriggerEffCorr_TOF -> Eval_Corrections();
+	TriggerEffCorr_NaF -> Eval_Corrections();
+	TriggerEffCorr_Agl -> Eval_Corrections();
 	TrackerEffCorr_TOF -> Eval_Corrections();
 	TrackerEffCorr_NaF -> Eval_Corrections();
 	TrackerEffCorr_Agl -> Eval_Corrections();
@@ -262,6 +289,10 @@ int main(int argc, char * argv[])
 
 	HEPPresEffCorr -> SaveResults(finalResults);
 	HEPQualEffCorr -> SaveResults(finalResults);
+	TriggerEffCorr_HE  -> SaveResults(finalResults);
+	TriggerEffCorr_TOF -> SaveResults(finalResults);
+	TriggerEffCorr_NaF -> SaveResults(finalResults);
+	TriggerEffCorr_Agl -> SaveResults(finalResults);
 	TrackerEffCorr_TOF -> SaveResults(finalResults);
 	TrackerEffCorr_NaF -> SaveResults(finalResults);
 	TrackerEffCorr_Agl -> SaveResults(finalResults);
