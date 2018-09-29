@@ -19,6 +19,7 @@
 #include "TRandom3.h"
 #include "TChain.h"
 #include "Globals.h"
+#include "TProof.h"
 #include "../include/InputFileReader.h"
 #include "../include/LatReweighter.h"
 
@@ -47,7 +48,7 @@ int main(int argc, char * argv[])
     
     bool Refill = false;
     if(refill!="") Refill=true;
-   
+  
   TChain * chain_RTI = InputFileReader(INPUT1.c_str(),"RTI");
  
   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
@@ -56,6 +57,7 @@ int main(int argc, char * argv[])
   TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
   //TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
+
 
     FileSaver LatWeights;
     LatWeights.setName("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/Weights.root");
@@ -124,7 +126,7 @@ int main(int argc, char * argv[])
 
         //main loops
         Filler.LoopOnMC  (DBarReader(chainMC, true ),vars);
-        Filler.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
+   //   Filler.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
         //
 
 //	SmearingCheck->DisableFit();

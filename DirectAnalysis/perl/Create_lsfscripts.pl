@@ -12,7 +12,7 @@ $outdir_plots="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/Analy
 #creating sum scripts and output directory
 #
 
-$queue = "ams1nd";
+$queue = "8nh";
 
 print "Resetting work directories...\n";
 
@@ -33,7 +33,6 @@ system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/EffCorr");
 system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Fluxes");
 system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Infos");
 
-
 system ("rm -r $workdir/lsf/");
 system ("mkdir $workdir/lsf/");
 system ("rm -r $workdir/err/");
@@ -48,9 +47,9 @@ $bookplots=0;
 $booklat=0;
 $bookhecont=0;
 $bookeff=0;
-$bookcounts=1;
-$bookeffcorr=0;
-$bookflux=1;
+$bookcounts=0;
+$bookeffcorr=1;
+$bookflux=0;
 $bookinfos=0;
 
 
@@ -73,9 +72,10 @@ for($j=0;$j<$njobs;$j++)
 			if($bookntuples){
 				print OUT "rm /tmp/fdimicco/*.root;\n";
 				print OUT  "\$WORKDIR/Ntuple_Maker \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/ 1 >> /tmp/fdimicco/log$j.log;\n\n";
-				print OUT "xrdcp -f /tmp/fdimicco/*.root $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples;\n";
-				print OUT "xrdcp -f /tmp/fdimicco/*.root_MC $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples;\n";
-				print OUT "touch $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$j.check;\n";
+				print OUT "(cd /tmp/fdimicco/ && ls *.root*) >> /tmp/fdimicco/Ntuple$j.check;\n";
+				print OUT "xrdcp -f /tmp/fdimicco/*.root* $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples;\n";
+				print OUT "xrdcp -f /tmp/fdimicco/Ntuple$j.check  $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples;\n";
+				print OUT "rm -r /tmp/fdimicco/*.root*;\n";	
 			}
 		
 			if($bookplots){
@@ -109,14 +109,14 @@ for($j=0;$j<$njobs;$j++)
 			if($bookcounts){
 
 				print OUT "xrdcp -f $outdir/$ARGV[0]-$ARGV[1]/Counts/Counts$j.root /tmp/fdimicco/;\n";
-				print OUT  "\$WORKDIR/CountsExtraction_Parallel \$WORKDIR/InputNtupleLists/FileListDT$j.txt \$WORKDIR/InputNtupleLists/FileListMC$j.txt  /tmp/fdimicco/Counts$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
+				print OUT  "\$WORKDIR/CountsExtraction_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Counts$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/Counts$j.root $outdir/$ARGV[0]-$ARGV[1]/Counts;\n";
 			}	
 			
 			if($bookeffcorr){
 
 				print OUT "xrdcp -f $outdir/$ARGV[0]-$ARGV[1]/EffCorr/EffCorr$j.root /tmp/fdimicco/;\n";
-				print OUT  "\$WORKDIR/EffCorr_Parallel \$WORKDIR/InputNtupleLists/FileListDT$j.txt \$WORKDIR/InputNtupleLists/FileListMC$j.txt  /tmp/fdimicco/EffCorr$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
+				print OUT  "\$WORKDIR/EffCorr_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/EffCorr$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/EffCorr$j.root $outdir/$ARGV[0]-$ARGV[1]/EffCorr;\n";
 			}
 		
@@ -146,19 +146,37 @@ $joblaunched = 0;
 $jobrunning = 0;	
 $jobs = 0;
 
-for($k=0;$k<3;$k++){
+for($k=0;$k<4;$k++){
 	$joblaunched = 0;
-
+	system("kinit -R");
+	$jobs = `bjobs -q $queue| wc -l`;
+	while($jobs>120){
+		$jobs = `bjobs -q $queue| wc -l`;
+		sleep(10);
+		$jobrunning = `bjobs -q $queue |grep RUN|wc -l`;
+		print "Total Jobs launched: $joblaunched\n";
+		print "Jobs currently running: $jobrunning\n";
+	}
 	while($joblaunched<$njobs){
 		$jobrunning = `bjobs -q $queue |grep RUN|wc -l`;
 		$jobs = `bjobs -q $queue| wc -l`;
 		$check;
 		$control=0;
-		while($jobs<500 and $joblaunched<$njobs) {
+		while($jobs<350 and $joblaunched<$njobs) {
 
 			$control=0;
 			if($bookinfos) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Infos/Infos$joblaunched.txt| awk '{print\$5}'`; if($check<1000) {print $check; $control=1}} 
-			if($bookntuples) { $check = `ls -la $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$joblaunched.check| awk '{print\$5}'`; if($check>=0) {print $check; $control=1}} 
+			if($bookntuples) { 
+				$checkfile = `ls -la $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$joblaunched.check`;
+				if($checkfile ne ""){
+					print "Check file found!!\n";
+					$filename = `cat $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$joblaunched.check`;
+					system("root -l -q $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/$filename 2> $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$joblaunched.test"); 
+					$test = `cat $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples/Ntuple$joblaunched.test`;
+					if($test ne "") {print $test; $control=1}
+				}
+				if($checkfile eq "") {$control=1}	
+			} 
 			if($bookplots) { $check = `ls -la $outdir_plots/$ARGV[0]-$ARGV[1]/Plots/Plots$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
 			if($booklat) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/LatRew/LatRew$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
 			if($bookhecont) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm/HeliumFragm$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 

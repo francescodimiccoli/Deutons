@@ -66,6 +66,26 @@ struct Variables{
     float        clustertrack;
     float        clustertottrack;
 
+    //Tracking Efficiency
+    float theta_track;
+    float phi_track;
+    float entrypointcoo[3];	
+    float beta_SA;
+    float betapatt_SA;	
+    float qUtof_SA;
+    float qLtof_SA;			
+    float qTrd_SA;	
+    float EdepECAL;
+    
+    //L1 pick-up Efficiency
+    float exthit_int[3];          
+    float exthit_closest_coo[3];
+    float exthit_closest_q;     
+    int   exthit_closest_status;
+    float exthit_largest_coo[3];
+    float exthit_largest_q;     
+    int   exthit_largest_status;
+
 
     // Track
     float      R_pre;  // ?
@@ -140,7 +160,6 @@ struct Variables{
     
 
     //Other
-    float      EdepECAL;
     std::vector<float>  *       trtrack_edep=0;
     std::vector<float>  *       trtot_edep=0;
     std::vector<float>  *       Endep=0;
@@ -231,5 +250,6 @@ float GetLoweredBetaNaF  (Variables * vars);
 float GetLoweredBetaAgl  (Variables * vars);
 float GetRICHBDT(Variables* vars);
 
-
+float GetEdepECAL(Variables * vars);
+float GetMomentumProxy(Variables *vars); 
 #endif

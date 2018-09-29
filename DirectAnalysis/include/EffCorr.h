@@ -11,6 +11,10 @@ class EffCorr{
 	TH1F * ExposureZones;
 
 	TH1F * LatCorrections[10];
+	TH1F * LatEfficiencies[10];
+	
+	TH1F * GlobalEfficiency;
+
 	TH1F * GlobalCorrection;
 	TH1F * GlobalCorrection2;
 	TH1F * GlobalCorrectionnopid;
@@ -34,6 +38,9 @@ class EffCorr{
 		TFile * file = File.GetFile();
 		if(file){
 			for(int lat=0;lat<10;lat++) LatCorrections[lat]=(TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_lat"+to_string(lat)).c_str());
+			for(int lat=0;lat<10;lat++) LatEfficiencies[lat]=(TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Eff_lat"+to_string(lat)).c_str());
+	
+			GlobalEfficiency = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Eff_glob").c_str());
 			GlobalCorrection = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_glob").c_str());
 			GlobalCorrection2 = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_glob2").c_str());
 			GlobalCorrectionnopid = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_globnopid").c_str());
@@ -76,7 +83,13 @@ class EffCorr{
 	virtual void SaveResults(FileSaver finalhistos);
 	virtual void Eval_Corrections();
 	TH1F * GetMCEfficiency()	{return (TH1F*)EffMC  -> GetEfficiency();}
+	TH1F * GetMCEfficiency2()	{return (TH1F*)EffMC2  -> GetEfficiency();}
+	TH1F * GetMCEfficiency_noPID()	{return (TH1F*)EffMCnopid  -> GetEfficiency();}
+	
 	TH1F * GetCorrectionLat(int lat)  {return LatCorrections[lat];}
+	TH1F * GetEfficiencyLat(int lat)  {return LatEfficiencies[lat];}
+	
+	TH1F * GetGlobEfficiency()	  {return GlobalEfficiency;}
 	TH1F * GetGlobCorrection()	  {return GlobalCorrection;}
 	TH1F * GetGlobCorrection2()	  {return GlobalCorrection2;}
 	TH1F * GetGlobCorrection_noPID()	  {return GlobalCorrectionnopid;}
@@ -95,7 +108,6 @@ void EffCorr::Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*disc
 }
 
 void EffCorr::Save(FileSaver finalhistos){
-	cout<<"coccole"<<endl;
 	EffMC  -> Save(finalhistos);
 	EffMC2  -> Save(finalhistos);
 	EffMCnopid  -> Save(finalhistos);
@@ -118,8 +130,10 @@ void EffCorr::SaveResults(FileSaver finalhistos){
 	for(int lat=0;lat<10;lat++) 
 		if(LatCorrections[lat]){
 			finalhistos.Add(LatCorrections[lat]); 	
+			finalhistos.Add(LatEfficiencies[lat]);
 			finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());
 		}
+	finalhistos.Add(GlobalEfficiency);
 	finalhistos.Add(GlobalCorrection);
  	finalhistos.Add(GlobalCorrection2);
  	finalhistos.Add(GlobalCorrectionnopid);
@@ -134,12 +148,20 @@ void EffCorr::Eval_Corrections(){
 		LatCorrections[lat] = ProjectionXtoTH1F((TH2F*)EffData->GetEfficiency(),(basename + "_Corr_lat"+to_string(lat)).c_str(),lat+1,lat+1);
 		LatCorrections[lat]->SetName((basename + "_Corr_lat"+to_string(lat)).c_str());
 		LatCorrections[lat]->Sumw2();
+		LatEfficiencies[lat] = ProjectionXtoTH1F((TH2F*)EffData->GetEfficiency(),(basename + "_Corr_lat"+to_string(lat)).c_str(),lat+1,lat+1);
+		LatEfficiencies[lat]->SetName((basename + "_Eff_lat"+to_string(lat)).c_str());
+		LatEfficiencies[lat]->Sumw2();
 		LatCorrections[lat]->Divide(EffMC->GetEfficiency());
 	}
 
 	TH1F * Global_Before=ProjectionXtoTH1F((TH2F*)EffData->GetBefore(),(basename + "_Corr_glob").c_str(),0,10);	
 	TH1F * Global_After =ProjectionXtoTH1F((TH2F*)EffData->GetAfter() ,(basename + "_Corr_glob").c_str(),0,10);	
 
+	GlobalEfficiency = (TH1F *) Global_After->Clone();
+	GlobalEfficiency -> SetName((basename + "_Eff_glob").c_str());
+	GlobalEfficiency->Sumw2();
+	GlobalEfficiency->Divide(Global_Before);	
+	
 	GlobalCorrection = (TH1F *) Global_After->Clone();
 	GlobalCorrection -> SetName((basename + "_Corr_glob").c_str());
 	GlobalCorrection->Sumw2();

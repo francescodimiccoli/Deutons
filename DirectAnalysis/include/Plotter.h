@@ -33,6 +33,8 @@ class Plotter{
 	void BookCleaningCutsAnalysis();
 	void BookRichBDTAnalysis();
 	void BookBetaResMatrixAnalysis();
+	void BookGenAcceptanceAnalysis();
+	void BookTrackingEfficiencyAnalysis();
 	void DoAllAnalyses();
 };
 
@@ -136,6 +138,21 @@ void Plotter::BookBetaResMatrixAnalysis(){
 
 	plottingfunctions.push_back(DrawBetaRes);
 }
+
+void Plotter::BookGenAcceptanceAnalysis(){
+	BookerMC.BookSingleHisto("ProtonMC_GenSpectrum",1000,0,100,"IsProtonMC",GetGenMomentum);
+	BookerMC.BookSingleHisto("DeutonMC_GenSpectrum",1000,0,100,"IsDeutonMC",GetGenMomentum);
+}
+
+
+void Plotter::BookTrackingEfficiencyAnalysis(){
+	BookerMC.BookSingleScatter(         "EdepEcalvsR_P",5000,0,100,5000,0,100,"IsProtonMC&IsPositive&IsMinimumBias&IsGoodTOFStandaloneQ1&IsExtrapolInsideL8",GetRigidity,GetEdepECAL,GetEdepECAL);
+	Booker.BookSingleScatter(           "EdepEcalvsR",5000,0,100,5000,0,100,"IsPositive&IsMinimumBias&IsGoodTOFStandaloneQ1&IsExtrapolInsideL8",GetRigidity,GetEdepECAL,GetEdepECAL);
+	BookerMC.BookSingleScatter(           "ProxyvsR_MC",5000,0,100,5000,0,100,"IsProtonMC&IsPositive&IsMinimumBias&IsGoodTOFStandaloneQ1&IsExtrapolInsideL8",GetRigidity,GetMomentumProxy,GetMomentumProxy);
+	Booker.BookSingleScatter(           "ProxyvsR",5000,0,100,5000,0,100,"IsPositive&IsMinimumBias&IsGoodTOFStandaloneQ1&IsExtrapolInsideL8",GetRigidity,GetMomentumProxy,GetMomentumProxy);
+
+}
+
 
 void Plotter::DoAllAnalyses(){
 

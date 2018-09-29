@@ -243,7 +243,7 @@ int main(int argc, char * argv[]){
 	TCanvas *c2 = new TCanvas("Deuteron Primary Flux");
 	c2->SetCanvasSize(2000,1500);
 
-	TH2F * Frame = CreateFrame(0.01,25,0.01,1000,"Kin.En./nucl. [GeV/nucl.]","Flux [(m^2 sr GeV/nucl.)^{-1}]");	
+	TH2F * Frame = CreateFrame(gPad,0.01,25,0.01,1000,"Kin.En./nucl. [GeV/nucl.]","Flux [(m^2 sr GeV/nucl.)^{-1}]");	
         c2->cd();
         gPad->SetLogx();
         gPad->SetLogy();

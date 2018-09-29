@@ -61,8 +61,7 @@ void DrawCorrection(EffCorr * Correction, FileSaver Plots, Binning Bins, std::st
 	gPad->SetLogx();
 	gPad->SetGridx();
 	for(int lat=0;lat<10;lat++){
-		TH1F * LatEff = (TH1F*)MCEff->Clone();
-		LatEff->Multiply((TH1F*)Correction->GetCorrectionLat(lat));		
+		TH1F * LatEff = (TH1F*)Correction->GetEfficiencyLat(lat);
 		PlotTH1FintoGraph(gPad,Bins, LatEff,"R [GV]", "Efficiency",55+5*lat,false,"Psame",rangemin,rangemax,0.5*MCEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),latitudes[lat].c_str(),8,skipleg,true);
 	}
 
@@ -83,8 +82,7 @@ void DrawCorrection(EffCorr * Correction, FileSaver Plots, Binning Bins, std::st
         	c4_do->Draw();
 	}
 
-	TH1F * DataEff = (TH1F*)MCEff->Clone();
-	DataEff->Multiply((TH1F*)Correction->GetGlobCorrection());
+	TH1F * DataEff = (TH1F*)Correction->GetGlobEfficiency();
 	c4_up->cd();
 	gPad->SetLogx();
 	gPad->SetGridx();
@@ -190,9 +188,21 @@ cout<<"****************************** FILES OPENING ****************************
         std::string after;
         before = "";
         after  = ""; 
-	EffCorr * TrackerEffCorr_TOF = new EffCorr(finalHistos,"TrackerEffCorr_TOF","Tracker Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * TrackerEffCorr_NaF = new EffCorr(finalHistos,"TrackerEffCorr_NaF","Tracker Eff. Corr",NaFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * TrackerEffCorr_Agl = new EffCorr(finalHistos,"TrackerEffCorr_Agl","Tracker Eff. Corr",AglPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
+	EffCorr * TriggerEffCorr_HE = new EffCorr(finalHistos,"TriggerEffCorr_HE","Trigger Eff. Corr",PRB,before,after,"IsPrimary",    "IsProtonMC","IsPureDMC","IsDeutonMC"); 
+	EffCorr * TriggerEffCorr_TOF = new EffCorr(finalHistos,"TriggerEffCorr_TOF","Trigger Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsDeutonMC");
+	EffCorr * TriggerEffCorr_NaF = new EffCorr(finalHistos,"TriggerEffCorr_NaF","Trigger Eff. Corr",NaFPB,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsDeutonMC");
+	EffCorr * TriggerEffCorr_Agl = new EffCorr(finalHistos,"TriggerEffCorr_Agl","Trigger Eff. Corr",AglPB,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsDeutonMC");
+
+	EffCorr * Trigger2EffCorr_HE = new EffCorr(finalHistos,"Trigger2EffCorr_HE","Trigger2 Eff. Corr",PRB,before,after,"IsPrimary",    "IsProtonMC","IsPureDMC","IsDeutonMC"); 
+	
+
+	EffCorr * L1PickUpEffCorr_HE = new EffCorr(finalHistos,"L1PickUpEffCorr_HE","L1PickUp Eff. Corr",PRB,before,after,"IsPrimary",    "IsPurePMC","IsPureDMC","IsDeutonMC"); 
+	EffCorr * L1PickUpEffCorr_TOF = new EffCorr(finalHistos,"L1PickUpEffCorr_TOF","L1PickUp Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	EffCorr * L1PickUpEffCorr_NaF = new EffCorr(finalHistos,"L1PickUpEffCorr_NaF","L1PickUp Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	EffCorr * L1PickUpEffCorr_Agl = new EffCorr(finalHistos,"L1PickUpEffCorr_Agl","L1PickUp Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+
+	EffCorr * TrackerEffCorr_HE = new EffCorr(finalHistos,"TrackerEffCorr_HE","Tracker Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
+	
 	EffCorr * GoodChi_TOF = new EffCorr(finalHistos,"GoodChiEffCorr_TOF","GoodChi Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodChi_NaF = new EffCorr(finalHistos,"GoodChiEffCorr_NaF","GoodChi Eff. Corr",NaFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodChi_Agl = new EffCorr(finalHistos,"GoodChiEffCorr_Agl","GoodChi Eff. Corr",AglPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
@@ -214,7 +224,7 @@ cout<<"****************************** FILES OPENING ****************************
 	EffCorr * RICHQualEffCorr_NaF = new EffCorr(finalHistos,"RICHQualCorrection_NaF","RICH Qual Eff. Corr",NaFPB,(before+"&IsFromNaF").c_str(),(after+"&IsFromNaF&RICHBDTCut").c_str(),"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * RICHQualEffCorr_Agl = new EffCorr(finalHistos,"RICHqualCorrection_Agl","RICH Qual. Eff. Corr",AglPB,(before+"&IsFromNaF").c_str(),(after+"&IsFromAgl&RICHBDTCut").c_str(),"","IsPurePMC","IsPureDMC","IsDeutonMC");
 
-	/*DrawCorrection(TrackerEffCorr_TOF,Plots, ToFPB,"TrackerEffCorr" ,"TOF");
+/*DrawCorrection(TrackerEffCorr_TOF,Plots, ToFPB,"TrackerEffCorr" ,"TOF");
 	DrawCorrection(TrackerEffCorr_NaF,Plots, NaFPB,"TrackerEffCorr" ,"NaF");
 	DrawCorrection(TrackerEffCorr_Agl,Plots, AglPB,"TrackerEffCorr" ,"Agl");
 	DrawCorrection(GoodChi_TOF,Plots, ToFPB, "GoodChi","TOF");
@@ -233,13 +243,17 @@ cout<<"****************************** FILES OPENING ****************************
 	DrawCorrection(GoodQTrack_NaF,Plots, NaFPB, "GoodQTrack","NaF");
 	DrawCorrection(GoodQTrack_Agl,Plots, AglPB, "GoodQTrack","Agl");
 	*/
-	DrawAllRangeCorrection(TrackerEffCorr_TOF,TrackerEffCorr_NaF,TrackerEffCorr_Agl,Plots,"TrackerEffCorr");
 	DrawAllRangeCorrection(GoodChi_TOF,GoodChi_NaF,GoodChi_Agl,Plots,"GoodChiEffCorr");
 	DrawAllRangeCorrection(GoodUtof_TOF,GoodUtof_NaF,GoodUtof_Agl,Plots,"GoodUtofEffCorr");
 	DrawAllRangeCorrection(GoodLtof_TOF,GoodLtof_NaF,GoodLtof_Agl,Plots,"GoodLtofEffCorr");
 	DrawAllRangeCorrection(Good1Track_TOF,Good1Track_NaF,Good1Track_Agl,Plots,"Good1TrackEffCorr");
 	DrawAllRangeCorrection(GoodQTrack_TOF,GoodQTrack_NaF,GoodQTrack_Agl,Plots,"GoodQTrackEffCorr");
 
+	DrawCorrection(TriggerEffCorr_HE,Plots,PRB,"TriggerEffCorr","HE",0,110);
+	DrawCorrection(L1PickUpEffCorr_HE,Plots,PRB,"L1PickUpEffCorr","HE",0,110);
+	DrawCorrection(TrackerEffCorr_HE,Plots,PRB,"TrackerEffCorr","HE",0,110);
+	DrawCorrection(Trigger2EffCorr_HE,Plots,PRB,"Trigger2EffCorr","HE",0,110);
+	
 	DrawCorrection(GoodTime_TOF,Plots, ToFPB, "GoodTime","TOF",0.5,3);
 	DrawCorrection(RICHEffCorr_NaF,Plots, NaFPB, "RICHEffCorr","NaF",1,7);
 	DrawCorrection(RICHEffCorr_Agl,Plots, AglPB, "RICHEffCorr","Agl",3,10);

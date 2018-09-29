@@ -20,12 +20,12 @@ bool IsFragmentedDMC 	   (Variables * vars) {return !(IsPureDMC(vars));}
 bool IsFragmentedPMC 	   (Variables * vars) {return !(IsPurePMC(vars));}
 
 bool IsFragmentedPfromDMC  (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
-bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0 && vars->qL1<2);} 
 bool IsPrimary	   (Variables * vars){ return (vars->R>1.3*vars->Rcutoff_RTI); }
 bool IsMC          (Variables * vars){ return (vars->Massa_gen>0);} 
 bool IsData        (Variables * vars){ return (vars->Massa_gen==0);}
 bool IsGoodL1Status (Variables * vars) {return (vars->qL1Status==0);}
 bool IsGoodL2Status (Variables * vars) {return (vars->qL2Status==0);}
+bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0 && vars->qL1<2&&IsGoodL1Status(vars));} 
 bool IsL1Fiducial   (Variables * vars) {return ((vars->FiducialVolume)==255);}
 bool IsGoodChiSquareX(Variables * vars) { return(vars->Chisquare<vars->Chi2Xcut->Eval(abs(vars->R)));}
 bool IsGoodChiSquareY(Variables * vars) { return(vars->Chisquare_y<vars->Chi2Ycut->Eval(abs(vars->R)));}
@@ -49,15 +49,11 @@ bool DistanceCut   (Variables * vars){ return QualChargeCut(vars);}//(Qualitycut
 
 bool LikelihoodCut (Variables * vars){ return ((vars->BetaRICH_new<=0)||(vars->BetaRICH_new>0&&vars->BDTDiscr>0)); }
 
-bool IsMinimumBias_notrigg (Variables * vars){ return (((int)vars->joinCutmask&14)==14);}
-bool IsMinimumBias_notrack (Variables * vars){ return (((int)vars->joinCutmask&3)==3);}
-
-
 
 //analysis selections
 bool IsPhysTrig    (Variables * vars){ return ((int)vars->joinCutmask&1)==1;}
-bool IsMinimumBias (Variables * vars){ return (((int)vars->joinCutmask&11)==11&&vars->R!=0&&vars->Beta>0);}
-bool IsLooseCharge1 (Variables * vars) {return L1LooseCharge1(vars)&&vars->qInner>0.6&&vars->qInner<1.5&&IsGoodL1Status(vars)&&IsGoodL2Status(vars)&&(vars->qL1>0);}
+bool IsMinimumBias (Variables * vars){ return (((int)vars->joinCutmask&15)==15&&vars->R!=0&&vars->Beta>0&&IsGoodL2Status(vars));}
+bool IsLooseCharge1 (Variables * vars) {return L1LooseCharge1(vars)&&vars->qInner>0.6&&vars->qInner<1.5;}
 bool IsCleaning	(Variables * vars) {return ( ((int)vars->joinCutmask&155)==155 &&  DistanceCut (vars)); }
 bool IsGoodTime (Variables * vars) { return ( ((int)vars->joinCutmask&32)==32);}
 bool IsFromNaF_nosel     (Variables * vars){ return vars->IsFromNaF_nosel();}
@@ -66,6 +62,12 @@ bool IsFromNaF     (Variables * vars){ return vars->IsFromNaF();}
 bool IsFromAgl     (Variables * vars){ return vars->IsFromAgl();}
 bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,999999,-0.26,-0.25);  }
 //////////////////////
+
+//baseline eff. corr
+bool IsMinimumBias_notrigg (Variables * vars){ return      (((int)vars->joinCutmask&14)==14&&vars->R!=0&&vars->Beta>0&&IsGoodL2Status(vars));}
+bool IsMinimumBias_notrack (Variables * vars){ return      (((int)vars->joinCutmask&7 )==7             &&vars->Beta>0);}
+bool IsMinimumBias_notriggtrack (Variables * vars){ return (((int)vars->joinCutmask&6 )==6             &&vars->Beta>0);}
+bool IsMinimumBias_notof (Variables * vars){ return (((int)vars->joinCutmask&13)==13&&vars->R!=0&&vars->Beta>0&&IsGoodL2Status(vars));}
 
 
 //efficiency corrections
@@ -121,6 +123,32 @@ bool AglBetaSafetyCut (Variables * vars) {return vars->BetaRICH_new<0.99;}
 
 bool IsClearQ1ExceptL2 (Variables * vars) {return (vars->qL2>0&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qL1InnerNoL2>0.8&&vars->qL1InnerNoL2<1.3&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));} 
 bool IsClearQ2ExceptL2 (Variables * vars) {return (vars->qL2>0&&vars->qUtof>1.8&&vars->qUtof<2.3&&vars->qLtof>1.8&&vars->qLtof<2.3&&vars->qL1InnerNoL2>1.8&&vars->qL1InnerNoL2<2.3&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));} 
+
+
+//// Tracking Efficiency
+
+bool IsExtrapolInsideL8 (Variables * vars) {
+	float X_extrapol = vars->entrypointcoo[0] + (( -29.185+vars->entrypointcoo[2])/cos(vars->theta_track))*cos(vars->phi_track)*sin(vars->theta_track);
+	float Y_extrapol = vars->entrypointcoo[1] + (( -29.185+vars->entrypointcoo[2])/cos(vars->theta_track))*sin(vars->phi_track)*sin(vars->theta_track);
+	return (Y_extrapol>-45&&Y_extrapol<45);
+}
+	
+bool IsGoodTOFStandaloneQ1(Variables * vars) {	
+	return (vars->beta_SA>0 && vars->betapatt_SA==0 && vars->qUtof_SA > 0.8 && vars->qUtof_SA < 1.3 && vars->qLtof_SA > 0.8 && vars->qLtof_SA < 1.3 && vars-> qTrd_SA > 0.6 && vars-> qTrd_SA < 1.7);
+
+} 
+
+//// L1 pick-up efficicny
+
+bool IsL1HitNearExtrapol (Variables * vars) {
+	return (fabs(vars->exthit_closest_coo[1] - vars->exthit_int[1])<3 && fabs(vars->exthit_closest_coo[0] - vars->exthit_int[0])<3);
+}
+
+
+bool IsCleanL1Hit (Variables * vars) { 
+
+	return ( vars->exthit_closest_status==0 && vars->exthit_closest_status==0 && fabs(vars->exthit_closest_q -1)<0.4 && fabs(vars->exthit_largest_q -1)<0.4);
+}
 
 
 template<typename Out>
@@ -189,6 +217,8 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsMinimumBias" ) IsPassed=IsPassed && IsMinimumBias (Vars); 
 		if(spl[i]=="IsMinimumBias_notrigg" ) IsPassed=IsPassed && IsMinimumBias_notrigg (Vars); 
 		if(spl[i]=="IsMinimumBias_notrack" ) IsPassed=IsPassed && IsMinimumBias_notrack (Vars); 
+		if(spl[i]=="IsMinimumBias_notof" )   IsPassed=IsPassed && IsMinimumBias_notof (Vars); 
+		if(spl[i]=="IsMinimumBias_notriggtrack" ) IsPassed=IsPassed && IsMinimumBias_notriggtrack (Vars); 
 	
 		if(spl[i]=="IsLooseCharge1" ) IsPassed=IsPassed && IsLooseCharge1 (Vars);
 		if(spl[i]=="IsCleaning" ) IsPassed=IsPassed && IsCleaning (Vars);
@@ -225,7 +255,16 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsCharge1UTOF") IsPassed=IsPassed && IsCharge1UTOF(Vars);
 		if(spl[i]=="IsCharge1LTOF") IsPassed=IsPassed && IsCharge1LTOF(Vars);
 
-	
+		//tracking eff.	
+  		if(spl[i]=="IsExtrapolInsideL8") IsPassed=IsPassed && IsExtrapolInsideL8(Vars);
+		if(spl[i]=="IsGoodTOFStandaloneQ1") IsPassed=IsPassed && IsGoodTOFStandaloneQ1(Vars);
+
+		//L1 pick-up eff.	
+  		if(spl[i]=="IsL1HitNearExtrapol") IsPassed=IsPassed && IsL1HitNearExtrapol(Vars);
+		if(spl[i]=="IsCleanL1Hit") IsPassed=IsPassed && IsCleanL1Hit(Vars);
+
+
+
 		for(int lat=0;lat<10;lat++)
 			if(spl[i]==("IsInLatZone"+to_string(lat)).c_str())      IsPassed=IsPassed && IsInLatZone(Vars,lat);
 

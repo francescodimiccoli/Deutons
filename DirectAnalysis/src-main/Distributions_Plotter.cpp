@@ -73,14 +73,15 @@ int main(int argc, char * argv[])
 
 	Plotter Plots(finalHistos,finalResults);
 
-/*	Plots.BookMassAnalysis();
+	Plots.BookMassAnalysis();
         Plots.BookCleaningCutsAnalysis();
         Plots.BookRichBDTAnalysis();
         Plots.BookBetaResMatrixAnalysis();
-*/
-	Plots.BookGenAcceptanceAnalysis();	
 
-       if(Refill)	Plots.FillAllAnalyses(chainDT,chainMC);
+	Plots.BookGenAcceptanceAnalysis();	
+	Plots.BookTrackingEfficiencyAnalysis();
+
+        if(Refill)	Plots.FillAllAnalyses(chainDT,chainMC);
 	Plots.DoAllAnalyses();
 
 	return 0;
