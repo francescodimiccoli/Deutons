@@ -89,7 +89,9 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
     // Stroemer cutoff is in the tracker data
     vars->Rcutoff = ntpTracker->stoermer_cutoff[0];
-    vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1];
+    vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1]; //stoermer
+    // vars->Rcutoff_RTI  =   rtiInfo->cf[1][2][1]; //IGRF
+    
     vars->Livetime_RTI =   rtiInfo->lf;    
     vars->good_RTI   = rtiInfo->good;
     vars->isinsaa = rtiInfo->isinsaa;

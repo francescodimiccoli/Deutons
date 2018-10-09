@@ -39,16 +39,26 @@ int main(int argc, char * argv[])
     TH1::SetDefaultSumw2();     	
     cout<<"****************************** FILES OPENING ***************************************"<<endl;
     
-    string INPUT1(argv[1]);
-    string INPUT2(argv[2]);
-    string OUTPUT(argv[3]);
+	string INPUT1 = "";
+	string INPUT2 = "";
+	string OUTPUT = "";
+	
+	if(argc<=2) { 
+		OUTPUT = argv[1];
+	}	
+	
+	else {
+	INPUT1 = argv[1];
+	INPUT2 = argv[2];
+	OUTPUT = argv[3];
+	}
+	string refill="";
+	if(argc > 4 ) 	refill = argv[4];	
+	
+	bool Refill = false;
+	if(refill!="") Refill=true;
 
-    string refill="";
-    if(argc > 4 ) 	refill = argv[4];	
-    
-    bool Refill = false;
-    if(refill!="") Refill=true;
-  
+ 
   TChain * chain_RTI = InputFileReader(INPUT1.c_str(),"RTI");
  
   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
@@ -101,8 +111,8 @@ int main(int argc, char * argv[])
 
   //  TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",60,0.3,1.6);	
     TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF"       ,150,0.4,7.5);
-    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",60,0.4,5,true,11,400,200);
-    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",60,0.4,5,true,11,110,80);	
+    TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"           ,60,0.4,5,true,11,400,200);
+    TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,11,110,80);	
 
   // SmearingCheck->SetLatitudeReweighter(weighter);
     TOFfits->SetLatitudeReweighter(weighter);	
@@ -126,7 +136,7 @@ int main(int argc, char * argv[])
 
         //main loops
         Filler.LoopOnMC  (DBarReader(chainMC, true ),vars);
-   //   Filler.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
+        Filler.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
         //
 
 //	SmearingCheck->DisableFit();
@@ -157,7 +167,7 @@ int main(int argc, char * argv[])
     	//SmearingCheck->ExtractCounts(finalHistos);	
         //SmearingCheck->SaveFitResults(finalResults);
 
-        //TOFfits->DisableFit();
+        TOFfits->DisableFit();
         TOFfits->SetFitRange(0.6,4);
         TOFfits->SetFitConstraints(0.9,1,0.015,0.06,0.005,0.015,true);
 	TOFfits->SetHeliumContamination(HeContTOF);
@@ -165,16 +175,15 @@ int main(int argc, char * argv[])
         TOFfits->SaveFitResults(finalResults);
 
         NaFfits->SetFitRange(0.6,5);
-        //NaFfits->DisableFit();
+        NaFfits->DisableFit();
         NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
 	NaFfits->SetHeliumContamination(HeContNaF);
         NaFfits->ExtractCounts(finalHistos);
 	NaFfits->SaveFitResults(finalResults);
 
         Aglfits->SetFitRange(0.6,5);
-        //Aglfits->DisableFit();
+        Aglfits->DisableFit();
 	Aglfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
-
         Aglfits->SetHeliumContamination(HeContAgl);
   	Aglfits->ExtractCounts(finalHistos);
         Aglfits->SaveFitResults(finalResults);	
@@ -195,9 +204,9 @@ void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, DBarRea
 
 	Variables * vars = new Variables();
 	Efficiency * CountsHE = new Efficiency(finalhistos,nameHE ,nameHE ,PRB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
-	Efficiency * CountsTOF= new Efficiency(finalhistos,nameTOF,nameTOF,ToFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
-	Efficiency * CountsNaF= new Efficiency(finalhistos,nameNaF,nameNaF,NaFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
-	Efficiency * CountsAgl= new Efficiency(finalhistos,nameAgl,nameAgl,AglPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
+	Efficiency * CountsTOF= new Efficiency(finalhistos,nameTOF,nameTOF,ToFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF");
+	Efficiency * CountsNaF= new Efficiency(finalhistos,nameNaF,nameNaF,NaFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    ,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    );
+	Efficiency * CountsAgl= new Efficiency(finalhistos,nameAgl,nameAgl,AglPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    ,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    );
 
 	ParallelFiller<Efficiency *> Filler;
 	Filler.AddObject2beFilled(CountsHE,GetRigidity,GetRigidity); 

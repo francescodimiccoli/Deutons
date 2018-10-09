@@ -40,13 +40,24 @@ int main(int argc, char * argv[])
 	TH1::SetDefaultSumw2();
         cout<<"****************************** FILES OPENING ***************************************"<<endl;
 
-	string INPUT1(argv[1]);
-	string INPUT2(argv[2]);
-	string OUTPUT(argv[3]);
-
+	
+	string INPUT1 = "";
+	string INPUT2 = "";
+	string OUTPUT = "";
+	
+	if(argc<=2) { 
+		OUTPUT = argv[1];
+	}	
+	
+	else {
+	INPUT1 = argv[1];
+	INPUT2 = argv[2];
+	OUTPUT = argv[3];
+	}
 	string refill="";
 	if(argc > 4 ) 	refill = argv[4];	
-
+	cout<<"ecco"<<endl;
+	
 	bool Refill = false;
 	if(refill!="") Refill=true;
 
@@ -96,7 +107,7 @@ int main(int argc, char * argv[])
         std::string after;
         before = "IsPositive&IsMinimumBias_notrigg&IsLooseCharge1";
         after  = "IsPositive&IsMinimumBias&IsLooseCharge1";
-	EffCorr * TriggerEffCorr_HE = new EffCorr(finalHistos,"TriggerEffCorr_HE","Trigger Eff. Corr",PRB,before,after,"IsPrimary",    "IsPurePMC","IsPureDMC","IsDeutonMC"); 
+	EffCorr * TriggerEffCorr_HE  = new EffCorr(finalHistos,"TriggerEffCorr_HE" ,"Trigger Eff. Corr",PRB  ,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC"); 
 	EffCorr * TriggerEffCorr_TOF = new EffCorr(finalHistos,"TriggerEffCorr_TOF","Trigger Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * TriggerEffCorr_NaF = new EffCorr(finalHistos,"TriggerEffCorr_NaF","Trigger Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * TriggerEffCorr_Agl = new EffCorr(finalHistos,"TriggerEffCorr_Agl","Trigger Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");

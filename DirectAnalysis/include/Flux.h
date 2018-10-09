@@ -172,7 +172,6 @@ void Flux::Eval_Flux(){
 	else { FluxEstim = new TH1F("dummy","dummy",10,0,10);
 		return;
 	}	
-	cout<<"Flux: "<<MCEfficiency->GetEfficiency()<<endl;
 	FluxEstim -> SetName((basename+"_Flux").c_str());
 	FluxEstim -> SetTitle((basename+"_Flux").c_str());
 	FluxEstim -> Sumw2();
@@ -193,7 +192,7 @@ void Flux::Eval_Flux(){
 	
 	         Eff_Acceptance = EvalEffAcc(MCEfficiency,bins,param);	
 		 for(int i=0;i<EfficiencyCorrections.size();i++) Eff_Acceptance -> Multiply(EfficiencyCorrections[i]); 
-	         FluxEstim -> Divide(Eff_Acceptance);
+	        FluxEstim -> Divide(Eff_Acceptance);
 		
 	}
 

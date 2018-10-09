@@ -28,7 +28,6 @@ class EffCorr{
 	public:
 
 	EffCorr(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,std::string Cut_MC2,std::string Cut_MCnopid){
-		cout<<"cia"<<endl;
 	
 		EffMC   = new Efficiency(File, (Basename+"_MC" ).c_str(),Directory,Bins, (Cut_before+"&"+Cut_MC  ).c_str(),(Cut_after+"&"+Cut_MC  ).c_str());
 		EffMC2 = new Efficiency(File, (Basename+"_MC2").c_str(),Directory,Bins, (Cut_before+"&"+Cut_MC2  ).c_str(),(Cut_after+"&"+Cut_MC2  ).c_str());
@@ -82,6 +81,8 @@ class EffCorr{
 	virtual void Eval_Efficiencies();
 	virtual void SaveResults(FileSaver finalhistos);
 	virtual void Eval_Corrections();
+	void SetToConstantValue(float value);
+	
 	TH1F * GetMCEfficiency()	{return (TH1F*)EffMC  -> GetEfficiency();}
 	TH1F * GetMCEfficiency2()	{return (TH1F*)EffMC2  -> GetEfficiency();}
 	TH1F * GetMCEfficiency_noPID()	{return (TH1F*)EffMCnopid  -> GetEfficiency();}
@@ -180,3 +181,20 @@ void EffCorr::Eval_Corrections(){
 	
 	return;
 }
+
+
+
+void EffCorr::SetToConstantValue(float value){
+	for(int i=0; i<GlobalCorrection->GetNbinsX(); i++) {
+		GlobalCorrection->SetBinContent(i+1,value);
+		GlobalCorrection->SetBinError(i+1,0.01*value);
+		GlobalCorrection2->SetBinContent(i+1,value);
+		GlobalCorrection2->SetBinError(i+1,0.01*value);
+		GlobalCorrectionnopid->SetBinContent(i+1,value);
+		GlobalCorrectionnopid->SetBinError(i+1,0.01*value);
+			
+	}
+
+}
+
+

@@ -201,6 +201,11 @@ cout<<"****************************** FILES OPENING ****************************
 	EffCorr * L1PickUpEffCorr_NaF = new EffCorr(finalHistos,"L1PickUpEffCorr_NaF","L1PickUp Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * L1PickUpEffCorr_Agl = new EffCorr(finalHistos,"L1PickUpEffCorr_Agl","L1PickUp Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 
+	EffCorr * MinTOFEffCorr_HE  = new EffCorr(finalHistos,"MinTOFEffCorr_HE" ,"Min TOF Eff. Corr",PRB,before,after,  "IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC"); 
+	EffCorr * MinTOFEffCorr_TOF = new EffCorr(finalHistos,"MinTOFEffCorr_TOF","Min TOF Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	EffCorr * MinTOFEffCorr_NaF = new EffCorr(finalHistos,"MinTOFEffCorr_NaF","Min TOF Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	EffCorr * MinTOFEffCorr_Agl = new EffCorr(finalHistos,"MinTOFEffCorr_Agl","Min TOF Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+
 	EffCorr * TrackerEffCorr_HE = new EffCorr(finalHistos,"TrackerEffCorr_HE","Tracker Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	
 	EffCorr * GoodChi_TOF = new EffCorr(finalHistos,"GoodChiEffCorr_TOF","GoodChi Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
@@ -252,7 +257,7 @@ cout<<"****************************** FILES OPENING ****************************
 	DrawCorrection(TriggerEffCorr_HE,Plots,PRB,"TriggerEffCorr","HE",0,110);
 	DrawCorrection(L1PickUpEffCorr_HE,Plots,PRB,"L1PickUpEffCorr","HE",0,110);
 	DrawCorrection(TrackerEffCorr_HE,Plots,PRB,"TrackerEffCorr","HE",0,110);
-	DrawCorrection(Trigger2EffCorr_HE,Plots,PRB,"Trigger2EffCorr","HE",0,110);
+	DrawCorrection(MinTOFEffCorr_HE,Plots,PRB,"MinTOFEffCorr","HE",0,110);
 	
 	DrawCorrection(GoodTime_TOF,Plots, ToFPB, "GoodTime","TOF",0.5,3);
 	DrawCorrection(RICHEffCorr_NaF,Plots, NaFPB, "RICHEffCorr","NaF",1,7);

@@ -12,7 +12,7 @@ $outdir_plots="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/Analy
 #creating sum scripts and output directory
 #
 
-$queue = "8nh";
+$queue = "ams1nd";
 
 print "Resetting work directories...\n";
 
@@ -47,8 +47,8 @@ $bookplots=0;
 $booklat=0;
 $bookhecont=0;
 $bookeff=0;
-$bookcounts=0;
-$bookeffcorr=1;
+$bookcounts=1;
+$bookeffcorr=0;
 $bookflux=0;
 $bookinfos=0;
 
@@ -145,24 +145,36 @@ print "Launching job files...";
 $joblaunched = 0;
 $jobrunning = 0;	
 $jobs = 0;
-
-for($k=0;$k<4;$k++){
+$notcomplete = 1000;
+	
+while($notcomplete>0){
 	$joblaunched = 0;
 	system("kinit -R");
 	$jobs = `bjobs -q $queue| wc -l`;
-	while($jobs>120){
-		$jobs = `bjobs -q $queue| wc -l`;
-		sleep(10);
-		$jobrunning = `bjobs -q $queue |grep RUN|wc -l`;
-		print "Total Jobs launched: $joblaunched\n";
-		print "Jobs currently running: $jobrunning\n";
+	$notcomplete = 0;
+	$control=0;
+	
+	for($i=0;$i<$njobs;$i++){
+		print "Checking results...\n";
+		if($bookplots) { $check = `ls -la $outdir_plots/$ARGV[0]-$ARGV[1]/Plots/Plots$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($booklat) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/LatRew/LatRew$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($bookhecont) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm/HeliumFragm$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($bookeff) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency/MCEfficiency$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($bookcounts) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Counts/Counts$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($bookeffcorr) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/EffCorr/EffCorr$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Fluxes/Fluxes$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($control) {
+			$notcomplete = $notcomplete + 1;
+		}
 	}
+	print $notcomplete." jobs not yet completed... Launching missing:\n";
+
 	while($joblaunched<$njobs){
 		$jobrunning = `bjobs -q $queue |grep RUN|wc -l`;
 		$jobs = `bjobs -q $queue| wc -l`;
 		$check;
 		$control=0;
-		while($jobs<350 and $joblaunched<$njobs) {
+		while($jobs<1000 and $joblaunched<$njobs) {
 
 			$control=0;
 			if($bookinfos) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Infos/Infos$joblaunched.txt| awk '{print\$5}'`; if($check<1000) {print $check; $control=1}} 

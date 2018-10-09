@@ -139,6 +139,7 @@ void Plotter::BookBetaResMatrixAnalysis(){
 	plottingfunctions.push_back(DrawBetaRes);
 }
 
+
 void Plotter::BookGenAcceptanceAnalysis(){
 	BookerMC.BookSingleHisto("ProtonMC_GenSpectrum",1000,0,100,"IsProtonMC",GetGenMomentum);
 	BookerMC.BookSingleHisto("DeutonMC_GenSpectrum",1000,0,100,"IsDeutonMC",GetGenMomentum);
