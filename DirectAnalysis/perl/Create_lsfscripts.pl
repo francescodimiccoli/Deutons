@@ -46,10 +46,10 @@ $bookntuples=0;
 $bookplots=0;
 $booklat=0;
 $bookhecont=0;
-$bookeff=0;
+$bookeff=1;
 $bookcounts=1;
-$bookeffcorr=0;
-$bookflux=0;
+$bookeffcorr=1;
+$bookflux=1;
 $bookinfos=0;
 
 
@@ -80,42 +80,36 @@ for($j=0;$j<$njobs;$j++)
 		
 			if($bookplots){
 
-				print OUT "xrdcp -f $outdir_plots/$ARGV[0]-$ARGV[1]/Plots/Plots$j.root /tmp/fdimicco/;\n";
 				print OUT  "\$WORKDIR/Distributions_Plotter \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Plots$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/Plots$j.root $outdir_plots/$ARGV[0]-$ARGV[1]/Plots;\n";
 			}               
 		
 			if($booklat){
 
-				print OUT "xrdcp -f $outdir/$ARGV[0]-$ARGV[1]/LatRew/LatRew$j.root /tmp/fdimicco/;\n";
 				print OUT  "\$WORKDIR/LatitudeReweighter \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/LatRew$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/LatRew$j.root $outdir/$ARGV[0]-$ARGV[1]/LatRew;\n";
 			}
 		
 			if($bookhecont){
 
-				print OUT "xrdcp -f $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm/HeliumFragm$j.root /tmp/fdimicco/;\n";
 				print OUT  "\$WORKDIR/HeliumContamination_Parallel \$WORKDIR/InputNtupleLists/FileListDT$j.txt \$WORKDIR/InputNtupleLists/FileListMC$j.txt  /tmp/fdimicco/HeliumFragm$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/HeliumFragm$j.root $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm;\n";
 			}
 		
 			if($bookeff){
 
-				print OUT "xrdcp -f $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency/MCEfficiency$j.root /tmp/fdimicco/;\n";
 				print OUT  "\$WORKDIR/MCEfficiency_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/MCEfficiency$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/MCEfficiency$j.root $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency;\n";
 			}
 		
 			if($bookcounts){
 
-				print OUT "xrdcp -f $outdir/$ARGV[0]-$ARGV[1]/Counts/Counts$j.root /tmp/fdimicco/;\n";
 				print OUT  "\$WORKDIR/CountsExtraction_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Counts$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/Counts$j.root $outdir/$ARGV[0]-$ARGV[1]/Counts;\n";
 			}	
 			
 			if($bookeffcorr){
 
-				print OUT "xrdcp -f $outdir/$ARGV[0]-$ARGV[1]/EffCorr/EffCorr$j.root /tmp/fdimicco/;\n";
 				print OUT  "\$WORKDIR/EffCorr_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/EffCorr$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/EffCorr$j.root $outdir/$ARGV[0]-$ARGV[1]/EffCorr;\n";
 			}
@@ -123,7 +117,6 @@ for($j=0;$j<$njobs;$j++)
 
 			if($bookflux){
 
-				print OUT "xrdcp -f $outdir/$ARGV[0]-$ARGV[1]/Fluxes/Fluxes$j.root /tmp/fdimicco/;\n";
 				print OUT  "\$WORKDIR/Fluxes_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Fluxes$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
 				print OUT "xrdcp -f /tmp/fdimicco/Fluxes$j.root $outdir/$ARGV[0]-$ARGV[1]/Fluxes;\n";
 			}
@@ -145,7 +138,7 @@ print "Launching job files...";
 $joblaunched = 0;
 $jobrunning = 0;	
 $jobs = 0;
-$notcomplete = 1000;
+$notcomplete = 10000;
 	
 while($notcomplete>0){
 	$joblaunched = 0;
@@ -174,7 +167,7 @@ while($notcomplete>0){
 		$jobs = `bjobs -q $queue| wc -l`;
 		$check;
 		$control=0;
-		while($jobs<1000 and $joblaunched<$njobs) {
+		while($jobs<500 and $joblaunched<$njobs) {
 
 			$control=0;
 			if($bookinfos) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Infos/Infos$joblaunched.txt| awk '{print\$5}'`; if($check<1000) {print $check; $control=1}} 

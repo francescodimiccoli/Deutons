@@ -33,6 +33,7 @@
 #include "../include/EffCorr.h"
 #include "../include/EffCorrTemplate.h"
 
+void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalHistos, FileSaver  finalResults);
 
 int main(int argc, char * argv[])
 {
@@ -133,31 +134,35 @@ int main(int argc, char * argv[])
 	// Good Z=1 and Golden Efficiency corrections
 	before = "IsPositive&IsMinimumBias&IsLooseCharge1";
         after  = "IsPositive&IsMinimumBias&IsLooseCharge1&IsGoodChi2"; 
+	EffCorr * GoodChi_HE  = new EffCorr(finalHistos,"GoodChiEffCorr_HE","GoodChi Eff. Corr",PRB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodChi_TOF = new EffCorr(finalHistos,"GoodChiEffCorr_TOF","GoodChi Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodChi_NaF = new EffCorr(finalHistos,"GoodChiEffCorr_NaF","GoodChi Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodChi_Agl = new EffCorr(finalHistos,"GoodChiEffCorr_Agl","GoodChi Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 
 	before = "IsPositive&IsMinimumBias&IsLooseCharge1";
         after  = "IsPositive&IsMinimumBias&IsLooseCharge1&IsCharge1UTOF"; 
+	EffCorr * GoodUtof_HE  = new EffCorr(finalHistos,"GoodUtofEffCorr_HE","GoodUtof Eff. Corr",PRB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodUtof_TOF = new EffCorr(finalHistos,"GoodUtofEffCorr_TOF","GoodUtof Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodUtof_NaF = new EffCorr(finalHistos,"GoodUtofEffCorr_NaF","GoodUtof Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodUtof_Agl = new EffCorr(finalHistos,"GoodUtofEffCorr_Agl","GoodUtof Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 
 	before = "IsPositive&IsMinimumBias&IsLooseCharge1";
         after  = "IsPositive&IsMinimumBias&IsLooseCharge1&IsCharge1LTOF";
+        EffCorr * GoodLtof_HE  = new EffCorr(finalHistos,"GoodLTOFEffCorr_HE","GoodQTrack Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
         EffCorr * GoodLtof_TOF = new EffCorr(finalHistos,"GoodLTOFEffCorr_TOF","GoodQTrack Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
         EffCorr * GoodLtof_NaF = new EffCorr(finalHistos,"GoodLTOFEffCorr_NaF","GoodQTrack Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
         EffCorr * GoodLtof_Agl = new EffCorr(finalHistos,"GoodLTOFEffCorr_Agl","GoodQTrack Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 
-
 	before = "IsPositive&IsMinimumBias&IsLooseCharge1";
         after  = "IsPositive&IsMinimumBias&IsLooseCharge1&Is1TrTrack"; 
+	EffCorr * Good1Track_HE  = new EffCorr(finalHistos,"Good1TrackEffCorr_HE","Good1Track Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * Good1Track_TOF = new EffCorr(finalHistos,"Good1TrackEffCorr_TOF","Good1Track Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * Good1Track_NaF = new EffCorr(finalHistos,"Good1TackEffCorr_NaF", "Good1Track Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * Good1Track_Agl = new EffCorr(finalHistos,"Good1TrackEffCorr_Agl","Good1Track Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 
 	before = "IsPositive&IsMinimumBias&IsLooseCharge1";
         after  = "IsPositive&IsMinimumBias&IsLooseCharge1&IsCharge1Track"; 
+	EffCorr * GoodQTrack_HE  = new EffCorr(finalHistos,"GoodQTrackEffCorr_HE","GoodQTrack Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodQTrack_TOF = new EffCorr(finalHistos,"GoodQTrackEffCorr_TOF","GoodQTrack Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodQTrack_NaF = new EffCorr(finalHistos,"GoodQTrackEffCorr_NaF","GoodQTrack Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodQTrack_Agl = new EffCorr(finalHistos,"GoodQTrackEffCorr_Agl","GoodQTrack Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
@@ -197,22 +202,32 @@ int main(int argc, char * argv[])
 	Filler2.AddObject2beFilled(MinTOFEffCorr_Agl,GetRigidity,GetRigidity);
 	
 	Filler2.AddObject2beFilled(TrackerEffCorr_HE,GetMomentumProxy,GetMomentumProxy);
-	
+
+	Filler2.AddObject2beFilled(GoodChi_HE,GetRigidity,GetRigidity);	
 	Filler2.AddObject2beFilled(GoodChi_TOF,GetRigidity,GetRigidity);	
 	Filler2.AddObject2beFilled(GoodChi_NaF,GetRigidity,GetRigidity);
-	Filler2.AddObject2beFilled(GoodChi_Agl,GetRigidity,GetRigidity);	
+	Filler2.AddObject2beFilled(GoodChi_Agl,GetRigidity,GetRigidity);
+	
+	Filler2.AddObject2beFilled(GoodUtof_HE,GetRigidity,GetRigidity);
 	Filler2.AddObject2beFilled(GoodUtof_TOF,GetRigidity,GetRigidity);
 	Filler2.AddObject2beFilled(GoodUtof_NaF,GetRigidity,GetRigidity);	
 	Filler2.AddObject2beFilled(GoodUtof_Agl,GetRigidity,GetRigidity);
+
+	Filler2.AddObject2beFilled(GoodLtof_HE,GetRigidity,GetRigidity);	
 	Filler2.AddObject2beFilled(GoodLtof_TOF,GetRigidity,GetRigidity);	
 	Filler2.AddObject2beFilled(GoodLtof_NaF,GetRigidity,GetRigidity);
 	Filler2.AddObject2beFilled(GoodLtof_Agl,GetRigidity,GetRigidity);	
+
+	Filler2.AddObject2beFilled(GoodQTrack_HE,GetRigidity,GetRigidity);
 	Filler2.AddObject2beFilled(GoodQTrack_TOF,GetRigidity,GetRigidity);
 	Filler2.AddObject2beFilled(GoodQTrack_NaF,GetRigidity,GetRigidity);	
 	Filler2.AddObject2beFilled(GoodQTrack_Agl,GetRigidity,GetRigidity);
+
+	Filler2.AddObject2beFilled(Good1Track_HE,GetRigidity,GetRigidity);
 	Filler2.AddObject2beFilled(Good1Track_TOF,GetRigidity,GetRigidity);
 	Filler2.AddObject2beFilled(Good1Track_NaF,GetRigidity,GetRigidity);	
 	Filler2.AddObject2beFilled(Good1Track_Agl,GetRigidity,GetRigidity);
+
 	Filler2.AddObject2beFilled(GoodTime_TOF,GetRigidity,GetRigidity);	
 	Filler2.AddObject2beFilled(RICHEffCorr_NaF,GetRigidity,GetRigidity);
 	Filler2.AddObject2beFilled(RICHEffCorr_Agl,GetRigidity,GetRigidity);	
@@ -225,156 +240,64 @@ int main(int argc, char * argv[])
 	Filler2.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
 
 	//saving
-	TriggerEffCorr_HE  -> Save(finalHistos);
-	TriggerEffCorr_TOF -> Save(finalHistos);
-	TriggerEffCorr_NaF -> Save(finalHistos);
-	TriggerEffCorr_Agl -> Save(finalHistos);
-	L1PickUpEffCorr_HE  -> Save(finalHistos);
-	L1PickUpEffCorr_TOF -> Save(finalHistos);
-	L1PickUpEffCorr_NaF -> Save(finalHistos);
-	L1PickUpEffCorr_Agl -> Save(finalHistos);
+	AnalyzeEffCorr(	TriggerEffCorr_HE  , finalHistos, finalResults);
+	AnalyzeEffCorr(	TriggerEffCorr_TOF , finalHistos, finalResults);
+	AnalyzeEffCorr(	TriggerEffCorr_NaF , finalHistos, finalResults);
+	AnalyzeEffCorr(	TriggerEffCorr_Agl , finalHistos, finalResults);
 
-	MinTOFEffCorr_HE  -> Save(finalHistos);
-	MinTOFEffCorr_TOF -> Save(finalHistos);
-	MinTOFEffCorr_NaF -> Save(finalHistos);
-	MinTOFEffCorr_Agl -> Save(finalHistos);
+	AnalyzeEffCorr(	L1PickUpEffCorr_HE , finalHistos, finalResults);
+	AnalyzeEffCorr(	L1PickUpEffCorr_TOF, finalHistos, finalResults);
+	AnalyzeEffCorr(	L1PickUpEffCorr_NaF, finalHistos, finalResults);
+	AnalyzeEffCorr(	L1PickUpEffCorr_Agl, finalHistos, finalResults);
 
-	TrackerEffCorr_HE -> Save(finalHistos);
-	GoodChi_TOF -> Save(finalHistos);
-	GoodChi_NaF -> Save(finalHistos);
-	GoodChi_Agl -> Save(finalHistos);
-	GoodUtof_TOF -> Save(finalHistos);
-	GoodUtof_NaF -> Save(finalHistos);
-	GoodUtof_Agl -> Save(finalHistos);
-	GoodLtof_TOF -> Save(finalHistos);
-	GoodLtof_NaF -> Save(finalHistos);
-	GoodLtof_Agl -> Save(finalHistos);
-	GoodQTrack_TOF -> Save(finalHistos);
-	GoodQTrack_NaF -> Save(finalHistos);
-	GoodQTrack_Agl -> Save(finalHistos);
-	Good1Track_TOF -> Save(finalHistos);
-	Good1Track_NaF -> Save(finalHistos);
-	Good1Track_Agl -> Save(finalHistos);
-	GoodTime_TOF -> Save(finalHistos);
-	RICHEffCorr_NaF -> Save(finalHistos);
-        RICHEffCorr_Agl -> Save(finalHistos);
-        RICHQualEffCorr_NaF -> Save(finalHistos);
-        RICHQualEffCorr_Agl -> Save(finalHistos);
+	AnalyzeEffCorr(	MinTOFEffCorr_HE  , finalHistos, finalResults);
+	AnalyzeEffCorr(	MinTOFEffCorr_TOF , finalHistos, finalResults);
+	AnalyzeEffCorr(	MinTOFEffCorr_NaF , finalHistos, finalResults);
+	AnalyzeEffCorr(	MinTOFEffCorr_Agl , finalHistos, finalResults);
 
-	//analysis
-	TriggerEffCorr_HE  -> Eval_Efficiencies();
-	TriggerEffCorr_TOF -> Eval_Efficiencies();
-	TriggerEffCorr_NaF -> Eval_Efficiencies();
-	TriggerEffCorr_Agl -> Eval_Efficiencies();
-	L1PickUpEffCorr_HE  -> Eval_Efficiencies();
-	L1PickUpEffCorr_TOF -> Eval_Efficiencies();
-	L1PickUpEffCorr_NaF -> Eval_Efficiencies();
-	L1PickUpEffCorr_Agl -> Eval_Efficiencies();
+	AnalyzeEffCorr(	TrackerEffCorr_HE , finalHistos, finalResults);
 
-	MinTOFEffCorr_HE   -> Eval_Efficiencies();
-	MinTOFEffCorr_TOF  -> Eval_Efficiencies();
-	MinTOFEffCorr_NaF  -> Eval_Efficiencies();
-	MinTOFEffCorr_Agl  -> Eval_Efficiencies();
+	AnalyzeEffCorr(	GoodChi_HE  , finalHistos, finalResults);  
+	AnalyzeEffCorr(	GoodChi_TOF , finalHistos, finalResults);  
+	AnalyzeEffCorr(	GoodChi_NaF , finalHistos, finalResults);    
+	AnalyzeEffCorr(	GoodChi_Agl , finalHistos, finalResults);
 
-	TrackerEffCorr_HE -> Eval_Efficiencies();
-	GoodChi_TOF -> Eval_Efficiencies();
-	GoodChi_NaF -> Eval_Efficiencies();
-	GoodChi_Agl -> Eval_Efficiencies();
-	GoodUtof_TOF -> Eval_Efficiencies();
-	GoodUtof_NaF -> Eval_Efficiencies();
-	GoodUtof_Agl -> Eval_Efficiencies();
-	GoodLtof_TOF -> Eval_Efficiencies();
-	GoodLtof_NaF -> Eval_Efficiencies();
-	GoodLtof_Agl -> Eval_Efficiencies();
-	GoodQTrack_TOF -> Eval_Efficiencies();
-	GoodQTrack_NaF -> Eval_Efficiencies();
-	GoodQTrack_Agl -> Eval_Efficiencies();
-	Good1Track_TOF -> Eval_Efficiencies();
-	Good1Track_NaF -> Eval_Efficiencies();
-	Good1Track_Agl -> Eval_Efficiencies();
-	GoodTime_TOF -> Eval_Efficiencies();
-	RICHEffCorr_NaF -> Eval_Efficiencies();
-        RICHEffCorr_Agl -> Eval_Efficiencies();
-        RICHQualEffCorr_NaF -> Eval_Efficiencies();
-        RICHQualEffCorr_Agl -> Eval_Efficiencies();
+	AnalyzeEffCorr(	GoodUtof_HE , finalHistos, finalResults);
+	AnalyzeEffCorr(	GoodUtof_TOF , finalHistos, finalResults);
+	AnalyzeEffCorr(	GoodUtof_NaF , finalHistos, finalResults);
+	AnalyzeEffCorr(	GoodUtof_Agl , finalHistos, finalResults);
 
+	AnalyzeEffCorr(	GoodLtof_HE  , finalHistos, finalResults);
+	AnalyzeEffCorr(	GoodLtof_TOF , finalHistos, finalResults);
+	AnalyzeEffCorr(	GoodLtof_NaF , finalHistos, finalResults);
+	AnalyzeEffCorr(	GoodLtof_Agl , finalHistos, finalResults);
 
-	TriggerEffCorr_HE  -> Eval_Corrections();
-	TriggerEffCorr_TOF -> Eval_Corrections();
-	TriggerEffCorr_NaF -> Eval_Corrections();
-	TriggerEffCorr_Agl -> Eval_Corrections();
-	L1PickUpEffCorr_HE  -> Eval_Corrections();
-	L1PickUpEffCorr_TOF -> Eval_Corrections();
-	L1PickUpEffCorr_NaF -> Eval_Corrections();
-	L1PickUpEffCorr_Agl -> Eval_Corrections();
+	AnalyzeEffCorr(	GoodQTrack_HE , finalHistos, finalResults);
+	AnalyzeEffCorr(	GoodQTrack_TOF , finalHistos, finalResults);
+	AnalyzeEffCorr(	GoodQTrack_NaF , finalHistos, finalResults);
+	AnalyzeEffCorr(	GoodQTrack_Agl , finalHistos, finalResults);
 
-	MinTOFEffCorr_HE  -> Eval_Corrections();
-	MinTOFEffCorr_TOF -> Eval_Corrections();
-	MinTOFEffCorr_NaF -> Eval_Corrections();
-	MinTOFEffCorr_Agl -> Eval_Corrections();
-	
-	TrackerEffCorr_HE -> Eval_Corrections();
-	GoodChi_TOF -> Eval_Corrections();
-	GoodChi_NaF -> Eval_Corrections();
-	GoodChi_Agl -> Eval_Corrections();
-	GoodUtof_TOF -> Eval_Corrections();
-	GoodUtof_NaF -> Eval_Corrections();
-	GoodUtof_Agl -> Eval_Corrections();
-	GoodLtof_TOF -> Eval_Corrections();
-	GoodLtof_NaF -> Eval_Corrections();
-	GoodLtof_Agl -> Eval_Corrections();
-	GoodQTrack_TOF -> Eval_Corrections();
-	GoodQTrack_NaF -> Eval_Corrections();
-	GoodQTrack_Agl -> Eval_Corrections();
-	Good1Track_TOF -> Eval_Corrections();
-	Good1Track_NaF -> Eval_Corrections();
-	Good1Track_Agl -> Eval_Corrections();
-	GoodTime_TOF -> Eval_Corrections();
-	RICHEffCorr_NaF -> Eval_Corrections();
-        RICHEffCorr_Agl -> Eval_Corrections();
-        RICHQualEffCorr_NaF -> Eval_Corrections();
-        RICHQualEffCorr_Agl -> Eval_Corrections();
+	AnalyzeEffCorr(	Good1Track_HE , finalHistos, finalResults);
+	AnalyzeEffCorr(	Good1Track_TOF , finalHistos, finalResults);
+	AnalyzeEffCorr(	Good1Track_NaF , finalHistos, finalResults);
+	AnalyzeEffCorr(	Good1Track_Agl , finalHistos, finalResults);
 
+	AnalyzeEffCorr(	GoodTime_TOF , finalHistos, finalResults);
+	AnalyzeEffCorr(	RICHEffCorr_NaF , finalHistos, finalResults);
+        AnalyzeEffCorr(	RICHEffCorr_Agl , finalHistos, finalResults);
+        AnalyzeEffCorr(	RICHQualEffCorr_NaF , finalHistos, finalResults);
+        AnalyzeEffCorr(	RICHQualEffCorr_Agl , finalHistos, finalResults);
 
-	TriggerEffCorr_HE  -> SaveResults(finalResults);
-	TriggerEffCorr_TOF -> SaveResults(finalResults);
-	TriggerEffCorr_NaF -> SaveResults(finalResults);
-	TriggerEffCorr_Agl -> SaveResults(finalResults);
-	L1PickUpEffCorr_HE  -> SaveResults(finalResults);
-	L1PickUpEffCorr_TOF -> SaveResults(finalResults);
-	L1PickUpEffCorr_NaF -> SaveResults(finalResults);
-	L1PickUpEffCorr_Agl -> SaveResults(finalResults);
-
-	MinTOFEffCorr_HE   -> SaveResults(finalResults);
-	MinTOFEffCorr_TOF  -> SaveResults(finalResults);
-	MinTOFEffCorr_NaF  -> SaveResults(finalResults);
-	MinTOFEffCorr_Agl  -> SaveResults(finalResults);
-	TrackerEffCorr_HE -> SaveResults(finalResults);
-	GoodChi_TOF -> SaveResults(finalResults);
-	GoodChi_NaF -> SaveResults(finalResults);
-	GoodChi_Agl -> SaveResults(finalResults);
-	GoodUtof_TOF -> SaveResults(finalResults);
-	GoodUtof_NaF -> SaveResults(finalResults);
-	GoodUtof_Agl -> SaveResults(finalResults);
-	GoodLtof_TOF -> SaveResults(finalResults);
-	GoodLtof_NaF -> SaveResults(finalResults);
-	GoodLtof_Agl -> SaveResults(finalResults);
-	GoodQTrack_TOF -> SaveResults(finalResults);
-	GoodQTrack_NaF -> SaveResults(finalResults);
-	GoodQTrack_Agl -> SaveResults(finalResults);
-	Good1Track_TOF -> SaveResults(finalResults);
-	Good1Track_NaF -> SaveResults(finalResults);
-	Good1Track_Agl -> SaveResults(finalResults);
-	GoodTime_TOF -> SaveResults(finalResults);
-	RICHEffCorr_NaF -> SaveResults(finalResults);
-        RICHEffCorr_Agl -> SaveResults(finalResults);
-        RICHQualEffCorr_NaF -> SaveResults(finalResults);
-        RICHQualEffCorr_Agl -> SaveResults(finalResults);
 
 	return 0;
 }
 
 
-	
+void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalHistos, FileSaver  finalResults){
+	Correction   -> Save(finalHistos);
+	Correction   -> Eval_Efficiencies();
+	Correction   -> Eval_Corrections();
+	Correction   -> SaveResults(finalResults);
+}	
 
 

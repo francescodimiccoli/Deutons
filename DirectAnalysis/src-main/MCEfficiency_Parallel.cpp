@@ -98,7 +98,9 @@ int main(int argc, char * argv[])
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
 
-	Efficiency * RigBinFullSetEff = new Efficiency(finalHistos,"RigBinFullSetEff","RigBinFullSetEff",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1");
+	Efficiency * RigBinBaselineEff = new Efficiency(finalHistos,"RigBinBaselineEff","RigBinBaselineEff",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1");
+	Efficiency * RigBinQualEff     = new Efficiency(finalHistos,"RigBinQualEff"    ,"RigBinQualEff"    ,PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning");
+
 
      	AllRangesEfficiency * FullSetTOT_P = new AllRangesEfficiency(finalHistos,"FullSetTOT_P","FullSetTOT",
 	"IsProtonMC",			      
@@ -381,7 +383,8 @@ int main(int argc, char * argv[])
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
 	Refill);
 
-	RigBinFullSetEff->SetNotWeightedMC();
+	RigBinBaselineEff->SetNotWeightedMC();
+	RigBinQualEff->SetNotWeightedMC();
 	FullSetTOT_P->SetNotWeightedMC();	
 	FullSetTOT_D->SetNotWeightedMC();	
 	Baseline_P->SetNotWeightedMC();	
@@ -390,7 +393,8 @@ int main(int argc, char * argv[])
 
 	ParallelFiller<Efficiency *> Filler;
 
-	Filler.AddObject2beFilled(RigBinFullSetEff,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(RigBinBaselineEff,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(RigBinQualEff,GetGenMomentum,GetGenMomentum);
 	Filler.AddObject2beFilled(Cascade0,GetGenMomentum,GetGenMomentum);
 	Filler.AddObject2beFilled(Cascade1,GetGenMomentum,GetGenMomentum);
 	Filler.AddObject2beFilled(Cascade2,GetGenMomentum,GetGenMomentum);
@@ -437,7 +441,8 @@ int main(int argc, char * argv[])
 	//main loop
 	Filler.LoopOnMC(DBarReader(chainMC, true ),vars);
 
-	RigBinFullSetEff->Save(finalHistos);
+	RigBinBaselineEff->Save(finalHistos);
+	RigBinQualEff->Save(finalHistos);
 	FullSetTOT_P 	->Save(finalHistos);
 	FullSetTOT_D 	->Save(finalHistos);
 	Baseline_P 	->Save(finalHistos);
@@ -479,7 +484,8 @@ int main(int argc, char * argv[])
 	Fragmentation_D ->Save(finalHistos);
 
 
-	RigBinFullSetEff->Eval_Efficiency();
+	RigBinBaselineEff->Eval_Efficiency();
+	RigBinQualEff->Eval_Efficiency();
 	FullSetTOT_P 	->Eval_Efficiency();
 	FullSetTOT_D 	->Eval_Efficiency();
 	Baseline_P 	->Eval_Efficiency();
@@ -528,7 +534,8 @@ int main(int argc, char * argv[])
         FullSetTOT_D      ->Eval_SystError(FullSet_P,FullSet_D);
 */	
 
-	RigBinFullSetEff->SaveResults(finalResults);
+	RigBinBaselineEff->SaveResults(finalResults);
+	RigBinQualEff->SaveResults(finalResults);
 	FullSetTOT_P 	->SaveResults(finalResults);
 	FullSetTOT_D 	->SaveResults(finalResults);
 	Baseline_P 	->SaveResults(finalResults);

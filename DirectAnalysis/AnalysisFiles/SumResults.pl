@@ -28,18 +28,24 @@ for ($n=0;$n<$nparts; $n++)
 	}
 	print $command."\n";
 	print "\n";
-	system("bsub -q 8nh $command");	
+	system("bsub -q ams1nd $command");	
 }
 
 #system("hadd -f $workdir/$ARGV[0]/Result.root $workdir/$ARGV[0]/Result_P*");
 
-$jobs = `bjobs -q 8nh| wc -l`;
-$running = `bjobs -q 8nh|grep RUN| wc -l`;
+$jobs = `bjobs -q ams1nd| wc -l`;
+$running = `bjobs -q ams1nd|grep RUN| wc -l`;
+$missing = `ls $workdir/$ARGV[0]/Result_P*|wc -l`;
+$missing = $nparts - $missing;
 
-while($jobs>4){
-	$jobs = `bjobs -q 8nh| wc -l`;
-	$running = `bjobs -q 8nh|grep RUN| wc -l`;
+while($missing>0){
+	
+	$jobs = `bjobs -q ams1nd| wc -l`;
+	$running = `bjobs -q ams1nd|grep RUN| wc -l`;
+	$missing = `ls $workdir/$ARGV[0]/Result_P*|wc -l`;
+	$missing = $nparts - $missing;
 
+	print "results missing: ".$missing."\n";
 	print "jobs: ".$jobs."\n";
 	print "running: ".$running."\n";
 
@@ -48,13 +54,19 @@ while($jobs>4){
 
 system ("perl SumPartials.pl $ARGV[0]");
 
-$jobs = `bjobs -q 8nh| wc -l`;
-$running = `bjobs -q 8nh|grep RUN| wc -l`;
+$jobs = `bjobs -q ams1nd| wc -l`;
+$running = `bjobs -q ams1nd|grep RUN| wc -l`;
+$missing = ` ls $workdir/$ARGV[0]/Result_T*|wc -l`;
+$missing = 10 - $missing;
 
-while($jobs>4){
-	$jobs = `bjobs -q 8nh| wc -l`;
-	$running = `bjobs -q 8nh|grep RUN| wc -l`;
 
+while($missing>0){
+	$jobs = `bjobs -q ams1nd| wc -l`;
+	$running = `bjobs -q ams1nd|grep RUN| wc -l`;
+	$missing = ` ls $workdir/$ARGV[0]/Result_P*|wc -l`;
+	$missing = $nparts - $missing;
+
+	print "results missing: ".$missing."\n";
 	print "jobs: ".$jobs."\n";
 	print "running: ".$running."\n";
 

@@ -26,7 +26,7 @@ for ($n=0;$n<$nparts; $n++)
 		$command = $command." ".$workdir."/".$ARGV[0]."/".$Rootuple[$i];
 		print $command."/n";
 	}
-	system("bsub -q 8nh $command");	
+	system("bsub -q ams1nd $command");	
 }
 
 

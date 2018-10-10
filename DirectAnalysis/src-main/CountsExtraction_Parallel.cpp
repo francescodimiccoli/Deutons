@@ -196,20 +196,23 @@ int main(int argc, char * argv[])
 
 void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, DBarReader readerDT, bool refill){
 
-	std::string nameHE  = "HEPCounts" ;
-	std::string nameTOF = "TOFPCounts";
-	std::string nameNaF = "NaFPCounts";
-	std::string nameAgl = "AglPCounts";
+	std::string nameHE      = "HEPCounts" ;
+	std::string namequalHE  = "HEPCountsQual" ;
+	std::string nameTOF 	= "TOFPCounts";
+	std::string nameNaF 	= "NaFPCounts";
+	std::string nameAgl 	= "AglPCounts";
 
 
 	Variables * vars = new Variables();
 	Efficiency * CountsHE = new Efficiency(finalhistos,nameHE ,nameHE ,PRB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
+	Efficiency * CountsQualHE = new Efficiency(finalhistos,namequalHE ,namequalHE ,PRB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning");
 	Efficiency * CountsTOF= new Efficiency(finalhistos,nameTOF,nameTOF,ToFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF");
 	Efficiency * CountsNaF= new Efficiency(finalhistos,nameNaF,nameNaF,NaFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    ,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    );
 	Efficiency * CountsAgl= new Efficiency(finalhistos,nameAgl,nameAgl,AglPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    ,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    );
 
 	ParallelFiller<Efficiency *> Filler;
 	Filler.AddObject2beFilled(CountsHE,GetRigidity,GetRigidity); 
+	Filler.AddObject2beFilled(CountsQualHE,GetRigidity,GetRigidity); 
 	Filler.AddObject2beFilled(CountsTOF,GetRigidity,GetRigidity); 
 	Filler.AddObject2beFilled(CountsNaF,GetRigidity,GetRigidity); 
 	Filler.AddObject2beFilled(CountsAgl,GetRigidity,GetRigidity); 
@@ -218,11 +221,11 @@ void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, DBarRea
 	Filler.LoopOnData(readerDT,vars);
 		
 	CountsHE->Save(finalhistos);
-      	CountsTOF->Save(finalhistos);
+      	CountsQualHE->Save(finalhistos);
+     	CountsTOF->Save(finalhistos);
       	CountsNaF->Save(finalhistos);
       	CountsAgl->Save(finalhistos);
       
-
 	TH1F * Counts_P = (TH1F*) CountsHE->GetBefore();
 	Counts_P->SetName(nameHE.c_str());
 	Counts_P->SetTitle(nameHE.c_str());
@@ -230,6 +233,15 @@ void ExtractSimpleCountNr(FileSaver finalhistos, FileSaver finalResults, DBarRea
 	if(Counts_P){
       		finalResults.Add(Counts_P);
       		finalResults.writeObjsInFolder((nameHE + "/" + nameHE).c_str());
+	}
+
+	TH1F * Counts_QualP = (TH1F*) CountsQualHE->GetBefore();
+	Counts_QualP->SetName(nameHE.c_str());
+	Counts_QualP->SetTitle(nameHE.c_str());
+
+	if(Counts_QualP){
+      		finalResults.Add(Counts_QualP);
+      		finalResults.writeObjsInFolder((namequalHE + "/" + nameHE).c_str());
 	}
 
 	TH1F * Counts_TOFP = (TH1F*) CountsTOF->GetBefore();

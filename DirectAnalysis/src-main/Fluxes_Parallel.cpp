@@ -112,21 +112,31 @@ int main(int argc, char * argv[])
 	EffCorr * TrackerEffCorr_Agl = new EffCorr(finalResults,"TrackerEffCorr_Agl","Tracker Eff. Corr",AglPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 
 	//Other selections eff. corr.
+	EffCorr * GoodChi_HE 		= new EffCorr(finalResults,"GoodChiEffCorr_HE","GoodChi Eff. Corr",PRB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodChi_TOF 		= new EffCorr(finalResults,"GoodChiEffCorr_TOF","GoodChi Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodChi_NaF 		= new EffCorr(finalResults,"GoodChiEffCorr_NaF","GoodChi Eff. Corr",NaFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodChi_Agl 		= new EffCorr(finalResults,"GoodChiEffCorr_Agl","GoodChi Eff. Corr",AglPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
+
+	EffCorr * GoodUtof_HE 		= new EffCorr(finalResults,"GoodUtofEffCorr_HE","GoodUtof Eff. Corr",PRB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodUtof_TOF 		= new EffCorr(finalResults,"GoodUtofEffCorr_TOF","GoodUtof Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodUtof_NaF 		= new EffCorr(finalResults,"GoodUtofEffCorr_NaF","GoodUtof Eff. Corr",NaFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodUtof_Agl 		= new EffCorr(finalResults,"GoodUtofEffCorr_Agl","GoodUtof Eff. Corr",AglPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
+
+        EffCorr * GoodLtof_HE 		= new EffCorr(finalResults,"GoodLTOFEffCorr_HE","GoodQTrack Eff. Corr",PRB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
         EffCorr * GoodLtof_TOF 		= new EffCorr(finalResults,"GoodLTOFEffCorr_TOF","GoodQTrack Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
         EffCorr * GoodLtof_NaF 		= new EffCorr(finalResults,"GoodLTOFEffCorr_NaF","GoodQTrack Eff. Corr",NaFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
         EffCorr * GoodLtof_Agl 		= new EffCorr(finalResults,"GoodLTOFEffCorr_Agl","GoodQTrack Eff. Corr",AglPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
+
+	EffCorr * Good1Track_HE 	= new EffCorr(finalResults,"Good1TrackEffCorr_HE","Good1Track Eff. Corr",PRB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * Good1Track_TOF 	= new EffCorr(finalResults,"Good1TrackEffCorr_TOF","Good1Track Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * Good1Track_NaF 	= new EffCorr(finalResults,"Good1TackEffCorr_NaF", "Good1Track Eff. Corr",NaFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * Good1Track_Agl 	= new EffCorr(finalResults,"Good1TrackEffCorr_Agl","Good1Track Eff. Corr",AglPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
+
+	EffCorr * GoodQTrack_HE 	= new EffCorr(finalResults,"GoodQTrackEffCorr_HE","GoodQTrack Eff. Corr",PRB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodQTrack_TOF 	= new EffCorr(finalResults,"GoodQTrackEffCorr_TOF","GoodQTrack Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodQTrack_NaF 	= new EffCorr(finalResults,"GoodQTrackEffCorr_NaF","GoodQTrack Eff. Corr",NaFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * GoodQTrack_Agl 	= new EffCorr(finalResults,"GoodQTrackEffCorr_Agl","GoodQTrack Eff. Corr",AglPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
+
 	EffCorr * GoodTime_TOF 		= new EffCorr(finalResults,"GoodTimeEffCorr_TOF","GoodTime Eff. Corr",ToFPB,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * RICHEffCorr_NaF 	= new EffCorr(finalResults,"RICHCorrection_NaF","RICH Eff. Corr",NaFPB,before,(after+"&IsFromNaF").c_str(),"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * RICHEffCorr_Agl 	= new EffCorr(finalResults,"RICHCorrection_Agl","RICH Eff. Corr",AglPB,before,(after+"&IsFromAgl").c_str(),"","IsPurePMC","IsPureDMC","IsDeutonMC");
@@ -155,7 +165,8 @@ int main(int argc, char * argv[])
 	Flux * DFluxNaF = new Flux(finalHistos,finalResults, "DFluxNaF", "FullSetTOT_D_NaF","FullSetTOT","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF",NaFDB);
 	Flux * DFluxAgl = new Flux(finalHistos,finalResults, "DFluxAgl", "FullSetTOT_D_Agl","FullSetTOT","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl",AglDB);
 
-	Flux * HEPFlux  = new Flux(finalHistos,finalResults,"PFluxHE","RigBinFullSetEff","RigBinFullSetEff","HEPCounts/HEPCounts/HEPCounts","HEExposure",PRB);
+	Flux * HEPFlux  = new Flux(finalHistos,finalResults,"PFluxHE","RigBinBaselineEff","RigBinBaselineEff","HEPCounts/HEPCounts/HEPCounts","HEExposure",PRB);
+	Flux * HEPFluxQ = new Flux(finalHistos,finalResults,"PFluxQHE","RigBinQualEff","RigBinQualEff","HEPCountsQual/HEPCountsQual/HEPCountsQual","HEExposure",PRB);
 	Flux * PFluxTOF = new Flux(finalHistos,finalResults, "PFluxTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF",ToFPB);
 	Flux * PFluxNaF = new Flux(finalHistos,finalResults, "PFluxNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF",NaFPB);
 	Flux * PFluxAgl = new Flux(finalHistos,finalResults, "PFluxAgl", "FullSetTOT_P_Agl","FullSetTOT","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl",AglPB);
@@ -179,6 +190,7 @@ int main(int argc, char * argv[])
 		Filler.AddObject2beFilled(PFluxNaF,GetBetaGen,GetBetaGen,"IsProtonMC");
 		Filler.AddObject2beFilled(PFluxAgl,GetBetaGen,GetBetaGen,"IsProtonMC");
 		Filler.AddObject2beFilled(HEPFlux,GetGenMomentum,GetGenMomentum,"IsProtonMC");
+		Filler.AddObject2beFilled(HEPFluxQ,GetGenMomentum,GetGenMomentum,"IsProtonMC");
 		Filler.AddObject2beFilled(DummyPTOF,GetBetaGen,GetBetaGen,"IsProtonMC");
 		Filler.AddObject2beFilled(DummyPNaF,GetBetaGen,GetBetaGen,"IsProtonMC");
 		Filler.AddObject2beFilled(DummyPAgl,GetBetaGen,GetBetaGen,"IsProtonMC");
@@ -244,6 +256,7 @@ int main(int argc, char * argv[])
 	cout<<"************* P FLUX ************"<<endl;
 
 	HEPFlux ->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
+	HEPFluxQ->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
 	PFluxTOF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
 	PFluxNaF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
 	PFluxAgl->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
@@ -257,6 +270,17 @@ int main(int argc, char * argv[])
 	HEPFlux->ApplyEfficCorr(L1PickUpEffCorr_HE  ->GetGlobCorrection());
 	HEPFlux->ApplyEfficCorr(TrackerEffCorr_HE   ->GetGlobCorrection());
 	HEPFlux->ApplyEfficCorr(MinTOFEffCorr_HE    ->GetGlobCorrection());
+	
+	//quality flux corrections
+	HEPFluxQ->ApplyEfficCorr(TriggerEffCorr_HE   ->GetGlobCorrection());
+	HEPFluxQ->ApplyEfficCorr(L1PickUpEffCorr_HE  ->GetGlobCorrection());
+	HEPFluxQ->ApplyEfficCorr(TrackerEffCorr_HE   ->GetGlobCorrection());
+	HEPFluxQ->ApplyEfficCorr(MinTOFEffCorr_HE    ->GetGlobCorrection());
+	HEPFluxQ->ApplyEfficCorr(GoodChi_HE 	     ->GetGlobCorrection());
+	HEPFluxQ->ApplyEfficCorr(GoodUtof_HE 	     ->GetGlobCorrection());
+	HEPFluxQ->ApplyEfficCorr(GoodLtof_HE 	     ->GetGlobCorrection());
+	HEPFluxQ->ApplyEfficCorr(Good1Track_HE     ->GetGlobCorrection());
+	HEPFluxQ->ApplyEfficCorr(GoodQTrack_HE     ->GetGlobCorrection());
 
 	//corrections for flux with R edges
 	DummyPTOF->ApplyEfficCorr(TriggerEffCorr_TOF ->GetGlobCorrection());
@@ -272,6 +296,27 @@ int main(int argc, char * argv[])
 	DummyPNaF->ApplyEfficCorr(MinTOFEffCorr_NaF ->GetGlobCorrection());
 	DummyPAgl->ApplyEfficCorr(MinTOFEffCorr_Agl ->GetGlobCorrection());
 
+	DummyPTOF->ApplyEfficCorr(GoodChi_TOF 	     ->GetGlobCorrection());
+	DummyPNaF->ApplyEfficCorr(GoodChi_NaF 	     ->GetGlobCorrection());
+	DummyPAgl->ApplyEfficCorr(GoodChi_Agl 	     ->GetGlobCorrection());
+	DummyPTOF->ApplyEfficCorr(GoodUtof_TOF 	     ->GetGlobCorrection());
+	DummyPNaF->ApplyEfficCorr(GoodUtof_NaF 	     ->GetGlobCorrection());
+	DummyPAgl->ApplyEfficCorr(GoodUtof_Agl 	     ->GetGlobCorrection());
+	DummyPTOF->ApplyEfficCorr(GoodLtof_TOF 	     ->GetGlobCorrection());
+	DummyPNaF->ApplyEfficCorr(GoodLtof_NaF 	     ->GetGlobCorrection());
+	DummyPAgl->ApplyEfficCorr(GoodLtof_Agl 	     ->GetGlobCorrection());
+	DummyPTOF->ApplyEfficCorr(Good1Track_TOF     ->GetGlobCorrection());
+	DummyPNaF->ApplyEfficCorr(Good1Track_NaF     ->GetGlobCorrection());
+	DummyPAgl->ApplyEfficCorr(Good1Track_Agl     ->GetGlobCorrection());
+	DummyPTOF->ApplyEfficCorr(GoodQTrack_TOF     ->GetGlobCorrection());
+	DummyPNaF->ApplyEfficCorr(GoodQTrack_NaF     ->GetGlobCorrection());
+	DummyPAgl->ApplyEfficCorr(GoodQTrack_Agl     ->GetGlobCorrection());
+	DummyPTOF->ApplyEfficCorr(GoodTime_TOF 	     ->GetGlobCorrection());
+	DummyPNaF->ApplyEfficCorr(RICHEffCorr_NaF    ->GetGlobCorrection());
+	DummyPAgl->ApplyEfficCorr(RICHEffCorr_Agl    ->GetGlobCorrection());
+	DummyPNaF->ApplyEfficCorr(RICHQualEffCorr_NaF->GetGlobCorrection());
+	DummyPAgl->ApplyEfficCorr(RICHQualEffCorr_Agl->GetGlobCorrection());
+	
 
 	//corrections for Analysis flux	
 	PFluxTOF->ApplyEfficCorr(TriggerEffCorr_TOF ->GetGlobCorrection());
@@ -309,6 +354,7 @@ int main(int argc, char * argv[])
 	PFluxAgl->ApplyEfficCorr(RICHQualEffCorr_Agl->GetGlobCorrection());
 
 	HEPFlux -> Eval_Flux();
+	HEPFluxQ -> Eval_Flux();
 	PFluxTOF-> Eval_Flux();
         PFluxNaF-> Eval_Flux();
         PFluxAgl-> Eval_Flux();
@@ -321,6 +367,7 @@ int main(int argc, char * argv[])
 	DummyPAgl->ChangeName("DummyPAgl");
 	
 	HEPFlux ->SaveResults(finalResults);
+	HEPFluxQ->SaveResults(finalResults);
 	PFluxTOF->SaveResults(finalResults);
 	PFluxNaF->SaveResults(finalResults);
 	PFluxAgl->SaveResults(finalResults);
