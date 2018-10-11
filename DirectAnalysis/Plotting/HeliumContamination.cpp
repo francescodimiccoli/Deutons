@@ -21,6 +21,8 @@
 #include "../include/Globals.h"
 #include "TKey.h"
 #include "TFractionFitter.h"
+#include "TText.h"
+#include "TPaveLabel.h"
 
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
@@ -29,6 +31,15 @@
 
 #include "../include/FitError.h"
 #include "../include/PlottingFunctions.h"
+
+std::string Convert (float number){
+    std::ostringstream buff;
+    buff<<number;
+    std::string output= buff.str();
+    output.erase(4,output.end()-output.begin()-4);	
+    return output;   
+}
+
 
 int colorbase = 55;
 float minscan =1.65;
@@ -84,6 +95,7 @@ int main(int argc, char * argv[]){
 	DrawFits(finalHistos.GetFile(),"HeContNaF",NaFDB,Plots);
 	DrawFits(finalHistos.GetFile(),"HeContAgl",AglDB,Plots);
 
+	DrawBranching(finalHistos.GetFile(),"HeContCheck9",ToFDB,Plots);
 	DrawBranching(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots);
 	DrawBranching(finalHistos.GetFile(),"HeContNaF",NaFDB,Plots);
 	DrawBranching(finalHistos.GetFile(),"HeContAgl",AglDB,Plots);
@@ -99,6 +111,7 @@ int main(int argc, char * argv[]){
 	DrawFragments(finalHistos.GetFile(),"HeContAgl",AglDB,Plots);
 
 	DrawFragmentsCheck(finalHistos.GetFile(),"HeContCheck",ToFDB,Plots);
+
 }
 
 
@@ -119,7 +132,7 @@ void DrawFragmentsCheck(TFile * file, std::string basename, Binning Bins, FileSa
 			Data.push_back(GetListOfTemplates(file, pathdatacheck[i]));	
 			cout<<"check: "<<Data[i].size()<<endl;
 			for(int bin =0; bin < Bins.size();bin++){
-				//Data[i][bin]->Rebin(3);
+				Data[i][bin]->Rebin(3);
 				if(bin==0) SumData[i] = (TH1F *)Data[i][0]->Clone();
 				else SumData[i]->Add(Data[i][bin]);
 			}
@@ -143,8 +156,8 @@ void DrawFragmentsCheck(TFile * file, std::string basename, Binning Bins, FileSa
 			SumRatio[i]->Divide(SumData[9]);
 		}
 		for(int i=0;i<10;i++){ 
-			PlotDistribution(pad1, SumData[i] ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",i,"ePsame",-SumData[i]->GetBinContent(SumData[i]->GetMaximumBin())*2.33,SumData[i]->GetBinContent(SumData[i]->GetMaximumBin())*2.33,3,("Cut: qL1>"+to_string(minscan+i*0.05)));
-			PlotDistribution(pad2, SumRatio[i] ,"Reconstructed Mass [GeV/c{^2}]","Ratio",i,"ePsame",0.,2.5,2,("Cut: qL1>"+to_string(minscan+i*0.05)));
+			PlotDistribution(pad1, SumData[i] ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",i,"ePsame",-SumData[i]->GetBinContent(SumData[i]->GetMaximumBin())*2.33,SumData[i]->GetBinContent(SumData[i]->GetMaximumBin())*2.33,3,("Cut: qL1>"+to_string(minscan+i*0.05)));
+			PlotDistribution(pad2, SumRatio[i] ,"Reconstructed Mass [GeV/c^{2}]","Ratio",i,"ePsame",0.,2.5,2,("Cut: qL1>"+to_string(minscan+i*0.05)));
 		}
 	
 		TCanvas * c4 = new TCanvas("Fragments Test Ratios");
@@ -202,66 +215,163 @@ void DrawBranching(TFile * file, std::string basename, Binning Bins, FileSaver P
 	std::string pathdata    = (basename + "/Fragments/");
         std::string pathmc      = (basename + "/FragmentsMC/");
 	std::string pathq2data  = (basename + "/Q2Templates/");
-        std::string pathq2mc    = (basename + "/Q2TemplatesMC/");
+        std::string pathmassPmc    = (basename + "/PMassMC/");
+ 	std::string pathmassDmc    = (basename + "/DMassMC/");
+	std::string pathmassTmc    = (basename + "/TMassMC/");
+	std::string pathq2mc    = (basename + "/Q2TemplatesMC/");
 
 
 	std::vector<TH1F*> Data=GetListOfTemplates(file, pathdata);
 	std::vector<TH1F*> MC=GetListOfTemplates(file, pathmc);			
 	std::vector<TH1F*> Q2Data=GetListOfTemplates(file, pathq2data);
 	std::vector<TH1F*> Q2MC=GetListOfTemplates(file, pathq2mc);			
+	std::vector<TH1F*> PMassMC=GetListOfTemplates(file, pathmassPmc);			
+	std::vector<TH1F*> DMassMC=GetListOfTemplates(file, pathmassDmc);			
+	std::vector<TH1F*> TMassMC=GetListOfTemplates(file, pathmassTmc);			
 
 
 	TH1F * SumData ;
 	TH1F * SumMC; 
 	TH1F * SumQ2Data ;
 	TH1F * SumQ2MC; 
+	TH1F * SumPMassMC; 
+	TH1F * SumDMassMC; 
+	TH1F * SumTMassMC; 
 
 
-	for(int bin =0; bin < Bins.size();bin++){
-		TCanvas * c3 = new TCanvas(("Fragments Bin "+to_string(bin)).c_str());
-                c3->SetCanvasSize(2000,1500);
+	for(int bin =2; bin < Bins.size();bin++){
 
 		Data[bin]->Rebin(3);
 		MC[bin]->Rebin(3);
 		Q2Data[bin]->Rebin(3);
 		Q2MC[bin]->Rebin(3);
+		PMassMC[bin]->Rebin(3);
+		DMassMC[bin]->Rebin(3);
+		TMassMC[bin]->Rebin(3);
 	
-
-		//if(Data[bin]->Integral()>0) Data[bin]->Scale(1/Data[bin]->Integral());
-		//if(MC[bin]->Integral()>0)   MC[bin]->Scale(1/MC[bin]->Integral());
-	
-		if(bin==0){
-		 SumData = (TH1F *)Data[0]->Clone();
-		 SumMC   = (TH1F *)MC[0]   ->Clone();
-		 SumQ2Data = (TH1F *)Q2Data[0]->Clone();
-		 SumQ2MC   = (TH1F *)Q2MC[0]   ->Clone();
+		if(bin==2){
+		 SumData = (TH1F *)Data[2]->Clone();
+		 SumMC   = (TH1F *)MC[2]   ->Clone();
+		 SumQ2Data = (TH1F *)Q2Data[2]->Clone();
+		 SumQ2MC   = (TH1F *)Q2MC[2]   ->Clone();
+		 SumPMassMC   = (TH1F *)PMassMC[2]   ->Clone();
+		 SumDMassMC   = (TH1F *)DMassMC[2]   ->Clone();
+		 SumTMassMC   = (TH1F *)TMassMC[2]   ->Clone();
+		
 		}
 		else {
 			SumData->Add(Data[bin]);
 			SumMC->Add(MC[bin]);
 			SumQ2Data->Add(Q2Data[bin]);
 			SumQ2MC->Add(Q2MC[bin]);
-		}	
+			SumPMassMC ->Add(PMassMC[bin]);
+                        SumDMassMC ->Add(DMassMC[bin]);
+			SumTMassMC ->Add(TMassMC[bin]);
+		}
 
-		Data[bin]->Scale(1/Data[bin]->Integral());
-		MC[bin]->Scale(1/MC[bin]->Integral());
-
-		PlotDistribution(gPad, Data[bin] ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",1,"ePsame",-Data[bin]->GetBinContent(Data[bin]->GetMaximumBin())*2.33,Data[bin]->GetBinContent(Data[bin]->GetMaximumBin())*2.33,3,"Data-Driven");	
-		PlotDistribution(gPad, MC[bin] ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",3,"same",-Data[bin]->GetBinContent(Data[bin]->GetMaximumBin())*2.33,Data[bin]->GetBinContent(Data[bin]->GetMaximumBin())*2.33,6,"Helium MC");	
-		
-		Plots.Add(c3);	
 	}
 
-	TCanvas * c4 = new TCanvas("Fragments Tot");
+	TCanvas * c4 = new TCanvas("Branching Ratio DT");
         c4->SetCanvasSize(2000,1500);
 	c4->cd();
-	
 	SumData->Scale(1/SumData->Integral());
-	SumMC->Scale(1/SumMC->Integral());
+	
+	float normP = (SumData->GetBinContent(SumData->FindBin(1.1))+SumData->GetBinContent(SumData->FindBin(1.1)+1)+SumData->GetBinContent(SumData->FindBin(1.1)-1) +SumData->GetBinContent(SumData->FindBin(1.1)+2)+SumData->GetBinContent(SumData->FindBin(1.1)-2))/5;
+	float normD = (SumData->GetBinContent(SumData->FindBin(1.9))+SumData->GetBinContent(SumData->FindBin(1.9)+1)+SumData->GetBinContent(SumData->FindBin(1.9)-1))/3;
+	float normT = (SumData->GetBinContent(SumData->FindBin(3))+SumData->GetBinContent(SumData->FindBin(3)+1)+SumData->GetBinContent(SumData->FindBin(3)-1))/3;
 
-	PlotDistribution(gPad, SumData ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",1,"ePsame",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,3,"Data-Driven");   
-        PlotDistribution(gPad, SumMC ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",3,"same",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,6,"Helium MC");	
+	SumPMassMC ->Scale(normP/ SumPMassMC -> GetBinContent(SumPMassMC ->FindBin(1.1)));
+	SumDMassMC ->Scale(normD/ SumDMassMC -> GetBinContent(SumDMassMC ->FindBin(1.9)));
+	SumTMassMC ->Scale(normT/ SumTMassMC -> GetBinContent(SumTMassMC ->FindBin(3)));
+
+	PlotDistribution(gPad, SumData ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",1,"ePsame",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,3,"Fragments");   
+	PlotDistribution(gPad, SumPMassMC ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",2,"same",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,3,"P mass Template");   
+	PlotDistribution(gPad, SumDMassMC ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",4,"same",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,3,"D mass Template");   
+	PlotDistribution(gPad, SumTMassMC ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",3,"same",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,3,"T mass Template");   
+		
+	std::string Pfract = "He->P: " + Convert(SumPMassMC->Integral()/SumData->Integral() *100) + "%"; 
+	std::string Dfract = "He->D: " + Convert(SumDMassMC->Integral()/SumData->Integral() *100) + "%"; 
+	std::string Tfract = "He->T: " + Convert(SumTMassMC->Integral()/SumData->Integral() *100) + "%"; 
+
+	{
+	TPad *newpad=new TPad("newpad","a transparent pad",0.5,0.2,0.8,0.6);
+	newpad->SetFillStyle(4000);
+	newpad->Draw();
+	newpad->cd();
+	
+	TText *t = new TText(.1,.7,Pfract.c_str());
+	t->SetTextAlign(11);
+	t->SetTextColor(kRed+1);
+	t->SetTextFont(43);
+	t->SetTextSize(40);
+	t->Draw();
+	TText *f = new TText(.1,.5,Dfract.c_str());
+	f->SetTextAlign(11);
+	f->SetTextColor(kBlue+1);
+	f->SetTextFont(43);
+	f->SetTextSize(40);
+	f->Draw("same");
+	TText *g = new TText(.1,.3,Tfract.c_str());
+	g->SetTextAlign(11);
+	g->SetTextColor(kGreen+1);
+	g->SetTextFont(43);
+	g->SetTextSize(40);
+	g->Draw("same");
+	}
+
 	Plots.Add(c4);	
+	Plots.writeObjsInFolder((basename + "/BranchingRatio").c_str());
+
+	TCanvas * c5 = new TCanvas("Branching Ratio MC");
+        c5->SetCanvasSize(2000,1500);
+	c5->cd();
+	SumMC->Scale(1/SumMC->Integral());
+	
+	normP = (SumMC->GetBinContent(SumMC->FindBin(0.93))+SumMC->GetBinContent(SumMC->FindBin(0.93)+1)+SumMC->GetBinContent(SumMC->FindBin(0.93)-1) +SumMC->GetBinContent(SumMC->FindBin(0.93)+2)+SumMC->GetBinContent(SumMC->FindBin(0.93)-2))/5;
+	normD = (SumMC->GetBinContent(SumMC->FindBin(1.9))+SumMC->GetBinContent(SumMC->FindBin(1.9)+1)+SumMC->GetBinContent(SumMC->FindBin(1.9)-1))/3;
+	normT = (SumMC->GetBinContent(SumMC->FindBin(3))+SumMC->GetBinContent(SumMC->FindBin(3)+1)+SumMC->GetBinContent(SumMC->FindBin(3)-1))/3;
+
+	SumPMassMC ->Scale(normP/ SumPMassMC -> GetBinContent(SumPMassMC ->FindBin(0.93)));
+	SumDMassMC ->Scale(normD/ SumDMassMC -> GetBinContent(SumDMassMC ->FindBin(1.9)));
+	SumTMassMC ->Scale(normT/ SumTMassMC -> GetBinContent(SumTMassMC ->FindBin(3)));
+
+	PlotDistribution(gPad, SumMC ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",3,"same",-SumMC->GetBinContent(SumMC->GetMaximumBin())*2.33,SumMC->GetBinContent(SumMC->GetMaximumBin())*2.33,3,"He MC Fragments");   
+	PlotDistribution(gPad, SumPMassMC ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",2,"same",-SumMC->GetBinContent(SumMC->GetMaximumBin())*2.33,SumMC->GetBinContent(SumMC->GetMaximumBin())*2.33,3,"P mass Template");   
+	PlotDistribution(gPad, SumDMassMC ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",4,"same",-SumMC->GetBinContent(SumMC->GetMaximumBin())*2.33,SumMC->GetBinContent(SumMC->GetMaximumBin())*2.33,3,"D mass Template");   
+	PlotDistribution(gPad, SumTMassMC ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",3,"same",-SumMC->GetBinContent(SumMC->GetMaximumBin())*2.33,SumMC->GetBinContent(SumMC->GetMaximumBin())*2.33,3,"T mass Template");   
+		
+	Pfract = "He->P: " + Convert(SumPMassMC->Integral()/SumMC->Integral() *100) + "%"; 
+	Dfract = "He->D: " + Convert(SumDMassMC->Integral()/SumMC->Integral() *100) + "%"; 
+	Tfract = "He->T: " + Convert(SumTMassMC->Integral()/SumMC->Integral() *100) + "%"; 
+
+	{
+	TPad *newpad=new TPad("newpad","a transparent pad",0.5,0.2,0.8,0.6);
+	newpad->SetFillStyle(4000);
+	newpad->Draw();
+	newpad->cd();
+	
+	
+	TText *t = new TText(.1,.7,Pfract.c_str());
+	t->SetTextAlign(11);
+	t->SetTextColor(kRed+1);
+	t->SetTextFont(43);
+	t->SetTextSize(40);
+	t->Draw();
+	TText *f = new TText(.1,.5,Dfract.c_str());
+	f->SetTextAlign(11);
+	f->SetTextColor(kBlue+1);
+	f->SetTextFont(43);
+	f->SetTextSize(40);
+	f->Draw("same");
+	TText *g = new TText(.1,.3,Tfract.c_str());
+	g->SetTextAlign(11);
+	g->SetTextColor(kGreen+1);
+	g->SetTextFont(43);
+	g->SetTextSize(40);
+	g->Draw("same");
+	}
+
+	Plots.Add(c5);	
 	Plots.writeObjsInFolder((basename + "/BranchingRatio").c_str());
 
 
@@ -287,9 +397,10 @@ void DrawFragments(TFile * file, std::string basename, Binning Bins, FileSaver P
 	TH1F * SumQ2MC; 
 
 
-	for(int bin =0; bin < Bins.size();bin++){
+	for(int bin =2; bin < Bins.size();bin++){
 		TCanvas * c3 = new TCanvas(("Fragments Bin "+to_string(bin)).c_str());
                 c3->SetCanvasSize(2000,1500);
+		gPad->SetLogy();
 
 		Data[bin]->Rebin(3);
 		MC[bin]->Rebin(3);
@@ -300,11 +411,11 @@ void DrawFragments(TFile * file, std::string basename, Binning Bins, FileSaver P
 		//if(Data[bin]->Integral()>0) Data[bin]->Scale(1/Data[bin]->Integral());
 		//if(MC[bin]->Integral()>0)   MC[bin]->Scale(1/MC[bin]->Integral());
 	
-		if(bin==0){
-		 SumData = (TH1F *)Data[0]->Clone();
-		 SumMC   = (TH1F *)MC[0]   ->Clone();
-		 SumQ2Data = (TH1F *)Q2Data[0]->Clone();
-		 SumQ2MC   = (TH1F *)Q2MC[0]   ->Clone();
+		if(bin==2){
+		 SumData = (TH1F *)Data[2]->Clone();
+		 SumMC   = (TH1F *)MC[2]   ->Clone();
+		 SumQ2Data = (TH1F *)Q2Data[2]->Clone();
+		 SumQ2MC   = (TH1F *)Q2MC[2]   ->Clone();
 		}
 		else {
 			SumData->Add(Data[bin]);
@@ -316,8 +427,8 @@ void DrawFragments(TFile * file, std::string basename, Binning Bins, FileSaver P
 		Data[bin]->Scale(1/Q2Data[bin]->Integral());
 		MC[bin]->Scale(1/Q2MC[bin]->Integral());
 
-		PlotDistribution(gPad, Data[bin] ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",1,"ePsame",-Data[bin]->GetBinContent(Data[bin]->GetMaximumBin())*2.33,Data[bin]->GetBinContent(Data[bin]->GetMaximumBin())*2.33,3,"Data-Driven");	
-		PlotDistribution(gPad, MC[bin] ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",3,"same",-Data[bin]->GetBinContent(Data[bin]->GetMaximumBin())*2.33,Data[bin]->GetBinContent(Data[bin]->GetMaximumBin())*2.33,6,"Helium MC");	
+		PlotDistribution(gPad, Data[bin] ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",1,"ePsame",1e-7,Data[bin]->GetBinContent(Data[bin]->GetMaximumBin())*2.33,3,"Data-Driven");	
+		PlotDistribution(gPad, MC[bin] ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",3,"same",1e-7,Data[bin]->GetBinContent(Data[bin]->GetMaximumBin())*2.33,6,"Helium MC");	
 		
 		Plots.Add(c3);	
 	}
@@ -325,12 +436,66 @@ void DrawFragments(TFile * file, std::string basename, Binning Bins, FileSaver P
 	TCanvas * c4 = new TCanvas("Fragments Tot");
         c4->SetCanvasSize(2000,1500);
 	c4->cd();
+	gPad->SetLogy();
 
 	SumData->Scale(1/SumQ2Data->Integral());
-	SumMC->Scale(1/SumQ2Data->Integral());
+	SumMC->Scale(1/(1.135*SumQ2MC->Integral())); //1.135 He3/He4 correction
 
-	PlotDistribution(gPad, SumData ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",1,"ePsame",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,3,"Data-Driven");   
-        PlotDistribution(gPad, SumMC ,"Reconstructed Mass [GeV/c{^2}]","Distribution Width",3,"same",-SumData->GetBinContent(SumData->GetMaximumBin())*2.33,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,6,"Helium MC");	
+	PlotDistribution(gPad, SumData ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",1,"ePsame",1e-7,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,3,"Data-Driven");   
+        PlotDistribution(gPad, SumMC ,"Reconstructed Mass [GeV/c^{2}]","Distribution Width",3,"same",1e-7,SumData->GetBinContent(SumData->GetMaximumBin())*2.33,6,"Helium MC");	
+
+	float D_DT=SumData->Integral(SumData->FindBin(1.6),SumData->FindBin(2.2));
+        float T_DT=SumData->Integral(SumData->FindBin(2.7),SumData->FindBin(3.7));
+	float D_MC=SumMC->Integral(SumMC->FindBin(1.6),SumMC->FindBin(2.2));
+        float T_MC=SumMC->Integral(SumMC->FindBin(2.7),SumMC->FindBin(3.7));
+
+	std::string MC_Cross_Section = "He fragm. Probability: " + Convert(SumMC->Integral()*100) + "%"; 
+	std::string DT_Cross_Section = "He fragm. Probability: " + Convert(SumData->Integral()*100) + "%"; 
+	std::string MC_ToverD = "He->T / He->D: " + Convert(T_MC/D_MC*100) + "%"; 
+	std::string DT_ToverD = "He->T / He->D: " + Convert(T_DT/D_DT*100) + "%"; 
+
+
+
+	TPad *newpad=new TPad("newpad","a transparent pad",0.5,0.2,0.8,0.6);
+	newpad->SetFillStyle(4000);
+	newpad->Draw();
+	newpad->cd();
+	
+	TText *t = new TText(.1,.7,MC_Cross_Section.c_str());
+	t->SetTextAlign(11);
+	t->SetTextColor(kGreen+1);
+	t->SetTextFont(43);
+	t->SetTextSize(40);
+	t->Draw();
+	TText *f = new TText(.1,.5,MC_ToverD.c_str());
+	f->SetTextAlign(11);
+	f->SetTextColor(kGreen+1);
+	f->SetTextFont(43);
+	f->SetTextSize(40);
+	f->Draw("same");
+	
+	c4->cd();
+	TPad *newpad2=new TPad("newpad2","another pad",0.2,0.2,0.5,0.6);
+	newpad2->SetFillStyle(4000);
+	newpad2->Draw();
+	newpad2->cd();
+	
+	TText *t2 = new TText(.1,.7,DT_Cross_Section.c_str());
+	t2->SetTextAlign(11);
+	t2->SetTextColor(kBlack);
+	t2->SetTextFont(43);
+	t2->SetTextSize(40);
+	t2->Draw();
+	TText *f2 = new TText(.1,.5,DT_ToverD.c_str());
+	f2->SetTextAlign(11);
+	f2->SetTextColor(kBlack);
+	f2->SetTextFont(43);
+	f2->SetTextSize(40);
+	f2->Draw("same");
+
+
+
+
 	Plots.Add(c4);	
 	Plots.writeObjsInFolder((basename + "/Fragments").c_str());
 }

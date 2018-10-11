@@ -1,4 +1,6 @@
-struct AllRangesEfficiency{
+#include "Efficiency.h"
+
+struct AllRangesEfficiency:public Efficiency{
 
 	private:
 	bool refill=false;
@@ -12,7 +14,7 @@ struct AllRangesEfficiency{
 	Efficiency * EffAgl;
 	
 
-	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_before,std::string Cut_after,bool Refill=false){
+	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_before,std::string Cut_after,bool Refill=false):Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB,Cut_before,Cut_after){
 	
 		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB,Cut_before,Cut_after);	
 		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,NaFDB,(Cut_before+"&IsFromNaF").c_str(),(Cut_after+"&IsFromNaF").c_str());
@@ -20,7 +22,7 @@ struct AllRangesEfficiency{
 		refill=Refill;
 	}
 
-	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_beforeTOF,std::string Cut_beforeNaF,std::string Cut_beforeAgl,std::string Cut_afterTOF,std::string Cut_afterNaF,std::string Cut_afterAgl,bool Refill=false){
+	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_beforeTOF,std::string Cut_beforeNaF,std::string Cut_beforeAgl,std::string Cut_afterTOF,std::string Cut_afterNaF,std::string Cut_afterAgl,bool Refill=false):Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB,Cut_beforeTOF,Cut_afterTOF){
 	
 		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB,Cut_beforeTOF,Cut_afterTOF);	
 		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,NaFDB,Cut_beforeNaF,Cut_afterNaF);
@@ -28,26 +30,26 @@ struct AllRangesEfficiency{
 		refill=Refill;
 	}
 
-	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory){
+	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory):Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB){
 	
 		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB);	
 		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,NaFDB);
 		EffAgl = new Efficiency(File,(Basename+"_Agl").c_str(),Directory,AglDB);
 	}
 
-	void SetUpBadEventSimulator(BadEventSimulator * SimTOF, BadEventSimulator * SimNaF, BadEventSimulator * SimAgl) {
+	virtual void SetUpBadEventSimulator(BadEventSimulator * SimTOF, BadEventSimulator * SimNaF, BadEventSimulator * SimAgl) {
 		BadEvSimTOF = SimTOF;
  		BadEvSimNaF = SimNaF;
 	        BadEvSimAgl = SimAgl;				
 	};
 	
-	void LoadEventIntoBadEvSim(Variables * vars) {
+	virtual void LoadEventIntoBadEvSim(Variables * vars) {
 		EffTOF->LoadEventIntoBadEvSim(vars);
 		EffNaF->LoadEventIntoBadEvSim(vars);
 		EffAgl->LoadEventIntoBadEvSim(vars);
 	}
 	
-	bool ReinitializeHistos(bool refill){
+	virtual bool ReinitializeHistos(bool refill){
 		bool checkifsomeismissing=false;
 		bool allfound=true;
 		if(!(EffTOF -> ReinitializeHistos(refill))) checkifsomeismissing = true;
@@ -57,72 +59,76 @@ struct AllRangesEfficiency{
 		return allfound;
 	}
 
-	void Fill(TTree * tree, Variables * vars){
+	virtual void Fill(TTree * tree, Variables * vars){
 		EffTOF -> Fill(tree,vars,GetBetaGen,refill);
                 EffNaF -> Fill(tree,vars,GetBetaGen,refill);
 	        EffAgl -> Fill(tree,vars,GetBetaGen,refill);
 	}
 
-	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+	virtual void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 		EffTOF -> FillEventByEventMC(vars,var,discr_var);
                 EffNaF -> FillEventByEventMC(vars,var,discr_var);
 	        EffAgl -> FillEventByEventMC(vars,var,discr_var);
 	}
 	
-	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+	virtual void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 		EffTOF -> FillEventByEventData(vars,var,discr_var);
                 EffNaF -> FillEventByEventData(vars,var,discr_var);
 	        EffAgl -> FillEventByEventData(vars,var,discr_var);
 	}
        
-	 void Save(FileSaver finalHistos){
+	virtual void Save(FileSaver finalHistos){
                 EffTOF -> Save(finalHistos);
                 EffNaF -> Save(finalHistos);
                 EffAgl -> Save(finalHistos);
         }
 
-	void Eval_Efficiency(){
+	 virtual void Eval_Efficiency(){
                 EffTOF -> Eval_Efficiency();
                 EffNaF -> Eval_Efficiency();
                 EffAgl -> Eval_Efficiency();
         }
 	
-	void Eval_FittedEfficiency(){
+	virtual void Eval_FittedEfficiency(){
                 EffTOF -> Eval_FittedEfficiency();
                 EffNaF -> Eval_FittedEfficiency();
                 EffAgl -> Eval_FittedEfficiency();
         }
-	void SaveResults(FileSaver finalResults){
+	virtual void SaveResults(FileSaver finalResults){
                 EffTOF -> SaveResults(finalResults);
 		EffNaF -> SaveResults(finalResults);
                 EffAgl -> SaveResults(finalResults);
         }
 
-	void ComposeEfficiency( AllRangesEfficiency * Second){
+	virtual void ComposeEfficiency( AllRangesEfficiency * Second){
 		EffTOF->ComposeEfficiency(Second->EffTOF);
 		EffNaF->ComposeEfficiency(Second->EffNaF);
 		EffAgl->ComposeEfficiency(Second->EffAgl);
 	}
 
-	void CloneEfficiency( AllRangesEfficiency * Second){
+	virtual void CloneEfficiency( AllRangesEfficiency * Second){
 		EffTOF->CloneEfficiency(Second->EffTOF);
 		EffNaF->CloneEfficiency(Second->EffNaF);
 		EffAgl->CloneEfficiency(Second->EffAgl);
 	}
 
 
-	void Eval_StatError(){
+	virtual void Eval_StatError(){
 		EffTOF->Eval_StatError();
 		EffNaF->Eval_StatError();
 		EffAgl->Eval_StatError();
 	} 
-	void Eval_SystError( AllRangesEfficiency * First, AllRangesEfficiency * Second){
+	virtual void Eval_SystError( AllRangesEfficiency * First, AllRangesEfficiency * Second){
 		EffTOF->Eval_SystError(First->EffTOF,Second->EffTOF);
 		EffNaF->Eval_SystError(First->EffNaF,Second->EffNaF);
 		EffAgl->Eval_SystError(First->EffAgl,Second->EffAgl);
 	}
 
-
+	 virtual void SetNotWeightedMC() {
+		EffTOF->SetNotWeightedMC(); 
+		EffNaF->SetNotWeightedMC();
+        	EffAgl->SetNotWeightedMC(); 
+	}
 };
 
 

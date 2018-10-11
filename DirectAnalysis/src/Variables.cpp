@@ -241,6 +241,35 @@ void Variables::ResetVariables(){
     isinsaa=0;
     Livetime_RTI       = 0;
 		
+    //Tracking Efficiency
+    theta_track=0;
+    phi_track=0;
+    entrypointcoo[0]=0;	
+    entrypointcoo[1]=0;	
+    entrypointcoo[2]=0;	
+    beta_SA=0;
+    betapatt_SA=0;	
+    qUtof_SA=0;
+    qLtof_SA=0;			
+    qTrd_SA=0;	
+    EdepECAL=0;
+
+
+    //L1 pick-up Efficiency
+    exthit_int[0]	=0;          
+    exthit_int[1]	=0;          
+    exthit_int[2]	=0;          
+    exthit_closest_coo[0]	=0;
+    exthit_closest_coo[1]	=0;
+    exthit_closest_coo[2]	=0;
+    exthit_closest_q	=0;     
+    exthit_closest_status	=0;
+    exthit_largest_coo[0]	=0;
+    exthit_largest_coo[1]	=0;
+    exthit_largest_coo[2]	=0;
+    exthit_largest_q	=0;     
+    exthit_largest_status	=0;
+
 
 
     // Bit fields
@@ -739,5 +768,12 @@ float GetRupdown(Variables* vars) {  return fabs(vars->Rup - vars->Rdown)/vars->
 float GetChisquareX(Variables * vars) {return vars->Chisquare;}
 float GetChisquareY(Variables * vars) {return vars->Chisquare_y;}
 
+float GetEdepECAL(Variables * vars) {return vars->EdepECAL;}
 
+float GetMomentumProxy(Variables *vars) {
+	float momproxy = -1;
+	if(vars->beta_SA>0 && vars->beta_SA<0.8) momproxy = (1/0.983) * vars->beta_SA/pow((1-pow(vars->beta_SA,2)),0.5);
+	if(vars->beta_SA>0 &&vars->EdepECAL>0.45) momproxy = pow((vars->EdepECAL/0.3),(float)(1/1.1));
 
+	return momproxy;	
+}

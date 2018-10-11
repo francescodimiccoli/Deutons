@@ -310,6 +310,14 @@ void DrawMasses(FileSaver finalHistos,FileSaver finalResults){
 
 }
 
+TH1D * GetMeans(TH2F * h1){
+	string nameh1 = h1->GetName();
+	nameh1 = nameh1 + "_1";
+	TH1D * h1_1 = (TH1D*)gDirectory->Get(nameh1.c_str());	
+	return h1_1;
+
+}
+
 
 void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 
@@ -322,14 +330,32 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 	
 	TF1 * ideal = new TF1("ideal","x",0,1.5); 
 
+	h1->FitSlicesY(0,50,h1->GetNbinsX(),0);
+	h2->FitSlicesY(0,50,h2->GetNbinsX(),0);
+	h3->FitSlicesY(0,50,h3->GetNbinsX(),0);
+	h4->FitSlicesY(0,50,h4->GetNbinsX(),0);
+	h5->FitSlicesY(0,50,h5->GetNbinsX(),0);
+	h6->FitSlicesY(0,50,h6->GetNbinsX(),0);
+
+	TH1D * h1_1 = GetMeans(h1);	
+	TH1D * h2_1 = GetMeans(h2);	
+	TH1D * h3_1 = GetMeans(h3);	
+	TH1D * h4_1 = GetMeans(h4);	
+	TH1D * h5_1 = GetMeans(h5);	
+	TH1D * h6_1 = GetMeans(h6);	
+
+
+
 
 	TCanvas * c1 = new TCanvas("Protons MC #beta shift");
 	c1->cd();
-	PlotTH2F(gPad, h1, "#beta_{gen}","#beta_{meas}","colz");
+//	PlotTH2F(gPad, h1, "#beta_{gen}","#beta_{meas}","colz");
+	h1_1->Draw();
 	ideal->Draw("same");
 	TCanvas * c2 = new TCanvas("Deuterons");
 	c2->cd();
-	PlotTH2F(gPad, h4, "#beta_{gen}","#beta_{meas}","colz");
+//	PlotTH2F(gPad, h4, "#beta_{gen}","#beta_{meas}","colz");
+	h4_1->Draw();
 	ideal->Draw("same");
 	finalResults.Add(c1);
 	finalResults.Add(c2);
@@ -338,11 +364,13 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 
 	TCanvas * c3 = new TCanvas("Protons MC #beta shift");
 	c3->cd();
-	PlotTH2F(gPad, h2, "#beta_{gen}","#beta_{meas}","colz");
+	//PlotTH2F(gPad, h2, "#beta_{gen}","#beta_{meas}","colz");
+	h2_1->Draw();
 	ideal->Draw("same");
 	TCanvas * c4 = new TCanvas("Deuterons MC #beta shift");
 	c4->cd();
-	PlotTH2F(gPad, h5, "#beta_{gen}","#beta_{meas}","colz");
+	//PlotTH2F(gPad, h5, "#beta_{gen}","#beta_{meas}","colz");
+	h5_1->Draw();
 	ideal->Draw("same");
 	finalResults.Add(c3);
 	finalResults.Add(c4);
@@ -350,11 +378,13 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 
 	TCanvas * c5 = new TCanvas("Protons MC #beta shift");
 	c5->cd();
-	PlotTH2F(gPad, h3, "#beta_{gen}","#beta_{meas}","colz");
+	//PlotTH2F(gPad, h3, "#beta_{gen}","#beta_{meas}","colz");
+	h3_1->Draw();
 	ideal->Draw("same");
 	TCanvas * c6 = new TCanvas("Deuterons MC #beta shift");
 	c6->cd();
-	PlotTH2F(gPad, h6, "#beta_{gen}","#beta_{meas}","colz");
+	//PlotTH2F(gPad, h6, "#beta_{gen}","#beta_{meas}","colz");
+	h6_1->Draw();
 	ideal->Draw("same");
 	finalResults.Add(c5);
 	finalResults.Add(c6);

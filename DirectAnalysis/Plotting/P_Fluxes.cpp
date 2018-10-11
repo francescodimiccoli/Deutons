@@ -103,19 +103,20 @@ int main(int argc, char * argv[]){
 
         cout<<"****************************** PLOTTING FLUXES ***************************************"<<endl;
 	
-	Flux * HEPFlux  = new Flux(finalHistos,"PFluxHE", "RigBinFullsetEff","RigBinFullsetEff","HEPCounts/HEPCounts/HEPCounts","HEExposure","Gen. Acceptance",PRB);
+	Flux * HEPFlux  = new Flux(finalHistos,"PFluxHE", "RigBinFullsetEff","RigBinFullsetEff","HEPCounts/HEPCounts/HEPCounts","HEExposure",PRB);
 	
-	Flux * PFluxTOF = new Flux(finalHistos, "PFluxTOF", "FullsetEff_P_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF","Gen. Acceptance",ToFPB);
-	Flux * PFluxNaF = new Flux(finalHistos, "PFluxNaF", "FullsetEff_P_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF","Gen. Acceptance",NaFPB);
-	Flux * PFluxAgl = new Flux(finalHistos, "PFluxAgl", "FullsetEff_P_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl","Gen. Acceptance",AglPB);
+	Flux * PFluxTOF = new Flux(finalHistos, "PFluxTOF", "FullsetEff_P_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF",ToFPB);
+	Flux * PFluxNaF = new Flux(finalHistos, "PFluxNaF", "FullsetEff_P_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF",NaFPB);
+	Flux * PFluxAgl = new Flux(finalHistos, "PFluxAgl", "FullsetEff_P_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl",AglPB);
+	Flux * DummyPTOF = new Flux(finalHistos,"DummyPTOF", "Baseline_P_TOF","Baseline","TOFPCounts/TOFPCounts/TOFPCounts","ExposureTOF",ToFPB);
+	Flux * DummyPNaF = new Flux(finalHistos,"DummyPNaF", "Baseline_P_NaF","Baseline","NaFPCounts/NaFPCounts/NaFPCounts","ExposureNaF",NaFPB);
+	Flux * DummyPAgl = new Flux(finalHistos,"DummyPAgl", "Baseline_P_Agl","Baseline","AglPCounts/AglPCounts/AglPCounts","ExposureAgl",AglPB);
 
-	TCanvas *c1 = new TCanvas("Gen. Acceptance (P)");
+
+	TCanvas *c1 = new TCanvas("Effective Acceptance (P)");
 	c1->SetCanvasSize(2000,1500);
 
-	PlotTH1FintoGraph(gPad,PRB,   HEPFlux ->GetGenAcceptance(),"Kinetic Energy [GeV/nucl.]", "Gen. Acceptance [m^{2} sr]",2,true,"Psame",0.1,100,0.1,3,"H.E. range",24);
-	PlotTH1FintoGraph(gPad,ToFDB, PFluxTOF->GetGenAcceptance(),"Kinetic Energy [GeV/nucl.]", "Gen. Acceptance [m^{2} sr]",2,true,"Psame",0.1,10,0.1,3,"TOF range",8);
-	PlotTH1FintoGraph(gPad,NaFDB, PFluxNaF->GetGenAcceptance(),"Kinetic Energy [GeV/nucl.]", "Gen. Acceptance [m^{2} sr]",2,true,"Psame",0.1,10,0.1,3,"NaF range",22);
-	PlotTH1FintoGraph(gPad,AglDB, PFluxAgl->GetGenAcceptance(),"Kinetic Energy [GeV/nucl.]", "Gen. Acceptance [m^{2} sr]",2,true,"Psame",0.1,10,0.1,3,"Agl range",29);
+	PlotTH1FintoGraph(gPad,PRB,   HEPFlux ->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Gen. Acceptance [m^{2} sr]",2,true,"Psame",0.1,100,0.1,3,"H.E. range",24);
 
 	Plots.Add(c1);
 	Plots.writeObjsInFolder("Fluxes");
@@ -125,12 +126,17 @@ int main(int argc, char * argv[]){
 	TCanvas *c2 = new TCanvas("Proton Primary Flux");
 	c2->SetCanvasSize(2000,1500);
 
-	TH2F * Frame = CreateFrame(0.01,100,1e-3,1e7,"Kin.En./nucl. [GeV/nucl.]","Flux [(m^2 sr GeV/nucl.)^{-1}]");	
+	TH2F * Frame = CreateFrame(gPad,0.01,100,1e-3,104*HEPFlux->GetFlux()->GetBinContent(HEPFlux->GetFlux()->GetMaximumBin()),"Kin.En./nucl. [GeV/nucl.]","Flux [(m^2 sr GeV/nucl.)^{-1}]");	
         c2->cd();
         gPad->SetLogx();
         gPad->SetLogy();
         gPad->SetGridx();
         gPad->SetGridy();
+
+
+
+	Frame->Draw();
+	
         TGraph* galprop3P=new TGraph();
         TGraph* galprop3P2=new TGraph();
         float x,y=0;
@@ -169,7 +175,6 @@ int main(int argc, char * argv[]){
         galprop3P->GetYaxis()->SetTitleSize(0.045);
         galprop3P ->GetYaxis()->SetRangeUser(1e-2,1e4);
 
-	Frame->Draw();
 	galprop3P->Draw("sameC");
         galprop3P2->Draw("sameC");
 	
@@ -184,11 +189,11 @@ int main(int argc, char * argv[]){
 	leg->SetFillColor(0);
 	leg->SetLineWidth(2);
 	leg->Draw("same");
-        
-	PlotTH1FintoGraph(gPad,PRB,   HEPFlux->GetFlux(), "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (H.E.)",24);
-	PlotTH1FintoGraph(gPad,ToFPB, PFluxTOF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFPB, PFluxNaF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglPB, PFluxAgl->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (Agl)",29);
+       
+	PlotTH1FintoGraph(gPad,PRB,   HEPFlux->GetFlux(), "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,104*HEPFlux->GetFlux()->GetBinContent(HEPFlux->GetFlux()->GetMaximumBin()),"This Work (H.E.)",24);
+	PlotTH1FintoGraph(gPad,ToFPB, DummyPTOF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,104*HEPFlux->GetFlux()->GetBinContent(HEPFlux->GetFlux()->GetMaximumBin()),"This Work (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFPB, DummyPNaF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,104*HEPFlux->GetFlux()->GetBinContent(HEPFlux->GetFlux()->GetMaximumBin()),"This Work (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglPB, DummyPAgl->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,104*HEPFlux->GetFlux()->GetBinContent(HEPFlux->GetFlux()->GetMaximumBin()),"This Work (Agl)",29);
 
 	
 	Plots.Add(c2);
@@ -208,10 +213,10 @@ int main(int argc, char * argv[]){
 	AMSFlux->SetLineColor(2);
 	AMSFlux->SetLineWidth(2);
 	//PlotTH1FintoGraph(gPad,PRB,   HEPFlux->GetFlux(), "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (H.E.)",24);
-	PlotRatioWithSplineintoGraph(gPad,PRB, HEPFlux->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (H.E.)",24);
-	PlotRatioWithSplineintoGraph(gPad,ToFDB, PFluxTOF->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (TOF)",8);
-	PlotRatioWithSplineintoGraph(gPad,NaFDB, PFluxNaF->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (NaF)",22);
-	PlotRatioWithSplineintoGraph(gPad,AglDB, PFluxAgl->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (Agl)",29);
+	PlotRatioWithSplineintoGraph(gPad,PRB, HEPFlux->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-5,20,"This Work (H.E.)",8);
+	PlotRatioWithSplineintoGraph(gPad,ToFDB,  DummyPTOF->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (TOF)",24);
+	PlotRatioWithSplineintoGraph(gPad,NaFDB,  DummyPNaF->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (NaF)",22);
+	PlotRatioWithSplineintoGraph(gPad,AglDB,  DummyPAgl->GetFlux(),AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (Agl)",29);
 	
 	//AMSFlux->Draw("same");
 	 
@@ -230,10 +235,10 @@ int main(int argc, char * argv[]){
 	BaseFlux->SetLineColor(2);
 	BaseFlux->SetLineWidth(2);
 	//PlotTH1FintoGraph(gPad,PRB,   HEPFlux->GetFlux(), "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,10000,"This Work (H.E.)",24);
-	PlotRatioWithSplineintoGraph(gPad,PRB, HEPFlux->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (H.E.)",24);
-	PlotRatioWithSplineintoGraph(gPad,ToFDB, PFluxTOF->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (TOF)",8);
-	PlotRatioWithSplineintoGraph(gPad,NaFDB, PFluxNaF->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (NaF)",22);
-	PlotRatioWithSplineintoGraph(gPad,AglDB, PFluxAgl->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (Agl)",29);
+	PlotRatioWithSplineintoGraph(gPad,PRB, HEPFlux->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,4,"This Work (H.E.)",8);
+	PlotRatioWithSplineintoGraph(gPad,ToFDB, DummyPTOF->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (TOF)",24);
+	PlotRatioWithSplineintoGraph(gPad,NaFDB, DummyPNaF->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (NaF)",22);
+	PlotRatioWithSplineintoGraph(gPad,AglDB, DummyPAgl->GetFlux(),BaseFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.1,2,"This Work (Agl)",29);
 	
 
 	//AMSFlux->Draw("same");

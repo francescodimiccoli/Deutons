@@ -66,6 +66,7 @@ int main(int argc, char * argv[])
     	finalResults.setName((OUTPUT+"_Results").c_str());
 	
 	bool checkfile = finalHistos.CheckFile();
+	if(!checkfile) Refill=true;
 
 	cout<<"****************************** VARIABLES ***************************************"<<endl;
 

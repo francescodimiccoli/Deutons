@@ -9,6 +9,7 @@ class Efficiency{
 
 	private:
 
+	bool notweighted = false;
 	TH1 * before;
 	TH1 * after;
 	TH1 * Eff;
@@ -65,32 +66,36 @@ class Efficiency{
 	}
 
 	void ReadFile(){
-		before =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_before").c_str());
-                after  =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_after").c_str());
-                Eff    =(TH1 *) file.Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
-        	Stat_Error = (TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_Stat_Error").c_str());
-		Syst_Error = (TH1F *) file.Get((directory+"/"+basename+"/"+basename+"_Syst_Error").c_str());
+		TFile * ff = file.GetFile();
+		if(ff){
+			before =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_before").c_str());
+                	after  =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_after").c_str());
+                	Eff    =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
+        		Stat_Error = (TH1F *) ff->Get((directory+"/"+basename+"/"+basename+"_Stat_Error").c_str());
+			Syst_Error = (TH1F *) ff->Get((directory+"/"+basename+"/"+basename+"_Syst_Error").c_str());
+		}
 	}
-
-	bool ReinitializeHistos(bool refill);
-	void Fill( TTree * treeMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
-	void Fill(DBarReader readerMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill);
-	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
-	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
-
-	void SetUpBadEventSimulator(BadEventSimulator * Sim) {BadEvSim = Sim; return; };
-	BadEventSimulator * GetBadEventSimulator() {return BadEvSim;};
-	void LoadEventIntoBadEvSim(Variables * vars) {if(BadEvSim) BadEvSim->LoadEvent(vars);}	
 	
-	void Save(FileSaver finalhistos);
-	void SaveResults(FileSaver finalhistos);
-	void Eval_Efficiency();
-	void Eval_FittedEfficiency();
+	virtual bool ReinitializeHistos(bool refill);
+	virtual void Fill( TTree * treeMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
+	virtual void Fill(DBarReader readerMC, Variables * vars, float (*discr_var) (Variables * vars),bool refill);
+	virtual void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
+	virtual void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
+	virtual void SetNotWeightedMC(){notweighted = true; return;}
 
-	void CloneEfficiency(Efficiency * Second);
-	void ComposeEfficiency(Efficiency * Second);
-	void Eval_StatError();
-	void Eval_SystError(Efficiency * First,  Efficiency * Second);
+	virtual void SetUpBadEventSimulator(BadEventSimulator * Sim) {BadEvSim = Sim; return; };
+	BadEventSimulator * GetBadEventSimulator() {return BadEvSim;};
+	virtual void LoadEventIntoBadEvSim(Variables * vars) {if(BadEvSim) BadEvSim->LoadEvent(vars);}	
+	
+	virtual void Save(FileSaver finalhistos);
+	virtual void SaveResults(FileSaver finalhistos);
+	virtual void Eval_Efficiency();
+	virtual void Eval_FittedEfficiency();
+
+	virtual void CloneEfficiency(Efficiency * Second);
+	virtual void ComposeEfficiency(Efficiency * Second);
+	virtual void Eval_StatError();
+	virtual void Eval_SystError(Efficiency * First,  Efficiency * Second);
 	
 	TH1 * GetEfficiency() {return Eff;}
 	TGraphErrors * GetFittedEfficiency() {return FittedEff;}
@@ -226,19 +231,23 @@ void Efficiency::Fill(DBarReader readerMC, Variables * vars, float (*discr_var) 
 void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 	if(!Refill) return;
 	int kbin;
-	float beta=discr_var(vars);;
+	kbin =bins.GetBin(var(vars));
 		
-	if(BadEvSim) beta=BadEvSim->SimulateBadEvents(beta);
-
-	if(bins.IsUsingBetaEdges()) kbin = bins.GetBin(beta);
-	else kbin =bins.GetBin(discr_var(vars));
 	if(kbin>0){
-			if(ApplyCuts(cut_before,vars))
-			 before->Fill(kbin,vars->mcweight);
-			
-			if(ApplyCuts(cut_after ,vars)) { after ->Fill(kbin,vars->mcweight);}
+			float weight =1;
+			if(!notweighted) weight = vars->mcweight;
+			if(ApplyCuts(cut_before,vars)){ before->Fill(kbin,weight);}
 	}
-	return;
+
+	kbin =bins.GetBin(discr_var(vars));
+
+	if(kbin>0){
+			float weight =1;
+			if(!notweighted) weight = vars->mcweight;
+			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,weight);
+	}
+
+return;
 }
 
 
@@ -260,6 +269,7 @@ void Efficiency::FillEventByEventData(Variables * vars, float (*var) (Variables 
 }
 
 void Efficiency::Save(FileSaver finalhistos){
+	cout<<"Saving histo with "<<before->GetEntries()<<"entries"<<endl;
 	finalhistos.Add(before);
 	finalhistos.Add(after); 	
  //	if(Stat_Error) finalhistos.Add(Stat_Error);
@@ -295,6 +305,8 @@ void Efficiency::Eval_FittedEfficiency(){
 }
 
 void Efficiency::SaveResults(FileSaver finalhistos){
+	finalhistos.Add(before);
+        finalhistos.Add(after);
 	finalhistos.Add(Eff); 	
  	//if(Stat_Error) finalhistos.Add(Stat_Error);
 	//if(Syst_Error) finalhistos.Add(Syst_Error);

@@ -797,7 +797,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 	float min=fitrangemin;
 	float max=fitrangemax;
 
-	bool fitcondition = (Fit -> Data->Integral()>500)&&(Fit -> Templ_P->Integral()>50) &&(Fit -> Templ_D->Integral()>50);
+	bool fitcondition = (Fit -> Data->Integral()>50)&&(Fit -> Templ_P->Integral()>50) &&(Fit -> Templ_D->Integral()>50);
 		
 	
 	if(fitcondition) { 
@@ -892,8 +892,10 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 
 		}
 		else{
-			Fit ->wheightP= 0;
-			Fit ->wheightD= 0;
+			Fit -> PCounts = Fit -> Data -> Integral();
+			Fit -> DCounts = Fit -> Data -> Integral();
+			Fit ->wheightP= 1;
+			Fit ->wheightD= 1;
 		}
 	}
 	return;

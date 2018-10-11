@@ -41,13 +41,22 @@ int main(int argc, char * argv[])
 	TH1::SetDefaultSumw2();     	
 	cout<<"****************************** FILES OPENING ***************************************"<<endl;
 
-	string INPUT1(argv[1]);
-	string INPUT2(argv[2]);
-	string OUTPUT(argv[3]);
-
+	string INPUT1 = "";
+	string INPUT2 = "";
+	string OUTPUT = "";
+	
+	if(argc<=2) { 
+		OUTPUT = argv[1];
+	}	
+	
+	else {
+	INPUT1 = argv[1];
+	INPUT2 = argv[2];
+	OUTPUT = argv[3];
+	}
 	string refill="";
 	if(argc > 4 ) 	refill = argv[4];	
-
+	
 	bool Refill = false;
 	if(refill!="") Refill=true;
 
@@ -77,8 +86,11 @@ int main(int argc, char * argv[])
         Plots.BookCleaningCutsAnalysis();
         Plots.BookRichBDTAnalysis();
         Plots.BookBetaResMatrixAnalysis();
-	
-       if(Refill)	Plots.FillAllAnalyses(chainDT,chainMC);
+
+	Plots.BookGenAcceptanceAnalysis();	
+	Plots.BookTrackingEfficiencyAnalysis();
+
+        if(Refill)	Plots.FillAllAnalyses(chainDT,chainMC);
 	Plots.DoAllAnalyses();
 
 	return 0;
