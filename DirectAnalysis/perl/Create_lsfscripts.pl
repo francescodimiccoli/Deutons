@@ -49,7 +49,7 @@ $bookhecont=0;
 $bookeff=1;
 $bookcounts=1;
 $bookeffcorr=1;
-$bookflux=1;
+$bookflux=0;
 $bookinfos=0;
 
 
