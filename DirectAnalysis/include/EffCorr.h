@@ -11,6 +11,10 @@ class EffCorr{
 	TH1F * ExposureZones;
 
 	TH1F * LatCorrections[10];
+	TH1F * LatEfficiencies[10];
+	
+	TH1F * GlobalEfficiency;
+
 	TH1F * GlobalCorrection;
 	TH1F * GlobalCorrection2;
 	TH1F * GlobalCorrectionnopid;
@@ -24,7 +28,6 @@ class EffCorr{
 	public:
 
 	EffCorr(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,std::string Cut_MC2,std::string Cut_MCnopid){
-		cout<<"cia"<<endl;
 	
 		EffMC   = new Efficiency(File, (Basename+"_MC" ).c_str(),Directory,Bins, (Cut_before+"&"+Cut_MC  ).c_str(),(Cut_after+"&"+Cut_MC  ).c_str());
 		EffMC2 = new Efficiency(File, (Basename+"_MC2").c_str(),Directory,Bins, (Cut_before+"&"+Cut_MC2  ).c_str(),(Cut_after+"&"+Cut_MC2  ).c_str());
@@ -34,6 +37,9 @@ class EffCorr{
 		TFile * file = File.GetFile();
 		if(file){
 			for(int lat=0;lat<10;lat++) LatCorrections[lat]=(TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_lat"+to_string(lat)).c_str());
+			for(int lat=0;lat<10;lat++) LatEfficiencies[lat]=(TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Eff_lat"+to_string(lat)).c_str());
+	
+			GlobalEfficiency = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Eff_glob").c_str());
 			GlobalCorrection = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_glob").c_str());
 			GlobalCorrection2 = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_glob2").c_str());
 			GlobalCorrectionnopid = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_globnopid").c_str());
@@ -75,8 +81,16 @@ class EffCorr{
 	virtual void Eval_Efficiencies();
 	virtual void SaveResults(FileSaver finalhistos);
 	virtual void Eval_Corrections();
+	void SetToConstantValue(float value);
+	
 	TH1F * GetMCEfficiency()	{return (TH1F*)EffMC  -> GetEfficiency();}
+	TH1F * GetMCEfficiency2()	{return (TH1F*)EffMC2  -> GetEfficiency();}
+	TH1F * GetMCEfficiency_noPID()	{return (TH1F*)EffMCnopid  -> GetEfficiency();}
+	
 	TH1F * GetCorrectionLat(int lat)  {return LatCorrections[lat];}
+	TH1F * GetEfficiencyLat(int lat)  {return LatEfficiencies[lat];}
+	
+	TH1F * GetGlobEfficiency()	  {return GlobalEfficiency;}
 	TH1F * GetGlobCorrection()	  {return GlobalCorrection;}
 	TH1F * GetGlobCorrection2()	  {return GlobalCorrection2;}
 	TH1F * GetGlobCorrection_noPID()	  {return GlobalCorrectionnopid;}
@@ -95,7 +109,6 @@ void EffCorr::Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*disc
 }
 
 void EffCorr::Save(FileSaver finalhistos){
-	cout<<"coccole"<<endl;
 	EffMC  -> Save(finalhistos);
 	EffMC2  -> Save(finalhistos);
 	EffMCnopid  -> Save(finalhistos);
@@ -118,8 +131,10 @@ void EffCorr::SaveResults(FileSaver finalhistos){
 	for(int lat=0;lat<10;lat++) 
 		if(LatCorrections[lat]){
 			finalhistos.Add(LatCorrections[lat]); 	
+			finalhistos.Add(LatEfficiencies[lat]);
 			finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());
 		}
+	finalhistos.Add(GlobalEfficiency);
 	finalhistos.Add(GlobalCorrection);
  	finalhistos.Add(GlobalCorrection2);
  	finalhistos.Add(GlobalCorrectionnopid);
@@ -134,12 +149,20 @@ void EffCorr::Eval_Corrections(){
 		LatCorrections[lat] = ProjectionXtoTH1F((TH2F*)EffData->GetEfficiency(),(basename + "_Corr_lat"+to_string(lat)).c_str(),lat+1,lat+1);
 		LatCorrections[lat]->SetName((basename + "_Corr_lat"+to_string(lat)).c_str());
 		LatCorrections[lat]->Sumw2();
+		LatEfficiencies[lat] = ProjectionXtoTH1F((TH2F*)EffData->GetEfficiency(),(basename + "_Corr_lat"+to_string(lat)).c_str(),lat+1,lat+1);
+		LatEfficiencies[lat]->SetName((basename + "_Eff_lat"+to_string(lat)).c_str());
+		LatEfficiencies[lat]->Sumw2();
 		LatCorrections[lat]->Divide(EffMC->GetEfficiency());
 	}
 
 	TH1F * Global_Before=ProjectionXtoTH1F((TH2F*)EffData->GetBefore(),(basename + "_Corr_glob").c_str(),0,10);	
 	TH1F * Global_After =ProjectionXtoTH1F((TH2F*)EffData->GetAfter() ,(basename + "_Corr_glob").c_str(),0,10);	
 
+	GlobalEfficiency = (TH1F *) Global_After->Clone();
+	GlobalEfficiency -> SetName((basename + "_Eff_glob").c_str());
+	GlobalEfficiency->Sumw2();
+	GlobalEfficiency->Divide(Global_Before);	
+	
 	GlobalCorrection = (TH1F *) Global_After->Clone();
 	GlobalCorrection -> SetName((basename + "_Corr_glob").c_str());
 	GlobalCorrection->Sumw2();
@@ -158,3 +181,20 @@ void EffCorr::Eval_Corrections(){
 	
 	return;
 }
+
+
+
+void EffCorr::SetToConstantValue(float value){
+	for(int i=0; i<GlobalCorrection->GetNbinsX(); i++) {
+		GlobalCorrection->SetBinContent(i+1,value);
+		GlobalCorrection->SetBinError(i+1,0.01*value);
+		GlobalCorrection2->SetBinContent(i+1,value);
+		GlobalCorrection2->SetBinError(i+1,0.01*value);
+		GlobalCorrectionnopid->SetBinContent(i+1,value);
+		GlobalCorrectionnopid->SetBinError(i+1,0.01*value);
+			
+	}
+
+}
+
+

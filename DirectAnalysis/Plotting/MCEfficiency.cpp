@@ -139,7 +139,7 @@ int main(int argc, char * argv[]){
 	Cascadehistos[6] = (TH1F *) Cascade7 ->GetEfficiency();
 	Cascadehistos[7] = (TH1F *) Cascade8 ->GetEfficiency();
 
-	for(int i=0;i<8;i++) Cascadehistos[i]->Divide(Cascadehistos[0]);
+	//for(int i=0;i<8;i++) Cascadehistos[i]->Divide(Cascadehistos[0]);
 
 	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[0],"Kinetic Energy [GeV/n.]", "Efficiency",1,true,"same",0.1,50,5e-4,1.1,"MinimumBias",8);
 	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[1],"Kinetic Energy [GeV/n.]", "Efficiency",2,true,"same",0.1,50,5e-4,1.1,"LooseQ1",8);

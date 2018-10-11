@@ -51,7 +51,7 @@ while(start==0)
 
       flag=fgets(entry[i],1000,ft); // read string until newline (Schildt p.222)
       if(flag==NULL){cout<<"end of data after "<<i<<" entries"<<endl;break;}
-      cout<<entry[i]<<endl;
+//      cout<<entry[i]<<endl;
     }
 
   n=i;

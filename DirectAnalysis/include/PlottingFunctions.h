@@ -40,7 +40,7 @@ void SetCanvas(TCanvas *c1){
 */
 }
 
-TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxis,std::string Yaxis){
+TH2F* CreateFrame (TVirtualPad * c,float xmin,float xmax,float ymin, float ymax,std::string Xaxis,std::string Yaxis){
 	
 		TH2F * Frame = new TH2F("Frame","Frame",1e3,xmin,xmax,1e3,ymin,ymax);
 		Frame->SetStats(false);
@@ -63,17 +63,31 @@ TH2F* CreateFrame (float xmin,float xmax,float ymin, float ymax,std::string Xaxi
 		Frame->GetXaxis()->SetTitle(Xaxis.c_str());
 		Frame->GetYaxis()->SetTitle(Yaxis.c_str());	
 
-		Frame->GetXaxis()->SetTitleFont(23);
-                Frame->GetYaxis()->SetTitleFont(23); 
+		Frame->GetXaxis()->SetTitleFont(21);
+                Frame->GetYaxis()->SetTitleFont(21); 
 
-                Frame->GetXaxis()->SetLabelFont(23);
-                Frame->GetYaxis()->SetLabelFont(23); 
+                Frame->GetXaxis()->SetLabelFont(21);
+                Frame->GetYaxis()->SetLabelFont(21); 
 
-		Frame->GetXaxis()->SetLabelSize(50);
-                Frame->GetYaxis()->SetLabelSize(50); 
+		Int_t wtopx,wtopy;
+		UInt_t ww,wh;
+		c->cd();
+		gPad->GetCanvas()->GetCanvasPar(wtopx,wtopy,ww,wh);
 
-		Frame->GetXaxis()->SetTitleSize(80);
-		Frame->GetYaxis()->SetTitleSize(80);	
+		cout<<"CANVAS: "<<wtopx<<" "<<wtopy<<" "<<(int)ww<<" "<<(int)wh<<" "<<gPad->GetCanvas()->GetWh()<<endl;
+		cout<<endl;
+		int charwidthX = 35;
+		int charwidthY = 35;
+		
+		Frame->GetXaxis()->SetLabelSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
+                Frame->GetYaxis()->SetLabelSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1())); 
+                                                                                           
+                Frame->GetXaxis()->SetTitleSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
+                Frame->GetYaxis()->SetTitleSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));	
+
+		Frame->GetXaxis()->SetTitleOffset(1/(gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1())));
+                Frame->GetYaxis()->SetTitleOffset(1/(gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1())));	
+
 
 		Frame->GetXaxis()->CenterTitle();
 		Frame->GetYaxis()->CenterTitle();
@@ -311,7 +325,7 @@ void PlotGraph(TVirtualPad * c,TGraphErrors * graph,std::string Xaxis, std::stri
 	}
 	else{
 
-		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
+		TH2F * Frame = CreateFrame(gPad,xmin,xmax,ymin,ymax,Xaxis,Yaxis);
 		Frame->Draw();
 		graph->Draw((options+"same").c_str());
 
@@ -345,7 +359,7 @@ void PlotFunction(TVirtualPad * c, TF1 * Function, std::string Xaxis, std::strin
 	Function->SetRange(xmin,xmax);
 
 	if(options==""){	
-		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
+		TH2F * Frame = CreateFrame(gPad,xmin,xmax,ymin,ymax,Xaxis,Yaxis);
 
 		TLegend * leg = new TLegend(0.6,0.95,0.95,0.7);
 		leg->SetName("leg");
@@ -383,7 +397,7 @@ void PlotFunction(TVirtualPad * c, TSpline3 * Function, std::string Xaxis, std::
 
 
 	if(options==""){	
-		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
+		TH2F * Frame = CreateFrame(gPad,xmin,xmax,ymin,ymax,Xaxis,Yaxis);
 
 		TLegend * leg = new TLegend(0.6,0.95,0.95,0.7);
 		leg->SetName("leg");
@@ -440,7 +454,7 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	Graph->SetFillStyle(3001);
 	Graph->SetLineWidth(7);
 	Graph->SetLineColor(color);
-	Graph->SetMarkerSize(3);
+	Graph->SetMarkerSize(1.7);
 	Graph->SetMarkerStyle(dotstyle);
 	Graph->SetMarkerColor(color);
 
@@ -460,7 +474,7 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 
 	else{
 
-		TH2F * Frame = CreateFrame(xmin,xmax,ymin,ymax,Xaxis,Yaxis);
+		TH2F * Frame = CreateFrame(gPad,xmin,xmax,ymin,ymax,Xaxis,Yaxis);
 		Frame->Draw();
 		Graph->Draw((options+"same").c_str());
 
@@ -487,6 +501,98 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	return;
 }
 
+
+void PlotMergedRanges(TVirtualPad * c, TH1F * ValuesTOF, TH1F* ValuesNaF, TH1F* ValuesAgl, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname="",int dotstyle=8,bool skipleg=false, bool cleanhigherrors=false){
+
+	c->cd();
+	c->SetTopMargin(0.1);
+	c->SetBottomMargin(0.1);
+	gPad->SetFrameLineWidth(5);
+	gPad->SetTickx();
+	gPad->SetTicky();
+	
+	TGraphErrors * Graph = new TGraphErrors();
+	int a=0;
+	for(int i=0;i<17;i++){
+		if(ValuesTOF->GetBinContent(i+1)!=0){
+			if(Ekin) Graph->SetPoint(a,ToFDB.EkPerMassBinCent(i), ValuesTOF->GetBinContent(i+1));
+			else Graph->SetPoint(a,ToFDB.GetBinCenter(i), ValuesTOF->GetBinContent(i+1));
+			Graph->SetPointError(a,0,ValuesTOF->GetBinError(i+1));
+			if(cleanhigherrors) if(ValuesTOF->GetBinError(i+1)/ValuesTOF->GetBinContent(i+1)>0.05) Graph->RemovePoint(a);
+			a++;
+		}
+	}	
+
+	for(int i=3;i<17;i++){
+		if(ValuesNaF->GetBinContent(i+1)!=0){
+			if(Ekin) Graph->SetPoint(a,NaFDB.EkPerMassBinCent(i), ValuesNaF->GetBinContent(i+1));
+			else Graph->SetPoint(a,NaFDB.GetBinCenter(i), ValuesNaF->GetBinContent(i+1));
+			Graph->SetPointError(a,0,ValuesNaF->GetBinError(i+1));
+			if(cleanhigherrors) if(ValuesNaF->GetBinError(i+1)/ValuesNaF->GetBinContent(i+1)>0.05) Graph->RemovePoint(a);
+			a++;
+		}
+	}	
+	for(int i=5;i<17;i++){
+		if(ValuesAgl->GetBinContent(i+1)!=0){
+			if(Ekin) Graph->SetPoint(a,AglDB.EkPerMassBinCent(i), ValuesAgl->GetBinContent(i+1));
+			else Graph->SetPoint(a,AglDB.GetBinCenter(i), ValuesAgl->GetBinContent(i+1));
+			Graph->SetPointError(a,0,ValuesAgl->GetBinError(i+1));
+			if(cleanhigherrors) if(ValuesAgl->GetBinError(i+1)/ValuesAgl->GetBinContent(i+1)>0.05) Graph->RemovePoint(a);
+			a++;
+		}
+	}	
+	Graph->SetLineColor(color);
+	Graph->SetFillColor(color);
+	Graph->SetFillStyle(3001);
+	Graph->SetLineWidth(7);
+	Graph->SetLineColor(color);
+	Graph->SetMarkerSize(3);
+	Graph->SetMarkerStyle(dotstyle);
+	Graph->SetMarkerColor(color);
+
+	TH2F * Frame = (TH2F*) gPad->FindObject("Frame");	
+		
+	if(Frame){
+		Graph->Draw(options.c_str());
+		TLegend * leg = (TLegend*) gPad->FindObject("leg");
+		if(legendname=="")leg->AddEntry(Graph,"","P");
+		else if(!skipleg) leg->AddEntry(Graph,legendname.c_str(),"P");
+		leg->SetLineWidth(3);
+		leg->SetFillColor(0);
+		leg->SetTextFont(32);
+		leg->Draw("same");
+
+	}
+
+	else{
+
+		TH2F * Frame = CreateFrame(gPad,xmin,xmax,ymin,ymax,Xaxis,Yaxis);
+		Frame->Draw();
+		Graph->Draw((options+"same").c_str());
+
+		TLegend * leg = new TLegend(0.6,0.9,0.95,0.6);
+		leg->SetName("leg");
+		leg->SetBorderSize(0);
+		leg->SetTextFont(32);
+		leg->SetLineColor(1);
+		leg->SetLineStyle(1);
+		leg->SetLineWidth(0);
+		leg->SetLineColor(0);
+		leg->SetFillColor(0);
+		leg->SetFillStyle(0);
+
+		if(legendname=="") leg->AddEntry(Graph,"","P");             
+		else if(!skipleg) leg->AddEntry(Graph,legendname.c_str(),"P");
+		leg->SetLineWidth(3);
+		leg->SetFillColor(0);
+		leg->SetTextFont(32);
+		leg->Draw("same");		
+
+	}
+	
+	return;
+
+}
 
 
 void PlotTH1FRatiointoGraph(TVirtualPad * c, Binning bins, TH1F * Values1, TH1F * Values2, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname1="",std::string legendname2=""){

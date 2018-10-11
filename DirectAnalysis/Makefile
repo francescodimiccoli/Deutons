@@ -1,4 +1,4 @@
-all: LatitudeReweighter HeliumContamination_Parallel CountsExtraction_Parallel MCEfficiency_Parallel Distributions_Plotter Ntuple_Maker ExtractInfos Unfolding Resolution_Calibrations EffCorr_Parallel Fluxes_Parallel
+all: LatitudeReweighter HeliumContamination_Parallel CountsExtraction_Parallel MCEfficiency_Parallel Distributions_Plotter Ntuple_Maker ExtractInfos Unfolding Resolution_Calibrations EffCorr_Parallel  Fluxes_Parallel
 
 DBARPATH=../data_reduction
 
@@ -38,7 +38,7 @@ Unfolding: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/Livetime.o obj/GlobalBi
 Resolution_Calibrations: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/Livetime.o obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/Resolution_Calibrations.o
 	g++ $^ -o $@ $(shell root-config --libs --cflags) -lTMVA -L$(DBARPATH)/lib/ -lntp
 
-Fluxes_Parallel: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/Livetime.o obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/Fluxes_Parallel.o 
+Fluxes_Parallel: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/Livetime.o obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/rundb.o obj/Fluxes_Parallel.o 
 	g++ $^ -o $@ $(shell root-config --libs --cflags) -lTMVA -L$(DBARPATH)/lib/ -lntp
 
 

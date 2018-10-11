@@ -45,13 +45,14 @@ int countBits(int n) {
 }
 
 bool DBarReader::minTOF(){
-   return  ((ntpTof->flagp[0]>>2)==0)&&
-	   ((ntpTof->flagp[1]>>2)==0)&&
-	   ((ntpTof->flagp[2]>>2)==0)&&
-	   ((ntpTof->flagp[3]>>2)==0);	
+
+    return (ntpTof->z_nhit>=3)&&(ntpTof->z_like>0)&&((ntpTof->clsn[0]+ntpTof->clsn[2])<=4);	
+
 }
 
 bool DBarReader::goldenTOF(){
+
+    if (!((ntpTof->trk_ncl==4)&&(ntpTof->beta_patt==0)&&(ntpTof->beta_ncl==4))) return false; 
     if ( (ntpTof->flag) != 0   ) return false;
     if (  ntpTof->chisqcn > 10 || ntpTof->chisqcn < 0     ) return false;
     if (  ntpTof->chisqtn > 10 || ntpTof->chisqtn < 0     ) return false;
@@ -88,7 +89,9 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
     // Stroemer cutoff is in the tracker data
     vars->Rcutoff = ntpTracker->stoermer_cutoff[0];
-    vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1];
+    vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1]; //stoermer
+    // vars->Rcutoff_RTI  =   rtiInfo->cf[1][2][1]; //IGRF
+    
     vars->Livetime_RTI =   rtiInfo->lf;    
     vars->good_RTI   = rtiInfo->good;
     vars->isinsaa = rtiInfo->isinsaa;
@@ -110,7 +113,10 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 	    vars->GenY = ntpMCHeader->coo[0][1];  vars->GenPY = ntpMCHeader->dir[1];;
 	    vars->GenZ = ntpMCHeader->coo[0][2];  vars->GenPZ = ntpMCHeader->dir[2];;
 	    vars->MCClusterGeantPids = getPackedLayers_1to4();
-    }    
+    }
+    if(!isMC) {
+   		if(((ntpHeader->trigpatt & 0x2) != 0) && ((ntpHeader->sublvl1&0x3E) ==0)) vars->PrescaleFactor*=100;
+    }	    
 
     /////////////////////////////////// UNBIAS ////////////////////////////////////////
     vars->PhysBPatt = ntpHeader->sublvl1;
@@ -123,16 +129,49 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 			ntpTracker->chisqn[1][1] < 10);	
    */
 
-    //if( (ntpHeader->trigpatt & 0x2) != 0   )  vars->CUTMASK |= 1 << 0;
-    if((vars->PhysBPatt>>1)>0        )   vars->CUTMASK |= 1 << 0;
+
+    /////////////////////////////// PRESELECTION CUTMASK //////////////////////////////////	
+   
+    if( ((ntpHeader->trigpatt & 0x2) != 0) && ((ntpHeader->sublvl1&0x3E) !=0) )      vars->CUTMASK |= 1 << 0;
     if( minTOF()                          )  vars->CUTMASK |= 1 << 1;
-    if( ntpTrd->nseg ==2                   )  vars->CUTMASK |= 1 << 2;
-    if( ntpTracker->rig[0] != 0.0          )  vars->CUTMASK |= 1 << 3;
+    if( (ntpHeader->trigpatt & 0x2) != 0)  vars->CUTMASK |= 1 << 2;
+    if( ntpTracker->rig[1] != 0.0          )  vars->CUTMASK |= 1 << 3;
     if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
     if( goldenTOF()                       )  vars->CUTMASK |= 1 << 5;  
                                                                 // 6
     if( ntpHeader->nparticle == 1  && vars->NTracks == 1 )  vars->CUTMASK |= 1 << 7;
     if( ntpTracker->rig[4] != 0.0          )  vars->CUTMASK |= 1 << 8;
+
+    //////////////////////////////  Tracking Efficiency /////////////////////////////////////
+
+    vars->theta_track     =ntpStandAlone->theta;;
+    vars->phi_track       =ntpStandAlone->phi;
+    vars->entrypointcoo[0]=ntpStandAlone->coo[0];	
+    vars->entrypointcoo[1]=ntpStandAlone->coo[1];	
+    vars->entrypointcoo[2]=ntpStandAlone->coo[2];	
+    vars->beta_SA	  =ntpStandAlone->beta;
+    vars->betapatt_SA     =ntpStandAlone->beta_patt;	
+    vars->qUtof_SA	  =(ntpStandAlone->beta_q_lay[0]+ntpStandAlone->beta_q_lay[1])/2;
+    vars->qLtof_SA	  =(ntpStandAlone->beta_q_lay[2]+ntpStandAlone->beta_q_lay[3])/2;
+    vars->qTrd_SA	  =ntpStandAlone->trd_q;	
+    vars->EdepECAL	  =ntpEcal->energyE[0];
+
+
+    //////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
+    vars->exthit_int[0]		=ntpStandAlone->exthit_int[0][0];	          
+    vars->exthit_int[1]		=ntpStandAlone->exthit_int[0][1];	          
+    vars->exthit_int[2]		=ntpStandAlone->exthit_int[0][2];	          
+    vars->exthit_closest_coo[0]	=ntpStandAlone->exthit_closest_coo[0][0];
+    vars->exthit_closest_coo[1]	=ntpStandAlone->exthit_closest_coo[0][1];
+    vars->exthit_closest_coo[2]	=ntpStandAlone->exthit_closest_coo[0][2];
+    vars->exthit_closest_q		=ntpStandAlone->exthit_closest_q[0]	 ;     
+    vars->exthit_closest_status	=ntpStandAlone->exthit_closest_status[0];
+    vars->exthit_largest_coo[0]	=ntpStandAlone->exthit_largest_coo[0][0];
+    vars->exthit_largest_coo[1]	=ntpStandAlone->exthit_largest_coo[0][1];
+    vars->exthit_largest_coo[2]	=ntpStandAlone->exthit_largest_coo[0][2];
+    vars-> exthit_largest_q		=ntpStandAlone->exthit_largest_q[0]	 ;     
+    vars-> exthit_largest_status	=ntpStandAlone->exthit_largest_status[0];
+
 
     /////////////////////////////// TRACKER ////////////////////////////////////
     
@@ -233,15 +272,16 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI) {
     Tree = tree;
     Tree_RTI = tree_RTI	;   
 
+    if(Tree){
     Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
     Tree->SetBranchAddress( "Header"  , &ntpHeader     );
     Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
     Tree->SetBranchAddress( "Tof"     , &ntpTof        );
     Tree->SetBranchAddress( "Tracker" , &ntpTracker    );
     Tree->SetBranchAddress( "Rich"    , &ntpRich       );
-//  Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
+    Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
 //  Tree->SetBranchAddress( "Anti"   , &ntpAnti       );
-//  Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
+    Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
     if(Tree_RTI){
 	Tree_RTI->SetBranchAddress( "RTIInfo" , &rtiInfo  );		
     	Tree_RTI->BuildIndex("SHeader.utime");
@@ -252,25 +292,28 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI) {
     if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
     cout<<"************ TOT ENTRIES ***************"<<endl;
     cout<<Tree->GetEntries()<<endl;
+    }	
 }
 
 DBarReader::DBarReader(TTree * tree, bool _isMC) {
     Init();
     Tree = tree;
+    if(Tree){
+	    Tree->SetBranchAddress( "RTIInfo" , &rtiInfo  );	
+	    Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
+	    Tree->SetBranchAddress( "Header"  , &ntpHeader     );
+	    Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
+	    Tree->SetBranchAddress( "Tof"     , &ntpTof        );
+	    Tree->SetBranchAddress( "Tracker" , &ntpTracker    );
+	    Tree->SetBranchAddress( "Rich"    , &ntpRich       );
+	    Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
+	    //  Tree->SetBranchAddress( "Anti"   , &ntpAnti       );
+	    Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
 
-    Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
-    Tree->SetBranchAddress( "Header"  , &ntpHeader     );
-    Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
-    Tree->SetBranchAddress( "Tof"     , &ntpTof        );
-    Tree->SetBranchAddress( "Tracker" , &ntpTracker    );
-    Tree->SetBranchAddress( "Rich"    , &ntpRich       );
-//  Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
-//  Tree->SetBranchAddress( "Anti"   , &ntpAnti       );
-//  Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
-
-    isMC = _isMC;
-    if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
-    cout<<"************ TOT ENTRIES ***************"<<endl;
-    cout<<Tree->GetEntries()<<endl;
+	    isMC = _isMC;
+	    if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
+	    cout<<"************ TOT ENTRIES ***************"<<endl;
+	    cout<<Tree->GetEntries()<<endl;
+    }	
 }
 

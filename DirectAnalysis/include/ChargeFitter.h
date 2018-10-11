@@ -14,6 +14,9 @@ class ChargeFitter{
 	std::vector<TH1F*> TemplatesD;
 	std::vector<TH1F*> RawFragments;
 	std::vector<TH1F*> Q1Mass;
+	std::vector<TH1F*> PMassMC;
+	std::vector<TH1F*> DMassMC;
+	std::vector<TH1F*> TMassMC;
 	
 	std::vector<TH1F*> TemplatesQ2MC;
 	std::vector<TH1F*> FragmentsMC;
@@ -60,6 +63,11 @@ ChargeFitter::ChargeFitter(FileSaver File, std::string Basename,Binning Bins, st
 		TemplatesD.push_back(new TH1F((basename+"_D_bin_"+to_string(bin)).c_str(),(basename+"D_bin_"+to_string(bin)).c_str(),nbinsx,xmin,xmax ));
 		RawFragments.push_back(new TH1F((basename+"_Fragm_bin_"+to_string(bin)).c_str(),(basename+"Fragm_bin_"+to_string(bin)).c_str(),nbinsx,xmin,xmax ));
 		Q1Mass.push_back(new TH1F((basename+"_Mass_bin_"+to_string(bin)).c_str(),(basename+"Mass_bin_"+to_string(bin)).c_str(),nbinsx,xmin,xmax ));
+		PMassMC.push_back(new TH1F((basename+"_PMassMC_bin_"+to_string(bin)).c_str(),(basename+"PMassNC_bin_"+to_string(bin)).c_str(),nbinsx,xmin,xmax ));
+		DMassMC.push_back(new TH1F((basename+"_DMassMC_bin_"+to_string(bin)).c_str(),(basename+"DMassMC_bin_"+to_string(bin)).c_str(),nbinsx,xmin,xmax ));
+		TMassMC.push_back(new TH1F((basename+"_TMassMC_bin_"+to_string(bin)).c_str(),(basename+"TMassMC_bin_"+to_string(bin)).c_str(),nbinsx,xmin,xmax ));
+		
+		
 		FragmentsMC.push_back(new TH1F((basename+"_FragmMC_bin_"+to_string(bin)).c_str(),(basename+"FragmMC_bin_"+to_string(bin)).c_str(),nbinsx,xmin,xmax ));
 
 		FractionFits.push_back(new TH1F((basename+"_fit_bin_"+to_string(bin)).c_str(),(basename+"fit_bin_"+to_string(bin)).c_str(),nbinsx,xmin,xmax ));
@@ -88,6 +96,10 @@ bool ChargeFitter::ReinitializeHistos(bool refill){
 			TemplatesQ2MC[bin] = (TH1F*) File->Get((basename +"/Q2TemplatesMC/"+basename+"_Q2MC_bin_"+to_string(bin)).c_str());
 			RawFragments[bin] = (TH1F*) File->Get((basename +"/Fragments/"+basename+"_Fragm_bin_"+to_string(bin)).c_str());
 			Q1Mass[bin] = (TH1F*) File->Get((basename +"/Mass/"+basename+"_Mass_bin_"+to_string(bin)).c_str());
+			PMassMC[bin] = (TH1F*) File->Get((basename +"/PMassMC/"+basename+"_PMassMC_bin_"+to_string(bin)).c_str());
+			DMassMC[bin] = (TH1F*) File->Get((basename +"/DMassMC/"+basename+"_DMassMC_bin_"+to_string(bin)).c_str());
+			TMassMC[bin] = (TH1F*) File->Get((basename +"/TMassMC/"+basename+"_TMassMC_bin_"+to_string(bin)).c_str());
+
 			FragmentsMC[bin] = (TH1F*) File->Get((basename +"/FragmentsMC/"+basename+"_FragmMC_bin_"+to_string(bin)).c_str());
 
 			allfound =true;
@@ -127,13 +139,20 @@ void ChargeFitter::FillEventByEventMC(Variables * vars, float (*var) (Variables 
 	std::string CutMassMC = CutMass + "&IsHeliumMC";
 	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
                 FragmentsMC[kbin]->Fill(mass,vars->mcweight);
-
+	CutMassMC = CutMass + "&IsPurePMC";
+	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
+                PMassMC[kbin]->Fill(mass,vars->mcweight);
+	CutMassMC = CutMass + "&IsPureDMC";
+	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
+                DMassMC[kbin]->Fill(mass,vars->mcweight);
+	CutMassMC = CutMass + "&IsPureTMC";
+	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
+                TMassMC[kbin]->Fill(mass,vars->mcweight);
+	
 	kbin =  bins.GetBin(discr_var(vars)); //filling with beta @L1
-	std::string CutTempl2MC = CutFragm.c_str();
-	CutTempl2MC.erase(CutTempl2MC.find("&LikelihoodCut&DistanceCut"),26);
-	CutTempl2MC = CutTempl2MC + "&IsHeliumMC";
+	std::string CutTempl2MC = CutData + "&IsHeliumMC";
 	if(ApplyCuts(CutTempl2MC,vars)&&kbin>0)
-                TemplatesQ2MC[kbin]->Fill(GetL2Q(vars),vars->PrescaleFactor);	
+                TemplatesQ2MC[kbin]->Fill(GetL2Q(vars),vars->mcweight);	
 }
 
 
@@ -159,10 +178,21 @@ void ChargeFitter::Save(FileSaver finalhisto){
 	for(int bin=0; bin<bins.size();bin++)
 		finalhisto.Add(Q1Mass[bin]);
 	finalhisto.writeObjsInFolder((basename+"/Mass"));
+	
 	for(int bin=0; bin<bins.size();bin++)
 		finalhisto.Add(FragmentsMC[bin]);
 	finalhisto.writeObjsInFolder((basename+"/FragmentsMC"));
-	
+
+	for(int bin=0; bin<bins.size();bin++)
+		finalhisto.Add(PMassMC[bin]);
+	finalhisto.writeObjsInFolder((basename+"/PMassMC"));
+	for(int bin=0; bin<bins.size();bin++)
+		finalhisto.Add(DMassMC[bin]);
+	finalhisto.writeObjsInFolder((basename+"/DMassMC"));
+	for(int bin=0; bin<bins.size();bin++)
+		finalhisto.Add(TMassMC[bin]);
+	finalhisto.writeObjsInFolder((basename+"/TMassMC"));
+
 }
 
 
@@ -209,6 +239,7 @@ void ChargeFitter::CreateFragmentsMass(float cutmin){
 		float falsefragments = TemplatesQ1[bin]->Integral(TemplatesQ1[bin]->FindBin(cutmin)+1,TemplatesQ1[bin]->FindBin(2.3)+1);
 		Q1Mass[bin]->Scale((1/Q1Mass[bin]->Integral())*falsefragments);
 		RawFragments[bin]->Add(Q1Mass[bin],-1);
+	
 	}	
 
 }

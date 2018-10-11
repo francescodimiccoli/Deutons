@@ -18,6 +18,7 @@
 #include "TGraphErrors.h"
 #include "TFractionFitter.h"
 #include "TRandom3.h"
+#include "fstream"
 
 #include "InputFileReader.h"
 #include "DBarReader.h"
@@ -28,6 +29,18 @@
 #include "Variables.hpp"
 #include "ParallelFiller.h"
 #include "Cuts.h"
+
+std::string GetOutFileName(std::string listname){
+	std::ifstream infile(listname);	
+	std::string line;
+	std::getline(infile, line);
+	line.erase(line.begin(),line.end()-15);
+	
+	std::cout<<"OUTPUT FILE: "<<line<<std::endl;
+	
+	return line;
+};
+
 
 int main(int argc, char * argv[])
 {
@@ -47,7 +60,7 @@ int main(int argc, char * argv[])
 	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
 	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
 
-
+	std::string outname = GetOutFileName(INPUT1.c_str());
 
 	cout<<"****************************** BINS ***************************************"<<endl;
 	SetUpUsualBinning();
@@ -57,7 +70,7 @@ int main(int argc, char * argv[])
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 	
-	TFile * File = new TFile(INPUT3.c_str(), "RECREATE");
+	TFile * File = new TFile((INPUT3+outname).c_str(), "RECREATE");
 
         TTree * measure_stuff= new TTree("parametri_geo","parametri_geo");
 	TTree * template_stuff= new TTree("template_stuff","template_stuff");
@@ -83,7 +96,7 @@ int main(int argc, char * argv[])
 	File->Write();
 	File->Close();
 		
-/*	
+	/*
 	TFile * File2 = new TFile((INPUT3+"_MC").c_str(), "RECREATE");
 
 	TTree * measure_stuffMC= new TTree("parametri_MC","parametri_MC");
@@ -109,8 +122,8 @@ int main(int argc, char * argv[])
 	}
 	File2->Write();
 	File2->Close();
-	
-*/
+	*/	
+
 	return 0;
 }
 
