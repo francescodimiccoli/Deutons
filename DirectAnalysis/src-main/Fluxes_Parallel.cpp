@@ -203,6 +203,7 @@ int main(int argc, char * argv[])
 		//main loops
 		Filler.ExposureTimeFilling_RTI(DBarReader(chainDT, false ),vars,finalHistos);
 
+	if(Refill) return 0;
 	cout<<"************* D FLUX ************"<<endl;
 
 	DFluxTOF->Set_MCPar(0.5,200,1,"D.B1081/d.pl1.l1.0_5200.2_01.info");	

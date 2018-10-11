@@ -239,6 +239,7 @@ int main(int argc, char * argv[])
 	Filler2.LoopOnMC(DBarReader(chainMC, true ),vars);
 	Filler2.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
 
+	if(Refill) return 0;
 	//saving
 	AnalyzeEffCorr(	TriggerEffCorr_HE  , finalHistos, finalResults);
 	AnalyzeEffCorr(	TriggerEffCorr_TOF , finalHistos, finalResults);
