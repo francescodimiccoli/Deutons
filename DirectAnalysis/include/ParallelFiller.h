@@ -18,10 +18,12 @@ class ParallelFiller{
 
     private:
     std::vector<T> Objects2beFilled;
+    std::vector<FileSaver> Outfiles;
     std::vector<GetFillinVariable>  FillinVariables;
     std::vector<GetFillinVariable>  SecondFillinVariables;
     std::vector<GetDiscrimVariable> DiscrimVariables;
     std::vector<std::string> 	Cuts;
+	
     bool Refill = true;	
 
     public:

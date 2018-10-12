@@ -5,7 +5,9 @@
 #include "Cuts.h"
 #include "DBarReader.h"
 
-class Efficiency{
+class Tool;
+
+class Efficiency : public Tool{
 
 	private:
 
@@ -26,7 +28,7 @@ class Efficiency{
 
 	TH1F * Stat_Error=0x0;
 	TH1F * Syst_Error=0x0;
-	
+
 	bool Refill = true;
 	public:
 
@@ -87,7 +89,7 @@ class Efficiency{
 	BadEventSimulator * GetBadEventSimulator() {return BadEvSim;};
 	virtual void LoadEventIntoBadEvSim(Variables * vars) {if(BadEvSim) BadEvSim->LoadEvent(vars);}	
 	
-	virtual void Save(FileSaver finalhistos);
+	virtual void Save();
 	virtual void SaveResults(FileSaver finalhistos);
 	virtual void Eval_Efficiency();
 	virtual void Eval_FittedEfficiency();
@@ -235,6 +237,7 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 		
 	if(kbin>0){
 			float weight =1;
+			cout<<"ecco"<<endl;
 			if(!notweighted) weight = vars->mcweight;
 			if(ApplyCuts(cut_before,vars)){ before->Fill(kbin,weight);}
 	}
@@ -268,7 +271,7 @@ void Efficiency::FillEventByEventData(Variables * vars, float (*var) (Variables 
 	return;
 }
 
-void Efficiency::Save(FileSaver finalhistos){
+void Efficiency::Save(){
 	cout<<"Saving histo with "<<before->GetEntries()<<"entries"<<endl;
 	finalhistos.Add(before);
 	finalhistos.Add(after); 	

@@ -4,7 +4,10 @@
 #include "BadEventSimulator.h"
 #include "LatReweighter.h" 
 #include "Livetime.h"
+#include "TFractionFitter.h"
+#include <TGraphErrors.h>
 
+class Tool;
 
 using namespace std;
 
@@ -99,7 +102,7 @@ struct BestChi {
 	}
 };
 
-class TemplateFIT {
+class TemplateFIT : public Tool{
 
 	private:
 	std::vector<std::vector<std::vector<TFit *>>> fits;
@@ -156,6 +159,7 @@ class TemplateFIT {
 	float constrainmax[3];
 	bool highmassconstrain=false;
 	int ActualTime=0;
+
 
 	public:	
 	//standard constructor
@@ -314,13 +318,13 @@ class TemplateFIT {
 	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
 
 
-	void ExtractCounts(FileSaver finalhisto);
+	void ExtractCounts(FileSaver finalhistos);
 	void EvalFinalParameters();
 	void EvalFinalErrors();
 	void CalculateFinalPDCounts();
-	void Save(FileSaver finalhisto,bool recreate=false);	
-	void SaveFitResults(FileSaver finalhisto);
-	void SumUpMassDistrib(FileSaver finalhisto);
+	void Save(bool recreate=false);	
+	void SaveFitResults(FileSaver finalhistos);
+	void SumUpMassDistrib(FileSaver finalhistos);
 
 	void SetUpBadEventSimulator(BadEventSimulator * Sim) {BadEvSim = Sim; return; };
 	void SetFitWithNoiseMode(){IsFitNoise = true; if(BadEvSim)  BadEvSim->SetFrequency(1); return;}
@@ -520,58 +524,58 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 
 
 
-void TemplateFIT::Save(FileSaver finalhisto,bool recreate){
+void TemplateFIT::Save(bool recreate){
 
-	finalhisto.Add(ExposureTime);
-	finalhisto.writeObjsInFolder((basename + "/ExposureTime").c_str(),recreate);	
+	finalhistos.Add(ExposureTime);
+	finalhistos.writeObjsInFolder((basename + "/ExposureTime").c_str(),recreate);	
 
 	for(int bin=0;bin<bins.size();bin++){ 
-		finalhisto.Add(fits[bin][0][5]->Data);
-		finalhisto.Add(fits[bin][0][5]->DataPrim);
+		finalhistos.Add(fits[bin][0][5]->Data);
+		finalhistos.Add(fits[bin][0][5]->DataPrim);
 
-		finalhisto.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/Data").c_str(),recreate);
+		finalhistos.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/Data").c_str(),recreate);
 	}
 
 	for(int bin=0;bin<bins.size();bin++){ 
 		for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
 
-				finalhisto.Add(fits[bin][i][j]->Templ_P);
+				finalhistos.Add(fits[bin][i][j]->Templ_P);
 		}
-		finalhisto.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/TemplateP").c_str(),recreate);
+		finalhistos.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/TemplateP").c_str(),recreate);
 	}
 
 	for(int bin=0;bin<bins.size();bin++){ 
 		for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
 
-				finalhisto.Add(fits[bin][i][j]->Templ_D);
+				finalhistos.Add(fits[bin][i][j]->Templ_D);
 		}
-		finalhisto.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/TemplateD").c_str(),recreate);
+		finalhistos.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/TemplateD").c_str(),recreate);
 	}
 
 	for(int bin=0;bin<bins.size();bin++){ 
 		for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
 
-				finalhisto.Add(fits[bin][i][j]->Templ_He);
+				finalhistos.Add(fits[bin][i][j]->Templ_He);
 		}
-		finalhisto.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/TemplateHe").c_str(),recreate);
+		finalhistos.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/TemplateHe").c_str(),recreate);
 	}
 
 	for(int bin=0;bin<bins.size();bin++){ 
 		for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
 
-				finalhisto.Add(fits[bin][i][j]->Templ_Noise);
+				finalhistos.Add(fits[bin][i][j]->Templ_Noise);
 		}
-		finalhisto.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/TemplateNoise").c_str(),recreate);
+		finalhistos.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/TemplateNoise").c_str(),recreate);
 	}
 
 	return;
 }
 
-void TemplateFIT::SaveFitResults(FileSaver finalhisto){
+void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 
 
 	for(int bin=0;bin<bins.size();bin++){
@@ -579,72 +583,72 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 	TH1F * BestP=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_P->Clone();
 	OriginalP->SetName("Original Proton MC ");
 	BestP->SetName("Best #chi^{2} Mod. Proton MC ");
-	finalhisto.Add(OriginalP);
-	finalhisto.Add(BestP);
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesP/Bin"+to_string(bin)).c_str());
+	finalhistos.Add(OriginalP);
+	finalhistos.Add(BestP);
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesP/Bin"+to_string(bin)).c_str());
 	
 	TH1F * OriginalD=(TH1F*)fits[bin][0][5]->Templ_D->Clone();
 	TH1F * BestD=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_D->Clone();
 	OriginalD->SetName("Original Deuton MC ");
 	BestD->SetName("Best #chi^{2} Mod. Deuton MC ");
-	finalhisto.Add(OriginalD);
-	finalhisto.Add(BestD);
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
+	finalhistos.Add(OriginalD);
+	finalhistos.Add(BestD);
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
 
 	TH1F * OriginalHe=(TH1F*)fits[bin][0][5]->Templ_He->Clone();
 	TH1F * BestHe=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_He->Clone();
 	OriginalHe->SetName("Original Tritium MC ");
 	BestHe->SetName("Best #chi^{2} Tritium MC ");
-	finalhisto.Add(OriginalHe);
-	finalhisto.Add(BestHe);
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
+	finalhistos.Add(OriginalHe);
+	finalhistos.Add(BestHe);
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
 
 	TH1F * OriginalNoise=(TH1F*)fits[bin][0][5]->Templ_Noise->Clone();
 	TH1F * BestNoise=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_Noise->Clone();
 	OriginalNoise->SetName("Original Noise Template MC ");
 	BestNoise->SetName("Best #chi^{2} Noise Template MC ");
-	finalhisto.Add(OriginalNoise);
-	finalhisto.Add(BestNoise);
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesNoise/Bin"+to_string(bin)).c_str());
+	finalhistos.Add(OriginalNoise);
+	finalhistos.Add(BestNoise);
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesNoise/Bin"+to_string(bin)).c_str());
 	
 	}
 
 	for(int bin=0;bin<bins.size();bin++){ 
-		finalhisto.Add(fits[bin][0][5]->Data);
-		finalhisto.Add(fits[bin][0][5]->DataPrim);
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/Data/Bin"+to_string(bin)).c_str());	
+		finalhistos.Add(fits[bin][0][5]->Data);
+		finalhistos.Add(fits[bin][0][5]->DataPrim);
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/Data/Bin"+to_string(bin)).c_str());	
 	}
 	
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==5))finalhisto.Add(fits[bin][i][j]->Templ_P);
+				if(!(i==0&&i==5))finalhistos.Add(fits[bin][i][j]->Templ_P);
 			}	
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesP/Bin"+to_string(bin)).c_str());
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesP/Bin"+to_string(bin)).c_str());
 	}
 
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==5))finalhisto.Add(fits[bin][i][j]->Templ_D);
+				if(!(i==0&&i==5))finalhistos.Add(fits[bin][i][j]->Templ_D);
 				}
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
 	}
 	
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==5))finalhisto.Add(fits[bin][i][j]->Templ_He);
+				if(!(i==0&&i==5))finalhistos.Add(fits[bin][i][j]->Templ_He);
 				}
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
 	}
 
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==5))finalhisto.Add(fits[bin][i][j]->Templ_Noise);
+				if(!(i==0&&i==5))finalhistos.Add(fits[bin][i][j]->Templ_Noise);
 				}
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesNoise/Bin"+to_string(bin)).c_str());
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesNoise/Bin"+to_string(bin)).c_str());
 	}
 	for(int bin=0;bin<bins.size();bin++){
 		if(BestChiSquare[bin]&&fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Tfit){
@@ -652,69 +656,69 @@ void TemplateFIT::SaveFitResults(FileSaver finalhisto){
 			if(fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Tfit_outcome!=-1){ 
 				FIT=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Tfit-> GetPlot();
 				FIT->SetName(("Fraction Fit bin" + to_string(bin)).c_str());
-				finalhisto.Add(FIT);
-				finalhisto.writeObjsInFolder((basename+"/Fit Results/FractionFits/Bin"+to_string(bin)).c_str());
+				finalhistos.Add(FIT);
+				finalhistos.writeObjsInFolder((basename+"/Fit Results/FractionFits/Bin"+to_string(bin)).c_str());
 			}
 		}
 	}
 
 
 	for(int i=0;i<bins.size();i++) 
-                finalhisto.Add(TransferFunction[i]);
-        finalhisto.writeObjsInFolder((basename + "/Fit Results/TrasnferFunctions/").c_str());
+                finalhistos.Add(TransferFunction[i]);
+        finalhistos.writeObjsInFolder((basename + "/Fit Results/TrasnferFunctions/").c_str());
 
 	for(int i=0;i<bins.size();i++){
-		finalhisto.Add(DCountsSpread[i]);
-		finalhisto.writeObjsInFolder((basename+"/Fit Results/Spreads/DCounts").c_str());
+		finalhistos.Add(DCountsSpread[i]);
+		finalhistos.writeObjsInFolder((basename+"/Fit Results/Spreads/DCounts").c_str());
 	}
 	for(int i=0;i<bins.size();i++){
-		finalhisto.Add(DErrSpread[i]);
-		finalhisto.writeObjsInFolder((basename+"/Fit Results/Spreads/DErrs").c_str());
+		finalhistos.Add(DErrSpread[i]);
+		finalhistos.writeObjsInFolder((basename+"/Fit Results/Spreads/DErrs").c_str());
 	}
 	
 	for(int i=0;i<bins.size();i++){
-		finalhisto.Add(TFitChisquare[i]);
-		finalhisto.writeObjsInFolder((basename+"/Fit Results/Spreads/ChiSquare").c_str());	
+		finalhistos.Add(TFitChisquare[i]);
+		finalhistos.writeObjsInFolder((basename+"/Fit Results/Spreads/ChiSquare").c_str());	
 	}
 	for(int i=0;i<bins.size();i++){
-		finalhisto.Add(WeightedDCounts[i]);
-		finalhisto.writeObjsInFolder((basename+"/Fit Results/Spreads/Weighted D counts").c_str());	
+		finalhistos.Add(WeightedDCounts[i]);
+		finalhistos.writeObjsInFolder((basename+"/Fit Results/Spreads/Weighted D counts").c_str());	
 	}
 
-	if(HeContModel) finalhisto.Add(HeContModel);
-	if(HeContError) finalhisto.Add(HeContError);
-	if(MeasuredHeContRatio) finalhisto.Add(MeasuredHeContRatio);
-	if(MCHeContRatio) finalhisto.Add(MCHeContRatio);
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/HeliumContamination").c_str());	
+	if(HeContModel) finalhistos.Add(HeContModel);
+	if(HeContError) finalhistos.Add(HeContError);
+	if(MeasuredHeContRatio) finalhistos.Add(MeasuredHeContRatio);
+	if(MCHeContRatio) finalhistos.Add(MCHeContRatio);
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/HeliumContamination").c_str());	
 
-	finalhisto.Add(BestFitSigma);
-	finalhisto.Add(BestFitShift);
-	finalhisto.Add(StatErrorP);
-	finalhisto.Add(StatErrorD);
-	finalhisto.Add(StatErrorT);
-	finalhisto.Add(SystError);
-	finalhisto.Add(ProtonCounts);
-	finalhisto.Add(DeuteronCounts);
-	finalhisto.Add(TritiumCounts);
-	finalhisto.Add(ProtonCountsPrim);
-	finalhisto.Add(DeuteronCountsPrim);
+	finalhistos.Add(BestFitSigma);
+	finalhistos.Add(BestFitShift);
+	finalhistos.Add(StatErrorP);
+	finalhistos.Add(StatErrorD);
+	finalhistos.Add(StatErrorT);
+	finalhistos.Add(SystError);
+	finalhistos.Add(ProtonCounts);
+	finalhistos.Add(DeuteronCounts);
+	finalhistos.Add(TritiumCounts);
+	finalhistos.Add(ProtonCountsPrim);
+	finalhistos.Add(DeuteronCountsPrim);
 
-	finalhisto.Add(BestChiSquares   ); 
-	finalhisto.Add(OriginalChiSquares);
+	finalhistos.Add(BestChiSquares   ); 
+	finalhistos.Add(OriginalChiSquares);
 
-	finalhisto.writeObjsInFolder((basename+"/Fit Results/").c_str());
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/").c_str());
 
 }
 
 
-void TemplateFIT::SumUpMassDistrib(FileSaver finalhisto){
+void TemplateFIT::SumUpMassDistrib(FileSaver finalhistos){
 
 	TH1F * SummedMass = (TH1F*)fits[0][0][5]->Data ->Clone(); 
 	for(int bin=0; bin<bins.size()-2;bin++){
 		SummedMass->Add(fits[bin][0][5]->Data);
 	}
-	finalhisto.Add(SummedMass);
-	finalhisto.writeObjsInFolder((basename + "/SummedData").c_str());
+	finalhistos.Add(SummedMass);
+	finalhistos.writeObjsInFolder((basename + "/SummedData").c_str());
 	return;
 }
 
@@ -922,7 +926,7 @@ void  TemplateFIT::RebinAll(int f){
 	}
 };
 
-void TemplateFIT::ExtractCounts(FileSaver finalhisto){
+void TemplateFIT::ExtractCounts(FileSaver finalhistos){
 
 	Eval_TransferFunction();
 
