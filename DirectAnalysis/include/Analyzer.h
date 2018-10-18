@@ -7,7 +7,8 @@
 #include "TChain.h"
 #include "InputFileReader.h"
 #include "DBarReader.h"
-#include "Variables.hpp"
+#include "Flux.h"
+
 
 class Analyzer{
 
@@ -18,6 +19,7 @@ class Analyzer{
         TChain * chainDT;  
         TChain * chainMC;  
 	ParallelFiller<Tool *> Filler;
+	ParallelFiller<Flux *> Filler_RTI;
 	std::vector<ComputingFunction> ComputingFunctions;	
 
 	public:
@@ -27,7 +29,12 @@ class Analyzer{
 		chainMC    = InputFileReader(INPUT2.c_str(),"Event");
 	};
 	void FillAll();
+	void SaveAll();
+
 	void BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill);
+	void BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill);
+	void BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill);
+	void BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill);
 
 };
 

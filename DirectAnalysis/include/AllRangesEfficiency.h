@@ -1,6 +1,6 @@
 #include "Efficiency.h"
 
-struct AllRangesEfficiency:public Efficiency{
+struct AllRangesEfficiency : public Efficiency{
 
 	private:
 	bool refill=false;
@@ -77,10 +77,10 @@ struct AllRangesEfficiency:public Efficiency{
 	        EffAgl -> FillEventByEventData(vars,var,discr_var);
 	}
        
-	virtual void Save(FileSaver finalHistos){
-                EffTOF -> Save(finalHistos);
-                EffNaF -> Save(finalHistos);
-                EffAgl -> Save(finalHistos);
+	virtual void Save(){
+                EffTOF -> Save();
+                EffNaF -> Save();
+                EffAgl -> Save();
         }
 
 	 virtual void Eval_Efficiency(){
@@ -129,6 +129,12 @@ struct AllRangesEfficiency:public Efficiency{
 		EffNaF->SetNotWeightedMC();
         	EffAgl->SetNotWeightedMC(); 
 	}
+	void SetDefaultOutFile(FileSaver FinalHistos){
+		 EffTOF->SetDefaultOutFile(FinalHistos);
+		 EffNaF->SetDefaultOutFile(FinalHistos);
+		 EffAgl->SetDefaultOutFile(FinalHistos);
+	 }
+
 };
 
 

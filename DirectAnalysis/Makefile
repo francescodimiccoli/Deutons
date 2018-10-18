@@ -8,7 +8,7 @@ obj/%.o: src/%.cpp
 obj/%.o: src-main/%.cpp 
 	g++ -std=c++11 -o $@ -c -I$(DBARPATH)/include/ -Iinclude $(shell root-config --libs --cflags) $^                  
 
-Analysis: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/Livetime.o obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/LatReweighter.o obj/InputFileReader.o obj/Analyzer.o obj/CountExtraction.o   obj/Analysis.o 
+Analysis: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/Livetime.o obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/LatReweighter.o obj/InputFileReader.o obj/BetaSmearing.o obj/Efficiency.o obj/TemplateFITbetasmear.o obj/effcorr.o  obj/Flux.o obj/rundb.o obj/Analyzer.o obj/CountExtraction.o  obj/MCEfficiency.o obj/EffCorr.o obj/Fluxes.o obj/Analysis.o 
 	g++ $^ -o $@ $(shell root-config --libs --cflags) -lTMVA -L$(DBARPATH)/lib/ -lntp
 
 LatitudeReweighter: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/Livetime.o obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/LatReweighter.o  obj/LatitudeReweighter.o

@@ -48,21 +48,44 @@ int main(int argc, char * argv[])
      if(refill!="") Refill=true;
 	
     FileSaver finalHistosCounts;
+    finalHistosCounts.setName((OUTPUT).c_str());
+    if(!finalHistosCounts.CheckFile())  	
     finalHistosCounts.setName((OUTPUT + "_Counts").c_str());
-    
+	  
+    FileSaver finalHistosEff;
+    finalHistosEff.setName((OUTPUT).c_str());
+    if(!finalHistosEff.CheckFile())  	
+    finalHistosEff.setName((OUTPUT + "_Eff").c_str());
+ 
+    FileSaver finalHistosCorr;
+    finalHistosCorr.setName((OUTPUT).c_str());
+    if(!finalHistosCorr.CheckFile())  	
+    finalHistosCorr.setName((OUTPUT + "_Corr").c_str());
+	
+    FileSaver finalHistosFlux;
+    finalHistosFlux.setName((OUTPUT).c_str());
+    if(!finalHistosFlux.CheckFile())  	
+    finalHistosFlux.setName((OUTPUT + "_Flux").c_str());
+	  
     FileSaver finalResults;
-    finalHistosCounts.setName((OUTPUT + "_Results").c_str());
+    finalResults.setName((OUTPUT + "_Results").c_str());
 
 
     cout<<"****************************** BINS ***************************************"<<endl;
     SetUpEffCorrBinning();
    
     cout<<"****************************** Analysis*************************************"<<endl;
-    	 
+
     Analyzer analyzer(INPUT1,INPUT2);	 
 
     analyzer.BookCountsAnalysis(finalHistosCounts,finalResults,Refill);	
-   
+    //analyzer.BookEfficiencyAnalysis(finalHistosEff,finalResults,Refill);	
+    //analyzer.BookEffCorrAnalysis(finalHistosCorr,finalResults,Refill);	
+    //analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
+
+
     analyzer.FillAll();
+    analyzer.SaveAll();
+
 
 } 

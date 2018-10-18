@@ -10,7 +10,7 @@ class Tool{
 	FileSaver finalhistos;
 
 	public:
-	void SetDefaultOutFile(FileSaver FinalHistos){finalhistos = FinalHistos; return;}
+	virtual void SetDefaultOutFile(FileSaver FinalHistos){finalhistos = FinalHistos; return;}
 	
 	virtual void SetUpBadEventSimulator(BadEventSimulator * Sim) {return;};
 	virtual void LoadEventIntoBadEvSim(Variables * vars) { return;}
