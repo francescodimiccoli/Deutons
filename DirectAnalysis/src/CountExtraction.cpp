@@ -13,7 +13,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	bool checkfile = finalhistos.CheckFile();
 
 	FileSaver LatWeights;
-	LatWeights.setName("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/Weights.root");
+	LatWeights.setName("LatWeights/Weights.root");
 	LatReweighter * weighter = new LatReweighter(LatWeights,"LatWeights");	
 	
 	cout<<"****************************** BINS ***************************************"<<endl;

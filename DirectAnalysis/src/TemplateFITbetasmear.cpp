@@ -459,7 +459,12 @@ if(fitcondition){
 	        if(isfitnoise&&highmasstailconstrain) 
 			Fit -> Tfit -> Constrain(4, 0.1*CalculateAmountOfHighMassComponent(Fit -> Data,Fit ->  Templ_P,Fit ->  Templ_Noise,4.5,0.001),1.2*CalculateAmountOfHighMassComponent(Fit -> Data,Fit ->  Templ_P,Fit ->  Templ_Noise,4.5,0.001));	 
 			
-		if(Fit -> Tfit ) Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
+		if(Fit -> Tfit ) 
+        {
+            Fit -> Tfit_outcome = 1;
+            try { Fit -> Tfit_outcome = Fit -> Tfit -> Fit(); } catch(const std::invalid_argument& e) 
+            { cout << "Failed TFractionFItting. Giving up.\n"; }
+        }
 
 		for(int fit_attempt=0; fit_attempt<20; fit_attempt++) {
 			cout<<"fit attempt: "<<fit_attempt<<endl;
@@ -467,7 +472,10 @@ if(fitcondition){
 			else {
 				cout<<fit_attempt<<endl;
 				Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin((1+0.01*fit_attempt)*min), Fit -> Data -> FindBin((1+0.01*fit_attempt)*max));
-				Fit -> Tfit_outcome = Fit -> Tfit -> Fit();
+
+                Fit -> Tfit_outcome = 1;
+                try { Fit -> Tfit_outcome = Fit -> Tfit -> Fit(); } catch(const std::invalid_argument& e) 
+                { cout << "Failed TFractionFItting. Giving up.\n"; }
 			}
 		}
 
