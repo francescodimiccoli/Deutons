@@ -255,7 +255,6 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesNoise/Bin"+to_string(bin)).c_str());
 	
 	}
-
 	for(int bin=0;bin<bins.size();bin++){ 
 		finalhistos.Add(fits[bin][0][3]->Data);
 		finalhistos.Add(fits[bin][0][3]->DataPrim);
@@ -265,7 +264,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==3))finalhistos.Add(fits[bin][i][j]->Templ_P);
+				if(!(i==0&&i==3)) if(fits[bin][i][j]->Templ_P) finalhistos.Add(fits[bin][i][j]->Templ_P);
 			}	
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesP/Bin"+to_string(bin)).c_str());
 	}
@@ -273,7 +272,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==3))finalhistos.Add(fits[bin][i][j]->Templ_D);
+				if(!(i==0&&i==3))if(fits[bin][i][j]->Templ_D) finalhistos.Add(fits[bin][i][j]->Templ_D);
 				}
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
 	}
@@ -281,7 +280,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==3))finalhistos.Add(fits[bin][i][j]->Templ_He);
+				if(!(i==0&&i==3))if(fits[bin][i][j]->Templ_He) finalhistos.Add(fits[bin][i][j]->Templ_He);
 				}
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
 	}
@@ -289,7 +288,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==3))finalhistos.Add(fits[bin][i][j]->Templ_Noise);
+				if(!(i==0&&i==3)) if(fits[bin][i][j]->Templ_Noise) finalhistos.Add(fits[bin][i][j]->Templ_Noise);
 				}
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesNoise/Bin"+to_string(bin)).c_str());
 	}
@@ -306,25 +305,26 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	}
 
 
-	for(int i=0;i<bins.size();i++) 
-                finalhistos.Add(TransferFunction[i]);
-        finalhistos.writeObjsInFolder((basename + "/Fit Results/TrasnferFunctions/").c_str());
-
+	for(int i=0;i<bins.size();i++){ 
+        	cout<<TransferFunction[i]<<endl; 
+	       if(TransferFunction[i]) finalhistos.Add(TransferFunction[i]);
+        }finalhistos.writeObjsInFolder((basename + "/Fit Results/TrasnferFunctions/").c_str());
+	
 	for(int i=0;i<bins.size();i++){
-		finalhistos.Add(DCountsSpread[i]);
+		if(DCountsSpread[i]) finalhistos.Add(DCountsSpread[i]);
 		finalhistos.writeObjsInFolder((basename+"/Fit Results/Spreads/DCounts").c_str());
 	}
 	for(int i=0;i<bins.size();i++){
-		finalhistos.Add(DErrSpread[i]);
+		if(DErrSpread[i]) finalhistos.Add(DErrSpread[i]);
 		finalhistos.writeObjsInFolder((basename+"/Fit Results/Spreads/DErrs").c_str());
 	}
 	
 	for(int i=0;i<bins.size();i++){
-		finalhistos.Add(TFitChisquare[i]);
+		if(TFitChisquare[i]) finalhistos.Add(TFitChisquare[i]);
 		finalhistos.writeObjsInFolder((basename+"/Fit Results/Spreads/ChiSquare").c_str());	
 	}
 	for(int i=0;i<bins.size();i++){
-		finalhistos.Add(WeightedDCounts[i]);
+		if(WeightedDCounts[i]) finalhistos.Add(WeightedDCounts[i]);
 		finalhistos.writeObjsInFolder((basename+"/Fit Results/Spreads/Weighted D counts").c_str());	
 	}
 
@@ -429,8 +429,6 @@ float GetChiSquare(TH1 * Result, TH1 * Data, float min, float max){
 
 
 void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constrain_min[], float constrain_max[], bool isfitnoise, bool highmasstailconstrain ){
-Pre_Scale(Fit->Data, Fit ->  Templ_P,Fit ->  Templ_D,Fit ->  Templ_He);
-	//CleanTemplates(Fit ->  Templ_P);
 	if(isfitnoise) cout<<"********** FIT NOISE MODE **********"<<endl;
 	if(isfitnoise) Fit->Templ_Noise->Scale(0.01*Fit ->  Templ_P->Integral()/Fit ->  Templ_Noise->Integral());
 	TObjArray *Tpl;
@@ -442,13 +440,13 @@ Pre_Scale(Fit->Data, Fit ->  Templ_P,Fit ->  Templ_D,Fit ->  Templ_He);
 
 	float min=fitrangemin;
 	float max=fitrangemax;
-
-	bool fitcondition = (Fit -> Data->Integral()>50)&&(Fit -> Templ_P->Integral()>50) &&(Fit -> Templ_D->Integral()>50);
+	bool fitcondition = (Fit -> Data->Integral()>50)&&(Fit -> Templ_P->Integral()>50) &&(Fit -> Templ_D->Integral()>50) && (Fit -> Templ_He->Integral()>50);
 	cout<<	Fit -> Data->Integral()<<" "<<Fit -> Templ_P->Integral()<<" "<<Fit -> Templ_D->Integral()<<endl;
 	
-if(fitcondition){	
+	if(fitcondition){	
+		cout<<"Conditions for fit OK!"<<endl;	
+		Pre_Scale(Fit->Data, Fit ->  Templ_P,Fit ->  Templ_D,Fit ->  Templ_He);
 		Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
-		Fit -> Tfit -> GetFitter()->SetMaxIterations(1);
 		Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(min), Fit -> Data -> FindBin(max));
 		
 		Fit -> Tfit -> Constrain(1, constrain_min[0] ,constrain_max[0]);
@@ -547,12 +545,22 @@ if(fitcondition){
 
 		}
 		else{
+			cout<<"Fit not converged: returning original templates"<<endl; 
 			Fit -> PCounts = Fit -> Data -> Integral();
 			Fit -> DCounts = Fit -> Data -> Integral();
 			Fit ->wheightP= 1;
 			Fit ->wheightD= 1;
+			Fit ->wheightHe= 1;
 		}
 	}
+	else{
+		cout<<"Fit conditions not OK: returning original templates"<<endl; 
+		Fit -> PCounts = Fit -> Data -> Integral();
+		Fit -> DCounts = Fit -> Data -> Integral();
+		Fit ->wheightP= 1;
+		Fit ->wheightD= 1;
+		Fit ->wheightHe= 1;
+	} 
 	return;
 }
 
@@ -586,15 +594,15 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos){
 			for(int shift=0;shift<systpar.steps;shift++){
 
 				if(!fitDisabled) {
+					cout<<endl;
 					cout<<"Bin: "<<bin<<": "<<sigma<<" "<<shift<<endl;
-
 					Do_TemplateFIT(fits[bin][sigma][shift],fits[bin][sigma][shift]->fitrangemin,fits[bin][sigma][shift]->fitrangemax,
 					constrainmin,constrainmax,IsFitNoise,highmassconstrain);
 				}
-	
 				fits[bin][sigma][shift]->Templ_DPrim=(TH1F*) fits[bin][sigma][shift]->Templ_D->Clone();
-				fits[bin][sigma][shift]->Templ_DPrim->Multiply(TransferFunction[bin]);
-				if(fits[bin][sigma][shift]->wheightD==0) fits[bin][sigma][shift]->DCountsPrim=0;	
+				if(fits[bin][sigma][shift]->Templ_DPrim->GetEntries()>0) fits[bin][sigma][shift]->Templ_DPrim->Multiply(TransferFunction[bin]);
+
+				if(fits[bin][sigma][shift]->wheightD==0||fits[bin][sigma][shift]->wheightD==1) fits[bin][sigma][shift]->DCountsPrim=0;	
 				else{
 					if(!fitDisabled) fits[bin][sigma][shift]->DCountsPrim = fits[bin][sigma][shift]->Templ_DPrim->Integral();
 					else { 
@@ -602,9 +610,11 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos){
 						fits[bin][sigma][shift]->DCounts     = fits[bin][sigma][shift]->DataPrim->Integral();
 					}
 				}
+				cout<<"ecco"<<endl;	
+	
 				fits[bin][sigma][shift]->Templ_PPrim=(TH1F*) fits[bin][sigma][shift]->Templ_P->Clone();
-				fits[bin][sigma][shift]->Templ_PPrim->Multiply(TransferFunction[bin]);
-				if(fits[bin][sigma][shift]->wheightD==0) fits[bin][sigma][shift]->PCountsPrim=0;
+				if(fits[bin][sigma][shift]->Templ_PPrim->GetEntries()>0) fits[bin][sigma][shift]->Templ_PPrim->Multiply(TransferFunction[bin]);
+				if(fits[bin][sigma][shift]->wheightP==0|| fits[bin][sigma][shift]->wheightP==1) fits[bin][sigma][shift]->PCountsPrim=0;
 				else{
 					if(!fitDisabled) fits[bin][sigma][shift]->PCountsPrim = fits[bin][sigma][shift]->Templ_PPrim->Integral();
 					else { 
