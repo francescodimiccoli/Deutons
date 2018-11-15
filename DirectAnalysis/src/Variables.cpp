@@ -351,6 +351,9 @@ void Variables::ResetVariables(){
 	
     //MC vars
     Momento_gen            = 0;
+    Momento_gen_UTOF       = 0;
+    Momento_gen_LTOF       = 0;
+    Momento_gen_RICH       = 0;
     Massa_gen              = 0;
     mcweight               = 0;
     MCClusterGeantPids     = 0;
@@ -747,19 +750,22 @@ float GetTRDEdepovPath    (Variables * vars) {return vars->TRDEdepovPath;}
 float GetLoweredBetaTOF  (Variables * vars) {	
 	ResponseTOF->SetParameter(0,0.00347548);
 	ResponseTOF->SetParameter(1,5.8474);
+	ResponseTOF->SetParameter(2,0);
 	return ResponseTOF->Eval(vars->Beta);				
 }
 
 float GetLoweredBetaNaF  (Variables * vars) {	
 	ResponseNaF->SetParameter(0,-0.000859132);
 	ResponseNaF->SetParameter(1,-30.5065);
+	ResponseNaF->SetParameter(2,0);
 	return ResponseNaF->Eval(vars->BetaRICH_new);	
 }
 
 float GetLoweredBetaAgl  (Variables * vars) {	
 	ResponseAgl->SetParameter(0,4.28781e-05);
 	ResponseAgl->SetParameter(1,67.8521);
-
+	ResponseAgl->SetParameter(2,0);
+	
 	return ResponseAgl->Eval(vars->BetaRICH_new);				
 }
 
@@ -777,3 +783,34 @@ float GetMomentumProxy(Variables *vars) {
 
 	return momproxy;	
 }
+
+
+float GetBetaGen_SlowDownTOF(Variables * vars) {
+
+	float beta = GetBetaGen(vars);
+	ResponseTOF->SetParameter(0,0.00347548);
+	ResponseTOF->SetParameter(1,5.8474);
+	ResponseTOF->SetParameter(2,0);
+	return beta-(0.9/vars->Massa_gen)*ResponseTOF->Eval(beta);				
+}
+
+float GetBetaGen_SlowDownNaF(Variables * vars) {
+
+	float beta = GetBetaGen(vars);
+	ResponseNaF->SetParameter(0,-0.000859132);
+	ResponseNaF->SetParameter(1,-30.5065);
+	ResponseNaF->SetParameter(2,0);
+	return beta-(0.9/vars->Massa_gen)*ResponseNaF->Eval(beta);				
+}
+
+float GetBetaGen_SlowDownAgl(Variables * vars) {
+
+	float beta = GetBetaGen(vars);
+	ResponseAgl->SetParameter(0,4.28781e-05);
+	ResponseAgl->SetParameter(1,67.8521);
+	ResponseAgl->SetParameter(2,0);
+	return beta-(0.9/vars->Massa_gen)*ResponseNaF->Eval(beta);				
+}
+
+
+

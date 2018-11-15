@@ -243,8 +243,8 @@ class TemplateFIT : public Tool{
 				for(int j=0;j<steps;j++){
 
 					TFit * fit = new TFit;
-					string named    =Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_Data_" +to_string(bin)+" "+to_string(0)+" "+to_string(5);
-					string namedprim=Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_DataPrim_" +to_string(bin)+" "+to_string(0)+" "+to_string(5);
+					string named    =Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_Data_" +to_string(bin)+" "+to_string(0)+" "+to_string(3);
+					string namedprim=Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_DataPrim_" +to_string(bin)+" "+to_string(0)+" "+to_string(3);
 					string nameP    =Basename + "/Bin "+ to_string(bin)+"/TemplateP/" + Basename + "_MCP_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameD    =Basename + "/Bin "+ to_string(bin)+"/TemplateD/" + Basename + "_MCD_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameHe    =Basename + "/Bin "+ to_string(bin)+"/TemplateHe/" + Basename + "_MCHe_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
@@ -257,7 +257,7 @@ class TemplateFIT : public Tool{
 					fit->Templ_Noise=  (TH1F *)file->Get(nameNo.c_str());
 					fit->Data    =  (TH1F *)file->Get(named.c_str());
 					fit->DataPrim=  (TH1F *)file->Get(namedprim.c_str());
-
+					
 					fits[bin][i].push_back(fit);
 				}
 			}

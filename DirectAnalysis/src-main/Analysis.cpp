@@ -71,17 +71,15 @@ int main(int argc, char * argv[])
     finalResults.setName((OUTPUT + "_Results").c_str());
 
 
-    cout<<"****************************** BINS ***************************************"<<endl;
-    SetUpEffCorrBinning();
-   
+  
     cout<<"****************************** Analysis*************************************"<<endl;
 
     Analyzer analyzer(INPUT1,INPUT2);	 
 
     analyzer.BookCountsAnalysis(finalHistosCounts,finalResults,Refill);	
-    //analyzer.BookEfficiencyAnalysis(finalHistosEff,finalResults,Refill);	
-    //analyzer.BookEffCorrAnalysis(finalHistosCorr,finalResults,Refill);	
-    //analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
+    analyzer.BookEfficiencyAnalysis(finalHistosEff,finalResults,Refill);	
+//  analyzer.BookEffCorrAnalysis(finalHistosCorr,finalResults,Refill);	
+//  analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
 
 
     analyzer.FillAll();

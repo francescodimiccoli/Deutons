@@ -14,6 +14,9 @@
 void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill){
 
 	bool checkfile = finalhistos.CheckFile();
+	cout<<"****************************** BINS ***************************************"<<endl;
+        SetUpEffCorrBinning();
+ 
 	cout<<"****************************** FLUXES EVALUATION ******************************************"<<endl;
 
 
@@ -21,8 +24,8 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	Flux * DFluxNaF  = new Flux(finalhistos,finalresults, "DFluxNaF", "FullSetTOT_D_NaF","FullSetTOT","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF",NaFDB);
 	Flux * DFluxAgl  = new Flux(finalhistos,finalresults, "DFluxAgl", "FullSetTOT_D_Agl","FullSetTOT","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl",AglDB);
 
-	Flux * HEPFlux   = new Flux(finalhistos,finalresults,"PFluxHE","RigBinBaselineEff","RigBinBaselineEff","HEPCounts/HEPCounts/HEPCounts","HEExposure",PRB);
-	Flux * HEPFluxQ  = new Flux(finalhistos,finalresults,"PFluxQHE","RigBinQualEff","RigBinQualEff","HEPCountsQual/HEPCountsQual/HEPCountsQual","HEExposure",PRB);
+	Flux * HEPFlux   = new Flux(finalhistos,finalresults,"PFluxHE","RigBinBaselineEff","RigBinBaselineEff","HEPCounts/HEPCounts/HEPCounts_before","HEExposure",PRB);
+	Flux * HEPFluxQ  = new Flux(finalhistos,finalresults,"PFluxQHE","RigBinQualEff","RigBinQualEff","HEPCountsQual/HEPCountsQual/HEPCountsQual_before","HEExposure",PRB);
 	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF",ToFPB);
 	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF",NaFPB);
 	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "FullSetTOT_P_Agl","FullSetTOT","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl",AglPB);
@@ -31,9 +34,9 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	Flux * DummyDNaF = new Flux(finalhistos,finalresults, "DummyDNaF", "FullSetTOT_D_NaF","FullSetTOT","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF",NaFDB);
 	Flux * DummyDAgl = new Flux(finalhistos,finalresults, "DummyDAgl", "FullSetTOT_D_Agl","FullSetTOT","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl",AglDB);
 
-	Flux * DummyPTOF = new Flux(finalhistos,finalresults, "DummyPTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFPCounts/TOFPCounts/TOFPCounts","ExposureTOF",ToFPB);
-	Flux * DummyPNaF = new Flux(finalhistos,finalresults, "DummyPNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFPCounts/NaFPCounts/NaFPCounts","ExposureNaF",NaFPB);
-	Flux * DummyPAgl = new Flux(finalhistos,finalresults, "DummyPAgl", "FullSetTOT_P_Agl","FullSetTOT","AglPCounts/AglPCounts/AglPCounts","ExposureAgl",AglPB);
+	Flux * DummyPTOF = new Flux(finalhistos,finalresults, "DummyPTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFPCounts/TOFPCounts/TOFPCounts_before","ExposureTOF",ToFPB);
+	Flux * DummyPNaF = new Flux(finalhistos,finalresults, "DummyPNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFPCounts/NaFPCounts/NaFPCounts_before","ExposureNaF",NaFPB);
+	Flux * DummyPAgl = new Flux(finalhistos,finalresults, "DummyPAgl", "FullSetTOT_P_Agl","FullSetTOT","AglPCounts/AglPCounts/AglPCounts_before","ExposureAgl",AglPB);
 
 
 	DFluxTOF ->SetDefaultOutFile(finalhistos); 

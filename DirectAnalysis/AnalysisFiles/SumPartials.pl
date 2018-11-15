@@ -24,8 +24,8 @@ for ($n=0;$n<$nparts; $n++)
 	$command = "hadd -f -k $workdir/$ARGV[0]/Result_T$n ";
 	for($i=($nsummed)*$n;$i<(($nsummed)*($n+1));$i++){
 		$command = $command." ".$workdir."/".$ARGV[0]."/".$Rootuple[$i];
-		print $command."/n";
 	}
+	print $command."/n";
 	system("bsub -q ams1nd $command");	
 }
 

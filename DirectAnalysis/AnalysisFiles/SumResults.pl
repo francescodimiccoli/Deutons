@@ -38,7 +38,7 @@ $running = `bjobs -q ams1nd|grep RUN| wc -l`;
 $missing = `ls $workdir/$ARGV[0]/Result_P*|wc -l`;
 $missing = $nparts - $missing;
 
-while($missing>0){
+while($jobs>0){
 	
 	$jobs = `bjobs -q ams1nd| wc -l`;
 	$running = `bjobs -q ams1nd|grep RUN| wc -l`;
@@ -60,7 +60,7 @@ $missing = ` ls $workdir/$ARGV[0]/Result_T*|wc -l`;
 $missing = 10 - $missing;
 
 
-while($missing>0){
+while($jobs>0){
 	$jobs = `bjobs -q ams1nd| wc -l`;
 	$running = `bjobs -q ams1nd|grep RUN| wc -l`;
 	$missing = ` ls $workdir/$ARGV[0]/Result_P*|wc -l`;

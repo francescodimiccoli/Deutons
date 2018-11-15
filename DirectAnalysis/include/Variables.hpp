@@ -150,6 +150,9 @@ struct Variables{
 
     //MC vars
     float      Momento_gen;
+    float      Momento_gen_UTOF;
+    float      Momento_gen_LTOF;
+    float      Momento_gen_RICH;
     float      Massa_gen;
     float      mcweight=0;
     float      GenX, GenY, GenZ;

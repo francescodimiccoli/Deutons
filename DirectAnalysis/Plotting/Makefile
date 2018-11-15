@@ -22,6 +22,9 @@ cpp7 = ../src/LatReweighter.cpp
 cpp8 = ../src/DBarReader.cpp
 cpp9 = ../src/Livetime.cpp
 cpp10 = ../src/rundb.cpp
+cpp11 = ../src/binning.cpp
+cpp12 = ../src/particle.cpp
+cpp13 = ../src/Efficiency.cpp
 
 #file to compile
 CC = CountsExtraction.cpp
@@ -37,10 +40,10 @@ DBARPATH=../../data_reduction
 
 rootlibs=`root-config --libs --cflags` 
 all:
-#	$(Compiler) $(FLAGS)  -o  $(exe)  $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(CC)  $(rootlibs) -lTMVA -I../include -L$(DBARPATH)/lib/ -lntp 
-	#$(Compiler) $(FLAGS)  -o $(exe1) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(CC1)  $(rootlibs) -lTMVA -I../include -L$(DBARPATH)/lib/ -lntp 
-	#$(Compiler) $(FLAGS)  -o $(exe2) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(CC2)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
-	#$(Compiler) $(FLAGS)  -o  $(exe3) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(CC3)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
-	$(Compiler) $(FLAGS)  -o $(exe4) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(CC4)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
-	$(Compiler) $(FLAGS)  -o  $(exe6) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(CC6)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
-#	$(Compiler) $(FLAGS)  -o  $(exe7) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(CC7)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
+#	$(Compiler) $(FLAGS)  -o  $(exe)  $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(CC)  $(rootlibs) -lTMVA -I../include -L$(DBARPATH)/lib/ -lntp 
+	#$(Compiler) $(FLAGS)  -o $(exe1) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(CC1)  $(rootlibs) -lTMVA -I../include -L$(DBARPATH)/lib/ -lntp 
+	$(Compiler) $(FLAGS)  -o $(exe2) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)   $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(CC2)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
+	#$(Compiler) $(FLAGS)  -o  $(exe3) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9) $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(CC3)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
+#	$(Compiler) $(FLAGS)  -o $(exe4) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)   $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(CC4)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
+#	$(Compiler) $(FLAGS)  -o  $(exe6) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(CC6)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
+#	$(Compiler) $(FLAGS)  -o  $(exe7) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(CC7)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp

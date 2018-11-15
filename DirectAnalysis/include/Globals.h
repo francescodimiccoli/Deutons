@@ -3,6 +3,7 @@
 
 
 #include "TF1.h"
+#include "particle.h"
 #include "binning.h"
 #include <TMVA/Reader.h>
 #include <TMVA/Tools.h>
@@ -58,4 +59,5 @@ void UpdateProgressBar(int currentevent, int totalentries);
 void SetBins();
 void SetUpUsualBinning();
 void SetUpEffCorrBinning();
+void SetUpTOIBinning();
 #endif

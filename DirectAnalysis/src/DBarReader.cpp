@@ -109,6 +109,10 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 	    vars->Charge_gen   = ntpMCHeader->charge;
 	    vars->Massa_gen     = ntpMCHeader->mass;
 	    vars->Momento_gen = ntpMCHeader->momentum[0];
+	    vars->Momento_gen_UTOF = ntpMCHeader->momentum[6];
+	    vars->Momento_gen_LTOF = ntpMCHeader->momentum[16];
+	    vars->Momento_gen_RICH = ntpMCHeader->momentum[18];
+
 	    vars->GenX = ntpMCHeader->coo[0][0];  vars->GenPX = ntpMCHeader->dir[0];;
 	    vars->GenY = ntpMCHeader->coo[0][1];  vars->GenPY = ntpMCHeader->dir[1];;
 	    vars->GenZ = ntpMCHeader->coo[0][2];  vars->GenPZ = ntpMCHeader->dir[2];;

@@ -1,3 +1,5 @@
+#include "TText.h"
+
 void DrawQvsRBeta(TH2F * h6, TH2F *h9, TH2F * h6_, TH2F * h9_, std::string name, FileSaver finalResults){
 
    TCanvas * c1_ = new TCanvas("Protons MC");
@@ -344,48 +346,109 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 	TH1D * h5_1 = GetMeans(h5);	
 	TH1D * h6_1 = GetMeans(h6);	
 
-
-
+        TF1 * fitfuncP  = new TF1("funcP","x*(1-[0]/x^[1])",0,1); 
+	TF1 * fitfuncD = new TF1("funcD","x-0.4*(x-x*(1-[0]/x^[1])) ",0,1);
 
 	TCanvas * c1 = new TCanvas("Protons MC #beta shift");
 	c1->cd();
-//	PlotTH2F(gPad, h1, "#beta_{gen}","#beta_{meas}","colz");
-	h1_1->Draw();
+	c1->SetLogz();
+	((TH1F*)h1_1->Clone())->Fit("funcP","Q");
+
+	PlotTH2F(gPad, h1, "#beta_{gen}","#beta_{meas}","colz");
 	ideal->Draw("same");
+	h1_1->SetMarkerStyle(8);
+	h1_1->SetMarkerSize(1);
+	h1_1->Draw("Psame");
+	fitfuncP->Draw("same");
 	TCanvas * c2 = new TCanvas("Deuterons");
 	c2->cd();
-//	PlotTH2F(gPad, h4, "#beta_{gen}","#beta_{meas}","colz");
-	h4_1->Draw();
+	c2->SetLogz();
+	
+	fitfuncD->SetParameter(0,fitfuncP->GetParameter(0));
+	fitfuncD->SetParameter(1,fitfuncP->GetParameter(1));
+	cout<<"TOF slow down parameters; "<<endl;
+	cout<<"par 0: "<<fitfuncP->GetParameter(0)<<endl;
+	cout<<"par 1: "<<fitfuncP->GetParameter(1)<<endl;
+
+	
+	PlotTH2F(gPad, h4, "#beta_{gen}","#beta_{meas}","colz");
+	h4_1->SetMarkerStyle(8);
+	h4_1->SetMarkerSize(1);
+	h4_1->Draw("Psame");
 	ideal->Draw("same");
+	fitfuncD->Draw("same");
+
 	finalResults.Add(c1);
 	finalResults.Add(c2);
 	finalResults.writeObjsInFolder("ResponseBeta/BetaTOF");
 
 
+
+
+
+
 	TCanvas * c3 = new TCanvas("Protons MC #beta shift");
 	c3->cd();
-	//PlotTH2F(gPad, h2, "#beta_{gen}","#beta_{meas}","colz");
-	h2_1->Draw();
+	c3->SetLogz();
+	((TH1F*)h2_1->Clone())->Fit("funcP","Q");
+
+	
+	PlotTH2F(gPad, h2, "#beta_{gen}","#beta_{meas}","colz");
 	ideal->Draw("same");
+	h2_1->SetMarkerStyle(8);
+	h2_1->SetMarkerSize(1);
+	h2_1->Draw("Psame");
+	
 	TCanvas * c4 = new TCanvas("Deuterons MC #beta shift");
 	c4->cd();
-	//PlotTH2F(gPad, h5, "#beta_{gen}","#beta_{meas}","colz");
-	h5_1->Draw();
+        c4->SetLogz();
+	fitfuncD->SetParameter(0,fitfuncP->GetParameter(0));
+	fitfuncD->SetParameter(1,fitfuncP->GetParameter(1));
+
+	cout<<"NaF slow down parameters; "<<endl;
+	cout<<"par 0: "<<fitfuncP->GetParameter(0)<<endl;
+	cout<<"par 1: "<<fitfuncP->GetParameter(1)<<endl;
+
+	PlotTH2F(gPad, h5, "#beta_{gen}","#beta_{meas}","colz");
+	h5_1->SetMarkerStyle(8);
+	h5_1->SetMarkerSize(1);
+	h5_1->Draw("Psame");
 	ideal->Draw("same");
+	fitfuncD->Draw("same");
 	finalResults.Add(c3);
 	finalResults.Add(c4);
 	finalResults.writeObjsInFolder("ResponseBeta/BetaNaF");
 
+
+
 	TCanvas * c5 = new TCanvas("Protons MC #beta shift");
 	c5->cd();
-	//PlotTH2F(gPad, h3, "#beta_{gen}","#beta_{meas}","colz");
-	h3_1->Draw();
+	c5->SetLogz();
+	
+	((TH1F*)h3_1->Clone())->Fit("funcP","Q");
+
+	PlotTH2F(gPad, h3, "#beta_{gen}","#beta_{meas}","colz");
+	h3_1->SetMarkerStyle(8);
+	h3_1->SetMarkerSize(1);
+	h3_1->Draw("same");
 	ideal->Draw("same");
 	TCanvas * c6 = new TCanvas("Deuterons MC #beta shift");
 	c6->cd();
-	//PlotTH2F(gPad, h6, "#beta_{gen}","#beta_{meas}","colz");
-	h6_1->Draw();
+	c6->SetLogz();
+	fitfuncD->SetParameter(0,fitfuncP->GetParameter(0));
+	fitfuncD->SetParameter(1,fitfuncP->GetParameter(1));
+
+	PlotTH2F(gPad, h6, "#beta_{gen}","#beta_{meas}","colz");
+	h6_1->SetMarkerStyle(8);
+	h6_1->SetMarkerSize(1);
+	h6_1->Draw("Psame");
 	ideal->Draw("same");
+	fitfuncD->Draw("same");
+
+	cout<<"Agl slow down parameters; "<<endl;
+	cout<<"par 0: "<<fitfuncP->GetParameter(0)<<endl;
+	cout<<"par 1: "<<fitfuncP->GetParameter(1)<<endl;
+
 	finalResults.Add(c5);
 	finalResults.Add(c6);
 	finalResults.writeObjsInFolder("ResponseBeta/BetaAgl");

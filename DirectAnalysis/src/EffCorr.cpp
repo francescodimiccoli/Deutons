@@ -10,6 +10,9 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 {
 
 	bool checkfile = finalhistos.CheckFile();
+        cout<<"****************************** BINS ***************************************"<<endl;
+        SetUpEffCorrBinning();
+ 
 	cout<<"****************************** Efficiency corr. ANALYIS ******************************************"<<endl;
 
 	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",30,0.82,1);

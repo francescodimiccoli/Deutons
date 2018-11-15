@@ -12,29 +12,29 @@ struct AllRangesEfficiency : public Efficiency{
 	Efficiency * EffTOF;
 	Efficiency * EffNaF;
 	Efficiency * EffAgl;
-	
 
-	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_before,std::string Cut_after,bool Refill=false):Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB,Cut_before,Cut_after){
+
+	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_before,std::string Cut_after,Binning binsTOF,Binning binsNaF,Binning binsAgl,bool Refill=false):Efficiency(File,(Basename+"_TOF").c_str(),Directory,binsTOF,Cut_before,Cut_after){
 	
-		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB,Cut_before,Cut_after);	
-		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,NaFDB,(Cut_before+"&IsFromNaF").c_str(),(Cut_after+"&IsFromNaF").c_str());
-		EffAgl = new Efficiency(File,(Basename+"_Agl").c_str(),Directory,AglDB,(Cut_before+"&IsFromAgl").c_str(),(Cut_after+"&IsFromAgl").c_str());
+		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,binsTOF,Cut_before,Cut_after);	
+		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,binsNaF,(Cut_before+"&IsFromNaF").c_str(),(Cut_after+"&IsFromNaF").c_str());
+		EffAgl = new Efficiency(File,(Basename+"_Agl").c_str(),Directory,binsAgl,(Cut_before+"&IsFromAgl").c_str(),(Cut_after+"&IsFromAgl").c_str());
 		refill=Refill;
 	}
 
-	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_beforeTOF,std::string Cut_beforeNaF,std::string Cut_beforeAgl,std::string Cut_afterTOF,std::string Cut_afterNaF,std::string Cut_afterAgl,bool Refill=false):Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB,Cut_beforeTOF,Cut_afterTOF){
+	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_beforeTOF,std::string Cut_beforeNaF,std::string Cut_beforeAgl,std::string Cut_afterTOF,std::string Cut_afterNaF,std::string Cut_afterAgl,Binning binsTOF,Binning binsNaF,Binning binsAgl,bool Refill=false):Efficiency(File,(Basename+"_TOF").c_str(),Directory,binsTOF,Cut_beforeTOF,Cut_afterTOF){
 	
-		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB,Cut_beforeTOF,Cut_afterTOF);	
-		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,NaFDB,Cut_beforeNaF,Cut_afterNaF);
-		EffAgl = new Efficiency(File,(Basename+"_Agl").c_str(),Directory,AglDB,Cut_beforeAgl,Cut_afterAgl);
+		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,binsTOF,Cut_beforeTOF,Cut_afterTOF);	
+		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,binsNaF,Cut_beforeNaF,Cut_afterNaF);
+		EffAgl = new Efficiency(File,(Basename+"_Agl").c_str(),Directory,binsAgl,Cut_beforeAgl,Cut_afterAgl);
 		refill=Refill;
 	}
 
-	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory):Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB){
+	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,Binning binsTOF,Binning binsNaF,Binning binsAgl):Efficiency(File,(Basename+"_TOF").c_str(),Directory,binsTOF){
 	
-		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,ToFDB);	
-		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,NaFDB);
-		EffAgl = new Efficiency(File,(Basename+"_Agl").c_str(),Directory,AglDB);
+		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,binsTOF);	
+		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,binsNaF);
+		EffAgl = new Efficiency(File,(Basename+"_Agl").c_str(),Directory,binsAgl);
 	}
 
 	virtual void SetUpBadEventSimulator(BadEventSimulator * SimTOF, BadEventSimulator * SimNaF, BadEventSimulator * SimAgl) {

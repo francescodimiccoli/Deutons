@@ -15,7 +15,10 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	FileSaver LatWeights;
 	LatWeights.setName("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/Weights.root");
 	LatReweighter * weighter = new LatReweighter(LatWeights,"LatWeights");	
-
+	
+	cout<<"****************************** BINS ***************************************"<<endl;
+    	SetUpEffCorrBinning();
+ 
 	cout<<"****************************** Counts ANALYIS ******************************************"<<endl;
 
 	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
@@ -23,11 +26,11 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 
 
 	//simple event count
-	Efficiency * CountsHE = new Efficiency(finalhistos    ,"HEPCounts"         ,"HEPCounts"      ,PRB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
+	Efficiency * CountsHE     = new Efficiency(finalhistos    ,"HEPCounts"         ,"HEPCounts"      ,PRB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1");
 	Efficiency * CountsQualHE = new Efficiency(finalhistos,"HEPCountsQual"     ,"HEPCountsQual"  ,PRB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning");
-	Efficiency * CountsTOF= new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,ToFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF");
-	Efficiency * CountsNaF= new Efficiency(finalhistos    ,"NaFPCounts"	   ,"NaFPCounts"	,NaFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    ,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    );
-	Efficiency * CountsAgl= new Efficiency(finalhistos    ,"AglPCounts"	   ,"AglPCounts"	,AglPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    ,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    );
+	Efficiency * CountsTOF    = new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,ToFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF","IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF");
+	Efficiency * CountsNaF    = new Efficiency(finalhistos    ,"NaFPCounts"	   ,"NaFPCounts"	,NaFPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    ,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    );
+	Efficiency * CountsAgl    = new Efficiency(finalhistos    ,"AglPCounts"	   ,"AglPCounts"	,AglPB,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    ,"IsPositive&IsPrimary&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    );
 
 	// Extraction of counts with Template Fit
 
@@ -37,6 +40,14 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,7,110,80);	
 
 	if(!refill&&checkfile) {	
+
+		CountsHE    ->ReinitializeHistos(refill); 
+	        CountsQualHE->ReinitializeHistos(refill); 
+                CountsTOF   ->ReinitializeHistos(refill); 
+	        CountsNaF   ->ReinitializeHistos(refill); 
+                CountsAgl   ->ReinitializeHistos(refill); 
+
+
 		//TemplateFIT * SmearingCheck = new TemplateFIT(finalhistos,"SmearingCheck",PRB);
 		TOFfits= new TemplateFIT(finalhistos,"TOFfits",ToFDB,false,7);
 		NaFfits= new TemplateFIT(finalhistos,"NaFfits",NaFDB,true,7,400,200);
@@ -51,20 +62,20 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		//SmearingCheck->ExtractCounts(finalhistos);	
 		//SmearingCheck->SaveFitResults(finalresults);
 
-		TOFfits->DisableFit();
+		//TOFfits->DisableFit();
 		TOFfits->SetFitRange(0.6,4);
 		TOFfits->SetFitConstraints(0.9,1,0.015,0.06,0.005,0.015,true);
 		TOFfits->ExtractCounts(finalhistos);	
 		TOFfits->SaveFitResults(finalresults);
 
 		NaFfits->SetFitRange(0.6,5);
-		NaFfits->DisableFit();
+		//NaFfits->DisableFit();
 		NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
 		NaFfits->ExtractCounts(finalhistos);
 		NaFfits->SaveFitResults(finalresults);
 
 		Aglfits->SetFitRange(0.6,5);
-		Aglfits->DisableFit();
+		//Aglfits->DisableFit();
 		Aglfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
 		Aglfits->ExtractCounts(finalhistos);
 		Aglfits->SaveFitResults(finalresults);	

@@ -7,6 +7,9 @@
 void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill)
 {
 
+	cout<<"****************************** BINS ***************************************"<<endl;
+    	SetUpTOIBinning();
+
 	bool checkfile = finalhistos.CheckFile();
 	cout<<"****************************** Efficiecny ANALYIS ******************************************"<<endl;
 
@@ -22,6 +25,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	ToFPB,NaFPB,AglPB,
 	refill);
 
 	AllRangesEfficiency * FullSetTOT_D = new AllRangesEfficiency(finalhistos,"FullSetTOT_D","FullSetTOT",
@@ -31,7 +35,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * Baseline_P = new AllRangesEfficiency(finalhistos,"Baseline_P","Baseline",
 	"IsProtonMC",			      
@@ -40,7 +46,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * Baseline_D = new AllRangesEfficiency(finalhistos,"Baseline_D","Baseline",
 	"IsDeutonMC",			      
@@ -49,7 +57,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	Efficiency * Cascade0 = new Efficiency(finalhistos,"Cascade1","Cascade1",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsPhysTrig");
 	Efficiency * Cascade1 = new Efficiency(finalhistos,"Cascade1","Cascade1",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias");
@@ -61,6 +71,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Efficiency * Cascade7 = new Efficiency(finalhistos,"Cascade7","Cascade7",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut");
 	Efficiency * Cascade8 = new Efficiency(finalhistos,"Cascade8","Cascade8",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut");
 
+	cout<<"ECCO"<<endl;
 	AllRangesEfficiency * Trigger_P_PID = new AllRangesEfficiency(finalhistos,"Trigger_P_PID","Trigger",
 	"IsPurePMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
 	"IsPurePMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			   	      
@@ -68,7 +79,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * Trigger_D_PID = new AllRangesEfficiency(finalhistos,"Trigger_D_PID","Trigger",
 	"IsPureDMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
@@ -77,7 +90,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * MinimBias_P_PID = new AllRangesEfficiency(finalhistos,"MinimBias_P_PID","MinimBias",
 	"IsPurePMC&IsPhysTrig",			      
@@ -86,7 +101,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * MinimBias_D_PID = new AllRangesEfficiency(finalhistos,"MinimBias_D_PID","MinimBias",
 	"IsPureDMC&IsPhysTrig",			      
@@ -95,7 +112,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * Cleaning_P_PID = new AllRangesEfficiency(finalhistos,"Cleaning_P_PID","Cleaning",
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
@@ -104,7 +123,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * Cleaning_D_PID = new AllRangesEfficiency(finalhistos,"Cleaning_D_PID","Cleaning",
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
@@ -113,7 +134,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * RICH_P_PID = new AllRangesEfficiency(finalhistos,"RICH_P_PID","RICH",
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -122,7 +145,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * RICH_D_PID = new AllRangesEfficiency(finalhistos,"RICH_D_PID","RICH",
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -131,7 +156,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * RICHQual_P_PID = new AllRangesEfficiency(finalhistos,"RICHQual_P_PID","RICHQual",
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -140,7 +167,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * RICHQual_D_PID = new AllRangesEfficiency(finalhistos,"RICHQual_D_PID","RICHQual",
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -149,7 +178,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * GoldenTOF_P_PID = new AllRangesEfficiency(finalhistos,"GoldenTOF_P_PID","GoldenTOF",
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -158,7 +189,10 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+		ToFPB,NaFPB,AglPB,
 	refill);
+	//GoldenTOF_P_PID->SetBins(ToFPB,NaFPB,AglPB);
+
 
 	AllRangesEfficiency * GoldenTOF_D_PID = new AllRangesEfficiency(finalhistos,"GoldenTOF_D_PID","GoldenTOF",
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -167,6 +201,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -177,7 +212,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * Trigger_D = new AllRangesEfficiency(finalhistos,"Trigger_D","Trigger",
 	"IsDeutonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
@@ -186,7 +223,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * MinimBias_P = new AllRangesEfficiency(finalhistos,"MinimBias_P","MinimBias",
 	"IsProtonMC&IsPhysTrig",			      
@@ -195,7 +234,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * MinimBias_D = new AllRangesEfficiency(finalhistos,"MinimBias_D","MinimBias",
 	"IsDeutonMC&IsPhysTrig",			      
@@ -204,7 +245,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * Cleaning_P = new AllRangesEfficiency(finalhistos,"Cleaning_P","Cleaning",
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
@@ -213,7 +256,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * Cleaning_D = new AllRangesEfficiency(finalhistos,"Cleaning_D","Cleaning",
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
@@ -222,7 +267,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			   	      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalhistos,"RICH_P","RICH",
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -231,7 +278,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalhistos,"RICH_D","RICH",
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -240,7 +289,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF",			   	      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * RICHQual_P = new AllRangesEfficiency(finalhistos,"RICHQual_P","RICHQual",
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -249,7 +300,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * RICHQual_D = new AllRangesEfficiency(finalhistos,"RICHQual_D","RICHQual",
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -258,7 +311,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * GoldenTOF_P = new AllRangesEfficiency(finalhistos,"GoldenTOF_P","GoldenTOF",
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -267,7 +322,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * GoldenTOF_D = new AllRangesEfficiency(finalhistos,"GoldenTOF_D","GoldenTOF",
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning",			      
@@ -276,7 +333,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime",			      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	AllRangesEfficiency * Fragmentation_P = new AllRangesEfficiency(finalhistos,"Fragmentation_P","Fragmentation",
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
@@ -285,7 +344,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFPB,NaFPB,AglPB,
 	refill);
+
 
 	AllRangesEfficiency * Fragmentation_D = new AllRangesEfficiency(finalhistos,"Fragmentation_D","Fragmentation",
 	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
@@ -294,7 +355,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+		ToFDB,NaFDB,AglDB,
 	refill);
+
 
 	RigBinBaselineEff->SetNotWeightedMC();
 	RigBinQualEff->SetNotWeightedMC();

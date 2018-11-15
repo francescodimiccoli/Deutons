@@ -130,10 +130,10 @@ void Plotter::BookBetaResMatrixAnalysis(){
 	
 	BookerMC.BookSingleScatter("BetagenvsBetaMeasTOFP",300,0.3,1,300,0.3,1,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"          ,GetBetaGen,GetBetaTOF,GetBetaTOF);
         BookerMC.BookSingleScatter("BetagenvsBetaMeasNaFP",300,0.7,1,300,0.7,1,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",GetBetaGen,GetBetaRICH,GetBetaRICH);
-        BookerMC.BookSingleScatter("BetagenvsBetaMeasAglP",300,0.9,1,300,0.9,1,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgò&RICHBDTCut",GetBetaGen,GetBetaRICH,GetBetaRICH);
+        BookerMC.BookSingleScatter("BetagenvsBetaMeasAglP",300,0.9,1,300,0.9,1,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",GetBetaGen,GetBetaRICH,GetBetaRICH);
         BookerMC.BookSingleScatter("BetagenvsBetaMeasTOFD",300,0.3,1,300,0.3,1,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"                    ,GetBetaGen,GetBetaTOF,GetBetaTOF);
         BookerMC.BookSingleScatter("BetagenvsBetaMeasNaFD",300,0.7,1,300,0.7,1,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"          ,GetBetaGen,GetBetaRICH,GetBetaRICH);
-        BookerMC.BookSingleScatter("BetagenvsBetaMeasAglD",300,0.9,1,300,0.9,1,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgò&RICHBDTCut"          ,GetBetaGen,GetBetaRICH,GetBetaRICH);
+        BookerMC.BookSingleScatter("BetagenvsBetaMeasAglD",300,0.9,1,300,0.9,1,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"          ,GetBetaGen,GetBetaRICH,GetBetaRICH);
 
 
 	plottingfunctions.push_back(DrawBetaRes);

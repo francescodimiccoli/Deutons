@@ -1,10 +1,12 @@
 #include "TemplateFITbetasmear.h"
 
 void TemplateFIT::Eval_TransferFunction(){
-	for(int bin=0;bin<fits.size();bin++){
-		TH1F * transferfunction = (TH1F *) fits[bin][0][5]->DataPrim->Clone();
+	cout<<"Transf:"<<endl;	
+	for(int bin=1;bin<fits.size();bin++){
+		cout<<"Transf: "<< fits[bin][0][3]->DataPrim<<endl;
+		TH1F * transferfunction = (TH1F *) fits[bin][0][3]->DataPrim->Clone();
 		transferfunction->Sumw2();
-		transferfunction->Divide(fits[bin][0][5]->Data);
+		transferfunction->Divide(fits[bin][0][3]->Data);
 		TransferFunction.push_back(transferfunction);
 	}
 	return;
@@ -171,8 +173,8 @@ void TemplateFIT::Save(){
 	finalhistos.writeObjsInFolder((basename + "/ExposureTime").c_str(),false);	
 
 	for(int bin=0;bin<bins.size();bin++){ 
-		finalhistos.Add(fits[bin][0][5]->Data);
-		finalhistos.Add(fits[bin][0][5]->DataPrim);
+		finalhistos.Add(fits[bin][0][3]->Data);
+		finalhistos.Add(fits[bin][0][3]->DataPrim);
 
 		finalhistos.writeObjsInFolder((basename + "/Bin "+ to_string(bin)+"/Data").c_str(),false);
 	}
@@ -220,7 +222,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 
 
 	for(int bin=0;bin<bins.size();bin++){
-	TH1F * OriginalP=(TH1F*)fits[bin][0][5]->Templ_P->Clone();
+	TH1F * OriginalP=(TH1F*)fits[bin][0][3]->Templ_P->Clone();
 	TH1F * BestP=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_P->Clone();
 	OriginalP->SetName("Original Proton MC ");
 	BestP->SetName("Best #chi^{2} Mod. Proton MC ");
@@ -228,7 +230,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	finalhistos.Add(BestP);
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesP/Bin"+to_string(bin)).c_str());
 	
-	TH1F * OriginalD=(TH1F*)fits[bin][0][5]->Templ_D->Clone();
+	TH1F * OriginalD=(TH1F*)fits[bin][0][3]->Templ_D->Clone();
 	TH1F * BestD=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_D->Clone();
 	OriginalD->SetName("Original Deuton MC ");
 	BestD->SetName("Best #chi^{2} Mod. Deuton MC ");
@@ -236,7 +238,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	finalhistos.Add(BestD);
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
 
-	TH1F * OriginalHe=(TH1F*)fits[bin][0][5]->Templ_He->Clone();
+	TH1F * OriginalHe=(TH1F*)fits[bin][0][3]->Templ_He->Clone();
 	TH1F * BestHe=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_He->Clone();
 	OriginalHe->SetName("Original Tritium MC ");
 	BestHe->SetName("Best #chi^{2} Tritium MC ");
@@ -244,7 +246,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	finalhistos.Add(BestHe);
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
 
-	TH1F * OriginalNoise=(TH1F*)fits[bin][0][5]->Templ_Noise->Clone();
+	TH1F * OriginalNoise=(TH1F*)fits[bin][0][3]->Templ_Noise->Clone();
 	TH1F * BestNoise=(TH1F*)fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->Templ_Noise->Clone();
 	OriginalNoise->SetName("Original Noise Template MC ");
 	BestNoise->SetName("Best #chi^{2} Noise Template MC ");
@@ -255,15 +257,15 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	}
 
 	for(int bin=0;bin<bins.size();bin++){ 
-		finalhistos.Add(fits[bin][0][5]->Data);
-		finalhistos.Add(fits[bin][0][5]->DataPrim);
+		finalhistos.Add(fits[bin][0][3]->Data);
+		finalhistos.Add(fits[bin][0][3]->DataPrim);
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/Data/Bin"+to_string(bin)).c_str());	
 	}
 	
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==5))finalhistos.Add(fits[bin][i][j]->Templ_P);
+				if(!(i==0&&i==3))finalhistos.Add(fits[bin][i][j]->Templ_P);
 			}	
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesP/Bin"+to_string(bin)).c_str());
 	}
@@ -271,7 +273,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==5))finalhistos.Add(fits[bin][i][j]->Templ_D);
+				if(!(i==0&&i==3))finalhistos.Add(fits[bin][i][j]->Templ_D);
 				}
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
 	}
@@ -279,7 +281,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==5))finalhistos.Add(fits[bin][i][j]->Templ_He);
+				if(!(i==0&&i==3))finalhistos.Add(fits[bin][i][j]->Templ_He);
 				}
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
 	}
@@ -287,7 +289,7 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==5))finalhistos.Add(fits[bin][i][j]->Templ_Noise);
+				if(!(i==0&&i==3))finalhistos.Add(fits[bin][i][j]->Templ_Noise);
 				}
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesNoise/Bin"+to_string(bin)).c_str());
 	}
@@ -354,9 +356,9 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 
 void TemplateFIT::SumUpMassDistrib(FileSaver finalhistos){
 
-	TH1F * SummedMass = (TH1F*)fits[0][0][5]->Data ->Clone(); 
+	TH1F * SummedMass = (TH1F*)fits[0][0][3]->Data ->Clone(); 
 	for(int bin=0; bin<bins.size()-2;bin++){
-		SummedMass->Add(fits[bin][0][5]->Data);
+		SummedMass->Add(fits[bin][0][3]->Data);
 	}
 	finalhistos.Add(SummedMass);
 	finalhistos.writeObjsInFolder((basename + "/SummedData").c_str());
@@ -446,6 +448,7 @@ Pre_Scale(Fit->Data, Fit ->  Templ_P,Fit ->  Templ_D,Fit ->  Templ_He);
 	
 if(fitcondition){	
 		Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
+		Fit -> Tfit -> GetFitter()->SetMaxIterations(1);
 		Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin(min), Fit -> Data -> FindBin(max));
 		
 		Fit -> Tfit -> Constrain(1, constrain_min[0] ,constrain_max[0]);
@@ -756,8 +759,8 @@ void TemplateFIT::CalculateFinalPDCounts(){
 TH1F * TemplateFIT::Eval_MCHeContRatio(std::string name){
 	TH1F * HeCountRatio = new TH1F(name.c_str(),name.c_str(),bins.size(),0,bins.size());
 	for(int bin=0;bin<bins.size();bin++){
-                TH1F * HeliumCounts = (TH1F*) fits[bin][0][5]->Templ_He->Clone();
-                TH1F * ProtonCounts = (TH1F*) fits[bin][0][5]->Templ_P->Clone();	
+                TH1F * HeliumCounts = (TH1F*) fits[bin][0][3]->Templ_He->Clone();
+                TH1F * ProtonCounts = (TH1F*) fits[bin][0][3]->Templ_P->Clone();	
 		if(ProtonCounts->Integral()>0){
 			HeCountRatio->SetBinContent(bin+1,HeliumCounts->Integral()/ProtonCounts->Integral());
 			HeCountRatio->SetBinError(bin+1,pow(HeliumCounts->Integral(),0.5)/ProtonCounts->Integral());

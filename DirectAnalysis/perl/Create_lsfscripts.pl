@@ -46,10 +46,7 @@ $bookntuples=0;
 $bookplots=0;
 $booklat=0;
 $bookhecont=0;
-$bookeff=1;
-$bookcounts=1;
-$bookeffcorr=1;
-$bookflux=0;
+$bookflux=1;
 $bookinfos=0;
 
 
@@ -96,29 +93,15 @@ for($j=0;$j<$njobs;$j++)
 				print OUT "xrdcp -f /tmp/fdimicco/HeliumFragm$j.root $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm;\n";
 			}
 		
-			if($bookeff){
-
-				print OUT  "\$WORKDIR/MCEfficiency_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/MCEfficiency$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
-				print OUT "xrdcp -f /tmp/fdimicco/MCEfficiency$j.root $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency;\n";
-			}
-		
-			if($bookcounts){
-
-				print OUT  "\$WORKDIR/CountsExtraction_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Counts$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
-				print OUT "xrdcp -f /tmp/fdimicco/Counts$j.root $outdir/$ARGV[0]-$ARGV[1]/Counts;\n";
-			}	
-			
-			if($bookeffcorr){
-
-				print OUT  "\$WORKDIR/EffCorr_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/EffCorr$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
-				print OUT "xrdcp -f /tmp/fdimicco/EffCorr$j.root $outdir/$ARGV[0]-$ARGV[1]/EffCorr;\n";
-			}
-		
 
 			if($bookflux){
 
-				print OUT  "\$WORKDIR/Fluxes_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Fluxes$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
-				print OUT "xrdcp -f /tmp/fdimicco/Fluxes$j.root $outdir/$ARGV[0]-$ARGV[1]/Fluxes;\n";
+				print OUT  "\$WORKDIR/Analysis \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  /tmp/fdimicco/Analysis$j.root 1 >> /tmp/fdimicco/log$j.log;\n\n";
+				print OUT "xrdcp -f /tmp/fdimicco/Analysis$j.root_Counts $outdir/$ARGV[0]-$ARGV[1]/Counts;\n";
+				print OUT "xrdcp -f /tmp/fdimicco/Analysis$j.root_Eff    $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency;\n";
+				print OUT "xrdcp -f /tmp/fdimicco/Analysis$j.root_Corr   $outdir/$ARGV[0]-$ARGV[1]/EffCorr;\n";
+				print OUT "xrdcp -f /tmp/fdimicco/Analysis$j.root_Flux   $outdir/$ARGV[0]-$ARGV[1]/Fluxes;\n";
+
 			}
 			
 			print OUT "xrdcp -f /tmp/fdimicco/log$j.log $outdir/../logs/$ARGV[0]-$ARGV[1]/;\n";
@@ -152,10 +135,10 @@ while($notcomplete>0){
 		if($bookplots) { $check = `ls -la $outdir_plots/$ARGV[0]-$ARGV[1]/Plots/Plots$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
 		if($booklat) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/LatRew/LatRew$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
 		if($bookhecont) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm/HeliumFragm$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($bookeff) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency/MCEfficiency$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($bookcounts) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Counts/Counts$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($bookeffcorr) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/EffCorr/EffCorr$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Fluxes/Fluxes$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency/Analysis$i.root_Eff| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Counts/Analysis$i.root_Counts| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/EffCorr/Analysis$i.root_Corr| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+		if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Fluxes/Analysis$i.root_Flux| awk '{print\$5}'`; if($check<1000) {$control=1}} 
 		if($control) {
 			$notcomplete = $notcomplete + 1;
 		}
@@ -185,11 +168,10 @@ while($notcomplete>0){
 			if($bookplots) { $check = `ls -la $outdir_plots/$ARGV[0]-$ARGV[1]/Plots/Plots$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
 			if($booklat) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/LatRew/LatRew$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
 			if($bookhecont) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm/HeliumFragm$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-			if($bookeff) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency/MCEfficiency$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-			if($bookcounts) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Counts/Counts$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-			if($bookeffcorr) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/EffCorr/EffCorr$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-			if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Fluxes/Fluxes$joblaunched.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-
+			if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency/Analysis$joblaunched.root_Eff| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+			if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Counts/Analysis$joblaunched.root_Counts| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+			if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/EffCorr/Analysis$joblaunched.root_Corr| awk '{print\$5}'`; if($check<1000) {$control=1}} 
+			if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Fluxes/Analysis$joblaunched.root_Flux| awk '{print\$5}'`; if($check<1000) {$control=1}} 
 			if($control){
 				print "job result nr $joblaunched not found\n"; 
 				system("bsub -q $queue -o $workdir/lsf/lsf$joblaunched.out -e $workdir/err/lsf$joblaunched.err $workdir/lsf/lsf$joblaunched.tcsh\n");
