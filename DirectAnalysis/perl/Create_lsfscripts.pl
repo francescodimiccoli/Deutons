@@ -121,36 +121,19 @@ print "Launching job files...";
 $joblaunched = 0;
 $jobrunning = 0;	
 $jobs = 0;
-$notcomplete = 10000;
 	
-while($notcomplete>0){
+for($loop=0; $loop<5; $loop++)	{
 	$joblaunched = 0;
 	system("kinit -R");
 	$jobs = `bjobs -q $queue| wc -l`;
-	$notcomplete = 0;
 	$control=0;
 	
-	for($i=0;$i<$njobs;$i++){
-		print "Checking results...\n";
-		if($bookplots) { $check = `ls -la $outdir_plots/$ARGV[0]-$ARGV[1]/Plots/Plots$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($booklat) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/LatRew/LatRew$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($bookhecont) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm/HeliumFragm$i.root| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency/Analysis$i.root_Eff| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Counts/Analysis$i.root_Counts| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/EffCorr/Analysis$i.root_Corr| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($bookflux) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Fluxes/Analysis$i.root_Flux| awk '{print\$5}'`; if($check<1000) {$control=1}} 
-		if($control) {
-			$notcomplete = $notcomplete + 1;
-		}
-	}
-	print $notcomplete." jobs not yet completed... Launching missing:\n";
-
 	while($joblaunched<$njobs){
 		$jobrunning = `bjobs -q $queue |grep RUN|wc -l`;
 		$jobs = `bjobs -q $queue| wc -l`;
 		$check;
 		$control=0;
-		while($jobs<500 and $joblaunched<$njobs) {
+		while($jobs<300 and $joblaunched<$njobs) {
 
 			$control=0;
 			if($bookinfos) { $check = `ls -la $outdir/$ARGV[0]-$ARGV[1]/Infos/Infos$joblaunched.txt| awk '{print\$5}'`; if($check<1000) {print $check; $control=1}} 

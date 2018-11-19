@@ -178,7 +178,7 @@ cout<<"****************************** FILES OPENING ****************************
 
 
         cout<<endl;
-
+	SetUpEffCorrBinning();
 	cout<<"**************************** PLOTTING ***************************************"<<endl;
 
 	EffCorr * HEPPresEffCorr = new EffCorr(finalHistos,"HEPPresEffCorr","HEPPresEffCorr",PRB,"IsPositive&IsMinimumBias&IsLooseCharge1","IsPositive&IsMinimumBias&IsLooseCharge1&IsGolden","","IsPurePMC","IsPureDMC","IsDeutonMC");
@@ -229,7 +229,7 @@ cout<<"****************************** FILES OPENING ****************************
 	EffCorr * RICHQualEffCorr_NaF = new EffCorr(finalHistos,"RICHQualCorrection_NaF","RICH Qual Eff. Corr",NaFPB,(before+"&IsFromNaF").c_str(),(after+"&IsFromNaF&RICHBDTCut").c_str(),"","IsPurePMC","IsPureDMC","IsDeutonMC");
 	EffCorr * RICHQualEffCorr_Agl = new EffCorr(finalHistos,"RICHqualCorrection_Agl","RICH Qual. Eff. Corr",AglPB,(before+"&IsFromNaF").c_str(),(after+"&IsFromAgl&RICHBDTCut").c_str(),"","IsPurePMC","IsPureDMC","IsDeutonMC");
 
-/*DrawCorrection(TrackerEffCorr_TOF,Plots, ToFPB,"TrackerEffCorr" ,"TOF");
+	/*DrawCorrection(TrackerEffCorr_TOF,Plots, ToFPB,"TrackerEffCorr" ,"TOF");
 	DrawCorrection(TrackerEffCorr_NaF,Plots, NaFPB,"TrackerEffCorr" ,"NaF");
 	DrawCorrection(TrackerEffCorr_Agl,Plots, AglPB,"TrackerEffCorr" ,"Agl");
 	DrawCorrection(GoodChi_TOF,Plots, ToFPB, "GoodChi","TOF");

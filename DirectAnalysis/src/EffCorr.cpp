@@ -10,7 +10,8 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 {
 
 	bool checkfile = finalhistos.CheckFile();
-        cout<<"****************************** BINS ***************************************"<<endl;
+        check_file = checkfile;
+	cout<<"****************************** BINS ***************************************"<<endl;
         SetUpEffCorrBinning();
  
 	cout<<"****************************** Efficiency corr. ANALYIS ******************************************"<<endl;

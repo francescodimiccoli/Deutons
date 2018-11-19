@@ -73,7 +73,6 @@ class Flux{
 			return false;
 		}
 		else {
-		cout<<"CULOOOOOOOOOOOOOOOOOOOOO"<<endl;
 		return true;	}
 	}
 	void Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename);

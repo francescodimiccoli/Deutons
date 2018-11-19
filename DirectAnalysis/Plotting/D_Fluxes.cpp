@@ -57,32 +57,7 @@ int main(int argc, char * argv[]){
 
         cout<<"****************************** BINS ***************************************"<<endl;
 
-        SetBins();
-
-	PRB.Print();
-
-        cout<<"**TOF**"<<endl;
-        ToFDB.Print();
-
-        cout<<"**NaF**"<<endl;
-        NaFDB.Print();
-
-        cout<<"**Agl**"<<endl;
-        AglDB.Print();
-
-        ToFDB.UseREdges();
-        NaFDB.UseREdges();
-        AglDB.UseREdges();
-	
-	ToFPB.UseREdges();
-        NaFPB.UseREdges();
-        AglPB.UseREdges();
-
-        PRB.UseREdges();
-
-
-        cout<<endl;
-
+	SetUpTOIBinning();
 	cout<<"****************************** READING DATABASES *************************************"<<endl;
 	
 	string filename2="./database_P.root";
@@ -143,23 +118,23 @@ int main(int argc, char * argv[]){
 	c2_->SetCanvasSize(2000,1500);
 
 	PlotTH1FintoGraph(gPad,ToFDB, DFluxTOF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",4,true,"Lsame",0.1,10,0.0001,0.3,"Deuterons",8);
-	PlotTH1FintoGraph(gPad,ToFDB, PFluxTOF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.3,"Protons",8);
+	PlotTH1FintoGraph(gPad,ToFPB, PFluxTOF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.3,"Protons",8);
 
 	PlotTH1FintoGraph(gPad,ToFDB, DFluxTOF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",4,true,"Lsame",0.1,10,0.0001,0.6,"TOF range",8,true);
 	PlotTH1FintoGraph(gPad,NaFDB, DFluxNaF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",4,true,"Lsame",0.1,10,0.0001,0.6,"NaF range",22,true);
 	PlotTH1FintoGraph(gPad,AglDB, DFluxAgl->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",4,true,"Lsame",0.1,10,0.0001,0.6,"Agl range",29,true);
 
-	PlotTH1FintoGraph(gPad,ToFDB, PFluxTOF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"TOF range",8,true);
-        PlotTH1FintoGraph(gPad,NaFDB, PFluxNaF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"NaF range",22,true);
-        PlotTH1FintoGraph(gPad,AglDB, PFluxAgl->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"Agl range",29,true);
+	PlotTH1FintoGraph(gPad,ToFPB, PFluxTOF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"TOF range",8,true);
+        PlotTH1FintoGraph(gPad,NaFPB, PFluxNaF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"NaF range",22,true);
+        PlotTH1FintoGraph(gPad,AglPB, PFluxAgl->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"Agl range",29,true);
 
 	PlotTH1FintoGraph(gPad,ToFDB, DummyDTOF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",4,true,"Lsame",0.1,10,0.0001,0.6,"TOF range",8,true);
 	PlotTH1FintoGraph(gPad,NaFDB, DummyDNaF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",4,true,"Lsame",0.1,10,0.0001,0.6,"NaF range",22,true);
 	PlotTH1FintoGraph(gPad,AglDB, DummyDAgl->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",4,true,"Lsame",0.1,10,0.0001,0.6,"Agl range",29,true);
 
-	PlotTH1FintoGraph(gPad,ToFDB, DummyPTOF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"TOF range",8,true);
-        PlotTH1FintoGraph(gPad,NaFDB, DummyPNaF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"NaF range",22,true);
-        PlotTH1FintoGraph(gPad,AglDB, DummyPAgl->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"Agl range",29,true);
+	PlotTH1FintoGraph(gPad,ToFPB, DummyPTOF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"TOF range",8,true);
+        PlotTH1FintoGraph(gPad,NaFPB, DummyPNaF->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"NaF range",22,true);
+        PlotTH1FintoGraph(gPad,AglPB, DummyPAgl->GetEffAcceptance(),"Kinetic Energy [GeV/nucl.]", "Eff. Acceptance [m^{2} sr]",2,true,"Lsame",0.1,10,0.0001,0.6,"Agl range",29,true);
 
 
 	Plots.Add(c2_);

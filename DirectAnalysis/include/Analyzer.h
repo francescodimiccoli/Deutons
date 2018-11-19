@@ -21,6 +21,7 @@ class Analyzer{
 	ParallelFiller<Tool *> Filler;
 	ParallelFiller<Flux *> Filler_RTI;
 	std::vector<ComputingFunction> ComputingFunctions;	
+	bool check_file = false;
 
 	public:
 	Analyzer(std::string INPUT1, std::string INPUT2){
@@ -28,6 +29,7 @@ class Analyzer{
 		chainDT    = InputFileReader(INPUT1.c_str(),"Event");
 		chainMC    = InputFileReader(INPUT2.c_str(),"Event");
 	};
+	bool CheckFile() {return check_file;}
 	void FillAll();
 	void SaveAll();
 

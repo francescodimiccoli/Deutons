@@ -78,12 +78,13 @@ int main(int argc, char * argv[])
 
     analyzer.BookCountsAnalysis(finalHistosCounts,finalResults,Refill);	
     analyzer.BookEfficiencyAnalysis(finalHistosEff,finalResults,Refill);	
-//  analyzer.BookEffCorrAnalysis(finalHistosCorr,finalResults,Refill);	
-//  analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
+    analyzer.BookEffCorrAnalysis(finalHistosCorr,finalResults,Refill);	
+    analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
 
-
-    analyzer.FillAll();
-    analyzer.SaveAll();
+    if(Refill || !analyzer.CheckFile()){ 
+	    analyzer.FillAll();
+	    analyzer.SaveAll();
+    }
 
 
 } 

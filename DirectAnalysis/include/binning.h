@@ -50,7 +50,7 @@ class Binning {
       Particle getParticle() {return particle; }
       inline void  RFill (TH1* h, float Var); ///< Fill the histogram with var indicating the rigidity bin
       void Print(); ///< Print the content of the bins
-      inline float GetBinLowEdge(int bin);	
+      float GetBinLowEdge(int bin);	
       float GetBinCenter(int bin);	
 
       std::vector<float> EkBins  ()   {  return   ekbin;   }

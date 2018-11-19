@@ -36,7 +36,7 @@ void Flux::ApplyEfficCorr(TH1F * Correction){
 }
 
 TH1F * EvalEffAcc(Efficiency* Eff, Binning bins, MCPar param){
-	
+	SetUpTOIBinning();	
 	//float normalization = param.tot_ev/FRAC*(pow(param.Trigrate,-1));
 	float normalization = param.tot_trig/FRAC;
 	TH1F * EffAcc = (TH1F *) (Eff->GetAfter())->Clone();	
@@ -45,7 +45,7 @@ TH1F * EvalEffAcc(Efficiency* Eff, Binning bins, MCPar param){
 			float range;
 			range = log(param.Rmax)-log(param.Rmin);
 			   	
-			float gen_bins= normalization*(log(bins.RigBins()[i+1])-log(bins.RigBins()[i]))/range; 
+			float gen_bins= normalization*(log(bins.RigBin(i+1))-log(bins.RigBin(i)))/range; 
 	
 			EffAcc -> SetBinContent(i+1,EffAcc -> GetBinContent(i+1)/gen_bins); 
 			EffAcc -> SetBinError(i+1,0);//pow(GenSpectrum -> GetBinContent(i+1),0.5)/gen_bins); 			

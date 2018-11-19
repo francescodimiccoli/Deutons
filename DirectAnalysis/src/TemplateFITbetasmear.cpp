@@ -2,7 +2,7 @@
 
 void TemplateFIT::Eval_TransferFunction(){
 	cout<<"Transf:"<<endl;	
-	for(int bin=1;bin<fits.size();bin++){
+	for(int bin=0;bin<fits.size();bin++){
 		cout<<"Transf: "<< fits[bin][0][3]->DataPrim<<endl;
 		TH1F * transferfunction = (TH1F *) fits[bin][0][3]->DataPrim->Clone();
 		transferfunction->Sumw2();
@@ -440,7 +440,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 
 	float min=fitrangemin;
 	float max=fitrangemax;
-	bool fitcondition = (Fit -> Data->Integral()>50)&&(Fit -> Templ_P->Integral()>50) &&(Fit -> Templ_D->Integral()>50) && (Fit -> Templ_He->Integral()>50);
+	bool fitcondition = (Fit -> Data->Integral()>50)&&(Fit -> Templ_P->Integral()>50) &&(Fit -> Templ_D->Integral()>50);
 	cout<<	Fit -> Data->Integral()<<" "<<Fit -> Templ_P->Integral()<<" "<<Fit -> Templ_D->Integral()<<endl;
 	
 	if(fitcondition){	
@@ -457,13 +457,13 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 	        if(isfitnoise&&highmasstailconstrain) 
 			Fit -> Tfit -> Constrain(4, 0.1*CalculateAmountOfHighMassComponent(Fit -> Data,Fit ->  Templ_P,Fit ->  Templ_Noise,4.5,0.001),1.2*CalculateAmountOfHighMassComponent(Fit -> Data,Fit ->  Templ_P,Fit ->  Templ_Noise,4.5,0.001));	 
 			
+		//fitting
 		if(Fit -> Tfit ) 
-        {
-            Fit -> Tfit_outcome = 1;
-            try { Fit -> Tfit_outcome = Fit -> Tfit -> Fit(); } catch(const std::invalid_argument& e) 
-            { cout << "Failed TFractionFItting. Giving up.\n"; }
-        }
-
+		{
+			Fit -> Tfit_outcome = -1;
+			try { Fit -> Tfit_outcome = Fit -> Tfit -> Fit(); } catch(const std::invalid_argument& e) 
+			{ cout << "Failed TFractionFItting. Giving up.\n"; }
+		}
 		for(int fit_attempt=0; fit_attempt<20; fit_attempt++) {
 			cout<<"fit attempt: "<<fit_attempt<<endl;
 			if(Fit -> Tfit_outcome == 0) break;
@@ -471,11 +471,12 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 				cout<<fit_attempt<<endl;
 				Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin((1+0.01*fit_attempt)*min), Fit -> Data -> FindBin((1+0.01*fit_attempt)*max));
 
-                Fit -> Tfit_outcome = 1;
-                try { Fit -> Tfit_outcome = Fit -> Tfit -> Fit(); } catch(const std::invalid_argument& e) 
-                { cout << "Failed TFractionFItting. Giving up.\n"; }
+				Fit -> Tfit_outcome = -1;
+				try { Fit -> Tfit_outcome = Fit -> Tfit -> Fit(); } catch(const std::invalid_argument& e) 
+				{ cout << "Failed TFractionFItting. Giving up.\n"; }
 			}
 		}
+		//
 
 		if(Fit -> Tfit_outcome==0){
 			TH1F * Result = (TH1F *) Fit-> Tfit -> GetPlot();
@@ -484,13 +485,13 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			double w2,e2 = 0;
 			double w3,e3 = 0;
 			double w4,e4 = 0;
-			
+
 			Fit -> Tfit ->GetResult(0,w1,e1);
 			Fit -> Tfit ->GetResult(1,w2,e2);
 			if(Fit-> Templ_He) Fit -> Tfit ->GetResult(2,w3,e3);
 			if(isfitnoise) Fit -> Tfit ->GetResult(3,w4,e4);
-		
-	
+
+
 
 			float i1 = Fit-> Templ_P  ->Integral(Fit->Templ_P -> FindBin(min), Fit->Templ_P -> FindBin(max));
 			float i2 = Fit-> Templ_D  ->Integral(Fit->Templ_D -> FindBin(min), Fit->Templ_D -> FindBin(max));
@@ -504,7 +505,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			Fit ->ContribD= w2;
 			Fit ->ContribHe=w3;
 			Fit ->ContribNoise=w4;
-			
+
 			Fit ->errP= e1;
 			Fit ->errD= e2;
 			Fit ->errHe=e3;
@@ -535,8 +536,8 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			Fit -> StatErrP = e1;
 			Fit -> StatErrD = e2;
 			Fit -> StatErrT = e3;
-			
-	//		Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Tfit -> GetNDF());
+
+			//		Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Tfit -> GetNDF());
 			Fit -> ChiSquare = GetChiSquare(Sum,Fit->Data,min,max);
 			Fit -> DCounts = Fit ->  Templ_D -> Integral();
 			Fit -> PCounts = Fit ->  Templ_P -> Integral();
@@ -691,7 +692,7 @@ void TemplateFIT::EvalFinalParameters(){
 		}
 
 		if(BestChiSquare[bin]->chimin<1000) 	       BestChiSquares     ->SetBinContent(bin+1,BestChiSquare[bin]->chimin);
-                if(TFitChisquare[bin]->GetBinContent(1,6)<1000)OriginalChiSquares ->SetBinContent(bin+1,TFitChisquare[bin]->GetBinContent(1,6));
+                if(TFitChisquare[bin]->GetBinContent(1,6)<1000)OriginalChiSquares ->SetBinContent(bin+1,TFitChisquare[bin]->GetBinContent(1,4));
 		BestChiSquares     ->SetBinError(bin+1,0.25);	
                 OriginalChiSquares ->SetBinError(bin+1,0.25);
 	}
@@ -706,7 +707,7 @@ void TemplateFIT::EvalFinalErrors(){
 			StatErrorP -> SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->StatErrP);
 			StatErrorD -> SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->StatErrD);
 			StatErrorT -> SetBinContent(bin+1,fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->StatErrT);
-			SystError -> SetBinContent(bin+1,WeightedDCounts[bin]->GetStdDev()/fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts*fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->ChiSquare);
+			SystError -> SetBinContent(bin+1,WeightedDCounts[bin]->GetStdDev()/fits[bin][BestChiSquare[bin]->i][BestChiSquare[bin]->j]->DCounts);
 			StatErrorP -> SetBinError(bin+1,0);
 			StatErrorD -> SetBinError(bin+1,0);
 			StatErrorT -> SetBinError(bin+1,0);

@@ -11,6 +11,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
     	SetUpTOIBinning();
 
 	bool checkfile = finalhistos.CheckFile();
+	check_file = checkfile;
 	cout<<"****************************** Efficiecny ANALYIS ******************************************"<<endl;
 
 

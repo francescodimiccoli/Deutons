@@ -14,6 +14,7 @@
 void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill){
 
 	bool checkfile = finalhistos.CheckFile();
+	check_file = checkfile;
 	cout<<"****************************** BINS ***************************************"<<endl;
         SetUpEffCorrBinning();
  
