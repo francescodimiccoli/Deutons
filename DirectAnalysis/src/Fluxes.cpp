@@ -16,7 +16,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	bool checkfile = finalhistos.CheckFile();
 	check_file = checkfile;
 	cout<<"****************************** BINS ***************************************"<<endl;
-        SetUpEffCorrBinning();
+        SetUpUsualBinning();
  
 	cout<<"****************************** FLUXES EVALUATION ******************************************"<<endl;
 
@@ -35,9 +35,9 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	Flux * DummyDNaF = new Flux(finalhistos,finalresults, "DummyDNaF", "FullSetTOT_D_NaF","FullSetTOT","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF",NaFDB);
 	Flux * DummyDAgl = new Flux(finalhistos,finalresults, "DummyDAgl", "FullSetTOT_D_Agl","FullSetTOT","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl",AglDB);
 
-	Flux * DummyPTOF = new Flux(finalhistos,finalresults, "DummyPTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFPCounts/TOFPCounts/TOFPCounts_before","ExposureTOF",ToFPB);
-	Flux * DummyPNaF = new Flux(finalhistos,finalresults, "DummyPNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFPCounts/NaFPCounts/NaFPCounts_before","ExposureNaF",NaFPB);
-	Flux * DummyPAgl = new Flux(finalhistos,finalresults, "DummyPAgl", "FullSetTOT_P_Agl","FullSetTOT","AglPCounts/AglPCounts/AglPCounts_before","ExposureAgl",AglPB);
+	Flux * DummyPTOF = new Flux(finalhistos,finalresults, "DummyPTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFPCounts/TOFPCounts/TOFPCounts_before","ExposureTOF",ToFRigB);
+	Flux * DummyPNaF = new Flux(finalhistos,finalresults, "DummyPNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFPCounts/NaFPCounts/NaFPCounts_before","ExposureNaF",NaFRigB);
+	Flux * DummyPAgl = new Flux(finalhistos,finalresults, "DummyPAgl", "FullSetTOT_P_Agl","FullSetTOT","AglPCounts/AglPCounts/AglPCounts_before","ExposureAgl",AglRigB);
 
 
 	DFluxTOF ->SetDefaultOutFile(finalhistos); 

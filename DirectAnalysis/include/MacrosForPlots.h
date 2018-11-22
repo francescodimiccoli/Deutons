@@ -1,4 +1,41 @@
 #include "TText.h"
+#include "TLine.h"
+#include "binning.h"
+#include "Globals.h"
+
+
+void DrawBins(TVirtualPad * c1, TH2F* histo, std::vector<float> orizontal_set,std::vector<float> vertical_set,int col_oriz, int col_vert) {
+		c1->cd();
+		std::vector< TLine *> oriz_lines;
+		std::vector< TLine *> vert_lines;
+
+		for(int i =0; i<orizontal_set.size(); i++) {
+			TLine * oriz = new TLine(histo->GetXaxis()->GetBinLowEdge(1),orizontal_set[i],vertical_set[i],orizontal_set[i]);    
+			TLine * vert = new TLine(vertical_set[i],histo->GetYaxis()->GetBinLowEdge(1),vertical_set[i],orizontal_set[i]);
+			oriz_lines.push_back(oriz);
+			vert_lines.push_back(vert);
+		}
+		for(int i =0; i<orizontal_set.size(); i++) {
+			oriz_lines[i]->SetLineColor(col_oriz);
+			vert_lines[i]->SetLineColor(col_vert);
+	
+			oriz_lines[i]->Draw("same");
+			vert_lines[i]->Draw("same");
+		}	
+}
+
+TH2F * RebinHisto(TH2F * histo,std::vector<float> orizontal_set,std::vector<float> vertical_set,std::string name){
+
+	TH2F * new_histo = new TH2F(name.c_str(),name.c_str(),orizontal_set.size(),0,orizontal_set.size(),vertical_set.size(),0,vertical_set.size())	;
+	
+	for(int i=1;i<orizontal_set.size()-1;i++)
+		for(int j=1;j<vertical_set.size()-1;j++){
+			float bincontent=histo->Integral(histo->GetXaxis()->FindBin(vertical_set[j]),histo->GetXaxis()->FindBin(vertical_set[j+1]),histo->GetYaxis()->FindBin(orizontal_set[i]),histo->GetYaxis()->FindBin(orizontal_set[i+1]));		
+			new_histo->SetBinContent(j+1,i+1,bincontent);
+		}
+	return new_histo;
+}
+
 
 void DrawQvsRBeta(TH2F * h6, TH2F *h9, TH2F * h6_, TH2F * h9_, std::string name, FileSaver finalResults){
 
@@ -330,7 +367,8 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
    TH2F * h5 = (TH2F*)finalHistos.Get("BetagenvsBetaMeasNaFD/BetagenvsBetaMeasNaFD");
    TH2F * h6 = (TH2F*)finalHistos.Get("BetagenvsBetaMeasAglD/BetagenvsBetaMeasAglD"); 
 	
-	TF1 * ideal = new TF1("ideal","x",0,1.5); 
+	TF1 * ideal = new TF1("ideal","x",0,50); 
+	ideal->SetLineStyle(2);
 
 	h1->FitSlicesY(0,50,h1->GetNbinsX(),0);
 	h2->FitSlicesY(0,50,h2->GetNbinsX(),0);
@@ -349,7 +387,7 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
         TF1 * fitfuncP  = new TF1("funcP","x*(1-[0]/x^[1])",0,1); 
 	TF1 * fitfuncD = new TF1("funcD","x-0.4*(x-x*(1-[0]/x^[1])) ",0,1);
 
-	TCanvas * c1 = new TCanvas("Protons MC #beta shift");
+	TCanvas * c1 = new TCanvas("Proton slowdown model");
 	c1->cd();
 	c1->SetLogz();
 	((TH1F*)h1_1->Clone())->Fit("funcP","Q");
@@ -360,7 +398,7 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 	h1_1->SetMarkerSize(1);
 	h1_1->Draw("Psame");
 	fitfuncP->Draw("same");
-	TCanvas * c2 = new TCanvas("Deuterons");
+	TCanvas * c2 = new TCanvas("Deuterons slowdown model ");
 	c2->cd();
 	c2->SetLogz();
 	
@@ -378,16 +416,59 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 	ideal->Draw("same");
 	fitfuncD->Draw("same");
 
+	TCanvas * BinningTOF = new TCanvas("binningTOF");
+	BinningTOF->Divide(2,0);
+
+	std::vector<float> orizontal_set=ToFPB.BetaBins ();
+	std::vector<float> vertical_set_P=ToFPB.BetaTOIBins () ;
+	std::vector<float> vertical_set_D=ToFDB.BetaTOIBins () ;
+
+	BinningTOF->cd(1);
+	PlotTH2F(gPad, h1, "#beta_{gen}","#beta_{meas}","colz");
+	DrawBins(gPad,h1,orizontal_set,vertical_set_P,1,2);	
+	ideal->Draw("same");
+	BinningTOF->cd(2);
+	PlotTH2F(gPad, h4, "#beta_{gen}","#beta_{meas}","colz");
+	DrawBins(gPad,h4,orizontal_set,vertical_set_D,1,4);	
+	ideal->Draw("same");
+	
+
+	TCanvas * MigrrectTOF = new TCanvas("Migr_rectTOF");
+	MigrrectTOF->Divide(2,0);
+	
+	MigrrectTOF->cd(1);
+	TH2F * Migrrect_P = RebinHisto(h1,orizontal_set,orizontal_set,"Migrrect_P");
+	Migrrect_P->Draw("colz");
+	ideal->Draw("same");
+	MigrrectTOF->cd(2);
+	TH2F * Migrrect_D = RebinHisto(h4,orizontal_set,orizontal_set,"Migrrect_D");
+	Migrrect_D->Draw("colz");
+	ideal->Draw("same");
+	
+	TCanvas * MigrmodTOF = new TCanvas("Migr_modTOF");
+	MigrmodTOF->Divide(2,0);
+	
+	MigrmodTOF->cd(1);
+	TH2F * Migrmod_P = RebinHisto(h1,orizontal_set,vertical_set_P,"Migrmod_P");
+	Migrmod_P->Draw("colz");
+	ideal->Draw("same");
+	MigrmodTOF->cd(2);
+	TH2F * Migrmod_D = RebinHisto(h4,orizontal_set,vertical_set_D,"Migrmod_D");
+	Migrmod_D->Draw("colz");
+	ideal->Draw("same");
+	
 	finalResults.Add(c1);
 	finalResults.Add(c2);
+	finalResults.Add(BinningTOF);
+	finalResults.Add(MigrrectTOF);
+	finalResults.Add(MigrmodTOF);
 	finalResults.writeObjsInFolder("ResponseBeta/BetaTOF");
 
 
 
 
 
-
-	TCanvas * c3 = new TCanvas("Protons MC #beta shift");
+	TCanvas * c3 = new TCanvas("Proton slowdown model");
 	c3->cd();
 	c3->SetLogz();
 	((TH1F*)h2_1->Clone())->Fit("funcP","Q");
@@ -399,7 +480,7 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 	h2_1->SetMarkerSize(1);
 	h2_1->Draw("Psame");
 	
-	TCanvas * c4 = new TCanvas("Deuterons MC #beta shift");
+	TCanvas * c4 = new TCanvas("Deuteron slowdown modle");
 	c4->cd();
         c4->SetLogz();
 	fitfuncD->SetParameter(0,fitfuncP->GetParameter(0));
@@ -421,7 +502,7 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 
 
 
-	TCanvas * c5 = new TCanvas("Protons MC #beta shift");
+	TCanvas * c5 = new TCanvas("Proton slowdown model");
 	c5->cd();
 	c5->SetLogz();
 	
@@ -432,7 +513,7 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 	h3_1->SetMarkerSize(1);
 	h3_1->Draw("same");
 	ideal->Draw("same");
-	TCanvas * c6 = new TCanvas("Deuterons MC #beta shift");
+	TCanvas * c6 = new TCanvas("Deuteron slowdown  model");
 	c6->cd();
 	c6->SetLogz();
 	fitfuncD->SetParameter(0,fitfuncP->GetParameter(0));
@@ -452,6 +533,58 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 	finalResults.Add(c5);
 	finalResults.Add(c6);
 	finalResults.writeObjsInFolder("ResponseBeta/BetaAgl");
+}
+
+
+void DrawBetavsRig(FileSaver finalHistos,FileSaver finalResults){
+	TH2F * RigvsBeta_TOFP = (TH2F*)finalHistos.Get("RigvsBeta_TOFP/RigvsBeta_TOFP");
+	TH2F * RigvsBeta_NaFP = (TH2F*)finalHistos.Get("RigvsBeta_NaFP/RigvsBeta_NaFP");
+	TH2F * RigvsBeta_AglP = (TH2F*)finalHistos.Get("RigvsBeta_AglP/RigvsBeta_AglP");
+	TH2F * RigvsBeta_TOFD = (TH2F*)finalHistos.Get("RigvsBeta_TOFD/RigvsBeta_TOFD");
+	TH2F * RigvsBeta_NaFD = (TH2F*)finalHistos.Get("RigvsBeta_NaFD/RigvsBeta_NaFD");
+	TH2F * RigvsBeta_AglD = (TH2F*)finalHistos.Get("RigvsBeta_AglD/RigvsBeta_AglD");
+
+	TH2F * RigvsBeta_TOF_data = (TH2F*)finalHistos.Get("RigvsBeta_TOF_data/RigvsBeta_TOF_data");
+	TH2F * RigvsBeta_NaF_data = (TH2F*)finalHistos.Get("RigvsBeta_NaF_data/RigvsBeta_NaF_data");
+	TH2F * RigvsBeta_Agl_data = (TH2F*)finalHistos.Get("RigvsBeta_Agl_data/RigvsBeta_Agl_data");
+	TH2F * RigvsBeta_TOF_dataprim = (TH2F*)finalHistos.Get("RigvsBeta_TOF_dataprim/RigvsBeta_TOF_dataprim");
+	TH2F * RigvsBeta_NaF_dataprim = (TH2F*)finalHistos.Get("RigvsBeta_NaF_dataprim/RigvsBeta_NaF_dataprim");
+	TH2F * RigvsBeta_Agl_dataprim = (TH2F*)finalHistos.Get("RigvsBeta_Agl_dataprim/RigvsBeta_Agl_dataprim");
+
+	TCanvas * c1 = new TCanvas("MC RvsBeta TOF");
+	c1->cd();
+	c1->SetLogz();
+	RigvsBeta_TOFP->SetMarkerColor(2);
+	RigvsBeta_TOFD->SetMarkerColor(4);
+	RigvsBeta_TOFP->Draw();
+	RigvsBeta_TOFD->Draw("same");
+
+	std::vector<float> orizontal_set=ToFPB.BetaBins ();
+	std::vector<float> vertical_set_P=ToFPB.RigBins () ;
+	std::vector<float> vertical_set_D=ToFDB.RigBins () ;
+	
+	DrawBins(c1,RigvsBeta_TOFP,orizontal_set,vertical_set_P,1,2);
+	DrawBins(c1,RigvsBeta_TOFD,orizontal_set,vertical_set_D,1,4);
+
+	TCanvas * c2 = new TCanvas("MC Binning TOF");
+	c2->cd();
+	c2->SetLogz();
+	c2->Divide(2,1);
+	
+	c2->cd(1);
+	TH2F * Rebinned_P = RebinHisto(RigvsBeta_TOFP,orizontal_set,vertical_set_P,"Rebinned_P");
+	Rebinned_P->Draw("colz");
+
+	c2->cd(2);
+	TH2F * Rebinned_D = RebinHisto(RigvsBeta_TOFD,orizontal_set,vertical_set_D,"Rebinned_D");
+	Rebinned_D->Draw("colz");
+
+
+	finalResults.Add(c1);
+	finalResults.Add(c2);
+	finalResults.writeObjsInFolder("RigvsBeta/TOF_MC");
+
+
 
 
 }

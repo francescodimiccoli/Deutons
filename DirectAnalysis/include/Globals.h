@@ -41,9 +41,9 @@ extern Binning PRB;
 extern Binning ForAcceptance;
 
 //resolution binning
-extern Binning ToFResB;
-extern Binning NaFResB;
-extern Binning AglResB;
+extern Binning ToFRigB;
+extern Binning NaFRigB;
+extern Binning AglRigB;
 
 extern Binning PResB;
 

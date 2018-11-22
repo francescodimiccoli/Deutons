@@ -611,7 +611,6 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos){
 						fits[bin][sigma][shift]->DCounts     = fits[bin][sigma][shift]->DataPrim->Integral();
 					}
 				}
-				cout<<"ecco"<<endl;	
 	
 				fits[bin][sigma][shift]->Templ_PPrim=(TH1F*) fits[bin][sigma][shift]->Templ_P->Clone();
 				if(fits[bin][sigma][shift]->Templ_PPrim->GetEntries()>0) fits[bin][sigma][shift]->Templ_PPrim->Multiply(TransferFunction[bin]);

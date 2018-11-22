@@ -135,7 +135,7 @@ std::vector<float> Binning::computeConstResoBinEdges(int nbins, float min, float
    std::vector<float> binEdges(nbins+1);
    binEdges[0]=min;
    for (int ibin=1; ibin<nbins; ibin++) {
-       binEdges[ibin]=binEdges[ibin-1]*1.035;
+       binEdges[ibin]=binEdges[ibin-1]*1.025;
    }
    binEdges[nbins]=max; // So it has the "right" value for sure
    return binEdges;
@@ -143,9 +143,9 @@ std::vector<float> Binning::computeConstResoBinEdges(int nbins, float min, float
 
 std::vector<float> Binning::computeConstResoBinCenters(int nbins, float min, float max) {
    std::vector<float> binCent(nbins);
-   binCent[0]=min*1.0175;
+   binCent[0]=min*1.0125;
   for (int ibin=1; ibin<nbins; ibin++) {
-	binCent[ibin]=binCent[ibin-1]*1.035;
+	binCent[ibin]=binCent[ibin-1]*1.025;
 	}
    return binCent;
    
@@ -224,13 +224,13 @@ int Binning::GetBin(float var){
 }
 
 float Binning::GetBinLowEdge(int bin){
-        if(Redges)    return RigBin (bin);
-        if(Betaedges) return BetaBin (bin);
+        if(Redges || RTOIedges)       return RigBin (bin);
+        if(Betaedges || BetaTOIedges) return BetaBin (bin);
 }
 
 float Binning::GetBinCenter(int bin){
-        if(Redges)    return RigBinCent (bin);
-        if(Betaedges) return BetaBinCent (bin);
+        if(Redges || RTOIedges)       return RigBinCent (bin);
+        if(Betaedges || BetaTOIedges) return BetaBinCent (bin);
 }
 
 int Binning::GetRBin (float var)
@@ -257,8 +257,10 @@ int Binning::GetRTOIBin (float var)
 {
    if (var<rigbin_TOI[0]||var>rigbin_TOI[rigbin.size()-1]) return -1;
    for (uint ib=0; ib<rigbin.size(); ib++)  {
-      if (var>rigbin_TOI[ib] && var<=rigbin_TOI[ib+1])
-         return ib;
+      if (var>rigbin_TOI[ib] && var<=rigbin_TOI[ib+1]){
+         //std::cout<<ib<<" "<<var<<" "<<rigbin_TOI[ib]<<" "<<rigbin_TOI[ib+1]<<std::endl;
+	 return ib;
+	}
    }
    return -1;
 }

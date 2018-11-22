@@ -1,4 +1,5 @@
 #include "Flux.h"
+#include "FluxRebin.h"
 
 void MCPar::Eval_trigrate(){
 	std::vector<float> events;
@@ -63,6 +64,17 @@ TH1F * EvalEffAcc(Efficiency* Eff, Binning bins, MCPar param){
 	return EffAcc;
 }
 
+void Flux::EvalFluxGraphs(){
+	int a=0;
+	for(int i=0;i<bins.size();i++){
+		FluxEstim_Graph->SetPoint(a,bins.EkPerMassBinCent(i),FluxEstim->GetBinContent(i+1) );
+		FluxEstim_Graph->SetPointError(a,bins.EkPerMassBinCent(i+1)-bins.EkPerMassBinCent(i),FluxEstim->GetBinError(i+1));
+		FluxEstim_rig_Graph->SetPoint(a,bins.RigBinCent(i),FluxEstim->GetBinContent(i+1) );
+		FluxEstim_rig_Graph->SetPointError(a,bins.RigBinCent(i+1)-bins.RigBinCent(i),FluxEstim->GetBinError(i+1));
+	}
+}
+
+
 void Flux::Eval_Flux(){
 	cout<<"Counts "<<Counts<<endl;
 	
@@ -95,20 +107,35 @@ void Flux::Eval_Flux(){
 	}
 
 	if(ExposureTime) FluxEstim -> Divide(ExposureTime);
-	
+
+/*	for(int i=0; i<FluxEstim->GetNbinsX(); i++) {
+		if(ExposureTime->GetBinContent(i+2)>0) {
+		FluxEstim ->SetBinContent(i,FluxEstim->GetBinContent(i)/ExposureTime->GetBinContent(i+2));
+		FluxEstim ->SetBinError(i,FluxEstim->GetBinError(i)/ExposureTime->GetBinContent(i+2));
+		}
+	}
+*/	
 	Eff_Acceptance = (TH1F *) MCEfficiency->GetAfter()->Clone();
 	if(Eff_Acceptance){
 	
 	         Eff_Acceptance = EvalEffAcc(MCEfficiency,bins,param);	
 		 for(int i=0;i<EfficiencyCorrections.size();i++) Eff_Acceptance -> Multiply(EfficiencyCorrections[i]); 
-	        FluxEstim -> Divide(Eff_Acceptance);
+	         FluxEstim -> Divide(Eff_Acceptance);
 		
 	}
-
+	FluxEstim_rig = (TH1F*) FluxEstim ->Clone();
+	FluxEstim_rig -> SetName((basename+"_Flux_rig").c_str());
+	FluxEstim_rig -> SetTitle((basename+"_Flux_rig").c_str());
+	FluxEstim_rig -> Sumw2();
+	
 	for(int i=0;i<bins.size();i++){
-		FluxEstim->SetBinError(i+1,FluxEstim->GetBinError(i+1)/(bins.EkPerMasBins()[i+1]-bins.EkPerMasBins()[i]));
-		FluxEstim->SetBinContent(i+1,FluxEstim->GetBinContent(i+1)/(bins.EkPerMasBins()[i+1]-bins.EkPerMasBins()[i]));
+		FluxEstim->SetBinError(i+1,FluxEstim->GetBinError(i+1)/(bins.EkPerMasTOIBins()[i+1]-bins.EkPerMasTOIBins()[i]));
+		FluxEstim->SetBinContent(i+1,FluxEstim->GetBinContent(i+1)/(bins.EkPerMasTOIBins()[i+1]-bins.EkPerMasTOIBins()[i]));
+		FluxEstim_rig->SetBinError(i+1,FluxEstim_rig->GetBinError(i+1)/(bins.RigTOIBins()[i+1]-bins.RigTOIBins()[i]));
+		FluxEstim_rig->SetBinContent(i+1,FluxEstim_rig->GetBinContent(i+1)/(bins.RigTOIBins()[i+1]-bins.RigTOIBins()[i]));
 	}
+
+
 	return;		
 }
 
@@ -116,6 +143,10 @@ void Flux::SaveResults(FileSaver finalhistos){
 	std::cout<<"Results: "<<FluxEstim<<" "<<ExposureTime<<" "<<Eff_Acceptance<<std::endl;
 
 	if(FluxEstim) finalhistos.Add(FluxEstim); 	
+	if(FluxEstim_rig) finalhistos.Add(FluxEstim_rig);
+	if(FluxEstim_Graph) finalhistos.Add(FluxEstim_Graph); 	
+	if(FluxEstim_rig_Graph) finalhistos.Add(FluxEstim_rig_Graph);
+	 	
 	if(ExposureTime) finalhistos.Add(ExposureTime);
 	if(Eff_Acceptance)finalhistos.Add(Eff_Acceptance);
 	if(Acc_StatErr) finalhistos.Add(Acc_StatErr);

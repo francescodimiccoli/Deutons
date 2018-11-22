@@ -32,9 +32,9 @@ Binning PRB(proton);
 Binning ForAcceptance(proton);
 
 //resolution binning
-Binning ToFResB(deuton);
-Binning NaFResB(deuton);
-Binning AglResB(deuton);
+Binning ToFRigB(proton);
+Binning NaFRigB(proton);
+Binning AglRigB(proton);
 
 Binning PResB(proton);
 
@@ -57,9 +57,9 @@ void SetBins(){
 	AglDB.Reset();
 	AglPB.Reset();
 	ForAcceptance.Reset();
-	ToFResB.Reset();
-	NaFResB.Reset();
-	AglResB.Reset();
+	ToFRigB.Reset();
+	NaFRigB.Reset();
+	AglRigB.Reset();
 	PResB  .Reset();
 
 
@@ -70,19 +70,23 @@ void SetBins(){
 
 	cout<<"TOF bins"<<endl;
 	float ekmin=0.1, ekmax=0.82;
-	float betamin=0.466; float betamax=0.8363;
+	float betamin=0.53; float betamax=0.8363;
 	ToFDB.setBinsFromBeta (nbinsToF, betamin, betamax,ResponseTOF,0.00347548,5.8474);
 	ToFPB.setBinsFromBeta (nbinsToF, betamin, betamax ,ResponseTOF,0.00347548,5.8474);
+	ToFRigB.setBinsFromBeta (nbinsToF, betamin, betamax ,ResponseTOF,0.00347548,5.8474);
 
 	cout<<"NaF bins"<<endl;
 	ekmin=0.666, ekmax=4.023;
 	NaFDB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
 	NaFPB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
+	NaFRigB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
 
 	cout<<"Agl bins"<<endl;
 	ekmin=2.57, ekmax=9.01;
 	AglDB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
 	AglPB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
+	AglRigB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
+
 
 	//PResB.setBinsFromRigidity(60, 0.5, 100,ResponseTOF,0.00347548,5.8474);	
 	//ToFResB.setBinsFromRigidity(25, 1,8,ResponseTOF,0.00347548,5.8474);
@@ -120,6 +124,11 @@ void SetUpUsualBinning(){
 	NaFDB.UseBetaEdges();
 	AglDB.UseBetaEdges();
 
+	ToFRigB.UseREdges();
+	NaFRigB.UseREdges();
+	AglRigB.UseREdges();
+
+
 
 	PRB.UseREdges();
 	ForAcceptance.UseREdges();
@@ -138,6 +147,10 @@ void SetUpEffCorrBinning(){
 	ToFDB.UseBetaEdges();
 	NaFDB.UseBetaEdges();
 	AglDB.UseBetaEdges();
+
+	ToFRigB.UseREdges();
+	NaFRigB.UseREdges();
+	AglRigB.UseREdges();
 
 
 	PRB.UseREdges();
@@ -158,9 +171,13 @@ void SetUpTOIBinning(){
 	NaFDB.UseBetaTOIEdges();
 	AglDB.UseBetaTOIEdges();
 
+	ToFRigB.UseRTOIEdges();
+	NaFRigB.UseRTOIEdges();
+	AglRigB.UseRTOIEdges();
+
 
 	PRB.UseRTOIEdges();
-	ForAcceptance.UseREdges();
+	ForAcceptance.UseRTOIEdges();
 	cout<<endl;
 	return;
 }
