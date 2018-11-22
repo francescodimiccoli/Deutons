@@ -163,6 +163,12 @@ int main(int argc, char * argv[]){
 	TH1F * PCountsPrimNaF = (TH1F*) finalHistos.Get((pathresNaF+"Primary Proton Counts").c_str());
 	TH1F * PCountsPrimAgl = (TH1F*) finalHistos.Get((pathresAgl+"Primary Proton Counts").c_str());
 	
+	TH1F * PCountsPrimTOF_rigbins = (TH1F*) finalHistos.Get("TOFPCounts/TOFPCounts/TOFPCounts_before");
+	TH1F * PCountsPrimNaF_rigbins = (TH1F*) finalHistos.Get("NaFPCounts/NaFPCounts/NaFPCounts_before");
+	TH1F * PCountsPrimAgl_rigbins = (TH1F*) finalHistos.Get("AglPCounts/AglPCounts/AglPCounts_before");
+	
+
+	
 	PlotTH1FintoGraph(gPad,ToFDB, DCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,2*DCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Deuteron Counts (TOF)",8);
 	PlotTH1FintoGraph(gPad,NaFDB, DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (NaF)",22);
 	PlotTH1FintoGraph(gPad,AglDB, DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (Agl)",29);
@@ -175,13 +181,18 @@ int main(int argc, char * argv[]){
 	TCanvas * c4_ = new TCanvas("Proton Counts");
         c4_->SetCanvasSize(2000,1500);
 
-	PlotTH1FintoGraph(gPad,ToFDB, PCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,2*PCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Proton Counts (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFDB, PCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Proton Counts (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglDB, PCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Proton Counts (Agl)",29);
+	PlotTH1FintoGraph(gPad,ToFDB, PCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,2*PCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Proton Counts (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFDB, PCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Proton Counts (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglDB, PCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Proton Counts (Agl)",29);
 
-	PlotTH1FintoGraph(gPad,ToFDB, PCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
-	PlotTH1FintoGraph(gPad,NaFDB, PCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
-	PlotTH1FintoGraph(gPad,AglDB, PCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
+	PlotTH1FintoGraph(gPad,ToFDB, PCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,NaFDB, PCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,AglDB, PCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
+
+	PlotTH1FintoGraph(gPad,ToFDB, PCountsPrimTOF_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,NaFDB, PCountsPrimNaF_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,AglDB, PCountsPrimAgl_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (Agl)",30);
+
 
 	Plots.Add(c4);
 	Plots.Add(c4_);

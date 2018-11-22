@@ -173,6 +173,11 @@ int main(int argc, char * argv[]){
 	PlotTH1FintoGraph(gPad,NaFPB, DummyPNaF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,104*HEPFlux->GetFlux()->GetBinContent(HEPFlux->GetFlux()->GetMaximumBin()),"This Work (NaF)",22);
 	PlotTH1FintoGraph(gPad,AglPB, DummyPAgl->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,1e-3,104*HEPFlux->GetFlux()->GetBinContent(HEPFlux->GetFlux()->GetMaximumBin()),"This Work (Agl)",29);
 
+	PlotTH1FintoGraph(gPad,ToFPB, PFluxTOF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",4,true,"Psame",0.1,100,1e-3,104*HEPFlux->GetFlux()->GetBinContent(HEPFlux->GetFlux()->GetMaximumBin()),"This Work (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFPB, PFluxNaF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",4,true,"Psame",0.1,100,1e-3,104*HEPFlux->GetFlux()->GetBinContent(HEPFlux->GetFlux()->GetMaximumBin()),"This Work (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglPB, PFluxAgl->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",4,true,"Psame",0.1,100,1e-3,104*HEPFlux->GetFlux()->GetBinContent(HEPFlux->GetFlux()->GetMaximumBin()),"This Work (Agl)",29);
+
+
 	
 	Plots.Add(c2);
 	Plots.writeObjsInFolder("Fluxes");

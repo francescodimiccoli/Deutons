@@ -331,12 +331,12 @@ int main(int argc, char * argv[]){
 	DPRatioNaF->Smooth();	
 
 	cout<<DPRatioTOF<<endl;
-/*
+
 	PlotTH1FintoGraph(gPad,ToFDB, DPRatioTOF ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.12,"This Work (TOF)",8);
 	PlotTH1FintoGraph(gPad,NaFDB, DPRatioNaF ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.12,"This Work (NaF)",22);
 	PlotTH1FintoGraph(gPad,AglDB, DPRatioAgl ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.12,"This Work (Agl)",29);
-*/
-	PlotMergedRanges(gPad,DPRatioTOF ,DPRatioNaF ,DPRatioAgl ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.12,"This Work (TOF)",8);	
+
+//	PlotMergedRanges(gPad,DPRatioTOF ,DPRatioNaF ,DPRatioAgl ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,10,0.00001,0.12,"This Work (TOF)",8);	
 
 	galprop3DP->Draw("sameC");
         galprop3DP2->Draw("sameC");
