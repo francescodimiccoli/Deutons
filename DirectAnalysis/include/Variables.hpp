@@ -46,6 +46,7 @@ struct Variables{
     //RTI
     int good_RTI;
     float       Rcutoff_RTI;
+    float 	Rcutoff_IGRFRTI;
     int isinsaa;
     float	Livetime_RTI;
 
@@ -214,6 +215,11 @@ float GetInverseEdepTrack(Variables * vars);
 float GetInverseEdepTRD  (Variables * vars); 
 
 float GetBetaGen         (Variables * vars);
+float GetBetaSlowTOF     (Variables * vars);
+float GetBetaSlowRICH    (Variables * vars);
+float GetRigSlow         (Variables * vars);
+
+
 float GetInverseBetaTOF  (Variables * vars);
 float GetInverseBetaRICH (Variables * vars);
 float GetBetaTOF         (Variables * vars);

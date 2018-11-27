@@ -238,6 +238,7 @@ void Variables::ResetVariables(){
     //RTI
     good_RTI=0;
     Rcutoff_RTI=0;
+    Rcutoff_IGRFRTI =0;
     isinsaa=0;
     Livetime_RTI       = 0;
 		
@@ -783,6 +784,12 @@ float GetMomentumProxy(Variables *vars) {
 
 	return momproxy;	
 }
+
+float GetBetaSlowTOF     (Variables * vars) { return GetBetaGen(vars) - GetBetaTOF(vars);}
+
+float GetBetaSlowRICH    (Variables * vars) { return GetBetaGen(vars) - GetBetaRICH(vars);}
+
+float GetRigSlow          (Variables * vars) { return  vars->Momento_gen - GetRigidity(vars); } 
 
 
 float GetBetaGen_SlowDownTOF(Variables * vars) {

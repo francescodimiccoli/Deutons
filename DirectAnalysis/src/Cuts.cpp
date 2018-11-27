@@ -20,7 +20,7 @@ bool IsFragmentedDMC 	   (Variables * vars) {return !(IsPureDMC(vars));}
 bool IsFragmentedPMC 	   (Variables * vars) {return !(IsPurePMC(vars));}
 
 bool IsFragmentedPfromDMC  (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
-bool IsPrimary	   (Variables * vars){ return (vars->R>1.3*vars->Rcutoff_RTI); }
+bool IsPrimary	   (Variables * vars){ return (vars->R>1.2*vars->Rcutoff_IGRFRTI); }
 bool IsMC          (Variables * vars){ return (vars->Massa_gen>0);} 
 bool IsData        (Variables * vars){ return (vars->Massa_gen==0);}
 bool IsGoodL1Status (Variables * vars) {return (vars->qL1Status==0);}
@@ -50,10 +50,24 @@ bool DistanceCut   (Variables * vars){ return QualChargeCut(vars);}//(Qualitycut
 bool LikelihoodCut (Variables * vars){ return ((vars->BetaRICH_new<=0)||(vars->BetaRICH_new>0&&vars->BDTDiscr>0)); }
 
 
+//baseline eff. corr
+bool IsDownGoing    (Variables * vars) { return (vars->Beta > 0); } 
+bool IsGoodChi2	    (Variables * vars) { return ( ((int)vars->joinCutmask&16)==16);}
+bool IsPhysTrig     (Variables * vars){ return ((int)vars->joinCutmask&1)==1;}
+bool IsGoodTrack    (Variables * vars) {return vars->R!=0 &&IsGoodL2Status(vars);}
+bool IsCharge1Track (Variables * vars) {return (vars->qInner>0.8&&vars->qInner<1.3);}
+bool IsCharge1TrackLoose (Variables * vars) {return (vars->qInner>0.5&&vars->qInner<1.5);}
+
+
+//efficiency corrections
+bool Is1TrTrack (Variables * vars) { return ( ((int)vars->joinCutmask&128)==128);}
+bool IsMinTOF   (Variables * vars) { return  ( ((int)vars->joinCutmask&2)==2);} 
+bool IsCharge1UTOF (Variables * vars) {return (vars->qUtof>0.8&&vars->qUtof<1.3);}
+bool IsCharge1LTOF (Variables * vars) {return (vars->qLtof>0.8&&vars->qLtof<1.3);}
+
 //analysis selections
-bool IsPhysTrig    (Variables * vars){ return ((int)vars->joinCutmask&1)==1;}
-bool IsMinimumBias (Variables * vars){ return (((int)vars->joinCutmask&15)==15&&vars->R!=0&&vars->Beta>0&&IsGoodL2Status(vars));}
-bool IsLooseCharge1 (Variables * vars) {return L1LooseCharge1(vars)&&vars->qInner>0.6&&vars->qInner<1.5;}
+bool IsMinimumBias (Variables * vars){ return IsPhysTrig(vars) && IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) && IsCharge1Track(vars);}
+bool IsLooseCharge1 (Variables * vars) {return L1LooseCharge1(vars)&&IsCharge1TrackLoose(vars);}
 bool IsCleaning	(Variables * vars) {return ( ((int)vars->joinCutmask&155)==155 &&  DistanceCut (vars)); }
 bool IsGoodTime (Variables * vars) { return ( ((int)vars->joinCutmask&32)==32);}
 bool IsFromNaF_nosel     (Variables * vars){ return vars->IsFromNaF_nosel();}
@@ -63,19 +77,6 @@ bool IsFromAgl     (Variables * vars){ return vars->IsFromAgl();}
 bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,999999,-0.26,-0.25);  }
 //////////////////////
 
-//baseline eff. corr
-bool IsMinimumBias_notrigg (Variables * vars){ return      (((int)vars->joinCutmask&14)==14&&vars->R!=0&&vars->Beta>0&&IsGoodL2Status(vars));}
-bool IsMinimumBias_notrack (Variables * vars){ return      (((int)vars->joinCutmask&7 )==7             &&vars->Beta>0);}
-bool IsMinimumBias_notriggtrack (Variables * vars){ return (((int)vars->joinCutmask&6 )==6             &&vars->Beta>0);}
-bool IsMinimumBias_notof (Variables * vars){ return (((int)vars->joinCutmask&13)==13&&vars->R!=0&&vars->Beta>0&&IsGoodL2Status(vars));}
-
-
-//efficiency corrections
-bool IsGoodChi2	(Variables * vars) { return ( ((int)vars->joinCutmask&16)==16);}
-bool Is1TrTrack (Variables * vars) { return ( ((int)vars->joinCutmask&128)==128);}
-bool IsCharge1Track (Variables * vars) {return (vars->qInner>0.8&&vars->qInner<1.3);}
-bool IsCharge1UTOF (Variables * vars) {return (vars->qUtof>0.8&&vars->qUtof<1.3);}
-bool IsCharge1LTOF (Variables * vars) {return (vars->qLtof>0.8&&vars->qLtof<1.3);}
 
 //He fragm
 bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));}
@@ -200,6 +201,9 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsGoodChiSquareX")            IsPassed=IsPassed && IsGoodChiSquareX     (Vars);	
 		if(spl[i]=="IsGoodChiSquareY")            IsPassed=IsPassed && IsGoodChiSquareY     (Vars);	
 
+		if(spl[i]=="IsDownGoing" )            IsPassed=IsPassed && IsDownGoing    (Vars);
+		if(spl[i]=="IsGoodTrack" )            IsPassed=IsPassed && IsGoodTrack    (Vars);	
+		
 
 		if(spl[i]=="IsClearQ1ExceptL2")   IsPassed=IsPassed && IsClearQ1ExceptL2     (Vars);
 		if(spl[i]=="IsClearQ2ExceptL2")   IsPassed=IsPassed && IsClearQ2ExceptL2     (Vars);
@@ -215,10 +219,7 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 			if(spl[i]==("IsPreselectedHe"+to_string(j)) )  IsPassed=IsPassed && IsPreselectedHeStep (Vars,j);
 		
 		if(spl[i]=="IsMinimumBias" ) IsPassed=IsPassed && IsMinimumBias (Vars); 
-		if(spl[i]=="IsMinimumBias_notrigg" ) IsPassed=IsPassed && IsMinimumBias_notrigg (Vars); 
-		if(spl[i]=="IsMinimumBias_notrack" ) IsPassed=IsPassed && IsMinimumBias_notrack (Vars); 
-		if(spl[i]=="IsMinimumBias_notof" )   IsPassed=IsPassed && IsMinimumBias_notof (Vars); 
-		if(spl[i]=="IsMinimumBias_notriggtrack" ) IsPassed=IsPassed && IsMinimumBias_notriggtrack (Vars); 
+		if(spl[i]=="IsMinTOF" )      IsPassed=IsPassed && IsMinTOF (Vars); 
 	
 		if(spl[i]=="IsLooseCharge1" ) IsPassed=IsPassed && IsLooseCharge1 (Vars);
 		if(spl[i]=="IsCleaning" ) IsPassed=IsPassed && IsCleaning (Vars);
@@ -252,6 +253,8 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsGoodTime") IsPassed=IsPassed && IsGoodTime(Vars);
 		if(spl[i]=="Is1TrTrack") IsPassed=IsPassed && Is1TrTrack(Vars);
 		if(spl[i]=="IsCharge1Track") IsPassed=IsPassed && IsCharge1Track(Vars);
+		if(spl[i]=="IsCharge1TrackLoose") IsPassed=IsPassed && IsCharge1TrackLoose(Vars);
+	
 		if(spl[i]=="IsCharge1UTOF") IsPassed=IsPassed && IsCharge1UTOF(Vars);
 		if(spl[i]=="IsCharge1LTOF") IsPassed=IsPassed && IsCharge1LTOF(Vars);
 

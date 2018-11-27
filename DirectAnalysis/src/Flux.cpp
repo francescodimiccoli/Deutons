@@ -64,16 +64,6 @@ TH1F * EvalEffAcc(Efficiency* Eff, Binning bins, MCPar param){
 	return EffAcc;
 }
 
-void Flux::EvalFluxGraphs(){
-	int a=0;
-	for(int i=0;i<bins.size();i++){
-		FluxEstim_Graph->SetPoint(a,bins.EkPerMassBinCent(i),FluxEstim->GetBinContent(i+1) );
-		FluxEstim_Graph->SetPointError(a,bins.EkPerMassBinCent(i+1)-bins.EkPerMassBinCent(i),FluxEstim->GetBinError(i+1));
-		FluxEstim_rig_Graph->SetPoint(a,bins.RigBinCent(i),FluxEstim->GetBinContent(i+1) );
-		FluxEstim_rig_Graph->SetPointError(a,bins.RigBinCent(i+1)-bins.RigBinCent(i),FluxEstim->GetBinError(i+1));
-	}
-}
-
 
 void Flux::Eval_Flux(){
 	cout<<"Counts "<<Counts<<endl;
@@ -135,7 +125,6 @@ void Flux::Eval_Flux(){
 		FluxEstim_rig->SetBinContent(i+1,FluxEstim_rig->GetBinContent(i+1)/(bins.RigTOIBins()[i+1]-bins.RigTOIBins()[i]));
 	}
 
-
 	return;		
 }
 
@@ -144,8 +133,6 @@ void Flux::SaveResults(FileSaver finalhistos){
 
 	if(FluxEstim) finalhistos.Add(FluxEstim); 	
 	if(FluxEstim_rig) finalhistos.Add(FluxEstim_rig);
-	if(FluxEstim_Graph) finalhistos.Add(FluxEstim_Graph); 	
-	if(FluxEstim_rig_Graph) finalhistos.Add(FluxEstim_rig_Graph);
 	 	
 	if(ExposureTime) finalhistos.Add(ExposureTime);
 	if(Eff_Acceptance)finalhistos.Add(Eff_Acceptance);
@@ -180,23 +167,23 @@ void Flux::Eval_ExposureTime(Variables * vars, TTree * treeDT,FileSaver finalhis
 	return;
 }
 
-
 TH1F * Flux::Eval_FluxRatio(Flux * Denominator,std::string name){
 
-	TH1F * Numerator = (TH1F*) FluxEstim -> Clone();
-	Numerator->SetName(name.c_str());
-	Numerator->SetTitle(name.c_str());
-	Numerator->Sumw2();
+        TH1F * Numerator = (TH1F*) FluxEstim -> Clone();
+        Numerator->SetName(name.c_str());
+        Numerator->SetTitle(name.c_str());
+        Numerator->Sumw2();
 
-	Numerator->Divide(Denominator->GetFlux());
-	for(int i=0;i<Numerator->GetNbinsX();i++){
-		float A = FluxEstim -> GetBinContent(i+1);
-		float B = Denominator->GetFlux() -> GetBinContent(i+1);	
-		float sigA = FluxEstim -> GetBinError(i+1);
-		float sigB = Denominator->GetFlux() -> GetBinError(i+1);	
-		Numerator->SetBinError(i+1,pow(pow(sigA/A,2)+pow(sigB/B,2)+2*sigA/A*sigB/B,0.5)*A/B);
-	}
+        Numerator->Divide(Denominator->GetFlux());
+        for(int i=0;i<Numerator->GetNbinsX();i++){
+                float A = FluxEstim -> GetBinContent(i+1);
+                float B = Denominator->GetFlux() -> GetBinContent(i+1);
+                float sigA = FluxEstim -> GetBinError(i+1);
+                float sigB = Denominator->GetFlux() -> GetBinError(i+1);
+                Numerator->SetBinError(i+1,pow(pow(sigA/A,2)+pow(sigB/B,2)+2*sigA/A*sigB/B,0.5)*A/B);
+        }
 
-	return Numerator;
+        return Numerator;
 }
+
 

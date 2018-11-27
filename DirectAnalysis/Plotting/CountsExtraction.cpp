@@ -419,7 +419,6 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 	std::string pathtemplNoise=(FIT->GetName() + "/Fit Results/ScaledTemplatesNoise");	
 
 	std::string pathfit   = (FIT->GetName() + "/Fit Results/FractionFits");
-	std::string pathtrans = (FIT->GetName() + "/Fit Results/TrasnferFunctions");
 	std::string pathres   = (FIT->GetName() + "/Fit Results/");
 	
 	TFile * infile = finalHistos.GetFile();	
@@ -450,7 +449,6 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 		std::vector<TH1F*> Datas     =GetListOfTemplates(infile, pathbindata);
 		std::vector<TH1F*> Fits      =GetListOfTemplates(infile, pathbinfit);
-		std::vector<TH1F*> Transfer  =GetListOfTemplates(infile, pathtrans);
 
 		//cout<<pathbinHe<<" "<<TemplatesHe.size()<<" "<<TemplatesHe[0]<<endl;
 	
@@ -561,6 +559,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		//PlotDistribution(gPad, Ratio,"","",1,"ePsame",-10,10,2,"",false,true,true);	
 		//PlotDistribution(gPad, Line,"","",1,"Lsame",-10,10,7,"",false,false,true);
 	
+		/*
 		TCanvas * c5 = new TCanvas("Transfer Functions");
                 c5->SetCanvasSize(2000,1500);
 
@@ -571,7 +570,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 		Plots.Add(c5);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits").c_str());
-
+		*/
 	
 
 		TCanvas * c4 = new TCanvas("ChiSquare");
@@ -589,14 +588,10 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
                 c6->SetCanvasSize(2000,1500);
 		gPad->SetLogy();
 	
-		TH1F * OverCutoffP = (TH1F *) TemplatesP[1]->Clone();
-		OverCutoffP->Multiply(Transfer[i]);
-		TH1F * OverCutoffD = (TH1F *) TemplatesD[1]->Clone();
-		OverCutoffD->Multiply(Transfer[i]);
-		TH1F * OverCutoffHe = (TH1F *) TemplatesHe[1]->Clone();
-		OverCutoffHe->Multiply(Transfer[i]);
-		
-		TH1F * NoCutoffP = (TH1F *) TemplatesP[1]->Clone();
+		TH1F * OverCutoffP = (TH1F *) TemplatesP[2]->Clone();
+		TH1F * OverCutoffD = (TH1F *) TemplatesD[2]->Clone();
+		TH1F * OverCutoffHe = (TH1F *) TemplatesHe[2]->Clone();
+		TH1F * NoCutoffP = (TH1F *) TemplatesP[2]->Clone();
 
 		NoCutoffP->Scale(
 			OverCutoffP->GetBinContent(OverCutoffP->GetMaximumBin())/

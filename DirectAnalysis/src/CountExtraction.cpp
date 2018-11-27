@@ -63,20 +63,20 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		//SmearingCheck->ExtractCounts(finalhistos);	
 		//SmearingCheck->SaveFitResults(finalresults);
 
-		//TOFfits->DisableFit();
 		TOFfits->SetFitRange(0.6,4);
-		TOFfits->SetFitConstraints(0.9,1,0.015,0.06,0.005,0.015,true);
+		//	TOFfits->DisableFit();
+		TOFfits->SetFitConstraints(0.9,1,0.015,0.16,0.005,0.015,true);
 		TOFfits->ExtractCounts(finalhistos);	
 		TOFfits->SaveFitResults(finalresults);
 
 		NaFfits->SetFitRange(0.6,5);
-		//NaFfits->DisableFit();
+		//	NaFfits->DisableFit();
 		NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
 		NaFfits->ExtractCounts(finalhistos);
 		NaFfits->SaveFitResults(finalresults);
 
 		Aglfits->SetFitRange(0.6,5);
-		//Aglfits->DisableFit();
+		//	Aglfits->DisableFit();
 		Aglfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
 		Aglfits->ExtractCounts(finalhistos);
 		Aglfits->SaveFitResults(finalresults);	

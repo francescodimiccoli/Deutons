@@ -30,9 +30,12 @@ using namespace std;
         return CutoffWeight;
 
 }*/
+
 struct TFit {
    TH1F * Templ_P =0x0;
    TH1F * Templ_D =0x0;
+   TH1F * Templ_DPrim=0x0;
+   TH1F * Templ_PPrim=0x0;
    TH1F * Templ_He=0x0;
    TH1F * Templ_Noise=0x0; 	
 
@@ -61,9 +64,7 @@ struct TFit {
    float StatErrT=0;
 	
 
-   TH1F * Templ_DPrim;
-   TH1F * Templ_PPrim;
-   
+  
    float DCountsPrim=0;		
    float PCountsPrim=0;	
 
@@ -101,8 +102,9 @@ struct BestChi {
 	}
 };
 
-void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constrain_min[], float constrain_max[], bool isfitnoise, bool highmasstailconstrain );
+void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constrain_min[], float constrain_max[], bool isfitnoise, bool highmasstailconstrain, bool IsFitPrim=false );
 
+TSpline3 * GetSplineFromHisto(TH1F * Graph, Binning bins);
 
 class TemplateFIT : public Tool{
 
@@ -149,7 +151,7 @@ class TemplateFIT : public Tool{
 
 	std::string basename;
 
-	TH1F * ExposureTime;
+	TSpline3 * ExposureTime;
 	LatReweighter * Latweighter = new LatReweighter("LatWeights","",500,0,150);
 
 	Systpar systpar;
@@ -209,7 +211,11 @@ class TemplateFIT : public Tool{
         	DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		TritiumCounts  = new TH1F("Tritium Counts","Tritium Counts",bins.size(),0,bins.size()) ;
 
-		ExposureTime = new TH1F("Exposure Time","Exposure Time",bins.size(),0,bins.size());
+		TFile * f = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/ExposureModel.root");		
+		TH1F * Exp = (TH1F*) f->Get("HEExposure");	
+	        Exp->Scale(1/Exp->GetBinContent(Exp->GetMaximumBin()));
+		ExposureTime = GetSplineFromHisto(Exp,PRB);
+
 		ProtonCountsPrim    = new TH1F("Primary Proton Counts","Primary Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCountsPrim  = new TH1F("Primary Deuteron Counts","Primary Deuteron Counts",bins.size(),0,bins.size()) ;
 	
@@ -251,13 +257,14 @@ class TemplateFIT : public Tool{
 					string nameNo    =Basename + "/Bin "+ to_string(bin)+"/TemplateNoise/" + Basename + "_MCNoise_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 
 
-					fit->Templ_P =  (TH1F *)file->Get(nameP.c_str());
-					fit->Templ_D =  (TH1F *)file->Get(nameD.c_str());
-					fit->Templ_He=  (TH1F *)file->Get(nameHe.c_str());
+					fit->Templ_P    =  (TH1F *)file->Get(nameP.c_str());
+					fit->Templ_D 	=  (TH1F *)file->Get(nameD.c_str());
+					fit->Templ_He	=  (TH1F *)file->Get(nameHe.c_str());
 					fit->Templ_Noise=  (TH1F *)file->Get(nameNo.c_str());
-					fit->Data    =  (TH1F *)file->Get(named.c_str());
-					fit->DataPrim=  (TH1F *)file->Get(namedprim.c_str());
-					
+					fit->Data    	=  (TH1F *)file->Get(named.c_str());
+					fit->DataPrim	=  (TH1F *)file->Get(namedprim.c_str());
+				
+												
 					fits[bin][i].push_back(fit);
 				}
 			}
@@ -278,7 +285,11 @@ class TemplateFIT : public Tool{
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
 		DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		TritiumCounts    = new TH1F("Tritium Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
-		ExposureTime = new TH1F("Exposure Time","Exposure Time",bins.size(),0,bins.size());	
+		
+		TFile * f = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/ExposureModel.root");		
+		TH1F * Exp = (TH1F*) f->Get("HEExposure");
+		Exp->Scale(1/Exp->GetBinContent(Exp->GetMaximumBin()));
+		ExposureTime = GetSplineFromHisto(Exp,PRB);
 
 		ProtonCountsPrim    = new TH1F("Primary Proton Counts","Primary Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCountsPrim  = new TH1F("Primary Deuteron Counts","Primary Deuteron Counts",bins.size(),0,bins.size()) ;
@@ -309,7 +320,7 @@ class TemplateFIT : public Tool{
 		highmassconstrain = highmasstailconstrain;
 	}
 
-	bool ReinitializeHistos(bool refill){cout<<"CAZZZOZOZOZOZO"<<endl; return true;}; //dummy
+	bool ReinitializeHistos(bool refill){return true;}; //dummy
 	void Eval_TransferFunction();
 	TH1F * Eval_MCHeContRatio(std::string name);
 	void Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) );
@@ -319,7 +330,8 @@ class TemplateFIT : public Tool{
 	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
 	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
 
-
+	float GetCutoffWeight(float particle_m, float beta, float m);
+	void ConvoluteTempletesWithCutoff();
 	void ExtractCounts(FileSaver finalhistos);
 	void EvalFinalParameters();
 	void EvalFinalErrors();

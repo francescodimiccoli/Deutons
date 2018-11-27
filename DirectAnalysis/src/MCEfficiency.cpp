@@ -72,25 +72,24 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Efficiency * Cascade7 = new Efficiency(finalhistos,"Cascade7","Cascade7",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut");
 	Efficiency * Cascade8 = new Efficiency(finalhistos,"Cascade8","Cascade8",PRB,"IsProtonMC","IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut");
 
-	cout<<"ECCO"<<endl;
 	AllRangesEfficiency * Trigger_P_PID = new AllRangesEfficiency(finalhistos,"Trigger_P_PID","Trigger",
-	"IsPurePMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
-	"IsPurePMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			   	      
-	"IsPurePMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",
-	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
-	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
-	"IsPurePMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsPurePMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",			      
+	"IsPurePMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",			   	      
+	"IsPurePMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",
+	"IsPurePMC&IsPositive&IsDownGoing&IsMinimumBias&IsLooseCharge1",			      
+	"IsPurePMC&IsPositive&IsDownGoing&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPurePMC&IsPositive&IsDownGoing&IsMinimumBias&IsLooseCharge1",
 		ToFPB,NaFPB,AglPB,
 	refill);
 
 
 	AllRangesEfficiency * Trigger_D_PID = new AllRangesEfficiency(finalhistos,"Trigger_D_PID","Trigger",
-	"IsPureDMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
-	"IsPureDMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			   	      
-	"IsPureDMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",
-	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
-	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
-	"IsPureDMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsPureDMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",			      
+	"IsPureDMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",			   	      
+	"IsPureDMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",
+	"IsPureDMC&IsPositive&IsDownGoing&IsMinimumBias&IsLooseCharge1",			      
+	"IsPureDMC&IsPositive&IsDownGoing&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsPureDMC&IsPositive&IsDownGoing&IsMinimumBias&IsLooseCharge1",
 		ToFDB,NaFDB,AglDB,
 	refill);
 
@@ -207,9 +206,9 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 
 
 	AllRangesEfficiency * Trigger_P = new AllRangesEfficiency(finalhistos,"Trigger_P","Trigger",
-	"IsProtonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
-	"IsProtonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			   	      
-	"IsProtonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",
+	"IsProtonMC&IsPositive&sDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",			      
+	"IsProtonMC&IsPositive&sDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",			   	      
+	"IsProtonMC&IsPositive&sDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
 	"IsProtonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
@@ -218,12 +217,12 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 
 
 	AllRangesEfficiency * Trigger_D = new AllRangesEfficiency(finalhistos,"Trigger_D","Trigger",
-	"IsDeutonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			      
-	"IsDeutonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",			   	      
-	"IsDeutonMC&IsPositive&IsMinimumBias_notrigg&IsLooseCharge1",
-	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			      
-	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",			   	      
-	"IsDeutonMC&IsPositive&IsMinimumBias&IsLooseCharge1",
+	"IsDeutonMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",			      
+	"IsDeutonMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",			   	      
+	"IsDeutonMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1",
+	"IsDeutonMC&IsPositive&IsDownGoing&IsMinimumBias&IsLooseCharge1",			      
+	"IsDeutonMC&IsPositive&IsDownGoing&IsMinimumBias&IsLooseCharge1",			   	      
+	"IsDeutonMC&IsPositive&IsDownGoing&IsMinimumBias&IsLooseCharge1",
 		ToFDB,NaFDB,AglDB,
 	refill);
 

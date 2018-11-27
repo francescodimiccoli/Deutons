@@ -137,6 +137,15 @@ void Plotter::BookBetaResMatrixAnalysis(){
         BookerMC.BookSingleScatter("BetagenvsBetaMeasNaFD",300,0.7,1,300,0.7,1,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"          ,GetBetaGen,GetBetaRICH,GetBetaRICH);
         BookerMC.BookSingleScatter("BetagenvsBetaMeasAglD",300,0.9,1,300,0.9,1,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"          ,GetBetaGen,GetBetaRICH,GetBetaRICH);
 
+	BookerMC.BookSingleScatter("BetaSlowvsBetaMeasTOFP",300,0.3,1,300,-0.5,0.5,  "IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"          ,GetBetaTOF,GetBetaSlowTOF,GetBetaSlowTOF);
+        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasNaFP",300,0.7,1,300,-0.05,0.05,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
+        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasAglP",300,0.9,1,300,-0.05,0.05,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
+        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasTOFD",300,0.3,1,300,-0.5,0.5,  "IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"                    ,GetBetaTOF,GetBetaSlowTOF,GetBetaSlowTOF);
+        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasNaFD",300,0.7,1,300,-0.05,0.05,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"          ,GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
+        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasAglD",300,0.9,1,300,-0.05,0.05,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"          ,GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
+
+	BookerMC.BookSingleScatter("RSlowvsRMeas",1000,0.3,100,300,-3,3,  "IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"          ,GetRigidity,GetRigSlow,GetRigSlow);
+       
 
 	plottingfunctions.push_back(DrawBetaRes);
 }

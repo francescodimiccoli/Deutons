@@ -8,7 +8,6 @@
 #include "rundb.h"
 #include "Efficiency.h"
 
-
 struct MCPar{
 float Rmin,Rmax,Trigrate,gen_factor;
 long int tot_ev,tot_trig;
@@ -31,8 +30,6 @@ class Flux{
 
 	TH1F * FluxEstim=0x0;
 	TH1F * FluxEstim_rig=0x0;
-	TGraphErrors *  FluxEstim_Graph=0x0;
-	TGraphErrors *  FluxEstim_rig_Graph=0x0;
 	
 	MCPar param;
 
@@ -67,8 +64,8 @@ class Flux{
 			Counts_Err= (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/Counts Error").c_str());
 			FluxEstim = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str());
 			FluxEstim_rig = (TH1F *) FileRes.Get(("Fluxes/"+Basename+"/"+Basename+"_Flux_rig").c_str());
-			FluxEstim_Graph = (TGraphErrors *) FileRes.Get(("Fluxes/"+Basename+"/"+Basename+"_Flux_Graph").c_str());
-			FluxEstim_rig_Graph = (TGraphErrors *) FileRes.Get(("Fluxes/"+Basename+"/"+Basename+"_Flux_rig_Graph").c_str());
+			cout<<("Fluxes/"+Basename+"/"+ExposureName).c_str()<<" "<<ExposureTime<<"; File Name: "<<FileRes.GetName()<<endl;
+		
 		}
 		bins = Bins;		
 		basename = Basename;
@@ -86,7 +83,6 @@ class Flux{
 	void Eval_ExposureTime(Variables * vars, TTree * treeDT,FileSaver finalhistos,bool refill);
 	void ApplyEfficCorr(TH1F * Correction);
 	void Eval_Flux();
-	void EvalFluxGraphs();
 	void SaveResults(FileSaver finalhistos);
 	void ChangeName (std::string newname) {basename = newname; return;}
 	Binning GetBins(){return bins;}
@@ -98,6 +94,7 @@ class Flux{
 	TH1F * GetExposureTime(){return ExposureTime;}
 	TH1F * GetFlux(){return FluxEstim;}
 	TH1F * GetFlux_rig(){return FluxEstim_rig;}
+
 	TH1F * GetEffAcceptance(){return Eff_Acceptance;}
 
 	TH1F * GetAcc_StatErr() { return  Acc_StatErr;}
@@ -105,6 +102,7 @@ class Flux{
 	TH1F * GetCounts_Err() {return Counts_Err;}
 
 	TH1F * Eval_FluxRatio(Flux * Denominator,std::string name);
+
 };
 
 

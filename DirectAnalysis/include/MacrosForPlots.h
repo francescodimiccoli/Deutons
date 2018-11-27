@@ -424,14 +424,18 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 	std::vector<float> vertical_set_D=ToFDB.BetaTOIBins () ;
 
 	BinningTOF->cd(1);
+	gPad->SetLogz();
 	PlotTH2F(gPad, h1, "#beta_{gen}","#beta_{meas}","colz");
 	DrawBins(gPad,h1,orizontal_set,vertical_set_P,1,2);	
 	ideal->Draw("same");
+	fitfuncP->Draw("same");
 	BinningTOF->cd(2);
 	PlotTH2F(gPad, h4, "#beta_{gen}","#beta_{meas}","colz");
+	gPad->SetLogz();
 	DrawBins(gPad,h4,orizontal_set,vertical_set_D,1,4);	
 	ideal->Draw("same");
-	
+	fitfuncD->Draw("same");
+
 
 	TCanvas * MigrrectTOF = new TCanvas("Migr_rectTOF");
 	MigrrectTOF->Divide(2,0);
@@ -554,11 +558,11 @@ void DrawBetavsRig(FileSaver finalHistos,FileSaver finalResults){
 	TCanvas * c1 = new TCanvas("MC RvsBeta TOF");
 	c1->cd();
 	c1->SetLogz();
-	RigvsBeta_TOFP->SetMarkerColor(2);
-	RigvsBeta_TOFD->SetMarkerColor(4);
-	RigvsBeta_TOFP->Draw();
-	RigvsBeta_TOFD->Draw("same");
-
+	RigvsBeta_TOFP->SetMarkerColor(7);
+	RigvsBeta_TOFD->SetMarkerColor(13);
+	RigvsBeta_TOFD->Draw();
+	RigvsBeta_TOFP->Draw("same");
+	
 	std::vector<float> orizontal_set=ToFPB.BetaBins ();
 	std::vector<float> vertical_set_P=ToFPB.RigBins () ;
 	std::vector<float> vertical_set_D=ToFDB.RigBins () ;

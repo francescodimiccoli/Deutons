@@ -6,6 +6,7 @@
 #include "../include/AllRangesEfficiency.h"
 #include "../include/Flux.h"
 #include "../include/EffCorr.h"
+#include "TGraphAsymmErrors.h"
 //#include "../include/EffCorrTemplate.h"
 
 
@@ -334,9 +335,11 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		TH1F * DPRatioNaF = DFluxNaF->Eval_FluxRatio(PFluxNaF,"DP ratio NaF");
 		TH1F * DPRatioAgl = DFluxAgl->Eval_FluxRatio(PFluxAgl,"DP ratio Agl");
 
+
 		finalresults.Add(DPRatioTOF);
 		finalresults.Add(DPRatioNaF);
 		finalresults.Add(DPRatioAgl);
+
 
 		finalresults.writeObjsInFolder("Fluxes/");	
 	}
