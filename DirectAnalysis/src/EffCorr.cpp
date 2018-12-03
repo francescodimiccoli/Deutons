@@ -58,7 +58,7 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 	EffCorr * TrackerEffCorr_HE = new EffCorr(finalhistos,"TrackerEffCorr_HE","Tracker Eff. Corr",PRB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 
 	// Good Z=1 and Golden Efficiency corrections
-
+		  
 	before = "IsPositive&IsMinimumBias&IsLooseCharge1";
         after  = "IsPositive&IsMinimumBias&IsLooseCharge1&IsMinTOF";
 	EffCorr * MinTOFEffCorr_HE  = new EffCorr(finalhistos,"MinTOFEffCorr_HE" ,"Min TOF Eff. Corr",PRB,before,after,  "IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC"); 

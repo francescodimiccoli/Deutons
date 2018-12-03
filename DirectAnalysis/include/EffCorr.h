@@ -14,6 +14,7 @@ class EffCorr : public Tool{
 	Efficiency * EffMCnopid;
 
 	Efficiency * EffData;
+	Efficiency * EffData_glob;
 	
 	TH1F * ExposureZones;
 
@@ -41,6 +42,8 @@ class EffCorr : public Tool{
 		EffMCnopid = new Efficiency(File, (Basename+"_MCnopid").c_str(),Directory,Bins, (Cut_before+"&"+Cut_MCnopid  ).c_str(),(Cut_after+"&"+Cut_MCnopid  ).c_str());
 
 		EffData = new Efficiency(File, (Basename+"_lat").c_str(),Directory,Bins, (Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str(),LatEdges);
+		EffData_glob = new Efficiency(File, (Basename+"_glob").c_str(),Directory,Bins,(Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str());
+		
 		TFile * file = File.GetFile();
 		if(file){
 			for(int lat=0;lat<10;lat++) LatCorrections[lat]=(TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_lat"+to_string(lat)).c_str());
@@ -71,7 +74,9 @@ class EffCorr : public Tool{
          	if(!(EffMC2 -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
 		if(!(EffMCnopid -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
 	        if(!(EffData -> ReinitializeHistos(refill))) checkifsomeismissing = true;
-	 	if(checkifsomeismissing||refill) allfound=false;
+		if(!(EffData_glob -> ReinitializeHistos(refill))) checkifsomeismissing = true;
+	 	 
+		if(checkifsomeismissing||refill) allfound=false;
 		return allfound;
 	}
 	virtual void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
@@ -82,6 +87,8 @@ class EffCorr : public Tool{
 	
 	virtual void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 		EffData -> FillEventByEventData(vars,var,discr_var);
+		EffData_glob -> FillEventByEventData(vars,var,discr_var);
+	
 	}
 	virtual void Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*discr_var) (Variables * vars),bool refill=false);
 	virtual void Save();

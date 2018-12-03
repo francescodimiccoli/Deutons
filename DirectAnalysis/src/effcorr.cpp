@@ -14,6 +14,8 @@ void EffCorr::Save(){
 	EffMC2  -> Save();
 	EffMCnopid  -> Save();
 	EffData-> Save();
+	EffData_glob-> Save();
+
 }
 
 void EffCorr::Eval_Efficiencies(){
@@ -56,21 +58,21 @@ void EffCorr::Eval_Corrections(){
 		LatCorrections[lat]->Divide(EffMC->GetEfficiency());
 	}
 
-	TH1F * Global_Before=ProjectionXtoTH1F((TH2F*)EffData->GetBefore(),(basename + "_Corr_glob").c_str(),0,10);	
+/*	TH1F * Global_Before=ProjectionXtoTH1F((TH2F*)EffData->GetBefore(),(basename + "_Corr_glob").c_str(),0,10);	
 	TH1F * Global_After =ProjectionXtoTH1F((TH2F*)EffData->GetAfter() ,(basename + "_Corr_glob").c_str(),0,10);	
 
 	GlobalEfficiency = (TH1F *) Global_After->Clone();
 	GlobalEfficiency -> SetName((basename + "_Eff_glob").c_str());
 	GlobalEfficiency->Sumw2();
 	GlobalEfficiency->Divide(Global_Before);	
-	
-	GlobalCorrection = (TH1F *) Global_After->Clone();
+*/
+	GlobalEfficiency = (TH1F *) EffData_glob->GetEfficiency()->Clone();
+	GlobalCorrection = (TH1F *) GlobalEfficiency->Clone();
 	GlobalCorrection -> SetName((basename + "_Corr_glob").c_str());
 	GlobalCorrection->Sumw2();
-	GlobalCorrection->Divide(Global_Before);	
 	
-	GlobalCorrection2=(TH1F *) EffMC->GetEfficiency()->Clone();
-	GlobalCorrectionnopid=(TH1F *) EffMC->GetEfficiency()->Clone();
+	GlobalCorrection2=(TH1F *) EffData_glob->GetEfficiency()->Clone();
+	GlobalCorrectionnopid=(TH1F *) EffData_glob->GetEfficiency()->Clone();
 	GlobalCorrection2->SetName((basename + "_Corr_glob2").c_str());
 	GlobalCorrection2->SetTitle((basename + "_Corr_glob2").c_str());
 	GlobalCorrectionnopid->SetName((basename + "_Corr_globnopid").c_str());
@@ -104,6 +106,7 @@ void EffCorr::SetDefaultOutFile(FileSaver FinalHistos){
 		EffMC2     ->SetDefaultOutFile(FinalHistos);
 		EffMCnopid ->SetDefaultOutFile(FinalHistos);
 		EffData	   ->SetDefaultOutFile(FinalHistos);
+		EffData_glob   ->SetDefaultOutFile(FinalHistos);
 		 
 }
 
