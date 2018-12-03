@@ -116,13 +116,15 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 	std::string cutHe=cut+"&IsPureTMC";
 	//std::string cutD=cut+"&IsDeutonMC";
 	//std::string cutHe=cut+"&IsHeliumMC";
-
+	
+        if(checkfiletemplates)	{return;}
 
 	cutHe.erase(cutHe.find("IsMinimumBias&IsLooseCharge1&"),14);
 	cutHe = "IsMinimumBias&" + cutHe;  //releasing cut for more stat. in Tritium templates
 
+
 	if((ApplyCuts(cutP,vars)||ApplyCuts(cutD,vars)||ApplyCuts(cutHe,vars))){
-		for(int i=0;i<systpar.steps;i++)
+	for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
 				float betasmear;
 				float mctotalweight = vars->mcweight; // Latweighter->GetWeight(fabs(vars->R));

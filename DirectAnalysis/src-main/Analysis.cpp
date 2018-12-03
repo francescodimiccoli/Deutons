@@ -76,10 +76,10 @@ int main(int argc, char * argv[])
 
     Analyzer analyzer(INPUT1,INPUT2);	 
 
-    analyzer.BookCountsAnalysis(finalHistosCounts,finalResults,Refill);	
-    analyzer.BookEfficiencyAnalysis(finalHistosEff,finalResults,Refill);	
+    //analyzer.BookCountsAnalysis(finalHistosCounts,finalResults,Refill);	
+    //analyzer.BookEfficiencyAnalysis(finalHistosEff,finalResults,Refill);	
     analyzer.BookEffCorrAnalysis(finalHistosCorr,finalResults,Refill);	
-    analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
+    //analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
 
     if(Refill || !analyzer.CheckFile()){ 
 	    analyzer.FillAll();

@@ -28,6 +28,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 	Flux * HEPFlux   = new Flux(finalhistos,finalresults,"PFluxHE","RigBinBaselineEff","RigBinBaselineEff","HEPCounts/HEPCounts/HEPCounts_before","HEExposure",PRB);
 	Flux * HEPFluxQ  = new Flux(finalhistos,finalresults,"PFluxQHE","RigBinQualEff","RigBinQualEff","HEPCountsQual/HEPCountsQual/HEPCountsQual_before","HEExposure",PRB);
+
 	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF",ToFPB);
 	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF",NaFPB);
 	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "FullSetTOT_P_Agl","FullSetTOT","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl",AglPB);
@@ -130,11 +131,11 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	TrackerEffCorr_NaF -> Eval_Corrections();
 	TrackerEffCorr_Agl -> Eval_Corrections();
 
-	TrackerEffCorr_HE -> SetToConstantValue(1.02);
+/*	TrackerEffCorr_HE -> SetToConstantValue(1.02);
 	TrackerEffCorr_TOF -> SetToConstantValue(1.02);
 	TrackerEffCorr_NaF -> SetToConstantValue(1.02);
 	TrackerEffCorr_Agl -> SetToConstantValue(1.02);
-
+*/
 
 	cout<<"********** EXPOSURE TIME & GEOM. ACCEPT. ********"<<endl;
 
@@ -165,7 +166,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		DummyDAgl->Set_MCPar(0.5,200,1,"D.B1081/d.pl1.l1.0_5200.2_01.info");	
 
 
-		DFluxTOF->ApplyEfficCorr(GoodChi_TOF 	     ->GetGlobCorrection());
+	/*	DFluxTOF->ApplyEfficCorr(GoodChi_TOF 	     ->GetGlobCorrection());
 		DFluxNaF->ApplyEfficCorr(GoodChi_NaF 	     ->GetGlobCorrection());
 		DFluxAgl->ApplyEfficCorr(GoodChi_Agl 	     ->GetGlobCorrection());
 		DFluxTOF->ApplyEfficCorr(GoodUtof_TOF 	     ->GetGlobCorrection());
@@ -185,7 +186,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		DFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl    ->GetGlobCorrection());
 		DFluxNaF->ApplyEfficCorr(RICHQualEffCorr_NaF->GetGlobCorrection());
 		DFluxAgl->ApplyEfficCorr(RICHQualEffCorr_Agl->GetGlobCorrection());
-
+*/
 
 		DFluxTOF-> Eval_Flux();
 		DFluxNaF-> Eval_Flux();
@@ -216,24 +217,27 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		DummyPNaF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
 		DummyPAgl->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
 
-
+/*
 		//baseline flux corrections
 		HEPFlux->ApplyEfficCorr(TriggerEffCorr_HE   ->GetGlobCorrection());
 		HEPFlux->ApplyEfficCorr(L1PickUpEffCorr_HE  ->GetGlobCorrection());
 		HEPFlux->ApplyEfficCorr(TrackerEffCorr_HE   ->GetGlobCorrection());
-		HEPFlux->ApplyEfficCorr(MinTOFEffCorr_HE    ->GetGlobCorrection());
+		HEPFlux->ApplyEfficCorr(GoodChi_HE 	     ->GetGlobCorrection());
+		HEPFlux->ApplyEfficCorr(GoodQTrack_HE     ->GetGlobCorrection());
 
+	
 		//quality flux corrections
 		HEPFluxQ->ApplyEfficCorr(TriggerEffCorr_HE   ->GetGlobCorrection());
 		HEPFluxQ->ApplyEfficCorr(L1PickUpEffCorr_HE  ->GetGlobCorrection());
 		HEPFluxQ->ApplyEfficCorr(TrackerEffCorr_HE   ->GetGlobCorrection());
-		HEPFluxQ->ApplyEfficCorr(MinTOFEffCorr_HE    ->GetGlobCorrection());
 		HEPFluxQ->ApplyEfficCorr(GoodChi_HE 	     ->GetGlobCorrection());
-		HEPFluxQ->ApplyEfficCorr(GoodUtof_HE 	     ->GetGlobCorrection());
-		HEPFluxQ->ApplyEfficCorr(GoodLtof_HE 	     ->GetGlobCorrection());
-		HEPFluxQ->ApplyEfficCorr(Good1Track_HE     ->GetGlobCorrection());
 		HEPFluxQ->ApplyEfficCorr(GoodQTrack_HE     ->GetGlobCorrection());
-
+*/	
+//	     	HEPFluxQ->ApplyEfficCorr(MinTOFEffCorr_HE    ->GetGlobCorrection());
+//		HEPFluxQ->ApplyEfficCorr(TriggerEffCorr_HE   ->GetGlobCorrection());
+//		HEPFluxQ->ApplyEfficCorr(L1PickUpEffCorr_HE  ->GetGlobCorrection());
+//		HEPFluxQ->ApplyEfficCorr(TrackerEffCorr_HE   ->GetGlobCorrection());
+/*	
 		//corrections for flux with R edges
 		DummyPTOF->ApplyEfficCorr(TriggerEffCorr_TOF ->GetGlobCorrection());
 		DummyPNaF->ApplyEfficCorr(TriggerEffCorr_NaF ->GetGlobCorrection());
@@ -244,13 +248,16 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		DummyPTOF->ApplyEfficCorr(TrackerEffCorr_TOF ->GetGlobCorrection());
 		DummyPNaF->ApplyEfficCorr(TrackerEffCorr_NaF ->GetGlobCorrection());
 		DummyPAgl->ApplyEfficCorr(TrackerEffCorr_Agl ->GetGlobCorrection());
-		DummyPTOF->ApplyEfficCorr(MinTOFEffCorr_TOF ->GetGlobCorrection());
-		DummyPNaF->ApplyEfficCorr(MinTOFEffCorr_NaF ->GetGlobCorrection());
-		DummyPAgl->ApplyEfficCorr(MinTOFEffCorr_Agl ->GetGlobCorrection());
-
 		DummyPTOF->ApplyEfficCorr(GoodChi_TOF 	     ->GetGlobCorrection());
 		DummyPNaF->ApplyEfficCorr(GoodChi_NaF 	     ->GetGlobCorrection());
 		DummyPAgl->ApplyEfficCorr(GoodChi_Agl 	     ->GetGlobCorrection());
+		DummyPTOF->ApplyEfficCorr(GoodQTrack_TOF     ->GetGlobCorrection());
+		DummyPNaF->ApplyEfficCorr(GoodQTrack_NaF     ->GetGlobCorrection());
+		DummyPAgl->ApplyEfficCorr(GoodQTrack_Agl     ->GetGlobCorrection());
+	
+		DummyPTOF->ApplyEfficCorr(MinTOFEffCorr_TOF ->GetGlobCorrection());
+		DummyPNaF->ApplyEfficCorr(MinTOFEffCorr_NaF ->GetGlobCorrection());
+		DummyPAgl->ApplyEfficCorr(MinTOFEffCorr_Agl ->GetGlobCorrection());
 		DummyPTOF->ApplyEfficCorr(GoodUtof_TOF 	     ->GetGlobCorrection());
 		DummyPNaF->ApplyEfficCorr(GoodUtof_NaF 	     ->GetGlobCorrection());
 		DummyPAgl->ApplyEfficCorr(GoodUtof_Agl 	     ->GetGlobCorrection());
@@ -260,9 +267,6 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		DummyPTOF->ApplyEfficCorr(Good1Track_TOF     ->GetGlobCorrection());
 		DummyPNaF->ApplyEfficCorr(Good1Track_NaF     ->GetGlobCorrection());
 		DummyPAgl->ApplyEfficCorr(Good1Track_Agl     ->GetGlobCorrection());
-		DummyPTOF->ApplyEfficCorr(GoodQTrack_TOF     ->GetGlobCorrection());
-		DummyPNaF->ApplyEfficCorr(GoodQTrack_NaF     ->GetGlobCorrection());
-		DummyPAgl->ApplyEfficCorr(GoodQTrack_Agl     ->GetGlobCorrection());
 		DummyPTOF->ApplyEfficCorr(GoodTime_TOF 	     ->GetGlobCorrection());
 		DummyPNaF->ApplyEfficCorr(RICHEffCorr_NaF    ->GetGlobCorrection());
 		DummyPAgl->ApplyEfficCorr(RICHEffCorr_Agl    ->GetGlobCorrection());
@@ -280,22 +284,22 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		PFluxTOF->ApplyEfficCorr(TrackerEffCorr_TOF ->GetGlobCorrection());
 		PFluxNaF->ApplyEfficCorr(TrackerEffCorr_NaF ->GetGlobCorrection());
 		PFluxAgl->ApplyEfficCorr(TrackerEffCorr_Agl ->GetGlobCorrection());
-		PFluxTOF->ApplyEfficCorr(MinTOFEffCorr_TOF ->GetGlobCorrection());
-		PFluxNaF->ApplyEfficCorr(MinTOFEffCorr_NaF ->GetGlobCorrection());
-		PFluxAgl->ApplyEfficCorr(MinTOFEffCorr_Agl ->GetGlobCorrection());
-
 		PFluxTOF->ApplyEfficCorr(GoodChi_TOF 	     ->GetGlobCorrection());
 		PFluxNaF->ApplyEfficCorr(GoodChi_NaF 	     ->GetGlobCorrection());
 		PFluxAgl->ApplyEfficCorr(GoodChi_Agl 	     ->GetGlobCorrection());
+		PFluxTOF->ApplyEfficCorr(Good1Track_TOF     ->GetGlobCorrection());
+		PFluxNaF->ApplyEfficCorr(Good1Track_NaF     ->GetGlobCorrection());
+		PFluxAgl->ApplyEfficCorr(Good1Track_Agl     ->GetGlobCorrection());
+		
+		PFluxTOF->ApplyEfficCorr(MinTOFEffCorr_TOF ->GetGlobCorrection());
+		PFluxNaF->ApplyEfficCorr(MinTOFEffCorr_NaF ->GetGlobCorrection());
+		PFluxAgl->ApplyEfficCorr(MinTOFEffCorr_Agl ->GetGlobCorrection());
 		PFluxTOF->ApplyEfficCorr(GoodUtof_TOF 	     ->GetGlobCorrection());
 		PFluxNaF->ApplyEfficCorr(GoodUtof_NaF 	     ->GetGlobCorrection());
 		PFluxAgl->ApplyEfficCorr(GoodUtof_Agl 	     ->GetGlobCorrection());
 		PFluxTOF->ApplyEfficCorr(GoodLtof_TOF 	     ->GetGlobCorrection());
 		PFluxNaF->ApplyEfficCorr(GoodLtof_NaF 	     ->GetGlobCorrection());
 		PFluxAgl->ApplyEfficCorr(GoodLtof_Agl 	     ->GetGlobCorrection());
-		PFluxTOF->ApplyEfficCorr(Good1Track_TOF     ->GetGlobCorrection());
-		PFluxNaF->ApplyEfficCorr(Good1Track_NaF     ->GetGlobCorrection());
-		PFluxAgl->ApplyEfficCorr(Good1Track_Agl     ->GetGlobCorrection());
 		PFluxTOF->ApplyEfficCorr(GoodQTrack_TOF     ->GetGlobCorrection());
 		PFluxNaF->ApplyEfficCorr(GoodQTrack_NaF     ->GetGlobCorrection());
 		PFluxAgl->ApplyEfficCorr(GoodQTrack_Agl     ->GetGlobCorrection());
@@ -304,7 +308,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		PFluxAgl->ApplyEfficCorr(RICHEffCorr_Agl    ->GetGlobCorrection());
 		PFluxNaF->ApplyEfficCorr(RICHQualEffCorr_NaF->GetGlobCorrection());
 		PFluxAgl->ApplyEfficCorr(RICHQualEffCorr_Agl->GetGlobCorrection());
-
+*/
 		HEPFlux -> Eval_Flux();
 		HEPFluxQ -> Eval_Flux();
 		PFluxTOF-> Eval_Flux();

@@ -57,8 +57,8 @@ class Efficiency : public Tool{
 		directory=Directory;
 		
 		ReadFile();
-		before = new TH2F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size(),LatZones.size()-1,0,LatZones.size()-1);
-		after  = new TH2F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size(),LatZones.size()-1,0,LatZones.size()-1);
+		before = new TH2F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size(),LatZones.size(),0,LatZones.size());
+		after  = new TH2F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size(),LatZones.size(),0,LatZones.size());
 	};
 
 	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins){

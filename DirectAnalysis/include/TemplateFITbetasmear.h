@@ -165,11 +165,21 @@ class TemplateFIT : public Tool{
 	int ActualTime=0;
 
 
+	FileSaver ExternalTemplates;
+	bool checkfiletemplates=false;
+
 	public:	
 	//standard constructor
 	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=60,float shift=60){
 		
-		for(int bin=0;bin<Bins.size();bin++){
+			ExternalTemplates.setName("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisFiles/ExternalTemplates.root");		
+			checkfiletemplates = ExternalTemplates.CheckFile();
+
+			if(checkfiletemplates){ 
+				cout<<"External Template file found: "<<endl; 
+			}
+	
+			for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
 			for(int i=0;i<steps;i++){
 				fits[bin].push_back(std::vector<TFit *>());
@@ -241,7 +251,16 @@ class TemplateFIT : public Tool{
 	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=11,float sigma=60,float shift=60){
 
 		TFile * file = File.GetFile();
+		TFile * externalfile;
 
+		ExternalTemplates.setName("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisFiles/ExternalTemplates.root");		
+
+		checkfiletemplates = ExternalTemplates.CheckFile();
+				
+		if(checkfiletemplates){ externalfile=ExternalTemplates.GetFile();
+			cout<<"External Template file found: "<<externalfile<<endl; 
+		}
+			
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
 			for(int i=0;i<steps;i++){
@@ -256,15 +275,24 @@ class TemplateFIT : public Tool{
 					string nameHe    =Basename + "/Bin "+ to_string(bin)+"/TemplateHe/" + Basename + "_MCHe_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameNo    =Basename + "/Bin "+ to_string(bin)+"/TemplateNoise/" + Basename + "_MCNoise_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 
+					if(checkfiletemplates) {
+						fit->Templ_P    =  (TH1F *)externalfile->Get(nameP.c_str());
+						fit->Templ_D 	=  (TH1F *)externalfile->Get(nameD.c_str());
+						fit->Templ_He	=  (TH1F *)externalfile->Get(nameHe.c_str());
+						fit->Templ_Noise=  (TH1F *)externalfile->Get(nameNo.c_str());
+					}
 
-					fit->Templ_P    =  (TH1F *)file->Get(nameP.c_str());
-					fit->Templ_D 	=  (TH1F *)file->Get(nameD.c_str());
-					fit->Templ_He	=  (TH1F *)file->Get(nameHe.c_str());
-					fit->Templ_Noise=  (TH1F *)file->Get(nameNo.c_str());
+					else {
+						fit->Templ_P    =  (TH1F *)file->Get(nameP.c_str());
+						fit->Templ_D 	=  (TH1F *)file->Get(nameD.c_str());
+						fit->Templ_He	=  (TH1F *)file->Get(nameHe.c_str());
+						fit->Templ_Noise=  (TH1F *)file->Get(nameNo.c_str());
+					}
+
 					fit->Data    	=  (TH1F *)file->Get(named.c_str());
 					fit->DataPrim	=  (TH1F *)file->Get(namedprim.c_str());
-				
-												
+
+
 					fits[bin][i].push_back(fit);
 				}
 			}

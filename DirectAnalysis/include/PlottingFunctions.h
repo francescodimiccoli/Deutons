@@ -624,7 +624,7 @@ void PlotRatioWithSplineintoGraph(TVirtualPad * c, Binning bins, TH1F * Values1,
 		Ratio1->SetBinContent(i+1,Values1->GetBinContent(i+1)/Spline->Eval(bins.EkPerMassBinCent(i)));
 		Ratio1->SetBinError(i+1,Values1->GetBinError(i+1)/Spline->Eval(bins.EkPerMassBinCent(i)));			
 	}
-	PlotTH1FintoGraph(c,bins, Ratio1,Xaxis,Yaxis,2,Ekin,options,xmin,xmax,ymin,ymax,legendname1,dotstyle);
+	PlotTH1FintoGraph(c,bins, Ratio1,Xaxis,Yaxis,color,Ekin,options,xmin,xmax,ymin,ymax,legendname1,dotstyle);
 
 }
 
