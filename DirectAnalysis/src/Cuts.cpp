@@ -51,17 +51,17 @@ bool LikelihoodCut (Variables * vars){ return ((vars->BetaRICH_new<=0)||(vars->B
 
 
 //baseline eff. corr
-bool IsDownGoing    (Variables * vars) { return (vars->Beta > 0); } 
-bool IsGoodChi2	    (Variables * vars) { return ( ((int)vars->joinCutmask&16)==16);}
-bool IsPhysTrig     (Variables * vars){ return ((int)vars->joinCutmask&1)==1;}
-bool IsGoodTrack    (Variables * vars) {return vars->R!=0 &&IsGoodL2Status(vars);}
-bool IsCharge1Track (Variables * vars) {return (vars->qInner>0.8&&vars->qInner<1.3);}
-bool IsCharge1TrackLoose (Variables * vars) {return (vars->qInner>0.5&&vars->qInner<1.5);}
+bool IsDownGoing    (Variables * vars)    	{ return (vars->Beta > 0); } 
+bool IsGoodChi2	    (Variables * vars) 		{ return ( ((int)vars->joinCutmask&16)==16);}
+bool IsPhysTrig     (Variables * vars)		{ return ((int)vars->joinCutmask&1)==1;}
+bool IsGoodTrack    (Variables * vars) 		{return vars->R!=0 &&IsGoodL2Status(vars);}
+bool IsCharge1Track (Variables * vars) 		{return (vars->qInner>0.8&&vars->qInner<1.3);}
+bool IsCharge1TrackLoose (Variables * vars) 	{return (vars->qInner>0.5&&vars->qInner<1.5);}
 
 
 //efficiency corrections
-bool Is1TrTrack (Variables * vars) { return ( ((int)vars->joinCutmask&128)==128);}
-bool IsMinTOF   (Variables * vars) { return  ( ((int)vars->joinCutmask&2)==2);} 
+bool Is1TrTrack (Variables * vars)    { return ( ((int)vars->joinCutmask&128)==128);}
+bool IsMinTOF   (Variables * vars)    { return  ( ((int)vars->joinCutmask&2)==2);} 
 bool IsCharge1UTOF (Variables * vars) {return (vars->qUtof>0.8&&vars->qUtof<1.3);}
 bool IsCharge1LTOF (Variables * vars) {return (vars->qLtof>0.8&&vars->qLtof<1.3);}
 

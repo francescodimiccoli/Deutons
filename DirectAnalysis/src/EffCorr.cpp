@@ -81,7 +81,7 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 	EffCorr * GoodUtof_Agl = new EffCorr(finalhistos,"GoodUtofEffCorr_Agl","GoodUtof Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
 
 	before = "IsPositive&IsMinimumBias&IsLooseCharge1&Is1TrTrack&IsMinTOF&IsCharge1UTOF";
-        after  = "IsPositive&IsMinimumBias&IsLooseCharge1&Is1TrTrack&IsMinTOF&IsCharge1UTOF&IsCharge1LTOF";
+	after  = "IsPositive&IsMinimumBias&IsLooseCharge1&Is1TrTrack&IsMinTOF&IsCharge1UTOF&IsCharge1LTOF";
         EffCorr * GoodLtof_HE  = new EffCorr(finalhistos,"GoodLTOFEffCorr_HE" ,"GoodLtof Eff. Corr",PRB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
         EffCorr * GoodLtof_TOF = new EffCorr(finalhistos,"GoodLTOFEffCorr_TOF","GoodLtof Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
         EffCorr * GoodLtof_NaF = new EffCorr(finalhistos,"GoodLTOFEffCorr_NaF","GoodLtof Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
@@ -179,15 +179,18 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 	Filler.AddObject2beFilled(GoodUtof_NaF,GetRigidity,GetRigidity);	
 	Filler.AddObject2beFilled(GoodUtof_Agl,GetRigidity,GetRigidity);
 
+
 	Filler.AddObject2beFilled(GoodLtof_HE,GetRigidity,GetRigidity);	
 	Filler.AddObject2beFilled(GoodLtof_TOF,GetRigidity,GetRigidity);	
 	Filler.AddObject2beFilled(GoodLtof_NaF,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(GoodLtof_Agl,GetRigidity,GetRigidity);	
 
+
 	Filler.AddObject2beFilled(GoodQTrack_HE,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(GoodQTrack_TOF,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(GoodQTrack_NaF,GetRigidity,GetRigidity);	
 	Filler.AddObject2beFilled(GoodQTrack_Agl,GetRigidity,GetRigidity);
+
 
 	Filler.AddObject2beFilled(Good1Track_HE,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(Good1Track_TOF,GetRigidity,GetRigidity);
