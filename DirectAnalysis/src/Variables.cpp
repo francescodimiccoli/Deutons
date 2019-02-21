@@ -238,6 +238,7 @@ void Variables::ResetVariables(){
     //RTI
     good_RTI=0;
     Rcutoff_RTI=0;
+    Rcutoff_IGRFRTI =0;
     isinsaa=0;
     Livetime_RTI       = 0;
 		
@@ -277,6 +278,7 @@ void Variables::ResetVariables(){
     PhysBPatt      = 0;
     CUTMASK        = 0;
     RICHmask_new   = 0;
+    P_standard_sel = 0;
 
     // Counts
     NTofClusters       = 0;
@@ -302,7 +304,8 @@ void Variables::ResetVariables(){
     Chisquare_L1_y     = 0;
     hitbits            = 0;
     FiducialVolume     = 0;	   
- 
+    R_sec	       = 0;
+
     // Tracker Charge
     qL1                = 0;
     qL1Status          = 0;
@@ -351,6 +354,9 @@ void Variables::ResetVariables(){
 	
     //MC vars
     Momento_gen            = 0;
+    Momento_gen_UTOF       = 0;
+    Momento_gen_LTOF       = 0;
+    Momento_gen_RICH       = 0;
     Massa_gen              = 0;
     mcweight               = 0;
     MCClusterGeantPids     = 0;
@@ -361,6 +367,15 @@ void Variables::ResetVariables(){
     //Quality Discr.
     BDTDiscr = -1;
     Likelihood = -1;
+
+    //checks on variables
+    beta_ncl =  0;
+    chisqcn  = -1; 
+    chisqtn  = -1; 
+    nTrTracks= -1;
+    sumclsn  = -1; 
+
+
 
 
 }
@@ -610,11 +625,11 @@ void Variables::Update(){
 
     U_time-=1305200000; //time offset (in order to have small time stamp)	
 
-    if(Momento_gen<1) mcweight=1; // in data Momento_gen=0
+    if(Momento_gen==0) mcweight=1; // in data Momento_gen=0
     else {
-        if(Massa_gen<1) mcweight = reweighter.getWeight(fabs(Momento_gen));
-        else if(Massa_gen>1&&Massa_gen<2) mcweight = 0.05*reweighter.getWeight(fabs(Momento_gen));
-        else mcweight = reweighterHe.getWeight(fabs(Momento_gen));
+			mcweight = reweighter.getWeight(fabs(Momento_gen));
+        if(Massa_gen>1&&Massa_gen<2) mcweight *= 0.05;
+        if(Massa_gen>2&&Massa_gen<4) mcweight = reweighterHe.getWeight(fabs(Momento_gen));
     }	
 }
 
@@ -716,6 +731,8 @@ float GetNegRecMassRICH     (Variables * vars) {return (-vars->R/vars->BetaRICH_
 
 
 float GetRigidity (Variables * vars) {return vars->R;}
+float GetRigiditySecondTrack (Variables * vars) {return vars->R_sec;}
+
 
 
 Reweighter ReweightInitializer(std::string galpropfilename, float r_min, float r_max, float norm_at){
@@ -726,8 +743,6 @@ Reweighter ReweightInitializer(std::string galpropfilename, float r_min, float r
         return reweighter;
 }
 
-float GetUtofQ	(Variables * vars) {return vars->qUtof; }
-float GetLtofQ	(Variables * vars) {return vars->qLtof; }
 float GetInnerQ	(Variables * vars) {return vars->qInner;}
 float GetL1Q (Variables * vars) {return vars->qL1;}
 float GetL2Q (Variables * vars) {return vars->qL2;}
@@ -747,19 +762,22 @@ float GetTRDEdepovPath    (Variables * vars) {return vars->TRDEdepovPath;}
 float GetLoweredBetaTOF  (Variables * vars) {	
 	ResponseTOF->SetParameter(0,0.00347548);
 	ResponseTOF->SetParameter(1,5.8474);
+	ResponseTOF->SetParameter(2,0);
 	return ResponseTOF->Eval(vars->Beta);				
 }
 
 float GetLoweredBetaNaF  (Variables * vars) {	
 	ResponseNaF->SetParameter(0,-0.000859132);
 	ResponseNaF->SetParameter(1,-30.5065);
+	ResponseNaF->SetParameter(2,0);
 	return ResponseNaF->Eval(vars->BetaRICH_new);	
 }
 
 float GetLoweredBetaAgl  (Variables * vars) {	
 	ResponseAgl->SetParameter(0,4.28781e-05);
 	ResponseAgl->SetParameter(1,67.8521);
-
+	ResponseAgl->SetParameter(2,0);
+	
 	return ResponseAgl->Eval(vars->BetaRICH_new);				
 }
 
@@ -777,3 +795,50 @@ float GetMomentumProxy(Variables *vars) {
 
 	return momproxy;	
 }
+
+float GetBetaSlowTOF     (Variables * vars) { return GetBetaGen(vars) - GetBetaTOF(vars);}
+
+float GetBetaSlowRICH    (Variables * vars) { return GetBetaGen(vars) - GetBetaRICH(vars);}
+
+float GetRigSlow          (Variables * vars) { return  vars->Momento_gen - GetRigidity(vars); } 
+
+
+float GetBetaGen_SlowDownTOF(Variables * vars) {
+
+	float beta = GetBetaGen(vars);
+	ResponseTOF->SetParameter(0,0.00347548);
+	ResponseTOF->SetParameter(1,5.8474);
+	ResponseTOF->SetParameter(2,0);
+	return beta-(0.9/vars->Massa_gen)*ResponseTOF->Eval(beta);				
+}
+
+float GetBetaGen_SlowDownNaF(Variables * vars) {
+
+	float beta = GetBetaGen(vars);
+	ResponseNaF->SetParameter(0,-0.000859132);
+	ResponseNaF->SetParameter(1,-30.5065);
+	ResponseNaF->SetParameter(2,0);
+	return beta-(0.9/vars->Massa_gen)*ResponseNaF->Eval(beta);				
+}
+
+float GetBetaGen_SlowDownAgl(Variables * vars) {
+
+	float beta = GetBetaGen(vars);
+	ResponseAgl->SetParameter(0,4.28781e-05);
+	ResponseAgl->SetParameter(1,67.8521);
+	ResponseAgl->SetParameter(2,0);
+	return beta-(0.9/vars->Massa_gen)*ResponseNaF->Eval(beta);				
+}
+
+
+
+// Tests of the Variables
+
+float GetNToFClusters(Variables * vars) { return vars->beta_ncl;}
+float GetUtofQ	(Variables * vars) {return vars->qUtof; }
+float GetLtofQ	(Variables * vars) {return vars->qLtof; }
+float GetTofChisqcn (Variables * vars) {return vars->chisqcn; }
+float GetTofChisqtn  (Variables * vars) {return vars->chisqtn; }
+float GetNTracks (Variables * vars) {return vars->nTrTracks; }
+float GetTofOnTime (Variables * vars) {return vars->sumclsn; } 
+

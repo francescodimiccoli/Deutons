@@ -46,6 +46,7 @@ struct Variables{
     //RTI
     int good_RTI;
     float       Rcutoff_RTI;
+    float 	Rcutoff_IGRFRTI;
     int isinsaa;
     float	Livetime_RTI;
 
@@ -54,6 +55,7 @@ struct Variables{
     int        PhysBPatt;
     int        CUTMASK;
     int        RICHmask_new;
+    int	       P_standard_sel;	
 
     // Counts
     float        NTofClusters;
@@ -100,6 +102,7 @@ struct Variables{
     float      Chisquare_L1_y;
     int        hitbits;
     float        FiducialVolume;	 	    
+    float      R_sec;		
 
     // Tracker Charge
     float      qL1;
@@ -150,6 +153,9 @@ struct Variables{
 
     //MC vars
     float      Momento_gen;
+    float      Momento_gen_UTOF;
+    float      Momento_gen_LTOF;
+    float      Momento_gen_RICH;
     float      Massa_gen;
     float      mcweight=0;
     float      GenX, GenY, GenZ;
@@ -181,6 +187,13 @@ struct Variables{
     float EdepTrack=0;	
     float EdepL1=0;	
 
+    //Checks on Variables
+    float  beta_ncl;
+    float  chisqcn; 
+    float  chisqtn; 
+    float  nTrTracks;
+    float  sumclsn; 
+
     TMVA::Reader *readerTOF;
     TMVA::Reader *readerNaF;
     TMVA::Reader *readerAgl;
@@ -211,6 +224,11 @@ float GetInverseEdepTrack(Variables * vars);
 float GetInverseEdepTRD  (Variables * vars); 
 
 float GetBetaGen         (Variables * vars);
+float GetBetaSlowTOF     (Variables * vars);
+float GetBetaSlowRICH    (Variables * vars);
+float GetRigSlow         (Variables * vars);
+
+
 float GetInverseBetaTOF  (Variables * vars);
 float GetInverseBetaRICH (Variables * vars);
 float GetBetaTOF         (Variables * vars);
@@ -221,6 +239,8 @@ float GetNegRecMassTOF	 (Variables * vars);
 float GetNegRecMassRICH  (Variables * vars);
 
 float GetRigidity (Variables * vars);
+float GetRigiditySecondTrack (Variables * vars);
+
 
 float GetUtofQ	(Variables * vars);
 float GetLtofQ	(Variables * vars);
@@ -252,4 +272,14 @@ float GetRICHBDT(Variables* vars);
 
 float GetEdepECAL(Variables * vars);
 float GetMomentumProxy(Variables *vars); 
+
+float GetNToFClusters(Variables * vars);; 
+float GetUtofQ	(Variables * vars) ;
+float GetLtofQ	(Variables * vars) ;
+float GetTofChisqcn (Variables * vars) ;
+float GetTofChisqtn  (Variables * vars); 
+float GetNTracks (Variables * vars) ;
+float GetTofOnTime (Variables * vars);  
+
+
 #endif

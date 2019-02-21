@@ -22,10 +22,14 @@ class ParallelFiller{
     std::vector<GetFillinVariable>  SecondFillinVariables;
     std::vector<GetDiscrimVariable> DiscrimVariables;
     std::vector<std::string> 	Cuts;
+	
     bool Refill = true;	
 
     public:
-    void AddObject2beFilled(T Object,GetFillinVariable var=0x0, GetDiscrimVariable discr_var=0x0,std::string cut="",GetFillinVariable second_var=0x0){
+    bool GetRefillFlag() {return Refill;}
+    T GetObject(int i) { return Objects2beFilled[i]; }
+    int GetObjectNr() {return Objects2beFilled.size();}
+    void AddObject2beFilled(const T Object,GetFillinVariable var=0x0, GetDiscrimVariable discr_var=0x0,std::string cut="",GetFillinVariable second_var=0x0){
         Objects2beFilled.push_back(Object);
         FillinVariables.push_back(var);
         DiscrimVariables.push_back(discr_var);
@@ -39,9 +43,10 @@ class ParallelFiller{
             if(!(Objects2beFilled[nobj]->ReinitializeHistos(refill))) {checkifsomeismissing=true;
                 cout<<"missing: "<<nobj<<endl;}
         }
-        if(checkifsomeismissing||refill) Refill=true;
-        else Refill=false;
-        if(Refill) cout<<"Refillo"<<endl;
+        if(checkifsomeismissing||refill){ Refill = true;
+        	 cout<<"Refillo"<<endl;
+		}
+	else Refill = false;
     }
 
     void LoopOnMC(TTree * treeMC, Variables * vars){
@@ -65,8 +70,9 @@ class ParallelFiller{
         if(!Refill) return;
         cout<<" DATA Filling from NTuples ..."<< endl;
         vars->ReadBranches(treeDT);
-        for(int i=0;i<treeDT->GetEntries()/FRAC;i++){
-            UpdateProgressBar(i, treeDT->GetEntries()/FRAC);
+        for(int i=0;i<treeDT->GetEntries();i++){
+	    if(i%(int)FRAC!=0) continue; // WTF ?!
+            UpdateProgressBar(i, treeDT->GetEntries());		
 	    vars->ResetVariables();	
             treeDT->GetEvent(i);
 	    //vars->PrintCurrentState();	
@@ -84,9 +90,9 @@ class ParallelFiller{
 	for(int i=0;i<readerMC.GetTreeEntries();i++){
             if(i%(int)FRAC!=0) continue; // WTF ?!
             UpdateProgressBar(i, readerMC.GetTreeEntries());
+            vars->ResetVariables();
             readerMC.FillVariables(i,vars);
             vars->Update();
-	  
 	  //vars->PrintCurrentState();
             for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
                 Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
@@ -100,8 +106,9 @@ class ParallelFiller{
         if(!Refill) return;
         cout<<" DATA Filling from NTuples ..."<< endl;
         vars->ReadBranches(treeDT);
-        for(int i=0;i<treeDT->GetEntries()/FRAC;i++){
-            UpdateProgressBar(i, treeDT->GetEntries()/FRAC);
+        for(int i=0;i<treeDT->GetEntries();i++){
+            if(i%(int)FRAC!=0) continue; // WTF ?!
+            UpdateProgressBar(i, treeDT->GetEntries());
             vars->ResetVariables();
 	    treeDT->GetEvent(i);
             //vars->Update();
@@ -119,12 +126,14 @@ class ParallelFiller{
 	if(readerDT.GetTree()->GetNbranches()>11) {LoopOnData(readerDT.GetTree(),vars); return;}
         else 
 	cout<<" DATA Filling ..."<< endl;
-        for(int i=0;i<readerDT.GetTreeEntries()/FRAC;i++){
-            UpdateProgressBar(i, readerDT.GetTreeEntries()/FRAC);
-            readerDT.FillVariables(i,vars);
+        for(int i=0;i<readerDT.GetTreeEntries();i++){
+	    if(i%(int)FRAC!=0) continue; // WTF ?!
+            UpdateProgressBar(i, readerDT.GetTreeEntries());
+            vars->ResetVariables();
+	    readerDT.FillVariables(i,vars);
             vars->Update();
 	    //vars->PrintCurrentState();
-	     for(int nobj=0;nobj<Objects2beFilled.size();nobj++){ 
+            for(int nobj=0;nobj<Objects2beFilled.size();nobj++){ 
 	        if(vars->isinsaa==0&&vars->good_RTI==0) {
 			Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
 			}
@@ -137,9 +146,11 @@ class ParallelFiller{
         if(reader.GetTree()->GetNbranches()>11) {LoopOnGeneric(reader.GetTree(),vars); return;}
         else
         cout<<" Generic Filling ..."<< endl;
-        for(int i=0;i<reader.GetTreeEntries()/FRAC;i++){
-            UpdateProgressBar(i, reader.GetTreeEntries()/FRAC);
-            reader.FillVariables(i,vars);
+        for(int i=0;i<reader.GetTreeEntries();i++){
+	    if(i%(int)FRAC!=0) continue; // WTF ?!
+            UpdateProgressBar(i, reader.GetTreeEntries());
+     	    vars->ResetVariables();	
+	    reader.FillVariables(i,vars);
             vars->Update();
             //vars->PrintCurrentState();
             for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
@@ -147,15 +158,19 @@ class ParallelFiller{
 		else Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
         }
     }
-    void ExposureTimeFilling(DBarReader reader, Variables * vars,FileSaver finalhistos){
+
+
+    void ExposureTimeFilling(DBarReader reader, Variables * vars){
         if(!Refill) return;
-	if(reader.GetTree()->GetNbranches()>11) {ExposureTimeFilling(reader.GetTree(),vars,finalhistos); return;}
+	if(reader.GetTree()->GetNbranches()>11) {ExposureTimeFilling(reader.GetTree(),vars); return;}
         else
         cout<<" Exposure Time Filling ..."<< endl;
        	int ActualTime=0;
-	for(int i=0;i<reader.GetTreeEntries()/FRAC;i++){
-            UpdateProgressBar(i, reader.GetTreeEntries()/FRAC);
-            reader.FillVariables(i,vars);
+	for(int i=0;i<reader.GetTreeEntries();i++){
+       	    if(i%(int)FRAC!=0) continue; // WTF ?!
+	    UpdateProgressBar(i, reader.GetTreeEntries());
+     	    vars->ResetVariables();
+	    reader.FillVariables(i,vars);
 	    vars->Update();
 		if((int)vars->U_time!=ActualTime){
 			for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
@@ -164,38 +179,38 @@ class ParallelFiller{
                     }
      	}
 	   for(int nobj=0;nobj<Objects2beFilled.size();nobj++){ 
-            finalhistos.Add(Objects2beFilled[nobj]->GetExposureTime());
-            finalhistos.writeObjsInFolder(("Fluxes/"+Objects2beFilled[nobj]->GetName()).c_str());
+            Objects2beFilled[nobj]->GetOutFileSaver().Add(Objects2beFilled[nobj]->GetExposureTime());
+            Objects2beFilled[nobj]->GetOutFileSaver().writeObjsInFolder(("Fluxes/"+Objects2beFilled[nobj]->GetName()).c_str());
         }
     }
 
-    void ExposureTimeFilling_RTI(DBarReader reader, Variables * vars,FileSaver finalhistos){
+    void ExposureTimeFilling_RTI(DBarReader reader, Variables * vars){
 	    if(!Refill) return;
-	    if(reader.GetTree()->GetNbranches()>11) {ExposureTimeFilling(reader.GetTree(),vars,finalhistos); return;}
+	    if(reader.GetTree()->GetNbranches()>11) {ExposureTimeFilling(reader.GetTree(),vars); return;}
 	    else
 		    cout<<" Exposure Time Filling ..."<< endl;
-	    for(int i=0;i<reader.GetTreeEntries()/FRAC;i++){
-		    UpdateProgressBar(i, reader.GetTreeEntries()/FRAC);
+	    for(int i=0;i<reader.GetTreeEntries();i++){
+		    UpdateProgressBar(i, reader.GetTreeEntries());
 		    reader.FillVariables(i,vars);
 		    vars->Update();
 		    for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
 			    if(vars->good_RTI==0&&vars->isinsaa==0) UpdateZoneLivetime(vars->Livetime_RTI,vars->Rcutoff_RTI,Objects2beFilled[nobj]->GetExposureTime(),Objects2beFilled[nobj]->GetBins());
 	    }
 	    for(int nobj=0;nobj<Objects2beFilled.size();nobj++){ 
-		    finalhistos.Add(Objects2beFilled[nobj]->GetExposureTime());
-		    finalhistos.writeObjsInFolder(("Fluxes/"+Objects2beFilled[nobj]->GetName()).c_str());
+		    Objects2beFilled[nobj]->GetOutFileSaver().Add(Objects2beFilled[nobj]->GetExposureTime());
+		    Objects2beFilled[nobj]->GetOutFileSaver().writeObjsInFolder(("Fluxes/"+Objects2beFilled[nobj]->GetName()).c_str());
 	    }
     }
 
 
 
-    void ExposureTimeFilling(TTree * treeDT, Variables * vars,FileSaver finalhistos){
+    void ExposureTimeFilling(TTree * treeDT, Variables * vars){
         if(!Refill) return;
         cout<<" Exposure Time Filling from Ntuples ..."<< endl;
         int ActualTime=0;
         vars->ReadBranches(treeDT);
-        for(int i=0;i<treeDT->GetEntries()/FRAC;i++){
-            UpdateProgressBar(i, treeDT->GetEntries()/FRAC);
+        for(int i=0;i<treeDT->GetEntries();i++){
+            UpdateProgressBar(i, treeDT->GetEntries());
             treeDT->GetEvent(i);
      //     vars->Update();
             if((int)vars->U_time!=ActualTime) {
@@ -205,8 +220,8 @@ class ParallelFiller{
 	            }
         }
         for(int nobj=0;nobj<Objects2beFilled.size();nobj++){ 
-            finalhistos.Add(Objects2beFilled[nobj]->GetExposureTime());
-            finalhistos.writeObjsInFolder(("Fluxes/"+Objects2beFilled[nobj]->GetName()).c_str());
+            Objects2beFilled[nobj]->GetOutFileSaver().Add(Objects2beFilled[nobj]->GetExposureTime());
+            Objects2beFilled[nobj]->GetOutFileSaver().writeObjsInFolder(("Fluxes/"+Objects2beFilled[nobj]->GetName()).c_str());
         }
     }
 

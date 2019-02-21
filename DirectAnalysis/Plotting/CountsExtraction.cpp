@@ -163,6 +163,12 @@ int main(int argc, char * argv[]){
 	TH1F * PCountsPrimNaF = (TH1F*) finalHistos.Get((pathresNaF+"Primary Proton Counts").c_str());
 	TH1F * PCountsPrimAgl = (TH1F*) finalHistos.Get((pathresAgl+"Primary Proton Counts").c_str());
 	
+	TH1F * PCountsPrimTOF_rigbins = (TH1F*) finalHistos.Get("TOFPCounts/TOFPCounts/TOFPCounts_before");
+	TH1F * PCountsPrimNaF_rigbins = (TH1F*) finalHistos.Get("NaFPCounts/NaFPCounts/NaFPCounts_before");
+	TH1F * PCountsPrimAgl_rigbins = (TH1F*) finalHistos.Get("AglPCounts/AglPCounts/AglPCounts_before");
+	
+
+	
 	PlotTH1FintoGraph(gPad,ToFDB, DCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,2*DCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Deuteron Counts (TOF)",8);
 	PlotTH1FintoGraph(gPad,NaFDB, DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (NaF)",22);
 	PlotTH1FintoGraph(gPad,AglDB, DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (Agl)",29);
@@ -175,13 +181,18 @@ int main(int argc, char * argv[]){
 	TCanvas * c4_ = new TCanvas("Proton Counts");
         c4_->SetCanvasSize(2000,1500);
 
-	PlotTH1FintoGraph(gPad,ToFDB, PCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,2*PCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Proton Counts (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFDB, PCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Proton Counts (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglDB, PCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Proton Counts (Agl)",29);
+	PlotTH1FintoGraph(gPad,ToFDB, PCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,2*PCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Proton Counts (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFDB, PCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Proton Counts (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglDB, PCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Proton Counts (Agl)",29);
 
-	PlotTH1FintoGraph(gPad,ToFDB, PCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
-	PlotTH1FintoGraph(gPad,NaFDB, PCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
-	PlotTH1FintoGraph(gPad,AglDB, PCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
+	PlotTH1FintoGraph(gPad,ToFDB, PCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,NaFDB, PCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,AglDB, PCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
+
+	PlotTH1FintoGraph(gPad,ToFDB, PCountsPrimTOF_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,NaFDB, PCountsPrimNaF_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,AglDB, PCountsPrimAgl_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (Agl)",30);
+
 
 	Plots.Add(c4);
 	Plots.Add(c4_);
@@ -193,16 +204,16 @@ int main(int argc, char * argv[]){
 	TCanvas * c5 = new TCanvas("D/P Raw Counts ratio");
         c5->SetCanvasSize(2000,1500);
 	
-	TH1F * RatioTOF = (TH1F*)DCountsTOF->Clone();
-	RatioTOF->Divide(PCountsTOF);
-	TH1F * RatioNaF = (TH1F*)DCountsNaF->Clone();
-	RatioNaF->Divide(PCountsNaF);
-	TH1F * RatioAgl = (TH1F*)DCountsAgl->Clone();
-	RatioAgl->Divide(PCountsAgl);
+	TH1F * RatioTOF = (TH1F*)DCountsPrimTOF->Clone();
+	RatioTOF->Divide(PCountsPrimTOF);
+	TH1F * RatioNaF = (TH1F*)DCountsPrimNaF->Clone();
+	RatioNaF->Divide(PCountsPrimNaF);
+	TH1F * RatioAgl = (TH1F*)DCountsPrimAgl->Clone();
+	RatioAgl->Divide(PCountsPrimAgl);
 
-	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"D/P Counts ratio (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"D/P Counts ratio (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1e-1,"D/P Counts ratio (Agl)",29);
+	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (TOF)",8);
+	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (NaF)",22);
+	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (Agl)",29);
 
 
 	Plots.Add(c5);
@@ -408,7 +419,6 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 	std::string pathtemplNoise=(FIT->GetName() + "/Fit Results/ScaledTemplatesNoise");	
 
 	std::string pathfit   = (FIT->GetName() + "/Fit Results/FractionFits");
-	std::string pathtrans = (FIT->GetName() + "/Fit Results/TrasnferFunctions");
 	std::string pathres   = (FIT->GetName() + "/Fit Results/");
 	
 	TFile * infile = finalHistos.GetFile();	
@@ -439,7 +449,6 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 		std::vector<TH1F*> Datas     =GetListOfTemplates(infile, pathbindata);
 		std::vector<TH1F*> Fits      =GetListOfTemplates(infile, pathbinfit);
-		std::vector<TH1F*> Transfer  =GetListOfTemplates(infile, pathtrans);
 
 		//cout<<pathbinHe<<" "<<TemplatesHe.size()<<" "<<TemplatesHe[0]<<endl;
 	
@@ -456,8 +465,8 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		title->SetTextSize(2.5);
 
 		for(int j=TemplatesP.size()-1;j>=0;j--){
-			if(j==0) PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",1,"same",1,TemplatesP[j]->GetBinContent(TemplatesP[j]->GetMaximumBin())*1.13,10);
-			else     PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",colorbase + j,"same",1,TemplatesP[j]->GetBinContent(TemplatesP[j]->GetMaximumBin())*1.13,7,"",false,false,true);		
+			if(j==0) PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",1,"same",1,TemplatesP[j]->GetBinContent(TemplatesP[j]->GetMaximumBin())*1.13,3);
+			else     PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",colorbase + j,"same",1,TemplatesP[j]->GetBinContent(TemplatesP[j]->GetMaximumBin())*1.13,3,"",false,false,true);		
 		}
 		c1->cd();
 		
@@ -468,9 +477,9 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		TCanvas * c2 = new TCanvas("Modified T. Fits");
                 c2->SetCanvasSize(2000,1500);
 
-		PlotDistribution(gPad, TemplatesP[0], "Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Original Protons MC Template");
-		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[0], "Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,10,"Original Deuterons MC Template");
-		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,1e5,10,"Original He Fragm. MC Template");
+		PlotDistribution(gPad, TemplatesP[0], "Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,3,"Original Protons MC Template");
+		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[0], "Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,3,"Original Deuterons MC Template");
+		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,1e5,3,"Original He Fragm. MC Template");
 
 		for(int j=TemplatesP.size()-1;j>=1;j--){
                         PlotDistribution(gPad, TemplatesP[j],"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,1e5,1,"",false,false,true);
@@ -505,13 +514,13 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		//PlotDistribution(gPad, TemplatesP[0] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,2,"Original Protons MC Template");
 		//if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[0] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,2,"Original Deuterons MC Template");
 	//	if(!IsFitNoise) if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,1e5,2,"Original He Fragm. MC Template");
-		PlotDistribution(gPad, TemplatesP[1] ,"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",2,"esame",8,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,10,"Best #chi^{2} Protons MC Template");
+		PlotDistribution(gPad, TemplatesP[1] ,"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",2,"esame",8,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,4,"Best #chi^{2} Protons MC Template");
 		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[1] ,"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",4,"esame",8,1e5,10,"Best #chi^{2} Deuterons MC Template");
 		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",3,"esame",8,1e5,10,"Best #chi^{2} Tritium MC Template");
 		if(IsFitNoise) {
 			TH1F * NoiseD = CreateNoiseD(TemplatesNoise[1],TemplatesP[1],TemplatesD[1]);
-			PlotDistribution(gPad, TemplatesNoise[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",kRed-9,"esame",1e-1,1e5,10,"Noise P Template",true);
-			PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^{2}]","Counts",kBlue-7,"esame",1e-1,1e5,10,"Noise D Template",true);
+			PlotDistribution(gPad, TemplatesNoise[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",kRed-9,"esame",1e-1,1e5,4,"Noise P Template",true);
+			PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^{2}]","Counts",kBlue-7,"esame",1e-1,1e5,4,"Noise D Template",true);
 		}		
 		
 		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",1,"ePsame",8,1e5,3,"ISS data",false,true);
@@ -550,6 +559,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		//PlotDistribution(gPad, Ratio,"","",1,"ePsame",-10,10,2,"",false,true,true);	
 		//PlotDistribution(gPad, Line,"","",1,"Lsame",-10,10,7,"",false,false,true);
 	
+		/*
 		TCanvas * c5 = new TCanvas("Transfer Functions");
                 c5->SetCanvasSize(2000,1500);
 
@@ -560,7 +570,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 		Plots.Add(c5);
                 Plots.writeObjsInFolder((FIT->GetName()+"/Fits").c_str());
-
+		*/
 	
 
 		TCanvas * c4 = new TCanvas("ChiSquare");
@@ -578,14 +588,10 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
                 c6->SetCanvasSize(2000,1500);
 		gPad->SetLogy();
 	
-		TH1F * OverCutoffP = (TH1F *) TemplatesP[1]->Clone();
-		OverCutoffP->Multiply(Transfer[i]);
-		TH1F * OverCutoffD = (TH1F *) TemplatesD[1]->Clone();
-		OverCutoffD->Multiply(Transfer[i]);
-		TH1F * OverCutoffHe = (TH1F *) TemplatesHe[1]->Clone();
-		OverCutoffHe->Multiply(Transfer[i]);
-		
-		TH1F * NoCutoffP = (TH1F *) TemplatesP[1]->Clone();
+		TH1F * OverCutoffP = (TH1F *) TemplatesP[2]->Clone();
+		TH1F * OverCutoffD = (TH1F *) TemplatesD[2]->Clone();
+		TH1F * OverCutoffHe = (TH1F *) TemplatesHe[2]->Clone();
+		TH1F * NoCutoffP = (TH1F *) TemplatesP[2]->Clone();
 
 		NoCutoffP->Scale(
 			OverCutoffP->GetBinContent(OverCutoffP->GetMaximumBin())/
@@ -593,13 +599,13 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 		PlotDistribution(gPad, NoCutoffP,"Reconstructed Mass [GeV/c^2]","Primary Counts",2,"same",1e-1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"Best #chi^{2} Protons MC Template");
 		PlotDistribution(gPad, OverCutoffP,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC (Cutoff filtered)");
-		if(!IsSmearingCheck) PlotDistribution(gPad, OverCutoffD,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
+		if(!IsSmearingCheck) PlotDistribution(gPad, OverCutoffD,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,4,"Best #chi^{2} Deutons MC (Cutoff filtered)");
 		if(!IsSmearingCheck) 
-			if(!IsFitNoise) PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Deutons MC (Cutoff filtered)");
+			if(!IsFitNoise) PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,4,"Best #chi^{2} Deutons MC (Cutoff filtered)");
 			else {
                         TH1F * NoiseD = CreateNoiseD(OverCutoffHe,OverCutoffP,OverCutoffD);
-                        PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",kRed-9,"same",1e-1,1e5,10,"Noise P Template",true);
-                        PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^2]","Counts",kBlue-7,"same",1e-1,1e5,10,"Noise D Template",true);
+                        PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",kRed-9,"same",1e-1,1e5,4,"Noise P Template",true);
+                        PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^2]","Counts",kBlue-7,"same",1e-1,1e5,4,"Noise D Template",true);
                 }
 		
 		PlotDistribution(gPad, Datas[1],"Reconstructed Mass [GeV/c^2]","Primary Counts",1,"ePsame",1e-1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"ISS data",false,true);

@@ -608,8 +608,8 @@ void PlotTH1FRatiointoGraph(TVirtualPad * c, Binning bins, TH1F * Values1, TH1F 
 
 	std::string yaxis = Yaxis + " (ratio)";
 
-	PlotTH1FintoGraph(c,bins, Ratio1,Xaxis,yaxis,2,Ekin,options,xmin,xmax,ymin,ymax,legendname1);
-	PlotTH1FintoGraph(c,bins, Ratio2,Xaxis,yaxis,4,Ekin,"ePsame",xmin,xmax,ymin,ymax,legendname2);	
+	PlotTH1FintoGraph(c,bins, Ratio1,Xaxis,yaxis,2,Ekin,options,xmin,xmax,ymin,ymax,legendname1,8,true);
+	PlotTH1FintoGraph(c,bins, Ratio2,Xaxis,yaxis,4,Ekin,"ePsame",xmin,xmax,ymin,ymax,legendname2,8,true);	
 
 	return;
 
@@ -622,9 +622,17 @@ void PlotRatioWithSplineintoGraph(TVirtualPad * c, Binning bins, TH1F * Values1,
 	
 	for(int i=0;i<Values1->GetNbinsX();i++){
 		Ratio1->SetBinContent(i+1,Values1->GetBinContent(i+1)/Spline->Eval(bins.EkPerMassBinCent(i)));
-		Ratio1->SetBinError(i+1,Values1->GetBinError(i+1)/Spline->Eval(bins.EkPerMassBinCent(i)));			
+		Ratio1->SetBinError(i+1,0);			
 	}
-	PlotTH1FintoGraph(c,bins, Ratio1,Xaxis,Yaxis,2,Ekin,options,xmin,xmax,ymin,ymax,legendname1,dotstyle);
+
+	TH1F * Errors = (TH1F*) Ratio1->Clone();
+	for(int i=0;i<Errors->GetNbinsX();i++){
+                Errors->SetBinContent(i+1,1);
+		Errors->SetBinError(i+1,1.0*Values1->GetBinError(i+1)/Spline->Eval(bins.EkPerMassBinCent(i)));			
+	}
+
+	PlotTH1FintoGraph(c,bins, Ratio1,Xaxis,Yaxis,color,Ekin,"Psame",xmin,xmax,ymin,ymax,legendname1,dotstyle);
+	PlotTH1FintoGraph(c,bins, Errors,Xaxis,Yaxis,color,Ekin,"3same",xmin,xmax,ymin,ymax,legendname1,dotstyle,true);
 
 }
 

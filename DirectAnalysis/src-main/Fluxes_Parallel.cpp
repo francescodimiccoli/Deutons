@@ -380,9 +380,9 @@ int main(int argc, char * argv[])
 	cout<<"************* D/P RATIO ************"<<endl;
 
 
-	TH1F * DPRatioTOF = DFluxTOF->Eval_FluxRatio(PFluxTOF,"DP ratio TOF");
-	TH1F * DPRatioNaF = DFluxNaF->Eval_FluxRatio(PFluxNaF,"DP ratio NaF");
-	TH1F * DPRatioAgl = DFluxAgl->Eval_FluxRatio(PFluxAgl,"DP ratio Agl");
+	TH1F * DPRatioTOF = DFluxTOF->Eval_FluxRatio(DummyPTOF,"DP ratio TOF");
+	TH1F * DPRatioNaF = DFluxNaF->Eval_FluxRatio(DummyPNaF,"DP ratio NaF");
+	TH1F * DPRatioAgl = DFluxAgl->Eval_FluxRatio(DummyPAgl,"DP ratio Agl");
 
 	finalResults.Add(DPRatioTOF);
 	finalResults.Add(DPRatioNaF);

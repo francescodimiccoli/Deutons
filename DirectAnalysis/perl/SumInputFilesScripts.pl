@@ -11,10 +11,12 @@ $mcD_path  = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/full/D.B1081/d.pl1.l
 $mcHe_path = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/full/He.B1081/he4.pl1.l1.2200.2_01";
 $mcT_path  = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/full/T.B1059/t.pl1.0_520_GG_BlicDPMJet/";
 
-
+$FRAC = 1;
+$OFFSET = $ARGV[3];
 $out_path  = "/eos/ams/user/f/fdimicco/";
 
-#$ntuplepath  = "/eos/ams/group/dbar/TrentoNTuples/$ARGV[0]-$ARGV[1]";
+#$ntuple
+#path  = "/eos/ams/group/dbar/TrentoNTuples/$ARGV[0]-$ARGV[1]";
 $ntuplepath    = "/eos/ams/user/f/fdimicco/AnalysisNTuples/Data-Data/Ntuples";
 #$ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/1305944557-1494599304/Ntuples";
 $ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/MC-MC/Ntuples";
@@ -24,9 +26,7 @@ $ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/MC-MC/Ntuples";
 
 
 #use warnings;
-if($ARGV[3]==0) { system("rm $workdir/InputFileLists/*"); }
-else { system("rm $workdir/InputNtupleLists/*");}
-
+system("rm $workdir/InputFileLists/*"); 
 
 print "Listing All Data Files..\n";
 chomp (@Rootuple = `eos ls  $datapath | grep -v "log" |  sed s/.root//g`);
@@ -74,7 +74,7 @@ print "NTuples in the requested period: ".$num_ntuple."\n";
 
 for ($n=0;$n<$njobs; $n++)
 {
-	if($ARGV[3]==1){
+	if($ARGV[3]==-1){
 		open(OUT,">","$workdir/InputNtupleLists/FileListDT$n.txt");
 		for ($j=($num_ntuple)/$njobs*$n ; $j<($num_ntuple)/$njobs*($n+1) ; $j++){
 			if($ntuple[$j] ne "") {
@@ -85,8 +85,9 @@ for ($n=0;$n<$njobs; $n++)
 	}
 	else{
 		open(OUT,">","$workdir/InputFileLists/FileListDT$n.txt");
-		for ($j=($num_rootuple)/$njobs*$n ; $j<($num_rootuple)/$njobs*($n+1) ; $j++)
+		for ($j=($num_rootuple)/$njobs*$n + $OFFSET  ; $j<($num_rootuple)/$njobs*($n+1)  + $OFFSET ; $j++)
 		{
+			$j=$j+$FRAC;
 			if($rootuple[$j] ne "") {	
 				print OUT  "$datapath/$rootuple[$j].root\n";
 				$rootuple[$j]="";	
@@ -125,7 +126,7 @@ print "Total Files MC T: ".$num_MC_T."\n";
 for ($n=0;$n<$njobs; $n++)
 {
 
-	if($ARGV[3]==1){
+	if($ARGV[3]==-1){
 		open(OUT,">","$workdir/InputNtupleLists/FileListMC$n.txt");
 		for ($j=($num_NTupleMC)/$njobs*$n ; $j<($num_NTupleMC)/$njobs*($n+1) ; $j++){
 			print OUT  "$ntuplepathMC/$NTupleMC[$j]\n";
@@ -134,20 +135,26 @@ for ($n=0;$n<$njobs; $n++)
 	else{
 		open(OUT,">","$workdir/InputFileLists/FileListMC$n.txt");
 
-		for ($j=($num_MC_P)/$njobs*$n ; $j<($num_MC_P)/$njobs*($n+1) ; $j++)
+		for ($j=($num_MC_P)/$njobs*$n + $OFFSET ; $j<($num_MC_P)/$njobs*($n+1) +$OFFSET ; $j++)
 		{
+						$j=$j+$FRAC;
+	
 			print OUT  "$mcP_path/$MC_P[$j].root\n"
 		}
-		for ($j=($num_MC_D)/$njobs*$n ; $j<($num_MC_D)/$njobs*($n+1) ; $j++)
+		for ($j=($num_MC_D)/$njobs*$n + $OFFSET  ; $j<($num_MC_D)/$njobs*($n+1) + $OFFSET  ; $j++)
 		{
+						$j=$j+$FRAC;
+	
 			print OUT  "$mcD_path/$MC_D[$j].root\n"
 		}
-		for ($j=($num_MC_He)/$njobs*$n ; $j<($num_MC_He)/$njobs*($n+1) ; $j++)
-		{
+		for ($j=($num_MC_He)/$njobs*$n  + $OFFSET ; $j<($num_MC_He)/$njobs*($n+1)  + $OFFSET ; $j++)
+		{			$j=$j+$FRAC;
+	
 			print OUT  "$mcHe_path/$MC_He[$j].root\n"
 		}
-		for ($j=($num_MC_T)/$njobs*$n ; $j<($num_MC_T)/$njobs*($n+1) ; $j++)
-		{
+		for ($j=($num_MC_T)/$njobs*$n  + $OFFSET ; $j<($num_MC_T)/$njobs*($n+1)  + $OFFSET ; $j++)
+		{			$j=$j+$FRAC;
+	
 			print OUT  "$mcT_path/$MC_T[$j].root\n"
 		}
 

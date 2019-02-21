@@ -1,5 +1,6 @@
 #ifndef rundb_h
 #define rundb_h
+
 #include <map>
 #include <cstdlib>
 #include  <cstdio>
@@ -91,15 +92,15 @@ public:
   float GetTrigRate(){
     std::map<int,rundb_el>::iterator it;
     it=db.begin();
-    double trigrate=0;     
+    long double trigrate=0;     
     float nn=0;
-    while(it!=db.end())
+    while(nn<=500)
     {
            trigrate+= it->second.GetEv()/(float)it->second.GetTrig();
 		nn++;
 		it++;
 	}
-    return trigrate/nn;
+    return (float) trigrate/nn;
   }    
 
   float GetTotEvents(){

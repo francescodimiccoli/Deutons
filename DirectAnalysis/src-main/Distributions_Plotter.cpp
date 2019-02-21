@@ -32,9 +32,10 @@
 
 #include "Plotter.h"
 
+#include "TProof.h"
+
 int main(int argc, char * argv[])
 {
-
 
 	cout<<"****************************** FILES OPENING ***************************************"<<endl;
 
@@ -72,6 +73,7 @@ int main(int argc, char * argv[])
 
 	bool checkfile = finalHistos.CheckFile();
 
+	
 	cout<<"****************************** BINS ***************************************"<<endl;
 	SetUpUsualBinning();
 
@@ -82,13 +84,20 @@ int main(int argc, char * argv[])
 
 	Plotter Plots(finalHistos,finalResults);
 
+	/*
 	Plots.BookMassAnalysis();
         Plots.BookCleaningCutsAnalysis();
         Plots.BookRichBDTAnalysis();
         Plots.BookBetaResMatrixAnalysis();
+	Plots.BookAcceptanceMatrixAnalysis();
 
 	Plots.BookGenAcceptanceAnalysis();	
 	Plots.BookTrackingEfficiencyAnalysis();
+	Plots.BookRigvsBetaAnalysis();
+	*/
+	Plots.BookAcceptanceMatrixAnalysis();
+	Plots.BookCutVariablesAnalysis();
+
 
         if(Refill)	Plots.FillAllAnalyses(chainDT,chainMC);
 	Plots.DoAllAnalyses();

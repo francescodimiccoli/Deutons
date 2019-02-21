@@ -27,6 +27,7 @@
 
 #include "../include/filesaver.h"
 
+#include "../include/Tool.h"
 #include "../include/Efficiency.h"
 #include "../include/AllRangesEfficiency.h"
 
@@ -391,7 +392,7 @@ int main(int argc, char * argv[])
 	Baseline_D->SetNotWeightedMC();	
 
 
-	ParallelFiller<Efficiency *> Filler;
+	ParallelFiller<Tool *> Filler;
 
 	Filler.AddObject2beFilled(RigBinBaselineEff,GetGenMomentum,GetGenMomentum);
 	Filler.AddObject2beFilled(RigBinQualEff,GetGenMomentum,GetGenMomentum);

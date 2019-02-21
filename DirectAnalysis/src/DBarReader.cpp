@@ -46,14 +46,14 @@ int countBits(int n) {
 
 bool DBarReader::minTOF(){
 
-    return (ntpTof->z_nhit>=3)&&(ntpTof->z_like>0)&&((ntpTof->clsn[0]+ntpTof->clsn[2])<=4);	
-
+   if (!((ntpTof->trk_ncl==4)&&(ntpTof->beta_patt==0)&&(ntpTof->beta_ncl==4))) return false; 
+   else return /*(ntpTof->z_nhit>=3)&&(ntpTof->z_like>0)&&*/((ntpTof->clsn[0]+ntpTof->clsn[2])<=4);	
+   	
 }
 
 bool DBarReader::goldenTOF(){
 
-    if (!((ntpTof->trk_ncl==4)&&(ntpTof->beta_patt==0)&&(ntpTof->beta_ncl==4))) return false; 
-    if ( (ntpTof->flag) != 0   ) return false;
+   if ( (ntpTof->flag) != 0   ) return false;
     if (  ntpTof->chisqcn > 10 || ntpTof->chisqcn < 0     ) return false;
     if (  ntpTof->chisqtn > 10 || ntpTof->chisqtn < 0     ) return false;
     return true;	
@@ -67,6 +67,40 @@ int DBarReader::RICHmaskConverter(){
     return richMASK;
 }
 
+Long64_t DBarReader::ProtonCandidateSelection() {
+  if ( (!ntpHeader)||(!ntpTof)||(!ntpTracker)||(!ntpTrd)||(!ntpRich) ) return -1;
+  int n = 0;
+  double rms = 0;
+  double q_utof = (ntpTof) ? ntpTof->GetQ(n,rms,0x3) : 0;
+  double q_ltof = (ntpTof) ? ntpTof->GetQ(n,rms,0xc) : 0;
+  bool selection[22] = {
+    ntpHeader->IsFTCP0(),
+    ntpHeader->IsChargedPhysTrigger(),
+    ntpTof->beta_ncl==4,
+    ntpTof->beta>0.3,
+    q_utof>0,
+    (q_ltof>0.5)&&(q_ltof<2),
+    ntpTof->chisqcn<100.,
+    (ntpTof->chisqtn>0)&&(ntpTof->chisqtn<10.),
+    ntpHeader->ntrtrack==1,
+    ((ntpTracker->patty&0x2)!=0)&&((ntpTracker->patty&0xc)!=0)&&((ntpTracker->patty&0x30)!=0)&&((ntpTracker->patty&0xc0)!=0),
+    (ntpTracker->q_inn>0.7)&&(ntpTracker->q_inn<1.5),
+    (ntpTracker->pattxy&0x2)!=0,
+    (ntpTracker->chisqn[7][0]>0)&&(ntpTracker->chisqn[7][0]<10),
+    (ntpTracker->chisqn[7][1]>0)&&(ntpTracker->chisqn[7][1]<10),
+    (ntpTof->clsn[0]+ntpTof->clsn[2])<=4,
+    (ntpTrd->trdk_is_align_ok)&&(ntpTrd->trdk_is_calib_ok)&&(ntpTrd->trdk_like_nhit[0]>15)&&(ntpTrd->trdk_like_valid[0]>0),
+    ntpTrd->chisq<10,
+    ntpRich->correction_status==0,
+    ntpRich->selection>0,
+    ntpRich->nhit>2,
+    fabs(ntpTof->beta-ntpRich->beta)<0.1*ntpRich->beta,
+    fabs(ntpTracker->rig[7])>0.8
+  };
+  Long64_t pattern = 0;
+  for (int i=0; i<22; i++) if (!selection[i]) pattern |= (0x1LL<<i);
+  return pattern;
+}
 
 
 
@@ -87,9 +121,13 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->PhiS              = ntpHeader->phis;
     vars->PrescaleFactor    = ntpHeader->pres_weight;
 
+    vars->P_standard_sel    = ProtonCandidateSelection(); 	
+
+
     // Stroemer cutoff is in the tracker data
     vars->Rcutoff = ntpTracker->stoermer_cutoff[0];
     vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1]; //stoermer
+    vars->Rcutoff_IGRFRTI = rtiInfo->cf[1][2][1]; //IGRF 
     // vars->Rcutoff_RTI  =   rtiInfo->cf[1][2][1]; //IGRF
     
     vars->Livetime_RTI =   rtiInfo->lf;    
@@ -109,13 +147,17 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 	    vars->Charge_gen   = ntpMCHeader->charge;
 	    vars->Massa_gen     = ntpMCHeader->mass;
 	    vars->Momento_gen = ntpMCHeader->momentum[0];
+	    vars->Momento_gen_UTOF = ntpMCHeader->momentum[6];
+	    vars->Momento_gen_LTOF = ntpMCHeader->momentum[16];
+	    vars->Momento_gen_RICH = ntpMCHeader->momentum[18];
+
 	    vars->GenX = ntpMCHeader->coo[0][0];  vars->GenPX = ntpMCHeader->dir[0];;
 	    vars->GenY = ntpMCHeader->coo[0][1];  vars->GenPY = ntpMCHeader->dir[1];;
 	    vars->GenZ = ntpMCHeader->coo[0][2];  vars->GenPZ = ntpMCHeader->dir[2];;
 	    vars->MCClusterGeantPids = getPackedLayers_1to4();
     }
     if(!isMC) {
-   		if(((ntpHeader->trigpatt & 0x2) != 0) && ((ntpHeader->sublvl1&0x3E) ==0)) vars->PrescaleFactor*=100;
+   //		if(((ntpHeader->trigpatt & 0x2) != 0) && ((ntpHeader->sublvl1&0x3E) ==0)) vars->PrescaleFactor*=100;
     }	    
 
     /////////////////////////////////// UNBIAS ////////////////////////////////////////
@@ -180,7 +222,8 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->Rdown = ntpTracker->rig[3]; // 3 -- Lower inner tracker
     vars->R_L1  = ntpTracker->rig[4]; // 4 -- Inner + L1
     vars->R_noMS= ntpTracker->rig[9]; // 9 -- Inner tracker NoMS
-
+    
+    vars->R_sec = ntpTracker-> sec_inn_rig; // rig secondary track;
 
     vars->Chisquare         = ntpTracker->chisqn[1][0]; // 1 = Inner      , 0 = X side
     vars->Chisquare_L1      = ntpTracker->chisqn[4][0]; // 4 = L1 + Inner , 0 = X side
@@ -208,8 +251,11 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     /////////////////////////////// TOF ////////////////////////////////////
     
     // TODO: proper averaging inclding errors?
-    vars->qUtof   = ( ntpTof->q_lay[0] + ntpTof->q_lay[1] ) / 2.0;
-    vars->qLtof   = ( ntpTof->q_lay[2] + ntpTof->q_lay[3] ) / 2.0;
+    int n = 0;
+    double rms = 0;
+  
+    vars->qUtof   =(ntpTof) ? ntpTof->GetQ(n,rms,0x3) : 0;  ;
+    vars->qLtof   =(ntpTof) ? ntpTof->GetQ(n,rms,0xc) : 0;  ;
 
     vars->BetaR   = ntpTof->evgeni_beta;
     vars->Beta    = ntpTof->beta;
@@ -262,11 +308,19 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
    vars->HitHVoutdir   =ntpRich->tot_hyp_hit_uncorr[1][0];
    vars->HitHVoutrefl  =ntpRich->tot_hyp_hit_uncorr[1][1];   
 
-  
-
-
  
+
+   //////////////////////// CHECKS on VARIABLES ///////////////////////////
+    vars-> beta_ncl =  ntpTof->beta_ncl;
+    vars-> chisqcn  =  ntpTof->chisqcn; 
+    vars-> chisqtn  =  ntpTof->chisqtn; 
+    vars-> nTrTracks=  ntpHeader->ntrtrack;
+    vars-> sumclsn  =  ntpTof->clsn[0] + ntpTof->clsn[2] ; 
+
 }
+
+
+
 DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI) {
     Init();
     Tree = tree;

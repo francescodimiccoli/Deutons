@@ -53,31 +53,19 @@ int  rundb::readdb(const char * fname){
    
 
     rundb_el el;
-
     el.run=atoi(dest[0]);
-
     el.Rpmin=atof(dest[1]);
-
     el.Rpmax=atof(dest[2]);
-
     el.RTrig=atoi(dest[3]);
-
     el.pmin=atof(dest[4]);
-
-    el.pmax=atof(dest[5]);
-
     el.Trig=atoi(dest[6]);
-
     el.Events=atoi(dest[7]);
-
     Add(el);
 
   }  
 
   if(fp) delete fp;
-
   fclose(fin);
-
   return 1;
 
 }

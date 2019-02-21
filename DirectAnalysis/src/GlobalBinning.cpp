@@ -3,7 +3,8 @@
 
 int Ev_Num;
 int Timebeg;
-float FRAC = 1;
+float FRAC =1;
+int OFFSET =0;
 
 int nbinsr=43;
 int nbinsToF=18;
@@ -32,9 +33,9 @@ Binning PRB(proton);
 Binning ForAcceptance(proton);
 
 //resolution binning
-Binning ToFResB(deuton);
-Binning NaFResB(deuton);
-Binning AglResB(deuton);
+Binning ToFRigB(proton);
+Binning NaFRigB(proton);
+Binning AglRigB(proton);
 
 Binning PResB(proton);
 
@@ -42,33 +43,70 @@ TMVA::Reader *readerTOF;
 TMVA::Reader *readerNaF;
 TMVA::Reader *readerAgl;
 
-TF1 * ResponseTOF = new TF1("ResponseTOF","x*(1-[0]/x^[1])",0,1);
-TF1 * ResponseNaF = new TF1("ResponseNaF","x*(1-[0]/x^[1])",0,1);
-TF1 * ResponseAgl = new TF1("ResponseAgl","x*(1-[0]/x^[1])",0,1);
+TF1 * ResponseTOF = new TF1("ResponseTOF","x*(1-[0]/x^[1]) - [2]",0,1);
+TF1 * ResponseNaF = new TF1("ResponseNaF","x*(1-[0]/x^[1]) - [2]",0,1);
+TF1 * ResponseAgl = new TF1("ResponseAgl","x*(1-[0]/x^[1]) - [2]",0,1);
 
 void SetBins(){	
 
-	DRB.setBinsFromRigidity(nbinsr, 0.5, 100); 
-	PRB.setBinsFromRigidity(nbinsr, 0.5, 100);
-	ForAcceptance.setBinsFromRigidity(2*nbinsr,0.5,250);
+	DRB.Reset();
+	PRB.Reset();
+	ToFDB.Reset();
+	ToFPB.Reset();
+	NaFDB.Reset();
+	NaFPB.Reset();
+	AglDB.Reset();
+	AglPB.Reset();
+	ForAcceptance.Reset();
+	ToFRigB.Reset();
+	NaFRigB.Reset();
+	AglRigB.Reset();
+	PResB  .Reset();
 
-	float ekmin=0.15, ekmax=1;
-	ToFDB.setBinsFromEkPerMass (nbinsToF, ekmin, ekmax);
-	ToFPB.setBinsFromEkPerMass(nbinsToF, ekmin, ekmax);
 
+	cout<<"H.E. bins"<<endl;
+	DRB.setBinsFromRigidity(nbinsr, 0.5, 100,ResponseTOF,0.00347548,5.8474); 
+	PRB.setBinsFromRigidity(nbinsr, 0.5, 100,ResponseTOF,0.00347548,5.8474);
+	ForAcceptance.setBinsFromRigidity(2*nbinsr,0.5,250,ResponseTOF,0.00347548,5.8474);
+
+	cout<<"TOF bins"<<endl;
+	float ekmin=0.1, ekmax=0.82;
+	float betamin=0.53; float betamax=0.8363;
+	ToFDB.setBinsFromBeta (nbinsToF, betamin, betamax,ResponseTOF,0.00347548,5.8474);
+	ToFPB.setBinsFromBeta (nbinsToF, betamin, betamax ,ResponseTOF,0.00347548,5.8474);
+	ToFRigB.setBinsFromBeta (nbinsToF, betamin, betamax ,ResponseTOF,0.00347548,5.8474);
+
+	cout<<"NaF bins"<<endl;
 	ekmin=0.666, ekmax=4.023;
-	NaFDB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
-	NaFPB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax);
+	NaFDB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
+	NaFPB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
+	NaFRigB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
 
+	cout<<"Agl bins"<<endl;
 	ekmin=2.57, ekmax=9.01;
-	AglDB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
-	AglPB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax);
+	AglDB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
+	AglPB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
+	AglRigB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
 
 
-	PResB.setBinsFromRigidity(60, 0.5, 100);	
-	ToFResB.setBinsFromRigidity(25, 1,8);
-	NaFResB.setBinsFromRigidity(25, 3,13);
-	AglResB.setBinsFromRigidity(25, 6,25);
+	//PResB.setBinsFromRigidity(60, 0.5, 100,ResponseTOF,0.00347548,5.8474);	
+	//ToFResB.setBinsFromRigidity(25, 1,8,ResponseTOF,0.00347548,5.8474);
+	//NaFResB.setBinsFromRigidity(25, 3,13,ResponseNaF,-0.000859132,-30.5065);
+	//AglResB.setBinsFromRigidity(25, 6,25,ResponseAgl,4.28781e-05,67.8521);
+
+	PRB.Print();
+
+	cout<<"**TOF**"<<endl;
+	ToFPB.Print();
+	ToFDB.Print();
+
+	cout<<"**NaF**"<<endl;
+	NaFPB.Print();
+	NaFDB.Print();
+
+	cout<<"**Agl**"<<endl;
+	AglPB.Print();
+	AglDB.Print();
 
 
 
@@ -79,17 +117,6 @@ void SetUpUsualBinning(){
 
 	SetBins();
 
-	PRB.Print();
-
-	cout<<"**TOF**"<<endl;
-	ToFDB.Print();
-
-	cout<<"**NaF**"<<endl;
-	NaFPB.Print();
-
-	cout<<"**Agl**"<<endl;
-	AglDB.Print();
-
 	ToFPB.UseBetaEdges();
 	NaFPB.UseBetaEdges();
 	AglPB.UseBetaEdges();
@@ -97,6 +124,11 @@ void SetUpUsualBinning(){
 	ToFDB.UseBetaEdges();
 	NaFDB.UseBetaEdges();
 	AglDB.UseBetaEdges();
+
+	ToFRigB.UseREdges();
+	NaFRigB.UseREdges();
+	AglRigB.UseREdges();
+
 
 
 	PRB.UseREdges();
@@ -109,17 +141,6 @@ void SetUpEffCorrBinning(){
 
 	SetBins();
 
-	PRB.Print();
-
-	cout<<"**TOF**"<<endl;
-	ToFDB.Print();
-
-	cout<<"**NaF**"<<endl;
-	NaFPB.Print();
-
-	cout<<"**Agl**"<<endl;
-	AglDB.Print();
-
 	ToFPB.UseREdges();
 	NaFPB.UseREdges();
 	AglPB.UseREdges();
@@ -128,12 +149,40 @@ void SetUpEffCorrBinning(){
 	NaFDB.UseBetaEdges();
 	AglDB.UseBetaEdges();
 
+	ToFRigB.UseREdges();
+	NaFRigB.UseREdges();
+	AglRigB.UseREdges();
+
 
 	PRB.UseREdges();
 	ForAcceptance.UseREdges();
 	cout<<endl;
 	return;
 }
+
+void SetUpTOIBinning(){
+
+	SetBins();
+
+	ToFPB.UseBetaTOIEdges();
+	NaFPB.UseBetaTOIEdges();
+	AglPB.UseBetaTOIEdges();
+
+	ToFDB.UseBetaTOIEdges();
+	NaFDB.UseBetaTOIEdges();
+	AglDB.UseBetaTOIEdges();
+
+	ToFRigB.UseRTOIEdges();
+	NaFRigB.UseRTOIEdges();
+	AglRigB.UseRTOIEdges();
+
+
+	PRB.UseRTOIEdges();
+	ForAcceptance.UseRTOIEdges();
+	cout<<endl;
+	return;
+}
+
 
 
 void UpdateProgressBar(int currentevent, int totalentries)

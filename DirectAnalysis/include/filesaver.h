@@ -17,7 +17,7 @@ class FileSaver {
       void writeObjs();
       void setName(string fname) {filename=fname;}
       void Add(TObject* obj) {fArr->Add(obj);}
-      string setName() {return filename;}
+      string GetName() {return filename;}
       bool CheckFile();	      
       TObject * Get(std::string name);	
       TFile * GetFile();

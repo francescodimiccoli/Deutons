@@ -13,7 +13,7 @@
 #include <Tofrec02_ihep.h>
 #include "Variables.hpp"
 #include "HitMCTruth.h"
-
+#include "InputFileReader.h"
 
 int getRICHmask(AMSEventR * ev){
     int cutmask=0;
@@ -135,7 +135,7 @@ int main(int argc, char * argv[])
         ev->SetDefaultMCTuningParameters();
 
 
-        if( ii % 10000 == 0){
+        if( ii % 100 == 0){
             std::cout << "Processed " << ii << " out of " << entries << "\n";
             // Output your testing here
         }		
@@ -187,6 +187,7 @@ int main(int argc, char * argv[])
         //////////////////////////////////////////////////////////////////////////////////		
 
 
+
         /////////////////////////////////// UNBIAS ////////////////////////////////////////
         Level1R* trig = ev->pLevel1(0);
         if(!trig) continue;
@@ -202,9 +203,10 @@ int main(int argc, char * argv[])
 
 
         //////////////////////////////////// CUTMASK ////////////////////////////////////////
-        bool MinTOF[2];
+        
+	bool MinTOF[2];
         minimumbiasTOF( ev, MinTOF);
-
+	
         if( minimumbiasTRIGG(ev) )       vars->CUTMASK |= 1 << 0;
         if( MinTOF[0] )                  vars->CUTMASK |= 1 << 1;
         if( minimumbiasTRD(ev))          vars->CUTMASK |= 1 << 2;
@@ -245,6 +247,7 @@ int main(int argc, char * argv[])
 
         ///////////////////////////  E. DEP. /////////////////////////////////////////////////////
 
+
         /////// TRACK EDEP on track
         if(minimumbiasTRACKER(ev,3)) {
             vars->NTrackHits = Tr->NTrRecHit();
@@ -262,7 +265,7 @@ int main(int argc, char * argv[])
             TrClusterR* cluster = ev->pTrCluster(i);
             int ilay = cluster->GetLayerJ() - 1;
             if(cluster->GetSide()==1) {
-                vars->trtot_edep[ilay] += cluster->GetEdep(); 
+                //vars->trtot_edep[ilay] += cluster->GetEdep(); 
                 vars->clustertottrack++;
             }
         }
@@ -299,6 +302,7 @@ int main(int argc, char * argv[])
             vars->EnergyECAL = show->GetCorrectedEnergy(2, 2);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
         ///////////////////////////////// BETA TOF ////////////////////////////////////////////////
@@ -346,6 +350,7 @@ int main(int argc, char * argv[])
         if(ev->pBetaH(0)) vars->qUtof = ev->pBetaH(0)->GetQ(utoflay,utofrms,2,TofClusterHR::DefaultQOptIonW,1100,0,vars->R);
         if(ev->pBetaH(0)) vars->qLtof = ev->pBetaH(0)->GetQ(ltoflay,ltofrms,2,TofClusterHR::DefaultQOptIonW,11  ,0,vars->R);
         /////////////////////////////////////////////////////////////////////////////////////////////////
+
 
         vars->RICHmask = getRICHmask(ev); 
 
