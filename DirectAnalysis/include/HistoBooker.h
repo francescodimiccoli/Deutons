@@ -45,6 +45,17 @@ class ScatterBinCollection: public SingleHisto {
 	virtual void FillEventByEventScatter(Variables * vars, float (*var) (Variables * vars),float (*secondvar) (Variables * vars),float (*discr_var) (Variables * vars));
 };
 
+class BinnedHisto: public SingleHisto{
+	public:
+	BinnedHisto(std::string Name, Binning Bins,std::string Cut);	
+        virtual void FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)); 
+};
+
+class BinnedScatter: public SingleHisto{
+	public:
+	BinnedScatter(std::string Name, Binning Bins,std::string Cut);	
+        virtual void FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)); 
+};
 
 class HistoBooker{
 	
@@ -62,6 +73,9 @@ class HistoBooker{
 	void BookBinCollection(std::string CollectionName, Binning Bins, int nbinsx, float xmin, float xmax,std::string Cut,GetFillinVariable var=0x0, GetDiscrimVariable discr_var=0x0);
 	void BookSingleScatter(std::string CollectionName, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, std::string Cut, GetFillinVariable var=0x0,GetFillinVariable secondvar=0x0, GetDiscrimVariable discr_var=0x0);
 	void BookScatterBinCollection(std::string CollectionName, Binning Bins, int nbinsx, float xmin, float xmax,int nbinsy, float ymin, float ymax,std::string Cut,GetFillinVariable var=0x0,GetFillinVariable secondvar=0x0, GetDiscrimVariable discr_var=0x0);
+	void BookBinnedHisto(std::string CollectionName, Binning Bins,std::string Cut, GetFillinVariable var=0x0, GetDiscrimVariable discr_var=0x0);
+        void BookBinnedScatter(std::string CollectionName, Binning Bins,std::string Cut, GetFillinVariable var=0x0, GetDiscrimVariable discr_var=0x0);
+	
 
 	void FillEverything(DBarReader reader);
 	void SaveEverything(FileSaver finalhisto);	

@@ -25,7 +25,7 @@
 
 int main(int argc, char * argv[])
 {
-    TH1::SetDefaultSumw2();     	
+   TH1::SetDefaultSumw2();     	
      cout<<"********************** FILES OPENING ***********************************"<<endl;
 
      string INPUT1 = "";
@@ -66,20 +66,26 @@ int main(int argc, char * argv[])
     finalHistosFlux.setName((OUTPUT).c_str());
     if(!finalHistosFlux.CheckFile())  	
     finalHistosFlux.setName((OUTPUT + "_Flux").c_str());
-	  
+
+    FileSaver finalHistosTest;
+    finalHistosTest.setName((OUTPUT).c_str());
+    if(!finalHistosTest.CheckFile())  	
+    finalHistosTest.setName((OUTPUT + "_Test").c_str());
+		  
     FileSaver finalResults;
     finalResults.setName((OUTPUT + "_Results").c_str());
 
 
   
     cout<<"****************************** Analysis*************************************"<<endl;
+	
+  Analyzer analyzer(INPUT1,INPUT2);	 
 
-    Analyzer analyzer(INPUT1,INPUT2);	 
-
-    analyzer.BookCountsAnalysis(finalHistosCounts,finalResults,Refill);	
- //   analyzer.BookEfficiencyAnalysis(finalHistosEff,finalResults,Refill);	
-    analyzer.BookEffCorrAnalysis(finalHistosCorr,finalResults,Refill);	
-  //  analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
+      //analyzer.BookCountsAnalysis(finalHistosCounts,finalResults,Refill);	
+      //analyzer.BookEfficiencyAnalysis(finalHistosEff,finalResults,Refill);	
+      //analyzer.BookEffCorrAnalysis(finalHistosCorr,finalResults,Refill);	
+      analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
+      //analyzer.BookTestCascade(finalHistosTest,finalResults,Refill);   
 
     if(Refill || !analyzer.CheckFile()){ 
 	    analyzer.FillAll();

@@ -20,16 +20,56 @@ bool IsFragmentedDMC 	   (Variables * vars) {return !(IsPureDMC(vars));}
 bool IsFragmentedPMC 	   (Variables * vars) {return !(IsPurePMC(vars));}
 
 bool IsFragmentedPfromDMC  (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
-bool IsPrimary	   (Variables * vars){ return (vars->R>1.2*vars->Rcutoff_IGRFRTI); }
+bool IsPrimary	   (Variables * vars){ return (vars->R>1.2*vars->Rcutoff_RTI && IsData(vars)); }
 bool IsMC          (Variables * vars){ return (vars->Massa_gen>0);} 
 bool IsData        (Variables * vars){ return (vars->Massa_gen==0);}
-bool IsGoodL1Status (Variables * vars) {return (vars->qL1Status==0);}
-bool IsGoodL2Status (Variables * vars) {return (vars->qL2Status==0);}
-bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0 && vars->qL1<2&&IsGoodL1Status(vars));} 
+bool IsGoodL1Status (Variables * vars) {return vars->R_L1>0 && (vars->qL1Status==0);}
+bool IsGoodL2Status (Variables * vars) {return (vars->hitbits&0x2!=0) && (vars->qL2Status==0);}
+
+bool HasL1 (Variables * vars) {return vars->R_L1>0;}
+bool HasL2 (Variables * vars) {return ((vars->P_standard_sel&0x2048)==0);} //(vars->hitbits&0x2!=0);}
+
+
 bool IsL1Fiducial   (Variables * vars) {return ((vars->FiducialVolume)==255);}
 bool IsGoodChiSquareX(Variables * vars) { return(vars->Chisquare<vars->Chi2Xcut->Eval(abs(vars->R)));}
 bool IsGoodChiSquareY(Variables * vars) { return(vars->Chisquare_y<vars->Chi2Ycut->Eval(abs(vars->R)));}
 
+bool IsStandardSel (Variables * vars) {return (vars->P_standard_sel&0x7FFF)==0;}
+//fulltracker + bit6 + bit5 + bit4 + bit3 (vars->P_standard_sel&0x3E7B)==0;
+//fulltracker + bit6 + bit5 + bit4 (vars->P_standard_sel&0x3E73)==0;
+//fulltracker + bit6 + bit5 (vars->P_standard_sel&0x3E63)==0;
+//fulltracker + bit6 (vars->P_standard_sel&0x3E43)==0;
+//ultra-basic 	(vars->P_standard_sel&0x3403)==0;	
+//fulltracker   (vars->P_standard_sel&0x3E03)==0;
+//basic	        (vars->P_standard_sel&0x3C7F)==0;
+//complete	(vars->P_standard_sel&0x7FFF)==0; }
+
+// one bit at a time
+bool IsStandardSel_v0 (Variables * vars) {return (vars->P_standard_sel&0x3403)==0&&vars->R>0;}
+bool IsStandardSel_v1 (Variables * vars) {return (vars->P_standard_sel&0x3E03)==0&&vars->R>0;}
+bool IsStandardSel_v2 (Variables * vars) {return (vars->P_standard_sel&0x3E07)==0&&vars->R>0;}
+bool IsStandardSel_v3 (Variables * vars) {return (vars->P_standard_sel&0x3E0B)==0&&vars->R>0;}
+bool IsStandardSel_v4 (Variables * vars) {return (vars->P_standard_sel&0x3E13)==0&&vars->R>0;}
+bool IsStandardSel_v5 (Variables * vars) {return (vars->P_standard_sel&0x3E23)==0&&vars->R>0;}
+bool IsStandardSel_v6 (Variables * vars) {return (vars->P_standard_sel&0x3E43)==0&&vars->R>0;}
+bool IsStandardSel_v7 (Variables * vars) {return (vars->P_standard_sel&0x3E83)==0&&vars->R>0;}
+bool IsStandardSel_v8 (Variables * vars) {return (vars->P_standard_sel&0x3F03)==0&&vars->R>0;}
+bool IsStandardSel_v9 (Variables * vars) {return (vars->P_standard_sel&0x7E03)==0&&vars->R>0;}
+
+
+//cascade
+/*bool IsStandardSel_v0 (Variables * vars) {return (vars->P_standard_sel&0x3E03)==0;}
+bool IsStandardSel_v1 (Variables * vars) {return (vars->P_standard_sel&0x3E07)==0;}
+bool IsStandardSel_v2 (Variables * vars) {return (vars->P_standard_sel&0x3E0F)==0;}
+bool IsStandardSel_v3 (Variables * vars) {return (vars->P_standard_sel&0x3E1F)==0;}
+bool IsStandardSel_v4 (Variables * vars) {return (vars->P_standard_sel&0x3E3F)==0;}
+bool IsStandardSel_v5 (Variables * vars) {return (vars->P_standard_sel&0x3E7F)==0;}
+bool IsStandardSel_v6 (Variables * vars) {return (vars->P_standard_sel&0x3F83)==0;}
+bool IsStandardSel_v7 (Variables * vars) {return (vars->P_standard_sel&0x3FFF)==0;}
+bool IsStandardSel_v8 (Variables * vars) {return (vars->P_standard_sel&0x7FFF)==0;}
+*/
+
+bool Is2Tracks(Variables * vars) {return (vars->NTracks==2);}
 
 bool Qualitycut(Variables * vars, float cutvariable, float cutTOF, float cutNaF, float cutAgl){
 
@@ -51,23 +91,24 @@ bool LikelihoodCut (Variables * vars){ return ((vars->BetaRICH_new<=0)||(vars->B
 
 
 //baseline eff. corr
-bool IsDownGoing    (Variables * vars)    	{ return (vars->Beta > 0); } 
-bool IsGoodChi2	    (Variables * vars) 		{ return ( ((int)vars->joinCutmask&16)==16);}
+bool IsDownGoing    (Variables * vars)    	{ return (vars->Beta > 0.3); } 
+bool IsGoodChi2	    (Variables * vars) 		{ return (vars->P_standard_sel&0x3000)==0;}   //( ((int)vars->joinCutmask&16)==16);}
+bool IsLUT2         (Variables * vars)          { return (((int)vars->joinCutmask&4)==4);} 
 bool IsPhysTrig     (Variables * vars)		{ return ((int)vars->joinCutmask&1)==1;}
-bool IsGoodTrack    (Variables * vars) 		{return vars->R!=0 &&IsGoodL2Status(vars);}
-bool IsCharge1Track (Variables * vars) 		{return (vars->qInner>0.8&&vars->qInner<1.3);}
-bool IsCharge1TrackLoose (Variables * vars) 	{return (vars->qInner>0.5&&vars->qInner<1.5);}
+bool IsGoodTrack    (Variables * vars) 		{return vars->R!=0 && HasL2(vars);}
+bool IsCharge1Track (Variables * vars) 		{return (vars->qInner>0.7&&vars->qInner<1.5);}
+bool IsCharge1TrackLoose (Variables * vars) 	{return (vars->qInner>0.3&&vars->qInner<1.8);}
 
 
 //efficiency corrections
-bool Is1TrTrack (Variables * vars)    { return ( ((int)vars->joinCutmask&128)==128);}
+bool Is1TrTrack (Variables * vars)    { return  ( ((int)vars->NTracks)==1);}
 bool IsMinTOF   (Variables * vars)    { return  ( ((int)vars->joinCutmask&2)==2);} 
 bool IsCharge1UTOF (Variables * vars) {return (vars->qUtof>0.8&&vars->qUtof<1.3);}
 bool IsCharge1LTOF (Variables * vars) {return (vars->qLtof>0.8&&vars->qLtof<1.3);}
 
 //analysis selections
-bool IsMinimumBias (Variables * vars){ return IsPhysTrig(vars) && IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) && IsCharge1Track(vars);}
-bool IsLooseCharge1 (Variables * vars) {return L1LooseCharge1(vars)&&IsCharge1TrackLoose(vars);}
+bool IsBaseline (Variables * vars){ return IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) && IsCharge1Track(vars);}
+bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0 && vars->qL1<2&&HasL1(vars));} 
 bool IsCleaning	(Variables * vars) { return Is1TrTrack(vars)&&IsMinTOF(vars)&&IsCharge1UTOF(vars)&&IsCharge1LTOF(vars);  }
 bool IsGoodTime (Variables * vars) { return ( ((int)vars->joinCutmask&32)==32);}
 bool IsFromNaF_nosel     (Variables * vars){ return vars->IsFromNaF_nosel();}
@@ -79,12 +120,12 @@ bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,99999
 
 
 //He fragm
-bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));}
-bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&L1LooseCharge1(vars)&&vars->R!=0&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));}
-bool IsPreselectedHe (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>1.75&&vars->qL1<2.3)&&IsGoodL1Status(vars))&&IsGoodL2Status(vars);}
+bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&HasL1(vars)&&HasL2(vars));}
+bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&L1LooseCharge1(vars)&&vars->R!=0&&HasL1(vars)&&HasL2(vars));}
+bool IsPreselectedHe (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>1.75&&vars->qL1<2.3)&&HasL1(vars))&&HasL2(vars);}
 bool IsPreselectedHeStep (Variables * vars,int step){
 			float chargecut=1.65;
-			return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>(chargecut+0.05*step)&&vars->qL1<2.3)&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));
+			return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>(chargecut+0.05*step)&&vars->qL1<2.3)&&HasL1(vars)&&HasL2(vars));
 }
 
 bool IsOnlyFromToF (Variables * vars){ return !((IsFromNaF(vars))||(IsFromAgl(vars)));}
@@ -122,18 +163,31 @@ bool TofBetaSafetyCut (Variables * vars) {return vars->Beta<0.8 ;}
 bool NafBetaSafetyCut (Variables * vars) {return vars->BetaRICH_new<0.967 ;}
 bool AglBetaSafetyCut (Variables * vars) {return vars->BetaRICH_new<0.99;}
 
-bool IsClearQ1ExceptL2 (Variables * vars) {return (vars->qL2>0&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qL1InnerNoL2>0.8&&vars->qL1InnerNoL2<1.3&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));} 
-bool IsClearQ2ExceptL2 (Variables * vars) {return (vars->qL2>0&&vars->qUtof>1.8&&vars->qUtof<2.3&&vars->qLtof>1.8&&vars->qLtof<2.3&&vars->qL1InnerNoL2>1.8&&vars->qL1InnerNoL2<2.3&&IsGoodL1Status(vars)&&IsGoodL2Status(vars));} 
+bool IsClearQ1ExceptL2 (Variables * vars) {return (vars->qL2>0&&vars->qUtof>0.8&&vars->qUtof<1.3&&vars->qLtof>0.8&&vars->qLtof<1.3&&vars->qL1InnerNoL2>0.8&&vars->qL1InnerNoL2<1.3&&HasL1(vars)&&HasL2(vars));} 
+bool IsClearQ2ExceptL2 (Variables * vars) {return (vars->qL2>0&&vars->qUtof>1.8&&vars->qUtof<2.3&&vars->qLtof>1.8&&vars->qLtof<2.3&&vars->qL1InnerNoL2>1.8&&vars->qL1InnerNoL2<2.3&&HasL1(vars)&&HasL2(vars));} 
 
 
 //// Tracking Efficiency
-
-bool IsExtrapolInsideL8 (Variables * vars) {
-	float X_extrapol = vars->entrypointcoo[0] + (( -29.185+vars->entrypointcoo[2])/cos(vars->theta_track))*cos(vars->phi_track)*sin(vars->theta_track);
-	float Y_extrapol = vars->entrypointcoo[1] + (( -29.185+vars->entrypointcoo[2])/cos(vars->theta_track))*sin(vars->phi_track)*sin(vars->theta_track);
+//layerZ = [160.,52.985,29.185,25.215,1.685,-2.285,-25.215,-29.185,-136.0]
+bool IsExtrapolInsideL9 (Variables * vars) {
+	float X_extrapol = vars->entrypointcoo[0] + (( -136.0-vars->entrypointcoo[2])/cos(vars->theta_track))*cos(vars->phi_track)*sin(vars->theta_track);
+	float Y_extrapol = vars->entrypointcoo[1] + (( -136.0-vars->entrypointcoo[2])/cos(vars->theta_track))*sin(vars->phi_track)*sin(vars->theta_track);
 	return (Y_extrapol>-45&&Y_extrapol<45);
 }
-	
+
+
+bool IsExtrapolInsideL8 (Variables * vars) {
+	float X_extrapol = vars->entrypointcoo[0] + (( -29.185-vars->entrypointcoo[2])/cos(vars->theta_track))*cos(vars->phi_track)*sin(vars->theta_track);
+	float Y_extrapol = vars->entrypointcoo[1] + (( -29.185-vars->entrypointcoo[2])/cos(vars->theta_track))*sin(vars->phi_track)*sin(vars->theta_track);
+	return (Y_extrapol>-45&&Y_extrapol<45);
+}
+
+bool IsExtrapolInsideL1 (Variables * vars) {
+	float X_extrapol = vars->entrypointcoo[0] + (( 160.-vars->entrypointcoo[2])/cos(vars->theta_track))*cos(vars->phi_track)*sin(vars->theta_track);
+	float Y_extrapol = vars->entrypointcoo[1] + (( 160.-vars->entrypointcoo[2])/cos(vars->theta_track))*sin(vars->phi_track)*sin(vars->theta_track);
+	return (Y_extrapol>-45&&Y_extrapol<45);
+}
+
 bool IsGoodTOFStandaloneQ1(Variables * vars) {	
 	return (vars->beta_SA>0 && vars->betapatt_SA==0 && vars->qUtof_SA > 0.8 && vars->qUtof_SA < 1.3 && vars->qLtof_SA > 0.8 && vars->qLtof_SA < 1.3 && vars-> qTrd_SA > 0.6 && vars-> qTrd_SA < 1.7);
 
@@ -197,6 +251,9 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsFragmentedPfromDMC")  IsPassed=IsPassed && IsFragmentedPfromDMC    (Vars);
 		if(spl[i]=="IsGoodL1Status")            IsPassed=IsPassed && IsGoodL1Status     (Vars);
 		if(spl[i]=="IsGoodL2Status")            IsPassed=IsPassed && IsGoodL2Status     (Vars);	
+		if(spl[i]=="HasL1")            IsPassed=IsPassed && HasL1     (Vars);
+		if(spl[i]=="HasL2")            IsPassed=IsPassed && HasL2     (Vars);	
+	
 		if(spl[i]=="IsL1Fiducial")            IsPassed=IsPassed && IsL1Fiducial     (Vars);	
 		if(spl[i]=="IsGoodChiSquareX")            IsPassed=IsPassed && IsGoodChiSquareX     (Vars);	
 		if(spl[i]=="IsGoodChiSquareY")            IsPassed=IsPassed && IsGoodChiSquareY     (Vars);	
@@ -218,10 +275,22 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		for(int j=0;j<10;j++) 
 			if(spl[i]==("IsPreselectedHe"+to_string(j)) )  IsPassed=IsPassed && IsPreselectedHeStep (Vars,j);
 		
-		if(spl[i]=="IsMinimumBias" ) IsPassed=IsPassed && IsMinimumBias (Vars); 
+		if(spl[i]=="IsBaseline" ) IsPassed=IsPassed && IsBaseline (Vars); 
 		if(spl[i]=="IsMinTOF" )      IsPassed=IsPassed && IsMinTOF (Vars); 
+		if(spl[i]=="IsStandardSel" )      IsPassed=IsPassed && IsStandardSel (Vars); 
 	
-		if(spl[i]=="IsLooseCharge1" ) IsPassed=IsPassed && IsLooseCharge1 (Vars);
+		if(spl[i]=="IsStandardSel_v0" )      IsPassed=IsPassed && IsStandardSel_v0 (Vars); 
+		if(spl[i]=="IsStandardSel_v1" )      IsPassed=IsPassed && IsStandardSel_v1 (Vars); 
+		if(spl[i]=="IsStandardSel_v2" )      IsPassed=IsPassed && IsStandardSel_v2 (Vars); 
+		if(spl[i]=="IsStandardSel_v3" )      IsPassed=IsPassed && IsStandardSel_v3 (Vars); 
+		if(spl[i]=="IsStandardSel_v4" )      IsPassed=IsPassed && IsStandardSel_v4 (Vars); 
+		if(spl[i]=="IsStandardSel_v5" )      IsPassed=IsPassed && IsStandardSel_v5 (Vars); 
+		if(spl[i]=="IsStandardSel_v6" )      IsPassed=IsPassed && IsStandardSel_v6 (Vars); 
+		if(spl[i]=="IsStandardSel_v7" )      IsPassed=IsPassed && IsStandardSel_v7 (Vars); 
+		if(spl[i]=="IsStandardSel_v8" )      IsPassed=IsPassed && IsStandardSel_v8 (Vars); 
+		if(spl[i]=="IsStandardSel_v9" )      IsPassed=IsPassed && IsStandardSel_v9 (Vars); 
+	
+
 		if(spl[i]=="IsCleaning" ) IsPassed=IsPassed && IsCleaning (Vars);
 
 		if(spl[i]=="IsOnlyFromToF" ) IsPassed=IsPassed && IsOnlyFromToF (Vars);
@@ -246,7 +315,11 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="AglBetaSafetyCut")  IsPassed=IsPassed && AglBetaSafetyCut(Vars);
 		if(spl[i]=="IsNegative") IsPassed=IsPassed && IsNegativeCharged(Vars);
 		if(spl[i]=="IsPositive") IsPassed=IsPassed && IsPositiveCharged(Vars);
+		
 		if(spl[i]=="IsHighEn") IsPassed=IsPassed && IsHighEn(Vars);
+		if(spl[i]=="IsLUT2") IsPassed=IsPassed && IsLUT2(Vars);
+	
+		if(spl[i]=="Is2Tracks") IsPassed=IsPassed && Is2Tracks(Vars);
 	
 		//eff. corr.
 		if(spl[i]=="IsGoodChi2") IsPassed=IsPassed && IsGoodChi2(Vars);
@@ -260,6 +333,8 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 
 		//tracking eff.	
   		if(spl[i]=="IsExtrapolInsideL8") IsPassed=IsPassed && IsExtrapolInsideL8(Vars);
+		if(spl[i]=="IsExtrapolInsideL1") IsPassed=IsPassed && IsExtrapolInsideL1(Vars);
+		if(spl[i]=="IsExtrapolInsideL9") IsPassed=IsPassed && IsExtrapolInsideL9(Vars);
 		if(spl[i]=="IsGoodTOFStandaloneQ1") IsPassed=IsPassed && IsGoodTOFStandaloneQ1(Vars);
 
 		//L1 pick-up eff.	

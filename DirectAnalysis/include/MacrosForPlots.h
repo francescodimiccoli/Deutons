@@ -2,7 +2,8 @@
 #include "TLine.h"
 #include "binning.h"
 #include "Globals.h"
-
+#include "reweight.h"
+#include "Variables.hpp"
 
 void DrawBins(TVirtualPad * c1, TH2F* histo, std::vector<float> orizontal_set,std::vector<float> vertical_set,int col_oriz, int col_vert) {
 		c1->cd();
@@ -81,6 +82,18 @@ void DrawQvsRBeta(TH2F * h6, TH2F *h9, TH2F * h6_, TH2F * h9_, std::string name,
 
 
 };
+
+TH1D * ReduceOnTimeHisto(TH1D *OnTime){
+		std::string name = OnTime->GetTitle();
+		TH1D * OnTime_red = new TH1D((name +"_red").c_str()      , (name+"_red").c_str()       , 2,0,2);
+		OnTime_red   ->SetBinContent(1,OnTime->Integral(OnTime->FindBin(0),OnTime->FindBin(4.5)));
+		OnTime_red   ->SetBinContent(2,OnTime->Integral(OnTime->FindBin(4.5),OnTime->FindBin(15)));
+		return OnTime_red;
+
+	}
+
+
+
 
 void DrawCleaning(FileSaver finalHistos,FileSaver finalResults){
    TH2F * h3d = (TH2F*)finalHistos.Get("MassTOFvsRupdown/MassTOFvsRupdown");
@@ -588,7 +601,867 @@ void DrawBetavsRig(FileSaver finalHistos,FileSaver finalResults){
 	finalResults.Add(c2);
 	finalResults.writeObjsInFolder("RigvsBeta/TOF_MC");
 
+}
+
+
+
+void DrawAcceptanceMatrix(FileSaver finalHistos,FileSaver finalResults){
+
+	Variables * vars = new Variables();
+	TH1F * Denominator = new TH1F("Denominator","MC spectrum",PRB.size(),0,PRB.size());
+	TH1F * DenominatorW = new TH1F("DenominatorW","Reweighted",PRB.size(),0,PRB.size());
+	
+	float range = log(100)-log(0.5);
+	
+	Histogram Spectrum = vars->reweighter.getTo(); 
+
+
+	for(int i=0;i<Denominator->GetNbinsX();i++){
+		
+		std::ostringstream ss;
+		ss << fixed << setprecision(1) << PRB.RigBinCent(i);
+		std::string s(ss.str());
+		Denominator->SetBinContent(i+1,(log(PRB.RigBin(i+1))-log(PRB.RigBin(i)))/range );
+		Denominator->GetXaxis()->SetBinLabel(i+1,s.c_str());
+		DenominatorW->SetBinContent(i+1,Spectrum.integrate(PRB.RigBin(i),PRB.RigBin(i+1)));
+		DenominatorW->GetXaxis()->SetBinLabel(i+1,s.c_str());
+	}
+
+	DenominatorW->Scale(1/DenominatorW->Integral());
+	Denominator->Scale(1e6);
+	DenominatorW->Scale(1e6);
+
+
+	Denominator->SetLineWidth(2);
+	DenominatorW->SetLineWidth(2);
+	Denominator->SetLineColor(4);
+	DenominatorW->SetLineColor(2);
+	DenominatorW->GetXaxis()->LabelsOption("v");
+	DenominatorW->GetXaxis()->SetTitle("R [GV]");
+	DenominatorW->GetYaxis()->SetTitle("Gen. Events");
+
+
+	TCanvas * c1 = new TCanvas("Denominator");
+        c1->cd();
+	gPad->SetGridx();
+	DenominatorW->Draw();
+	Denominator->Draw("same");
+	finalResults.Add(c1);
+        finalResults.writeObjsInFolder("Acceptance Matrix");
+
+
+
+
+	std::string names[7] = {"N Tof Clusters","Q L tof","Q U tof","tof Coo chi","tof Time chi","N Tracks","On Time"};
+
+	for(int i=0; i<7;i++) {
+		TH2F * AcceptanceMatrix= (TH2F*)finalHistos.Get(("Acceptance Matrix v" + to_string(i) +"/Acceptance Matrix v" +to_string(i)).c_str());
+		cout<<"Acc Matrix: "<<("Acceptance Matrix v" + to_string(i) +"/Acceptance Matrix v" +to_string(i)).c_str()<< AcceptanceMatrix<<endl; 
+		AcceptanceMatrix->SetName(("tracker + " + names[i]).c_str());
+		AcceptanceMatrix->SetTitle(("tracker + " + names[i]).c_str());
+	
+		for(int i=0;i<AcceptanceMatrix->GetNbinsX();i++){
+			for(int j=0;j<AcceptanceMatrix->GetNbinsY();j++){
+				if(DenominatorW->GetBinContent(i+1)>0 && (i+1)>6)
+					AcceptanceMatrix->SetBinContent(i+1,j+1,AcceptanceMatrix->GetBinContent(i+1,j+1)/DenominatorW->GetBinContent(i+1));
+				else AcceptanceMatrix->SetBinContent(i+1,j+1,AcceptanceMatrix->GetBinContent(i+1,j+1)/(2*Denominator->GetBinContent(i+1)));	
+				}
+		}
+
+		for(int i=0;i<AcceptanceMatrix->GetNbinsX();i++){
+
+			std::ostringstream ss;
+			ss << fixed << setprecision(1) << PRB.RigBinCent(i);
+			std::string s(ss.str());
+
+			AcceptanceMatrix->GetXaxis()->SetBinLabel(i+1,s.c_str());
+			AcceptanceMatrix->GetYaxis()->SetBinLabel(i+1,s.c_str());
+		}
+		AcceptanceMatrix->GetXaxis()->LabelsOption("v");
+
+		AcceptanceMatrix->GetXaxis()->SetTitle("R_{gen} [GV]");
+		AcceptanceMatrix->GetYaxis()->SetTitle("R_{meas} [GV]");
+
+		AcceptanceMatrix->GetXaxis()->SetTitleOffset(1.35);
+		AcceptanceMatrix->GetYaxis()->SetLabelSize(0.03);
+
+		TCanvas * c2 = new TCanvas(("tracker + " + names[i]).c_str());
+		c2->cd();
+		gPad->SetGridx();
+		gPad->SetGridy();
+		c2->SetLogz();
+		AcceptanceMatrix->Draw("colz");
+		finalResults.Add(c2);
+
+	}
+
+        finalResults.writeObjsInFolder("Acceptance Matrix");
+
+	TH2F * AcceptanceMatrix= (TH2F*)finalHistos.Get("Acceptance Matrix/Acceptance Matrix");
+
+	for(int i=0;i<AcceptanceMatrix->GetNbinsX();i++){
+			for(int j=0;j<AcceptanceMatrix->GetNbinsY();j++){
+				if(DenominatorW->GetBinContent(i+1)>0 && (i+1)>6){
+					AcceptanceMatrix->SetBinError(i+1,j+1, pow(AcceptanceMatrix->GetBinContent(i+1,j+1),0.5)/DenominatorW->GetBinContent(i+1));
+					AcceptanceMatrix->SetBinContent(i+1,j+1,AcceptanceMatrix->GetBinContent(i+1,j+1)/DenominatorW->GetBinContent(i+1));
+					}
+				else{
+					AcceptanceMatrix->SetBinError(i+1,j+1, pow(AcceptanceMatrix->GetBinContent(i+1,j+1),0.5)/(2*Denominator->GetBinContent(i+1)));
+					AcceptanceMatrix->SetBinContent(i+1,j+1,AcceptanceMatrix->GetBinContent(i+1,j+1)/(2*Denominator->GetBinContent(i+1)));
+					}
+				}
+		}
+
+        TH1D*	Acceptance_gen  = AcceptanceMatrix->ProjectionX("projx",1,43);
+	TH1D*   Acceptance_meas = AcceptanceMatrix->ProjectionY("projy",1,43);
+
+
+	Acceptance_meas->GetXaxis()->LabelsOption("v");
+	Acceptance_gen->GetXaxis()->LabelsOption("v");
+
+
+	TCanvas * c4 = new TCanvas("Acceptance Matrix");
+	for(int i=0;i<AcceptanceMatrix->GetNbinsX();i++){
+		for(int j=0;j<AcceptanceMatrix->GetNbinsY();j++){
+			if(DenominatorW->GetBinContent(i+1)>0 && (i+1)>6)
+				AcceptanceMatrix->SetBinContent(i+1,j+1,AcceptanceMatrix->GetBinContent(i+1,j+1)/Denominator->GetBinContent(i+1));
+			else AcceptanceMatrix->SetBinContent(i+1,j+1,AcceptanceMatrix->GetBinContent(i+1,j+1)/(2*Denominator->GetBinContent(i+1)));	
+		}
+	}
+
+	for(int i=0;i<AcceptanceMatrix->GetNbinsX();i++){
+
+		std::ostringstream ss;
+		ss << fixed << setprecision(1) << PRB.RigBinCent(i);
+		std::string s(ss.str());
+
+		AcceptanceMatrix->GetXaxis()->SetBinLabel(i+1,s.c_str());
+		AcceptanceMatrix->GetYaxis()->SetBinLabel(i+1,s.c_str());
+	}
+	AcceptanceMatrix->GetXaxis()->LabelsOption("v");
+
+	AcceptanceMatrix->GetXaxis()->SetTitle("R_{gen} [GV]");
+	AcceptanceMatrix->GetYaxis()->SetTitle("R_{meas} [GV]");
+
+	AcceptanceMatrix->GetXaxis()->SetTitleOffset(1.35);
+	AcceptanceMatrix->GetYaxis()->SetLabelSize(0.03);
+
+	c4->cd();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	c4->SetLogz();
+	AcceptanceMatrix->Draw("colz");
+	finalResults.Add(c4);
+
+
+	TCanvas * c3 = new TCanvas("Acceptance Projections");
+        c3->cd();
+	Acceptance_gen->SetLineColor(2);
+	Acceptance_meas->SetLineColor(4);
+	Acceptance_gen->Draw("P");
+        Acceptance_meas->Draw("Psame");
+	finalResults.Add(c3);
+        finalResults.writeObjsInFolder("Acceptance Matrix");
 
 
 
 }
+
+TH1D * EvalRunningIntegral(TH1D * Distrib){
+	TH1D * RunIntegral = (TH1D*) Distrib->Clone();
+	RunIntegral->Clear();
+
+	for(int i=0;i<RunIntegral->GetNbinsX();i++){
+		RunIntegral->SetBinContent(i+1,Distrib->Integral(0,i+1));
+//		RunIntegral->SetBinContent(i+1,Distrib->Integral(i+1,Distrib->GetNbinsX()));
+		RunIntegral->SetBinError(i+1,0);
+	}
+	return RunIntegral;
+}
+
+
+void DrawVariables_app(FileSaver finalHistos,FileSaver finalResults, std::string app){
+
+	TH2F * hd[7];
+	TH2F * h[7];
+	TCanvas * c[7];
+	TCanvas * d[7];
+	std::string names[7] = {"N Tof Clusters","Q L tof","Q U tof","tof Coo chi","tof Time chi","N Tracks","On Time"};
+
+	hd[0]  =(TH2F*)finalHistos.Get( ("N Tof Clusters" +app+"/N Tof Clusters"+app).c_str());
+	hd[1]  =(TH2F*)finalHistos.Get( ("Q L tof" +app+"/Q L tof"+app).c_str()	)	;
+	hd[2]  =(TH2F*)finalHistos.Get( ("Q U tof"+app+"/Q U tof"+app).c_str()	)	 ;  
+	hd[3]  =(TH2F*)finalHistos.Get( ("tof Coo chi"+app+"/tof Coo chi"+app).c_str());	   
+	hd[4]  =(TH2F*)finalHistos.Get( ("tof Time chi"+app+"/tof Time chi"+app).c_str());		   
+	hd[5]  =(TH2F*)finalHistos.Get( ("N Tracks"+app+"/N Tracks"+app).c_str()	)	 ;  
+        hd[6]  =(TH2F*)finalHistos.Get( ("On Time"+app+"/On Time"+app).c_str()	)	;
+                                         
+	h[0]   =(TH2F*)finalHistos.Get( ("N Tof Clusters MC"+app+"/N Tof Clusters MC"+app).c_str()	);
+	h[1]   =(TH2F*)finalHistos.Get( ("Q L tof MC"+app+"/Q L tof MC"+app).c_str()	)	;
+	h[2]   =(TH2F*)finalHistos.Get( ("Q U tof MC"+app+"/Q U tof MC"+app).c_str()	)	 ;  
+	h[3]   =(TH2F*)finalHistos.Get( ("tof Coo chi MC"+app+"/tof Coo chi MC"+app).c_str()	);	   
+	h[4]   =(TH2F*)finalHistos.Get( ("tof Time chi MC"+app+"/tof Time chi MC"+app).c_str());		   
+	h[5]   =(TH2F*)finalHistos.Get( ("N Tracks MC"+app+"/N Tracks MC"+app).c_str()	)	 ;  
+        h[6]   =(TH2F*)finalHistos.Get( ("On Time MC"+app+"/On Time MC"+app).c_str()	)	;
+
+
+	for(int i=0; i<7; i++) {
+		
+		cout<<h[i]<<" "<<hd[i]<<endl;	
+		TH1D * HighDT = hd[i]->ProjectionX((names[i] + "DT_High").c_str(),15,40);
+		TH1D * MedDT  = hd[i]->ProjectionX((names[i] + "DT_Med").c_str() ,8,15);
+		TH1D * LowDT  = hd[i]->ProjectionX((names[i] + "DT_Low").c_str() ,1,7);
+
+		TH1D * High = h[i]->ProjectionX((names[i] + "MC_High").c_str(),15,40);
+		TH1D * Med  = h[i]->ProjectionX((names[i] + "MC_Med").c_str() ,8,15);
+		TH1D * Low  = h[i]->ProjectionX((names[i] + "MC_Low").c_str() ,1,7);
+
+		c[i] = new TCanvas(names[i].c_str());
+		c[i]->Divide(3,1);
+		d[i] = new TCanvas((names[i]+" R.I.").c_str());
+		d[i]->Divide(3,1);
+	
+		c[i]->cd(1);
+		gPad->SetLogy();
+
+
+		LowDT->SetLineColor(1);
+		LowDT->SetLineWidth(2);
+		Low  ->SetLineColor(2);
+		Low  ->SetLineWidth(2);
+		LowDT->SetTitle("1-7 GV");	
+		LowDT->Scale(1/LowDT->Integral());
+		Low->Scale(1/Low->Integral());
+	
+		LowDT->Draw("hist");
+		Low->Draw("same,hist");
+		
+		d[i]->cd(1);
+		TH1D * LowDT_RI = EvalRunningIntegral(LowDT);
+		TH1D * Low_RI = EvalRunningIntegral(Low);		
+		LowDT_RI->Draw("hist");
+		Low_RI->Draw("same,hist");
+
+		c[i]->cd(2);
+		gPad->SetLogy();
+
+		MedDT->SetLineColor(1);
+		MedDT->SetLineWidth(2);
+		Med  ->SetLineColor(2);
+		Med  ->SetLineWidth(2);
+		MedDT->SetTitle("8-15 GV");	
+		MedDT->Scale(1/MedDT->Integral());
+		Med->Scale(1/Med->Integral());
+	
+
+		MedDT->Draw("hist");
+		Med->Draw("same,hist");
+
+		d[i]->cd(2);
+		TH1D * MedDT_RI = EvalRunningIntegral(MedDT);
+		TH1D * Med_RI = EvalRunningIntegral(Med);		
+		MedDT_RI->Draw("hist");
+		Med_RI->Draw("same,hist");
+
+		c[i]->cd(3);
+		gPad->SetLogy();
+
+
+		HighDT->SetLineColor(1);
+		HighDT->SetLineWidth(2);
+		High  ->SetLineColor(2);
+		High  ->SetLineWidth(2);
+		HighDT->Scale(1/HighDT->Integral());
+		High->Scale(1/High->Integral());
+		HighDT->SetTitle("15-40 GV");	
+		HighDT->Draw("hist");
+		High->Draw("same,hist");
+
+		d[i]->cd(3);
+		TH1D * HighDT_RI = EvalRunningIntegral(HighDT);
+		TH1D * High_RI = EvalRunningIntegral(High);		
+		HighDT_RI->Draw("hist");
+		High_RI->Draw("same,hist");
+
+
+			finalResults.Add(c[i]);
+			finalResults.Add(d[i]);
+
+	}
+	TCanvas * c2 = new TCanvas("NTracks vs QLtof");
+	c2->cd();
+
+       TH2F * NTrTracksvsQLtof = (TH2F*)finalHistos.Get(("NTrTracksvsQLtof"+app+"/NTrTracksvsQLtof"+app).c_str());
+       TH2F * NTrTracksvsQLtof_MC = (TH2F*)finalHistos.Get(("NTrTracksvsQLtof MC"+app+"/NTrTracksvsQLtof MC"+app).c_str());
+	cout<<NTrTracksvsQLtof<<" "<<NTrTracksvsQLtof_MC<<endl;
+
+       TH1D * OneTrack      = NTrTracksvsQLtof->ProjectionY(   	"1 Track"	, NTrTracksvsQLtof->GetXaxis()->FindBin(0.5),NTrTracksvsQLtof->GetXaxis()->FindBin(1.5));	
+       TH1D * OneTrack_MC   = NTrTracksvsQLtof_MC->ProjectionY(	"1 Track MC"	, NTrTracksvsQLtof->GetXaxis()->FindBin(0.5),NTrTracksvsQLtof->GetXaxis()->FindBin(1.5));
+       TH1D * TwoTrack      = NTrTracksvsQLtof->ProjectionY(	"2 Track"		, NTrTracksvsQLtof->GetXaxis()->FindBin(1.5),NTrTracksvsQLtof->GetXaxis()->FindBin(2.5));	
+       TH1D * TwoTrack_MC   = NTrTracksvsQLtof_MC->ProjectionY(	"2 Track MC"	, NTrTracksvsQLtof->GetXaxis()->FindBin(1.5),NTrTracksvsQLtof->GetXaxis()->FindBin(2.5));
+       TH1D * ThreeTrack    = NTrTracksvsQLtof->ProjectionY(	"3 Track"		, NTrTracksvsQLtof->GetXaxis()->FindBin(2.5),NTrTracksvsQLtof->GetXaxis()->FindBin(3.5));	
+       TH1D * ThreeTrack_MC = NTrTracksvsQLtof_MC->ProjectionY(	"3 Track MC"	, NTrTracksvsQLtof->GetXaxis()->FindBin(2.5),NTrTracksvsQLtof->GetXaxis()->FindBin(3.5));
+       TH1D * FourTrack     = NTrTracksvsQLtof->ProjectionY(	"4 Track"		, NTrTracksvsQLtof->GetXaxis()->FindBin(3.5),NTrTracksvsQLtof->GetXaxis()->FindBin(4.5));	
+       TH1D * FourTrack_MC  = NTrTracksvsQLtof_MC->ProjectionY(	"4 Track MC"	, NTrTracksvsQLtof->GetXaxis()->FindBin(3.5),NTrTracksvsQLtof->GetXaxis()->FindBin(4.5));
+    
+      OneTrack     ->SetTitle("1 Track"   ); 
+      OneTrack_MC  ->SetTitle("1 Track MC"); 
+      TwoTrack     ->SetTitle("2 Track"   ); 
+      TwoTrack_MC  ->SetTitle("2 Track MC"); 
+      ThreeTrack   ->SetTitle("3 Track"   ); 
+      ThreeTrack_MC->SetTitle("3 Track MC"); 
+      FourTrack    ->SetTitle("4 Track"   ); 
+      FourTrack_MC ->SetTitle("4 Track MC"); 
+
+
+       OneTrack      ->Scale(1/OneTrack     ->Integral() ); 
+       OneTrack_MC   ->Scale(1/OneTrack_MC  ->Integral() ); 
+       TwoTrack      ->Scale(1/TwoTrack    ->Integral()  ); 
+       TwoTrack_MC   ->Scale(1/TwoTrack_MC ->Integral()  ); 
+       ThreeTrack    ->Scale(1/ThreeTrack  ->Integral()  ); 
+       ThreeTrack_MC ->Scale(1/ThreeTrack_MC->Integral() ); 
+       FourTrack     ->Scale(1/FourTrack ->Integral()    ); 
+       FourTrack_MC  ->Scale(1/FourTrack_MC->Integral() ); 
+
+       OneTrack->SetLineColor(1);
+       OneTrack_MC->SetLineColor(1);
+       OneTrack->SetLineWidth(2);
+       OneTrack_MC->SetLineWidth(2);
+       OneTrack_MC->SetLineStyle(2);
+
+      OneTrack->GetXaxis()->SetTitle("Q Ltof");
+        OneTrack->Draw("hist");
+       OneTrack_MC->Draw("hist,same");
+
+       TwoTrack->SetLineColor(2);
+       TwoTrack_MC->SetLineColor(2);
+       TwoTrack->SetLineWidth(2);
+       TwoTrack_MC->SetLineWidth(2);
+       TwoTrack_MC->SetLineStyle(2);
+
+       TwoTrack->Draw("hist,same");
+       TwoTrack_MC->Draw("hist,same");
+
+       ThreeTrack->SetLineColor(3);
+       ThreeTrack_MC->SetLineColor(3);
+       ThreeTrack->SetLineWidth(2);
+       ThreeTrack_MC->SetLineWidth(2);
+       ThreeTrack_MC->SetLineStyle(2);
+
+       ThreeTrack->Draw("hist,same");
+       ThreeTrack_MC->Draw("hist,same");
+
+       FourTrack->SetLineColor(4);
+       FourTrack_MC->SetLineColor(4);
+       FourTrack->SetLineWidth(2);
+       FourTrack_MC->SetLineWidth(2);
+       FourTrack_MC->SetLineStyle(2);
+
+       FourTrack->Draw("hist,same");
+       FourTrack_MC->Draw("hist,same");
+
+
+	finalResults.Add(c2);
+
+	TCanvas * c3 = new TCanvas("NTracks vs QUtof");
+	c3->cd();
+
+       TH2F * NTrTracksvsQUtof = (TH2F*)finalHistos.Get(("NTrTracksvsQUtof"+app+"/NTrTracksvsQUtof"+app).c_str());
+       TH2F * NTrTracksvsQUtof_MC = (TH2F*)finalHistos.Get(("NTrTracksvsQUtof MC"+app+"/NTrTracksvsQUtof MC"+app).c_str());
+	cout<<NTrTracksvsQUtof<<" "<<NTrTracksvsQUtof_MC<<endl;
+
+       TH1D * OneTrack2      = NTrTracksvsQUtof->ProjectionY("1 Track", NTrTracksvsQUtof->GetXaxis()->FindBin(0.5),NTrTracksvsQUtof->GetXaxis()->FindBin(1.5));	
+       TH1D * OneTrack2_MC   = NTrTracksvsQUtof_MC->ProjectionY("1 Track MC", NTrTracksvsQUtof->GetXaxis()->FindBin(0.5),NTrTracksvsQUtof->GetXaxis()->FindBin(1.5));
+       TH1D * TwoTrack2      = NTrTracksvsQUtof->ProjectionY("2 Track", NTrTracksvsQUtof->GetXaxis()->FindBin(1.5),NTrTracksvsQUtof->GetXaxis()->FindBin(2.5));	
+       TH1D * TwoTrack2_MC   = NTrTracksvsQUtof_MC->ProjectionY("2 Track MC", NTrTracksvsQUtof->GetXaxis()->FindBin(1.5),NTrTracksvsQUtof->GetXaxis()->FindBin(2.5));
+       TH1D * ThreeTrack2    = NTrTracksvsQUtof->ProjectionY("3 Track", NTrTracksvsQUtof->GetXaxis()->FindBin(2.5),NTrTracksvsQUtof->GetXaxis()->FindBin(3.5));	
+       TH1D * ThreeTrack2_MC = NTrTracksvsQUtof_MC->ProjectionY("3 Track MC", NTrTracksvsQUtof->GetXaxis()->FindBin(2.5),NTrTracksvsQUtof->GetXaxis()->FindBin(3.5));
+       TH1D * FourTrack2     = NTrTracksvsQUtof->ProjectionY("4 Track", NTrTracksvsQUtof->GetXaxis()->FindBin(3.5),NTrTracksvsQUtof->GetXaxis()->FindBin(4.5));	
+       TH1D * FourTrack2_MC  = NTrTracksvsQUtof_MC->ProjectionY("4 Track MC", NTrTracksvsQUtof->GetXaxis()->FindBin(3.5),NTrTracksvsQUtof->GetXaxis()->FindBin(4.5));
+
+      OneTrack2     ->SetTitle("1 Track"   ); 
+      OneTrack2_MC  ->SetTitle("1 Track MC"); 
+      TwoTrack2     ->SetTitle("2 Track"   ); 
+      TwoTrack2_MC  ->SetTitle("2 Track MC"); 
+      ThreeTrack2   ->SetTitle("3 Track"   ); 
+      ThreeTrack2_MC->SetTitle("3 Track MC"); 
+      FourTrack2    ->SetTitle("4 Track"   ); 
+      FourTrack2_MC ->SetTitle("4 Track MC"); 
+
+
+       OneTrack2      ->Scale(1/OneTrack2     ->Integral() ); 
+       OneTrack2_MC   ->Scale(1/OneTrack2_MC  ->Integral() ); 
+       TwoTrack2      ->Scale(1/TwoTrack2    ->Integral()  ); 
+       TwoTrack2_MC   ->Scale(1/TwoTrack2_MC ->Integral()  ); 
+       ThreeTrack2    ->Scale(1/ThreeTrack2  ->Integral()  ); 
+       ThreeTrack2_MC ->Scale(1/ThreeTrack2_MC->Integral() ); 
+       FourTrack2     ->Scale(1/FourTrack2 ->Integral()    ); 
+       FourTrack2_MC  ->Scale(1/FourTrack2_MC->Integral() ); 
+
+       OneTrack2->SetLineColor(1);
+       OneTrack2_MC->SetLineColor(1);
+       OneTrack2->SetLineWidth(2);
+       OneTrack2_MC->SetLineWidth(2);
+       OneTrack2_MC->SetLineStyle(2);
+
+	OneTrack2->GetXaxis()->SetTitle("Q Utof");
+       OneTrack2->Draw("hist");
+       OneTrack2_MC->Draw("hist,same");
+
+       TwoTrack2->SetLineColor(2);
+       TwoTrack2_MC->SetLineColor(2);
+       TwoTrack2->SetLineWidth(2);
+       TwoTrack2_MC->SetLineWidth(2);
+       TwoTrack2_MC->SetLineStyle(2);
+
+       TwoTrack2->Draw("hist,same");
+       TwoTrack2_MC->Draw("hist,same");
+
+       ThreeTrack2->SetLineColor(3);
+       ThreeTrack2_MC->SetLineColor(3);
+       ThreeTrack2->SetLineWidth(2);
+       ThreeTrack2_MC->SetLineWidth(2);
+       ThreeTrack2_MC->SetLineStyle(2);
+
+       ThreeTrack2->Draw("hist,same");
+       ThreeTrack2_MC->Draw("hist,same");
+
+       FourTrack2->SetLineColor(4);
+       FourTrack2_MC->SetLineColor(4);
+       FourTrack2->SetLineWidth(2);
+       FourTrack2_MC->SetLineWidth(2);
+       FourTrack2_MC->SetLineStyle(2);
+
+       FourTrack2->Draw("hist,same");
+       FourTrack2_MC->Draw("hist,same");
+
+
+finalResults.Add(c3);
+	TCanvas * c4 = new TCanvas("NTracks vs OnTime");
+	c4->cd();
+
+       TH2F * OnTimeVsNTrTracks = (TH2F*)finalHistos.Get(("OnTimeVsNTrTracks"+app+"/OnTimeVsNTrTracks"+app).c_str());
+       TH2F * OnTimeVsNTrTracks_MC = (TH2F*)finalHistos.Get(("OnTimeVsNTrTracks MC"+app+"/OnTimeVsNTrTracks MC"+app).c_str());
+	cout<<OnTimeVsNTrTracks<<" "<<OnTimeVsNTrTracks_MC<<endl;
+
+       TH1D * OneTrack3      = OnTimeVsNTrTracks->ProjectionX("1 Track", OnTimeVsNTrTracks->GetYaxis()->FindBin(0.5),OnTimeVsNTrTracks->GetYaxis()->FindBin(1.5));	
+       TH1D * OneTrack3_MC   = OnTimeVsNTrTracks_MC->ProjectionX("1 Track MC", OnTimeVsNTrTracks->GetYaxis()->FindBin(0.5),OnTimeVsNTrTracks->GetYaxis()->FindBin(1.5));
+       TH1D * TwoTrack3      = OnTimeVsNTrTracks->ProjectionX("2 Track", OnTimeVsNTrTracks->GetYaxis()->FindBin(1.5),OnTimeVsNTrTracks->GetYaxis()->FindBin(2.5));	
+       TH1D * TwoTrack3_MC   = OnTimeVsNTrTracks_MC->ProjectionX("2 Track MC", OnTimeVsNTrTracks->GetYaxis()->FindBin(1.5),OnTimeVsNTrTracks->GetYaxis()->FindBin(2.5));
+       TH1D * ThreeTrack3    = OnTimeVsNTrTracks->ProjectionX("3 Track", OnTimeVsNTrTracks->GetYaxis()->FindBin(2.5),OnTimeVsNTrTracks->GetYaxis()->FindBin(3.5));	
+       TH1D * ThreeTrack3_MC = OnTimeVsNTrTracks_MC->ProjectionX("3 Track MC", OnTimeVsNTrTracks->GetYaxis()->FindBin(2.5),OnTimeVsNTrTracks->GetYaxis()->FindBin(3.5));
+       TH1D * FourTrack3     = OnTimeVsNTrTracks->ProjectionX("4 Track", OnTimeVsNTrTracks->GetYaxis()->FindBin(3.5),OnTimeVsNTrTracks->GetYaxis()->FindBin(4.5));	
+       TH1D * FourTrack3_MC  = OnTimeVsNTrTracks_MC->ProjectionX("4 Track MC", OnTimeVsNTrTracks->GetYaxis()->FindBin(3.5),OnTimeVsNTrTracks->GetYaxis()->FindBin(4.5));
+
+      OneTrack3     ->SetTitle("1 Track"   ); 
+      OneTrack3_MC  ->SetTitle("1 Track MC"); 
+      TwoTrack3     ->SetTitle("2 Track"   ); 
+      TwoTrack3_MC  ->SetTitle("2 Track MC"); 
+      ThreeTrack3   ->SetTitle("3 Track"   ); 
+      ThreeTrack3_MC->SetTitle("3 Track MC"); 
+      FourTrack3    ->SetTitle("4 Track"   ); 
+      FourTrack3_MC ->SetTitle("4 Track MC"); 
+
+
+
+	TH1D * OneTrack3_red     = ReduceOnTimeHisto(OneTrack3     	);  
+        TH1D * OneTrack3_MC_red  = ReduceOnTimeHisto(OneTrack3_MC  	);
+        TH1D * TwoTrack3_red     = ReduceOnTimeHisto(TwoTrack3     	);
+        TH1D * TwoTrack3_MC_red  = ReduceOnTimeHisto(TwoTrack3_MC  	);
+        TH1D * ThreeTrack3_red   = ReduceOnTimeHisto(ThreeTrack3   	);
+        TH1D * ThreeTrack3_MC_red= ReduceOnTimeHisto(ThreeTrack3_MC	);
+        TH1D * FourTrack3_red    = ReduceOnTimeHisto(FourTrack3    	);
+        TH1D * FourTrack3_MC_red = ReduceOnTimeHisto(FourTrack3_MC 	);
+
+
+       OneTrack3_red      ->Scale(1/OneTrack3_red     ->Integral() ); 
+       OneTrack3_MC_red   ->Scale(1/OneTrack3_MC_red  ->Integral() ); 
+       TwoTrack3_red      ->Scale(1/TwoTrack3_red     ->Integral()  ); 
+       TwoTrack3_MC_red   ->Scale(1/TwoTrack3_MC_red  ->Integral()  ); 
+       ThreeTrack3_red    ->Scale(1/ThreeTrack3_red   ->Integral()  ); 
+       ThreeTrack3_MC_red ->Scale(1/ThreeTrack3_MC_red->Integral() ); 
+       FourTrack3_red     ->Scale(1/FourTrack3_red    ->Integral()    ); 
+       FourTrack3_MC_red  ->Scale(1/FourTrack3_MC_red ->Integral() ); 
+
+       OneTrack3_red->SetLineColor(1);
+       OneTrack3_MC_red->SetLineColor(1);
+       OneTrack3_red->SetLineWidth(2);
+       OneTrack3_MC_red->SetLineWidth(2);
+       OneTrack3_MC_red->SetLineStyle(2);
+
+	OneTrack3_red->GetXaxis()->SetTitle("On Time Cl.");
+       OneTrack3_red->Draw("hist");
+       OneTrack3_MC_red->Draw("hist,same");
+
+       TwoTrack3_red->SetLineColor(2);
+       TwoTrack3_MC_red->SetLineColor(2);
+       TwoTrack3_red->SetLineWidth(2);
+       TwoTrack3_MC_red->SetLineWidth(2);
+       TwoTrack3_MC_red->SetLineStyle(2);
+
+       TwoTrack3_red->Draw("hist,same");
+       TwoTrack3_MC_red->Draw("hist,same");
+
+       ThreeTrack3_red->SetLineColor(3);
+       ThreeTrack3_MC_red->SetLineColor(3);
+       ThreeTrack3_red->SetLineWidth(2);
+       ThreeTrack3_MC_red->SetLineWidth(2);
+       ThreeTrack3_MC_red->SetLineStyle(2);
+
+       ThreeTrack3_red->Draw("hist,same");
+       ThreeTrack3_MC_red->Draw("hist,same");
+
+       FourTrack3_red->SetLineColor(4);
+       FourTrack3_MC_red->SetLineColor(4);
+       FourTrack3_red->SetLineWidth(2);
+       FourTrack3_MC_red->SetLineWidth(2);
+       FourTrack3_MC_red->SetLineStyle(2);
+
+       FourTrack3_red->Draw("hist,same");
+       FourTrack3_MC_red->Draw("hist,same");
+
+
+	finalResults.Add(c4);
+
+
+	finalResults.Add(c4);
+
+	TCanvas * c5 = new TCanvas("NTofCl vs OnTime");
+	c5->cd();
+
+       TH2F * TofClustersVsOnTime = (TH2F*)finalHistos.Get(("TofClustersVsOnTime"+app+"/TofClustersVsOnTime"+app).c_str());
+       TH2F * TofClustersVsOnTime_MC = (TH2F*)finalHistos.Get(("TofClustersVsOnTime MC"+app+"/TofClustersVsOnTime MC"+app).c_str());
+	cout<<TofClustersVsOnTime<<" "<<TofClustersVsOnTime_MC<<endl;
+
+	TH1D * OneClust      = TofClustersVsOnTime->ProjectionY(	"1 Cluster"	, TofClustersVsOnTime->GetXaxis()->FindBin(0.5),TofClustersVsOnTime->GetXaxis()->FindBin(1.5));	
+	TH1D * OneClust_MC   = TofClustersVsOnTime_MC->ProjectionY(	"1 Cluster MC"	, TofClustersVsOnTime->GetXaxis()->FindBin(0.5),TofClustersVsOnTime->GetXaxis()->FindBin(1.5));
+	TH1D * TwoClust      = TofClustersVsOnTime->ProjectionY(	"2 Cluster"	, TofClustersVsOnTime->GetXaxis()->FindBin(1.5),TofClustersVsOnTime->GetXaxis()->FindBin(2.5));	
+	TH1D * TwoClust_MC   = TofClustersVsOnTime_MC->ProjectionY(	"2 Cluster MC"	, TofClustersVsOnTime->GetXaxis()->FindBin(1.5),TofClustersVsOnTime->GetXaxis()->FindBin(2.5));
+	TH1D * ThreeClust    = TofClustersVsOnTime->ProjectionY(	"3 Cluster"	, TofClustersVsOnTime->GetXaxis()->FindBin(2.5),TofClustersVsOnTime->GetXaxis()->FindBin(3.5));	
+	TH1D * ThreeClust_MC = TofClustersVsOnTime_MC->ProjectionY(	"3 Cluster MC"	, TofClustersVsOnTime->GetXaxis()->FindBin(2.5),TofClustersVsOnTime->GetXaxis()->FindBin(3.5));
+	TH1D * FourClust     = TofClustersVsOnTime->ProjectionY(	"4 Cluster"	, TofClustersVsOnTime->GetXaxis()->FindBin(3.5),TofClustersVsOnTime->GetXaxis()->FindBin(4.5));	
+	TH1D * FourClust_MC  = TofClustersVsOnTime_MC->ProjectionY(	"4 Cluster MC"	, TofClustersVsOnTime->GetXaxis()->FindBin(3.5),TofClustersVsOnTime->GetXaxis()->FindBin(4.5));
+
+	OneClust     ->SetTitle("1 Cluster"   ); 
+	OneClust_MC  ->SetTitle("1 Cluster MC"); 
+	TwoClust     ->SetTitle("2 Cluster"   ); 
+	TwoClust_MC  ->SetTitle("2 Cluster MC"); 
+	ThreeClust   ->SetTitle("3 Cluster"   ); 
+	ThreeClust_MC->SetTitle("3 Cluster MC"); 
+	FourClust    ->SetTitle("4 Cluster"   ); 
+	FourClust_MC ->SetTitle("4 Cluster MC"); 
+
+
+
+	TH1D * OneClust_red     = ReduceOnTimeHisto(OneClust     	);  
+	TH1D * OneClust_MC_red  = ReduceOnTimeHisto(OneClust_MC  	);
+	TH1D * TwoClust_red     = ReduceOnTimeHisto(TwoClust     	);
+	TH1D * TwoClust_MC_red  = ReduceOnTimeHisto(TwoClust_MC  	);
+	TH1D * ThreeClust_red   = ReduceOnTimeHisto(ThreeClust   	);
+	TH1D * ThreeClust_MC_red= ReduceOnTimeHisto(ThreeClust_MC	);
+	TH1D * FourClust_red    = ReduceOnTimeHisto(FourClust    	);
+	TH1D * FourClust_MC_red = ReduceOnTimeHisto(FourClust_MC 	);
+
+     	if(OneClust_red          ->Integral() > 0)  OneClust_red      ->Scale(1/OneClust_red     ->Integral() ); 
+	if(OneClust_MC_red       ->Integral() > 0)  OneClust_MC_red   ->Scale(1/OneClust_MC_red  ->Integral() ); 
+	if(TwoClust_red          ->Integral() > 0)  TwoClust_red      ->Scale(1/TwoClust_red     ->Integral()  ); 
+	if(TwoClust_MC_red       ->Integral() > 0)  TwoClust_MC_red   ->Scale(1/TwoClust_MC_red  ->Integral()  ); 
+	if(ThreeClust_red        ->Integral() > 0)  ThreeClust_red    ->Scale(1/ThreeClust_red   ->Integral()  ); 
+	if(ThreeClust_MC_red     ->Integral() > 0)  ThreeClust_MC_red ->Scale(1/ThreeClust_MC_red->Integral() ); 
+	if(FourClust_red         ->Integral() > 0)  FourClust_red     ->Scale(1/FourClust_red    ->Integral()    ); 
+        if(FourClust_MC_red      ->Integral() > 0)  FourClust_MC_red  ->Scale(1/FourClust_MC_red ->Integral() ); 
+
+       OneClust_red->SetLineColor(1);
+       OneClust_MC_red->SetLineColor(1);
+       OneClust_red->SetLineWidth(2);
+       OneClust_MC_red->SetLineWidth(2);
+       OneClust_MC_red->SetLineStyle(2);
+
+       OneClust_red->GetXaxis()->SetTitle("On Time Cl.");
+       OneClust_red->Draw("hist");
+       OneClust_MC_red->Draw("hist,same");
+
+       TwoClust_red->SetLineColor(2);
+       TwoClust_MC_red->SetLineColor(2);
+       TwoClust_red->SetLineWidth(2);
+       TwoClust_MC_red->SetLineWidth(2);
+       TwoClust_MC_red->SetLineStyle(2);
+
+       TwoClust_red->Draw("hist,same");
+       TwoClust_MC_red->Draw("hist,same");
+
+       ThreeClust_red->SetLineColor(3);
+       ThreeClust_MC_red->SetLineColor(3);
+       ThreeClust_red->SetLineWidth(2);
+       ThreeClust_MC_red->SetLineWidth(2);
+       ThreeClust_MC_red->SetLineStyle(2);
+
+       ThreeClust_red->Draw("hist,same");
+       ThreeClust_MC_red->Draw("hist,same");
+
+       FourClust_red->SetLineColor(4);
+       FourClust_MC_red->SetLineColor(4);
+       FourClust_red->SetLineWidth(2);
+       FourClust_MC_red->SetLineWidth(2);
+       FourClust_MC_red->SetLineStyle(2);
+
+       FourClust_red->Draw("hist,same");
+       FourClust_MC_red->Draw("hist,same");
+
+
+	finalResults.Add(c5);
+
+
+	TCanvas * c6 = new TCanvas("NTofCl vs QUtof");
+	c6->cd();
+
+       TH2F * TofClustersVsQUtof = (TH2F*)finalHistos.Get(("TofClustersVsQUtof"+app+"/TofClustersVsQUtof"+app).c_str());
+       TH2F * TofClustersVsQUtof_MC = (TH2F*)finalHistos.Get(("TofClustersVsQUtof MC"+app+"/TofClustersVsQUtof MC"+app).c_str());
+	cout<<TofClustersVsQUtof<<" "<<TofClustersVsQUtof_MC<<endl;
+
+       TH1D * OneClust2      = TofClustersVsQUtof->ProjectionY("1 Cluster", TofClustersVsQUtof->GetXaxis()->FindBin(0.5),TofClustersVsQUtof->GetXaxis()->FindBin(1.5));	
+       TH1D * OneClust2_MC   = TofClustersVsQUtof_MC->ProjectionY("1 Cluster MC", TofClustersVsQUtof->GetXaxis()->FindBin(0.5),TofClustersVsQUtof->GetXaxis()->FindBin(1.5));
+       TH1D * TwoClust2      = TofClustersVsQUtof->ProjectionY("2 Cluster", TofClustersVsQUtof->GetXaxis()->FindBin(1.5),TofClustersVsQUtof->GetXaxis()->FindBin(2.5));	
+       TH1D * TwoClust2_MC   = TofClustersVsQUtof_MC->ProjectionY("2 Cluster MC", TofClustersVsQUtof->GetXaxis()->FindBin(1.5),TofClustersVsQUtof->GetXaxis()->FindBin(2.5));
+       TH1D * ThreeClust2    = TofClustersVsQUtof->ProjectionY("3 Cluster", TofClustersVsQUtof->GetXaxis()->FindBin(2.5),TofClustersVsQUtof->GetXaxis()->FindBin(3.5));	
+       TH1D * ThreeClust2_MC = TofClustersVsQUtof_MC->ProjectionY("3 Cluster MC", TofClustersVsQUtof->GetXaxis()->FindBin(2.5),TofClustersVsQUtof->GetXaxis()->FindBin(3.5));
+       TH1D * FourClust2     = TofClustersVsQUtof->ProjectionY("4 Cluster", TofClustersVsQUtof->GetXaxis()->FindBin(3.5),TofClustersVsQUtof->GetXaxis()->FindBin(4.5));	
+       TH1D * FourClust2_MC  = TofClustersVsQUtof_MC->ProjectionY("4 Cluster MC", TofClustersVsQUtof->GetXaxis()->FindBin(3.5),TofClustersVsQUtof->GetXaxis()->FindBin(4.5));
+
+	OneClust2     ->SetTitle("1 Cluster"   ); 
+	OneClust2_MC  ->SetTitle("1 Cluster MC"); 
+	TwoClust2     ->SetTitle("2 Cluster"   ); 
+	TwoClust2_MC  ->SetTitle("2 Cluster MC"); 
+	ThreeClust2   ->SetTitle("3 Cluster"   ); 
+	ThreeClust2_MC->SetTitle("3 Cluster MC"); 
+	FourClust2    ->SetTitle("4 Cluster"   ); 
+	FourClust2_MC ->SetTitle("4 Cluster MC"); 
+
+
+
+
+       if(OneClust2          ->Integral() > 0)OneClust2      ->Scale(1/OneClust2     ->Integral() ); 
+       if(OneClust2_MC       ->Integral() > 0)OneClust2_MC   ->Scale(1/OneClust2_MC  ->Integral() ); 
+       if(TwoClust2          ->Integral() > 0)TwoClust2      ->Scale(1/TwoClust2    ->Integral()  ); 
+       if(TwoClust2_MC       ->Integral() > 0)TwoClust2_MC   ->Scale(1/TwoClust2_MC ->Integral()  ); 
+       if(ThreeClust2        ->Integral() > 0)ThreeClust2    ->Scale(1/ThreeClust2  ->Integral()  ); 
+       if(ThreeClust2_MC     ->Integral() > 0)ThreeClust2_MC ->Scale(1/ThreeClust2_MC->Integral() ); 
+       if(FourClust2         ->Integral() > 0)FourClust2     ->Scale(1/FourClust2 ->Integral()    ); 
+       if(FourClust2_MC      ->Integral() > 0)FourClust2_MC  ->Scale(1/FourClust2_MC->Integral() ); 
+
+       FourClust2->SetLineColor(4);
+       FourClust2_MC->SetLineColor(4);
+       FourClust2->SetLineWidth(2);
+       FourClust2_MC->SetLineWidth(2);
+       FourClust2_MC->SetLineStyle(2);
+
+       FourClust2->GetXaxis()->SetTitle("Q UTof");
+       FourClust2->Draw("hist");
+       FourClust2_MC->Draw("hist,same");
+
+       OneClust2->SetLineColor(1);
+       OneClust2_MC->SetLineColor(1);
+       OneClust2->SetLineWidth(2);
+       OneClust2_MC->SetLineWidth(2);
+       OneClust2_MC->SetLineStyle(2);
+
+       OneClust2->Draw("hist,same");
+       OneClust2_MC->Draw("hist,same");
+
+       TwoClust2->SetLineColor(2);
+       TwoClust2_MC->SetLineColor(2);
+       TwoClust2->SetLineWidth(2);
+       TwoClust2_MC->SetLineWidth(2);
+       TwoClust2_MC->SetLineStyle(2);
+
+       TwoClust2->Draw("hist,same");
+       TwoClust2_MC->Draw("hist,same");
+
+       ThreeClust2->SetLineColor(3);
+       ThreeClust2_MC->SetLineColor(3);
+       ThreeClust2->SetLineWidth(2);
+       ThreeClust2_MC->SetLineWidth(2);
+       ThreeClust2_MC->SetLineStyle(2);
+
+       ThreeClust2->Draw("hist,same");
+       ThreeClust2_MC->Draw("hist,same");
+
+     	finalResults.Add(c6);
+
+	TCanvas * c7 = new TCanvas("NTofCl vs QLtof");
+	c7->cd();
+
+       TH2F * TofClustersVsQLtof = (TH2F*)finalHistos.Get(("TofClustersVsQLtof"+app+"/TofClustersVsQLtof"+app).c_str());
+       TH2F * TofClustersVsQLtof_MC = (TH2F*)finalHistos.Get(("TofClustersVsQLtof MC"+app+"/TofClustersVsQLtof MC"+app).c_str());
+	cout<<TofClustersVsQLtof<<" "<<TofClustersVsQLtof_MC<<endl;
+
+       TH1D * OneClust3      = TofClustersVsQLtof->ProjectionY("1 Cluster", TofClustersVsQLtof->GetXaxis()->FindBin(0.5),TofClustersVsQLtof->GetXaxis()->FindBin(1.5));	
+       TH1D * OneClust3_MC   = TofClustersVsQLtof_MC->ProjectionY("1 Cluster MC", TofClustersVsQLtof->GetXaxis()->FindBin(0.5),TofClustersVsQLtof->GetXaxis()->FindBin(1.5));
+       TH1D * TwoClust3      = TofClustersVsQLtof->ProjectionY("2 Cluster", TofClustersVsQLtof->GetXaxis()->FindBin(1.5),TofClustersVsQLtof->GetXaxis()->FindBin(2.5));	
+       TH1D * TwoClust3_MC   = TofClustersVsQLtof_MC->ProjectionY("2 Cluster MC", TofClustersVsQLtof->GetXaxis()->FindBin(1.5),TofClustersVsQLtof->GetXaxis()->FindBin(2.5));
+       TH1D * ThreeClust3    = TofClustersVsQLtof->ProjectionY("3 Cluster", TofClustersVsQLtof->GetXaxis()->FindBin(2.5),TofClustersVsQLtof->GetXaxis()->FindBin(3.5));	
+       TH1D * ThreeClust3_MC = TofClustersVsQLtof_MC->ProjectionY("3 Cluster MC", TofClustersVsQLtof->GetXaxis()->FindBin(2.5),TofClustersVsQLtof->GetXaxis()->FindBin(3.5));
+       TH1D * FourClust3     = TofClustersVsQLtof->ProjectionY("4 Cluster", TofClustersVsQLtof->GetXaxis()->FindBin(3.5),TofClustersVsQLtof->GetXaxis()->FindBin(4.5));	
+       TH1D * FourClust3_MC  = TofClustersVsQLtof_MC->ProjectionY("4 Cluster MC", TofClustersVsQLtof->GetXaxis()->FindBin(3.5),TofClustersVsQLtof->GetXaxis()->FindBin(4.5));
+
+	OneClust3     ->SetTitle("1 Cluster"   ); 
+	OneClust3_MC  ->SetTitle("1 Cluster MC"); 
+	TwoClust3     ->SetTitle("2 Cluster"   ); 
+	TwoClust3_MC  ->SetTitle("2 Cluster MC"); 
+	ThreeClust3   ->SetTitle("3 Cluster"   ); 
+	ThreeClust3_MC->SetTitle("3 Cluster MC"); 
+	FourClust3    ->SetTitle("4 Cluster"   ); 
+	FourClust3_MC ->SetTitle("4 Cluster MC"); 
+
+
+       if(OneClust3          ->Integral() > 0)OneClust3      ->Scale(1/OneClust3     ->Integral() ); 
+       if(OneClust3_MC       ->Integral() > 0)OneClust3_MC   ->Scale(1/OneClust3_MC  ->Integral() ); 
+       if(TwoClust3          ->Integral() > 0)TwoClust3      ->Scale(1/TwoClust3    ->Integral()  ); 
+       if(TwoClust3_MC       ->Integral() > 0)TwoClust3_MC   ->Scale(1/TwoClust3_MC ->Integral()  ); 
+       if(ThreeClust3        ->Integral() > 0)ThreeClust3    ->Scale(1/ThreeClust3  ->Integral()  ); 
+       if(ThreeClust3_MC     ->Integral() > 0)ThreeClust3_MC ->Scale(1/ThreeClust3_MC->Integral() ); 
+       if(FourClust3         ->Integral() > 0)FourClust3     ->Scale(1/FourClust3 ->Integral()    ); 
+       if(FourClust3_MC      ->Integral() > 0)FourClust3_MC  ->Scale(1/FourClust3_MC->Integral() ); 
+
+
+       FourClust3->SetLineColor(4);
+       FourClust3_MC->SetLineColor(4);
+       FourClust3->SetLineWidth(2);
+       FourClust3_MC->SetLineWidth(2);
+       FourClust3_MC->SetLineStyle(2);
+
+       FourClust3->GetXaxis()->SetTitle("Q LTof");
+       FourClust3->Draw("hist");
+       FourClust3_MC->Draw("hist,same");
+
+
+       OneClust3->SetLineColor(1);
+       OneClust3_MC->SetLineColor(1);
+       OneClust3->SetLineWidth(2);
+       OneClust3_MC->SetLineWidth(2);
+       OneClust3_MC->SetLineStyle(2);
+
+       OneClust3->Draw("hist,same");
+       OneClust3_MC->Draw("hist,same");
+
+       TwoClust3->SetLineColor(2);
+       TwoClust3_MC->SetLineColor(2);
+       TwoClust3->SetLineWidth(2);
+       TwoClust3_MC->SetLineWidth(2);
+       TwoClust3_MC->SetLineStyle(2);
+
+       TwoClust3->Draw("hist,same");
+       TwoClust3_MC->Draw("hist,same");
+
+       ThreeClust3->SetLineColor(3);
+       ThreeClust3_MC->SetLineColor(3);
+       ThreeClust3->SetLineWidth(2);
+       ThreeClust3_MC->SetLineWidth(2);
+       ThreeClust3_MC->SetLineStyle(2);
+
+       ThreeClust3->Draw("hist,same");
+       ThreeClust3_MC->Draw("hist,same");
+
+	finalResults.Add(c7);
+
+	TCanvas * c8 = new TCanvas("NTofCl vs NTrTracks");
+	c8->cd();
+	
+	TH2F * TofClustersVsNTrtracks = (TH2F*)finalHistos.Get(("TofClustersVsNTrtracks"+app+"/TofClustersVsNTrtracks"+app).c_str());
+        TH2F * TofClustersVsNTrtracks_MC = (TH2F*)finalHistos.Get(("TofClustersVsNTrtracks MC"+app+"/TofClustersVsNTrtracks MC"+app).c_str());
+	cout<<TofClustersVsNTrtracks<<" "<<TofClustersVsNTrtracks_MC<<endl;
+
+       TH1D * OneClust4      = TofClustersVsNTrtracks->ProjectionY("1 Cluster", TofClustersVsNTrtracks->GetXaxis()->FindBin(0.5),TofClustersVsNTrtracks->GetXaxis()->FindBin(1.5));	
+       TH1D * OneClust4_MC   = TofClustersVsNTrtracks_MC->ProjectionY("1 Cluster MC", TofClustersVsNTrtracks->GetXaxis()->FindBin(0.5),TofClustersVsNTrtracks->GetXaxis()->FindBin(1.5));
+       TH1D * TwoClust4      = TofClustersVsNTrtracks->ProjectionY("2 Cluster", TofClustersVsNTrtracks->GetXaxis()->FindBin(1.5),TofClustersVsNTrtracks->GetXaxis()->FindBin(2.5));	
+       TH1D * TwoClust4_MC   = TofClustersVsNTrtracks_MC->ProjectionY("2 Cluster MC", TofClustersVsNTrtracks->GetXaxis()->FindBin(1.5),TofClustersVsNTrtracks->GetXaxis()->FindBin(2.5));
+       TH1D * ThreeClust4    = TofClustersVsNTrtracks->ProjectionY("3 Cluster", TofClustersVsNTrtracks->GetXaxis()->FindBin(2.5),TofClustersVsNTrtracks->GetXaxis()->FindBin(3.5));	
+       TH1D * ThreeClust4_MC = TofClustersVsNTrtracks_MC->ProjectionY("3 Cluster MC", TofClustersVsNTrtracks->GetXaxis()->FindBin(2.5),TofClustersVsNTrtracks->GetXaxis()->FindBin(3.5));
+       TH1D * FourClust4     = TofClustersVsNTrtracks->ProjectionY("4 Cluster", TofClustersVsNTrtracks->GetXaxis()->FindBin(3.5),TofClustersVsNTrtracks->GetXaxis()->FindBin(4.5));	
+       TH1D * FourClust4_MC  = TofClustersVsNTrtracks_MC->ProjectionY("4 Cluster MC", TofClustersVsNTrtracks->GetXaxis()->FindBin(3.5),TofClustersVsNTrtracks->GetXaxis()->FindBin(4.5));
+
+       if(OneClust4          ->Integral() > 0)OneClust4      ->Scale(1/OneClust4     ->Integral() ); 
+       if(OneClust4_MC       ->Integral() > 0)OneClust4_MC   ->Scale(1/OneClust4_MC  ->Integral() ); 
+       if(TwoClust4          ->Integral() > 0)TwoClust4      ->Scale(1/TwoClust4    ->Integral()  ); 
+       if(TwoClust4_MC       ->Integral() > 0)TwoClust4_MC   ->Scale(1/TwoClust4_MC ->Integral()  ); 
+       if(ThreeClust4        ->Integral() > 0)ThreeClust4    ->Scale(1/ThreeClust4  ->Integral()  ); 
+       if(ThreeClust4_MC     ->Integral() > 0)ThreeClust4_MC ->Scale(1/ThreeClust4_MC->Integral() ); 
+       if(FourClust4         ->Integral() > 0)FourClust4     ->Scale(1/FourClust4 ->Integral()    ); 
+       if(FourClust4_MC      ->Integral() > 0)FourClust4_MC  ->Scale(1/FourClust4_MC->Integral() ); 
+	
+	OneClust4     ->SetTitle("1 Cluster"   ); 
+	OneClust4_MC  ->SetTitle("1 Cluster MC"); 
+	TwoClust4     ->SetTitle("2 Cluster"   ); 
+	TwoClust4_MC  ->SetTitle("2 Cluster MC"); 
+	ThreeClust4   ->SetTitle("3 Cluster"   ); 
+	ThreeClust4_MC->SetTitle("3 Cluster MC"); 
+	FourClust4    ->SetTitle("4 Cluster"   ); 
+	FourClust4_MC ->SetTitle("4 Cluster MC"); 
+
+
+       OneClust4    ->Rebin(2); 
+       OneClust4_MC  ->Rebin(2); 
+       TwoClust4     ->Rebin(2); 
+       TwoClust4_MC  ->Rebin(2); 
+       ThreeClust4   ->Rebin(2); 
+       ThreeClust4_MC->Rebin(2); 
+       FourClust4    ->Rebin(2); 
+       FourClust4_MC ->Rebin(2); 
+
+
+       FourClust4->SetLineColor(4);
+       FourClust4_MC->SetLineColor(4);
+       FourClust4->SetLineWidth(2);
+       FourClust4_MC->SetLineWidth(2);
+       FourClust4_MC->SetLineStyle(2);
+       
+       FourClust4->GetXaxis()->SetTitle("N Tr. Tracks");
+       FourClust4->Draw("hist");
+       FourClust4_MC->Draw("hist,same");
+
+
+       OneClust4->SetLineColor(1);
+       OneClust4_MC->SetLineColor(1);
+       OneClust4->SetLineWidth(2);
+       OneClust4_MC->SetLineWidth(2);
+       OneClust4_MC->SetLineStyle(2);
+
+       OneClust4->Draw("hist,same");
+       OneClust4_MC->Draw("hist,same");
+
+       TwoClust4->SetLineColor(2);
+       TwoClust4_MC->SetLineColor(2);
+       TwoClust4->SetLineWidth(2);
+       TwoClust4_MC->SetLineWidth(2);
+       TwoClust4_MC->SetLineStyle(2);
+
+       TwoClust4->Draw("hist,same");
+       TwoClust4_MC->Draw("hist,same");
+
+       ThreeClust4->SetLineColor(3);
+       ThreeClust4_MC->SetLineColor(3);
+       ThreeClust4->SetLineWidth(2);
+       ThreeClust4_MC->SetLineWidth(2);
+       ThreeClust4_MC->SetLineStyle(2);
+
+       ThreeClust4->Draw("hist,same");
+       ThreeClust4_MC->Draw("hist,same");
+
+       finalResults.Add(c8);
+
+
+
+       finalResults.writeObjsInFolder(("Variables"+app).c_str());
+
+
+
+
+
+}
+ 
+void DrawVariables(FileSaver finalHistos,FileSaver finalResults){
+	DrawVariables_app(finalHistos,finalResults,"");
+	DrawVariables_app(finalHistos,finalResults," L1");
+
+}
+

@@ -42,6 +42,8 @@ public:
     void FillVariables(int NEvent, Variables * vars);
     int GetTreeEntries(){return Tree->GetEntries();}; 	
     TTree * GetTree() {return Tree;}
+    Long64_t ProtonCandidateSelection();
+
 };
 
 #endif

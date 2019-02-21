@@ -37,7 +37,7 @@ class Analyzer{
 	void BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill);
 	void BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill);
 	void BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill);
-
+	void BookTestCascade(FileSaver finalhistos, FileSaver finalresults, bool refill);
 };
 
 #endif

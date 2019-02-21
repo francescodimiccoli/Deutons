@@ -5,14 +5,14 @@ void EffCorr::Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*disc
 
 	EffMC      -> Fill(treeMC,vars,discr_var,refill);
 	EffMC2     -> Fill(treeMC,vars,discr_var,refill);
-	EffMCnopid -> Fill(treeMC,vars,discr_var,refill);
+	EffMCpid -> Fill(treeMC,vars,discr_var,refill);
 	EffData    -> Fill(treeDT,vars,discr_var,refill);
 }
 
 void EffCorr::Save(){
 	EffMC  -> Save();
 	EffMC2  -> Save();
-	EffMCnopid  -> Save();
+	EffMCpid  -> Save();
 	EffData-> Save();
 	EffData_glob-> Save();
 
@@ -21,14 +21,22 @@ void EffCorr::Save(){
 void EffCorr::Eval_Efficiencies(){
 	EffMC  -> Eval_Efficiency();
 	EffMC2  -> Eval_Efficiency();
-	EffMCnopid  -> Eval_Efficiency();
-	EffData-> Eval_Efficiency();
+	EffMCpid  -> Eval_Efficiency();
+	if(!IsTrigEffCorr) {
+		EffData-> Eval_Efficiency();
+		EffData_glob-> Eval_Efficiency();
+	}
+	else{
+		EffData-> Eval_TrigEfficiency();
+		EffData_glob-> Eval_TrigEfficiency();
+	}
+
 }
 
 void EffCorr::SaveResults(FileSaver finalhistos){
 	EffMC  -> SaveResults(finalhistos);
 	EffMC2  -> SaveResults(finalhistos);
-	EffMCnopid  -> SaveResults(finalhistos);
+	EffMCpid  -> SaveResults(finalhistos);
 	EffData-> SaveResults(finalhistos);
 
 	for(int lat=0;lat<10;lat++) 
@@ -40,11 +48,49 @@ void EffCorr::SaveResults(FileSaver finalhistos){
 	finalhistos.Add(GlobalEfficiency);
 	finalhistos.Add(GlobalCorrection);
  	finalhistos.Add(GlobalCorrection2);
- 	finalhistos.Add(GlobalCorrectionnopid);
+ 	finalhistos.Add(GlobalCorrectionpid);
+ 	finalhistos.Add(Stat_Err);
+ 	finalhistos.Add(Syst_Err);
+
+
 
        finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());	
 }
 
+void AddCorrSystError(TH1F * Correction) {
+	for(int i=0; i<Correction->GetNbinsX(); i++) {
+		float stat = Correction->GetBinError(i+1);
+		float syst = fabs(Correction->GetBinContent(i+1) - 1)/pow(3,0.5);
+		Correction->SetBinError(i+1, pow(pow(stat,2)+pow(syst,2),0.5));
+	}
+}
+
+void EffCorr::Eval_Errors(){
+
+	Stat_Err = (TH1F *) GlobalCorrection->Clone();
+	Syst_Err = (TH1F *) GlobalCorrection->Clone();
+	Stat_Err->SetName((basename + "Stat_Err").c_str());
+	Stat_Err->SetTitle((basename +"Stat_Err").c_str());
+	Syst_Err->SetName((basename + "Syst_Err").c_str());
+	Syst_Err->SetTitle((basename +"Syst_Err").c_str());
+
+
+	for(int i=0; i<GlobalCorrection->GetNbinsX(); i++) {
+		float stat = GlobalCorrectionpid->GetBinError(i+1);
+		float syst = fabs(GlobalCorrectionpid->GetBinContent(i+1) - 1)/pow(3,0.5);
+		if(GlobalCorrection->GetBinContent(i+1)>0){
+			Stat_Err->SetBinContent(i+1, stat / GlobalCorrectionpid->GetBinContent(i+1));
+			Syst_Err->SetBinContent(i+1, syst / GlobalCorrectionpid->GetBinContent(i+1));
+		}
+		Stat_Err->SetBinError(i+1, 0);	
+		Syst_Err->SetBinError(i+1, 0);	
+	}
+
+	AddCorrSystError(GlobalCorrection);
+	AddCorrSystError(GlobalCorrection2);
+	AddCorrSystError(GlobalCorrectionpid);
+
+}
 
 void EffCorr::Eval_Corrections(){
 
@@ -58,30 +104,25 @@ void EffCorr::Eval_Corrections(){
 		LatCorrections[lat]->Divide(EffMC->GetEfficiency());
 	}
 
-/*	TH1F * Global_Before=ProjectionXtoTH1F((TH2F*)EffData->GetBefore(),(basename + "_Corr_glob").c_str(),0,10);	
-	TH1F * Global_After =ProjectionXtoTH1F((TH2F*)EffData->GetAfter() ,(basename + "_Corr_glob").c_str(),0,10);	
-
-	GlobalEfficiency = (TH1F *) Global_After->Clone();
-	GlobalEfficiency -> SetName((basename + "_Eff_glob").c_str());
-	GlobalEfficiency->Sumw2();
-	GlobalEfficiency->Divide(Global_Before);	
-*/
+	cout<<EffData_glob->GetEfficiency()<<endl;
 	GlobalEfficiency = (TH1F *) EffData_glob->GetEfficiency()->Clone();
 	GlobalCorrection = (TH1F *) GlobalEfficiency->Clone();
 	GlobalCorrection -> SetName((basename + "_Corr_glob").c_str());
 	GlobalCorrection->Sumw2();
 	
 	GlobalCorrection2=(TH1F *) EffData_glob->GetEfficiency()->Clone();
-	GlobalCorrectionnopid=(TH1F *) EffData_glob->GetEfficiency()->Clone();
+	GlobalCorrectionpid=(TH1F *) EffData_glob->GetEfficiency()->Clone();
 	GlobalCorrection2->SetName((basename + "_Corr_glob2").c_str());
 	GlobalCorrection2->SetTitle((basename + "_Corr_glob2").c_str());
-	GlobalCorrectionnopid->SetName((basename + "_Corr_globnopid").c_str());
-	GlobalCorrectionnopid->SetTitle((basename + "_Corr_globnopid").c_str());
+	GlobalCorrectionpid->SetName((basename + "_Corr_globpid").c_str());
+	GlobalCorrectionpid->SetTitle((basename + "_Corr_globpid").c_str());
+
 
 	GlobalCorrection->Divide(EffMC->GetEfficiency());	
 	GlobalCorrection2->Divide(EffMC2->GetEfficiency());	
-	GlobalCorrectionnopid->Divide(EffMCnopid->GetEfficiency());	
-	
+	GlobalCorrectionpid->Divide(EffMCpid->GetEfficiency());	
+
+	Eval_Errors();
 	return;
 }
 
@@ -94,8 +135,8 @@ void EffCorr::SetToConstantValue(float value){
 		GlobalCorrection->SetBinError(i+1,0.01*value);
 		GlobalCorrection2->SetBinContent(i+1,value);
 		GlobalCorrection2->SetBinError(i+1,0.01*value);
-		GlobalCorrectionnopid->SetBinContent(i+1,value);
-		GlobalCorrectionnopid->SetBinError(i+1,0.01*value);
+		GlobalCorrectionpid->SetBinContent(i+1,value);
+		GlobalCorrectionpid->SetBinError(i+1,0.01*value);
 			
 	}
 
@@ -104,7 +145,7 @@ void EffCorr::SetToConstantValue(float value){
 void EffCorr::SetDefaultOutFile(FileSaver FinalHistos){
 		EffMC      ->SetDefaultOutFile(FinalHistos);
 		EffMC2     ->SetDefaultOutFile(FinalHistos);
-		EffMCnopid ->SetDefaultOutFile(FinalHistos);
+		EffMCpid ->SetDefaultOutFile(FinalHistos);
 		EffData	   ->SetDefaultOutFile(FinalHistos);
 		EffData_glob   ->SetDefaultOutFile(FinalHistos);
 		 

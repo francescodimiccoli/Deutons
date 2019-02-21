@@ -84,14 +84,20 @@ int main(int argc, char * argv[])
 
 	Plotter Plots(finalHistos,finalResults);
 
+	/*
 	Plots.BookMassAnalysis();
         Plots.BookCleaningCutsAnalysis();
         Plots.BookRichBDTAnalysis();
         Plots.BookBetaResMatrixAnalysis();
+	Plots.BookAcceptanceMatrixAnalysis();
 
 	Plots.BookGenAcceptanceAnalysis();	
 	Plots.BookTrackingEfficiencyAnalysis();
 	Plots.BookRigvsBetaAnalysis();
+	*/
+	Plots.BookAcceptanceMatrixAnalysis();
+	Plots.BookCutVariablesAnalysis();
+
 
         if(Refill)	Plots.FillAllAnalyses(chainDT,chainMC);
 	Plots.DoAllAnalyses();

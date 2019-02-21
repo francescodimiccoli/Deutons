@@ -168,21 +168,21 @@ int main(int argc, char * argv[])
         //SmearingCheck->SaveFitResults(finalResults);
 
         TOFfits->DisableFit();
-        TOFfits->SetFitRange(0.6,4);
+        //TOFfits->SetFitRange(0.6,4);
         TOFfits->SetFitConstraints(0.9,1,0.015,0.06,0.005,0.015,true);
 	TOFfits->SetHeliumContamination(HeContTOF);
 	TOFfits->ExtractCounts(finalHistos);	
         TOFfits->SaveFitResults(finalResults);
 
         NaFfits->SetFitRange(0.6,5);
-        NaFfits->DisableFit();
+        //NaFfits->DisableFit();
         NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
 	NaFfits->SetHeliumContamination(HeContNaF);
         NaFfits->ExtractCounts(finalHistos);
 	NaFfits->SaveFitResults(finalResults);
 
         Aglfits->SetFitRange(0.6,5);
-        Aglfits->DisableFit();
+        //Aglfits->DisableFit();
 	Aglfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
         Aglfits->SetHeliumContamination(HeContAgl);
   	Aglfits->ExtractCounts(finalHistos);

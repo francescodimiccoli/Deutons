@@ -14,7 +14,8 @@ void Analyzer::FillAll(){
 	} 
 	if(Filler_RTI.GetRefillFlag()&&Filler_RTI.GetObjectNr()) 
 		Filler_RTI.ExposureTimeFilling_RTI(DBarReader(chain_RTI, false ),vars);
-
+		//fill using data
+	//	Filler_RTI.ExposureTimeFilling(DBarReader(chainDT, false,chain_RTI),vars);
 }
 
 void Analyzer::SaveAll(){

@@ -79,6 +79,7 @@ class Efficiency : public Tool{
         		Stat_Error = (TH1F *) ff->Get((directory+"/"+basename+"/"+basename+"_Stat_Error").c_str());
 			Syst_Error = (TH1F *) ff->Get((directory+"/"+basename+"/"+basename+"_Syst_Error").c_str());
 		}
+		
 	}
 	
 	virtual bool ReinitializeHistos(bool refill);
@@ -95,6 +96,8 @@ class Efficiency : public Tool{
 	virtual void Save();
 	virtual void SaveResults(FileSaver finalhistos);
 	virtual void Eval_Efficiency();
+	virtual void Eval_TrigEfficiency();
+	
 	virtual void Eval_FittedEfficiency();
 
 	virtual void CloneEfficiency(Efficiency * Second);

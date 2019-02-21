@@ -1,5 +1,7 @@
 #include "Flux.h"
 #include "FluxRebin.h"
+#include "histUtils.h"
+
 
 void MCPar::Eval_trigrate(){
 	std::vector<float> events;
@@ -10,7 +12,7 @@ void MCPar::Eval_trigrate(){
 	//rdb->Print();
     	rdb->Summary();	
 	cout<<"********MC infos:*******"<<endl;
-	cout<<"Trig. Rate: "<<rdb->GetTrigRate()<<endl;		
+	cout<<"Trig. Rate: "<< rdb->GetTrigRate()<<endl; //rdb->GetTotEvents()/rdb->GetTotTrigg()<<endl;//rdb->GetTrigRate()<<endl;		
         cout<<"Total Gen: "<<rdb->GetTotTrigg()<<endl; 
 	cout<<"Total events: "<<rdb->GetTotEvents()<<endl;
 	cout<<"************************"<<endl;
@@ -20,38 +22,77 @@ void MCPar::Eval_trigrate(){
 }
 
 
-void Flux::Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename){
+void Flux::Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename, float Art_ratio){
 	cout<<"Setting MC parameters"<<endl;
 	param.Rmin=rmin;
 	param.Rmax=rmax;
 	param.filename = Filename;
 	param.gen_factor = Gen_factor;
 	param.Eval_trigrate();
+	param.art_ratio = Art_ratio;
 }
 
 
-void Flux::ApplyEfficCorr(TH1F * Correction){
-	cout<<"Correction: "<<basename<<" "<<Correction->GetEntries()<<endl;
+void Flux::ApplyEfficCorr(EffCorr * Correction){
+	cout<<"Correction: "<<basename<<" "<<Correction->GetGlobCorrection()->GetEntries()<<endl;
 	EfficiencyCorrections.push_back(Correction);
 	return;
 }
 
-TH1F * EvalEffAcc(Efficiency* Eff, Binning bins, MCPar param){
-	SetUpTOIBinning();	
-	//float normalization = param.tot_ev/FRAC*(pow(param.Trigrate,-1));
-	float normalization = param.tot_trig/FRAC;
-	TH1F * EffAcc = (TH1F *) (Eff->GetAfter())->Clone();	
-	for(int i=0;i<bins.size();i++){
+void Flux::ApplyEfficFromData(EffCorr * Correction){
+	cout<<"Correction: "<<basename<<" "<<Correction->GetGlobCorrection()->GetEntries()<<endl;
+	EfficiencyFromData.push_back(Correction);
+	return;
+}
+
+TH1F * EvalEffAcc(Efficiency* Eff, TH1F* ForAcc, Binning bins, MCPar param){
+	SetUpUsualBinning();	
+	cout<<"********** MC flux reweighting **********"<<endl;
+	Variables * vars = new Variables();
+	cout<<"********** ForAcc **************"<<endl;
+	float normalization = ForAcc->GetEntries()/FRAC*(pow(param.Trigrate,-1));
+	cout<<ForAcc->GetEntries()<<" "<<normalization<<" "<<param.tot_trig<<endl;
+	//float normalization = param.tot_trig/FRAC;
+	TH1F * Numerator = (TH1F *) (Eff->GetAfter())->Clone();	
+	
+	//no_reweighting
+	/*for(int i=0;i<bins.size();i++){
 		if(EffAcc -> GetBinContent(i+1)>0){
+			cout<<"********** MC flux reweighting **********"<<endl;
 			float range;
 			range = log(param.Rmax)-log(param.Rmin);
-			   	
-			float gen_bins= normalization*(log(bins.RigBin(i+1))-log(bins.RigBin(i)))/range; 
-	
+			
+			float gen_bins= normalization*(log(bins.RigBin(i+1))-log(bins.RigBin(i)))/range;  
 			EffAcc -> SetBinContent(i+1,EffAcc -> GetBinContent(i+1)/gen_bins); 
 			EffAcc -> SetBinError(i+1,0);//pow(GenSpectrum -> GetBinContent(i+1),0.5)/gen_bins); 			
+			
+		
 		}
+	}*/
+	/////////////// 
+
+	//with reweighting
+	TH1F * Denominator = new TH1F ("Denominator","Denominator",bins.size(),0,bins.size());
+	Histogram Spectrum = vars->reweighter.getTo();
+	Histogram LogNorm  = vars->reweighter.getFrom();
+
+	cout<<"********** Gen. Spectrum **********"<<endl;
+	TH1F * FullGenSpec = new TH1F("FullGenSpec","FullGenSpec",ForAcceptance.size(),0,ForAcceptance.size());
+	//total triggers in range
+	for(int i=0;i<bins.size();i++){
+		float bincontent = normalization*(log(bins.RigBin(i+1))-log(bins.RigBin(i)))/log(param.Rmax)-log(param.Rmin);
+		float meanweight = Spectrum.integrate(bins.RigBin(i),bins.RigBin(i+1)) / LogNorm.integrate(bins.RigBin(i),bins.RigBin(i+1));
+		Denominator->SetBinContent(i+1,param.art_ratio*bincontent*meanweight); //vars->reweighter.getWeight(bins.RigBinsCent()[i]));
+		Denominator->SetBinError(i+1,0);
 	}
+	//Denominator->Scale(param.art_ratio*rangefactor*normalization/(Denominator->Integral()));
+
+	cout<<"********** THE DIVISION **********"<<endl;
+	cout<<Numerator->GetName()<<endl;
+	TH1F * EffAcc= (TH1F*)Numerator->Clone();
+	EffAcc->Divide(Denominator);
+	/////
+	
 	EffAcc ->SetName("Eff. Acceptance");
 	EffAcc ->SetTitle("Eff. Acceptance"); 
 	EffAcc -> Sumw2();
@@ -65,9 +106,12 @@ TH1F * EvalEffAcc(Efficiency* Eff, Binning bins, MCPar param){
 }
 
 
+
 void Flux::Eval_Flux(){
-	cout<<"Counts "<<Counts<<endl;
-	
+	// COUNTS
+	cout<<endl;
+	cout<<"********************************************"<<endl;
+	cout<<"Counts "<<Counts<<" "<<Counts->GetName()<<endl;	
 	if(Counts>0) {			FluxEstim = (TH1F *) Counts->Clone();
 					Counts_Err  = (TH1F *) Counts->Clone();
 					for(int i=0;i<Counts_Err->GetNbinsX();i++) {
@@ -86,45 +130,84 @@ void Flux::Eval_Flux(){
 	FluxEstim -> SetName((basename+"_Flux").c_str());
 	FluxEstim -> SetTitle((basename+"_Flux").c_str());
 	FluxEstim -> Sumw2();
+
+	////
 	
-	if(MCEfficiency->GetStat_Error()){	
+	/*if(MCEfficiency->GetStat_Error()){	
 		Acc_StatErr = (TH1F *) MCEfficiency->GetStat_Error()->Clone();
 		Acc_SystErr = (TH1F *) MCEfficiency->GetSyst_Error()->Clone();
 		Acc_StatErr->SetName("Acceptance Stat. Error");
 		Acc_StatErr->SetTitle("Acceptance Stat. Error");	
 		Acc_SystErr->SetName("Acceptance Syst. Error");
 		Acc_SystErr->SetTitle("Acceptance Syst. Error");	
-	}
-
+	}*/
+	
+	// EXPOSURE TIME	
 	if(ExposureTime) FluxEstim -> Divide(ExposureTime);
-
-/*	for(int i=0; i<FluxEstim->GetNbinsX(); i++) {
-		if(ExposureTime->GetBinContent(i+2)>0) {
-		FluxEstim ->SetBinContent(i,FluxEstim->GetBinContent(i)/ExposureTime->GetBinContent(i+2));
-		FluxEstim ->SetBinError(i,FluxEstim->GetBinError(i)/ExposureTime->GetBinContent(i+2));
-		}
-	}
-*/	
+	////
+	cout<<MCEfficiency->GetAfter()<<endl;	
+	//ACCEPTANCE
 	Eff_Acceptance = (TH1F *) MCEfficiency->GetAfter()->Clone();
 	if(Eff_Acceptance){
+
+		Acc_StatErr = (TH1F *)  MCEfficiency->GetAfter()->Clone();
+		Acc_SystErr = (TH1F *)  MCEfficiency->GetAfter()->Clone();
 	
-	         Eff_Acceptance = EvalEffAcc(MCEfficiency,bins,param);	
-		 for(int i=0;i<EfficiencyCorrections.size();i++) Eff_Acceptance -> Multiply(EfficiencyCorrections[i]); 
-	         FluxEstim -> Divide(Eff_Acceptance);
+
+
+
+	         Eff_Acceptance = EvalEffAcc(MCEfficiency,ForAcceptance,bins,param);	
+		 for(int i=0;i<EfficiencyCorrections.size();i++) Eff_Acceptance -> Multiply(EfficiencyCorrections[i]->GetGlobCorrection()); 
+		 for(int i=0;i<EfficiencyFromData.size();i++)    Eff_Acceptance -> Multiply(EfficiencyFromData[i]->GetGlobEfficiency()); 
+
+		 if(EfficiencyCorrections.size()>0){
+
+			 Acc_StatErr = (TH1F*) EfficiencyCorrections[0]->GetStat_Err()->Clone();
+			 Acc_SystErr = (TH1F*) EfficiencyCorrections[0]->GetSyst_Err()->Clone();
+			 Acc_StatErr->SetName("Acceptance Stat. Error");
+			 Acc_StatErr->SetTitle("Acceptance Stat. Error");	
+			 Acc_SystErr->SetName("Acceptance Syst. Error");
+			 Acc_SystErr->SetTitle("Acceptance Syst. Error");	
+			
+			Acc_StatErr->Multiply(Acc_StatErr);
+                        Acc_SystErr->Multiply(Acc_SystErr);
+			
+    			 for(int i=EfficiencyCorrections.size()-1;i>0;i--) {
+				 TH1F * stat = (TH1F*) EfficiencyCorrections[i]->GetStat_Err()->Clone();
+				 stat->Multiply(EfficiencyCorrections[i]->GetStat_Err());
+				 Acc_StatErr->Add(stat);
+			
+				 TH1F * syst = (TH1F*) EfficiencyCorrections[i]->GetSyst_Err()->Clone();
+				 syst->Multiply(EfficiencyCorrections[i]->GetSyst_Err());
+				 Acc_SystErr->Add(syst);
+			 }
+			
+			 for(int i=0;i<Acc_StatErr->GetNbinsX();i++) {
+				 Acc_StatErr->SetBinContent(i+1,pow(Acc_StatErr->GetBinContent(i+1),0.5));
+				 Acc_StatErr->SetBinError(i+1,0);
+				 Acc_SystErr->SetBinContent(i+1,pow(Acc_SystErr->GetBinContent(i+1),0.5));
+				 Acc_SystErr->SetBinError(i+1,0);
+			 }
+
+ 
+		}
 		
+		     FluxEstim -> Divide(Eff_Acceptance);
 	}
+	///
+	
+	// DeltaE (CONV IN RIG)
 	FluxEstim_rig = (TH1F*) FluxEstim ->Clone();
 	FluxEstim_rig -> SetName((basename+"_Flux_rig").c_str());
 	FluxEstim_rig -> SetTitle((basename+"_Flux_rig").c_str());
 	FluxEstim_rig -> Sumw2();
-	
 	for(int i=0;i<bins.size();i++){
 		FluxEstim->SetBinError(i+1,FluxEstim->GetBinError(i+1)/(bins.EkPerMasTOIBins()[i+1]-bins.EkPerMasTOIBins()[i]));
 		FluxEstim->SetBinContent(i+1,FluxEstim->GetBinContent(i+1)/(bins.EkPerMasTOIBins()[i+1]-bins.EkPerMasTOIBins()[i]));
 		FluxEstim_rig->SetBinError(i+1,FluxEstim_rig->GetBinError(i+1)/(bins.RigTOIBins()[i+1]-bins.RigTOIBins()[i]));
 		FluxEstim_rig->SetBinContent(i+1,FluxEstim_rig->GetBinContent(i+1)/(bins.RigTOIBins()[i+1]-bins.RigTOIBins()[i]));
 	}
-
+	///
 	return;		
 }
 

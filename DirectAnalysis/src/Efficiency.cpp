@@ -124,6 +124,7 @@ void Efficiency::Fill(DBarReader readerMC, Variables * vars, float (*discr_var) 
 
 void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 	if(!Refill) return;
+	if(ApplyCuts("IsData",vars)) return;
 	int kbin;
 	kbin =bins.GetBin(var(vars));
 		
@@ -180,6 +181,27 @@ void Efficiency::Eval_Efficiency(){
 	Eff ->SetName((basename+"_Eff").c_str());
 	Eff ->SetTitle((basename+" Efficiency").c_str());
 	return;
+}
+
+void Efficiency::Eval_TrigEfficiency(){
+	TH1 * Unbias = (TH1 *) before->Clone();
+	Unbias->Sumw2();
+	Unbias->Add(after,-1);
+	for(int i=0; i<Unbias->GetNbinsX();i++) 
+		Unbias->SetBinError(i+1,2*pow(Unbias->GetBinContent(i+1),0.5));
+
+	Unbias->Scale(100);
+	
+	TH1 * Denominator = (TH1F *) after->Clone();
+	Denominator->Sumw2();
+	Denominator->Add(Unbias);
+
+	Eff = (TH1 *)after->Clone();	
+	Eff -> Sumw2();
+        Eff -> Divide(Denominator);
+        Eff ->SetName((basename+"_Eff").c_str());
+        Eff ->SetTitle((basename+" Efficiency").c_str());
+
 }
 
 void Efficiency::Eval_FittedEfficiency(){

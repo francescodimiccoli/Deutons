@@ -55,6 +55,7 @@ struct Variables{
     int        PhysBPatt;
     int        CUTMASK;
     int        RICHmask_new;
+    int	       P_standard_sel;	
 
     // Counts
     float        NTofClusters;
@@ -101,6 +102,7 @@ struct Variables{
     float      Chisquare_L1_y;
     int        hitbits;
     float        FiducialVolume;	 	    
+    float      R_sec;		
 
     // Tracker Charge
     float      qL1;
@@ -185,6 +187,13 @@ struct Variables{
     float EdepTrack=0;	
     float EdepL1=0;	
 
+    //Checks on Variables
+    float  beta_ncl;
+    float  chisqcn; 
+    float  chisqtn; 
+    float  nTrTracks;
+    float  sumclsn; 
+
     TMVA::Reader *readerTOF;
     TMVA::Reader *readerNaF;
     TMVA::Reader *readerAgl;
@@ -230,6 +239,8 @@ float GetNegRecMassTOF	 (Variables * vars);
 float GetNegRecMassRICH  (Variables * vars);
 
 float GetRigidity (Variables * vars);
+float GetRigiditySecondTrack (Variables * vars);
+
 
 float GetUtofQ	(Variables * vars);
 float GetLtofQ	(Variables * vars);
@@ -261,4 +272,14 @@ float GetRICHBDT(Variables* vars);
 
 float GetEdepECAL(Variables * vars);
 float GetMomentumProxy(Variables *vars); 
+
+float GetNToFClusters(Variables * vars);; 
+float GetUtofQ	(Variables * vars) ;
+float GetLtofQ	(Variables * vars) ;
+float GetTofChisqcn (Variables * vars) ;
+float GetTofChisqtn  (Variables * vars); 
+float GetNTracks (Variables * vars) ;
+float GetTofOnTime (Variables * vars);  
+
+
 #endif

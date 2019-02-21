@@ -4,7 +4,7 @@
 #include "../include/EffCorr.h"
 #include "../include/EffCorrTemplate.h"
 
-void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults);
+void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults,bool IsTrig=false);
 
 void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill)
 {
@@ -24,84 +24,89 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 	//Baseline efficiency corrections
 	std::string before;
         std::string after;
-        before = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1";
-        after  = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsLooseCharge1&IsPhysTrig";
-	EffCorr * TriggerEffCorr_HE  = new EffCorr(finalhistos,"TriggerEffCorr_HE" ,"Trigger Eff. Corr",PRB  ,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC"); 
-	EffCorr * TriggerEffCorr_TOF = new EffCorr(finalhistos,"TriggerEffCorr_TOF","Trigger Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * TriggerEffCorr_NaF = new EffCorr(finalhistos,"TriggerEffCorr_NaF","Trigger Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * TriggerEffCorr_Agl = new EffCorr(finalhistos,"TriggerEffCorr_Agl","Trigger Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+        before = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsLUT2";
+        after  = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsPhysTrig";
+	EffCorr * TriggerEffCorr_HE  = new EffCorr(finalhistos,"TriggerEffCorr_HE" ,"Trigger Eff. Corr",PRB  ,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC"); 
+	EffCorr * TriggerEffCorr_TOF = new EffCorr(finalhistos,"TriggerEffCorr_TOF","Trigger Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * TriggerEffCorr_NaF = new EffCorr(finalhistos,"TriggerEffCorr_NaF","Trigger Eff. Corr",NaFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * TriggerEffCorr_Agl = new EffCorr(finalhistos,"TriggerEffCorr_Agl","Trigger Eff. Corr",AglPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 
 	before = "IsDownGoing&IsPhysTrig&IsGoodTOFStandaloneQ1&IsL1HitNearExtrapol&IsCleanL1Hit";
-        after  = "IsDownGoing&IsPhysTrig&IsGoodTOFStandaloneQ1&IsL1HitNearExtrapol&IsCleanL1Hit&L1LooseCharge1";
-	EffCorr * L1PickUpEffCorr_HE = new EffCorr(finalhistos,"L1PickUpEffCorr_HE","L1PickUp Eff. Corr",PRB,before,after,"IsPrimary",    "IsPurePMC","IsPureDMC","IsDeutonMC"); 
-	EffCorr * L1PickUpEffCorr_TOF = new EffCorr(finalhistos,"L1PickUpEffCorr_TOF","L1PickUp Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * L1PickUpEffCorr_NaF = new EffCorr(finalhistos,"L1PickUpEffCorr_NaF","L1PickUp Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * L1PickUpEffCorr_Agl = new EffCorr(finalhistos,"L1PickUpEffCorr_Agl","L1PickUp Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+        after  = "IsDownGoing&IsPhysTrig&IsGoodTOFStandaloneQ1&IsL1HitNearExtrapol&IsCleanL1Hit&HasL1";
+	EffCorr * L1PickUpEffCorr_HE = new EffCorr(finalhistos,"L1PickUpEffCorr_HE","L1PickUp Eff. Corr",PRB,before,after,"IsPrimary",    "IsProtonMC","IsDeutonMC","IsPurePMC"); 
+	EffCorr * L1PickUpEffCorr_TOF = new EffCorr(finalhistos,"L1PickUpEffCorr_TOF","L1PickUp Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * L1PickUpEffCorr_NaF = new EffCorr(finalhistos,"L1PickUpEffCorr_NaF","L1PickUp Eff. Corr",NaFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * L1PickUpEffCorr_Agl = new EffCorr(finalhistos,"L1PickUpEffCorr_Agl","L1PickUp Eff. Corr",AglPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 
-	before = "IsDownGoing&IsGoodTrack&IsLooseCharge1";
-        after  = "IsDownGoing&IsGoodTrack&IsLooseCharge1&IsCharge1Track"; 
-	EffCorr * GoodQTrack_HE  = new EffCorr(finalhistos,"GoodQTrackEffCorr_HE","GoodQTrack Eff. Corr",PRB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * GoodQTrack_TOF = new EffCorr(finalhistos,"GoodQTrackEffCorr_TOF","GoodQTrack Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * GoodQTrack_NaF = new EffCorr(finalhistos,"GoodQTrackEffCorr_NaF","GoodQTrack Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * GoodQTrack_Agl = new EffCorr(finalhistos,"GoodQTrackEffCorr_Agl","GoodQTrack Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	before = "IsDownGoing&IsPhysTrig&IsGoodTrack&L1LooseCharge1&IsCharge1TrackLoose";
+        after  = "IsDownGoing&IsPhysTrig&IsGoodTrack&L1LooseCharge1&IsCharge1Track"; 
+	EffCorr * GoodQTrack_HE  = new EffCorr(finalhistos,"GoodQTrackEffCorr_HE","GoodQTrack Eff. Corr",PRB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * GoodQTrack_TOF = new EffCorr(finalhistos,"GoodQTrackEffCorr_TOF","GoodQTrack Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * GoodQTrack_NaF = new EffCorr(finalhistos,"GoodQTrackEffCorr_NaF","GoodQTrack Eff. Corr",NaFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * GoodQTrack_Agl = new EffCorr(finalhistos,"GoodQTrackEffCorr_Agl","GoodQTrack Eff. Corr",AglPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 
+	before = "IsDownGoing&IsPhysTrig&IsGoodTrack&IsCharge1Track&L1LooseCharge1";
+        after  = "IsDownGoing&IsPhysTrig&IsGoodTrack&IsCharge1Track&L1LooseCharge1&IsGoodChi2"; 
+	EffCorr * GoodChi_HE  = new EffCorr(finalhistos,"GoodChiEffCorr_HE","GoodChi Eff. Corr",PRB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * GoodChi_TOF = new EffCorr(finalhistos,"GoodChiEffCorr_TOF","GoodChi Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * GoodChi_NaF = new EffCorr(finalhistos,"GoodChiEffCorr_NaF","GoodChi Eff. Corr",NaFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * GoodChi_Agl = new EffCorr(finalhistos,"GoodChiEffCorr_Agl","GoodChi Eff. Corr",AglPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 
-	before = "IsDownGoing&IsGoodTrack&IsCharge1Track&IsLooseCharge1";
-        after  = "IsDownGoing&IsGoodTrack&IsCharge1Track&IsLooseCharge1&IsGoodChi2"; 
-	EffCorr * GoodChi_HE  = new EffCorr(finalhistos,"GoodChiEffCorr_HE","GoodChi Eff. Corr",PRB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * GoodChi_TOF = new EffCorr(finalhistos,"GoodChiEffCorr_TOF","GoodChi Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * GoodChi_NaF = new EffCorr(finalhistos,"GoodChiEffCorr_NaF","GoodChi Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * GoodChi_Agl = new EffCorr(finalhistos,"GoodChiEffCorr_Agl","GoodChi Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+        before = "IsDownGoing&IsPhysTrig&IsGoodTOFStandaloneQ1&IsExtrapolInsideL8&IsExtrapolInsideL1&IsExtrapolInsideL9";
+        after  = "IsDownGoing&IsPhysTrig&IsGoodTOFStandaloneQ1&IsExtrapolInsideL8&IsExtrapolInsideL1&IsExtrapolInsideL9&IsGoodTrack"; 
+	EffCorr * TrackerEffCorr_HE = new EffCorr(finalhistos,"TrackerEffCorr_HE","Tracker Eff. Corr",PRB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsProtonPMC");
 
-        before = "IsDownGoing&IsPhysTrig&IsGoodTOFStandaloneQ1&IsExtrapolInsideL8";
-        after  = "IsDownGoing&IsPhysTrig&IsGoodTrack&IsGoodTOFStandaloneQ1&IsExtrapolInsideL8"; 
-	EffCorr * TrackerEffCorr_HE = new EffCorr(finalhistos,"TrackerEffCorr_HE","Tracker Eff. Corr",PRB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	before = "IsDownGoing&IsPhysTrig&IsGoodTrack&IsCharge1Track&L1LooseCharge1";
+        after  = "IsDownGoing&IsPhysTrig&IsGoodTrack&IsCharge1Track&L1LooseCharge1&IsGoodL1Status"; 
+	EffCorr * StatusL1Check_HE = new EffCorr(finalhistos,"StatusL1Check_HE","StatusL1Check Eff. Corr",PRB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+
 
 	// Good Z=1 and Golden Efficiency corrections
-		  
-	before = "IsPositive&IsMinimumBias&IsLooseCharge1";
-        after  = "IsPositive&IsMinimumBias&IsLooseCharge1&IsMinTOF";
-	EffCorr * MinTOFEffCorr_HE  = new EffCorr(finalhistos,"MinTOFEffCorr_HE" ,"Min TOF Eff. Corr",PRB,before,after,  "IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC"); 
-	EffCorr * MinTOFEffCorr_TOF = new EffCorr(finalhistos,"MinTOFEffCorr_TOF","Min TOF Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * MinTOFEffCorr_NaF = new EffCorr(finalhistos,"MinTOFEffCorr_NaF","Min TOF Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * MinTOFEffCorr_Agl = new EffCorr(finalhistos,"MinTOFEffCorr_Agl","Min TOF Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1";
+        after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&Is1TrTrack"; 
+	EffCorr * Good1Track_HE  = new EffCorr(finalhistos,"Good1TrackEffCorr_HE","Good1Track Eff. Corr",PRB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * Good1Track_TOF = new EffCorr(finalhistos,"Good1TrackEffCorr_TOF","Good1Track Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * Good1Track_NaF = new EffCorr(finalhistos,"Good1TackEffCorr_NaF", "Good1Track Eff. Corr",NaFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * Good1Track_Agl = new EffCorr(finalhistos,"Good1TrackEffCorr_Agl","Good1Track Eff. Corr",AglPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 
-	before = "IsPositive&IsMinimumBias&IsLooseCharge1&IsMinTOF";
-        after  = "IsPositive&IsMinimumBias&IsLooseCharge1&IsMinTOF&Is1TrTrack"; 
-	EffCorr * Good1Track_HE  = new EffCorr(finalhistos,"Good1TrackEffCorr_HE","Good1Track Eff. Corr",PRB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * Good1Track_TOF = new EffCorr(finalhistos,"Good1TrackEffCorr_TOF","Good1Track Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * Good1Track_NaF = new EffCorr(finalhistos,"Good1TackEffCorr_NaF", "Good1Track Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * Good1Track_Agl = new EffCorr(finalhistos,"Good1TrackEffCorr_Agl","Good1Track Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	  
+	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&Is1TrTrack";
+        after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&Is1TrTrack&IsMinTOF";
+	EffCorr * MinTOFEffCorr_HE  = new EffCorr(finalhistos,"MinTOFEffCorr_HE" ,"Min TOF Eff. Corr",PRB,before,after,  "IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC"); 
+	EffCorr * MinTOFEffCorr_TOF = new EffCorr(finalhistos,"MinTOFEffCorr_TOF","Min TOF Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * MinTOFEffCorr_NaF = new EffCorr(finalhistos,"MinTOFEffCorr_NaF","Min TOF Eff. Corr",NaFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * MinTOFEffCorr_Agl = new EffCorr(finalhistos,"MinTOFEffCorr_Agl","Min TOF Eff. Corr",AglPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 
-	before = "IsPositive&IsMinimumBias&IsLooseCharge1&Is1TrTrack&IsMinTOF";
-        after  = "IsPositive&IsMinimumBias&IsLooseCharge1&Is1TrTrack&IsMinTOF&IsCharge1UTOF"; 
-	EffCorr * GoodUtof_HE  = new EffCorr(finalhistos,"GoodUtofEffCorr_HE" ,"GoodUtof Eff. Corr",PRB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * GoodUtof_TOF = new EffCorr(finalhistos,"GoodUtofEffCorr_TOF","GoodUtof Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * GoodUtof_NaF = new EffCorr(finalhistos,"GoodUtofEffCorr_NaF","GoodUtof Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * GoodUtof_Agl = new EffCorr(finalhistos,"GoodUtofEffCorr_Agl","GoodUtof Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&Is1TrTrack&IsMinTOF";
+	after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&Is1TrTrack&IsMinTOF&IsCharge1LTOF";
+        EffCorr * GoodLtof_HE  = new EffCorr(finalhistos,"GoodLTOFEffCorr_HE" ,"GoodLtof Eff. Corr",PRB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+        EffCorr * GoodLtof_TOF = new EffCorr(finalhistos,"GoodLTOFEffCorr_TOF","GoodLtof Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+        EffCorr * GoodLtof_NaF = new EffCorr(finalhistos,"GoodLTOFEffCorr_NaF","GoodLtof Eff. Corr",NaFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+        EffCorr * GoodLtof_Agl = new EffCorr(finalhistos,"GoodLTOFEffCorr_Agl","GoodLtof Eff. Corr",AglPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 
-	before = "IsPositive&IsMinimumBias&IsLooseCharge1&Is1TrTrack&IsMinTOF&IsCharge1UTOF";
-	after  = "IsPositive&IsMinimumBias&IsLooseCharge1&Is1TrTrack&IsMinTOF&IsCharge1UTOF&IsCharge1LTOF";
-        EffCorr * GoodLtof_HE  = new EffCorr(finalhistos,"GoodLTOFEffCorr_HE" ,"GoodLtof Eff. Corr",PRB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-        EffCorr * GoodLtof_TOF = new EffCorr(finalhistos,"GoodLTOFEffCorr_TOF","GoodLtof Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-        EffCorr * GoodLtof_NaF = new EffCorr(finalhistos,"GoodLTOFEffCorr_NaF","GoodLtof Eff. Corr",NaFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-        EffCorr * GoodLtof_Agl = new EffCorr(finalhistos,"GoodLTOFEffCorr_Agl","GoodLtof Eff. Corr",AglPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&Is1TrTrack&IsMinTOF&IsCharge1LTOF";
+        after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&Is1TrTrack&IsMinTOF&IsCharge1LTOF&IsCharge1UTOF"; 
+	EffCorr * GoodUtof_HE  = new EffCorr(finalhistos,"GoodUtofEffCorr_HE" ,"GoodUtof Eff. Corr",PRB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * GoodUtof_TOF = new EffCorr(finalhistos,"GoodUtofEffCorr_TOF","GoodUtof Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * GoodUtof_NaF = new EffCorr(finalhistos,"GoodUtofEffCorr_NaF","GoodUtof Eff. Corr",NaFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * GoodUtof_Agl = new EffCorr(finalhistos,"GoodUtofEffCorr_Agl","GoodUtof Eff. Corr",AglPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 
-	before = "IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning";
-        after  = "IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"; 
-	EffCorr * GoodTime_TOF = new EffCorr(finalhistos,"GoodTimeEffCorr_TOF","GoodTime Eff. Corr",ToFPB,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+
+	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
+        after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime"; 
+	EffCorr * GoodTime_TOF = new EffCorr(finalhistos,"GoodTimeEffCorr_TOF","GoodTime Eff. Corr",ToFPB,before,after,"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 	
-	before = "IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning";
-        after  = "IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning";
-	EffCorr * RICHEffCorr_NaF = new EffCorr(finalhistos,"RICHCorrection_NaF","RICH Eff. Corr",NaFPB,before,(after+"&IsFromNaF").c_str(),"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * RICHEffCorr_Agl = new EffCorr(finalhistos,"RICHCorrection_Agl","RICH Eff. Corr",AglPB,before,(after+"&IsFromAgl").c_str(),"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
+        after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
+	EffCorr * RICHEffCorr_NaF = new EffCorr(finalhistos,"RICHCorrection_NaF","RICH Eff. Corr",NaFPB,before,(after+"&IsFromNaF").c_str(),"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * RICHEffCorr_Agl = new EffCorr(finalhistos,"RICHCorrection_Agl","RICH Eff. Corr",AglPB,before,(after+"&IsFromAgl").c_str(),"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 
-	before = "IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning";
-        after  = "IsPositive&IsMinimumBias&IsLooseCharge1&IsCleaning";
-	EffCorr * RICHQualEffCorr_NaF = new EffCorr(finalhistos,"RICHQualCorrection_NaF","RICH Qual Eff. Corr",NaFPB,(before+"&IsFromNaF").c_str(),(after+"&IsFromNaF&RICHBDTCut").c_str(),"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * RICHQualEffCorr_Agl = new EffCorr(finalhistos,"RICHqualCorrection_Agl","RICH Qual. Eff. Corr",AglPB,(before+"&IsFromAgl").c_str(),(after+"&IsFromAgl&RICHBDTCut").c_str(),"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
+        after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
+	EffCorr * RICHQualEffCorr_NaF = new EffCorr(finalhistos,"RICHQualCorrection_NaF","RICH Qual Eff. Corr",NaFPB,(before+"&IsFromNaF").c_str(),(after+"&IsFromNaF&RICHBDTCut").c_str(),"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
+	EffCorr * RICHQualEffCorr_Agl = new EffCorr(finalhistos,"RICHqualCorrection_Agl","RICH Qual. Eff. Corr",AglPB,(before+"&IsFromAgl").c_str(),(after+"&IsFromAgl&RICHBDTCut").c_str(),"IsPrimary","IsProtonMC","IsDeutonMC","IsPurePMC");
 
-	TriggerEffCorr_HE 	->SetDefaultOutFile(finalhistos); 
+	TriggerEffCorr_HE	->SetDefaultOutFile(finalhistos); 
 	TriggerEffCorr_TOF ->SetDefaultOutFile(finalhistos); 
 	TriggerEffCorr_NaF ->SetDefaultOutFile(finalhistos); 
 	TriggerEffCorr_Agl ->SetDefaultOutFile(finalhistos); 
@@ -117,6 +122,7 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 	MinTOFEffCorr_Agl ->SetDefaultOutFile(finalhistos); 
 	
 	TrackerEffCorr_HE ->SetDefaultOutFile(finalhistos); 
+	StatusL1Check_HE ->SetDefaultOutFile(finalhistos); 
 	
 	GoodChi_HE   ->SetDefaultOutFile(finalhistos); 
 	GoodChi_TOF  ->SetDefaultOutFile(finalhistos); 
@@ -168,6 +174,7 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 	Filler.AddObject2beFilled(MinTOFEffCorr_Agl,GetRigidity,GetRigidity);
 
 	Filler.AddObject2beFilled(TrackerEffCorr_HE,GetMomentumProxy,GetMomentumProxy);
+	Filler.AddObject2beFilled(StatusL1Check_HE,GetMomentumProxy,GetMomentumProxy);
 
 	Filler.AddObject2beFilled(GoodChi_HE,GetRigidity,GetRigidity);	
 	Filler.AddObject2beFilled(GoodChi_TOF,GetRigidity,GetRigidity);	
@@ -207,10 +214,10 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 
 	if(!refill&&checkfile) {	
 
-		AnalyzeEffCorr(	TriggerEffCorr_HE  , finalhistos, finalresults);
-		AnalyzeEffCorr(	TriggerEffCorr_TOF , finalhistos, finalresults);
-		AnalyzeEffCorr(	TriggerEffCorr_NaF , finalhistos, finalresults);
-		AnalyzeEffCorr(	TriggerEffCorr_Agl , finalhistos, finalresults);
+		AnalyzeEffCorr(	TriggerEffCorr_HE  , finalhistos, finalresults,true);
+		AnalyzeEffCorr(	TriggerEffCorr_TOF , finalhistos, finalresults,true);
+		AnalyzeEffCorr(	TriggerEffCorr_NaF , finalhistos, finalresults,true);
+		AnalyzeEffCorr(	TriggerEffCorr_Agl , finalhistos, finalresults,true);
 
 		AnalyzeEffCorr(	L1PickUpEffCorr_HE , finalhistos, finalresults);
 		AnalyzeEffCorr(	L1PickUpEffCorr_TOF, finalhistos, finalresults);
@@ -223,6 +230,7 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 		AnalyzeEffCorr(	MinTOFEffCorr_Agl , finalhistos, finalresults);
 
 		AnalyzeEffCorr(	TrackerEffCorr_HE , finalhistos, finalresults);
+		AnalyzeEffCorr(	StatusL1Check_HE , finalhistos, finalresults);
 
 		AnalyzeEffCorr(	GoodChi_HE  , finalhistos, finalresults);  
 		AnalyzeEffCorr(	GoodChi_TOF , finalhistos, finalresults);  
@@ -260,7 +268,8 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 }
 
 
-void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults){
+void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults, bool IsTrig){
+	if(IsTrig) Correction   -> SetAsTrigEffCorr();
 	Correction   -> Eval_Efficiencies();
 	Correction   -> Eval_Corrections();
 	Correction   -> SaveResults(finalresults);

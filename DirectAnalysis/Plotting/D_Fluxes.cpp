@@ -193,7 +193,7 @@ int main(int argc, char * argv[]){
 
 
 	PlotTH1FintoGraph(gPad,PRB, HEPFlux->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",1,true,"Psame",0.1,50,1,2*   HEPFlux->GetExposureTime()->GetBinContent(30),"HE range",8);
-	
+/*	
 	PlotTH1FintoGraph(gPad,ToFDB, DFluxTOF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",1,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"TOF range",8);
 	PlotTH1FintoGraph(gPad,NaFDB, DFluxNaF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",1,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"NaF range",22);
 	PlotTH1FintoGraph(gPad,AglDB, DFluxAgl->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",1,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"Agl range",29);
@@ -208,7 +208,7 @@ int main(int argc, char * argv[]){
 	PlotTH1FintoGraph(gPad,ToFPB, PFluxTOF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",2,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"TOF range",8,true);
 	PlotTH1FintoGraph(gPad,NaFPB, PFluxNaF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",2,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"NaF range",22,true);
 	PlotTH1FintoGraph(gPad,AglPB, PFluxAgl->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",2,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"Agl range",29,true);
-
+*/
 	Plots.Add(c1_);
 	Plots.writeObjsInFolder("Fluxes");
 
