@@ -18,6 +18,8 @@ void DBarReader::Init(){
     ntpEcal       = new NtpEcal();
     ntpAnti       = new NtpAnti();
     ntpStandAlone = new NtpStandAlone();
+
+    ntpCompact    = new NtpCompact();	
 }
 
 
@@ -58,6 +60,15 @@ bool DBarReader::goldenTOF(){
     if (  ntpTof->chisqtn > 10 || ntpTof->chisqtn < 0     ) return false;
     return true;	
 }
+
+bool DBarReader::goldenTOF_Cpct(){
+
+  // if ( (ntpTof->flag) != 0   ) return false; ?? Is it already in compact selection?
+    if (  ntpCompact->tof_chisqcn > 10 || ntpCompact->tof_chisqcn < 0     ) return false;
+    if (  ntpCompact->tof_chisqtn > 10 || ntpCompact->tof_chisqtn < 0     ) return false;
+    return true;	
+}
+
 
 int DBarReader::RICHmaskConverter(){
     int richMASK;
@@ -318,6 +329,199 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars-> sumclsn  =  ntpTof->clsn[0] + ntpTof->clsn[2] ; 
 
 }
+
+
+
+void DBarReader::FillCompact(int NEvent, Variables * vars){
+
+    Tree->GetEntry(NEvent);
+
+    vars->ResetVariables();
+
+    ////////////////////// EVENT INFORMATION ///////////////////////////////////////
+    vars->PrescaleFactor    = 1; 
+
+    vars->P_standard_sel    = 0; 	
+
+    // Stroemer cutoff is in the tracker data
+    vars->Rcutoff = ntpCompact->trk_stoermer;
+    vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1]; //stoermer
+    vars->Rcutoff_IGRFRTI = rtiInfo->cf[1][2][1]; //IGRF 
+    // vars->Rcutoff_RTI  =   rtiInfo->cf[1][2][1]; //IGRF
+    
+    vars->Livetime_RTI =   rtiInfo->lf;    
+    vars->good_RTI   = rtiInfo->good;
+    vars->isinsaa = rtiInfo->isinsaa;
+
+    vars->NAnticluster      = from status;
+    vars->NTrackHits        = from status;
+    vars->NTracks           = from status;
+    vars->NTRDclusters      = from status;
+    vars->NTRDSegments      = from status;
+    vars->nparticle         = from status;    
+
+    /////////////////////////////////// UNBIAS ////////////////////////////////////////
+    vars->PhysBPatt = ntpCompact->sublvl1;
+    vars->JMembPatt = ntpCompact->trigpatt;
+
+    bool goodChi2 =  (ntpCompact->trk_chisqn[0] < vars->Chi2Xcut->Eval(abs(ntpCompact->rig[1])) &&
+			ntpCompact->trk_chisqn[1] < vars->Chi2Ycut->Eval(abs(ntpCompact->rig[1])));	
+    
+    /*bool goodChi2 =  (ntpTracker->chisqn[1][0] < 10 &&
+			ntpTracker->chisqn[1][1] < 10);	
+   */
+
+    /////////////////////////////// PRESELECTION CUTMASK //////////////////////////////////	
+   
+    if( ((ntpCompact->trigpatt & 0x2) != 0) && ((ntpCompact->sublvl1&0x3E) !=0) )      vars->CUTMASK |= 1 << 0;
+    if( true                          )  vars->CUTMASK |= 1 << 1; //minTOF already in compact selection
+    if( (ntpCompact->trigpatt & 0x2) != 0)  vars->CUTMASK |= 1 << 2;
+    if( ntpCompact->rig[1] != 0.0          )  vars->CUTMASK |= 1 << 3;
+    if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
+    if( goldenTOF_Cpct()                       )  vars->CUTMASK |= 1 << 5;  
+                                                                // 6
+    if( vars->nparticle == 1  && vars->NTracks == 1 )  vars->CUTMASK |= 1 << 7;
+    if( false  )  vars->CUTMASK |= 1 << 8;
+
+    //////////////////////////////  Tracking Efficiency /////////////////////////////////////
+
+    vars->theta_track     =ntpStandAlone->theta;;
+    vars->phi_track       =ntpStandAlone->phi;
+    vars->entrypointcoo[0]=ntpStandAlone->coo[0];	
+    vars->entrypointcoo[1]=ntpStandAlone->coo[1];	
+    vars->entrypointcoo[2]=ntpStandAlone->coo[2];	
+    vars->beta_SA	  =ntpStandAlone->beta;
+    vars->betapatt_SA     =ntpStandAlone->beta_patt;	
+    vars->qUtof_SA	  =(ntpStandAlone->beta_q_lay[0]+ntpStandAlone->beta_q_lay[1])/2;
+    vars->qLtof_SA	  =(ntpStandAlone->beta_q_lay[2]+ntpStandAlone->beta_q_lay[3])/2;
+    vars->qTrd_SA	  =ntpStandAlone->trd_q;	
+    vars->EdepECAL	  =ntpEcal->energyE[0];
+
+
+    //////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
+    vars->exthit_int[0]		=ntpStandAlone->exthit_int[0][0];	          
+    vars->exthit_int[1]		=ntpStandAlone->exthit_int[0][1];	          
+    vars->exthit_int[2]		=ntpStandAlone->exthit_int[0][2];	          
+    vars->exthit_closest_coo[0]	=ntpStandAlone->exthit_closest_coo[0][0];
+    vars->exthit_closest_coo[1]	=ntpStandAlone->exthit_closest_coo[0][1];
+    vars->exthit_closest_coo[2]	=ntpStandAlone->exthit_closest_coo[0][2];
+    vars->exthit_closest_q		=ntpStandAlone->exthit_closest_q[0]	 ;     
+    vars->exthit_closest_status	=ntpStandAlone->exthit_closest_status[0];
+    vars->exthit_largest_coo[0]	=ntpStandAlone->exthit_largest_coo[0][0];
+    vars->exthit_largest_coo[1]	=ntpStandAlone->exthit_largest_coo[0][1];
+    vars->exthit_largest_coo[2]	=ntpStandAlone->exthit_largest_coo[0][2];
+    vars-> exthit_largest_q		=ntpStandAlone->exthit_largest_q[0]	 ;     
+    vars-> exthit_largest_status	=ntpStandAlone->exthit_largest_status[0];
+
+
+    /////////////////////////////// TRACKER ////////////////////////////////////
+    
+    vars->R     = ntpTracker->rig[1]; // 1 -- Inner tracker
+    vars->Rup   = ntpTracker->rig[2]; // 2 -- Upper inner tracker
+    vars->Rdown = ntpTracker->rig[3]; // 3 -- Lower inner tracker
+    vars->R_L1  = ntpTracker->rig[4]; // 4 -- Inner + L1
+    vars->R_noMS= ntpTracker->rig[9]; // 9 -- Inner tracker NoMS
+    
+    vars->R_sec = ntpTracker-> sec_inn_rig; // rig secondary track;
+
+    vars->Chisquare         = ntpTracker->chisqn[1][0]; // 1 = Inner      , 0 = X side
+    vars->Chisquare_L1      = ntpTracker->chisqn[4][0]; // 4 = L1 + Inner , 0 = X side
+    vars->Chisquare_y       = ntpTracker->chisqn[1][1]; // 1 = Inner      , 1 = Y side
+    vars->Chisquare_L1_y    = ntpTracker->chisqn[4][1]; // 4 = L1 + Inner , 1 = Y side
+    vars->hitbits           = ntpTracker->pattxy; 
+    vars->FiducialVolume    = ntpTracker->GetPatternInsideTracker();   
+
+    vars->qL1               = ntpTracker->q_lay[1][0];
+    vars->qL1Status         = ntpTracker->q_lay_status[1][0];
+    vars->qL2               = ntpTracker->q_lay[1][1];
+    vars->qL2Status         = ntpTracker->q_lay_status[1][1];
+    vars->qInner            = ntpTracker->q_inn;
+    vars->clustertottrack   = ntpHeader->ntrrechit;
+    vars->clustertrack      = countBits(vars->hitbits);
+    vars->qL1InnerNoL2	    = (ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0])/7;	
+
+    vars->trtrack_edep = new std::vector<float>;
+    vars->trtot_edep   = new std::vector<float>;
+    for(int il=1;il<=9;il++) {
+        vars->trtrack_edep->push_back(ntpTracker->edep_lay[1][il-1][0]);
+        vars->trtot_edep->push_back(ntpTracker->edep_lay[1][il-1][0]);
+    }
+    
+    /////////////////////////////// TOF ////////////////////////////////////
+    
+    // TODO: proper averaging inclding errors?
+    int n = 0;
+    double rms = 0;
+  
+    vars->qUtof   =(ntpTof) ? ntpTof->GetQ(n,rms,0x3) : 0;  ;
+    vars->qLtof   =(ntpTof) ? ntpTof->GetQ(n,rms,0xc) : 0;  ;
+
+    vars->BetaR   = ntpTof->evgeni_beta;
+    vars->Beta    = ntpTof->beta;
+    
+    vars->Endep = new std::vector<float>;
+    for(int il=0;il<4;il++) {
+       //cout<<vars->Endep<<endl; 
+       vars->Endep->push_back(ntpTof->edep[il][0]);
+    }
+    vars->TOFchisq_s = ntpTof->chisqcn;
+    vars->TOFchisq_t = ntpTof->chisqtn;
+    vars->NBadTOF    = 0;
+    for(int il=0;il<4;il++) { 
+	if(ntpTof->flagp[il]!=0) vars->NBadTOF++;
+    }	
+    /////////////////////////////// TRD ////////////////////////////////////
+    vars->TRDLike= ntpTrd->trdk_like_e[0];
+    vars->TRDLikP= ntpTrd->trdk_like_p[0];
+    vars->TRDLikD= ntpTrd->trdk_like_d[0];	    
+    float Edep=0;
+    float path=0;
+    for(int il=0;il<20;il++) {		
+	Edep+=ntpTrd->trdk_ampl[il];
+	path+=ntpTrd->trdk_path[il];
+    }
+    vars->TRDEdepovPath = Edep/path;
+    vars->EdepTRD = Edep;	
+
+    /////////////////////////////// RICH ////////////////////////////////////
+    vars->BetaRICH_new      = ntpRich->beta_corrected;
+    vars->RICHmask_new      = RICHmaskConverter();
+    vars->Richtotused       = ntpHeader->nrichhit-ntpRich->nhit;
+    if(ntpRich->np_uncorr>0) vars->RichPhEl = ntpRich->np_exp_uncorr/ntpRich->np_uncorr; else vars->RichPhEl = 0;
+    vars->RICHprob          = ntpRich->prob;
+    vars->RICHPmts          = ntpRich->npmt;
+    if(ntpRich->tot_p_uncorr>0) vars->RICHcollovertotal = ntpRich->np_uncorr/ntpRich->tot_p_uncorr; else vars->RICHcollovertotal=0;
+    vars->RICHgetExpected   = ntpRich->np_exp_uncorr;
+
+    vars->RICHLipBetaConsistency = fabs(ntpRich->lip_beta-ntpRich->beta_corrected);	
+    vars->RICHTOFBetaConsistency = fabs(ntpRich->beta_corrected - ntpTof->beta)/ntpRich->beta_corrected;
+    vars->RICHChargeConsistency  = ntpRich->q_consistency;
+    vars->tot_hyp_p_uncorr	 = ntpRich->tot_hyp_p_uncorr[1]; 	
+    vars->Bad_ClusteringRICH=0;
+	 for (int is=0; is<10; is++) if ((ntpRich->clus_mean[is]-ntpRich->beta)>0.01) vars->Bad_ClusteringRICH++;
+    vars->NSecondariesRICHrich=0;
+	 for (int is=0; is< 5; is++) if ((ntpRich->pmt_np_uncorr[is]>5)&&(ntpRich->pmt_dist[is]>3.5)) vars->NSecondariesRICHrich++;
+
+   vars->HitHValldir   =ntpRich->tot_hyp_hit_uncorr[0][0];
+   vars->HitHVallrefl  =ntpRich->tot_hyp_hit_uncorr[0][1];
+   vars->HitHVoutdir   =ntpRich->tot_hyp_hit_uncorr[1][0];
+   vars->HitHVoutrefl  =ntpRich->tot_hyp_hit_uncorr[1][1];   
+
+ 
+
+   //////////////////////// CHECKS on VARIABLES ///////////////////////////
+    vars-> beta_ncl =  ntpTof->beta_ncl;
+    vars-> chisqcn  =  ntpTof->chisqcn; 
+    vars-> chisqtn  =  ntpTof->chisqtn; 
+    vars-> nTrTracks=  ntpHeader->ntrtrack;
+    vars-> sumclsn  =  ntpTof->clsn[0] + ntpTof->clsn[2] ; 
+
+}
+
+
+
+
+
 
 
 
