@@ -78,7 +78,15 @@ int DBarReader::RICHmaskConverter(){
     return richMASK;
 }
 
-Long64_t DBarReader::ProtonCandidateSelection() {
+int DBarReader::RICHmaskConverter_Cpt(){
+    int richMASK;
+    if(ntpCompact->rich_select<0) richMASK = -ntpCompact->rich_select;
+    else richMASK = 0;
+    if(ntpCompact->rich_select==1) richMASK=richMASK|1024;;
+    return richMASK;
+}
+
+ong64_t DBarReader::ProtonCandidateSelection() {
   if ( (!ntpHeader)||(!ntpTof)||(!ntpTracker)||(!ntpTrd)||(!ntpRich) ) return -1;
   int n = 0;
   double rms = 0;
@@ -211,20 +219,9 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
 
     //////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
-    vars->exthit_int[0]		=ntpStandAlone->exthit_int[0][0];	          
-    vars->exthit_int[1]		=ntpStandAlone->exthit_int[0][1];	          
-    vars->exthit_int[2]		=ntpStandAlone->exthit_int[0][2];	          
-    vars->exthit_closest_coo[0]	=ntpStandAlone->exthit_closest_coo[0][0];
-    vars->exthit_closest_coo[1]	=ntpStandAlone->exthit_closest_coo[0][1];
-    vars->exthit_closest_coo[2]	=ntpStandAlone->exthit_closest_coo[0][2];
     vars->exthit_closest_q		=ntpStandAlone->exthit_closest_q[0]	 ;     
     vars->exthit_closest_status	=ntpStandAlone->exthit_closest_status[0];
-    vars->exthit_largest_coo[0]	=ntpStandAlone->exthit_largest_coo[0][0];
-    vars->exthit_largest_coo[1]	=ntpStandAlone->exthit_largest_coo[0][1];
-    vars->exthit_largest_coo[2]	=ntpStandAlone->exthit_largest_coo[0][2];
-    vars-> exthit_largest_q		=ntpStandAlone->exthit_largest_q[0]	 ;     
-    vars-> exthit_largest_status	=ntpStandAlone->exthit_largest_status[0];
-
+    vars-> hitdistfromint =pow( pow(ntpStandAlone->exthit_int[0][0]-ntpStandAlone->exthit_closest_coo[0][0],2) + pow(ntpStandAlone->exthit_int[0][1]-ntpStandAlone->exthit_closest_coo[0][1],2),0.5);
 
     /////////////////////////////// TRACKER ////////////////////////////////////
     
@@ -261,7 +258,6 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     
     /////////////////////////////// TOF ////////////////////////////////////
     
-    // TODO: proper averaging inclding errors?
     int n = 0;
     double rms = 0;
   
@@ -364,12 +360,12 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
     vars->PhysBPatt = ntpCompact->sublvl1;
     vars->JMembPatt = ntpCompact->trigpatt;
 
-    bool goodChi2 =  (ntpCompact->trk_chisqn[0] < vars->Chi2Xcut->Eval(abs(ntpCompact->rig[1])) &&
+    /*bool goodChi2 =    (ntpCompact->trk_chisqn[0] < vars->Chi2Xcut->Eval(abs(ntpCompact->rig[1])) &&
 			ntpCompact->trk_chisqn[1] < vars->Chi2Ycut->Eval(abs(ntpCompact->rig[1])));	
-    
-    /*bool goodChi2 =  (ntpTracker->chisqn[1][0] < 10 &&
-			ntpTracker->chisqn[1][1] < 10);	
-   */
+   */ 
+    bool goodChi2 =  (ntpCompact->trk_chisqn[0]< 100 &&
+			ntpCompact->trk_chisqn[1]< 100);	
+   
 
     /////////////////////////////// PRESELECTION CUTMASK //////////////////////////////////	
    
@@ -385,113 +381,52 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 
     //////////////////////////////  Tracking Efficiency /////////////////////////////////////
 
-    vars->theta_track     =ntpStandAlone->theta;;
-    vars->phi_track       =ntpStandAlone->phi;
-    vars->entrypointcoo[0]=ntpStandAlone->coo[0];	
-    vars->entrypointcoo[1]=ntpStandAlone->coo[1];	
-    vars->entrypointcoo[2]=ntpStandAlone->coo[2];	
-    vars->beta_SA	  =ntpStandAlone->beta;
-    vars->betapatt_SA     =ntpStandAlone->beta_patt;	
-    vars->qUtof_SA	  =(ntpStandAlone->beta_q_lay[0]+ntpStandAlone->beta_q_lay[1])/2;
-    vars->qLtof_SA	  =(ntpStandAlone->beta_q_lay[2]+ntpStandAlone->beta_q_lay[3])/2;
-    vars->qTrd_SA	  =ntpStandAlone->trd_q;	
-    vars->EdepECAL	  =ntpEcal->energyE[0];
+    vars->beta_SA	  =ntpCompact->sa_tof_beta;
+    vars->qUtof_SA	  =ntpCompact->sa_tof_qup;
+    vars->qLtof_SA	  =ntpCompact->sa_tof_qdw;
+    vars->EdepECAL	  =ntpCompact->sa_ecal_edepd;
 
 
     //////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
-    vars->exthit_int[0]		=ntpStandAlone->exthit_int[0][0];	          
-    vars->exthit_int[1]		=ntpStandAlone->exthit_int[0][1];	          
-    vars->exthit_int[2]		=ntpStandAlone->exthit_int[0][2];	          
-    vars->exthit_closest_coo[0]	=ntpStandAlone->exthit_closest_coo[0][0];
-    vars->exthit_closest_coo[1]	=ntpStandAlone->exthit_closest_coo[0][1];
-    vars->exthit_closest_coo[2]	=ntpStandAlone->exthit_closest_coo[0][2];
-    vars->exthit_closest_q		=ntpStandAlone->exthit_closest_q[0]	 ;     
-    vars->exthit_closest_status	=ntpStandAlone->exthit_closest_status[0];
-    vars->exthit_largest_coo[0]	=ntpStandAlone->exthit_largest_coo[0][0];
-    vars->exthit_largest_coo[1]	=ntpStandAlone->exthit_largest_coo[0][1];
-    vars->exthit_largest_coo[2]	=ntpStandAlone->exthit_largest_coo[0][2];
-    vars-> exthit_largest_q		=ntpStandAlone->exthit_largest_q[0]	 ;     
-    vars-> exthit_largest_status	=ntpStandAlone->exthit_largest_status[0];
+    vars->exthit_closest_q		=ntpCompact ->sa_exthit_ql1 ;     
+    vars->hitdistfromint = pow(pow(vars->sa_exthit_dl1[0],2)+ pow(vars->sa_exthit_dl1[1],2),0.5);
 
 
     /////////////////////////////// TRACKER ////////////////////////////////////
     
-    vars->R     = ntpTracker->rig[1]; // 1 -- Inner tracker
-    vars->Rup   = ntpTracker->rig[2]; // 2 -- Upper inner tracker
-    vars->Rdown = ntpTracker->rig[3]; // 3 -- Lower inner tracker
-    vars->R_L1  = ntpTracker->rig[4]; // 4 -- Inner + L1
-    vars->R_noMS= ntpTracker->rig[9]; // 9 -- Inner tracker NoMS
-    
-    vars->R_sec = ntpTracker-> sec_inn_rig; // rig secondary track;
+    vars->R     = ntpCompact->rig[1]; // 1 -- Inner tracker (Kalman)
 
-    vars->Chisquare         = ntpTracker->chisqn[1][0]; // 1 = Inner      , 0 = X side
-    vars->Chisquare_L1      = ntpTracker->chisqn[4][0]; // 4 = L1 + Inner , 0 = X side
-    vars->Chisquare_y       = ntpTracker->chisqn[1][1]; // 1 = Inner      , 1 = Y side
-    vars->Chisquare_L1_y    = ntpTracker->chisqn[4][1]; // 4 = L1 + Inner , 1 = Y side
-    vars->hitbits           = ntpTracker->pattxy; 
-    vars->FiducialVolume    = ntpTracker->GetPatternInsideTracker();   
+    vars->Chisquare         = ntpCompact->trk_chisqn[0]; // 1 = Inner      , 0 = X side
+    vars->Chisquare_y       = ntpCompact->trk_chisqn[1]; // 1 = Inner      , 1 = Y side
+    vars->hitbits           = ntpCompact->pattxy; 
+    vars->FiducialVolume    = 255;   
 
-    vars->qL1               = ntpTracker->q_lay[1][0];
-    vars->qL1Status         = ntpTracker->q_lay_status[1][0];
-    vars->qL2               = ntpTracker->q_lay[1][1];
-    vars->qL2Status         = ntpTracker->q_lay_status[1][1];
-    vars->qInner            = ntpTracker->q_inn;
-    vars->clustertottrack   = ntpHeader->ntrrechit;
-    vars->clustertrack      = countBits(vars->hitbits);
-    vars->qL1InnerNoL2	    = (ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0])/7;	
+    vars->qL1               = ntpCompact->trk_ql1;
+    if(vars->qL1>0)         vars->qL1Status         = 0; else   vars->qL1Status         = 1; 
+    vars->qL2               = ntpCompact->trk_ql2;
+    if(vars->qL2>0)         vars->qL2Status         = 0; else   vars->qL2Status         = 1; 
+    vars->qInner            = ntpCompact->trk_qinn;
 
-    vars->trtrack_edep = new std::vector<float>;
-    vars->trtot_edep   = new std::vector<float>;
-    for(int il=1;il<=9;il++) {
-        vars->trtrack_edep->push_back(ntpTracker->edep_lay[1][il-1][0]);
-        vars->trtot_edep->push_back(ntpTracker->edep_lay[1][il-1][0]);
-    }
     
     /////////////////////////////// TOF ////////////////////////////////////
     
-    // TODO: proper averaging inclding errors?
-    int n = 0;
-    double rms = 0;
-  
-    vars->qUtof   =(ntpTof) ? ntpTof->GetQ(n,rms,0x3) : 0;  ;
-    vars->qLtof   =(ntpTof) ? ntpTof->GetQ(n,rms,0xc) : 0;  ;
+    vars->qUtof   = ntpCompact->tof_qup;
+    vars->qLtof   = ntpCompact->tof_qdw;
 
-    vars->BetaR   = ntpTof->evgeni_beta;
-    vars->Beta    = ntpTof->beta;
+    vars->Beta    = ntpCompact-> tof_beta;
     
-    vars->Endep = new std::vector<float>;
-    for(int il=0;il<4;il++) {
-       //cout<<vars->Endep<<endl; 
-       vars->Endep->push_back(ntpTof->edep[il][0]);
-    }
-    vars->TOFchisq_s = ntpTof->chisqcn;
-    vars->TOFchisq_t = ntpTof->chisqtn;
-    vars->NBadTOF    = 0;
-    for(int il=0;il<4;il++) { 
-	if(ntpTof->flagp[il]!=0) vars->NBadTOF++;
-    }	
-    /////////////////////////////// TRD ////////////////////////////////////
-    vars->TRDLike= ntpTrd->trdk_like_e[0];
-    vars->TRDLikP= ntpTrd->trdk_like_p[0];
-    vars->TRDLikD= ntpTrd->trdk_like_d[0];	    
-    float Edep=0;
-    float path=0;
-    for(int il=0;il<20;il++) {		
-	Edep+=ntpTrd->trdk_ampl[il];
-	path+=ntpTrd->trdk_path[il];
-    }
-    vars->TRDEdepovPath = Edep/path;
-    vars->EdepTRD = Edep;	
+    vars->TOFchisq_s = ntpCompact->tof_chisqcn;
+    vars->TOFchisq_t = ntpCompact->tof_chisqtn;
 
     /////////////////////////////// RICH ////////////////////////////////////
-    vars->BetaRICH_new      = ntpRich->beta_corrected;
-    vars->RICHmask_new      = RICHmaskConverter();
-    vars->Richtotused       = ntpHeader->nrichhit-ntpRich->nhit;
-    if(ntpRich->np_uncorr>0) vars->RichPhEl = ntpRich->np_exp_uncorr/ntpRich->np_uncorr; else vars->RichPhEl = 0;
-    vars->RICHprob          = ntpRich->prob;
-    vars->RICHPmts          = ntpRich->npmt;
-    if(ntpRich->tot_p_uncorr>0) vars->RICHcollovertotal = ntpRich->np_uncorr/ntpRich->tot_p_uncorr; else vars->RICHcollovertotal=0;
-    vars->RICHgetExpected   = ntpRich->np_exp_uncorr;
+    vars->BetaRICH_new      = ntpCompact->rich_beta;
+    vars->RICHmask_new      = RICHmaskConverter_Cpt();
+    vars->Richtotused       = from status;
+    if(ntpRich->np_uncorr>0) vars->RichPhEl = ntpRich->np_exp_uncorr/ntpRich->np_uncorr; else vars->RichPhEl = 0; //from status
+    vars->RICHprob          = ntpCompact->rich_prob;
+    vars->RICHPmts          = from status;
+    if(ntpRich->tot_p_uncorr>0) vars->RICHcollovertotal = ntpRich->np_uncorr/ntpRich->tot_p_uncorr; else vars->RICHcollovertotal=0; //from status
+    vars->RICHgetExpected   = ntpCompact->rich_np_exp;;
 
     vars->RICHLipBetaConsistency = fabs(ntpRich->lip_beta-ntpRich->beta_corrected);	
     vars->RICHTOFBetaConsistency = fabs(ntpRich->beta_corrected - ntpTof->beta)/ntpRich->beta_corrected;
@@ -510,11 +445,9 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
  
 
    //////////////////////// CHECKS on VARIABLES ///////////////////////////
-    vars-> beta_ncl =  ntpTof->beta_ncl;
-    vars-> chisqcn  =  ntpTof->chisqcn; 
-    vars-> chisqtn  =  ntpTof->chisqtn; 
-    vars-> nTrTracks=  ntpHeader->ntrtrack;
-    vars-> sumclsn  =  ntpTof->clsn[0] + ntpTof->clsn[2] ; 
+    vars-> chisqcn  =  vars->TOFchisq_s;
+    vars-> chisqtn  =  vars->TOFchisq_t;
+    vars-> nTrTracks=  vars->NTracks; 
 
 }
 
