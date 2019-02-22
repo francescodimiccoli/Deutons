@@ -5,11 +5,11 @@ chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 #chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
-$datapath  = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/neg/ISS.B950/pass6";
-$mcP_path  = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/full/Pr.B1119/pr.pl1.05100.3_01";
-$mcD_path  = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/full/D.B1081/d.pl1.l1.0_5200.2_01";
-$mcHe_path = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/full/He.B1081/he4.pl1.l1.2200.2_01";
-$mcT_path  = "/eos/ams/group/dbar/release_v4/e1_vdev_180213/full/T.B1059/t.pl1.0_520_GG_BlicDPMJet/";
+$datapath  = "/data1/home/data/v4_pass6/bartel.2440/";
+$mcP_path  = "/data1/home/data/v4_pass6/MC/Pr.B1128/pr.pl1ph.5200/";
+$mcD_path  = "";
+$mcHe_path = "";
+$mcT_path  = "";
 
 $FRAC = 1;
 $OFFSET = $ARGV[3];
@@ -29,7 +29,7 @@ $ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/MC-MC/Ntuples";
 system("rm $workdir/InputFileLists/*"); 
 
 print "Listing All Data Files..\n";
-chomp (@Rootuple = `eos ls  $datapath | grep -v "log" |  sed s/.root//g`);
+chomp (@Rootuple = `ls  $datapath | grep -v "log" |  sed s/.root//g`);
 $num_Rootuple = scalar(@Rootuple);
 
 chomp (@NTuple = `ls  $ntuplepath | grep -v "log" |grep -v "check" |  sed s/.root//g`);
