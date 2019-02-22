@@ -200,19 +200,8 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
 
     //////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
-    vars->exthit_int[0]		=ntpStandAlone->exthit_int[0][0];	          
-    vars->exthit_int[1]		=ntpStandAlone->exthit_int[0][1];	          
-    vars->exthit_int[2]		=ntpStandAlone->exthit_int[0][2];	          
-    vars->exthit_closest_coo[0]	=ntpStandAlone->exthit_closest_coo[0][0];
-    vars->exthit_closest_coo[1]	=ntpStandAlone->exthit_closest_coo[0][1];
-    vars->exthit_closest_coo[2]	=ntpStandAlone->exthit_closest_coo[0][2];
     vars->exthit_closest_q		=ntpStandAlone->exthit_closest_q[0]	 ;     
     vars->exthit_closest_status	=ntpStandAlone->exthit_closest_status[0];
-    vars->exthit_largest_coo[0]	=ntpStandAlone->exthit_largest_coo[0][0];
-    vars->exthit_largest_coo[1]	=ntpStandAlone->exthit_largest_coo[0][1];
-    vars->exthit_largest_coo[2]	=ntpStandAlone->exthit_largest_coo[0][2];
-    vars-> exthit_largest_q		=ntpStandAlone->exthit_largest_q[0]	 ;     
-    vars-> exthit_largest_status	=ntpStandAlone->exthit_largest_status[0];
 
 
     /////////////////////////////// TRACKER ////////////////////////////////////

@@ -148,13 +148,13 @@ Double_t Variables::ChiYcut_Y[] = {
 
 
 int GetUnusedLayers(int hitbits){ return 7 - std::bitset<32>(hitbits & 0b1111111).count(); }
-Reweighter ReweightInitializer(std::string galpropfilename="/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/include/CRDB_ProtonsAMS_R.galprop",float r_min=0.5, float r_max=100,float norm_at=1.05);
+Reweighter ReweightInitializer(std::string galpropfilename="include/CRDB_ProtonsAMS_R.galprop",float r_min=0.5, float r_max=100,float norm_at=1.05);
 
 
 Variables::Variables(){
     BDTreader();
     reweighter = ReweightInitializer();
-    reweighterHe = ReweightInitializer("/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/include/CRDB_HeliumAMS_R.galprop",2,2000,2.05);
+    reweighterHe = ReweightInitializer("include/CRDB_HeliumAMS_R.galprop",2,2000,2.05);
    	
     Chi2Xcut = new TSpline3("Chi2Xcut", ChiXcut_X,ChiXcut_Y,30);
     Chi2Ycut = new TSpline3("Chi2Ycut", ChiYcut_X,ChiYcut_Y,37);
@@ -190,7 +190,7 @@ void Variables::BDTreader()
 	readerNaF->AddSpectator("R", &R);
     	readerNaF->AddSpectator("BetaRICH_new", &BetaRICH_new);
 
-	readerNaF->BookMVA("BDTmethod", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/New3/QualityNaF_BDT.weights.xml");
+	readerNaF->BookMVA("BDTmethod", "TMVA/New3/QualityNaF_BDT.weights.xml");
 
 
 	TMVA::Tools::Instance();
@@ -215,7 +215,7 @@ void Variables::BDTreader()
 	readerAgl->AddSpectator("R", &R);
     	readerAgl->AddSpectator("BetaRICH_new", &BetaRICH_new);
 
-	readerAgl->BookMVA("BDTmethod", "/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/TMVA/New3/QualityAgl_BDT.weights.xml");
+	readerAgl->BookMVA("BDTmethod", "TMVA/New3/QualityAgl_BDT.weights.xml");
 }
 
 void Variables::ResetVariables(){
@@ -257,20 +257,9 @@ void Variables::ResetVariables(){
 
 
     //L1 pick-up Efficiency
-    exthit_int[0]	=0;          
-    exthit_int[1]	=0;          
-    exthit_int[2]	=0;          
-    exthit_closest_coo[0]	=0;
-    exthit_closest_coo[1]	=0;
-    exthit_closest_coo[2]	=0;
     exthit_closest_q	=0;     
     exthit_closest_status	=0;
-    exthit_largest_coo[0]	=0;
-    exthit_largest_coo[1]	=0;
-    exthit_largest_coo[2]	=0;
-    exthit_largest_q	=0;     
-    exthit_largest_status	=0;
-
+    hitdistfromint  =0;
 
 
     // Bit fields
