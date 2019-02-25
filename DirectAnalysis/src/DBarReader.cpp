@@ -348,13 +348,24 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
     vars->Livetime_RTI =   rtiInfo->lf;    
     vars->good_RTI   = rtiInfo->good;
     vars->isinsaa = rtiInfo->isinsaa;
+  
+    int status = ntpCompact->status; 
+    vars->NTRDSegments = ((int)status/100000000);
+    status -= (((int)status/100000000) * 100000000); 	  
 
-    vars->NAnticluster      = from status;
-    vars->NTrackHits        = from status;
-    vars->NTracks           = from status;
-    vars->NTRDclusters      = from status;
-    vars->NTRDSegments      = from status;
-    vars->nparticle         = from status;    
+    vars->NTRDclusters = ((int)status/1000000);
+    status -= (((int)status/1000000) * 1000000);			
+
+    vars->NTrackHits  = ((int)status/10000);
+    status -= (((int)status/10000) * 10000); 
+    
+    vars->NTracks  = ((int)status/1000);
+    status -= (((int)status/1000) * 1000);  
+
+    vars->NAnticluster      = ((int)status/10);
+    status -= (((int)status/10) * 10);
+
+    vars->nparticle         = status;    
 
     /////////////////////////////////// UNBIAS ////////////////////////////////////////
     vars->PhysBPatt = ntpCompact->sublvl1;
