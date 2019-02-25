@@ -1,6 +1,6 @@
 all: Analysis Distributions_Plotter 
 
-DBARPATH=/data1/home/work/data_reduction/v4bdt/
+DBARPATH=/data1/home/work/data_reduction/v5/
 
 obj/%.o: src/%.cpp
 	g++ -std=c++11 -o $@ -c -I$(DBARPATH)/include/ -Iinclude $(shell root-config --libs --cflags) $^                  
