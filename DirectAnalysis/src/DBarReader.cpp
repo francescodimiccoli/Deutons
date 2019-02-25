@@ -432,30 +432,30 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
     /////////////////////////////// RICH ////////////////////////////////////
     vars->BetaRICH_new      = ntpCompact->rich_beta;
     vars->RICHmask_new      = RICHmaskConverter_Cpt();
-    vars->Richtotused       = from status;
-    if(ntpRich->np_uncorr>0) vars->RichPhEl = ntpRich->np_exp_uncorr/ntpRich->np_uncorr; else vars->RichPhEl = 0; //from status
+
+    int richstatus = ntpCompact->rich_status;
+    int nrich_hits, rich_pmts, rich_usedhits=0;	
+
+    rich_usedhits= ((int)richstatus/10000);
+    richstatus -= ((int)richstatus/10000)*10000;
+  
+    rich_pmts=((int)richstatus/100);
+    richstatus -= ((int)richstatus/100)*100;	 
+	
+    nrich_hits = richstatus;	
+
+    vars->Richtotused       = nrich_hits-rich_usedhits;
+    if(ntpCompact->rich_np>0) vars->RichPhEl = ntpCompact->rich_np_exp/ntpCompact->rich_np; else vars->RichPhEl = 0; 
     vars->RICHprob          = ntpCompact->rich_prob;
-    vars->RICHPmts          = from status;
-    if(ntpRich->tot_p_uncorr>0) vars->RICHcollovertotal = ntpRich->np_uncorr/ntpRich->tot_p_uncorr; else vars->RICHcollovertotal=0; //from status
+    vars->RICHPmts          = rich_pmts;
+    if(ntpCompact->rich_np>0) vars->RICHcollovertotal = ntpCompact->rich_tot_np/ntpCompact->rich_np; else vars->RICHcollovertotal=0; 
     vars->RICHgetExpected   = ntpCompact->rich_np_exp;;
 
-    vars->RICHLipBetaConsistency = fabs(ntpRich->lip_beta-ntpRich->beta_corrected);	
-    vars->RICHTOFBetaConsistency = fabs(ntpRich->beta_corrected - ntpTof->beta)/ntpRich->beta_corrected;
-    vars->RICHChargeConsistency  = ntpRich->q_consistency;
-    vars->tot_hyp_p_uncorr	 = ntpRich->tot_hyp_p_uncorr[1]; 	
-    vars->Bad_ClusteringRICH=0;
-	 for (int is=0; is<10; is++) if ((ntpRich->clus_mean[is]-ntpRich->beta)>0.01) vars->Bad_ClusteringRICH++;
-    vars->NSecondariesRICHrich=0;
-	 for (int is=0; is< 5; is++) if ((ntpRich->pmt_np_uncorr[is]>5)&&(ntpRich->pmt_dist[is]>3.5)) vars->NSecondariesRICHrich++;
+    vars->RICHTOFBetaConsistency = fabs(ntpCompact->rich_beta - ntpCompact->tof_beta)/ntpCompact->rich_beta;
 
-   vars->HitHValldir   =ntpRich->tot_hyp_hit_uncorr[0][0];
-   vars->HitHVallrefl  =ntpRich->tot_hyp_hit_uncorr[0][1];
-   vars->HitHVoutdir   =ntpRich->tot_hyp_hit_uncorr[1][0];
-   vars->HitHVoutrefl  =ntpRich->tot_hyp_hit_uncorr[1][1];   
+    vars->BDTDiscr = ntpCompact->rich_bdt;
 
- 
-
-   //////////////////////// CHECKS on VARIABLES ///////////////////////////
+    //////////////////////// CHECKS on VARIABLES ///////////////////////////
     vars-> chisqcn  =  vars->TOFchisq_s;
     vars-> chisqtn  =  vars->TOFchisq_t;
     vars-> nTrTracks=  vars->NTracks; 
@@ -469,11 +469,12 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 
 
 
-DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI) {
+DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI, TTree * tree_cpct) {
     Init();
     Tree = tree;
     Tree_RTI = tree_RTI	;   
-
+    Tree_Cpct = tree_cpct; 
+	
     if(Tree){
     Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
     Tree->SetBranchAddress( "Header"  , &ntpHeader     );
@@ -484,11 +485,17 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI) {
     Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
 //  Tree->SetBranchAddress( "Anti"   , &ntpAnti       );
     Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
+
+    if(Tree_Cpct){
+        Tree_Cpct->SetBranchAddress( "Compact" , &ntpCompact  );
+    }	
     if(Tree_RTI){
 	Tree_RTI->SetBranchAddress( "RTIInfo" , &rtiInfo  );		
     	Tree_RTI->BuildIndex("SHeader.utime");
 	Tree->AddFriend(Tree_RTI);
+        Tree_Cpct->AddFriend(Tree_RTI);
     }	
+
 
     isMC = _isMC;
     if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
