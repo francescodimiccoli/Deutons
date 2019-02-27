@@ -18,6 +18,8 @@ void DBarReader::Init(){
     ntpEcal       = new NtpEcal();
     ntpAnti       = new NtpAnti();
     ntpStandAlone = new NtpStandAlone();
+
+    ntpCompact    = new NtpCompact();	
 }
 
 
@@ -59,6 +61,15 @@ bool DBarReader::goldenTOF(){
     return true;	
 }
 
+bool DBarReader::goldenTOF_Cpct(){
+
+  // if ( (ntpTof->flag) != 0   ) return false; ?? Is it already in compact selection?
+    if (  ntpCompact->tof_chisqcn > 10 || ntpCompact->tof_chisqcn < 0     ) return false;
+    if (  ntpCompact->tof_chisqtn > 10 || ntpCompact->tof_chisqtn < 0     ) return false;
+    return true;	
+}
+
+
 int DBarReader::RICHmaskConverter(){
     int richMASK;
     if(ntpRich->selection<0) richMASK = -ntpRich->selection;
@@ -67,7 +78,15 @@ int DBarReader::RICHmaskConverter(){
     return richMASK;
 }
 
-Long64_t DBarReader::ProtonCandidateSelection() {
+int DBarReader::RICHmaskConverter_Cpt(){
+    int richMASK;
+    if(ntpCompact->rich_select<0) richMASK = -ntpCompact->rich_select;
+    else richMASK = 0;
+    if(ntpCompact->rich_select==1) richMASK=richMASK|1024;;
+    return richMASK;
+}
+
+ong64_t DBarReader::ProtonCandidateSelection() {
   if ( (!ntpHeader)||(!ntpTof)||(!ntpTracker)||(!ntpTrd)||(!ntpRich) ) return -1;
   int n = 0;
   double rms = 0;
@@ -200,9 +219,9 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
 
     //////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
+
     vars->exthit_closest_q		=ntpStandAlone->exthit_closest_q[0][0]	 ;     
     vars->exthit_closest_status	=ntpStandAlone->exthit_closest_status[0];
-
 
     /////////////////////////////// TRACKER ////////////////////////////////////
     
@@ -239,7 +258,6 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     
     /////////////////////////////// TOF ////////////////////////////////////
     
-    // TODO: proper averaging inclding errors?
     int n = 0;
     double rms = 0;
   
@@ -310,11 +328,153 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
 
 
-DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI) {
+void DBarReader::FillCompact(int NEvent, Variables * vars){
+
+    Tree->GetEntry(NEvent);
+
+    vars->ResetVariables();
+
+    ////////////////////// EVENT INFORMATION ///////////////////////////////////////
+    vars->PrescaleFactor    = 1; 
+
+    vars->P_standard_sel    = 0; 	
+
+    // Stroemer cutoff is in the tracker data
+    vars->Rcutoff = ntpCompact->trk_stoermer;
+    vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1]; //stoermer
+    vars->Rcutoff_IGRFRTI = rtiInfo->cf[1][2][1]; //IGRF 
+    // vars->Rcutoff_RTI  =   rtiInfo->cf[1][2][1]; //IGRF
+    
+    vars->Livetime_RTI =   rtiInfo->lf;    
+    vars->good_RTI   = rtiInfo->good;
+    vars->isinsaa = rtiInfo->isinsaa;
+  
+    int status = ntpCompact->status; 
+    vars->NTRDSegments = ((int)status/100000000);
+    status -= (((int)status/100000000) * 100000000); 	  
+
+    vars->NTRDclusters = ((int)status/1000000);
+    status -= (((int)status/1000000) * 1000000);			
+
+    vars->NTrackHits  = ((int)status/10000);
+    status -= (((int)status/10000) * 10000); 
+    
+    vars->NTracks  = ((int)status/1000);
+    status -= (((int)status/1000) * 1000);  
+
+    vars->NAnticluster      = ((int)status/10);
+    status -= (((int)status/10) * 10);
+
+    vars->nparticle         = status;    
+
+    /////////////////////////////////// UNBIAS ////////////////////////////////////////
+    vars->PhysBPatt = ntpCompact->sublvl1;
+    vars->JMembPatt = ntpCompact->trigpatt;
+
+    /*bool goodChi2 =    (ntpCompact->trk_chisqn[0] < vars->Chi2Xcut->Eval(abs(ntpCompact->rig[1])) &&
+			ntpCompact->trk_chisqn[1] < vars->Chi2Ycut->Eval(abs(ntpCompact->rig[1])));	
+   */ 
+    bool goodChi2 =  (ntpCompact->trk_chisqn[0]< 100 &&
+			ntpCompact->trk_chisqn[1]< 100);	
+   
+
+    /////////////////////////////// PRESELECTION CUTMASK //////////////////////////////////	
+   
+    if( ((ntpCompact->trigpatt & 0x2) != 0) && ((ntpCompact->sublvl1&0x3E) !=0) )      vars->CUTMASK |= 1 << 0;
+    if( true                          )  vars->CUTMASK |= 1 << 1; //minTOF already in compact selection
+    if( (ntpCompact->trigpatt & 0x2) != 0)  vars->CUTMASK |= 1 << 2;
+    if( ntpCompact->rig[1] != 0.0          )  vars->CUTMASK |= 1 << 3;
+    if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
+    if( goldenTOF_Cpct()                       )  vars->CUTMASK |= 1 << 5;  
+                                                                // 6
+    if( vars->nparticle == 1  && vars->NTracks == 1 )  vars->CUTMASK |= 1 << 7;
+    if( false  )  vars->CUTMASK |= 1 << 8;
+
+    //////////////////////////////  Tracking Efficiency /////////////////////////////////////
+
+    vars->beta_SA	  =ntpCompact->sa_tof_beta;
+    vars->qUtof_SA	  =ntpCompact->sa_tof_qup;
+    vars->qLtof_SA	  =ntpCompact->sa_tof_qdw;
+    vars->EdepECAL	  =ntpCompact->sa_ecal_edepd;
+
+
+    //////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
+    vars->exthit_closest_q		=ntpCompact ->sa_exthit_ql1 ;     
+    vars->hitdistfromint = pow(pow(vars->sa_exthit_dl1[0],2)+ pow(vars->sa_exthit_dl1[1],2),0.5);
+
+
+    /////////////////////////////// TRACKER ////////////////////////////////////
+    
+    vars->R     = ntpCompact->rig[1]; // 1 -- Inner tracker (Kalman)
+
+    vars->Chisquare         = ntpCompact->trk_chisqn[0]; // 1 = Inner      , 0 = X side
+    vars->Chisquare_y       = ntpCompact->trk_chisqn[1]; // 1 = Inner      , 1 = Y side
+    vars->hitbits           = ntpCompact->pattxy; 
+    vars->FiducialVolume    = 255;   
+
+    vars->qL1               = ntpCompact->trk_ql1;
+    if(vars->qL1>0)         vars->qL1Status         = 0; else   vars->qL1Status         = 1; 
+    vars->qL2               = ntpCompact->trk_ql2;
+    if(vars->qL2>0)         vars->qL2Status         = 0; else   vars->qL2Status         = 1; 
+    vars->qInner            = ntpCompact->trk_qinn;
+
+    
+    /////////////////////////////// TOF ////////////////////////////////////
+    
+    vars->qUtof   = ntpCompact->tof_qup;
+    vars->qLtof   = ntpCompact->tof_qdw;
+
+    vars->Beta    = ntpCompact-> tof_beta;
+    
+    vars->TOFchisq_s = ntpCompact->tof_chisqcn;
+    vars->TOFchisq_t = ntpCompact->tof_chisqtn;
+
+    /////////////////////////////// RICH ////////////////////////////////////
+    vars->BetaRICH_new      = ntpCompact->rich_beta;
+    vars->RICHmask_new      = RICHmaskConverter_Cpt();
+
+    int richstatus = ntpCompact->rich_status;
+    int nrich_hits, rich_pmts, rich_usedhits=0;	
+
+    rich_usedhits= ((int)richstatus/10000);
+    richstatus -= ((int)richstatus/10000)*10000;
+  
+    rich_pmts=((int)richstatus/100);
+    richstatus -= ((int)richstatus/100)*100;	 
+	
+    nrich_hits = richstatus;	
+
+    vars->Richtotused       = nrich_hits-rich_usedhits;
+    if(ntpCompact->rich_np>0) vars->RichPhEl = ntpCompact->rich_np_exp/ntpCompact->rich_np; else vars->RichPhEl = 0; 
+    vars->RICHprob          = ntpCompact->rich_prob;
+    vars->RICHPmts          = rich_pmts;
+    if(ntpCompact->rich_np>0) vars->RICHcollovertotal = ntpCompact->rich_tot_np/ntpCompact->rich_np; else vars->RICHcollovertotal=0; 
+    vars->RICHgetExpected   = ntpCompact->rich_np_exp;;
+
+    vars->RICHTOFBetaConsistency = fabs(ntpCompact->rich_beta - ntpCompact->tof_beta)/ntpCompact->rich_beta;
+
+    vars->BDTDiscr = ntpCompact->rich_bdt;
+
+    //////////////////////// CHECKS on VARIABLES ///////////////////////////
+    vars-> chisqcn  =  vars->TOFchisq_s;
+    vars-> chisqtn  =  vars->TOFchisq_t;
+    vars-> nTrTracks=  vars->NTracks; 
+
+}
+
+
+
+
+
+
+
+
+DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI, TTree * tree_cpct) {
     Init();
     Tree = tree;
     Tree_RTI = tree_RTI	;   
-
+    Tree_Cpct = tree_cpct; 
+	
     if(Tree){
     Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
     Tree->SetBranchAddress( "Header"  , &ntpHeader     );
@@ -325,11 +485,17 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI) {
     Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
 //  Tree->SetBranchAddress( "Anti"   , &ntpAnti       );
     Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
+
+    if(Tree_Cpct){
+        Tree_Cpct->SetBranchAddress( "Compact" , &ntpCompact  );
+    }	
     if(Tree_RTI){
 	Tree_RTI->SetBranchAddress( "RTIInfo" , &rtiInfo  );		
     	Tree_RTI->BuildIndex("SHeader.utime");
 	Tree->AddFriend(Tree_RTI);
+        Tree_Cpct->AddFriend(Tree_RTI);
     }	
+
 
     isMC = _isMC;
     if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);

@@ -691,8 +691,8 @@ void Variables::Eval_Discriminants(){
 
 	Likelihood = 1;//readerTOF->EvaluateMVA("TMVA::Types::kLikelihood");
 
-	if(IsFromNaF()) BDTDiscr = readerNaF->EvaluateMVA("BDTmethod");
-	if(IsFromAgl()) BDTDiscr = readerAgl->EvaluateMVA("BDTmethod");
+	if(IsFromNaF()&&BDTDiscr!=-1) BDTDiscr = readerNaF->EvaluateMVA("BDTmethod");
+	if(IsFromAgl()&&BDTDiscr!=0-1) BDTDiscr = readerAgl->EvaluateMVA("BDTmethod");
 	
 	return;
 }

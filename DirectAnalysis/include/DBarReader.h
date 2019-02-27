@@ -14,6 +14,7 @@ private:
     bool isMC;
     TTree * Tree;	
     TTree * Tree_RTI=0x0;
+    TTree * Tree_Cpct=0x0;
 
     RTIInfo 	  *rtiInfo; 	
     NtpSHeader    *ntpSHeader; 
@@ -27,6 +28,7 @@ private:
     NtpAnti       *ntpAnti;
     NtpStandAlone *ntpStandAlone;
 
+    NtpCompact    *ntpCompact;
 
     void Init();
     UInt_t getPackedLayers_1to4();

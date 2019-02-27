@@ -174,7 +174,7 @@ struct Variables{
     float DistP=0;
     float DistD=0;
     float Likelihood=0;
-    float BDTDiscr=0;
+    float BDTDiscr=-1;
 
     //Summed E. deps.
     float EdepTOFU=0;
