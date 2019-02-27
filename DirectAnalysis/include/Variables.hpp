@@ -80,14 +80,9 @@ struct Variables{
     float EdepECAL;
     
     //L1 pick-up Efficiency
-    float exthit_int[3];          
-    float exthit_closest_coo[3];
     float exthit_closest_q;     
     int   exthit_closest_status;
-    float exthit_largest_coo[3];
-    float exthit_largest_q;     
-    int   exthit_largest_status;
-
+    float hitdistfromint; 
 
     // Track
     float      R_pre;  // ?

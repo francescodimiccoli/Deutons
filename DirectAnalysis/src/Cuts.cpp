@@ -92,7 +92,7 @@ bool LikelihoodCut (Variables * vars){ return ((vars->BetaRICH_new<=0)||(vars->B
 
 //baseline eff. corr
 bool IsDownGoing    (Variables * vars)    	{ return (vars->Beta > 0.3); } 
-bool IsGoodChi2	    (Variables * vars) 		{ return (vars->P_standard_sel&0x3000)==0;}   //( ((int)vars->joinCutmask&16)==16);}
+bool IsGoodChi2	    (Variables * vars) 		{ return ( ((int)vars->joinCutmask&16)==16);}
 bool IsLUT2         (Variables * vars)          { return (((int)vars->joinCutmask&4)==4);} 
 bool IsPhysTrig     (Variables * vars)		{ return ((int)vars->joinCutmask&1)==1;}
 bool IsGoodTrack    (Variables * vars) 		{return vars->R!=0 && HasL2(vars);}
@@ -170,6 +170,7 @@ bool IsClearQ2ExceptL2 (Variables * vars) {return (vars->qL2>0&&vars->qUtof>1.8&
 //// Tracking Efficiency
 //layerZ = [160.,52.985,29.185,25.215,1.685,-2.285,-25.215,-29.185,-136.0]
 bool IsExtrapolInsideL9 (Variables * vars) {
+	if(vars->entrypointcoo[0]==0 &&vars->entrypointcoo[1]==0) return true;
 	float X_extrapol = vars->entrypointcoo[0] + (( -136.0-vars->entrypointcoo[2])/cos(vars->theta_track))*cos(vars->phi_track)*sin(vars->theta_track);
 	float Y_extrapol = vars->entrypointcoo[1] + (( -136.0-vars->entrypointcoo[2])/cos(vars->theta_track))*sin(vars->phi_track)*sin(vars->theta_track);
 	return (Y_extrapol>-45&&Y_extrapol<45);
@@ -177,32 +178,34 @@ bool IsExtrapolInsideL9 (Variables * vars) {
 
 
 bool IsExtrapolInsideL8 (Variables * vars) {
+	if(vars->entrypointcoo[0]==0 &&vars->entrypointcoo[1]==0) return true;
 	float X_extrapol = vars->entrypointcoo[0] + (( -29.185-vars->entrypointcoo[2])/cos(vars->theta_track))*cos(vars->phi_track)*sin(vars->theta_track);
 	float Y_extrapol = vars->entrypointcoo[1] + (( -29.185-vars->entrypointcoo[2])/cos(vars->theta_track))*sin(vars->phi_track)*sin(vars->theta_track);
 	return (Y_extrapol>-45&&Y_extrapol<45);
 }
 
 bool IsExtrapolInsideL1 (Variables * vars) {
+	if(vars->entrypointcoo[0]==0 &&vars->entrypointcoo[1]==0) return true;
 	float X_extrapol = vars->entrypointcoo[0] + (( 160.-vars->entrypointcoo[2])/cos(vars->theta_track))*cos(vars->phi_track)*sin(vars->theta_track);
 	float Y_extrapol = vars->entrypointcoo[1] + (( 160.-vars->entrypointcoo[2])/cos(vars->theta_track))*sin(vars->phi_track)*sin(vars->theta_track);
 	return (Y_extrapol>-45&&Y_extrapol<45);
 }
 
 bool IsGoodTOFStandaloneQ1(Variables * vars) {	
-	return (vars->beta_SA>0 && vars->betapatt_SA==0 && vars->qUtof_SA > 0.8 && vars->qUtof_SA < 1.3 && vars->qLtof_SA > 0.8 && vars->qLtof_SA < 1.3 && vars-> qTrd_SA > 0.6 && vars-> qTrd_SA < 1.7);
+	return (vars->beta_SA>0 && vars->qUtof_SA > 0.8 && vars->qUtof_SA < 1.3 && vars->qLtof_SA > 0.8 && vars->qLtof_SA < 1.3 && vars-> qTrd_SA > 0.6 && vars-> qTrd_SA < 1.7);
 
 } 
 
 //// L1 pick-up efficicny
 
 bool IsL1HitNearExtrapol (Variables * vars) {
-	return (fabs(vars->exthit_closest_coo[1] - vars->exthit_int[1])<3 && fabs(vars->exthit_closest_coo[0] - vars->exthit_int[0])<3);
+	return (vars->hitdistfromint<3);
 }
 
 
 bool IsCleanL1Hit (Variables * vars) { 
 
-	return ( vars->exthit_closest_status==0 && vars->exthit_closest_status==0 && fabs(vars->exthit_closest_q -1)<0.4 && fabs(vars->exthit_largest_q -1)<0.4);
+	return ( vars->exthit_closest_status==0 && fabs(vars->exthit_closest_q -1)<0.4 );
 }
 
 

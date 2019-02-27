@@ -103,7 +103,7 @@ ong64_t DBarReader::ProtonCandidateSelection() {
     (ntpTof->chisqtn>0)&&(ntpTof->chisqtn<10.),
     ntpHeader->ntrtrack==1,
     ((ntpTracker->patty&0x2)!=0)&&((ntpTracker->patty&0xc)!=0)&&((ntpTracker->patty&0x30)!=0)&&((ntpTracker->patty&0xc0)!=0),
-    (ntpTracker->q_inn>0.7)&&(ntpTracker->q_inn<1.5),
+    (ntpTracker->q_inn[0]>0.7)&&(ntpTracker->q_inn[0]<1.5),
     (ntpTracker->pattxy&0x2)!=0,
     (ntpTracker->chisqn[7][0]>0)&&(ntpTracker->chisqn[7][0]<10),
     (ntpTracker->chisqn[7][1]>0)&&(ntpTracker->chisqn[7][1]<10),
@@ -114,7 +114,7 @@ ong64_t DBarReader::ProtonCandidateSelection() {
     ntpRich->selection>0,
     ntpRich->nhit>2,
     fabs(ntpTof->beta-ntpRich->beta)<0.1*ntpRich->beta,
-    fabs(ntpTracker->rig[7])>0.8
+    fabs(ntpTracker->rig[7][1])>0.8
   };
   Long64_t pattern = 0;
   for (int i=0; i<22; i++) if (!selection[i]) pattern |= (0x1LL<<i);
@@ -183,8 +183,8 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->PhysBPatt = ntpHeader->sublvl1;
     vars->JMembPatt = ntpHeader->trigpatt;
 
-    bool goodChi2 =  (ntpTracker->chisqn[1][0] < vars->Chi2Xcut->Eval(abs(ntpTracker->rig[1])) &&
-			ntpTracker->chisqn[1][1] < vars->Chi2Ycut->Eval(abs(ntpTracker->rig[1])));	
+    bool goodChi2 =  (ntpTracker->chisqn[1][0] < vars->Chi2Xcut->Eval(abs(ntpTracker->rig[1][1])) &&
+			ntpTracker->chisqn[1][1] < vars->Chi2Ycut->Eval(abs(ntpTracker->rig[1][1])));	
     
     /*bool goodChi2 =  (ntpTracker->chisqn[1][0] < 10 &&
 			ntpTracker->chisqn[1][1] < 10);	
@@ -196,12 +196,12 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     if( ((ntpHeader->trigpatt & 0x2) != 0) && ((ntpHeader->sublvl1&0x3E) !=0) )      vars->CUTMASK |= 1 << 0;
     if( minTOF()                          )  vars->CUTMASK |= 1 << 1;
     if( (ntpHeader->trigpatt & 0x2) != 0)  vars->CUTMASK |= 1 << 2;
-    if( ntpTracker->rig[1] != 0.0          )  vars->CUTMASK |= 1 << 3;
+    if( ntpTracker->rig[1][1] != 0.0          )  vars->CUTMASK |= 1 << 3;
     if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
     if( goldenTOF()                       )  vars->CUTMASK |= 1 << 5;  
                                                                 // 6
     if( ntpHeader->nparticle == 1  && vars->NTracks == 1 )  vars->CUTMASK |= 1 << 7;
-    if( ntpTracker->rig[4] != 0.0          )  vars->CUTMASK |= 1 << 8;
+    if( ntpTracker->rig[4][1] != 0.0          )  vars->CUTMASK |= 1 << 8;
 
     //////////////////////////////  Tracking Efficiency /////////////////////////////////////
 
@@ -219,17 +219,17 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
 
     //////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
-    vars->exthit_closest_q		=ntpStandAlone->exthit_closest_q[0]	 ;     
+
+    vars->exthit_closest_q		=ntpStandAlone->exthit_closest_q[0][0]	 ;     
     vars->exthit_closest_status	=ntpStandAlone->exthit_closest_status[0];
-    vars-> hitdistfromint =pow( pow(ntpStandAlone->exthit_int[0][0]-ntpStandAlone->exthit_closest_coo[0][0],2) + pow(ntpStandAlone->exthit_int[0][1]-ntpStandAlone->exthit_closest_coo[0][1],2),0.5);
 
     /////////////////////////////// TRACKER ////////////////////////////////////
     
-    vars->R     = ntpTracker->rig[1]; // 1 -- Inner tracker
-    vars->Rup   = ntpTracker->rig[2]; // 2 -- Upper inner tracker
-    vars->Rdown = ntpTracker->rig[3]; // 3 -- Lower inner tracker
-    vars->R_L1  = ntpTracker->rig[4]; // 4 -- Inner + L1
-    vars->R_noMS= ntpTracker->rig[9]; // 9 -- Inner tracker NoMS
+    vars->R     = ntpTracker->rig[1][1]; // 1 -- Inner tracker
+    vars->Rup   = ntpTracker->rig[2][1]; // 2 -- Upper inner tracker
+    vars->Rdown = ntpTracker->rig[3][1]; // 3 -- Lower inner tracker
+    vars->R_L1  = ntpTracker->rig[4][1]; // 4 -- Inner + L1
+    vars->R_noMS= ntpTracker->rig[7][1]; // 9 -- Inner tracker NoMS
     
     vars->R_sec = ntpTracker-> sec_inn_rig; // rig secondary track;
 
@@ -241,10 +241,10 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->FiducialVolume    = ntpTracker->GetPatternInsideTracker();   
 
     vars->qL1               = ntpTracker->q_lay[1][0];
-    vars->qL1Status         = ntpTracker->q_lay_status[1][0];
+    vars->qL1Status         = ntpTracker->q_clu_status[1][0];
     vars->qL2               = ntpTracker->q_lay[1][1];
-    vars->qL2Status         = ntpTracker->q_lay_status[1][1];
-    vars->qInner            = ntpTracker->q_inn;
+    vars->qL2Status         = ntpTracker->q_clu_status[1][1];
+    vars->qInner            = ntpTracker->q_inn[0];
     vars->clustertottrack   = ntpHeader->ntrrechit;
     vars->clustertrack      = countBits(vars->hitbits);
     vars->qL1InnerNoL2	    = (ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0])/7;	

@@ -9,7 +9,7 @@ void Analyzer::FillAll(){
 	cout<<Filler.GetObjectNr()<<" Event Objects to be filled... "<< endl;
 	cout<<Filler_RTI.GetObjectNr()<<" RTI Objects to be filled... "<< endl;
 	if(Filler.GetRefillFlag()&&Filler.GetObjectNr()) {
-		Filler.LoopOnMC  (DBarReader(chainMC, true ),vars);
+//		Filler.LoopOnMC  (DBarReader(chainMC, true ),vars);
 		Filler.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
 	} 
 	if(Filler_RTI.GetRefillFlag()&&Filler_RTI.GetObjectNr()) 
