@@ -86,7 +86,7 @@ int DBarReader::RICHmaskConverter_Cpt(){
     return richMASK;
 }
 
-ong64_t DBarReader::ProtonCandidateSelection() {
+Long64_t DBarReader::ProtonCandidateSelection() {
   if ( (!ntpHeader)||(!ntpTof)||(!ntpTracker)||(!ntpTrd)||(!ntpRich) ) return -1;
   int n = 0;
   double rms = 0;
@@ -200,7 +200,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
     if( goldenTOF()                       )  vars->CUTMASK |= 1 << 5;  
                                                                 // 6
-    if( ntpHeader->nparticle == 1  && vars->NTracks == 1 )  vars->CUTMASK |= 1 << 7;
+    if( vars->NTracks == 1 )  vars->CUTMASK |= 1 << 7;
     if( ntpTracker->rig[4][1] != 0.0          )  vars->CUTMASK |= 1 << 8;
 
     //////////////////////////////  Tracking Efficiency /////////////////////////////////////
@@ -330,7 +330,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
 void DBarReader::FillCompact(int NEvent, Variables * vars){
 
-    Tree->GetEntry(NEvent);
+    Tree_Cpct->GetEntry(NEvent);
 
     vars->ResetVariables();
 
@@ -339,6 +339,7 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 
     vars->P_standard_sel    = 0; 	
 
+    
     // Stroemer cutoff is in the tracker data
     vars->Rcutoff = ntpCompact->trk_stoermer;
     vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1]; //stoermer
@@ -365,8 +366,6 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
     vars->NAnticluster      = ((int)status/10);
     status -= (((int)status/10) * 10);
 
-    vars->nparticle         = status;    
-
     /////////////////////////////////// UNBIAS ////////////////////////////////////////
     vars->PhysBPatt = ntpCompact->sublvl1;
     vars->JMembPatt = ntpCompact->trigpatt;
@@ -383,11 +382,11 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
     if( ((ntpCompact->trigpatt & 0x2) != 0) && ((ntpCompact->sublvl1&0x3E) !=0) )      vars->CUTMASK |= 1 << 0;
     if( true                          )  vars->CUTMASK |= 1 << 1; //minTOF already in compact selection
     if( (ntpCompact->trigpatt & 0x2) != 0)  vars->CUTMASK |= 1 << 2;
-    if( ntpCompact->rig[1] != 0.0          )  vars->CUTMASK |= 1 << 3;
+    if( ntpCompact->trk_rig[1] != 0.0          )  vars->CUTMASK |= 1 << 3;
     if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
     if( goldenTOF_Cpct()                       )  vars->CUTMASK |= 1 << 5;  
                                                                 // 6
-    if( vars->nparticle == 1  && vars->NTracks == 1 )  vars->CUTMASK |= 1 << 7;
+    if( vars->NTracks == 1 )  vars->CUTMASK |= 1 << 7;
     if( false  )  vars->CUTMASK |= 1 << 8;
 
     //////////////////////////////  Tracking Efficiency /////////////////////////////////////
@@ -400,16 +399,16 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 
     //////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
     vars->exthit_closest_q		=ntpCompact ->sa_exthit_ql1 ;     
-    vars->hitdistfromint = pow(pow(vars->sa_exthit_dl1[0],2)+ pow(vars->sa_exthit_dl1[1],2),0.5);
+    vars->hitdistfromint = pow(pow(ntpCompact->sa_exthit_dl1[0],2)+ pow(ntpCompact->sa_exthit_dl1[1],2),0.5);
 
 
     /////////////////////////////// TRACKER ////////////////////////////////////
     
-    vars->R     = ntpCompact->rig[1]; // 1 -- Inner tracker (Kalman)
+    vars->R     = ntpCompact->trk_rig[1]; // 1 -- Inner tracker (Kalman)
 
     vars->Chisquare         = ntpCompact->trk_chisqn[0]; // 1 = Inner      , 0 = X side
     vars->Chisquare_y       = ntpCompact->trk_chisqn[1]; // 1 = Inner      , 1 = Y side
-    vars->hitbits           = ntpCompact->pattxy; 
+    vars->hitbits           = ntpCompact->trk_pattxy; 
     vars->FiducialVolume    = 255;   
 
     vars->qL1               = ntpCompact->trk_ql1;
@@ -474,6 +473,8 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI, TTree * tree_
     Tree = tree;
     Tree_RTI = tree_RTI	;   
     Tree_Cpct = tree_cpct; 
+
+	cout<<Tree<<" "<<Tree_RTI<<" "<<Tree_Cpct<<endl;
 	
     if(Tree){
     Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );

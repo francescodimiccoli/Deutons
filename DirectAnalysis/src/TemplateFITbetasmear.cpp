@@ -62,13 +62,11 @@ void TemplateFIT::Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*
 
 
 void TemplateFIT::FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)){
-
 	int kbin;
 	kbin = 	bins.GetBin(discr_var(vars));
 	if(!ApplyCuts("IsData",vars)) return;
+
 	if(ApplyCuts(cut,vars)&&kbin>0){
-		//cout<<"Bin; "<<kbin<<endl;
-		//
 		//vars->PrintCurrentState();
 		for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){

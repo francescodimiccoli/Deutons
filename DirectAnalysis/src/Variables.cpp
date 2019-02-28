@@ -628,62 +628,58 @@ void Variables::PrintCurrentState(){
     cout<<endl;
     cout<<"***Current Values of Variables:***"<<endl;
 
-
-    cout<<"U_time:                "<<U_time<<endl;
-    cout<<"Latitude:              "<<Latitude<<endl;
-    cout<<"Rcutoff:               "<<Rcutoff<<endl;
-    cout<<"Livetime:              "<<Livetime<<endl;
-    cout<<"PhysBPatt:             "<<PhysBPatt<<endl;
-    cout<<"R_pre:                 "<<R_pre<<endl;
-    cout<<"Beta_pre:              "<<Beta_pre<<endl;
-    cout<<"CUTMASK:               "<<CUTMASK<<endl;
-    cout<<"BetaRICH_new:          "<<BetaRICH_new<<endl;
-    cout<<"RICHmask_new:          "<<RICHmask_new<<endl;
-    cout<<"EdepECAL:              "<<EdepECAL<<endl;
-    cout<<"EdepTRD:               "<<EdepTRD<<endl;
-    cout<<"NAnticluster:          "<<NAnticluster<<endl;
-    cout<<"NTofClusters:          "<<NTofClusters<<endl;
-    cout<<"NTofClustersusati:     "<<NTofClustersusati<<endl;
-    cout<<"Rup:                   "<<Rup<<endl;
-    cout<<"Rdown:                 "<<Rdown<<endl;
-    cout<<"R:                     "<<R<<endl;
-    cout<<"Chisquare:             "<<Chisquare<<endl;
-    cout<<"Beta:                  "<<Beta<<endl;
-    cout<<"BetaR:                 "<<BetaR<<endl;
-    cout<<"NTrackHits:            "<<NTrackHits          <<endl;                   
-    cout<<"Richtotused:           "<<Richtotused<<endl;
-    cout<<"RichPhEl:              "<<RichPhEl<<endl;
-    cout<<"R_L1:                  "<<R_L1<<endl;
-    cout<<"hitbits:               "<<hitbits<<endl;
-    cout<<"qL1:                   "<<qL1<<endl;
-    cout<<"qInner:                "<<qInner<<endl;
-    cout<<"qUtof:                 "<<qUtof<<endl;
-    cout<<"qLtof:                 "<<qLtof<<endl;
-    cout<<"Momento_gen:           "<<Momento_gen<<endl;
-    cout<<"Massa_gen:	      "<<Massa_gen<<endl;		
-
-    cout<<"EdepTOFU:	     "<<EdepTOFU<<endl;
-    cout<<"EdepTOFD:             "<<EdepTOFD<<endl; 
-    cout<<"EdepTrack:            "<<EdepTrack<<endl;
-
-    cout<<"diffR:		      "<<diffR<<endl;
-    cout<<"Layernonusati:         "<<Layernonusati<<endl;
-    cout<<"TOF_Up_Down		"<<TOF_Up_Down<<endl;
-    cout<<"NTofUsed			"<<NTofUsed<<endl;
-    cout<<"DistP:		      "<<DistP<<endl;
-    cout<<"DistD:                 "<<DistD<<endl; 
-    cout<<"Likelihood:            "<<Likelihood<<endl;
-    cout<<"BDTDiscr:            "<<BDTDiscr<<endl;
-
-    cout<<"mcweight:            "<<mcweight<<endl;
-    cout<<"joinCutmask:           "<<joinCutmask<<endl;
-
-
-
-
+	cout<<"PrescaleFactor		"<<PrescaleFactor	    <<endl;
+	cout<<"P_standard_sel           " <<P_standard_sel            <<endl;
+	cout<<"Rcutoff                  " <<Rcutoff               <<endl;
+        cout<<"Rcutoff_RTI              " <<Rcutoff_RTI           <<endl;
+	cout<<"Rcutoff_IGRFRTI          " <<Rcutoff_IGRFRTI       <<endl;
+	cout<<"Livetime_RTI             " <<Livetime_RTI          <<endl;
+	cout<<"good_RTI                 " <<good_RTI              <<endl;
+	cout<<"isinsaa                  " <<isinsaa               <<endl;
+	cout<<"NTRDSegments             " <<NTRDSegments          <<endl;
+	cout<<"NTRDclusters             " <<NTRDclusters          <<endl;
+	cout<<"NTrackHits               " <<NTrackHits            <<endl;
+	cout<<"NTracks                  " <<NTracks               <<endl;
+	cout<<"NAnticluster             " <<NAnticluster          <<endl;
+	cout<<"PhysBPatt                " <<PhysBPatt             <<endl;
+	cout<<"JMembPatt                " <<JMembPatt             <<endl;
+	cout<<"CUTMASK                  " <<CUTMASK               <<endl;
+	cout<<"beta_SA                  " <<beta_SA               <<endl;
+	cout<<"qUtof_SA                 " <<qUtof_SA              <<endl;
+	cout<<"qLtof_SA                 " <<qLtof_SA              <<endl;
+	cout<<"EdepECAL                 " <<EdepECAL              <<endl;
+	cout<<"exthit_closest_q         " <<exthit_closest_q      <<endl;
+	cout<<"hitdistfromint           " <<hitdistfromint        <<endl;
+	cout<<"R                        " <<R                     <<endl;
+	cout<<"Chisquare                " <<Chisquare             <<endl;
+	cout<<"Chisquare_y              " <<Chisquare_y           <<endl;
+	cout<<"hitbits                  " <<hitbits               <<endl;
+	cout<<"FiducialVolume           " <<FiducialVolume        <<endl;
+	cout<<"qL1                      " <<qL1                   <<endl;
+	cout<<"qL1Status                " <<qL1Status             <<endl;
+	cout<<"qL2                      " <<qL2                   <<endl;
+	cout<<"qL2Status                " <<qL2Status             <<endl;
+	cout<<"qInner                   " <<qInner                <<endl;
+	cout<<"qUtof                    " <<qUtof                 <<endl;
+	cout<<"qLtof                    " <<qLtof                 <<endl;
+	cout<<"Beta                     " <<Beta                  <<endl;
+	cout<<"TOFchisq_s               " <<TOFchisq_s            <<endl;
+	cout<<"TOFchisq_t               " <<TOFchisq_t            <<endl;
+	cout<<"BetaRICH_new             " <<BetaRICH_new          <<endl;
+	cout<<"RICHmask_new             " <<RICHmask_new          <<endl;
+	cout<<"Richtotused              " <<Richtotused           <<endl;
+	cout<<"RichPhEl                 " <<RichPhEl              <<endl;
+	cout<<"RICHprob                 " <<RICHprob              <<endl;
+	cout<<"RICHgetExpected          " <<RICHgetExpected      	<<endl;  
+	cout<<"RICHTOFBetaConsistency   " <<RICHTOFBetaConsistency<<endl;
+	cout<<"BDTDiscr                 " <<BDTDiscr              <<endl;
+	      
+              
+             
     cout<<"******"<<endl;
     cout<<endl;
     cout<<endl;
+
 
 }
 

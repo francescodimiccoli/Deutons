@@ -23,11 +23,11 @@ bool IsFragmentedPfromDMC  (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDa
 bool IsPrimary	   (Variables * vars){ return (vars->R>1.2*vars->Rcutoff_RTI && IsData(vars)); }
 bool IsMC          (Variables * vars){ return (vars->Massa_gen>0);} 
 bool IsData        (Variables * vars){ return (vars->Massa_gen==0);}
-bool IsGoodL1Status (Variables * vars) {return vars->R_L1>0 && (vars->qL1Status==0);}
+bool IsGoodL1Status (Variables * vars) {return (vars->qL1Status==0);}
 bool IsGoodL2Status (Variables * vars) {return (vars->hitbits&0x2!=0) && (vars->qL2Status==0);}
 
-bool HasL1 (Variables * vars) {return vars->R_L1>0;}
-bool HasL2 (Variables * vars) {return ((vars->P_standard_sel&0x2048)==0);} //(vars->hitbits&0x2!=0);}
+bool HasL1 (Variables * vars) {return vars->qL1>0 && IsGoodL1Status(vars);}
+bool HasL2 (Variables * vars) {return vars->qL2>0 && IsGoodL2Status(vars);} //(vars->hitbits&0x2!=0);}
 
 
 bool IsL1Fiducial   (Variables * vars) {return ((vars->FiducialVolume)==255);}

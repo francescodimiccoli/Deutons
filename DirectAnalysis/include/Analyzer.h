@@ -18,6 +18,9 @@ class Analyzer{
 	TChain * chain_RTI;
         TChain * chainDT;  
         TChain * chainMC;  
+	TChain * chainDT_Cpct;  
+        TChain * chainMC_Cpct;  
+	
 	ParallelFiller<Tool *> Filler;
 	ParallelFiller<Flux *> Filler_RTI;
 	std::vector<ComputingFunction> ComputingFunctions;	
@@ -25,9 +28,11 @@ class Analyzer{
 
 	public:
 	Analyzer(std::string INPUT1, std::string INPUT2){
-		chain_RTI  = InputFileReader(INPUT1.c_str(),"RTI");
-		chainDT    = InputFileReader(INPUT1.c_str(),"Event");
-		chainMC    = InputFileReader(INPUT2.c_str(),"Event");
+		chain_RTI  	= InputFileReader(INPUT1.c_str(),"RTI");
+		chainDT    	= InputFileReader(INPUT1.c_str(),"Event");
+		chainMC    	= InputFileReader(INPUT2.c_str(),"Event");
+		chainDT_Cpct    = InputFileReader(INPUT1.c_str(),"Compact");
+		chainMC_Cpct    = InputFileReader(INPUT2.c_str(),"Compact");
 	};
 	bool CheckFile() {return check_file;}
 	void FillAll();
