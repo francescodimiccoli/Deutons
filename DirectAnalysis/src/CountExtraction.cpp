@@ -46,9 +46,9 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	// Extraction of counts with Template Fit
 
 	//  TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",60,0.3,1.6);	  
-	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning"       ,150,0.4,7.5,7);
-	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"           ,60,0.4,5,true,7,400,200);
-	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,7,110,80);	
+	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning"       ,150,0.4,7.5,11);
+	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"           ,60,0.4,5,true,11,400,200);
+	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,11,110,80);	
 
 	if(!refill&&checkfile) {	
 
@@ -61,9 +61,9 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		for(int i=0;i<10;i++)  CountsTests[i] ->ReinitializeHistos(refill);
 
 		//TemplateFIT * SmearingCheck = new TemplateFIT(finalhistos,"SmearingCheck",PRB);
-		TOFfits= new TemplateFIT(finalhistos,"TOFfits",ToFDB,false,7);
-		NaFfits= new TemplateFIT(finalhistos,"NaFfits",NaFDB,true,7,400,200);
-		Aglfits= new TemplateFIT(finalhistos,"Aglfits",AglDB,true,7,110,90);
+		TOFfits= new TemplateFIT(finalhistos,"TOFfits",ToFDB,false,11);
+		NaFfits= new TemplateFIT(finalhistos,"NaFfits",NaFDB,true,11,400,200);
+		Aglfits= new TemplateFIT(finalhistos,"Aglfits",AglDB,true,11,110,90);
 		//	NaFfits->SetFitWithNoiseMode();
 		//	Aglfits->SetFitWithNoiseMode();
 
