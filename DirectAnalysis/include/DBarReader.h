@@ -35,14 +35,20 @@ private:
     bool minTOF();
     bool goldenTOF();
     int RICHmaskConverter();
+    bool goldenTOF_Cpct();
+    int RICHmaskConverter_Cpt();
 
 public:
 
-    DBarReader(TTree * f, bool isMC,TTree * f_RTI);
+    DBarReader(TTree * f, bool isMC,TTree * f_RTI, TTree * tree_cpct);
     DBarReader(TTree * f, bool isMC);
     
     void FillVariables(int NEvent, Variables * vars);
+    void FillCompact(int NEvent, Variables * vars);
+    
     int GetTreeEntries(){return Tree->GetEntries();}; 	
+    int GetCompactEntries(){return Tree_Cpct->GetEntries();}; 	
+    
     TTree * GetTree() {return Tree;}
     Long64_t ProtonCandidateSelection();
 

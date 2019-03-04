@@ -91,8 +91,7 @@ class ParallelFiller{
             if(i%(int)FRAC!=0) continue; // WTF ?!
             UpdateProgressBar(i, readerMC.GetTreeEntries());
             vars->ResetVariables();
-            if(readerMC.GetTree()->GetNbranches()>2) readerMC.FillVariables(i,vars);
-	    else readerMC.FillCompact(i,vars);	
+	    readerMC.FillCompact(i,vars);	
             vars->Update();
 	  //vars->PrintCurrentState();
             for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
@@ -127,12 +126,11 @@ class ParallelFiller{
 	if(readerDT.GetTree()->GetNbranches()>11) {LoopOnData(readerDT.GetTree(),vars); return;}
         else 
 	cout<<" DATA Filling ..."<< endl;
-        for(int i=0;i<readerDT.GetTreeEntries();i++){
+        for(int i=0;i<readerDT.GetCompactEntries();i++){
 	    if(i%(int)FRAC!=0) continue; // WTF ?!
-            UpdateProgressBar(i, readerDT.GetTreeEntries());
+            UpdateProgressBar(i, readerDT.GetCompactEntries());
             vars->ResetVariables();
-	    if(readerDT.GetTree()->GetNbranches()>2) readerDT.FillVariables(i,vars);
-            else readerDT.FillCompact(i,vars); 
+            readerDT.FillCompact(i,vars); 
             vars->Update();
 	    //vars->PrintCurrentState();
             for(int nobj=0;nobj<Objects2beFilled.size();nobj++){ 

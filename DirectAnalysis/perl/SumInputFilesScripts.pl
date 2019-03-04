@@ -5,13 +5,13 @@ chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 #chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
-$datapath  = "/data1/home/data/v4_pass6/bartel.2440/";
-$mcP_path  = "/data1/home/data/v4_pass6/MC/Pr.B1128/pr.pl1ph.5200/";
+$datapath  = "/data1/home/data/v5_pass7/bartel.2440/";
+$mcP_path  = "/data1/home/data/v5_pass7/MC/Pr.B1128/pr.pl1ph.5200/";
 $mcD_path  = "";
 $mcHe_path = "";
 $mcT_path  = "";
 
-$FRAC = 1;
+$FRAC = 5;
 $OFFSET = $ARGV[3];
 $out_path  = "/eos/ams/user/f/fdimicco/";
 

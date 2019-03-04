@@ -37,16 +37,18 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	Efficiency * CountsL1HE   = new Efficiency(finalhistos    ,"HEPCountsL1"         ,"HEPCountsL1"  ,PRB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1");
 	Efficiency * CountsQualHE = new Efficiency(finalhistos,"HEPCountsQual"     ,"HEPCountsQual"      ,PRB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning");
 
-	Efficiency * CountsTOF    = new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,ToFRigB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF");
+//"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF"
+
+	Efficiency * CountsTOF    = new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,ToFRigB,"","");
 	Efficiency * CountsNaF    = new Efficiency(finalhistos    ,"NaFPCounts"	   ,"NaFPCounts"	,NaFRigB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    );
 	Efficiency * CountsAgl    = new Efficiency(finalhistos    ,"AglPCounts"	   ,"AglPCounts"	,AglRigB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    );
 
 	// Extraction of counts with Template Fit
 
 	//  TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",60,0.3,1.6);	  
-	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF"       ,150,0.4,7.5,7);
-	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"           ,60,0.4,5,true,7,400,200);
-	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,7,110,80);	
+	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning"       ,150,0.4,7.5,11);
+	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"           ,60,0.4,5,true,11,400,200);
+	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,11,110,80);	
 
 	if(!refill&&checkfile) {	
 
@@ -59,9 +61,9 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		for(int i=0;i<10;i++)  CountsTests[i] ->ReinitializeHistos(refill);
 
 		//TemplateFIT * SmearingCheck = new TemplateFIT(finalhistos,"SmearingCheck",PRB);
-		TOFfits= new TemplateFIT(finalhistos,"TOFfits",ToFDB,false,7);
-		NaFfits= new TemplateFIT(finalhistos,"NaFfits",NaFDB,true,7,400,200);
-		Aglfits= new TemplateFIT(finalhistos,"Aglfits",AglDB,true,7,110,90);
+		TOFfits= new TemplateFIT(finalhistos,"TOFfits",ToFDB,false,11);
+		NaFfits= new TemplateFIT(finalhistos,"NaFfits",NaFDB,true,11,400,200);
+		Aglfits= new TemplateFIT(finalhistos,"Aglfits",AglDB,true,11,110,90);
 		//	NaFfits->SetFitWithNoiseMode();
 		//	Aglfits->SetFitWithNoiseMode();
 
@@ -143,6 +145,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	Filler.AddObject2beFilled(CountsTOF,GetRigidity,GetRigidity); 
 	Filler.AddObject2beFilled(CountsNaF,GetRigidity,GetRigidity); 
 	Filler.AddObject2beFilled(CountsAgl,GetRigidity,GetRigidity); 
+	
 
 	for(int i=0;i<10;i++)  Filler.AddObject2beFilled(CountsTests[i],GetRigidity,GetRigidity);
 
