@@ -628,6 +628,9 @@ void Variables::PrintCurrentState(){
     cout<<endl;
     cout<<"***Current Values of Variables:***"<<endl;
 
+	cout<<"Massa_gen		"<<Massa_gen<<endl;
+	cout<<"Momento_gen		"<<Momento_gen<<endl;
+	cout<<"mcweight			"<<mcweight<<endl;
 	cout<<"PrescaleFactor		"<<PrescaleFactor	    <<endl;
 	cout<<"P_standard_sel           " <<P_standard_sel            <<endl;
 	cout<<"Rcutoff                  " <<Rcutoff               <<endl;
@@ -687,8 +690,8 @@ void Variables::Eval_Discriminants(){
 
 	Likelihood = 1;//readerTOF->EvaluateMVA("TMVA::Types::kLikelihood");
 
-	if(IsFromNaF()&&BDTDiscr!=-1) BDTDiscr = readerNaF->EvaluateMVA("BDTmethod");
-	if(IsFromAgl()&&BDTDiscr!=0-1) BDTDiscr = readerAgl->EvaluateMVA("BDTmethod");
+	if(IsFromNaF()&&BDTDiscr==-1) BDTDiscr = readerNaF->EvaluateMVA("BDTmethod");
+	if(IsFromAgl()&&BDTDiscr==-1) BDTDiscr = readerAgl->EvaluateMVA("BDTmethod");
 	
 	return;
 }

@@ -91,9 +91,9 @@ class ParallelFiller{
             if(i%(int)FRAC!=0) continue; // WTF ?!
             UpdateProgressBar(i, readerMC.GetTreeEntries());
             vars->ResetVariables();
-	    readerMC.FillCompact(i,vars);	
+	    readerMC.FillVariables(i,vars);	
             vars->Update();
-	  //vars->PrintCurrentState();
+	    //vars->PrintCurrentState();
             for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
                 Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
                 Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);

@@ -6,12 +6,12 @@ chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
 $datapath  = "/data1/home/data/v5_pass7/bartel.2440/";
-$mcP_path  = "/data1/home/data/v5_pass7/MC/Pr.B1128/pr.pl1ph.5200/";
+$mcP_path  = "/data1/home/data/v5_pass7/MC/Pr.1200/pr.pl1.05100.4_00/";
 $mcD_path  = "";
 $mcHe_path = "";
 $mcT_path  = "";
 
-$FRAC = 5;
+$FRAC = 0;
 $OFFSET = $ARGV[3];
 $out_path  = "/eos/ams/user/f/fdimicco/";
 
@@ -99,23 +99,23 @@ for ($n=0;$n<$njobs; $n++)
 
 
 print "Listing All MC Files..\n";
-chomp (@MC_P = `ls  $mcP_path | grep -v "log" |  sed s/.root//g`);
+chomp (@MC_P = `ls  $mcP_path | grep -v "log" |grep root|  sed s/.root//g`);
 $num_MC_P = scalar(@MC_P);
 
 print "Total Files MC P: ".$num_MC_P."\n";
 
-chomp (@MC_D = `ls  $mcD_path | grep -v "log" |  sed s/.root//g`);
+chomp (@MC_D = `ls  $mcD_path | grep -v "log" | grep root|   sed s/.root//g`);
 $num_MC_D = scalar(@MC_D);
 
 print "Total Files MC D: ".$num_MC_D."\n";
 
-chomp (@MC_He = `ls $mcHe_path  | grep -v "log" |  sed s/.root//g`);
+chomp (@MC_He = `ls $mcHe_path  | grep -v "log" | grep root|   sed s/.root//g`);
 $num_MC_He = scalar(@MC_He);
 
 print "Total Files MC He: ".$num_MC_He."\n";
 
 
-chomp (@MC_T = `ls $mcT_path  | grep -v "log" |  sed s/.root//g`);
+chomp (@MC_T = `ls $mcT_path  | grep -v "log" |  grep root|  sed s/.root//g`);
 $num_MC_T = scalar(@MC_T);
 
 

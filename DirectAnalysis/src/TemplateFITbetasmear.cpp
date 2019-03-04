@@ -110,15 +110,15 @@ float TemplateFIT::SmearBeta(float Beta, float stepsigma, float stepshift,float 
 void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)){
 
 	std::string cutP=cut+"&IsProtonMC";
-	std::string cutD=cut+"&IsPureDMC";
-	std::string cutHe=cut+"&IsPureTMC";
+	std::string cutD=cut+"&IsProtonMC";
+	std::string cutHe=cut+"&IsProtonMC";
 	//std::string cutD=cut+"&IsDeutonMC";
 	//std::string cutHe=cut+"&IsHeliumMC";
 	
         if(checkfiletemplates)	{return;}
 
-	cutHe.erase(cutHe.find("IsMinimumBias&IsLooseCharge1&"),14);
-	cutHe = "IsMinimumBias&" + cutHe;  //releasing cut for more stat. in Tritium templates
+	//cutHe.erase(cutHe.find("IsBaseline&IsLooseCharge1&"),14);
+	//cutHe = "IsBaseline&" + cutHe;  //releasing cut for more stat. in Tritium templates
 
 
 	if((ApplyCuts(cutP,vars)||ApplyCuts(cutD,vars)||ApplyCuts(cutHe,vars))){
@@ -139,9 +139,10 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 
 					float mass = vars->R/betasmear * pow((1-pow(betasmear,2)),0.5);
 
+
 					if(ApplyCuts(cutP,vars)&&kbin>0)  fits[kbin][i][j]->Templ_P->Fill(mass,mctotalweight);		
-					if(ApplyCuts(cutD,vars)&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill(mass,vars->mcweight);
-					if(ApplyCuts(cutHe,vars)&&kbin>0) fits[kbin][i][j]->Templ_He->Fill(mass,vars->mcweight);
+					if(ApplyCuts(cutD,vars)&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill( (1.875/0.938)*mass,vars->mcweight);
+					if(ApplyCuts(cutHe,vars)&&kbin>0) fits[kbin][i][j]->Templ_He->Fill((2.793/0.938)*mass,vars->mcweight);
 					}
 				    else {
 				   	kbin = bins.GetBin(discr_var(vars));
@@ -158,8 +159,8 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 						float mass = vars->R/betasmear * pow((1-pow(betasmear,2)),0.5);		
 
 						if(ApplyCuts(cutP,vars)&&kbin>0)  fits[kbin][i][j]->Templ_P->Fill(mass,mctotalweight);		
-						if(ApplyCuts(cutD,vars)&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill(mass,vars->mcweight);
-						if(ApplyCuts(cutHe,vars)&&kbin>0) fits[kbin][i][j]->Templ_He->Fill(mass,vars->mcweight);
+						if(ApplyCuts(cutD,vars)&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill( (1.875/0.938)*mass,vars->mcweight);
+						if(ApplyCuts(cutHe,vars)&&kbin>0) fits[kbin][i][j]->Templ_He->Fill((2.793/0.938)*mass,vars->mcweight);
 
 						float betabad = betasmear;
 						if(BadEvSim) {betabad=BadEvSim->SimulateBadEvents(betasmear); 
