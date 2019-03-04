@@ -89,8 +89,8 @@ TH1F * EvalEffAcc(Efficiency* Eff, TH1F* ForAcc, Binning bins, MCPar param){
 
 	cout<<"********** THE DIVISION **********"<<endl;
 	cout<<Numerator->GetName()<<endl;
-	TH1F * EffAcc= (TH1F*)Numerator->Clone();
-	EffAcc->Divide(Denominator);
+	TH1F * EffAcc= (TH1F*)Denominator->Clone();
+	//EffAcc->Divide(Denominator);
 	/////
 	
 	EffAcc ->SetName("Eff. Acceptance");

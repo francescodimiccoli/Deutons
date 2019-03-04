@@ -339,11 +339,81 @@ void Variables::ResetVariables(){
     Bad_ClusteringRICH     =0;
     NSecondariesRICHrich   =0;	    
 
-    HitHValldir	    =0;
-    HitHVallrefl    =0;
-    HitHVoutdir     =0;
-    HitHVoutrefl    =0;
-    HVBranchCheck   =0;
+    HitHValldir	 	   =0;
+    HitHVallrefl   	   =0;
+    HitHVoutdir     	   =0;
+    HitHVoutrefl           =0;
+    HVBranchCheck          =0;
+
+    nparticle            = 0;
+    tot_hit_uncorr       = 0;
+    tot_pmt_uncorr       = 0;
+    tot_p_uncorr         = 0;
+    max_p_uncorr         = {0,0};
+
+    pmt_nhit_uncorr      = {0,0,0,0,0};
+    pmt_np_uncorr        = {0,0,0,0,0};
+    pmt_dist             = {0,0,0,0,0};
+    pmt_pmt              = {0,0,0,0,0};
+
+    hit_hit;             = 0;
+    hit_stat             = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    hit_used             = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    hit_chan             = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    hit_np_uncorr        = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    hit_beta             = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+    tot_hyp_hit_uncorr   = {0,0,0,0,0,0};
+    tot_hyp_p_uncorr     = {0,0};
+
+
+
+    selection            = 0;
+    is_naf               = 0;
+    status               = 0;
+    correction_status    = 0;
+    nhit                 = 0;
+    nhit_uncorr          = 0;
+    nhit_refl            = 0;
+    npmt                 = 0;
+    npmt_uncorr          = 0;
+    np                   = 0;
+    np_uncorr            = 0;
+    np_w                 = {0,0,0,0,0,0,0,0,0,0};
+    npmt_exp             = 0;
+    np_exp               = 0;
+    np_exp_uncorr        = 0;
+    np_exp_elec          = 0;
+    prob                 = 0;
+    width                = 0;
+    udist                = 0;
+    tile_id              = 0;
+    rad_coo              = {0,0};
+    rad_theta            = 0;
+    rad_phi              = 0;
+    distance_tile_border = 0;
+    beta                 = 0;
+    beta_res             = 0;
+    beta_rms             = 0;
+    beta_raw             = 0;
+    beta_refit           = 0;
+    beta_corrected       = 0;
+    beta_unifcorr        = 0;
+    q                    = 0;
+    q_consistency        = 0;
+    q_res                = 0;
+    q_rms                = 0;
+    nclus                = 0;
+    clus_size            = {0,0,0,0,0,0,0,0,0,0};
+    clus_mean            = {0,0,0,0,0,0,0,0,0,0};
+    clus_rms             = {0,0,0,0,0,0,0,0,0,0};
+    lip_beta             = 0;
+    lip_q                = 0; 
+
+    veto_np_exp_elec     = 0;
+    veto_np_exp_prot     = 0;
+    veto_beta_trk_prot   = 0;
 
     //TRD
     TRDEdepovPath=0;
@@ -351,7 +421,7 @@ void Variables::ResetVariables(){
     TRDLikD=0;
     TRDLike=0;
     EdepTRD=0;
-	
+
     //MC vars
     Momento_gen            = 0;
     Momento_gen_UTOF       = 0;
@@ -596,6 +666,88 @@ void Variables::RegisterBranches(TTree * tree){
 }
 
 
+
+void Variables::RegisterTemplatesBranches_RICH(TTree * tree){
+	tree->Branch("PhysBPatt"	 ,&PhysBPatt);
+	tree->Branch("R"		 ,&R);
+	tree->Branch("Momentum"	 ,&Momento_gen);  
+	tree->Branch("GenMass"	 ,&Massa_gen);  		
+	tree->Branch( "HitHValldir"	 	,&HitHValldir	  ); 	
+        tree->Branch( "HitHVallrefl"   	,&HitHVallrefl    );	
+        tree->Branch( "HitHVoutdir"     	,&HitHVoutdir     );	
+        tree->Branch( "HitHVoutrefl"         ,&HitHVoutrefl    );    
+        tree->Branch( "HVBranchCheck"        ,&HVBranchCheck   );    
+                                                      
+        tree->Branch( "nparticle"           ,& nparticle         );   
+        tree->Branch( "tot_hit_uncorr"      ,& tot_hit_uncorr    );   
+        tree->Branch( "tot_pmt_uncorr"      ,& tot_pmt_uncorr    );   
+        tree->Branch( "tot_p_uncorr"        ,& tot_p_uncorr      );   
+        tree->Branch( "max_p_uncorr"        ,& max_p_uncorr      );   
+                                                      
+        tree->Branch( "pmt_nhit_uncorr"     ,& pmt_nhit_uncorr    );  
+        tree->Branch( "pmt_np_uncorr"       ,& pmt_np_uncorr      );  
+        tree->Branch( "pmt_dist"            ,& pmt_dist           );  
+        tree->Branch( "pmt_pmt"             ,& pmt_pmt            );  
+                                                      
+        tree->Branch( "hit_hit"            ,&  hit_hit;           ); 
+        tree->Branch( "hit_stat"           ,&  hit_stat           ); 
+        tree->Branch( "hit_used"           ,&  hit_used           ); 
+        tree->Branch( "hit_chan"           ,&  hit_chan           ); 
+        tree->Branch( "hit_np_uncorr"       ,& hit_np_uncorr      ); 
+        tree->Branch( "hit_beta"            ,& hit_beta           ); 
+             		              		
+        tree->Branch(                                              
+        tree->Branch( "tot_hyp_hit_uncorr"  ,& tot_hyp_hit_uncorr  );
+        tree->Branch( "tot_hyp_p_uncorr"    ,& tot_hyp_p_uncorr    );
+                                                      
+                                                      
+                                                      
+        tree->Branch( "selection"           ,& selection           );
+        tree->Branch( "is_naf"              ,& is_naf              );
+        tree->Branch( "status"              ,& status              );
+        tree->Branch( "correction_status"   ,& correction_status   );
+        tree->Branch( "nhit"                ,& nhit                );
+        tree->Branch( "nhit_uncorr"         ,& nhit_uncorr         );
+        tree->Branch( "nhit_refl"           ,& nhit_refl           );
+        tree->Branch( "npmt"                ,& npmt                );
+        tree->Branch( "npmt_uncorr"         ,& npmt_uncorr         );
+        tree->Branch( "np"                  ,& np                  );
+        tree->Branch( "np_uncorr"           ,& np_uncorr           );
+        tree->Branch( "np_w"                ,& np_w                );
+        tree->Branch( "npmt_exp"            ,& npmt_exp            );
+        tree->Branch( "np_exp"              ,& np_exp              );
+        tree->Branch( "np_exp_uncorr"       ,& np_exp_uncorr       );
+        tree->Branch( "np_exp_elec"         ,& np_exp_elec         );
+        tree->Branch( "prob"                ,& prob                );
+        tree->Branch( "width"               ,& width               );
+        tree->Branch( "udist"               ,& udist               );
+        tree->Branch( "tile_id"             ,& tile_id             );
+        tree->Branch( "rad_coo"             ,& rad_coo             );
+        tree->Branch( "rad_theta"           ,& rad_theta           );
+        tree->Branch( "rad_phi"             ,& rad_phi             );
+        tree->Branch( "distance_tile_border",& distance_tile_border);
+        tree->Branch( "beta"                ,& beta                );
+        tree->Branch( "beta_res"            ,& beta_res            );
+        tree->Branch( "beta_rms"            ,& beta_rms            );
+        tree->Branch( "beta_raw"            ,& beta_raw            );
+        tree->Branch( "beta_refit"          ,& beta_refit          );
+        tree->Branch( "beta_corrected"      ,& beta_corrected      );
+        tree->Branch( "beta_unifcorr"       ,& beta_unifcorr       );
+        tree->Branch( "q"                   ,& q                   );
+        tree->Branch( "q_consistency"       ,& q_consistency       );
+        tree->Branch( "q_res"               ,& q_res               );
+        tree->Branch( "q_rms"               ,& q_rms               );
+        tree->Branch( "nclus"               ,& nclus               );
+        tree->Branch( "clus_size"           ,& clus_size           );
+        tree->Branch( "clus_mean"           ,& clus_mean           );
+        tree->Branch( "clus_rms"            ,& clus_rms            );
+        tree->Branch( "lip_beta"            ,& lip_beta            );
+        tree->Branch( "lip_q"               ,& lip_q               );
+                                                      
+        tree->Branch( "veto_np_exp_elec"    ,& veto_np_exp_elec   ); 
+        tree->Branch( "veto_np_exp_prot"    ,& veto_np_exp_prot    );
+        tree->Branch( "veto_beta_trk_prot"  ,& veto_beta_trk_prot  );
+}
 
 void Variables::Update(){
 

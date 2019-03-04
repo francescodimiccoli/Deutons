@@ -308,6 +308,80 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
    vars->HitHVoutdir   =ntpRich->tot_hyp_hit_uncorr[1][0];
    vars->HitHVoutrefl  =ntpRich->tot_hyp_hit_uncorr[1][1];   
 
+   
+    vars->  nparticle                =  ntpRich->nparticle            ;  
+    vars->  tot_hit_uncorr           =  ntpRich->tot_hit_uncorr       ;  
+    vars->  tot_pmt_uncorr           =  ntpRich->tot_pmt_uncorr       ;  
+    vars->  tot_p_uncorr             =  ntpRich->tot_p_uncorr         ;  
+    vars->  max_p_uncorr             =  ntpRich->max_p_uncorr         ; 
+                                                            
+    vars->  pmt_nhit_uncorr          =  ntpRich->pmt_nhit_uncorr      ;  
+    vars->  pmt_np_uncorr            =  ntpRich->pmt_np_uncorr        ;  
+    vars->  pmt_dist                 =  ntpRich->pmt_dist             ;  
+    vars->  pmt_pmt                  =  ntpRich->pmt_pmt              ;  
+                                                            
+    // hits                                                 
+                                                            
+    vars->  hit_hit;                 = ntpRich->hit_hit;              ;
+    vars->  hit_stat                 = ntpRich->hit_stat              ;
+    vars->  hit_used                 = ntpRich->hit_used              ;
+    vars->  hit_chan                 = ntpRich->hit_chan              ; 
+    vars->  hit_np_uncorr            = ntpRich->hit_np_uncorr         ;
+    vars->  hit_beta                 = ntpRich->hit_beta              ;
+    vars->  tot_hyp_hit_uncorr       = ntpRich->tot_hyp_hit_uncorr    ;
+    vars->  tot_hyp_p_uncorr         = ntpRich->tot_hyp_p_uncorr      ; 
+                                                            
+    // ring                                                 
+                                                            
+    vars->  selection                = ntpRich->selection              ;
+    vars->  is_naf                   = ntpRich->is_naf                 ;
+    vars->  status                   = ntpRich->status                 ;
+    vars->  correction_status        = ntpRich->correction_status      ; 
+    vars->  nhit                     = ntpRich->nhit                   ;
+    vars->  nhit_uncorr              = ntpRich->nhit_uncorr            ;
+    vars->  nhit_refl                = ntpRich->nhit_refl              ;
+    vars->  npmt                     = ntpRich->npmt                   ; 
+    vars->  npmt_uncorr              = ntpRich->npmt_uncorr            ;
+    vars->  np                       = ntpRich->np                     ;
+    vars->  np_uncorr                = ntpRich->np_uncorr              ;
+    vars->  np_w                     = ntpRich->np_w                   ; 
+    vars->  npmt_exp                 = ntpRich->npmt_exp               ;
+    vars->  np_exp                   = ntpRich->np_exp                 ;
+    vars->  np_exp_uncorr            = ntpRich->np_exp_uncorr          ;
+    vars->  np_exp_elec              = ntpRich->np_exp_elec            ; 
+    vars->  prob                     = ntpRich->prob                   ;
+    vars->  width                    = ntpRich->width                  ;
+    vars->  udist                    = ntpRich->udist                  ;
+    vars->  tile_id                  = ntpRich->tile_id                ; 
+    vars->  rad_coo                  = ntpRich->rad_coo                ;
+    vars->  rad_theta                = ntpRich->rad_theta              ;
+    vars->  rad_phi                  = ntpRich->rad_phi                ;
+    vars->  distance_tile_border     = ntpRich->distance_tile_border   ;  
+    vars->  beta                     = ntpRich->beta                    ;  
+    vars->  beta_res                 = ntpRich->beta_res                ;  
+    vars->  beta_rms                 = ntpRich->beta_rms                ;  
+    vars->  beta_raw                 = ntpRich->beta_raw                ;  
+    vars->  beta_refit               = ntpRich->beta_refit              ;  
+    vars->  beta_corrected           = ntpRich->beta_corrected          ;
+    vars->  beta_unifcorr            = ntpRich->beta_unifcorr           ;
+    vars->  q                        = ntpRich->q                       ;  
+    vars->  q_consistency            = ntpRich->q_consistency          ;
+    vars->  q_res                    = ntpRich->q_res                  ;
+    vars->  q_rms                    = ntpRich->q_rms                  ;
+    vars->  nclus                    = ntpRich->nclus                  ; 
+    vars->  clus_size                = ntpRich->clus_size              ;
+    vars->  clus_mean                = ntpRich->clus_mean              ;
+    vars->  clus_rms                 = ntpRich->clus_rms               ;
+    vars->  lip_beta                 = ntpRich->lip_beta               ; 
+    vars->  lip_q                    = ntpRich->lip_q                 ; 
+                                                            
+    // veto                                                 
+                                                            
+    vars->  veto_np_exp_elec         = ntpRich->veto_np_exp_elec      ;
+    vars->  veto_np_exp_prot         = ntpRich->veto_np_exp_prot      ;
+    vars->  veto_beta_trk_prot       = ntpRich->veto_beta_trk_prot    ;
+
+
  
 
    //////////////////////// CHECKS on VARIABLES ///////////////////////////
