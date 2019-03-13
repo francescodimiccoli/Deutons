@@ -28,7 +28,6 @@
 #include "../include/filesaver.h"
 #include "../include/TemplateFITbetasmear.h"
 
-#include "../include/FitError.h"
 #include "../include/PlottingFunctions.h"
 #include <sstream>
 
@@ -514,17 +513,17 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		//PlotDistribution(gPad, TemplatesP[0] ,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,2,"Original Protons MC Template");
 		//if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[0] ,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,1e5,2,"Original Deuterons MC Template");
 	//	if(!IsFitNoise) if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,1e5,2,"Original He Fragm. MC Template");
-		PlotDistribution(gPad, TemplatesP[1] ,"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",2,"esame",8,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,4,"Best #chi^{2} Protons MC Template");
-		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[1] ,"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",4,"esame",8,1e5,10,"Best #chi^{2} Deuterons MC Template");
-		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",3,"esame",8,1e5,10,"Best #chi^{2} Tritium MC Template");
+		PlotDistribution(gPad, TemplatesP[1] ,"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",2,"esame",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.33,2,"Best #chi^{2} Protons MC Template");
+		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[1] ,"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",4,"esame",1,1e5,2,"Best #chi^{2} Deuterons MC Template");
+		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",3,"esame",1,1e5,2,"Best #chi^{2} Tritium MC Template");
 		if(IsFitNoise) {
 			TH1F * NoiseD = CreateNoiseD(TemplatesNoise[1],TemplatesP[1],TemplatesD[1]);
-			PlotDistribution(gPad, TemplatesNoise[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",kRed-9,"esame",1e-1,1e5,4,"Noise P Template",true);
-			PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^{2}]","Counts",kBlue-7,"esame",1e-1,1e5,4,"Noise D Template",true);
+			PlotDistribution(gPad, TemplatesNoise[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",kRed-9,"esame",1e-1,1e5,1,"Noise P Template",true);
+			PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^{2}]","Counts",kBlue-7,"esame",1e-1,1e5,1,"Noise D Template",true);
 		}		
 		
-		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",1,"ePsame",8,1e5,3,"ISS data",false,true);
-		if(Fits.size()>0) { PlotDistribution(gPad, Fits[0],"Reconstructed Mass [Gev/c^{2}]","counts",6,"same",1,1e5,4,"Fraction Fit");
+		PlotDistribution(gPad, Datas[0],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",1,"ePsame",1,1e5,1,"ISS data",false,true);
+		if(Fits.size()>0) { //PlotDistribution(gPad, Fits[0],"Reconstructed Mass [Gev/c^{2}]","counts",6,"same",1,1e5,4,"Fraction Fit");
 				     PlotDistribution(gPad, Sum,"Reconstructed Mass [Gev/c^{2}]","counts",1,"esame",8,1e5,6,"Sum of Contributions");	
 		}
 		c3_up->cd();

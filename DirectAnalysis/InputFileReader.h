@@ -20,8 +20,8 @@ TChain * InputFileReader(std::string listfilename,std::string treename)
 	}
 	cout<<"Chain: "<<chain<<endl;
 	cout<<chain->GetEntries()<<endl;
-	if(chain->GetEntries()==0) return 0; 
-	else return chain;
+//	if(chain->GetEntries()==0) return 0; 
+	/*else*/ return chain;
 }
 
 

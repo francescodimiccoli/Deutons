@@ -5,13 +5,13 @@ chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 #chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
-$datapath  = "/data1/home/data/v5_pass7/bartel.2440/";
+$datapath  = "/data1/home/data/v5_pass7/Compact_data";
 $mcP_path  = "/data1/home/data/v5_pass7/MC/Pr.1200/pr.pl1.05100.4_00/";
 $mcD_path  = "";
 $mcHe_path = "";
 $mcT_path  = "";
 
-$FRAC = 0;
+$FRAC = 1;
 $OFFSET = $ARGV[3];
 $out_path  = "/eos/ams/user/f/fdimicco/";
 
@@ -29,7 +29,8 @@ $ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/MC-MC/Ntuples";
 system("rm $workdir/InputFileLists/*"); 
 
 print "Listing All Data Files..\n";
-chomp (@Rootuple = `ls  $datapath | grep -v "log" |  sed s/.root//g`);
+
+chomp (@Rootuple = `ls $datapath/* | grep root | grep -v "log" |  sed s/.root//g`);
 $num_Rootuple = scalar(@Rootuple);
 
 chomp (@NTuple = `ls  $ntuplepath | grep -v "log" |grep -v "check" |  sed s/.root//g`);
@@ -88,8 +89,9 @@ for ($n=0;$n<$njobs; $n++)
 		for ($j=($num_rootuple)/$njobs*$n + $OFFSET  ; $j<($num_rootuple)/$njobs*($n+1)  + $OFFSET ; $j++)
 		{
 			$j=$j+$FRAC;
-			if($rootuple[$j] ne "") {	
-				print OUT  "$datapath/$rootuple[$j].root\n";
+			if($rootuple[$j] ne "") {
+				$out = `ls -d $datapath/*/$rootuple[$j].root`;	
+				print OUT  "$out";
 				$rootuple[$j]="";	
 			}
 		}

@@ -331,12 +331,13 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 void DBarReader::FillCompact(int NEvent, Variables * vars){
 	Tree_Cpct->GetEntry(NEvent);
 	vars->ResetVariables();
+
 	////////////////////// EVENT INFORMATION ///////////////////////////////////////
 	vars->PrescaleFactor    = 1; 
 
 	vars->P_standard_sel    = 0; 	
 
-
+	
 	// Stroemer cutoff is in the tracker data
 	vars->Rcutoff = ntpCompact->trk_stoermer;
 	vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1]; //stoermer
@@ -346,7 +347,7 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	vars->Livetime_RTI =   rtiInfo->lf;    
 	vars->good_RTI   = rtiInfo->good;
 	vars->isinsaa = rtiInfo->isinsaa;
-
+	
 	int status = ntpCompact->status; 
 	vars->NTRDSegments = ((int)status/100000000);
 	status -= (((int)status/100000000) * 100000000); 	  
@@ -483,23 +484,23 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI, TTree * tree_
 		Tree->SetBranchAddress( "Ecal"   , &ntpEcal       );
 		//  Tree->SetBranchAddress( "Anti"   , &ntpAnti       );
 		Tree->SetBranchAddress( "SA"     , &ntpStandAlone );
+		if (_isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
 
-		if(Tree_Cpct){
-			Tree_Cpct->SetBranchAddress( "Compact" , &ntpCompact  );
-		}	
+	}
+	if(Tree_Cpct){
+		Tree_Cpct->SetBranchAddress( "SHeader" , &ntpSHeader    );
+		Tree_Cpct->SetBranchAddress( "Compact" , &ntpCompact  );
+	}	
+	if(!_isMC){
 		if(Tree_RTI){
 			Tree_RTI->SetBranchAddress( "RTIInfo" , &rtiInfo  );		
 			Tree_RTI->BuildIndex("SHeader.utime");
-			Tree->AddFriend(Tree_RTI);
+			if(Tree) Tree->AddFriend(Tree_RTI);
 			Tree_Cpct->AddFriend(Tree_RTI);
 		}	
+	}
 
-
-		isMC = _isMC;
-		if (isMC) Tree->SetBranchAddress("MCHeader",&ntpMCHeader);
-		cout<<"************ TOT ENTRIES ***************"<<endl;
-		cout<<Tree->GetEntries()<<endl;
-	}	
+	isMC = _isMC;
 }
 
 DBarReader::DBarReader(TTree * tree, bool _isMC) {

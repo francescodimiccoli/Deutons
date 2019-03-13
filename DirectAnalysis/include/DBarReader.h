@@ -12,7 +12,7 @@ class DBarReader {
 
 private:
     bool isMC;
-    TTree * Tree;	
+    TTree * Tree =0x0;	
     TTree * Tree_RTI=0x0;
     TTree * Tree_Cpct=0x0;
 
@@ -50,6 +50,7 @@ public:
     int GetCompactEntries(){return Tree_Cpct->GetEntries();}; 	
     
     TTree * GetTree() {return Tree;}
+    TTree * GetCompactTree() {return Tree_Cpct;}
     Long64_t ProtonCandidateSelection();
 
 };

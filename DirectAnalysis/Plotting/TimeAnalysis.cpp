@@ -26,12 +26,12 @@
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 #include "../include/filesaver.h"
-#include "../include/TemplateFITbetasmear.h"
 #include "TGraphAsymmErrors.h"
-#include "../include/FitError.h"
 #include "../include/PlottingFunctions.h"
 #include <sstream>
 #include "TStyle.h"
+
+#include "../perl/List.h"
 
 void DrawGalpropRatio(TVirtualPad *c){
 	c->cd();
@@ -129,13 +129,55 @@ void DrawDPRatio(FileSaver Plots, std::vector<TFile *> Files ){
 }
 
 
+void DrawPDCountsRatio(FileSaver Plots, std::vector<TFile *> Files ){
+
+	TStyle* m_gStyle= new TStyle();;
+	m_gStyle->SetPalette(55);
+	int nColors = m_gStyle->GetNumberOfColors();
+
+	TCanvas *c3 = new TCanvas("D/P Counts");
+	c3->SetCanvasSize(2000,1500);
+	TH1F * DCountsTOF[Files.size()];
+	TH1F * DCountsNaF[Files.size()];
+	TH1F * DCountsAgl[Files.size()];
+
+	for(int i=0;i<Files.size();i++){
+		DCountsTOF[i]=(TH1F*)Files[i]->Get("TOFfits/Fit Results/Deuteron Counts");
+		DCountsNaF[i]=(TH1F*)Files[i]->Get("NaFfits/Fit Results/Deuteron Counts");
+		DCountsAgl[i]=(TH1F*)Files[i]->Get("Aglfits/Fit Results/Deuteron Counts");
+	}
+
+	TH1F * PCountsTOF[Files.size()];
+	TH1F * PCountsNaF[Files.size()];
+	TH1F * PCountsAgl[Files.size()];
+
+	for(int i=0;i<Files.size();i++){
+		PCountsTOF[i]=(TH1F*)Files[i]->Get("TOFfits/Fit Results/Proton Counts");
+		PCountsNaF[i]=(TH1F*)Files[i]->Get("NaFfits/Fit Results/Proton Counts");
+		PCountsAgl[i]=(TH1F*)Files[i]->Get("Aglfits/Fit Results/Proton Counts");
+	}
+
+	for(int i=0;i<Files.size();i++){
+	DCountsTOF[i]->Divide(PCountsTOF[i]	);
+	DCountsNaF[i]->Divide(PCountsNaF[i]	);
+        DCountsAgl[i]->Divide(PCountsAgl[i]	);
+	}
+
+	for(int i=0;i<Files.size();i++){
+		PlotMergedRanges(gPad,DCountsTOF[i] ,DCountsNaF[i] ,DCountsAgl[i] ,"Kinetic Energy [GeV/nucl.]", "Flux",m_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)),true,"Psame",0.1,10,0.00001,0.12,"This Work (TOF)",8);	
+	}	
+
+        Plots.Add(c3);
+        Plots.writeObjsInFolder("Counts");
+
+	return;
+}
 
 int main(int argc, char * argv[]){
 
 	std::vector<TFile *> Files;
-	for(int i=1; i< argc; i++){
-		string INPUT(argv[i]);
-		TFile * f = TFile::Open(INPUT.c_str()); 
+	for(int i=0; i< TimeFiles.size(); i++){
+		TFile * f = TFile::Open(TimeFiles[i].c_str()); 
 		Files.push_back(f);
 	}
 	cout<<"Files stored: "<<Files.size()<<endl;
@@ -172,7 +214,7 @@ int main(int argc, char * argv[]){
 
 
 	cout<<"**************** PLOTTING *****************"<<endl;
-	DrawDPRatio(Plots,Files );
-
+	//DrawDPRatio(Plots,Files );
+	DrawPDCountsRatio(Plots,Files);
 	return 0;
 }

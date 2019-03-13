@@ -14,7 +14,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	check_file = checkfile;
 
 	FileSaver LatWeights;
-	LatWeights.setName("LatWeights/Weights.root");
+	LatWeights.setName("/data1/home/fdimicco/Deutons/DirectAnalysis/LatWeights/Weights.root");
 	LatReweighter * weighter = new LatReweighter(LatWeights,"LatWeights");	
 	
 	cout<<"****************************** BINS ***************************************"<<endl;
@@ -39,13 +39,13 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 
 //"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&IsOnlyFromToF"
 
-	Efficiency * CountsTOF    = new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,ToFRigB,"","");
+	Efficiency * CountsTOF    = new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,ToFRigB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning");
 	Efficiency * CountsNaF    = new Efficiency(finalhistos    ,"NaFPCounts"	   ,"NaFPCounts"	,NaFRigB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    );
 	Efficiency * CountsAgl    = new Efficiency(finalhistos    ,"AglPCounts"	   ,"AglPCounts"	,AglRigB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    );
 
 	// Extraction of counts with Template Fit
 
-	//  TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",60,0.3,1.6);	  
+	//TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsOnlyFromToF",60,0.3,1.6);	  
 	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning"       ,150,0.4,7.5,11);
 	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"           ,60,0.4,5,true,11,400,200);
 	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,11,110,80);	
@@ -75,20 +75,20 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		//SmearingCheck->SaveFitResults(finalresults);
 
 		TOFfits->SetFitRange(0.6,4);
-		//	TOFfits->DisableFit();
-		TOFfits->SetFitConstraints(0.9,1,0.015,0.16,0.005,0.015,true);
+//		TOFfits->DisableFit();
+		TOFfits->SetFitConstraints(0.9,1,0.015,0.16,0.01,0.02,true);
 		TOFfits->ExtractCounts(finalhistos);	
 		TOFfits->SaveFitResults(finalresults);
 
 		NaFfits->SetFitRange(0.6,5);
-		//	NaFfits->DisableFit();
-		NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
+//		NaFfits->DisableFit();
+		NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0005,0.02,true);
 		NaFfits->ExtractCounts(finalhistos);
 		NaFfits->SaveFitResults(finalresults);
 
 		Aglfits->SetFitRange(0.6,5);
-		//	Aglfits->DisableFit();
-		Aglfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.0005);
+//		Aglfits->DisableFit();
+		Aglfits->SetFitConstraints(0.9,1,0.001,0.1,0.0005,0.02,true);
 		Aglfits->ExtractCounts(finalhistos);
 		Aglfits->SaveFitResults(finalresults);	
 
@@ -111,7 +111,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	}
 
 
-	///SmearingCheck -> SetDefaultOutFile(finalhistos);
+	//SmearingCheck -> SetDefaultOutFile(finalhistos);
 	TOFfits	    -> SetDefaultOutFile(finalhistos);
 	NaFfits	    -> SetDefaultOutFile(finalhistos);
 	Aglfits	    -> SetDefaultOutFile(finalhistos);
@@ -125,7 +125,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	CountsAgl	-> SetDefaultOutFile(finalhistos);
 
 
-	// SmearingCheck->SetLatitudeReweighter(weighter);
+	//SmearingCheck->SetLatitudeReweighter(weighter);
 	TOFfits	 ->SetLatitudeReweighter(weighter);	
 	NaFfits	 ->SetLatitudeReweighter(weighter);	
 	Aglfits	 ->SetLatitudeReweighter(weighter);	
@@ -135,7 +135,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	NaFfits->SetFitWithNoiseMode();
 	Aglfits->SetFitWithNoiseMode();
 
-	//  Filler.AddObject2beFilled(SmearingCheck,GetBetaTOF,GetRigidity);
+	//Filler.AddObject2beFilled(SmearingCheck,GetBetaTOF,GetRigidity);
 	Filler.AddObject2beFilled(TOFfits,GetRecMassTOF ,GetBetaTOF);
 	Filler.AddObject2beFilled(NaFfits,GetRecMassRICH,GetBetaRICH);
 	Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);
