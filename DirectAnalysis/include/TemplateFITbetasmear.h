@@ -253,7 +253,7 @@ class TemplateFIT : public Tool{
 		TFile * file = File.GetFile();
 		TFile * externalfile;
 
-		ExternalTemplates.setName("AnalysisFiles/ExternalTemplates.root");		
+		ExternalTemplates.setName("/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles/ExternalTemplates.root");		
 
 		checkfiletemplates = ExternalTemplates.CheckFile();
 				

@@ -616,10 +616,13 @@ void Variables::Update(){
 
     if(Momento_gen==0) mcweight=1; // in data Momento_gen=0
     else {
-			mcweight = reweighter.getWeight(fabs(Momento_gen));
-        if(Massa_gen>1&&Massa_gen<2) mcweight *= 0.05;
-        if(Massa_gen>2&&Massa_gen<4) mcweight = reweighterHe.getWeight(fabs(Momento_gen));
-    }	
+			if(isinf(reweighter.getWeight(fabs(Momento_gen)))) mcweight = 0;
+			else {
+				mcweight = reweighter.getWeight(fabs(Momento_gen));
+				if(Massa_gen>1&&Massa_gen<2) mcweight *= 0.05;
+				if(Massa_gen>2&&Massa_gen<4) mcweight = reweighterHe.getWeight(fabs(Momento_gen));
+			}
+	}	
 }
 
 void Variables::PrintCurrentState(){

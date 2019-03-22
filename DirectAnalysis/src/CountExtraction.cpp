@@ -46,9 +46,9 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	// Extraction of counts with Template Fit
 
 	//TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsOnlyFromToF",60,0.3,1.6);	  
-	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning"       ,150,0.4,7.5,11);
-	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"           ,60,0.4,5,true,11,400,200);
-	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,11,110,80);	
+	TemplateFIT * TOFfits= new TemplateFIT("TOFfits",ToFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsOnlyFromToF"       ,150,0.4,7.5,11);
+	TemplateFIT * NaFfits= new TemplateFIT("NaFfits",NaFDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"           ,60,0.4,5,true,11,250,150);
+	TemplateFIT * Aglfits= new TemplateFIT("Aglfits",AglDB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,11,75,55);	
 
 	if(!refill&&checkfile) {	
 
@@ -62,8 +62,8 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 
 		//TemplateFIT * SmearingCheck = new TemplateFIT(finalhistos,"SmearingCheck",PRB);
 		TOFfits= new TemplateFIT(finalhistos,"TOFfits",ToFDB,false,11);
-		NaFfits= new TemplateFIT(finalhistos,"NaFfits",NaFDB,true,11,400,200);
-		Aglfits= new TemplateFIT(finalhistos,"Aglfits",AglDB,true,11,110,90);
+		NaFfits= new TemplateFIT(finalhistos,"NaFfits",NaFDB,true,11,250,150);
+		Aglfits= new TemplateFIT(finalhistos,"Aglfits",AglDB,true,11,75,55);
 		//	NaFfits->SetFitWithNoiseMode();
 		//	Aglfits->SetFitWithNoiseMode();
 
@@ -76,11 +76,11 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 
 		TOFfits->SetFitRange(0.6,4);
 //		TOFfits->DisableFit();
-		TOFfits->SetFitConstraints(0.9,1,0.015,0.16,0.01,0.02,true);
+		TOFfits->SetFitConstraints(0.9,1,0.015,0.16,0.005,0.02,true);
 		TOFfits->ExtractCounts(finalhistos);	
 		TOFfits->SaveFitResults(finalresults);
 
-		NaFfits->SetFitRange(0.6,5);
+		NaFfits->SetFitRange(0.6,6);
 //		NaFfits->DisableFit();
 		NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0005,0.02,true);
 		NaFfits->ExtractCounts(finalhistos);

@@ -513,7 +513,7 @@ void PlotMergedRanges(TVirtualPad * c, TH1F * ValuesTOF, TH1F* ValuesNaF, TH1F* 
 	
 	TGraphErrors * Graph = new TGraphErrors();
 	int a=0;
-	for(int i=0;i<17;i++){
+	for(int i=0;i<18;i++){
 		if(ValuesTOF->GetBinContent(i+1)!=0){
 			if(Ekin) Graph->SetPoint(a,ToFDB.EkPerMassBinCent(i), ValuesTOF->GetBinContent(i+1));
 			else Graph->SetPoint(a,ToFDB.GetBinCenter(i), ValuesTOF->GetBinContent(i+1));
@@ -523,7 +523,7 @@ void PlotMergedRanges(TVirtualPad * c, TH1F * ValuesTOF, TH1F* ValuesNaF, TH1F* 
 		}
 	}	
 
-	for(int i=3;i<17;i++){
+	for(int i=1;i<17;i++){
 		if(ValuesNaF->GetBinContent(i+1)!=0){
 			if(Ekin) Graph->SetPoint(a,NaFDB.EkPerMassBinCent(i), ValuesNaF->GetBinContent(i+1));
 			else Graph->SetPoint(a,NaFDB.GetBinCenter(i), ValuesNaF->GetBinContent(i+1));
@@ -544,9 +544,9 @@ void PlotMergedRanges(TVirtualPad * c, TH1F * ValuesTOF, TH1F* ValuesNaF, TH1F* 
 	Graph->SetLineColor(color);
 	Graph->SetFillColor(color);
 	Graph->SetFillStyle(3001);
-	Graph->SetLineWidth(7);
+	Graph->SetLineWidth(3);
 	Graph->SetLineColor(color);
-	Graph->SetMarkerSize(3);
+	Graph->SetMarkerSize(1.5);
 	Graph->SetMarkerStyle(dotstyle);
 	Graph->SetMarkerColor(color);
 

@@ -475,6 +475,7 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI, TTree * tree_
 	cout<<Tree<<" "<<Tree_RTI<<" "<<Tree_Cpct<<endl;
 
 	if(Tree){
+		Tree->SetAutoFlush( 0 );
 		Tree->SetBranchAddress( "SHeader" , &ntpSHeader     );
 		Tree->SetBranchAddress( "Header"  , &ntpHeader     );
 		Tree->SetBranchAddress( "Trd"     , &ntpTrd        );
@@ -488,11 +489,13 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI, TTree * tree_
 
 	}
 	if(Tree_Cpct){
+		Tree_Cpct->SetAutoFlush( 0 );
 		Tree_Cpct->SetBranchAddress( "SHeader" , &ntpSHeader    );
 		Tree_Cpct->SetBranchAddress( "Compact" , &ntpCompact  );
 	}	
 	if(!_isMC){
 		if(Tree_RTI){
+			Tree_RTI->SetAutoFlush( 0 );
 			Tree_RTI->SetBranchAddress( "RTIInfo" , &rtiInfo  );		
 			Tree_RTI->BuildIndex("SHeader.utime");
 			if(Tree) Tree->AddFriend(Tree_RTI);

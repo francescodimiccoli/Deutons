@@ -34,14 +34,18 @@ void Flux::Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filen
 
 
 void Flux::ApplyEfficCorr(EffCorr * Correction){
-	cout<<"Correction: "<<basename<<" "<<Correction->GetGlobCorrection()->GetEntries()<<endl;
-	EfficiencyCorrections.push_back(Correction);
+	if(Correction->GetGlobCorrection()) { 
+		cout<<"Correction: "<<basename<<" "<<Correction->GetGlobCorrection()->GetEntries()<<endl;
+		EfficiencyCorrections.push_back(Correction);
+	}
 	return;
 }
 
 void Flux::ApplyEfficFromData(EffCorr * Correction){
-	cout<<"Correction: "<<basename<<" "<<Correction->GetGlobCorrection()->GetEntries()<<endl;
-	EfficiencyFromData.push_back(Correction);
+	if(Correction->GetGlobCorrection()) { 
+		cout<<"Correction: "<<basename<<" "<<Correction->GetGlobCorrection()->GetEntries()<<endl;
+		EfficiencyFromData.push_back(Correction);
+	}
 	return;
 }
 
@@ -145,11 +149,10 @@ void Flux::Eval_Flux(){
 	// EXPOSURE TIME	
 	if(ExposureTime) FluxEstim -> Divide(ExposureTime);
 	////
-	cout<<MCEfficiency->GetAfter()<<endl;	
 	//ACCEPTANCE
+	if(MCEfficiency->GetAfter()){
+	cout<<MCEfficiency->GetAfter()<<endl;	
 	Eff_Acceptance = (TH1F *) MCEfficiency->GetAfter()->Clone();
-	if(Eff_Acceptance){
-
 		Acc_StatErr = (TH1F *)  MCEfficiency->GetAfter()->Clone();
 		Acc_SystErr = (TH1F *)  MCEfficiency->GetAfter()->Clone();
 	
@@ -192,7 +195,7 @@ void Flux::Eval_Flux(){
  
 		}
 		
-		     FluxEstim -> Divide(Eff_Acceptance);
+		     //FluxEstim -> Divide(Eff_Acceptance);
 	}
 	///
 	

@@ -124,32 +124,30 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 	if((ApplyCuts(cutP,vars)||ApplyCuts(cutD,vars)||ApplyCuts(cutHe,vars))){
 	for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
-				float betasmear;
+				float betasmear=0;
 				float mctotalweight = vars->mcweight; // Latweighter->GetWeight(fabs(vars->R));
 				if(!ApplyCuts("IsOnlyFromToF",vars)) betasmear = SmearBetaRICH(vars->BetaRICH_new,(float)i,(float)j); 
 				else 	{ 
 						betasmear = SmearBeta(vars->Beta,(float)i,(float)j,vars->R);    
-						if(betasmear>0.7776) mctotalweight = vars->mcweight / Latweighter->GetWeight(fabs(vars->R));
+				//		if(betasmear>0.7776) mctotalweight = vars->mcweight / Latweighter->GetWeight(fabs(vars->R));
 				}
 				int kbin;
 	
 				if(!IsFitNoise){
 				   if(bins.IsUsingBetaEdges()){	 
 					kbin = bins.GetBin(betasmear);
-
-					float mass = vars->R/betasmear * pow((1-pow(betasmear,2)),0.5);
-
-					if(mass<0) cout<<mass<<endl;					
-
+					float mass=0;
+					mass = vars->R/betasmear * pow((1-pow(betasmear,2)),0.5);
+	
 					if(ApplyCuts(cutP,vars)&&kbin>0)  fits[kbin][i][j]->Templ_P->Fill(mass,mctotalweight);		
-					if(ApplyCuts(cutD,vars)&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill( (1.875/0.938)*mass,vars->mcweight);
-					if(ApplyCuts(cutHe,vars)&&kbin>0) fits[kbin][i][j]->Templ_He->Fill((2.793/0.938)*mass,vars->mcweight);
+					if(ApplyCuts(cutD,vars)&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill( (1.875/0.938)*mass,mctotalweight);
+					if(ApplyCuts(cutHe,vars)&&kbin>0) fits[kbin][i][j]->Templ_He->Fill((2.793/0.938)*mass,mctotalweight);
 					}
 				    else {
 				   	kbin = bins.GetBin(discr_var(vars));
 					if(ApplyCuts(cutP,vars)&&kbin>0)  fits[kbin][i][j]->Templ_P->Fill(betasmear,mctotalweight);
-                                        if(ApplyCuts(cutD,vars)&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill(betasmear,vars->mcweight);
-                                        if(ApplyCuts(cutHe,vars)&&kbin>0) fits[kbin][i][j]->Templ_He->Fill(betasmear,vars->mcweight);
+                                        if(ApplyCuts(cutD,vars)&&kbin>0)  fits[kbin][i][j]->Templ_D->Fill(betasmear,mctotalweight);
+                                        if(ApplyCuts(cutHe,vars)&&kbin>0) fits[kbin][i][j]->Templ_He->Fill(betasmear,mctotalweight);
 
 				   }	
 
