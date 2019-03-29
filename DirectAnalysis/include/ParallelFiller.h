@@ -140,6 +140,27 @@ class ParallelFiller{
 	}
     }
 
+    void LoopOnDataVariables(DBarReader readerDT, Variables * vars){
+        if(!Refill) return;
+	if(!readerDT.GetTree() && !readerDT.GetCompactTree()) return;
+	if(readerDT.GetTree()) if(readerDT.GetTree()->GetNbranches()>11) {LoopOnData(readerDT.GetTree(),vars); return;}
+	cout<<" DATA Filling ..."<< endl;
+        for(int i=0;i<readerDT.GetTreeEntries();i++){
+	    if(i%(int)FRAC!=0) continue; // WTF ?!
+            UpdateProgressBar(i, readerDT.GetTreeEntries());
+            vars->ResetVariables();
+            readerDT.FillVariables(i,vars); 
+            vars->Update();
+	    //vars->PrintCurrentState();
+            for(int nobj=0;nobj<Objects2beFilled.size();nobj++){ 
+	        if(vars->isinsaa==0&&vars->good_RTI==0) {
+			Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+			}
+		}
+	}
+    }
+
+
     void LoopOnGeneric(DBarReader reader, Variables * vars){
         if(!Refill) return;
         if(reader.GetTree()->GetNbranches()>11) {LoopOnGeneric(reader.GetTree(),vars); return;}

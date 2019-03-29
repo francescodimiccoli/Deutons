@@ -11,7 +11,7 @@ $mcD_path  = "";
 $mcHe_path = "";
 $mcT_path  = "";
 
-$FRAC = 1;
+$FRAC = 5;
 $OFFSET = $ARGV[3];
 $out_path  = "/eos/ams/user/f/fdimicco/";
 

@@ -51,13 +51,11 @@ int main(int argc, char * argv[])
 	bool Refill = false;
 	if(refill!="") Refill=true;
 
-	TChain * chain_RTI = InputFileReader(INPUT1.c_str(),"RTI");
-
-	TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
-	TChain * chainMC = InputFileReader(INPUT2.c_str(),"parametri_MC");
-	//TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-	//TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
-
+	TChain *		chain_RTI  	= InputFileReader(INPUT1.c_str(),"RTI");
+	TChain *		chainDT    	= InputFileReader(INPUT1.c_str(),"Event");
+	TChain *		chainMC    	= InputFileReader(INPUT2.c_str(),"Event");
+	TChain *		chainDT_Cpct    = InputFileReader(INPUT1.c_str(),"Compact");
+	TChain *		chainMC_Cpct    = InputFileReader(INPUT2.c_str(),"Compact");
 
 	FileSaver finalHistos;
 	finalHistos.setName(OUTPUT.c_str());
@@ -99,16 +97,16 @@ int main(int argc, char * argv[])
 	TestReweigthingHe->Save(finalResults);
 	*/
 
-	ChargeFitter * HeContTOF = new ChargeFitter(finalHistos,"HeContTOF",ToFDB,"IsPositive&IsPreselectedInner","IsPositive&IsPreselected&IsClearQ1ExceptL2","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2","IsPositive&IsPreselectedHe&LikelihoodCut&DistanceCut","IsPositive&IsPreselected&LikelihoodCut&DistanceCut",300,0,4);
-	ChargeFitter * HeContNaF = new ChargeFitter(finalHistos,"HeContNaF",NaFDB,"IsPositive&IsPreselectedInner&IsFromNaF&RICHBDTCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromNaF&RICHBDTCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromNaF&RICHBDTCut","IsPositive&IsPreselectedHe&LikelihoodCut&DistanceCut&IsFromNaF&RICHBDTCut","IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromNaF&RICHBDTCut",300,0,4);
-	ChargeFitter * HeContAgl = new ChargeFitter(finalHistos,"HeContAgl",AglDB,"IsPositive&IsPreselectedInner&IsFromAgl&RICHBDTCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromAgl&RICHBDTCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromAgl&RICHBDTCut","IsPositive&IsPreselectedHe&LikelihoodCut&DistanceCut&IsFromAgl&RICHBDTCut","IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsFromAgl&RICHBDTCut",300,0,4);
+	ChargeFitter * HeContTOF = new ChargeFitter(finalHistos,"HeContTOF",ToFDB,"IsPositive&IsPreselectedInner","IsPositive&IsPreselected&IsClearQ1ExceptL2","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2","IsPositive&IsPreselectedHe&IsCleaning","IsPositive&IsPreselected&IsCleaning",300,0,4);
+	ChargeFitter * HeContNaF = new ChargeFitter(finalHistos,"HeContNaF",NaFDB,"IsPositive&IsPreselectedInner&IsFromNaF&RICHBDTCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromNaF&RICHBDTCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromNaF&RICHBDTCut","IsPositive&IsPreselectedHe&IsCleaning&IsFromNaF&RICHBDTCut","IsPositive&IsPreselected&IsCleaning&IsFromNaF&RICHBDTCut",300,0,4);
+	ChargeFitter * HeContAgl = new ChargeFitter(finalHistos,"HeContAgl",AglDB,"IsPositive&IsPreselectedInner&IsFromAgl&RICHBDTCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromAgl&RICHBDTCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromAgl&RICHBDTCut","IsPositive&IsPreselectedHe&IsCleaning&IsFromAgl&RICHBDTCut","IsPositive&IsPreselected&IsCleaning&IsFromAgl&RICHBDTCut",300,0,4);
 
 
 	ChargeFitter * HeContTOFCheck[10];
 	for(int i=0;i<10;i++){
 		 std::string basename = "HeContCheck" + to_string(i);
-		 std::string FragmentCut = "IsPositive&LikelihoodCut&DistanceCut&IsPreselectedHe" + to_string(i);
-		 HeContTOFCheck[i] = new ChargeFitter(finalHistos,basename,ToFDB,"IsPositive&IsPreselectedInner","IsPositive&IsPreselected&IsClearQ1ExceptL2","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2",FragmentCut,"IsPositive&IsPreselected&LikelihoodCut&DistanceCut",300,0,4);
+		 std::string FragmentCut = "IsPositive&IsCleaning&IsPreselectedHe" + to_string(i);
+		 HeContTOFCheck[i] = new ChargeFitter(finalHistos,basename,ToFDB,"IsPositive&IsPreselectedInner","IsPositive&IsPreselected&IsClearQ1ExceptL2","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2",FragmentCut,"IsPositive&IsPreselected&IsCleaning",300,0,4);
 	}
 
 
@@ -122,8 +120,8 @@ int main(int argc, char * argv[])
 	for(int i=0;i<10;i++) Filler2.AddObject2beFilled(HeContTOFCheck[i],GetBetaTOF,GetLoweredBetaTOF);
 	Filler2.ReinitializeAll(Refill);
 	//main loops
-	Filler2.LoopOnData(DBarReader(chainDT, false,chain_RTI),vars);
-	Filler2.LoopOnMC(DBarReader(chainMC, true),vars);
+	Filler2.LoopOnDataVariables(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct),vars);
+	Filler2.LoopOnMC(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct),vars);
 
 	HeContTOF->Save(finalHistos);
 	HeContNaF->Save(finalHistos);

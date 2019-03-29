@@ -120,12 +120,12 @@ bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,99999
 
 
 //He fragm
-bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&HasL1(vars)&&HasL2(vars));}
-bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&L1LooseCharge1(vars)&&vars->R!=0&&HasL1(vars)&&HasL2(vars));}
-bool IsPreselectedHe (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>1.75&&vars->qL1<2.3)&&HasL1(vars))&&HasL2(vars);}
+bool IsPreselectedInner (Variables * vars){ return IsBaseline(vars);}
+bool IsPreselected (Variables * vars){ return (IsBaseline(vars)&&L1LooseCharge1(vars));}
+bool IsPreselectedHe (Variables * vars){ return (IsBaseline(vars)&&HasL1(vars)&&(vars->qL1>0)&&(vars->qL1>1.75&&vars->qL1<2.3)&&HasL2(vars));}
 bool IsPreselectedHeStep (Variables * vars,int step){
 			float chargecut=1.65;
-			return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>(chargecut+0.05*step)&&vars->qL1<2.3)&&HasL1(vars)&&HasL2(vars));
+			return (IsBaseline(vars)&&HasL1(vars)&&(vars->qL1>0)&&(vars->qL1>(chargecut+0.05*step)&&vars->qL1<2.3)&&HasL2(vars));
 }
 
 bool IsOnlyFromToF (Variables * vars){ return !((IsFromNaF(vars))||(IsFromAgl(vars)));}

@@ -38,7 +38,7 @@
 #include <chrono>
 #include <iomanip>
 #include <ctime>
-
+int start =2;
 void DrawGalpropRatio(TVirtualPad *c){
 	c->cd();
 	float x,y=0;
@@ -52,7 +52,7 @@ void DrawGalpropRatio(TVirtualPad *c){
                 ifstream fp(filename.c_str());
                 while (!fp.eof()){
                         fp>>x>>y;
-                        if(x/1e3>0.05&&x/1e3<=100)
+                        if(x/1e3>3&&x/1e3<=100)
                                 galprop3DP->SetPoint(j,x/(0.5*1e3),y);
                         j++;
                 }
@@ -65,7 +65,7 @@ void DrawGalpropRatio(TVirtualPad *c){
                 ifstream fp(filename.c_str());
                 while (!fp.eof()){
                         fp>>x>>y;
-                        if(x/1e3>0.05&&x/1e3<=100)
+                        if(x/1e3>3&&x/1e3<=100)
                                 galprop3DP2->SetPoint(j,x/(0.5*1e3),y);
                         j++;
                 }
@@ -110,13 +110,13 @@ void DrawDPRatio(FileSaver Plots, std::vector<TFile *> Files ){
 	TH1F * RatiosNaF[Files.size()];
 	TH1F * RatiosAgl[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		RatiosTOF[i]=(TH1F*)Files[i]->Get("Fluxes/DP ratio TOF");
 		RatiosNaF[i]=(TH1F*)Files[i]->Get("Fluxes/DP ratio NaF");
 		RatiosAgl[i]=(TH1F*)Files[i]->Get("Fluxes/DP ratio Agl");
 	}
 	
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		PlotMergedRanges(gPad,RatiosTOF[i] ,RatiosNaF[i] ,RatiosAgl[i] ,"Kinetic Energy [GeV/nucl.]", "Flux",m_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)),true,"Psame",0.1,10,0.00001,0.12,"This Work (TOF)",8);	
 	}	
 
@@ -140,22 +140,22 @@ void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_e
 	TGraphErrors * TimeDepP = new TGraphErrors();
 
 
-	for(int i=0;i<Times.size();i++){
-		TimeDepD->SetPoint(i,Times[i],D[i]);
-		TimeDepD->SetPointError(i,0,D_err[i]);
-		TimeDepP->SetPoint(i,Times[i],P[i]);
-		TimeDepP->SetPointError(i,0,P_err[i]);
+	for(int i=start;i<Times.size();i++){
+		TimeDepD->SetPoint(i-start,Times[i],D[i]);
+		TimeDepD->SetPointError(i-start,0,D_err[i]);
+		TimeDepP->SetPoint(i-start,Times[i],P[i]);
+		TimeDepP->SetPointError(i-start,0,P_err[i]);
 	
 	}
 
 	TimeDepD->SetMarkerStyle(8);
-	TimeDepD->SetMarkerSize(2);
+	TimeDepD->SetMarkerSize(1.3);
 	TimeDepD->SetMarkerColor(4);
 	TimeDepD->SetLineColor(4);
 	TimeDepD->SetLineWidth(2);
 
 	TimeDepP->SetMarkerStyle(8);
-	TimeDepP->SetMarkerSize(2);
+	TimeDepP->SetMarkerSize(1.3);
 	TimeDepP->SetMarkerColor(2);
 	TimeDepP->SetLineColor(2);
 	TimeDepP->SetLineWidth(4);
@@ -163,6 +163,9 @@ void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_e
 	TimeDepP->GetYaxis()->SetLabelSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
 	TimeDepP->GetYaxis()->SetLabelFont(21);
 	TimeDepP->GetYaxis()->SetAxisColor(2);
+	TimeDepP->GetYaxis()->SetRangeUser(0.4*(TimeDepP->GetHistogram()->GetMinimum() + TimeDepP->GetHistogram()->GetMaximum())/2,1.6*(TimeDepP->GetHistogram()->GetMinimum() + TimeDepP->GetHistogram()->GetMaximum())/2);
+
+
 	TimeDepP->GetXaxis()->	SetTimeDisplay(1);
 	TimeDepP->GetXaxis()->  SetTimeOffset(0,"gmt");  
 	TimeDepP->GetXaxis()->  SetTimeFormat("%b%y");
@@ -185,8 +188,8 @@ void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_e
 
 	Double_t xmin = p1->GetUxmin();
 	Double_t xmax = p1->GetUxmax();
-	Double_t ymin = TimeDepD->GetHistogram()->GetMinimum();
-	Double_t ymax = TimeDepD->GetHistogram()->GetMaximum();
+	Double_t ymin = 0.4*(TimeDepD->GetHistogram()->GetMinimum() + TimeDepD->GetHistogram()->GetMaximum())/2;
+	Double_t ymax = 1.6*(TimeDepD->GetHistogram()->GetMinimum() + TimeDepD->GetHistogram()->GetMaximum())/2;
 	Double_t dx = (xmax - xmin) / 0.8; // 10 percent margins left and right
 	Double_t dy = (ymax - ymin) / 0.8; // 10 percent margins top and bottom
 	
@@ -203,6 +206,39 @@ void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_e
 	axis->Draw();
 	gPad->Update();
 
+}
+
+void PlotTimeRatio(TVirtualPad * c, float D[], float D_err[], float P[], float P_err[], std::vector <int> Times, int col) {
+	TGraphErrors * TimeDepP = (TGraphErrors * ) gPad->FindObject("Time");
+	TGraphErrors * TimeDepR = new TGraphErrors();
+	
+	for(int i=start;i<Times.size();i++){
+		TimeDepR->SetPoint(i-start,Times[i],D[i]/P[i]);
+		TimeDepR->SetPointError(i-start,0,pow(pow(D_err[i]/D[i],2) + pow (P_err[i]/P[i],2),0.5)*D[i]/(P[i]) );
+	
+	}
+	TimeDepR->SetName("Time");
+	 TimeDepR->SetTitle("Time");
+
+	TimeDepR->SetMarkerStyle(8);
+	TimeDepR->SetMarkerSize(1.5);
+	TimeDepR->SetMarkerColor(col);
+	TimeDepR->SetLineColor(col);
+	TimeDepR->SetLineWidth(3);
+	TimeDepR->GetYaxis()->SetRangeUser(0,0.035);
+	TimeDepR->GetXaxis()->	SetTimeDisplay(1);
+	TimeDepR->GetXaxis()->  SetTimeOffset(0,"gmt");  
+	TimeDepR->GetXaxis()->  SetTimeFormat("%b%y");
+	TimeDepR->GetYaxis()->SetLabelColor(1);
+	TimeDepR->GetYaxis()->SetLabelSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
+	TimeDepR->GetYaxis()->SetLabelFont(21);
+	
+
+	c->cd();
+	if(!TimeDepP)	TimeDepR->Draw("AP");
+	else      TimeDepR->Draw("Psame");
+	
+	gPad->Update();
 }
 
 void DrawPDCountsRatio(FileSaver Plots, std::vector<TFile *> Files ){
@@ -238,7 +274,7 @@ void DrawPDCountsRatio(FileSaver Plots, std::vector<TFile *> Files ){
 	TH1F * DCountsNaF[Files.size()];
 	TH1F * DCountsAgl[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		DCountsTOF[i]=(TH1F*)Files[i]->Get("TOFfits/Fit Results/Primary Deuteron Counts");
 		DCountsNaF[i]=(TH1F*)Files[i]->Get("NaFfits/Fit Results/Primary Deuteron Counts");
 		DCountsAgl[i]=(TH1F*)Files[i]->Get("Aglfits/Fit Results/Primary Deuteron Counts");
@@ -248,13 +284,13 @@ void DrawPDCountsRatio(FileSaver Plots, std::vector<TFile *> Files ){
 	TH1F * PCountsNaF[Files.size()];
 	TH1F * PCountsAgl[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		PCountsTOF[i]=(TH1F*)Files[i]->Get("TOFfits/Fit Results/Primary Proton Counts");
 		PCountsNaF[i]=(TH1F*)Files[i]->Get("NaFfits/Fit Results/Primary Proton Counts");
 		PCountsAgl[i]=(TH1F*)Files[i]->Get("Aglfits/Fit Results/Primary Proton Counts");
 	}
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 	RatioTOF[i] 	= (TH1F*)DCountsTOF[i]->Clone();
 	RatioNaF[i]	= (TH1F*)DCountsNaF[i]->Clone();
 	RatioAgl[i]	= (TH1F*)DCountsAgl[i]->Clone();
@@ -263,7 +299,7 @@ void DrawPDCountsRatio(FileSaver Plots, std::vector<TFile *> Files ){
         RatioAgl[i]->Divide(PCountsAgl[i]	);
 	}
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		PlotMergedRanges(gPad,RatioTOF[i] ,RatioNaF[i] ,RatioAgl[i] ,"Ekin [GeV/n]", "Primary Counts (D/P)",m_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)),true,"Psame",0.1,10,0.00001,0.4,Dates[i],8);	
 	}	
 
@@ -276,7 +312,7 @@ void DrawPDCountsRatio(FileSaver Plots, std::vector<TFile *> Files ){
 	float PTOF[Files.size()];
 	float PTOF_err[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		DTOF[i]=DCountsTOF[i]->GetBinContent(4);
 		DTOF_err[i] = DCountsTOF[i]->GetBinError(4);		
 		PTOF[i]=PCountsTOF[i]->GetBinContent(18);
@@ -288,7 +324,7 @@ void DrawPDCountsRatio(FileSaver Plots, std::vector<TFile *> Files ){
 	float PNaF[Files.size()];
 	float PNaF_err[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		DNaF[i]=DCountsNaF[i]->GetBinContent(5);
 		DNaF_err[i] = DCountsNaF[i]->GetBinError(5);		
 		PNaF[i]=PCountsNaF[i]->GetBinContent(15);
@@ -299,7 +335,7 @@ void DrawPDCountsRatio(FileSaver Plots, std::vector<TFile *> Files ){
 	float PAgl[Files.size()];
 	float PAgl_err[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		DAgl[i]=DCountsAgl[i]->GetBinContent(4);
 		DAgl_err[i] = DCountsAgl[i]->GetBinError(4);		
 		PAgl[i]=PCountsAgl[i]->GetBinContent(13);
@@ -407,7 +443,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	TH1F * DCountsNaF[Files.size()];
 	TH1F * DCountsAgl[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		DCountsTOF[i]=(TH1F*) FluxesDTOF[i]->GetFlux();
 		DCountsNaF[i]=(TH1F*) FluxesDNaF[i]->GetFlux();
 		DCountsAgl[i]=(TH1F*) FluxesDAgl[i]->GetFlux();
@@ -417,13 +453,13 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	TH1F * PCountsNaF[Files.size()];
 	TH1F * PCountsAgl[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		PCountsTOF[i]=(TH1F*)FluxesPTOF[i]->GetFlux();
 		PCountsNaF[i]=(TH1F*)FluxesPNaF[i]->GetFlux();
 		PCountsAgl[i]=(TH1F*)FluxesPAgl[i]->GetFlux();
 	}
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 	RatioTOF[i] 	= (TH1F*)DCountsTOF[i]->Clone();
 	RatioNaF[i]	= (TH1F*)DCountsNaF[i]->Clone();
 	RatioAgl[i]	= (TH1F*)DCountsAgl[i]->Clone();
@@ -432,7 +468,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
         RatioAgl[i]->Divide(PCountsAgl[i]	);
 	}
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		PlotMergedRanges(gPad,RatioTOF[i] ,RatioNaF[i] ,RatioAgl[i] ,"Ekin [GeV/n]", "Primary Counts (D/P)",f_gStyle->GetColorPalette( ((float)nColors/Dates.size()) *(i+1)),true,"Psame",0.1,10,0.00001,0.15,Dates[i],8);	
 	}	
 
@@ -445,7 +481,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
         }
 	leg2->Draw("same");
 
-//	DrawGalpropRatio(c3);
+	DrawGalpropRatio(c3);
         Plots.Add(c3);
         Plots.writeObjsInFolder("Flux");
 
@@ -453,7 +489,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	TH1F * DCountsNaF_rig[Files.size()];
 	TH1F * DCountsAgl_rig[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		DCountsTOF_rig[i]=(TH1F*) FluxesDTOF[i]->GetFlux_rig();
 		DCountsNaF_rig[i]=(TH1F*) FluxesDNaF[i]->GetFlux_rig();
 		DCountsAgl_rig[i]=(TH1F*) FluxesDAgl[i]->GetFlux_rig();
@@ -463,7 +499,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	TH1F * PCountsNaF_rig[Files.size()];
 	TH1F * PCountsAgl_rig[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		PCountsTOF_rig[i]=(TH1F*)FluxesPTOF[i]->GetFlux_rig();
 		PCountsNaF_rig[i]=(TH1F*)FluxesPNaF[i]->GetFlux_rig();
 		PCountsAgl_rig[i]=(TH1F*)FluxesPAgl[i]->GetFlux_rig();
@@ -476,7 +512,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	float PTOF[Files.size()];
 	float PTOF_err[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		DTOF[i]=DCountsTOF_rig[i]->GetBinContent(4);
 		DTOF_err[i] = DCountsTOF_rig[i]->GetBinError(4);		
 		PTOF[i]=PCountsTOF_rig[i]->GetBinContent(18);
@@ -488,7 +524,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	float PNaF[Files.size()];
 	float PNaF_err[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		DNaF[i]=DCountsNaF_rig[i]->GetBinContent(5);
 		DNaF_err[i] = DCountsNaF_rig[i]->GetBinError(5);		
 		PNaF[i]=PCountsNaF_rig[i]->GetBinContent(15);
@@ -499,34 +535,71 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	float PAgl[Files.size()];
 	float PAgl_err[Files.size()];
 
-	for(int i=0;i<Files.size();i++){
+	for(int i=start;i<Files.size();i++){
 		DAgl[i]=DCountsAgl_rig[i]->GetBinContent(4);
 		DAgl_err[i] = DCountsAgl_rig[i]->GetBinError(4);		
 		PAgl[i]=PCountsAgl_rig[i]->GetBinContent(13);
 		PAgl_err[i] = PCountsAgl_rig[i]->GetBinError(13);		
 	}
 
-
+/*
 	TCanvas *c4 = new TCanvas("Time Dep. 1.3 GV");
-	c4->SetCanvasSize(1000,300);
-	PlotTimeDep(c4,DTOF,DTOF_err,PTOF,PTOF_err, Times);
-	
+	c4->SetCanvasSize(1000,700);
+	c4->Divide(1,2);
+	c4->cd(1);	
+	PlotTimeDep(gPad,DTOF,DTOF_err,PTOF,PTOF_err, Times);
+	c4->cd(2);
+	PlotTimeRatio(gPad,DTOF,DTOF_err,PTOF,PTOF_err, Times);
+
 	Plots.Add(c4);
 	Plots.writeObjsInFolder("Flux");
 
 	TCanvas *c5 = new TCanvas("Time Dep. 3.5 GV");
-	c5->SetCanvasSize(1000,300);
-	PlotTimeDep(c5,DNaF,DNaF_err,PNaF,PNaF_err, Times);
+	c5->SetCanvasSize(1000,700);
+	c5->Divide(1,2);
+	c5->cd(1);	
+	PlotTimeDep(gPad,DNaF,DNaF_err,PNaF,PNaF_err, Times);
+	c5->cd(2);
+	PlotTimeRatio(gPad,DNaF,DNaF_err,PNaF,PNaF_err, Times);
 	
 	Plots.Add(c5);
 	Plots.writeObjsInFolder("Flux");
 
+
 	TCanvas *c6 = new TCanvas("Time Dep. 7.8 GV");
-	c6->SetCanvasSize(1000,300);
-	PlotTimeDep(c6,DAgl,DAgl_err,PAgl,PAgl_err, Times);
-	
+	c6->SetCanvasSize(1000,700);
+	c6->Divide(1,2);
+	c6->cd(1);	
+	PlotTimeDep(gPad,DAgl,DAgl_err,PAgl,PAgl_err, Times);
+	c6->cd(2);
+	PlotTimeRatio(gPad,DAgl,DAgl_err,PAgl,PAgl_err, Times);
+
+
 	Plots.Add(c6);
 	Plots.writeObjsInFolder("Flux");
+*/
+	TCanvas *c = new TCanvas("Time Dep. Allbins");
+	c->SetCanvasSize(1000,700);
+	c->Divide(1,3);
+	c->cd(1);	
+	PlotTimeDep(gPad,DTOF,DTOF_err,PTOF,PTOF_err, Times);
+	c->cd(2);      
+        PlotTimeDep(gPad,DNaF,DNaF_err,PNaF,PNaF_err, Times);
+	c->cd(3);      
+        PlotTimeDep(gPad,DAgl,DAgl_err,PAgl,PAgl_err, Times);		
+	
+	Plots.Add(c);
+        Plots.writeObjsInFolder("Flux");
+
+	TCanvas *c1 = new TCanvas("Time Ratio Allbins");
+	c1->SetCanvasSize(1000,700);
+	c1->cd();
+	PlotTimeRatio(gPad,DTOF,DTOF_err,PTOF,PTOF_err, Times, 1);
+	PlotTimeRatio(gPad,DNaF,DNaF_err,PNaF,PNaF_err, Times, 12);
+	PlotTimeRatio(gPad,DAgl,DAgl_err,PAgl,PAgl_err, Times, 15);
+
+	Plots.Add(c1);
+        Plots.writeObjsInFolder("Flux");
 
 
 	return;

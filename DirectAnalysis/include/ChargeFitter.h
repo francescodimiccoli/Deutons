@@ -142,12 +142,12 @@ void ChargeFitter::FillEventByEventMC(Variables * vars, float (*var) (Variables 
 	CutMassMC = CutMass + "&IsPurePMC";
 	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
                 PMassMC[kbin]->Fill(mass,vars->mcweight);
-	CutMassMC = CutMass + "&IsPureDMC";
+	CutMassMC = CutMass + "&IsPurePMC";
 	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
-                DMassMC[kbin]->Fill(mass,vars->mcweight);
-	CutMassMC = CutMass + "&IsPureTMC";
+                DMassMC[kbin]->Fill((1.875/0.938)*mass,vars->mcweight);
+	CutMassMC = CutMass + "&IsPurePMC";
 	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
-                TMassMC[kbin]->Fill(mass,vars->mcweight);
+                TMassMC[kbin]->Fill((2.793/0.938)*mass,vars->mcweight);
 	
 	kbin =  bins.GetBin(discr_var(vars)); //filling with beta @L1
 	std::string CutTempl2MC = CutData + "&IsHeliumMC";

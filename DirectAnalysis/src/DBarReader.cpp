@@ -247,7 +247,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->qInner            = ntpTracker->q_inn[0];
     vars->clustertottrack   = ntpHeader->ntrrechit;
     vars->clustertrack      = countBits(vars->hitbits);
-    vars->qL1InnerNoL2	    = (ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0]+ntpTracker->q_lay[1][0])/7;	
+    vars->qL1InnerNoL2	    = (ntpTracker->q_lay[1][1]+ntpTracker->q_lay[1][3]+ntpTracker->q_lay[1][4]+ntpTracker->q_lay[1][5]+ntpTracker->q_lay[1][6]+ntpTracker->q_lay[1][7]+ntpTracker->q_lay[1][0])/7;	
 
     vars->trtrack_edep = new std::vector<float>;
     vars->trtot_edep   = new std::vector<float>;
