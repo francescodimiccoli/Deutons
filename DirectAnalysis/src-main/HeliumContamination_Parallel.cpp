@@ -121,7 +121,7 @@ int main(int argc, char * argv[])
 	Filler2.ReinitializeAll(Refill);
 	//main loops
 	Filler2.LoopOnDataVariables(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct),vars);
-	Filler2.LoopOnMC(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct),vars);
+//	Filler2.LoopOnMC(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct),vars);
 
 	HeContTOF->Save(finalHistos);
 	HeContNaF->Save(finalHistos);

@@ -93,22 +93,22 @@ print "Time bins: ".scalar(@bartels)."\n";
 
 $jobsrunning = 0;
 
-for($i=38;$i<80;$i++){
+for($i=10;$i<25;$i++){
 
 	print $bartels[$i]."\n";
-#	system("perl Launch_all.pl $bartels[$i] $bartels[$i+1] 40 0");
-#	system ("cd $outdir/..");
-#	system("sh $outdir/../Jobs.tcsh");
-#	system ("cd $outdir/../perl");
-#	$jobsrunning = `ps ux| grep "Analysis "|grep -v "grep"|wc -l`;
-#	while($jobsrunning > 1) {
-#		$jobsrunning = `ps ux| grep Analysis|grep -v "grep"|wc -l`;
-#		print "bartel nr. $i: Jobs running: $jobsrunning\n";
-#		sleep(5);
-#	}	
+	system("perl Launch_all.pl $bartels[$i] $bartels[$i+1] 40 0");
+	system ("cd $outdir/..");
+	system("sh $outdir/../Jobs.tcsh");
+	system ("cd $outdir/../perl");
+	$jobsrunning = `ps ux| grep "Analysis "|grep -v "grep"|wc -l`;
+	while($jobsrunning > 1) {
+		$jobsrunning = `ps ux| grep Analysis|grep -v "grep"|wc -l`;
+		print "bartel nr. $i: Jobs running: $jobsrunning\n";
+		sleep(5);
+	}	
 #	system("hadd -f $outdir/$bartels[$i]-$bartels[$i+1]/Counts/Partial_Counts.root $outdir/$bartels[$i]-$bartels[$i+1]/*/Analysis*Counts*");
 #	system("hadd -f $outdir/$bartels[$i]-$bartels[$i+1]/Fluxes/Partial_Flux.root   $outdir/$bartels[$i]-$bartels[$i+1]/*/Analysis*Flux*");
 #	system("hadd -f $outdir/$bartels[$i]-$bartels[$i+1]/Result.root   $outdir/$bartels[$i]-$bartels[$i+1]/*/Partial_*");
-	system("$outdir/../Analysis  $outdir/$bartels[$i]-$bartels[$i+1]/Result.root");
+#	system("$outdir/../Analysis  $outdir/$bartels[$i]-$bartels[$i+1]/Result.root");
 }
 

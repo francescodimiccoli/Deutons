@@ -116,7 +116,7 @@ void DrawDPRatio(FileSaver Plots, std::vector<TFile *> Files ){
 		RatiosAgl[i]=(TH1F*)Files[i]->Get("Fluxes/DP ratio Agl");
 	}
 	
-	for(int i=start;i<Files.size();i++){
+/*	for(int i=start;i<Files.size();i++){
 		PlotMergedRanges(gPad,RatiosTOF[i] ,RatiosNaF[i] ,RatiosAgl[i] ,"Kinetic Energy [GeV/nucl.]", "Flux",m_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)),true,"Psame",0.1,10,0.00001,0.12,"This Work (TOF)",8);	
 	}	
 
@@ -129,9 +129,31 @@ void DrawDPRatio(FileSaver Plots, std::vector<TFile *> Files ){
         }
 
 	DrawGalpropRatio(c3);
-
+*/
         Plots.Add(c3);
         Plots.writeObjsInFolder("Fluxes");
+	
+
+
+	TCanvas *c4 = new TCanvas("Double ratio");
+	c4->SetCanvasSize(1000,700);
+	
+	for(int i=start;i<Files.size();i++){
+		RatiosTOF[i]->Divide(RatiosTOF[start]);
+		RatiosNaF[i]->Divide(RatiosNaF[start]);
+		RatiosAgl[i]->Divide(RatiosAgl[start]);
+
+	}
+	
+
+	 for(int i=start;i<Files.size();i++){
+                PlotMergedRanges(gPad,RatiosTOF[i] ,RatiosNaF[i] ,RatiosAgl[i] ,"Kinetic Energy [GeV/nucl.]", "Flux",m_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)),true,"Psame",0.1,10,0.1,5,"This Work (TOF)",8);
+        }
+
+	Plots.Add(c4);
+        Plots.writeObjsInFolder("Fluxes");
+
+
 }
 
 void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_err[], std::vector <int> Times) {
@@ -485,6 +507,31 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
         Plots.Add(c3);
         Plots.writeObjsInFolder("Flux");
 
+/*	TCanvas *c4_ = new TCanvas("D/P Double Ratio");
+	c4_->SetCanvasSize(1000,600);
+	gPad->SetLogx();
+
+	TH1F * RatioTOF_start = (TH1F*) RatioTOF[start]->Clone();
+	TH1F * RatioNaF_start = (TH1F*) RatioNaF[start]->Clone();
+	TH1F * RatioAgl_start = (TH1F*) RatioAgl[start]->Clone();
+
+	for(int i=start;i<Files.size();i++){
+		RatioTOF[i] 	->Divide(RatioTOF_start); 
+		RatioNaF[i]	->Divide(RatioNaF_start);  
+		RatioAgl[i]	->Divide(RatioAgl_start);  
+	}
+
+
+	for(int i=start;i<Files.size();i++){
+		PlotMergedRanges(gPad,RatioTOF[i] ,RatioNaF[i] ,RatioAgl[i] ,"Ekin [GeV/n]", "Primary Counts (D/P)",1,true,"Psame",0.1,10,0.1,4,Dates[i],8);	
+	}	
+
+
+	
+	Plots.Add(c4_);
+        Plots.writeObjsInFolder("Flux");
+*/
+
 	TH1F * DCountsTOF_rig[Files.size()];
 	TH1F * DCountsNaF_rig[Files.size()];
 	TH1F * DCountsAgl_rig[Files.size()];
@@ -631,6 +678,6 @@ int main(int argc, char * argv[]){
 	cout<<"**************** PLOTTING *****************"<<endl;
 	//DrawDPRatio(Plots,Files );
 	DrawPDFluxRatio(Plots,files);
-	DrawPDCountsRatio(Plots,Files);
+	//DrawPDCountsRatio(Plots,Files);
 	return 0;
 }

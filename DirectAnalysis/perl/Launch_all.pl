@@ -43,8 +43,8 @@ system ("mkdir $workdir/errs/");
 $bookntuples=0;
 $bookplots=0;
 $booklat=0;
-$bookhecont=0;
-$bookflux=1;
+$bookhecont=1;
+$bookflux=0;
 $bookinfos=0;
 
 
@@ -74,6 +74,7 @@ for($j=0;$j<$njobs;$j++)
 			}
 		
 			if($bookhecont){
+				print OUT  "\$WORKDIR/HeliumContamination_Parallel \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm/HeFragm$j-$offset.root 1  > \$WORKDIR/logs/log$j.log 2>\$WORKDIR/errs/err$j.err &\n\n";
 			}
 		
 
