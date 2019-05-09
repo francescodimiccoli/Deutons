@@ -206,18 +206,18 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 		cout<<"************* P FLUX ************"<<endl;
 
-		HEPFlux ->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
-		HEPFluxL1 ->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
-		HEPFluxQ->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
-		PFluxTOF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
-		PFluxNaF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
-		PFluxAgl->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
-		DummyPTOF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
-		DummyPNaF->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
-		DummyPAgl->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");	
-		for(int i=0;i<10;i++) FluxTests[i] ->Set_MCPar(0.5,100,1,"Pr.B1119/pr.pl1.05100.3_01.info");
+		HEPFlux ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		HEPFluxL1 ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		HEPFluxQ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		PFluxTOF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		PFluxNaF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		PFluxAgl->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		DummyPTOF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		DummyPNaF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		DummyPAgl->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		for(int i=0;i<10;i++) FluxTests[i] ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");
 
-		
+	/*	
 		//baseline flux corrections
         //	HEPFlux->ApplyEfficCorr(TriggerEffCorr_HE );
 		HEPFlux->ApplyEfficCorr(TrackerEffCorr_HE );
@@ -245,7 +245,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		//corrections for flux with R edges
 		//corrections for Analysis flux	
 			
-	
+	*/
 		HEPFlux -> Eval_Flux();
 		HEPFluxL1 -> Eval_Flux();
 		HEPFluxQ -> Eval_Flux();

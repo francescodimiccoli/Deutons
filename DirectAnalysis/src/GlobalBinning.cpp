@@ -71,21 +71,21 @@ void SetBins(){
 
 	cout<<"TOF bins"<<endl;
 	float ekmin=0.1, ekmax=0.82;
-	float betamin=0.53; float betamax=0.8363;
-	ToFDB.setBinsFromBeta (nbinsToF, betamin, betamax,ResponseTOF,0.00347548,5.8474);
-	ToFPB.setBinsFromBeta (nbinsToF, betamin, betamax ,ResponseTOF,0.00347548,5.8474);
+	float betamin=0.55; float betamax=0.853;
+	ToFDB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseTOF,0.00347548,5.8474);
+	ToFPB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseTOF,0.00347548,5.8474);
 	ToFRigB.setBinsFromBeta (nbinsToF, betamin, betamax ,ResponseTOF,0.00347548,5.8474);
 
 	cout<<"NaF bins"<<endl;
-	ekmin=0.666, ekmax=4.023;
-	NaFDB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
-	NaFPB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
+	betamin=0.85, betamax=0.977;
+	NaFDB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseNaF,-0.000859132,-30.5065);
+	NaFPB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseNaF,-0.000859132,-30.5065);
 	NaFRigB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
 
 	cout<<"Agl bins"<<endl;
-	ekmin=2.57, ekmax=9.01;
-	AglDB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
-	AglPB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
+	betamin=0.97, betamax=0.995;
+	AglDB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseAgl,4.28781e-05,67.8521);
+	AglPB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseAgl,4.28781e-05,67.8521);
 	AglRigB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
 
 
@@ -184,6 +184,27 @@ void SetUpTOIBinning(){
 }
 
 
+void SetUpRigTOIBinning(){
+	SetBins();
+
+	ToFPB.UseRTOIEdges();
+	NaFPB.UseRTOIEdges();
+	AglPB.UseRTOIEdges();
+
+	ToFDB.UseRTOIEdges();
+	NaFDB.UseRTOIEdges();
+	AglDB.UseRTOIEdges();
+
+	ToFRigB.UseRTOIEdges();
+	NaFRigB.UseRTOIEdges();
+	AglRigB.UseRTOIEdges();
+
+	PRB.UseRTOIEdges();
+	ForAcceptance.UseRTOIEdges();
+	cout<<endl;
+	return;
+
+}
 
 void UpdateProgressBar(int currentevent, int totalentries)
 {

@@ -107,6 +107,52 @@ void Binning::setBinsFromEkPerMass (int nbins, float min, float max, TF1 * SlowD
 }
 
 
+void Binning::setBinsFromRDatacard(std::string filename, float min, float max, TF1 * SlowDownModel,float alpha_slowdown, float gamma_slowdown){
+
+	particle.SetSlowDownModel(SlowDownModel,alpha_slowdown,gamma_slowdown);
+	std::vector<float> vedg = ReadBinDatacard(filename, min, max);
+	for (float binedge:vedg) {
+		particle.FillFromRig (binedge);
+		pushBackVelocities();
+	}
+
+	std::vector<float> vcen=CentersFromEdges(vedg);
+	for (float bincenter:vcen) {
+		particle.FillFromRig (bincenter);
+		pushBackCentralVelocities();
+	}
+
+	return;
+
+}
+
+std::vector<float> Binning::ReadBinDatacard(std::string filename, float min, float max){
+	std::vector<float> vedg;
+	std::string lineData;
+    	float tmp;
+	int count;
+	std::ifstream myfile ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", std::ios::in);
+
+	while(!myfile.eof()) {
+		myfile >> tmp;
+		if(tmp>particle.RigFromEk(particle.EkFromBeta(min)) && tmp< particle.RigFromEk(particle.EkFromBeta(max))) { 
+			vedg.push_back(tmp);
+			std::cout << tmp << std::endl;
+		} 
+	}
+	return vedg;
+
+}
+
+std::vector<float> Binning::CentersFromEdges(std::vector<float> vedg){
+	std::vector<float> vcent;
+	for (int i=0; i<vedg.size()-1;i++) {
+		vcent.push_back( exp((log (vedg[i]) + log (vedg[i+1]))/2));
+	}
+	return vcent;
+}
+
+
 std::vector<float> Binning::computeLogBinEdges(int nbins, float min, float max) {
    std::vector<float> binEdges(nbins+1);
    float logmin=log (min), logmax=log (max);
@@ -194,9 +240,9 @@ void Binning::pushBackCentralVelocities ()
 void Binning::Print()
 {
    printMatrix::print(
-      { ekbin, mombin, rigbin, betabin ,ekbin_TOI, mombin_TOI, rigbin_TOI, betabin_TOI, ekpermassbincent_TOI },
+      { ekbin, mombin, rigbin, betabin ,ekbin_TOI, mombin_TOI, rigbin_TOI, betabin_TOI, betabincent_TOI},
 
-      {"Ekin", "Momentum", "Rigidity", "Beta", "EkinTOI", "MomTOI", "RigTOI", "BetaTOI", "EkpermassCTOI"}
+      {"Ekin", "Momentum", "Rigidity", "Beta", "EkinTOI", "MomTOI", "RigTOI", "BetaTOI", "BetaCTOI"}
     
       //{betabin},
      // {"Beta"}

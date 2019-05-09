@@ -26,6 +26,15 @@ float Particle::BetaTOIFromBeta (float beta){
 	return betaTOI;
 }	
  
+float Particle::BetaMeasFromBetaTOI (float beta){
+	TF1 model("slowdown", "(x-[2]*(x-x*(1-[0]/x^[1]))) - [3]",beta*0.5,1) ;
+	model.SetParameter(0,slowdownmodel->GetParameter(0));
+	model.SetParameter(1,slowdownmodel->GetParameter(1));
+	model.SetParameter(2,0.9/mass);
+	model.SetParameter(3,beta);
+
+	return beta + model.Eval(beta);
+}
 
 
 void Particle::FillFromEk (float ek)
@@ -48,14 +57,31 @@ void Particle::FillFromEk (float ek)
 
 void Particle::FillFromRig ( float r)
 {
-	rig=r;
-	mom=MomFromRig (rig);
-	ekin=EkFromMom (mom);
-	ekpermass=EkPerMassFromEk(ekin);
-	etot=EtotfromEk(ekin);  
-	beta=BetaFromEk (ekin);
+	rig_TOI=r;
+	mom_TOI=MomFromRig (rig_TOI);
+	ekin_TOI=EkFromMom (mom_TOI);
+	ekpermass_TOI=EkPerMassFromEk(ekin_TOI);
+	etot_TOI=EtotfromEk(ekin_TOI);  
+	beta_TOI=BetaFromEk (ekin_TOI);
 
-	beta_TOI = BetaTOIFromBeta(beta);
+	beta = BetaMeasFromBetaTOI(beta_TOI);
+	if((beta_TOI-beta)>0.0005){
+		ekin = EkFromBeta(beta);
+		ekpermass=EkPerMassFromEk(ekin);
+		etot=  EtotfromEk(ekin);
+		mom=MomFromEk (ekin);
+		rig=RigFromMom (mom);
+	}	
+	else{
+		rig=rig_TOI;
+		mom=MomFromRig (rig);
+		ekin=EkFromMom (mom);
+		ekpermass=EkPerMassFromEk(ekin);
+		etot=EtotfromEk(ekin);  
+		beta=BetaFromEk (ekin);
+	}	
+
+/*	beta_TOI = BetaTOIFromBeta(beta);
 	if((beta_TOI-beta)>0.005){
 		ekin_TOI = EkFromBeta(beta_TOI);
 		ekpermass_TOI=EkPerMassFromEk(ekin_TOI);
@@ -70,24 +96,25 @@ void Particle::FillFromRig ( float r)
 		ekpermass_TOI=EkPerMassFromEk(ekin_TOI);
 		etot_TOI=EtotfromEk(ekin_TOI);  
 		beta_TOI=BetaFromEk (ekin_TOI);
-	}	
+	}	*/
 }
 
 void Particle::FillFromBeta ( float Beta)
 {
-   beta = Beta;
+   beta_TOI = Beta;
+   ekin_TOI = EkFromBeta(beta);
+   ekpermass_TOI=EkPerMassFromEk(ekin);
+   etot_TOI=  EtotfromEk(ekin);
+   mom_TOI=MomFromEk (ekin);
+   rig_TOI=RigFromMom (mom);
+
+   beta = BetaMeasFromBetaTOI(beta_TOI);
    ekin = EkFromBeta(beta);
    ekpermass=EkPerMassFromEk(ekin);
    etot=  EtotfromEk(ekin);
    mom=MomFromEk (ekin);
    rig=RigFromMom (mom);
 
-   beta_TOI = BetaTOIFromBeta(beta);
-   ekin_TOI = EkFromBeta(beta_TOI);
-   ekpermass_TOI=EkPerMassFromEk(ekin_TOI);
-   etot_TOI=  EtotfromEk(ekin_TOI);
-   mom_TOI=MomFromEk (ekin_TOI);
-   rig_TOI=RigFromMom (mom_TOI);
 }
 
 

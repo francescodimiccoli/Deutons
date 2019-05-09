@@ -16,9 +16,9 @@ struct AllRangesEfficiency : public Efficiency{
 
 	AllRangesEfficiency(FileSaver  File, std::string Basename,std::string Directory,std::string Cut_before,std::string Cut_after,Binning binsTOF,Binning binsNaF,Binning binsAgl,bool Refill=false):Efficiency(File,(Basename+"_TOF").c_str(),Directory,binsTOF,Cut_before,Cut_after){
 	
-		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,binsTOF,Cut_before,Cut_after);	
-		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,binsNaF,(Cut_before+"&IsFromNaF").c_str(),(Cut_after+"&IsFromNaF").c_str());
-		EffAgl = new Efficiency(File,(Basename+"_Agl").c_str(),Directory,binsAgl,(Cut_before+"&IsFromAgl").c_str(),(Cut_after+"&IsFromAgl").c_str());
+		EffTOF = new Efficiency(File,(Basename+"_TOF").c_str(),Directory,binsTOF,(Cut_before+"&IsOnlyFromToF").c_str(),(Cut_after+"&IsOnlyFromToF").c_str());	
+		EffNaF = new Efficiency(File,(Basename+"_NaF").c_str(),Directory,binsNaF,(Cut_before+"&IsFromNaF"    ).c_str(),(Cut_after+"&IsFromNaF"    ).c_str());
+		EffAgl = new Efficiency(File,(Basename+"_Agl").c_str(),Directory,binsAgl,(Cut_before+"&IsFromAgl"    ).c_str(),(Cut_after+"&IsFromAgl"    ).c_str());
 		refill=Refill;
 	}
 

@@ -27,7 +27,7 @@ inline Histogram loadGalpropFile (std::string filename)
 inline Histogram makeLogUniform(int nbins, float min, float max) {
     Binning binning;
     binning.setBinsFromRigidity (nbins, min, max,ResponseAgl,4.28781e-05,67.8521);
-    Histogram h( binning.RigBins() );
+    Histogram h( binning.RigTOIBins() );
     std::vector<float> counts(nbins, 1);
     h.fillWithCounts(counts);
     return h;

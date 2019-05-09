@@ -6,6 +6,7 @@
 #include <TMVA/Tools.h>
 #include "Globals.h"
 #include "TF1.h"
+#include "TFile.h"
 #include "TSpline.h"
 
 using namespace std;
@@ -25,8 +26,12 @@ struct Variables{
     TSpline3 * Chi2Xcut; 	
     TSpline3 * Chi2Ycut; 	
 
-
-
+    TSpline3 * Qinn_cal; 	
+    TSpline3 * Qutof_cal; 	
+    TSpline3 * Qltof_cal; 	
+    TSpline3 * Ql1_cal; 	
+ 
+	void ReadChargeCalibration(std::string filename);
     // Event info
     int        Run;
     int        Event;
@@ -226,6 +231,7 @@ float GetRigSlow         (Variables * vars);
 
 float GetInverseBetaTOF  (Variables * vars);
 float GetInverseBetaRICH (Variables * vars);
+float GetBetaMeas        (Variables * vars);
 float GetBetaTOF         (Variables * vars);
 float GetBetaRICH        (Variables * vars);
 float GetRecMassTOF	     (Variables * vars);

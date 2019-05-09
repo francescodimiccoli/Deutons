@@ -97,42 +97,29 @@ int main(int argc, char * argv[]){
         bool checkfile = finalHistos.CheckFile();
 
 
-        cout<<"****************************** BINS ***************************************"<<endl;
-
-        SetBins();
-
-	PRB.Print();
-
-        cout<<"**TOF**"<<endl;
-        ToFDB.Print();
-
-        cout<<"**NaF**"<<endl;
-        NaFDB.Print();
-
-        cout<<"**Agl**"<<endl;
-        AglDB.Print();
-
-        ToFDB.UseBetaEdges();
-        NaFDB.UseBetaEdges();
-        AglDB.UseBetaEdges();
-
-        PRB.UseREdges();
-
-
-        cout<<endl;
-
+	cout<<"****************************** BINS ***************************************"<<endl;
+    	SetUpUsualBinning();
+ 
         cout<<"****************************** PLOTTING FITS ***************************************"<<endl;
 
 //	TemplateFIT * SmearingCheck = new TemplateFIT(finalHistos,"SmearingCheck",PRB);
-	TemplateFIT * ToFfits= new TemplateFIT(finalHistos,"TOFfits",ToFDB);
-	TemplateFIT * NaFfits= new TemplateFIT(finalHistos,"NaFfits",NaFDB);
-	TemplateFIT * Aglfits= new TemplateFIT(finalHistos,"Aglfits",AglDB);
+	TemplateFIT * ToFfits= new TemplateFIT(finalHistos,"TOFDfits",ToFDB);
+	TemplateFIT * NaFfits= new TemplateFIT(finalHistos,"NaFDfits",NaFDB);
+	TemplateFIT * Aglfits= new TemplateFIT(finalHistos,"AglDfits",AglDB);
+
+	TemplateFIT * ToFfits_P= new TemplateFIT(finalHistos,"TOFPfits",ToFPB);
+	TemplateFIT * NaFfits_P= new TemplateFIT(finalHistos,"NaFPfits",NaFPB);
+	TemplateFIT * Aglfits_P= new TemplateFIT(finalHistos,"AglPfits",AglPB);
+
 
 //	DrawFits(SmearingCheck,finalHistos,Plots,false,true);
 	DrawFits(ToFfits,finalHistos,Plots);
 	DrawFits(NaFfits,finalHistos,Plots);
 	DrawFits(Aglfits,finalHistos,Plots);
 //
+	DrawFits(ToFfits_P,finalHistos,Plots);
+	DrawFits(NaFfits_P,finalHistos,Plots);
+	DrawFits(Aglfits_P,finalHistos,Plots);
 
 
 	cout<<"****************************** RESULTS ***************************************"<<endl;
@@ -346,6 +333,49 @@ int main(int argc, char * argv[]){
 
 
 
+	cout<<"****************************** RESULTS RIGIDITY ***************************************"<<endl;
+	std::string pathresTOF_P   = (ToFfits_P->GetName() + "/Fit Results/");
+	std::string pathresNaF_P   = (NaFfits_P->GetName() + "/Fit Results/");
+	std::string pathresAgl_P   = (Aglfits_P->GetName() + "/Fit Results/");
+	
+
+	SetUpRigTOIBinning();
+
+
+	TH1F * PCountsPrim_rigTOF = (TH1F*) finalHistos.Get((pathresTOF_P+"Primary Proton Counts").c_str());
+	TH1F * PCountsPrim_rigNaF = (TH1F*) finalHistos.Get((pathresNaF_P+"Primary Proton Counts").c_str());
+	TH1F * PCountsPrim_rigAgl = (TH1F*) finalHistos.Get((pathresAgl_P+"Primary Proton Counts").c_str());
+
+	TCanvas * d4 = new TCanvas("Rigidity Counts");
+        d4->SetCanvasSize(2000,1500);
+	d4->cd();
+	gPad->SetLogx();
+	gPad->SetLogy();
+
+	for(int i=0; i<ToFPB.size();i++) PCountsPrim_rigTOF->SetBinContent(i+1,PCountsPrim_rigTOF->GetBinContent(i+1)/(ToFPB.RigTOIBins()[i+1]-ToFPB.RigTOIBins()[i])); 
+	for(int i=0; i<NaFPB.size();i++) PCountsPrim_rigNaF->SetBinContent(i+1,PCountsPrim_rigNaF->GetBinContent(i+1)/(NaFPB.RigTOIBins()[i+1]-NaFPB.RigTOIBins()[i])); 
+	for(int i=0; i<AglPB.size();i++) PCountsPrim_rigAgl->SetBinContent(i+1,PCountsPrim_rigAgl->GetBinContent(i+1)/(AglPB.RigTOIBins()[i+1]-AglPB.RigTOIBins()[i])); 
+
+	PlotTH1FintoGraph(gPad,ToFPB, PCountsPrim_rigTOF,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,NaFPB, PCountsPrim_rigNaF,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,AglPB, PCountsPrim_rigAgl,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (Agl)",30);
+
+	for(int i=0; i<ToFDB.size();i++) DCountsPrimTOF->SetBinContent(i+1,DCountsPrimTOF->GetBinContent(i+1)/(ToFDB.RigTOIBins()[i+1]-ToFDB.RigTOIBins()[i])); 
+	for(int i=0; i<NaFDB.size();i++) DCountsPrimNaF->SetBinContent(i+1,DCountsPrimNaF->GetBinContent(i+1)/(NaFDB.RigTOIBins()[i+1]-NaFDB.RigTOIBins()[i])); 
+	for(int i=0; i<AglDB.size();i++) DCountsPrimAgl->SetBinContent(i+1,DCountsPrimAgl->GetBinContent(i+1)/(AglDB.RigTOIBins()[i+1]-AglDB.RigTOIBins()[i])); 
+
+	PlotTH1FintoGraph(gPad,ToFDB, DCountsPrimTOF,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,NaFDB, DCountsPrimNaF,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,AglDB, DCountsPrimAgl,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (Agl)",30);
+
+	Plots.Add(d4);
+	Plots.writeObjsInFolder("Results Rig");
+
+
+	
+	cout<<"****************************** RESULTS PARAMETERS ***************************************"<<endl;
+
+
 	
 	DrawParameters(finalHistos,Plots,pathresTOF,ToFDB,"Parameters TOF","Measured #beta","[ps]",0.45,0.9,-100,100,-40,180);
 	DrawParameters(finalHistos,Plots,pathresNaF,NaFDB,"Parameters NaF","Measured #beta","[rad/10^{4}]",0.7,0.98,-1000,1000,-1000,2000);
@@ -368,6 +398,12 @@ int main(int argc, char * argv[]){
 
 	DrawParameters(finalHistos,Plots,pathresCheck,PRB,"Parameters Check","Measured Rig [GV]","[ps]",0.5,120,-150,150,-40,180);
 */
+
+
+
+
+
+
 	return 0;
 }
 
@@ -432,7 +468,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 
 
-	for(int i=1; i<FIT->GetBinning().size();i++){
+	for(int i=0; i<FIT->GetBinning().size();i++){
 		
 		std::string pathbinP    = pathtemplP + "/Bin"+to_string(i);
 		std::string pathbinD    = pathtemplD + "/Bin"+to_string(i);
@@ -489,7 +525,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		c2->cd();
 	
 		Plots.Add(c2);
-                Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
+		 Plots.writeObjsInFolder((FIT->GetName()+"/Fits/Bin"+to_string(i)).c_str());
 		
 		
 		TCanvas * c3 = new TCanvas("Template Fits");

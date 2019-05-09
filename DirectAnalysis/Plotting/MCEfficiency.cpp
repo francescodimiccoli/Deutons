@@ -26,7 +26,6 @@
 #include "../include/Cuts.h"
 #include "../include/filesaver.h"
 
-#include "../include/FitError.h"
 #include "../include/Efficiency.h"
 
 #include "../include/PlottingFunctions.h"

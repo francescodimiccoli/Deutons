@@ -60,4 +60,6 @@ void SetBins();
 void SetUpUsualBinning();
 void SetUpEffCorrBinning();
 void SetUpTOIBinning();
+void SetUpRigTOIBinning();
+
 #endif

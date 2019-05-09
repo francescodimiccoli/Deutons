@@ -170,7 +170,7 @@ class TemplateFIT : public Tool{
 
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=60,float shift=60){
+	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=9,float sigma=60,float shift=60){
 		
 			ExternalTemplates.setName("/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles/ExternalTemplates.root");		
 			checkfiletemplates = ExternalTemplates.CheckFile();
@@ -205,6 +205,20 @@ class TemplateFIT : public Tool{
 				}
 			}
 		}
+   	 	/*cout<<"CHECK OF POINTERS"<< " "<<Basename.c_str()<<endl;
+		for(int bin=0;bin<Bins.size();bin++){
+			for(int i=0;i<steps;i++){
+				fits[bin].push_back(std::vector<TFit *>());
+				for(int j=0;j<steps;j++){
+				cout<<bin<<" "<<i<<" "<<j<<" "<<fits[bin][i][j]->Data<<" "<<fits[bin][i][j]->Templ_P<<endl;
+				}
+			}
+		}*/
+		cout<<"************************"<<endl;
+		
+
+
+
 	
 		basename=Basename;
 		cut = Cut;
@@ -248,7 +262,7 @@ class TemplateFIT : public Tool{
 
 	//reading constructor
 
-	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=11,float sigma=60,float shift=60){
+	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=9,float sigma=60,float shift=60){
 
 		TFile * file = File.GetFile();
 		TFile * externalfile;
@@ -268,8 +282,8 @@ class TemplateFIT : public Tool{
 				for(int j=0;j<steps;j++){
 
 					TFit * fit = new TFit;
-					string named    =Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_Data_" +to_string(bin)+" "+to_string(0)+" "+to_string(3);
-					string namedprim=Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_DataPrim_" +to_string(bin)+" "+to_string(0)+" "+to_string(3);
+					string named    =Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_Data_" +to_string(bin)+" "+to_string(0)+" "+to_string(5);
+					string namedprim=Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_DataPrim_" +to_string(bin)+" "+to_string(0)+" "+to_string(5);
 					string nameP    =Basename + "/Bin "+ to_string(bin)+"/TemplateP/" + Basename + "_MCP_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameD    =Basename + "/Bin "+ to_string(bin)+"/TemplateD/" + Basename + "_MCD_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameHe    =Basename + "/Bin "+ to_string(bin)+"/TemplateHe/" + Basename + "_MCHe_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
@@ -297,13 +311,10 @@ class TemplateFIT : public Tool{
 				}
 			}
 		}	
-
-
-
 		basename=Basename;
 
 		bins=Bins; 
-
+	
 		StatErrorP  = new TH1F("StatErrorP","StatErrorP",bins.size(),0,bins.size()) ;
 		StatErrorD  = new TH1F("StatErrorD","StatErrorD",bins.size(),0,bins.size()) ;
 		StatErrorT  = new TH1F("StatErrorT","StatErrorT",bins.size(),0,bins.size()) ;

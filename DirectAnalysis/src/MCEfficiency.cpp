@@ -8,7 +8,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 {
 
 	cout<<"****************************** BINS ***************************************"<<endl;
-    	SetUpUsualBinning();
+    	SetUpTOIBinning();
 
 	bool checkfile = finalhistos.CheckFile();
 	check_file = checkfile;
@@ -43,8 +43,8 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC",			   	      
 	"IsProtonMC",
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",			      
-	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",			   	      
-	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",
+	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
 	ToFPB,NaFPB,AglPB,
 	refill);
 
@@ -53,8 +53,8 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsDeutonMC",			   	      
 	"IsDeutonMC",
 	"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",			      
-	"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",			   	      
-	"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",
+	"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
 	ToFDB,NaFDB,AglDB,
 	refill);
 
@@ -66,7 +66,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1",			      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1",			   	      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -98,7 +98,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsPhysTrig",			      
 	"IsPurePMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsPhysTrig",			   	      
 	"IsPurePMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsPhysTrig",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -120,7 +120,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1",			      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1",			   	      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -142,7 +142,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",			      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",			   	      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -164,7 +164,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",			      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF",			   	      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -186,7 +186,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",			      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -208,7 +208,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",			      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 	//GoldenTOF_P_PID->SetBins(ToFPB,NaFPB,AglPB);
 
@@ -231,7 +231,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsPhysTrig",			      
 	"IsProtonMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsPhysTrig",			   	      
 	"IsProtonMC&IsPositive&IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsPhysTrig",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -253,7 +253,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1",			      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1",			   	      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -275,7 +275,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",			      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",			   	      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -297,7 +297,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",			      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF",			   	      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -319,7 +319,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",			      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -341,7 +341,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",			      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
 	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -363,7 +363,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1",			      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1",			   	      
 	"IsPurePMC&IsPositive&IsBaseline&L1LooseCharge1",
-		ToFPB,NaFPB,AglPB,
+		ToFDB,NaFDB,AglDB,
 	refill);
 
 
@@ -402,6 +402,7 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 
 	FullSetTOT_P 	 ->SetDefaultOutFile(finalhistos);
 	FullSetTOT_D 	 ->SetDefaultOutFile(finalhistos);
+	Baseline_P 	 ->SetDefaultOutFile(finalhistos);
 	Baseline_P 	 ->SetDefaultOutFile(finalhistos);
 	Baseline_D 	 ->SetDefaultOutFile(finalhistos);
 	Cascade0         ->SetDefaultOutFile(finalhistos);
@@ -460,8 +461,8 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Filler.AddObject2beFilled(Cascade8,GetGenMomentum,GetGenMomentum);
 
 
-	Filler.AddObject2beFilled(FullSetTOT_P,GetBetaGen,GetBetaGen);
-	Filler.AddObject2beFilled(FullSetTOT_D,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(FullSetTOT_P,GetBetaMeas,GetBetaMeas);
+	Filler.AddObject2beFilled(FullSetTOT_D,GetBetaMeas,GetBetaMeas);
 	Filler.AddObject2beFilled(Baseline_P,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(Baseline_D,GetBetaGen,GetBetaGen);
 	Filler.AddObject2beFilled(Trigger_P,GetBetaGen,GetBetaGen);

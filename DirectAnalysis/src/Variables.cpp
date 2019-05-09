@@ -159,9 +159,21 @@ Variables::Variables(){
     Chi2Xcut = new TSpline3("Chi2Xcut", ChiXcut_X,ChiXcut_Y,30);
     Chi2Ycut = new TSpline3("Chi2Ycut", ChiYcut_X,ChiYcut_Y,37);
 
+    ReadChargeCalibration("/data1/home/fdimicco/Deutons/DirectAnalysis/ChargeCalibrations/ChargeCalibrations.root");
+
 }
 
+void Variables::ReadChargeCalibration(std::string filename){
+	TFile * filecal = TFile::Open(filename.c_str(),"READ");
+	Qinn_cal = (TSpline3*) filecal->Get("hDTqinn_1");	
+	Qutof_cal = (TSpline3*) filecal->Get("hDTqutof_1");	
+	Qltof_cal = (TSpline3*) filecal->Get("hDTqltof_1");	
+	Ql1_cal = (TSpline3*) filecal->Get("hDTql1_1");	
 
+
+	cout<< "*********** CHARGE CALIBRATIONS ***********"<<endl;
+	cout<<Qinn_cal<<" "<<Qutof_cal<<" "<<Qltof_cal<<" "<<Ql1_cal<<endl;
+}
 
 void Variables::BDTreader()
 {
@@ -584,7 +596,11 @@ void Variables::RegisterBranches(TTree * tree){
 
 }
 
-
+float CalibrateQ(TSpline * cal, float Q, float beta, bool isMC){
+	if(!isMC) return Q;
+	if(!cal) return Q;
+	return cal->Eval(beta)*Q;
+}
 
 void Variables::Update(){
 
@@ -623,6 +639,12 @@ void Variables::Update(){
 				if(Massa_gen>2&&Massa_gen<4) mcweight = reweighterHe.getWeight(fabs(Momento_gen));
 			}
 	}	
+
+	qL1 = CalibrateQ(Ql1_cal,qL1,Beta,(Momento_gen==0));
+	qUtof = CalibrateQ(Qutof_cal,qUtof,Beta,(Momento_gen==0));
+	qLtof = CalibrateQ(Qltof_cal,qLtof,Beta,(Momento_gen==0));
+	qInner = CalibrateQ(Qinn_cal,qInner,Beta,(Momento_gen==0));
+
 }
 
 void Variables::PrintCurrentState(){
@@ -715,6 +737,7 @@ float GetInverseEdepTRD  (Variables * vars) {return 1/vars->EdepTRD;}
 float GetBetaGen         (Variables * vars) {return pow((pow((vars->Momento_gen/vars->Massa_gen),2)/(pow((vars->Momento_gen/vars->Massa_gen),2)+1)),0.5);}
 float GetInverseBetaTOF  (Variables * vars) {return 1/vars->Beta - 1/GetBetaGen(vars);}
 float GetInverseBetaRICH (Variables * vars) {return 1/vars->BetaRICH_new - 1/GetBetaGen(vars);}
+float GetBetaMeas        (Variables * vars) { if(!(vars->IsFromNaF()) && !(vars->IsFromAgl())) return GetBetaTOF(vars); else return GetBetaRICH(vars); }
 float GetBetaTOF         (Variables * vars) {return vars->Beta;}
 float GetBetaRICH        (Variables * vars) {return vars->BetaRICH_new;}
 float GetRecMassTOF	 (Variables * vars) {return (vars->R/vars->Beta)*pow((1-pow(vars->Beta,2)),0.5);}
@@ -729,7 +752,7 @@ float GetRigiditySecondTrack (Variables * vars) {return vars->R_sec;}
 
 
 Reweighter ReweightInitializer(std::string galpropfilename, float r_min, float r_max, float norm_at){
-        Histogram   mcFlux = makeLogUniform(500, r_min, r_max);
+	Histogram   mcFlux = makeLogUniform(500, r_min, r_max);
         Histogram dataFlux = loadGalpropFile(galpropfilename.c_str());
         dataFlux.multiply( mcFlux.at(norm_at) / dataFlux.getContent()[0] );
         Reweighter reweighter(mcFlux, dataFlux);

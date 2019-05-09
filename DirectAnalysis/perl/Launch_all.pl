@@ -43,8 +43,8 @@ system ("mkdir $workdir/errs/");
 $bookntuples=0;
 $bookplots=0;
 $booklat=0;
-$bookhecont=1;
-$bookflux=0;
+$bookhecont=0;
+$bookflux=1;
 $bookinfos=0;
 
 

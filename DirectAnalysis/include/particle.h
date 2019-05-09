@@ -50,6 +50,24 @@ class Particle {
       float getEkinPerNuc_TOI() {return ekin_TOI/A;}
       float getEkinPerMass_TOI(){return ekin_TOI/mass;}
       void  SetSlowDownModel(TF1 * SlowDownModel, float alpha_slowdown, float gamma_slowdown); 
+ 
+      float BetaFromEk (float ek)     { return sqrt (ek*ek + 2 * ek * mass) / (ek + mass); }
+      float BetaFromEtot (float e)    { return sqrt (1- (mass*mass)/(e*e) ); }
+      float GammaFromEk (float ek)    { return 1 + ek/mass;                                }
+      float GammaFromBeta (float beta){ return 1/(sqrt(1-beta*beta)); }
+      float RigFromEk (float ek)      { return RigFromMom (MomFromEk (ek) ) ;              }
+      float MomFromEk  (float ek)     { return mass * BetaFromEk (ek) * GammaFromEk (ek);  }
+      float EtotfromMom(float p)      { return sqrt ( mass*mass + p*p); }
+      float EtotfromEk(float ek)      { return ek + mass; }
+      float EkFromMom (float p)       { return EtotfromMom(p) - mass  ;  }
+      float RigFromMom (float p)      { return p/Z ;   }
+      float MomFromRig (float rig)    { return rig*Z ; }
+      float EkPerMassFromEk(float ek) { return ek/mass; }
+  
+      float BetaTOIFromBeta (float beta);	
+      float BetaMeasFromBetaTOI (float beta);	
+      float EkFromBeta (float beta) {return GammaFromBeta(beta)*mass - mass;}	
+
 
    private:
       float mass;
@@ -70,23 +88,6 @@ class Particle {
       float ekpermass_TOI=0;
 
       TF1 * slowdownmodel;
- 
-      float BetaFromEk (float ek)     { return sqrt (ek*ek + 2 * ek * mass) / (ek + mass); }
-      float BetaFromEtot (float e)    { return sqrt (1- (mass*mass)/(e*e) ); }
-      float GammaFromEk (float ek)    { return 1 + ek/mass;                                }
-      float GammaFromBeta (float beta){ return 1/(sqrt(1-beta*beta)); }
-      float RigFromEk (float ek)      { return RigFromMom (MomFromEk (ek) ) ;              }
-      float MomFromEk  (float ek)     { return mass * BetaFromEk (ek) * GammaFromEk (ek);  }
-      float EtotfromMom(float p)      { return sqrt ( mass*mass + p*p); }
-      float EtotfromEk(float ek)      { return ek + mass; }
-      float EkFromMom (float p)       { return EtotfromMom(p) - mass  ;  }
-      float RigFromMom (float p)      { return p/Z ;   }
-      float MomFromRig (float rig)    { return rig*Z ; }
-      float EkPerMassFromEk(float ek) { return ek/mass; }
-  
-      float BetaTOIFromBeta (float beta);	
-      float EkFromBeta (float beta) {return GammaFromBeta(beta)*mass - mass;}	
-
 };
 
 #endif 

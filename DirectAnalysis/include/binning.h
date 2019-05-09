@@ -6,8 +6,12 @@
 
 #include <fstream>
 #include <vector>
+#include "string.h"
 #include "TH1F.h"
 #include "TF1.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 /** @brief Class used for all the binning manipulation
  * @author $Author: L. Basara$
@@ -26,8 +30,9 @@ class Binning {
       void setBinsFromRigidity (int, float, float, TF1 * SlowDownModel, float alpha_slowdown, float gamma_slowdown);
       void setBinsFromEkPerMass(int, float, float, TF1 * SlowDownModel, float alpha_slowdown, float gamma_slowdown);
       void setBinsFromBeta     (int, float, float, TF1 * SlowDownModel, float alpha_slowdown, float gamma_slowdown);
-
-      void Reset();
+      void setBinsFromRDatacard(std::string filename, float min, float max, TF1 * SlowDownModel,float alpha_slowdown, float gamma_slowdown);	
+      
+       void Reset();
 
       int size() {return ekbincent.size(); };
       
@@ -137,8 +142,10 @@ class Binning {
       inline std::vector<float> computeLogBinCenters(int nbins, float min, float max);
       inline std::vector<float> computeConstResoBinEdges(int nbins, float min, float max);
       inline std::vector<float> computeConstResoBinCenters(int nbins, float min, float max);
-	   
-  
+      
+      inline std::vector<float> ReadBinDatacard(std::string filename, float min, float max);	   
+      inline std::vector<float> CentersFromEdges(std::vector<float> vedg); 
+      
       bool Betaedges=false;
       bool Redges   =false;		
       bool BetaTOIedges=false;
