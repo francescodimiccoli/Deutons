@@ -3,14 +3,14 @@
 
 #include "Tool.h"
 #include "Efficiency.h"
-
+#include "Globals.h"
 
 class EffCorr : public Tool{
 
 	private:
 
 	Efficiency * EffMC;
-	Efficiency * EffMC2;
+	Efficiency * EffMCpid2;
 	Efficiency * EffMCpid;
 
 	Efficiency * EffData;
@@ -31,21 +31,53 @@ class EffCorr : public Tool{
         TH1F * Stat_Err;
 
 	bool IsTrigEffCorr = false;
+	bool IsEkinCorrection = true;
 
 	std::string basename;
 	std::string directory;
 
 	BadEventSimulator * BadEvSim;	
+
+	protected:
+	Binning Bins;
+
 	public:
 
-	EffCorr(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,std::string Cut_MC2,std::string Cut_MCpid){
+	EffCorr(FileSaver  File, std::string Basename,std::string Directory, bool ekin, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,std::string Cut_MC2,std::string Cut_MCpid){
 	
-		EffMC   = new Efficiency(File, (Basename+"_MC" ).c_str(),Directory,Bins, (Cut_before+"&"+Cut_MC  ).c_str(),(Cut_after+"&"+Cut_MC  ).c_str());
-		EffMC2 = new Efficiency(File, (Basename+"_MC2").c_str(),Directory,Bins, (Cut_before+"&"+Cut_MC2  ).c_str(),(Cut_after+"&"+Cut_MC2  ).c_str());
-		EffMCpid = new Efficiency(File, (Basename+"_MCpid").c_str(),Directory,Bins, (Cut_before+"&"+Cut_MCpid  ).c_str(),(Cut_after+"&"+Cut_MCpid  ).c_str());
 
-		EffData = new Efficiency(File, (Basename+"_lat").c_str(),Directory,Bins, (Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str(),LatEdges);
-		EffData_glob = new Efficiency(File, (Basename+"_glob").c_str(),Directory,Bins,(Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str());
+		
+			IsEkinCorrection = ekin;
+
+		if(IsEkinCorrection) {
+				ForEffCorr.Reset();
+				ForEffCorr_D.Reset();
+				ForEffCorr.setBinsFromEkPerMass(nbinsr,0.5,15,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr_D.setBinsFromEkPerMass(nbinsr,0.5,15,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr.UseREdges();
+				ForEffCorr_D.UseREdges();
+		}
+
+		else {
+				ForEffCorr.Reset();
+				ForEffCorr_D.Reset();
+				ForEffCorr.setBinsFromRigidity(nbinsr,0.5,30,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr_D.setBinsFromRigidity(nbinsr,0.5,30,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr.UseREdges();
+				ForEffCorr_D.UseREdges();
+		}
+
+
+
+
+	
+
+		EffMC   = new Efficiency(File, (Basename+"_MC" ).c_str(),Directory,ForEffCorr, (Cut_before+"&"+Cut_MC  ).c_str(),(Cut_after+"&"+Cut_MC  ).c_str());
+		EffMCpid2 = new Efficiency(File, (Basename+"_MC2").c_str(),Directory,ForEffCorr_D, (Cut_before+"&"+Cut_MC2  ).c_str(),(Cut_after+"&"+Cut_MC2  ).c_str());
+		EffMCpid = new Efficiency(File, (Basename+"_MCpid").c_str(),Directory,ForEffCorr, (Cut_before+"&"+Cut_MCpid  ).c_str(),(Cut_after+"&"+Cut_MCpid  ).c_str());
+
+		EffData = new Efficiency(File, (Basename+"_lat").c_str(),Directory,ForEffCorr, (Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str(),LatEdges);
+		EffData_glob = new Efficiency(File, (Basename+"_glob").c_str(),Directory,ForEffCorr,(Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str());
 		
 		TFile * file = File.GetFile();
 		if(file){
@@ -73,14 +105,14 @@ class EffCorr : public Tool{
 	
 	virtual void LoadEventIntoBadEvSim(Variables * vars) {
 		EffMC->LoadEventIntoBadEvSim(vars);
-		EffMC2->LoadEventIntoBadEvSim(vars);
+		EffMCpid2->LoadEventIntoBadEvSim(vars);
 		EffMCpid->LoadEventIntoBadEvSim(vars);
 	}
 	virtual bool ReinitializeHistos(bool refill){
 		bool checkifsomeismissing=false;
 		bool allfound=true;
 		if(!(EffMC -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
-         	if(!(EffMC2 -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
+         	if(!(EffMCpid2 -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
 		if(!(EffMCpid -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
 	        if(!(EffData -> ReinitializeHistos(refill))) checkifsomeismissing = true;
 		if(!(EffData_glob -> ReinitializeHistos(refill))) checkifsomeismissing = true;
@@ -90,8 +122,8 @@ class EffCorr : public Tool{
 	}
 	virtual void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 		EffMC -> FillEventByEventMC(vars,var,discr_var);
-		EffMC2 -> FillEventByEventMC(vars,var,discr_var);
-		EffMCpid -> FillEventByEventMC(vars,var,discr_var);
+		EffMCpid2 -> FillEventByEventMC(vars,GetGenMomentum,GetGenMomentum);
+		EffMCpid -> FillEventByEventMC(vars,GetGenMomentum,GetGenMomentum);
 	}
 	
 	virtual void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
@@ -111,7 +143,7 @@ class EffCorr : public Tool{
 	void Eval_Errors();
 
 	TH1F * GetMCEfficiency()	{return (TH1F*)EffMC  -> GetEfficiency();}
-	TH1F * GetMCEfficiency2()	{return (TH1F*)EffMC2  -> GetEfficiency();}
+	TH1F * GetMCEfficiency2()	{return (TH1F*)EffMCpid2  -> GetEfficiency();}
 	TH1F * GetMCEfficiency_noPID()	{return (TH1F*)EffMCpid  -> GetEfficiency();}
 	
 	TH1F * GetCorrectionLat(int lat)  {return LatCorrections[lat];}

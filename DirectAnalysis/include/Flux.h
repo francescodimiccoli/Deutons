@@ -9,14 +9,6 @@
 #include "Efficiency.h"
 #include "EffCorr.h"
 
-struct MCPar{
-float Rmin,Rmax,Trigrate,gen_factor,art_ratio;
-long int tot_ev,tot_trig;
-std::string filename;
-void Eval_trigrate();
-};
-
-
 	
 class Flux{
 
@@ -34,7 +26,6 @@ class Flux{
 	TH1F * FluxEstim=0x0;
 	TH1F * FluxEstim_rig=0x0;
 	
-	MCPar param;
 
 	TH1F * Acc_StatErr=0x0;
 	TH1F * Acc_SystErr=0x0;
@@ -96,10 +87,7 @@ class Flux{
 		else {
 		return true;	}
 	}
-	void Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename, float Art_ratio=1);
 	void Eval_ExposureTime(Variables * vars, TTree * treeDT,FileSaver finalhistos,bool refill);
-	void ApplyEfficCorr(EffCorr * Correction);
-	void ApplyEfficFromData(EffCorr * Correction);
 	
 	void Eval_Flux();
 	void SaveResults(FileSaver finalhistos);

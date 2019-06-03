@@ -124,10 +124,10 @@ void Efficiency::Fill(DBarReader readerMC, Variables * vars, float (*discr_var) 
 
 void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 	if(!Refill) return;
+
 	if(ApplyCuts("IsData",vars)) return;
 	int kbin;
 	kbin =bins.GetBin(var(vars));
-		
 	if(kbin>0){
 			float weight =1;
 			if(!notweighted) weight = vars->mcweight;

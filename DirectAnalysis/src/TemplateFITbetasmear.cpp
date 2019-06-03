@@ -73,6 +73,7 @@ void TemplateFIT::FillEventByEventData(Variables * vars, float (*var) (Variables
 		}
 	cout<<"******************"<<endl;
 */
+				
 	if(ApplyCuts(cut,vars)&&kbin>=0){
 		//vars->PrintCurrentState();
 		for(int i=0;i<systpar.steps;i++)

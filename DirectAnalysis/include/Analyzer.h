@@ -7,7 +7,7 @@
 #include "TChain.h"
 #include "InputFileReader.h"
 #include "DBarReader.h"
-#include "Flux.h"
+//#include "Flux.h"
 
 
 class Analyzer{
@@ -22,7 +22,7 @@ class Analyzer{
         TChain * chainMC_Cpct;  
 	
 	ParallelFiller<Tool *> Filler;
-	ParallelFiller<Flux *> Filler_RTI;
+//	ParallelFiller<Flux *> Filler_RTI;
 	std::vector<ComputingFunction> ComputingFunctions;	
 	bool check_file = false;
 

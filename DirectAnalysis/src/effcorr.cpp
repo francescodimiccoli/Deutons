@@ -4,14 +4,14 @@
 void EffCorr::Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*discr_var) (Variables * vars),bool refill){
 
 	EffMC      -> Fill(treeMC,vars,discr_var,refill);
-	EffMC2     -> Fill(treeMC,vars,discr_var,refill);
+	EffMCpid2     -> Fill(treeMC,vars,discr_var,refill);
 	EffMCpid -> Fill(treeMC,vars,discr_var,refill);
 	EffData    -> Fill(treeDT,vars,discr_var,refill);
 }
 
 void EffCorr::Save(){
 	EffMC  -> Save();
-	EffMC2  -> Save();
+	EffMCpid2  -> Save();
 	EffMCpid  -> Save();
 	EffData-> Save();
 	EffData_glob-> Save();
@@ -20,7 +20,7 @@ void EffCorr::Save(){
 
 void EffCorr::Eval_Efficiencies(){
 	EffMC  -> Eval_Efficiency();
-	EffMC2  -> Eval_Efficiency();
+	EffMCpid2  -> Eval_Efficiency();
 	EffMCpid  -> Eval_Efficiency();
 	if(!IsTrigEffCorr) {
 		EffData-> Eval_Efficiency();
@@ -35,7 +35,7 @@ void EffCorr::Eval_Efficiencies(){
 
 void EffCorr::SaveResults(FileSaver finalhistos){
 	EffMC  -> SaveResults(finalhistos);
-	EffMC2  -> SaveResults(finalhistos);
+	EffMCpid2  -> SaveResults(finalhistos);
 	EffMCpid  -> SaveResults(finalhistos);
 	EffData-> SaveResults(finalhistos);
 
@@ -119,7 +119,7 @@ void EffCorr::Eval_Corrections(){
 
 
 	GlobalCorrection->Divide(EffMC->GetEfficiency());	
-	GlobalCorrection2->Divide(EffMC2->GetEfficiency());	
+	GlobalCorrection2->Divide(EffMCpid2->GetEfficiency());	
 	GlobalCorrectionpid->Divide(EffMCpid->GetEfficiency());	
 
 	Eval_Errors();
@@ -144,7 +144,7 @@ void EffCorr::SetToConstantValue(float value){
 
 void EffCorr::SetDefaultOutFile(FileSaver FinalHistos){
 		EffMC      ->SetDefaultOutFile(FinalHistos);
-		EffMC2     ->SetDefaultOutFile(FinalHistos);
+		EffMCpid2     ->SetDefaultOutFile(FinalHistos);
 		EffMCpid ->SetDefaultOutFile(FinalHistos);
 		EffData	   ->SetDefaultOutFile(FinalHistos);
 		EffData_glob   ->SetDefaultOutFile(FinalHistos);

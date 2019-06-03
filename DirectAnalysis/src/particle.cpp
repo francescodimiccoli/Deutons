@@ -65,7 +65,7 @@ void Particle::FillFromRig ( float r)
 	beta_TOI=BetaFromEk (ekin_TOI);
 
 	beta = BetaMeasFromBetaTOI(beta_TOI);
-	if((beta_TOI-beta)>0.0005){
+	if(RigFromBeta(beta_TOI)<MIPthreshold){
 		ekin = EkFromBeta(beta);
 		ekpermass=EkPerMassFromEk(ekin);
 		etot=  EtotfromEk(ekin);
@@ -73,30 +73,17 @@ void Particle::FillFromRig ( float r)
 		rig=RigFromMom (mom);
 	}	
 	else{
-		rig=rig_TOI;
+		
+		beta = BetaFromEk(EkFromMom(MomFromRig(MIPthreshold)));
+		beta = BetaMeasFromBetaTOI(beta);
+		float delta = MIPthreshold - RigFromBeta(beta);
+		rig=rig_TOI-delta;
 		mom=MomFromRig (rig);
 		ekin=EkFromMom (mom);
 		ekpermass=EkPerMassFromEk(ekin);
 		etot=EtotfromEk(ekin);  
 		beta=BetaFromEk (ekin);
 	}	
-
-/*	beta_TOI = BetaTOIFromBeta(beta);
-	if((beta_TOI-beta)>0.005){
-		ekin_TOI = EkFromBeta(beta_TOI);
-		ekpermass_TOI=EkPerMassFromEk(ekin_TOI);
-		etot_TOI=  EtotfromEk(ekin_TOI);
-		mom_TOI=MomFromEk (ekin_TOI);
-		rig_TOI=RigFromMom (mom_TOI);
-	}	
-	else{
-		rig_TOI=r;
-		mom_TOI=MomFromRig (rig_TOI);
-		ekin_TOI=EkFromMom (mom_TOI);
-		ekpermass_TOI=EkPerMassFromEk(ekin_TOI);
-		etot_TOI=EtotfromEk(ekin_TOI);  
-		beta_TOI=BetaFromEk (ekin_TOI);
-	}	*/
 }
 
 void Particle::FillFromBeta ( float Beta)

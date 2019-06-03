@@ -49,12 +49,12 @@ void Analyzer::BookEfficiencyAnalysis(FileSaver finalhistos, FileSaver finalresu
 	refill);
 
 	AllRangesEfficiency * FullSetTOT_D = new AllRangesEfficiency(finalhistos,"FullSetTOT_D","FullSetTOT",
-	"IsDeutonMC",			      
-	"IsDeutonMC",			   	      
-	"IsDeutonMC",
-	"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",			      
-	"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
-	"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
+	"IsProtonMC",			      
+	"IsProtonMC",			   	      
+	"IsProtonMC",
+	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",			      
+	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",			   	      
+	"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",
 	ToFDB,NaFDB,AglDB,
 	refill);
 

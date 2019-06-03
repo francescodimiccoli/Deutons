@@ -6,7 +6,6 @@
 #include <TMVA/Tools.h>
 #include "Globals.h"
 #include "TF1.h"
-#include "TFile.h"
 #include "TSpline.h"
 
 using namespace std;
@@ -26,12 +25,8 @@ struct Variables{
     TSpline3 * Chi2Xcut; 	
     TSpline3 * Chi2Ycut; 	
 
-    TSpline3 * Qinn_cal; 	
-    TSpline3 * Qutof_cal; 	
-    TSpline3 * Qltof_cal; 	
-    TSpline3 * Ql1_cal; 	
- 
-	void ReadChargeCalibration(std::string filename);
+
+
     // Event info
     int        Run;
     int        Event;
@@ -85,10 +80,12 @@ struct Variables{
     float EdepECAL;
     
     //L1 pick-up Efficiency
-    float exthit_closest_q;     
-    int   exthit_closest_status;
-    float hitdistfromint; 
-
+    int  exthit_closest_status;
+    float unb_qL1;
+    float L1hit_dist;	
+    float hitdistfromint;
+    float exthit_closest_q;
+    
     // Track
     float      R_pre;  // ?
     float      Rup;
@@ -101,7 +98,8 @@ struct Variables{
     float      Chisquare_y;
     float      Chisquare_L1_y;
     int        hitbits;
-    float        FiducialVolume;	 	    
+    int 	patty;
+    int      FiducialVolume;	 	    
     float      R_sec;		
 
     // Tracker Charge
@@ -121,14 +119,18 @@ struct Variables{
     float      TOFchisq_s;
     float      TOFchisq_t;	
     float      NBadTOF;
-
+    float beta_chiT_SA;
+    float 	beta_ncl_SA; 
+    
     // TRD
     float       TRDEdepovPath;		
     float 	TRDLikP;
     float 	TRDLikD;
     float 	TRDLike;
     float	EdepTRD;
-	
+    bool trd_int_inside_tracker;	
+    float Trd_chi_SA;
+
     // RICH 
     float      BetaRICH_new;
     float        Richtotused;

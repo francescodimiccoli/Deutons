@@ -21,9 +21,9 @@ using namespace ROOT::Math;
 
 class Particle {
    public:
-      Particle (float m) :          mass (m) {}
-      Particle (float m, float z) : mass (m), Z(z) {}
-      Particle (float m, float z, float a) : mass (m), Z(z), A (a)  {}
+      Particle (float m) :          mass (m) { MIPthreshold = 1.2*mass; }
+      Particle (float m, float z) : mass (m), Z(z) {MIPthreshold = 1.2*mass;}
+      Particle (float m, float z, float a) : mass (m), Z(z), A (a)  {MIPthreshold = 1.2*mass;}
 
       void FillFromEk        (float);
       void FillFromEkPerMass (float);
@@ -63,10 +63,11 @@ class Particle {
       float RigFromMom (float p)      { return p/Z ;   }
       float MomFromRig (float rig)    { return rig*Z ; }
       float EkPerMassFromEk(float ek) { return ek/mass; }
-  
+    
       float BetaTOIFromBeta (float beta);	
       float BetaMeasFromBetaTOI (float beta);	
       float EkFromBeta (float beta) {return GammaFromBeta(beta)*mass - mass;}	
+      float RigFromBeta(float beta)    {return RigFromMom(MomFromEk(EkFromBeta(beta))); }
 
 
    private:
@@ -86,6 +87,7 @@ class Particle {
       float rig_TOI =0;
       float beta_TOI=0;
       float ekpermass_TOI=0;
+      float MIPthreshold;	
 
       TF1 * slowdownmodel;
 };

@@ -39,6 +39,10 @@ extern Binning AglPB;
 extern Binning DRB;
 extern Binning PRB;
 extern Binning ForAcceptance;
+extern Binning ForEffCorr;
+extern Binning ForEffCorr_D;
+
+
 
 //resolution binning
 extern Binning ToFRigB;

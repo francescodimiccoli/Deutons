@@ -53,8 +53,8 @@ class EffCorrTemplate: public EffCorr{
 	bool Refill = false;
 	public:
 
-	EffCorrTemplate(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,std::string Cut_MC2,std::string Cut_nopid,bool IsRICH=false):
-	EffCorr(File,Basename,Directory,Bins,Cut_before,Cut_after,Cut_Data,Cut_MC,Cut_MC2,Cut_nopid){
+	EffCorrTemplate(FileSaver  File, std::string Basename,std::string Directory, bool ekin, std::string Cut_before,std::string Cut_after,std::string Cut_Data,std::string Cut_MC,std::string Cut_MC2,std::string Cut_nopid,bool IsRICH=false):
+	EffCorr(File,Basename,Directory,ekin,Cut_before,Cut_after,Cut_Data,Cut_MC,Cut_MC2,Cut_nopid){
 		for(int bin=0;bin<Bins.size();bin++){
 			
 			std::string name = (Basename+"_MC_Before_"+to_string(bin));

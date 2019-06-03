@@ -49,23 +49,23 @@ int countBits(int n) {
 bool DBarReader::minTOF(){
 
    if (!((ntpTof->trk_ncl==4)&&(ntpTof->beta_patt==0)&&(ntpTof->beta_ncl==4))) return false; 
-   else return /*(ntpTof->z_nhit>=3)&&(ntpTof->z_like>0)&&*/((ntpTof->clsn[0]+ntpTof->clsn[2])<=4);	
+//   else return (ntpTof->z_nhit>=3)&&(ntpTof->z_like>0)&&((ntpTof->clsn[0]+ntpTof->clsn[2])<=4);	
    	
 }
 
 bool DBarReader::goldenTOF(){
 
    if ( (ntpTof->flag) != 0   ) return false;
-    if (  ntpTof->chisqcn > 10 || ntpTof->chisqcn < 0     ) return false;
-    if (  ntpTof->chisqtn > 10 || ntpTof->chisqtn < 0     ) return false;
+    if (  ntpTof->chisqcn > 5 || ntpTof->chisqcn < 0     ) return false;
+    if (  ntpTof->chisqtn > 5 || ntpTof->chisqtn < 0     ) return false;
     return true;	
 }
 
 bool DBarReader::goldenTOF_Cpct(){
 
   // if ( (ntpTof->flag) != 0   ) return false; ?? Is it already in compact selection?
-    if (  ntpCompact->tof_chisqcn > 10 || ntpCompact->tof_chisqcn < 0     ) return false;
-    if (  ntpCompact->tof_chisqtn > 10 || ntpCompact->tof_chisqtn < 0     ) return false;
+    if (  ntpCompact->tof_chisqcn > 5 || ntpCompact->tof_chisqcn < 0     ) return false;
+    if (  ntpCompact->tof_chisqtn > 5 || ntpCompact->tof_chisqtn < 0     ) return false;
     return true;	
 }
 
@@ -183,12 +183,12 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->PhysBPatt = ntpHeader->sublvl1;
     vars->JMembPatt = ntpHeader->trigpatt;
 
-    bool goodChi2 =  (ntpTracker->chisqn[1][0] < vars->Chi2Xcut->Eval(abs(ntpTracker->rig[1][1])) &&
+/*    bool goodChi2 =  (ntpTracker->chisqn[1][0] < vars->Chi2Xcut->Eval(abs(ntpTracker->rig[1][1])) &&
 			ntpTracker->chisqn[1][1] < vars->Chi2Ycut->Eval(abs(ntpTracker->rig[1][1])));	
-    
-    /*bool goodChi2 =  (ntpTracker->chisqn[1][0] < 10 &&
+    */
+    bool goodChi2 =  (ntpTracker->chisqn[1][0] < 10 &&
 			ntpTracker->chisqn[1][1] < 10);	
-   */
+   
 
 
     /////////////////////////////// PRESELECTION CUTMASK //////////////////////////////////	
@@ -205,6 +205,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
     //////////////////////////////  Tracking Efficiency /////////////////////////////////////
 
+    vars->trd_int_inside_tracker = ntpTrd->GetPatternInsideTracker();
     vars->theta_track     =ntpStandAlone->theta;;
     vars->phi_track       =ntpStandAlone->phi;
     vars->entrypointcoo[0]=ntpStandAlone->coo[0];	
@@ -212,16 +213,20 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->entrypointcoo[2]=ntpStandAlone->coo[2];	
     vars->beta_SA	  =ntpStandAlone->beta;
     vars->betapatt_SA     =ntpStandAlone->beta_patt;	
+    vars->beta_ncl_SA	  =ntpStandAlone->beta_ncl;
+    vars->beta_chiT_SA    =ntpStandAlone->beta_chisqtn;
+    vars->Trd_chi_SA      =ntpStandAlone->trd_chisq;     	   
     vars->qUtof_SA	  =(ntpStandAlone->beta_q_lay[0]+ntpStandAlone->beta_q_lay[1])/2;
     vars->qLtof_SA	  =(ntpStandAlone->beta_q_lay[2]+ntpStandAlone->beta_q_lay[3])/2;
     vars->qTrd_SA	  =ntpStandAlone->trd_q;	
-    vars->EdepECAL	  =ntpEcal->energyE[0];
+    vars->EdepECAL	  =ntpEcal->energyD[0];
 
 
     //////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
 
     vars->exthit_closest_q		=ntpStandAlone->exthit_closest_q[0][0]	 ;     
     vars->exthit_closest_status	=ntpStandAlone->exthit_closest_status[0];
+    vars->hitdistfromint = pow(pow(ntpStandAlone->exthit_closest_coo[0][0] - ntpStandAlone->exthit_int[0][0],2)+ pow(ntpStandAlone->exthit_closest_coo[0][1] - ntpStandAlone->exthit_int[0][1],2),0.5); 
 
     /////////////////////////////// TRACKER ////////////////////////////////////
     
@@ -238,6 +243,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->Chisquare_y       = ntpTracker->chisqn[1][1]; // 1 = Inner      , 1 = Y side
     vars->Chisquare_L1_y    = ntpTracker->chisqn[4][1]; // 4 = L1 + Inner , 1 = Y side
     vars->hitbits           = ntpTracker->pattxy; 
+     vars->patty           = ntpTracker->patty; 
     vars->FiducialVolume    = ntpTracker->GetPatternInsideTracker();   
 
     vars->qL1               = ntpTracker->q_lay[1][0];
@@ -332,6 +338,14 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	Tree_Cpct->GetEntry(NEvent);
 	vars->ResetVariables();
 
+	///////////////////// MONTE CARLO //////////////////////////
+	if(isMC) {
+		vars->Charge_gen   = 1;
+		vars->Massa_gen     = 0.938;
+		vars->Momento_gen =10; 	
+		vars->mcweight =1;
+	}
+
 	////////////////////// EVENT INFORMATION ///////////////////////////////////////
 	vars->PrescaleFactor    = 1; 
 
@@ -348,22 +362,25 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	vars->good_RTI   = rtiInfo->good;
 	vars->isinsaa = rtiInfo->isinsaa;
 	
-	int status = ntpCompact->status; 
-	vars->NTRDSegments = ((int)status/100000000);
-	status -= (((int)status/100000000) * 100000000); 	  
+	long long  int status = ntpCompact->status; 
 
-	vars->NTRDclusters = ((int)status/1000000);
-	status -= (((int)status/1000000) * 1000000);			
-
-	vars->NTrackHits  = ((int)status/10000);
-	status -= (((int)status/10000) * 10000); 
-
-	vars->NTracks  = ((int)status/1000);
-	status -= (((int)status/1000) * 1000);  
-
-	vars->NAnticluster      = ((int)status/10);
-	status -= (((int)status/10) * 10);
-
+	vars->NTRDSegments = ((long int)(status/100000000));
+	status -= ((long int)(status/100000000) * 100000000); 	  
+	
+	vars->NTRDclusters = ((long int)(status/1000000));
+	status -= ((long int)(status/1000000) * 1000000);			
+	
+	vars->NTrackHits  = ((long int)(status/10000));
+	status -= ((long int)(status/10000) * 10000); 
+	
+	vars->NTracks  = ((long int)(status/1000));
+	status -= ((long int)(status/1000) * 1000);  
+	
+	vars->NAnticluster      = ((long int)(status/10));
+	status -= ((int)(status/10) * 10);
+	
+	if(vars->NTracks<0) cout<<"ECCO! "<<status<<" "<<ntpCompact->status<<" "<<vars->NTracks<<endl;
+	
 	/////////////////////////////////// UNBIAS ////////////////////////////////////////
 	vars->PhysBPatt = ntpCompact->sublvl1;
 	vars->JMembPatt = ntpCompact->trigpatt;
@@ -371,8 +388,8 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	/*bool goodChi2 =    (ntpCompact->trk_chisqn[0] < vars->Chi2Xcut->Eval(abs(ntpCompact->rig[1])) &&
 	  ntpCompact->trk_chisqn[1] < vars->Chi2Ycut->Eval(abs(ntpCompact->rig[1])));	
 	  */ 
-	bool goodChi2 =  (ntpCompact->trk_chisqn[0]< 100 &&
-			ntpCompact->trk_chisqn[1]< 100);	
+	bool goodChi2 =  (ntpCompact->trk_chisqn[0]< 10 &&
+			ntpCompact->trk_chisqn[1]< 10);	
 
 
 	/////////////////////////////// PRESELECTION CUTMASK //////////////////////////////////	
@@ -380,7 +397,7 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	if( ((ntpCompact->trigpatt & 0x2) != 0) && ((ntpCompact->sublvl1&0x3E) !=0) )      vars->CUTMASK |= 1 << 0;
 	if( true                          )  vars->CUTMASK |= 1 << 1; //minTOF already in compact selection
 	if( (ntpCompact->trigpatt & 0x2) != 0)  vars->CUTMASK |= 1 << 2;
-	if( ntpCompact->trk_rig[1] != 0.0          )  vars->CUTMASK |= 1 << 3;
+	if( ntpCompact->trk_rig_kalman[1] != 0.0          )  vars->CUTMASK |= 1 << 3;
 	if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
 	if( goldenTOF_Cpct()                       )  vars->CUTMASK |= 1 << 5;  
 	// 6
@@ -393,8 +410,12 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	vars->qUtof_SA	  =ntpCompact->sa_tof_qup;
 	vars->qLtof_SA	  =ntpCompact->sa_tof_qdw;
 	vars->EdepECAL	  =ntpCompact->sa_ecal_edepd;
-
-
+	vars->beta_chiT_SA    =ntpCompact->sa_tof_chisqtn;
+        vars->Trd_chi_SA      =ntpCompact->sa_trd_chi2;     	   
+        vars->beta_ncl_SA	  = 4;  //already in selection
+	vars->trd_int_inside_tracker = 0xff; //already in selection
+	vars->qTrd_SA         =ntpCompact->sa_trd_q;
+	
 	//////////////////////////////  L1 PICK-UP Efficiency /////////////////////////////////////
 	vars->exthit_closest_q		=ntpCompact ->sa_exthit_ql1 ;     
 	vars->hitdistfromint = pow(pow(ntpCompact->sa_exthit_dl1[0],2)+ pow(ntpCompact->sa_exthit_dl1[1],2),0.5);
@@ -402,16 +423,17 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 
 	/////////////////////////////// TRACKER ////////////////////////////////////
 
-	vars->R     = ntpCompact->trk_rig[1]; // 1 -- Inner tracker (Kalman)
+	vars->R     = ntpCompact->trk_rig_kalman[1]; // 1 -- Inner tracker (Kalman)
 
 	vars->Chisquare         = ntpCompact->trk_chisqn[0]; // 1 = Inner      , 0 = X side
 	vars->Chisquare_y       = ntpCompact->trk_chisqn[1]; // 1 = Inner      , 1 = Y side
 	vars->hitbits           = ntpCompact->trk_pattxy; 
-	vars->FiducialVolume    = 255;   
+	vars->patty		= ntpCompact->trk_patty;
+        vars->FiducialVolume    = 0xff;  //already in selection 
 
-	vars->qL1               = ntpCompact->trk_ql1;
+	vars->qL1               = ntpCompact->trk_q_lay[0];
 	if(vars->qL1>0)         vars->qL1Status         = 0; else   vars->qL1Status         = 1; 
-	vars->qL2               = ntpCompact->trk_ql2;
+	vars->qL2               = ntpCompact->trk_q_lay[1];
 	if(vars->qL2>0)         vars->qL2Status         = 0; else   vars->qL2Status         = 1; 
 	vars->qInner            = ntpCompact->trk_qinn;
 

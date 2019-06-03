@@ -3,51 +3,6 @@
 #include "histUtils.h"
 
 
-void MCPar::Eval_trigrate(){
-	std::vector<float> events;
-	std::vector<float> triggers;
-	std::ifstream infile;
-	rundb* rdb= new rundb();
-	int ret=rdb->readdb(("/cvmfs/ams.cern.ch/Offline/AMSDataDir/DataManagement/DataSetsDesc/"+filename).c_str());
-	//rdb->Print();
-    	rdb->Summary();	
-	cout<<"********MC infos:*******"<<endl;
-	cout<<"Trig. Rate: "<< rdb->GetTrigRate()<<endl; //rdb->GetTotEvents()/rdb->GetTotTrigg()<<endl;//rdb->GetTrigRate()<<endl;		
-        cout<<"Total Gen: "<<rdb->GetTotTrigg()<<endl; 
-	cout<<"Total events: "<<rdb->GetTotEvents()<<endl;
-	cout<<"************************"<<endl;
-        Trigrate=rdb->GetTrigRate();
-	tot_ev = rdb->GetTotEvents();	
-	tot_trig = rdb->GetTotTrigg();
-}
-
-
-void Flux::Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename, float Art_ratio){
-	cout<<"Setting MC parameters"<<endl;
-	param.Rmin=rmin;
-	param.Rmax=rmax;
-	param.filename = Filename;
-	param.gen_factor = Gen_factor;
-	param.Eval_trigrate();
-	param.art_ratio = Art_ratio;
-}
-
-
-void Flux::ApplyEfficCorr(EffCorr * Correction){
-	if(Correction->GetGlobCorrection()) { 
-		cout<<"Correction: "<<basename<<" "<<Correction->GetGlobCorrection()->GetEntries()<<endl;
-		EfficiencyCorrections.push_back(Correction);
-	}
-	return;
-}
-
-void Flux::ApplyEfficFromData(EffCorr * Correction){
-	if(Correction->GetGlobCorrection()) { 
-		cout<<"Correction: "<<basename<<" "<<Correction->GetGlobCorrection()->GetEntries()<<endl;
-		EfficiencyFromData.push_back(Correction);
-	}
-	return;
-}
 
 TH1F * EvalEffAcc(Efficiency* Eff, TH1F* ForAcc, Binning bins, MCPar param){
 	SetUpUsualBinning();	

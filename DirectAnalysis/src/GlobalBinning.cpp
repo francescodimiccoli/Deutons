@@ -26,7 +26,9 @@ Binning NaFDB(deuton);
 Binning NaFPB(proton);
 Binning AglDB(deuton);
 Binning AglPB(proton);
-
+Binning ForEffCorr(proton);
+Binning ForEffCorr_D(deuton);
+	
 Binning DRB(deuton);
 Binning PRB(proton);
 
@@ -84,8 +86,8 @@ void SetBins(){
 
 	cout<<"Agl bins"<<endl;
 	betamin=0.97, betamax=0.995;
-	AglDB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseAgl,4.28781e-05,67.8521);
-	AglPB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseAgl,4.28781e-05,67.8521);
+	AglDB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseAgl,0,67.8521);
+	AglPB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseAgl,0,67.8521);
 	AglRigB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
 
 

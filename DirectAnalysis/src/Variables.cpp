@@ -159,21 +159,9 @@ Variables::Variables(){
     Chi2Xcut = new TSpline3("Chi2Xcut", ChiXcut_X,ChiXcut_Y,30);
     Chi2Ycut = new TSpline3("Chi2Ycut", ChiYcut_X,ChiYcut_Y,37);
 
-    ReadChargeCalibration("/data1/home/fdimicco/Deutons/DirectAnalysis/ChargeCalibrations/ChargeCalibrations.root");
 
 }
 
-void Variables::ReadChargeCalibration(std::string filename){
-	TFile * filecal = TFile::Open(filename.c_str(),"READ");
-	Qinn_cal = (TSpline3*) filecal->Get("hDTqinn_1");	
-	Qutof_cal = (TSpline3*) filecal->Get("hDTqutof_1");	
-	Qltof_cal = (TSpline3*) filecal->Get("hDTqltof_1");	
-	Ql1_cal = (TSpline3*) filecal->Get("hDTql1_1");	
-
-
-	cout<< "*********** CHARGE CALIBRATIONS ***********"<<endl;
-	cout<<Qinn_cal<<" "<<Qutof_cal<<" "<<Qltof_cal<<" "<<Ql1_cal<<endl;
-}
 
 void Variables::BDTreader()
 {
@@ -262,11 +250,14 @@ void Variables::ResetVariables(){
     entrypointcoo[2]=0;	
     beta_SA=0;
     betapatt_SA=0;	
+    beta_ncl_SA=0;
+    beta_chiT_SA=0;
+    Trd_chi_SA=0;	
     qUtof_SA=0;
     qLtof_SA=0;			
     qTrd_SA=0;	
     EdepECAL=0;
-
+    trd_int_inside_tracker=0;
 
     //L1 pick-up Efficiency
     exthit_closest_q	=0;     
@@ -304,6 +295,7 @@ void Variables::ResetVariables(){
     Chisquare_y        = 0;
     Chisquare_L1_y     = 0;
     hitbits            = 0;
+    patty	       =0;
     FiducialVolume     = 0;	   
     R_sec	       = 0;
 
@@ -596,11 +588,6 @@ void Variables::RegisterBranches(TTree * tree){
 
 }
 
-float CalibrateQ(TSpline * cal, float Q, float beta, bool isMC){
-	if(!isMC) return Q;
-	if(!cal) return Q;
-	return cal->Eval(beta)*Q;
-}
 
 void Variables::Update(){
 
@@ -639,11 +626,6 @@ void Variables::Update(){
 				if(Massa_gen>2&&Massa_gen<4) mcweight = reweighterHe.getWeight(fabs(Momento_gen));
 			}
 	}	
-
-	qL1 = CalibrateQ(Ql1_cal,qL1,Beta,(Momento_gen==0));
-	qUtof = CalibrateQ(Qutof_cal,qUtof,Beta,(Momento_gen==0));
-	qLtof = CalibrateQ(Qltof_cal,qLtof,Beta,(Momento_gen==0));
-	qInner = CalibrateQ(Qinn_cal,qInner,Beta,(Momento_gen==0));
 
 }
 

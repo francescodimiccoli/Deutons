@@ -22,7 +22,7 @@
 #include "TKey.h"
 #include "TFractionFitter.h"
 #include "TPaveLabel.h"
-
+#include "TGraph.h"
 #include "../include/Variables.hpp"
 #include "../include/Cuts.h"
 #include "../include/filesaver.h"
@@ -30,6 +30,9 @@
 
 #include "../include/PlottingFunctions.h"
 #include <sstream>
+
+void CheckSlowDown(FileSaver Plots);
+
 
 std::string Convert (float number){
     std::ostringstream buff;
@@ -99,7 +102,8 @@ int main(int argc, char * argv[]){
 
 	cout<<"****************************** BINS ***************************************"<<endl;
     	SetUpUsualBinning();
- 
+	cout<<"****************************** CHECK SLOWDOWN ***************************************"<<endl;
+	CheckSlowDown(Plots); 
         cout<<"****************************** PLOTTING FITS ***************************************"<<endl;
 
 //	TemplateFIT * SmearingCheck = new TemplateFIT(finalHistos,"SmearingCheck",PRB);
@@ -658,3 +662,68 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 	return;
 
 }
+
+
+void CheckSlowDown(FileSaver Plots){
+	
+
+	Binning BinningRIGD(deuton);
+	Binning BinningRIGP(proton);
+
+        BinningRIGD.setBinsFromRigidity(25, 0.8, 5,ResponseTOF,0.00347548,5.8474);
+        BinningRIGP.setBinsFromRigidity(25, 0.8, 5,ResponseTOF,0.00347548,5.8474);
+	
+	TGraph * SlowdownRigP = new TGraph();
+	TGraph * SlowdownRigD = new TGraph();
+
+	for(int i=0;i<BinningRIGP.size();i++){
+		SlowdownRigP->SetPoint(i,BinningRIGP.RigTOIBins()[i],(BinningRIGP.RigBins()[i]-BinningRIGP.RigTOIBins()[i]));
+		SlowdownRigD->SetPoint(i,BinningRIGP.RigTOIBins()[i],(BinningRIGD.RigBins()[i]-BinningRIGD.RigTOIBins()[i]));
+	}
+	
+	TCanvas * c1 = new TCanvas("Slowdown Rig");
+	c1->cd();
+	SlowdownRigP->SetLineColor(2);
+	SlowdownRigP->SetLineWidth(4);
+	SlowdownRigP->GetXaxis()->SetTitle("Rig[GV]");
+	SlowdownRigD->SetLineColor(4);
+	SlowdownRigD->SetLineWidth(4);
+	SlowdownRigD->Draw("AL");
+	SlowdownRigP->Draw("Lsame");
+	
+
+	Binning BinningBetaD(deuton);
+	Binning BinningBetaP(proton);
+
+
+	BinningBetaD.setBinsFromBeta(20, 0.55, 0.9,ResponseTOF,0.00347548,5.8474);
+        BinningBetaP.setBinsFromBeta(20, 0.55, 0.9,ResponseTOF,0.00347548,5.8474);
+	
+
+	TGraph * SlowdownBetaP = new TGraph();
+	TGraph * SlowdownBetaD = new TGraph();
+
+	for(int i=0;i<BinningBetaP.size();i++){
+		SlowdownBetaP->SetPoint(i,BinningBetaP.BetaTOIBins()[i],BinningBetaP.BetaBins()[i]-BinningBetaP.BetaTOIBins()[i]);
+		SlowdownBetaD->SetPoint(i,BinningBetaP.BetaTOIBins()[i],BinningBetaD.BetaBins()[i]-BinningBetaD.BetaTOIBins()[i]);
+	}
+	
+	TCanvas * c2 = new TCanvas("Slowdown Beta");
+	c2->cd();
+	SlowdownBetaP->SetLineColor(2);
+	SlowdownBetaP->SetLineWidth(4);
+	SlowdownBetaD->SetLineColor(4);
+	SlowdownBetaD->SetLineWidth(4);
+	SlowdownBetaD->GetXaxis()->SetTitle("Beta");
+	
+	SlowdownBetaD->Draw("AL");
+	SlowdownBetaP->Draw("Lsame");
+	
+
+
+	Plots.Add(c1);
+	Plots.Add(c2);
+	Plots.writeObjsInFolder("EnergyLoss");	
+}
+
+
