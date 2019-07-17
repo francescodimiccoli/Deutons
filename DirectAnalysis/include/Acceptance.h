@@ -6,7 +6,6 @@
 #include "Globals.h"
 #include "EffCorr.h"
 #include "rundb.h"
-
 struct MCPar{
 	float Rmin,Rmax,Trigrate,gen_factor,art_ratio;
 	long int tot_ev,tot_trig;
@@ -38,9 +37,9 @@ class Acceptance : public Tool{
 	TH1F * EffAcceptanceMC=0x0;
 
 	public:
-	Acceptance(FileSaver File, FileSaver FileRes, std::string Basename, std::string Directory,std::string Cut_before,std::string Cut_after,Binning Bins){
+	Acceptance(FileSaver File, std::string Basename, std::string Directory,std::string Cut_before,std::string Cut_after,Binning Bins){
 		FullSetEff     = new Efficiency(File, (Basename+"_FullSetMC" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str());
-	        For_Acceptance = new Efficiency(finalhistos,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,Cut_before.c_str(),Cut_before.c_str());
+	        For_Acceptance = new Efficiency(File,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,Cut_before.c_str(),Cut_before.c_str());
       		For_Acceptance->SetNotWeightedMC();
  		directory = Directory;
 		basename = Basename;
@@ -48,27 +47,29 @@ class Acceptance : public Tool{
 		EffAcceptance = new TH1F((Basename +"_Eff_Acceptance").c_str(),(Basename +"_Eff_Acceptance").c_str(),Bins.size(),0,Bins.size());
 		Acc_StatErr = new TH1F((Basename +"_Acc_StatErr").c_str(),(Basename +"_Acc_StatErr").c_str(),Bins.size(),0,Bins.size());
 		Acc_SystErr = new TH1F((Basename +"_Acc_SystErr").c_str(),(Basename +"_Acc_SystErr").c_str(),Bins.size(),0,Bins.size());
+		bins = Bins;
 	}
 
 	void Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename, float Art_ratio=1);
 	void ApplyEfficCorr(EffCorr * Correction);
 	void ApplyEfficFromData(EffCorr * Correction);
 
-	virtual bool ReinitializeHistos(bool refill){
+	bool ReinitializeHistos(bool refill){
 		bool checkifsomeismissing=false;
 		bool allfound=true;
 		if(!(FullSetEff -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
+		if(!(For_Acceptance -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
 		if(checkifsomeismissing||refill) allfound=false;
 		return allfound;
 	}
-	virtual void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
+	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 		FullSetEff 	-> FillEventByEventMC(vars,var,discr_var);
 		For_Acceptance  ->FillEventByEventMC(vars,GetGenMomentum,GetGenMomentum);
 	}
+	void Save();
+	void SaveResults(FileSaver finalhistos);
 	void SetDefaultOutFile(FileSaver FinalHistos);
-	virtual void Save();
-	virtual void SaveResults(FileSaver finalhistos);
-	
+	void EvalEffAcc();	
 };
 
 #endif

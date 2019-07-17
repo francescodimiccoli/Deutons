@@ -121,12 +121,12 @@ bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,99999
 
 
 //He fragm
-bool IsPreselectedInner (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&HasL1(vars)&&HasL2(vars));}
-bool IsPreselected (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&L1LooseCharge1(vars)&&vars->R!=0&&HasL1(vars)&&HasL2(vars));}
-bool IsPreselectedHe (Variables * vars){ return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>1.75&&vars->qL1<2.3)&&HasL1(vars))&&HasL2(vars);}
+bool IsPreselectedInner (Variables * vars){ return IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) &&(vars->qL1>0)&&vars->R!=0&&HasL1(vars)&&HasL2(vars);}
+bool IsPreselected (Variables * vars){ return (IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) &&(vars->qL1>0)&&L1LooseCharge1(vars)&&vars->R!=0&&HasL1(vars)&&HasL2(vars));}
+bool IsPreselectedHe (Variables * vars){ return (IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) &&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>1.85&&vars->qL1<2.3)&&HasL1(vars))&&HasL2(vars);}
 bool IsPreselectedHeStep (Variables * vars,int step){
 			float chargecut=1.65;
-			return (((int)vars->joinCutmask&187)==187&&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>(chargecut+0.05*step)&&vars->qL1<2.3)&&HasL1(vars)&&HasL2(vars));
+			return (IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) &&(vars->qL1>0)&&vars->R!=0&&(vars->qL1>(chargecut+0.05*step)&&vars->qL1<2.3)&&HasL1(vars)&&HasL2(vars));
 }
 
 bool IsOnlyFromToF (Variables * vars){ return !((IsFromNaF(vars))||(IsFromAgl(vars)));}
@@ -160,7 +160,7 @@ bool IsInLatZone   (Variables * vars, int lat) { return (vars->Latitude>=LatEdge
 bool IsHighEn	(Variables * vars) {return vars->R>30;}
 
 
-bool TofBetaSafetyCut (Variables * vars) {return vars->Beta<0.8 ;}
+bool TofBetaSafetyCut (Variables * vars) {return vars->Beta>0.45 && vars->Beta<0.78 ;}
 bool NafBetaSafetyCut (Variables * vars) {return vars->BetaRICH_new<0.967 ;}
 bool AglBetaSafetyCut (Variables * vars) {return vars->BetaRICH_new<0.99;}
 

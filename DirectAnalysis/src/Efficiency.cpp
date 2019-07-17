@@ -68,12 +68,15 @@ void Efficiency::CloneEfficiency(Efficiency * Second){
 
 bool Efficiency::ReinitializeHistos(bool refill){
 	bool allfound = false;
+	cout<<" FOUND: "<<(directory+"/"+basename+"/"+basename+"_after").c_str()<<endl;;
+	
 	if(!file.CheckFile()) return allfound;
 	TFile * File = file.GetFile();
 	if(( (TH1F*)  File->Get((directory+"/"+basename+"/"+basename+"_before").c_str()) &&
                                 (TH1F*)  File->Get((directory+"/"+basename+"/"+basename+"_after").c_str()) ) && !refill) {
                 before =(TH1F *) File->Get((directory+"/"+basename+"/"+basename+"_before").c_str());
                 after  =(TH1F *) File->Get((directory+"/"+basename+"/"+basename+"_after").c_str());
+		cout<<" FOUND: "<<(directory+"/"+basename+"/"+basename+"_after").c_str()<<endl;;
 		Refill=false;
 		allfound =true;;
 	}
@@ -177,6 +180,7 @@ void Efficiency::Save(){
 void Efficiency::Eval_Efficiency(){
 	Eff = (TH1 *)after->Clone();
 	Eff -> Sumw2();
+	for(int i=0;i<Eff->GetNbinsX();i++) Eff->SetBinError(i+1,0);
 	Eff -> Divide(before);
 	Eff ->SetName((basename+"_Eff").c_str());
 	Eff ->SetTitle((basename+" Efficiency").c_str());
@@ -224,7 +228,7 @@ void Efficiency::Eval_FittedEfficiency(){
 void Efficiency::SaveResults(FileSaver finalhistos){
 	finalhistos.Add(before);
         finalhistos.Add(after);
-	finalhistos.Add(Eff); 	
+	if(Eff)	finalhistos.Add(Eff); 	
  	//if(Stat_Error) finalhistos.Add(Stat_Error);
 	//if(Syst_Error) finalhistos.Add(Syst_Error);
 	finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());

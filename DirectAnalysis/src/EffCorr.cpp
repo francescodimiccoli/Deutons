@@ -3,6 +3,8 @@
 #include "../include/Efficiency.h"
 #include "../include/EffCorr.h"
 #include "../include/EffCorrTemplate.h"
+#include "Acceptance.h"
+
 
 void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults,bool IsTrig=false);
 
@@ -56,7 +58,7 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 //        after  = "IsDownGoing&IsPhysTrig&IsCompact&IsGoodTOFStandaloneQ1&IsGoodTrack"; 
 	before = "IsCompact";
         after  = "IsCompact_An"; 
-	EffCorr * TrackerEffCorr_HE = new EffCorr(finalhistos,"TrackerEffCorr_HE","Tracker Eff. Corr",false,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsProtonPMC");
+	EffCorr * TrackerEffCorr_HE = new EffCorr(finalhistos,"TrackerEffCorr_HE","Tracker Eff. Corr",false,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 
 	before = "IsDownGoing&IsPhysTrig&IsGoodTrack&IsCharge1Track&L1LooseCharge1";
         after  = "IsDownGoing&IsPhysTrig&IsGoodTrack&IsCharge1Track&L1LooseCharge1&IsGoodL1Status"; 
@@ -90,7 +92,12 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 	EffCorr * RICHQualEffCorr_NaF = new EffCorr(finalhistos,"RICHQualCorrection_NaF","RICH Qual Eff. Corr",true,(before+"&IsFromNaF").c_str(),(after+"&IsFromNaF&RICHBDTCut").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 	EffCorr * RICHQualEffCorr_Agl = new EffCorr(finalhistos,"RICHqualCorrection_Agl","RICH Qual. Eff. Corr",true,(before+"&IsFromAgl").c_str(),(after+"&IsFromAgl&RICHBDTCut").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 
+	//Acceptance
+	Acceptance * Acceptance_PTOF = new Acceptance(finalhistos,"Acceptance_PTOF","Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",ToFPB);
+	Acceptance * Acceptance_PNaF = new Acceptance(finalhistos,"Acceptance_PNaF","Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",NaFPB);
+	Acceptance * Acceptance_PAgl = new Acceptance(finalhistos,"Acceptance_PAgl","Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",AglPB);
 
+	
 	Cascade0         ->SetDefaultOutFile(finalhistos);
 	Cascade1  	 ->SetDefaultOutFile(finalhistos);
 	Cascade2  	 ->SetDefaultOutFile(finalhistos);
@@ -114,7 +121,9 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 	RICHEffCorr_Agl 	->SetDefaultOutFile(finalhistos); 
 	RICHQualEffCorr_NaF 	->SetDefaultOutFile(finalhistos); 
 	RICHQualEffCorr_Agl 	->SetDefaultOutFile(finalhistos); 
-
+	Acceptance_PTOF 	->SetDefaultOutFile(finalhistos); 
+ 	Acceptance_PNaF 	->SetDefaultOutFile(finalhistos); 
+ 	Acceptance_PAgl 	->SetDefaultOutFile(finalhistos); 
 
 
 	Filler.AddObject2beFilled(Cascade0,GetGenMomentum,GetGenMomentum);
@@ -140,11 +149,20 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 	Filler.AddObject2beFilled(RICHEffCorr_Agl,GetRigidity,GetRigidity);	
 	Filler.AddObject2beFilled(RICHQualEffCorr_NaF,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(RICHQualEffCorr_Agl,GetRigidity,GetRigidity);	
+	Filler.AddObject2beFilled(Acceptance_PTOF,GetBetaTOF,GetBetaTOF);
+        Filler.AddObject2beFilled(Acceptance_PNaF,GetBetaRICH,GetBetaRICH);
+        Filler.AddObject2beFilled(Acceptance_PAgl,GetBetaRICH,GetBetaRICH);
+
+
 
 	Filler.ReinitializeAll(refill);
 
 	if(!refill&&checkfile) {	
 	
+		Acceptance_PTOF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		Acceptance_PNaF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		Acceptance_PAgl->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+
 		Cascade0  	->Eval_Efficiency();
 		Cascade1  	->Eval_Efficiency();
 		Cascade2  	->Eval_Efficiency();
@@ -179,8 +197,14 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 		AnalyzeEffCorr(	RICHEffCorr_Agl , finalhistos, finalresults);
 		AnalyzeEffCorr(	RICHQualEffCorr_NaF , finalhistos, finalresults);
 		AnalyzeEffCorr(	RICHQualEffCorr_Agl , finalhistos, finalresults);
-	
 
+		Acceptance_PTOF 	->  EvalEffAcc();
+	        Acceptance_PNaF 	->  EvalEffAcc();
+                Acceptance_PAgl 	->  EvalEffAcc();
+		
+		Acceptance_PTOF 	->SaveResults(finalresults);
+                Acceptance_PNaF 	->SaveResults(finalresults);
+                Acceptance_PAgl 	->SaveResults(finalresults);
 	}
 
 	return ;

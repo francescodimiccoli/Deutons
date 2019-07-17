@@ -253,7 +253,15 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->qInner            = ntpTracker->q_inn[0];
     vars->clustertottrack   = ntpHeader->ntrrechit;
     vars->clustertrack      = countBits(vars->hitbits);
-    vars->qL1InnerNoL2	    = (ntpTracker->q_lay[1][1]+ntpTracker->q_lay[1][3]+ntpTracker->q_lay[1][4]+ntpTracker->q_lay[1][5]+ntpTracker->q_lay[1][6]+ntpTracker->q_lay[1][7]+ntpTracker->q_lay[1][0])/7;	
+    int layerswithhit=0;
+    vars->qL1InnerNoL2=0;
+    for(int i=0;i<7;i++) {
+	    if(i!=2){
+		    if(ntpTracker->q_lay[1][i]>0) layerswithhit++;
+		    vars->qL1InnerNoL2 += 	ntpTracker->q_lay[1][i];	
+	    }	
+    }
+    vars->qL1InnerNoL2/= layerswithhit;
 
     vars->trtrack_edep = new std::vector<float>;
     vars->trtot_edep   = new std::vector<float>;
@@ -436,6 +444,16 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	vars->qL2               = ntpCompact->trk_q_lay[1];
 	if(vars->qL2>0)         vars->qL2Status         = 0; else   vars->qL2Status         = 1; 
 	vars->qInner            = ntpCompact->trk_qinn;
+
+	int layerswithhit=0;
+	vars->qL1InnerNoL2=0;
+	for(int i=0;i<7;i++) {
+		if(i!=2){
+			if(ntpCompact->trk_q_lay[i]>0) layerswithhit++;
+			vars->qL1InnerNoL2 += 	ntpCompact->trk_q_lay[i];	
+		}	
+	}
+	vars->qL1InnerNoL2/= layerswithhit;
 
 
 	/////////////////////////////// TOF ////////////////////////////////////

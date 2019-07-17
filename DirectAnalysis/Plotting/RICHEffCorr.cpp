@@ -55,8 +55,14 @@ void DrawCorrection(EffCorr * Correction, FileSaver Plots, Binning Bins, std::st
 	TH1F * MCEffPID = (TH1F*)Correction->GetMCEfficiency_noPID();
 	cout<<MCEff<<endl;
 	if(rangemin==-1&&rangemax==-1) {
-		rangemin =0.8*Bins.EkPerMasBins()[0];
-		rangemax =1.2*Bins.EkPerMasBins()[Bins.EkPerMasBins().size()-1];
+		if(Correction->IsEkin()){
+			rangemin =0.8*Bins.EkPerMasBins()[0];
+			rangemax =1.2*Bins.EkPerMasBins()[Bins.EkPerMasBins().size()-1];
+		}
+		else{
+			rangemin =0.8*Bins.GetBinCenter(0);
+			rangemax =1.2*Bins.GetBinCenter(Bins.EkPerMasBins().size()-1);
+		}	
 	}
 
 	c3_up->cd();
@@ -65,14 +71,16 @@ void DrawCorrection(EffCorr * Correction, FileSaver Plots, Binning Bins, std::st
 	for(int lat=0;lat<10;lat++){
 		TH1F * LatEff = (TH1F*)Correction->GetEfficiencyLat(lat);
 		cout<<LatEff<<endl;
-		PlotTH1FintoGraph(gPad,Bins, LatEff,"R [GV]", "Efficiency",55+5*lat,false,"Psame",rangemin,rangemax,0.5*MCEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),latitudes[lat].c_str(),8,skipleg,true);
+		if(Correction->IsEkin()) PlotTH1FintoGraph(gPad,Bins, LatEff,"Ekin [GeV/n]", "Efficiency",55+5*lat,true,"Psame",rangemin,rangemax,0.5*MCEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),latitudes[lat].c_str(),8,skipleg,true);
+		else PlotTH1FintoGraph(gPad,Bins, LatEff,"R [GV]", "Efficiency",55+5*lat,false,"Psame",rangemin,rangemax,0.5*MCEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),latitudes[lat].c_str(),8,skipleg,true);
 	}
 
 	c3_do->cd();
 	gPad->SetLogx();
 	gPad->SetGridx();
 	for(int lat=0;lat<10;lat++){ 
-	PlotTH1FintoGraph(gPad,Bins, (TH1F*)Correction->GetCorrectionLat(lat),"", "Eff. (Data/MC)",55+5*lat,false,"Psame",rangemin,rangemax,0.65*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),1.2*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),latitudes[lat].c_str(),8,true,false);
+	if(Correction->IsEkin()) PlotTH1FintoGraph(gPad,Bins, (TH1F*)Correction->GetCorrectionLat(lat),"", "Eff. (Data/MC)",55+5*lat,true,"Psame",rangemin,rangemax,0.65*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),1.2*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),latitudes[lat].c_str(),8,true,false);
+	else PlotTH1FintoGraph(gPad,Bins, (TH1F*)Correction->GetCorrectionLat(lat),"", "Eff. (Data/MC)",55+5*lat,false,"Psame",rangemin,rangemax,0.65*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),1.2*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),latitudes[lat].c_str(),8,true,false);
 	}
 
 	if(!c4||!c4_up) {
@@ -90,19 +98,33 @@ void DrawCorrection(EffCorr * Correction, FileSaver Plots, Binning Bins, std::st
 	c4_up->cd();
 	gPad->SetLogx();
 	gPad->SetGridx();
-	PlotTH1FintoGraph(gPad,Bins, MCEff,"R [GV]", "Efficiency",2,false,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (P)",8,skipleg);
-	PlotTH1FintoGraph(gPad,Bins, MCEff2,"R [GV]", "Efficiency",4,false,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (D)",8,skipleg);
-	PlotTH1FintoGraph(gPad,Bins, MCEffPID,"R [GV]", "Efficiency",2,false,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (P - PID)",3,skipleg);
-	
-	PlotTH1FintoGraph(gPad,Bins, DataEff,"R [GV]", "Efficiency",1,false,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"Data",8,skipleg);
-
+	if(Correction->IsEkin()){
+		PlotTH1FintoGraph(gPad,Bins, MCEff,"Ekin [GeV/n]", "Efficiency",2,true,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (P)",8,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, MCEff2,"Ekin [GeV/n]", "Efficiency",4,true,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (D)",8,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, MCEffPID,"Ekin [GeV/n]", "Efficiency",2,true,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (P - PID)",3,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, DataEff,"Ekin [GeV/n]", "Efficiency",1,true,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"Data",8,skipleg);
+	}
+	else{
+		PlotTH1FintoGraph(gPad,Bins, MCEff,"R [GV]", "Efficiency",2,false,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (P)",8,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, MCEff2,"R [GV]", "Efficiency",4,false,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (D)",8,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, MCEffPID,"R [GV]", "Efficiency",2,false,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (P - PID)",3,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, DataEff,"R [GV]", "Efficiency",1,false,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"Data",8,skipleg);
+	}
 
 
 	c4_do->cd();
 	gPad->SetLogx();
 	gPad->SetGridx();
-	PlotTH1FintoGraph(gPad,Bins, (TH1F*) Correction->GetGlobCorrection(),"", "Eff. (Data/MC)",1,false,"Psame",rangemin,rangemax,0.65*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),1.2*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),"Data",8,true,false);	
-	
+	if(Correction->IsEkin())
+	PlotTH1FintoGraph(gPad,Bins, (TH1F*) Correction->GetGlobCorrection(),"", "Eff. (Data/MC)",1,true,"Psame",rangemin,rangemax,0.65*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),1.2*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),"Data",8,true,false);	
+	else
+	PlotTH1FintoGraph(gPad,Bins, (TH1F*) Correction->GetGlobCorrection(),"", "Eff. (Data/MC)",1,false,"Psame",rangemin,rangemax,0.65*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),1.2*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),"Data",8,true,false); 
+
+	TSpline3 * model = (TSpline3 *) Correction->GetCorrectionModel();
+	model->SetLineWidth(3);
+	model->SetLineColor(2);
+	model->Draw("same");
+
 	Plots.Add(c3);
 	Plots.Add(c4);
 	Plots.writeObjsInFolder(("Eff. Correction/" +CorrName+"/"+RangeName).c_str());
@@ -110,8 +132,8 @@ void DrawCorrection(EffCorr * Correction, FileSaver Plots, Binning Bins, std::st
 }
 
 
-void DrawCorrection(EffCorr * Correction, FileSaver Plots, Binning Bins, std::string CorrName,std::string RangeName,float rangemin=-1, float rangemax=-1,bool skipleg=false) {
-	DrawCorrection(Correction,Plots,Bins,CorrName,RangeName,0x0,0x0,0x0,0x0,0x0,0x0,rangemin,rangemax,skipleg);
+void DrawCorrection(EffCorr * Correction, FileSaver Plots, std::string CorrName,std::string RangeName,float rangemin=-1, float rangemax=-1,bool skipleg=false) {
+	DrawCorrection(Correction,Plots,Correction->GetBins(),CorrName,RangeName,0x0,0x0,0x0,0x0,0x0,0x0,rangemin,rangemax,skipleg);
 }
 
 
@@ -164,50 +186,41 @@ cout<<"****************************** FILES OPENING ****************************
     	SetUpTOIBinning();
 	cout<<"**************************** PLOTTING ***************************************"<<endl;
 
-	EffCorr * HEPPresEffCorr = new EffCorr(finalHistos,"HEPPresEffCorr","HEPPresEffCorr",ForEffCorr,"IsPositive&IsMinimumBias&IsLooseCharge1","IsPositive&IsMinimumBias&IsLooseCharge1&IsGolden","","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * HEPQualEffCorr = new EffCorr(finalHistos,"HEPQualEffCorr","HEPQualEffCorr",ForEffCorr,"IsPositive&IsMinimumBias&IsLooseCharge1","IsPositive&IsMinimumBias&IsLooseCharge1&IsGolden","","IsPurePMC","IsPureDMC","IsDeutonMC");
-	
 	std::string before;
         std::string after;
         before = "";
         after  = ""; 
-	EffCorr * TriggerEffCorr_HE = new EffCorr(finalHistos,"TriggerEffCorr_HE","Trigger Eff. Corr",ForEffCorr,before,after,"IsPrimary",    "IsProtonMC","IsPureDMC","IsDeutonMC"); 
-//	EffCorr * Trigger2EffCorr_HE = new EffCorr(finalHistos,"Trigger2EffCorr_HE","Trigger2 Eff. Corr",ForEffCorr,before,after,"IsPrimary",    "IsProtonMC","IsPureDMC","IsDeutonMC"); 
 
-	EffCorr * L1PickUpEffCorr_HE = new EffCorr(finalHistos,"L1PickUpEffCorr_HE","L1PickUp Eff. Corr",ForEffCorr,before,after,"IsPrimary",    "IsPurePMC","IsPureDMC","IsDeutonMC"); 
-	EffCorr * TrackerEffCorr_HE = new EffCorr(finalHistos,"TrackerEffCorr_HE","Tracker Eff. Corr",ForEffCorr,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * GoodChi_HE  = new EffCorr(finalHistos,"GoodChiEffCorr_HE","GoodChi Eff. Corr",ForEffCorr,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	EffCorr * TriggerEffCorr_HE  = new EffCorr(finalHistos,"TriggerEffCorr_HE" ,"Trigger Eff. Corr",true  ,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * L1PickUpEffCorr_HE = new EffCorr(finalHistos,"L1PickUpEffCorr_HE","L1PickUp Eff. Corr",false,before,after,"IsPrimary",    "IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * GoodQTrack_HE  = new EffCorr(finalHistos,"GoodQTrackEffCorr_HE","GoodQTrack Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * GoodChi_HE  = new EffCorr(finalHistos,"GoodChiEffCorr_HE","GoodChi Eff. Corr",false,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * TrackerEffCorr_HE = new EffCorr(finalHistos,"TrackerEffCorr_HE","Tracker Eff. Corr",false,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsProtonPMC");
+	EffCorr * StatusL1Check_HE = new EffCorr(finalHistos,"StatusL1Check_HE","StatusL1Check Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * Good1Track_HE  = new EffCorr(finalHistos,"Good1TrackEffCorr_HE","Good1Track Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * GoodLtof_HE  = new EffCorr(finalHistos,"GoodLTOFEffCorr_HE" ,"GoodLtof Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * GoodUtof_HE  = new EffCorr(finalHistos,"GoodUtofEffCorr_HE" ,"GoodUtof Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * GoodTime_TOF = new EffCorr(finalHistos,"GoodTimeEffCorr_TOF","GoodTime Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * RICHEffCorr_NaF = new EffCorr(finalHistos,"RICHCorrection_NaF","RICH Eff. Corr",true,before,(after+"&IsFromNaF").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * RICHEffCorr_Agl = new EffCorr(finalHistos,"RICHCorrection_Agl","RICH Eff. Corr",true,before,(after+"&IsFromAgl").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * RICHQualEffCorr_NaF = new EffCorr(finalHistos,"RICHQualCorrection_NaF","RICH Qual Eff. Corr",true,(before+"&IsFromNaF").c_str(),(after+"&IsFromNaF&RICHBDTCut").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * RICHQualEffCorr_Agl = new EffCorr(finalHistos,"RICHqualCorrection_Agl","RICH Qual. Eff. Corr",true,(before+"&IsFromAgl").c_str(),(after+"&IsFromAgl&RICHBDTCut").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 
-	EffCorr * GoodUtof_HE  = new EffCorr(finalHistos,"GoodUtofEffCorr_HE","GoodUtof Eff. Corr",ForEffCorr,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
+	DrawCorrection(TriggerEffCorr_HE,Plots,"TriggerEffCorr","HE",0.1,40);
+	DrawCorrection(L1PickUpEffCorr_HE,Plots,"L1PickUpEffCorr","HE",0.1,40);
+	DrawCorrection(TrackerEffCorr_HE,Plots,"TrackerEffCorr","HE",0.1,40);
+	DrawCorrection(GoodChi_HE,Plots,"GoodChi_HE_EffCorr","HE",0.1,40);
+	DrawCorrection(GoodQTrack_HE,Plots,"GoodQTrack_HE_EffCorr","HE",0.1,40);
 
-	EffCorr * GoodLtof_HE  = new EffCorr(finalHistos,"GoodLTOFEffCorr_HE","GoodLtof Eff. Corr",ForEffCorr,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-
-	EffCorr * Good1Track_HE  = new EffCorr(finalHistos,"Good1TrackEffCorr_HE","Good1Track Eff. Corr",ForEffCorr,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-
-	EffCorr * GoodQTrack_HE  = new EffCorr(finalHistos,"GoodQTrackEffCorr_HE","GoodQTrack Eff. Corr",ForEffCorr,before,after,"IsPrimary","IsPurePMC","IsPureDMC","IsDeutonMC");
-
-	EffCorr * GoodTime_TOF = new EffCorr(finalHistos,"GoodTimeEffCorr_TOF","GoodTime Eff. Corr",ForEffCorr,before,after,"","IsPurePMC","IsPureDMC","IsDeutonMC");
-
-	EffCorr * RICHEffCorr_NaF = new EffCorr(finalHistos,"RICHCorrection_NaF","RICH Eff. Corr",ForEffCorr,before,(after+"&IsFromNaF").c_str(),"","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * RICHEffCorr_Agl = new EffCorr(finalHistos,"RICHCorrection_Agl","RICH Eff. Corr",ForEffCorr,before,(after+"&IsFromAgl").c_str(),"","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * RICHQualEffCorr_NaF = new EffCorr(finalHistos,"RICHQualCorrection_NaF","RICH Qual Eff. Corr",ForEffCorr,(before+"&IsFromNaF").c_str(),(after+"&IsFromNaF&RICHBDTCut").c_str(),"","IsPurePMC","IsPureDMC","IsDeutonMC");
-	EffCorr * RICHQualEffCorr_Agl = new EffCorr(finalHistos,"RICHqualCorrection_Agl","RICH Qual. Eff. Corr",ForEffCorr,(before+"&IsFromNaF").c_str(),(after+"&IsFromAgl&RICHBDTCut").c_str(),"","IsPurePMC","IsPureDMC","IsDeutonMC");
-
-	DrawCorrection(TriggerEffCorr_HE,Plots,ForEffCorr,"TriggerEffCorr","HE",0.5,70);
-	DrawCorrection(L1PickUpEffCorr_HE,Plots,ForEffCorr,"L1PickUpEffCorr","HE",0.5,70);
-	DrawCorrection(TrackerEffCorr_HE,Plots,ForEffCorr,"TrackerEffCorr","HE",0.5,70);
-	DrawCorrection(GoodChi_HE,Plots,ForEffCorr,"GoodChi_HE_EffCorr","HE",0.5,70);
-	DrawCorrection(GoodQTrack_HE,Plots,ForEffCorr,"GoodQTrack_HE_EffCorr","HE",0.5,70);
-
-	DrawCorrection(GoodUtof_HE,Plots,ForEffCorr,"GoodUtof_HE_EffCorr","HE",0.5,70);
-	DrawCorrection(GoodLtof_HE,Plots,ForEffCorr,"GoodLtof_HE_EffCorr","HE",0.5,70);
-	DrawCorrection(Good1Track_HE,Plots,ForEffCorr,"Good1Track_HE_EffCorr","HE",0.5,70);
+	DrawCorrection(GoodUtof_HE,Plots,"GoodUtof_HE_EffCorr","HE",0.1,40);
+	DrawCorrection(GoodLtof_HE,Plots,"GoodLtof_HE_EffCorr","HE",0.1,40);
+	DrawCorrection(Good1Track_HE,Plots,"Good1Track_HE_EffCorr","HE",0.1,40);
 	
-	DrawCorrection(GoodTime_TOF,Plots, ForEffCorr, "GoodTime","TOF",0.5,70);
-	DrawCorrection(RICHEffCorr_NaF,Plots, ForEffCorr, "RICHEffCorr","NaF",0.5,70);
-	DrawCorrection(RICHEffCorr_Agl,Plots, ForEffCorr, "RICHEffCorr","Agl",0.5,70);
-	DrawCorrection(RICHQualEffCorr_NaF,Plots, ForEffCorr, "RICHQualEffCorr","NaF",0.5,70);
-	DrawCorrection(RICHQualEffCorr_Agl,Plots, ForEffCorr, "RICHQualEffCorr","Agl",0.5,70);
+	DrawCorrection(GoodTime_TOF,Plots, "GoodTime","TOF",0.1,40);
+	DrawCorrection(RICHEffCorr_NaF,Plots,"RICHEffCorr","NaF",0.1,40);
+	DrawCorrection(RICHEffCorr_Agl,Plots,"RICHEffCorr","Agl",0.1,40);
+	DrawCorrection(RICHQualEffCorr_NaF,Plots,"RICHQualEffCorr","NaF",0.1,40);
+	DrawCorrection(RICHQualEffCorr_Agl,Plots,"RICHQualEffCorr","Agl",0.1,40);
 	
 
 	return 0;

@@ -12,33 +12,19 @@
 	chainDT->SetProof();
 
 
-	string beforecutDT = "trk_ql1>0.7 && trk_ql1<1.6 && ((trigpatt & 0x2) != 0) && ((sublvl1&0x3E) !=0) && trk_rig[1]>0&&trk_chisqn[0]<100&&tof_beta>0&&trk_qinn>0.07&&trk_qinn<13&&tof_beta<2.85&&fabs(tof_qdw-1)<0.3&&abs(tof_qup-1)<0.3&&trk_rig[1]<1.5";
+	string beforecutDT = "trk_q_lay[0]>0.7 && trk_q_lay[0]<1.6 && ((trigpatt & 0x2) != 0) && ((sublvl1&0x3E) !=0) && trk_rig_kalman[1]>0&&trk_chisqn[0]<10&&tof_beta>0.5&&trk_qinn>0.7&&trk_qinn<1.3&&tof_beta<0.78&&fabs(tof_qdw-1)<0.3&&abs(tof_qup-1)<0.3";
+	string beforecutDTfragm = "trk_q_lay[0]>1.7 && trk_q_lay[0]<2.6 && ((trigpatt & 0x2) != 0) && ((sublvl1&0x3E) !=0) && trk_rig_kalman[1]>0&&trk_chisqn[0]<10&&tof_beta>0.5&&trk_qinn>0.7&&trk_qinn<1.3&&tof_beta<0.78&&fabs(tof_qdw-1)<0.3&&abs(tof_qup-1)<0.3";
+
+	//string beforecutDT = "trk_q_lay[0]>0.7 && trk_q_lay[0]<1.6 && ((trigpatt & 0x2) != 0) && ((sublvl1&0x3E) !=0) && trk_chisqn[0]<10&&trk_qinn>0.7&&trk_qinn<1.3&&fabs(tof_qdw-1)<0.3&&abs(tof_qup-1)<0.3";
 	
-	//trigger	
-/*	TH2F * hbeforeDT1 = new TH2F("hbeforeDT1","hbeforeDT1",500,0,4,500,-4,4);
-	TH2F * hbeforeDT2 = new TH2F("hbeforeDT2","hbeforeDT2",500,0,4,500,-4,4);
-	TH2F * hbeforeDT3 = new TH2F("hbeforeDT3","hbeforeDT3",500,0,4,500,-4,4);
-*/
-
-	TH2F * hbeforeDT1 = new TH2F("hbeforeDT1","hbeforeDT1",500,0.,1.1,500,-4,4);
-	TH2F * hbeforeDT2 = new TH2F("hbeforeDT2","hbeforeDT2",500,0.,1.1,500,-4,4);
-	TH2F * hbeforeDT3 = new TH2F("hbeforeDT3","hbeforeDT3",500,0.,1.1,500,-4,4);
-
-//	TH3F * hbeforeDT1 = new TH3F("hbeforeDT1","hbeforeDT1",100,0.4,1.1,100,0,3,100,0.2,1.8);
-
-/*	chainDT->Draw("trk_qinn :trk_rig[1]/tof_beta*(1-tof_beta^2)^0.5>>hbeforeDT1",beforecutDT.c_str());
-	chainDT->Draw("tof_qdw  :trk_rig[1]/tof_beta*(1-tof_beta^2)^0.5>>hbeforeDT2",beforecutDT.c_str());
-	chainDT->Draw("tof_qup  :trk_rig[1]/tof_beta*(1-tof_beta^2)^0.5>>hbeforeDT3",beforecutDT.c_str());
-*/
-	chainDT->Draw("trk_qinn :tof_beta>>hbeforeDT1",beforecutDT.c_str());
-	chainDT->Draw("tof_qdw  :tof_beta>>hbeforeDT2",beforecutDT.c_str());
-	chainDT->Draw("tof_qup  :tof_beta>>hbeforeDT3",beforecutDT.c_str());
-
-
-
-//	chainDT->Draw("tof_qup  :trk_rig[1]:tof_beta>>hbeforeDT1",beforecutDT.c_str());
-
-
+/*
+ *fragm charge
+	TH2F * hbeforeDT1 = new TH2F("hbeforeDT1","hbeforeDT1",500,0.,4,500,0,2);
+	TH2F * hbeforeDT2 = new TH2F("hbeforeDT2","hbeforeDT2",500,0.,4,500,0,2);
+	TH2F * hbeforeDT3 = new TH2F("hbeforeDT3","hbeforeDT3",500,0.,4,500,0,2);
+	chainDT->Draw("tof_qup  :trk_rig_kalman[1]/tof_beta*(1-tof_beta^2)^0.5>>hbeforeDT1",beforecutDT.c_str());
+	chainDT->Draw("trk_qinn  :trk_rig_kalman[1]/tof_beta*(1-tof_beta^2)^0.5>>hbeforeDT2",beforecutDT.c_str());
+	chainDT->Draw("trk_qinn  :trk_rig_kalman[1]/tof_beta*(1-tof_beta^2)^0.5>>hbeforeDT3",beforecutDT.c_str());
 
 	TCanvas * c1 = new TCanvas("quinn");
 	c1->cd();
@@ -51,5 +37,33 @@
 	hbeforeDT3->Draw("col");;
 
 
+*/
+
+	//fragm mass
+//	TH1F * hbeforeDT1 = new TH1F("hbeforeDT1","hbeforeDT1",500,0.,4);
+//	TH1F * hbeforeDT2 = new TH1F("hbeforeDT2","hbeforeDT2",500,0.,4);
+	//chainDT->Draw("trk_rig_kalman[1]/tof_beta*(1-tof_beta^2)^0.5>>hbeforeDT2",beforecutDTfragm.c_str());
+//	chainDT->Draw("trk_rig_kalman[1]/tof_beta*(1-tof_beta^2)^0.5>>hbeforeDT1",beforecutDT.c_str());
+	
+
+	//fragm rigvsbeta
+//	TH2F * hbeforeDT1 = new TH2F("hbeforeDT1","hbeforeDT1",100,0.,4,100,0,4);
+//	chainDT->Draw("trk_rig_kalman[1]:trk_rig_choutko[1]>>hbeforeDT1",beforecutDT.c_str());
+	
+	//fragm rig
+	//TH1F * hbeforeDT1 = new TH1F("hbeforeDT1","hbeforeDT1",500,0.,4);
+	//TH1F * hbeforeDT2 = new TH1F("hbeforeDT2","hbeforeDT2",500,0.,4);
+	//chainDT->Draw("trk_rig_kalman[1]>>hbeforeDT2",beforecutDTfragm.c_str());
+	//chainDT->Draw("trk_rig_kalman[1]>>hbeforeDT1",beforecutDT.c_str());
+
+	//fragm qL1vsmass
+        beforecutDT = "((trigpatt & 0x2) != 0) && ((sublvl1&0x3E) !=0) && trk_rig_kalman[1]>0&&trk_chisqn[0]<10&&tof_beta>0.5&&trk_qinn>0.7&&trk_qinn<1.3&&tof_beta<0.78&&fabs(tof_qdw-1)<0.3&&abs(tof_qup-1)<0.3&&trk_rig_kalman[1]/tof_beta*(1-tof_beta^2)^0.5<1.25";
+	
+	TH2F * hbeforeDT1 = new TH2F("hbeforeDT1","hbeforeDT1",200,0.,2,200,0,4);
+	chainDT->Draw("trk_q_lay[0]:trk_rig_kalman[1]/tof_beta*(1-tof_beta^2)^0.5>>hbeforeDT1",beforecutDT.c_str());
+		
+	TCanvas * c1 = new TCanvas("mass");
+//	hbeforeDT1->Draw("col");
+	//hbeforeDT2->Draw("same");
 
 }

@@ -4,6 +4,10 @@
 #include "TH1.h"
 #include "binning.h"
 
+
+
+
+
 class ChargeFitter{
 
 	private:
@@ -41,7 +45,7 @@ class ChargeFitter{
 	void SaveResults(FileSaver finalResults);
 
 	void CreateFragmentsMass(float cutmin);
-
+	void FitFragments();
 };
 
 ChargeFitter::ChargeFitter(FileSaver File, std::string Basename,Binning Bins, std::string cutdata, std::string cuttempl1, std::string cuttempl2,std::string cutfragm,std::string cutmass, int nbinsx,int xmin, int xmax){
@@ -113,19 +117,21 @@ void ChargeFitter::FillEventByEventData(Variables * vars, float (*var) (Variable
 	int kbin;
         kbin =  bins.GetBin(var(vars)); //normal filling
 	float mass = (vars->R/var(vars))*pow((1-pow(var(vars),2)),0.5);
-        if(ApplyCuts(CutData,vars)&&kbin>0)
+	float massshift=0;
+	if(!(ApplyCuts("IsFromAgl",vars)||ApplyCuts("IsFromNaF",vars))) massshift=0.007;
+        if(ApplyCuts(CutData,vars)&&kbin>=0)
 		DataDistrib[kbin]->Fill(GetL1Q(vars),vars->PrescaleFactor);	
-	if(ApplyCuts(CutMass,vars)&&kbin>0)
-                Q1Mass[kbin]->Fill(mass,vars->PrescaleFactor);
-	if(ApplyCuts(CutFragm,vars)&&kbin>0){
+	if(ApplyCuts(CutMass,vars)&&kbin>=0)
+                Q1Mass[kbin]->Fill(mass-massshift,vars->PrescaleFactor);
+	if(ApplyCuts(CutFragm,vars)&&kbin>=0){
 		RawFragments[kbin]->Fill(mass,vars->PrescaleFactor);
 		}
 	
 	kbin =  bins.GetBin(discr_var(vars)); //filling with beta @L1
-	if(ApplyCuts(CutTempl1,vars)&&kbin>0){
+	if(ApplyCuts(CutTempl1,vars)&&kbin>=0){
   	      TemplatesQ1[kbin]->Fill(GetL2Q(vars),vars->PrescaleFactor);
 	}
-	if(ApplyCuts(CutTempl2,vars)&&kbin>0)
+	if(ApplyCuts(CutTempl2,vars)&&kbin>=0)
                 TemplatesQ2[kbin]->Fill(GetL2Q(vars),vars->PrescaleFactor);
 }
 
@@ -135,23 +141,26 @@ void ChargeFitter::FillEventByEventMC(Variables * vars, float (*var) (Variables 
 	kbin =  bins.GetBin(var(vars));
 	float betasmear = var(vars);
 	if(BadEvSim) betasmear=BadEvSim->SimulateBadEvents(betasmear);
-	float mass = (vars->R/betasmear)*pow((1-pow(betasmear,2)),0.5);
+	float massshift=0;
+	if(!(ApplyCuts("IsFromAgl",vars)||ApplyCuts("IsFromNaF",vars))) massshift=0.007;
+        
+	float mass = (vars->R/betasmear)*pow((1-pow(betasmear,2)),0.5) - massshift;
 	std::string CutMassMC = CutMass + "&IsHeliumMC";
-	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
+	if(ApplyCuts(CutMassMC,vars)&&kbin>=0)
                 FragmentsMC[kbin]->Fill(mass,vars->mcweight);
 	CutMassMC = CutMass + "&IsPurePMC";
-	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
+	if(ApplyCuts(CutMassMC,vars)&&kbin>=0)
                 PMassMC[kbin]->Fill(mass,vars->mcweight);
 	CutMassMC = CutMass + "&IsPurePMC";
-	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
+	if(ApplyCuts(CutMassMC,vars)&&kbin>=0)
                 DMassMC[kbin]->Fill((1.875/0.938)*mass,vars->mcweight);
 	CutMassMC = CutMass + "&IsPurePMC";
-	if(ApplyCuts(CutMassMC,vars)&&kbin>0)
+	if(ApplyCuts(CutMassMC,vars)&&kbin>=0)
                 TMassMC[kbin]->Fill((2.793/0.938)*mass,vars->mcweight);
 	
 	kbin =  bins.GetBin(discr_var(vars)); //filling with beta @L1
 	std::string CutTempl2MC = CutData + "&IsHeliumMC";
-	if(ApplyCuts(CutTempl2MC,vars)&&kbin>0)
+	if(ApplyCuts(CutTempl2MC,vars)&&kbin>=0)
                 TemplatesQ2MC[kbin]->Fill(GetL2Q(vars),vars->mcweight);	
 }
 
@@ -237,12 +246,59 @@ void ChargeFitter::FitDistributions(float rangemin, float rangemax){
 void ChargeFitter::CreateFragmentsMass(float cutmin){
 	for(int bin=2; bin<bins.size();bin++){
 		float falsefragments = TemplatesQ1[bin]->Integral(TemplatesQ1[bin]->FindBin(cutmin)+1,TemplatesQ1[bin]->FindBin(2.3)+1);
+		if(falsefragments<=0) falsefragments=0;
 		Q1Mass[bin]->Scale((1/Q1Mass[bin]->Integral())*falsefragments);
 		RawFragments[bin]->Add(Q1Mass[bin],-1);
-	
+		//regularization
+		for(int i=0;i<RawFragments[bin]->GetNbinsX();i++) if(RawFragments[bin]->GetBinContent(i+1)<=0) 
+		{	RawFragments[bin]->SetBinContent(i+1,0);
+			RawFragments[bin]->SetBinError(i+1,0);
+		}
 	}	
+	//FitFragments();
+}
+
+void ChargeFitter::FitFragments(){
+		for(int bin=2; bin<bins.size();bin++){
+		TObjArray *Tpl;
+        	Tpl = new TObjArray(2);	
+		Tpl->Add(PMassMC[bin]);
+		Tpl->Add(DMassMC[bin]);		
+		Tpl->Add(TMassMC[bin]);		
+
+		TFractionFitter * Fit = new TFractionFitter(RawFragments[bin], Tpl ,"q");
+		Fit -> SetRangeX(DataDistrib[bin] -> FindBin(0.5),DataDistrib[bin] -> FindBin(4));
+		float outcome = 1;
+                bool fitcondition = (RawFragments[bin] -> GetEntries()>0 && PMassMC[bin]-> GetEntries()>0 && DMassMC[bin]-> GetEntries()>0 && TMassMC[bin]-> GetEntries()>0 );
+                if(fitcondition) outcome=Fit->Fit();
+		if(outcome == 0){
+			TH1F * Result = (TH1F *) Fit-> GetPlot();
+			float itot= Result->Integral();
+			double w1,e1 = 0;
+			double w2,e2 = 0;
+			double w3,e3 = 0;
+		
+
+			////////////////
+			Fit ->GetResult(0,w1,e1);
+			Fit ->GetResult(1,w2,e2);
+			Fit ->GetResult(3,w2,e2);
+				
+			float i1 = PMassMC[bin] ->Integral(PMassMC[bin] -> FindBin(0.5), PMassMC[bin] -> FindBin(4));
+			float i2 = DMassMC[bin] ->Integral(DMassMC[bin] -> FindBin(0.5), DMassMC[bin] -> FindBin(4));
+			float i3 = TMassMC[bin] ->Integral(TMassMC[bin] -> FindBin(0.5), TMassMC[bin] -> FindBin(4));
+
+			cout<<w1<<" "<<w2<<" "<<w3<< ": chisquare= "<<Fit-> GetChisquare()/(float) (Fit -> GetNDF())<<endl;
+
+			PMassMC[bin] -> Scale(w1*itot/i1);
+			DMassMC[bin] -> Scale(w2*itot/i2);
+			TMassMC[bin] -> Scale(w3*itot/i3);
+				
+		} 	
+	}		
 
 }
+
 
 void ChargeFitter::SaveResults(FileSaver finalResults){
 	Save(finalResults);

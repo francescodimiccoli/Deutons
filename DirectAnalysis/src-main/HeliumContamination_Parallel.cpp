@@ -36,15 +36,24 @@ int main(int argc, char * argv[])
 {
 
 
-      cout<<"****************************** FILES OPENING ***************************************"<<endl;
+	cout<<"****************************** FILES OPENING ***************************************"<<endl;
 
 	TH1::SetDefaultSumw2();     	
 	cout<<"****************************** FILES OPENING ***************************************"<<endl;
 
-	string INPUT1(argv[1]);
-	string INPUT2(argv[2]);
-	string OUTPUT(argv[3]);
+	string INPUT1 = "";
+	string INPUT2 = "";
+	string OUTPUT = "";
 
+	if(argc<=2) { 
+		OUTPUT = argv[1];
+	}	
+
+	else {
+		INPUT1 = argv[1];
+		INPUT2 = argv[2];
+		OUTPUT = argv[3];
+	}
 	string refill="";
 	if(argc > 4 ) 	refill = argv[4];	
 
@@ -97,10 +106,11 @@ int main(int argc, char * argv[])
 	TestReweigthingHe->Save(finalResults);
 	*/
 
-	ChargeFitter * HeContTOF = new ChargeFitter(finalHistos,"HeContTOF",ToFDB,"IsPositive&IsPreselectedInner","IsPositive&IsPreselected&IsClearQ1ExceptL2","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2","IsPositive&IsPreselectedHe&IsCleaning","IsPositive&IsPreselected&IsCleaning",300,0,4);
-	ChargeFitter * HeContNaF = new ChargeFitter(finalHistos,"HeContNaF",NaFDB,"IsPositive&IsPreselectedInner&IsFromNaF&RICHBDTCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromNaF&RICHBDTCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromNaF&RICHBDTCut","IsPositive&IsPreselectedHe&IsCleaning&IsFromNaF&RICHBDTCut","IsPositive&IsPreselected&IsCleaning&IsFromNaF&RICHBDTCut",300,0,4);
-	ChargeFitter * HeContAgl = new ChargeFitter(finalHistos,"HeContAgl",AglDB,"IsPositive&IsPreselectedInner&IsFromAgl&RICHBDTCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromAgl&RICHBDTCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromAgl&RICHBDTCut","IsPositive&IsPreselectedHe&IsCleaning&IsFromAgl&RICHBDTCut","IsPositive&IsPreselected&IsCleaning&IsFromAgl&RICHBDTCut",300,0,4);
+	ChargeFitter * HeContTOF = new ChargeFitter(finalHistos,"HeContTOF",ToFDB,"IsPositive&IsPreselectedInner&TofBetaSafetyCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&TofBetaSafetyCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&TofBetaSafetyCut","IsPositive&IsPreselectedHe&IsCleaning&TofBetaSafetyCut","IsPositive&IsPreselected&IsCleaning&TofBetaSafetyCut",300,0,4);
 
+	ChargeFitter * HeContNaF = new ChargeFitter(finalHistos,"HeContNaF",NaFDB,"IsPositive&IsPreselectedInner&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselectedHe&IsCleaning&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselected&IsCleaning&IsFromNaF&RICHBDTCut&NafBetaSafetyCut",300,0,4);
+
+	ChargeFitter * HeContAgl = new ChargeFitter(finalHistos,"HeContAgl",AglDB,"IsPositive&IsPreselectedInner&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselectedHe&IsCleaning&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselected&IsCleaning&IsFromAgl&RICHBDTCut&AglBetaSafetyCut",300,0,4);
 
 	ChargeFitter * HeContTOFCheck[10];
 	for(int i=0;i<10;i++){
@@ -120,8 +130,8 @@ int main(int argc, char * argv[])
 	for(int i=0;i<10;i++) Filler2.AddObject2beFilled(HeContTOFCheck[i],GetBetaTOF,GetLoweredBetaTOF);
 	Filler2.ReinitializeAll(Refill);
 	//main loops
-	Filler2.LoopOnDataVariables(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct),vars);
-//	Filler2.LoopOnMC(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct),vars);
+	Filler2.LoopOnData(DBarReader(chainDT, false ,chain_RTI,chainDT_Cpct),vars);
+	Filler2.LoopOnMC(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct),vars);
 
 	HeContTOF->Save(finalHistos);
 	HeContNaF->Save(finalHistos);
@@ -134,9 +144,9 @@ int main(int argc, char * argv[])
 	HeContAgl->FitDistributions(0.8, 2.3);
 	for(int i=0;i<10;i++) HeContTOFCheck[i]->FitDistributions(0.8, 2.3);
 
-	HeContTOF->CreateFragmentsMass(1.75);
-	HeContNaF->CreateFragmentsMass(1.75);
-	HeContAgl->CreateFragmentsMass(1.75);
+	HeContTOF->CreateFragmentsMass(1.85);
+	HeContNaF->CreateFragmentsMass(1.85);
+	HeContAgl->CreateFragmentsMass(1.85);
 	for(int i=0;i<10;i++) HeContTOFCheck[i]->CreateFragmentsMass(1.65+0.05*i);
 
 	HeContTOF->SaveResults(finalResults);

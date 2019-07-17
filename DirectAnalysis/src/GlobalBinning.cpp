@@ -28,6 +28,10 @@ Binning AglDB(deuton);
 Binning AglPB(proton);
 Binning ForEffCorr(proton);
 Binning ForEffCorr_D(deuton);
+Binning HefragmToF(deuton);
+Binning HefragmNaF(deuton);
+Binning HefragmAgl(deuton);
+
 	
 Binning DRB(deuton);
 Binning PRB(proton);
@@ -64,7 +68,9 @@ void SetBins(){
 	NaFRigB.Reset();
 	AglRigB.Reset();
 	PResB  .Reset();
-
+	HefragmToF.Reset();
+	HefragmNaF.Reset();
+	HefragmAgl.Reset();
 
 	cout<<"H.E. bins"<<endl;
 	DRB.setBinsFromRigidity(nbinsr, 0.5, 100,ResponseTOF,0.00347548,5.8474); 
@@ -77,18 +83,23 @@ void SetBins(){
 	ToFDB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseTOF,0.00347548,5.8474);
 	ToFPB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseTOF,0.00347548,5.8474);
 	ToFRigB.setBinsFromBeta (nbinsToF, betamin, betamax ,ResponseTOF,0.00347548,5.8474);
+	HefragmToF.setBinsFromEkPerMass (4,0.15,0.504,ResponseTOF,0.00347548,5.8474);
 
 	cout<<"NaF bins"<<endl;
 	betamin=0.85, betamax=0.977;
 	NaFDB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseNaF,-0.000859132,-30.5065);
 	NaFPB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseNaF,-0.000859132,-30.5065);
 	NaFRigB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
+	HefragmNaF.setBinsFromEkPerMass (1,1.5,3,ResponseNaF,0.00347548,5.8474);
+
 
 	cout<<"Agl bins"<<endl;
 	betamin=0.97, betamax=0.995;
 	AglDB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseAgl,0,67.8521);
 	AglPB.setBinsFromRDatacard ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data", betamin, betamax ,ResponseAgl,0,67.8521);
 	AglRigB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
+	HefragmAgl.setBinsFromEkPerMass (2,2.6,11.9,ResponseAgl,0.00347548,5.8474);
+
 
 
 	//PResB.setBinsFromRigidity(60, 0.5, 100,ResponseTOF,0.00347548,5.8474);	
@@ -99,16 +110,19 @@ void SetBins(){
 	PRB.Print();
 
 	cout<<"**TOF**"<<endl;
-	ToFPB.Print();
-	ToFDB.Print();
+	//ToFPB.Print();
+	//ToFDB.Print();
+	HefragmToF.Print();
 
 	cout<<"**NaF**"<<endl;
-	NaFPB.Print();
-	NaFDB.Print();
+	//NaFPB.Print();
+	//NaFDB.Print();
+	HefragmNaF.Print();
 
 	cout<<"**Agl**"<<endl;
-	AglPB.Print();
-	AglDB.Print();
+	//AglPB.Print();
+	//AglDB.Print();
+	HefragmAgl.Print();
 
 
 
@@ -130,6 +144,10 @@ void SetUpUsualBinning(){
 	ToFRigB.UseREdges();
 	NaFRigB.UseREdges();
 	AglRigB.UseREdges();
+
+	HefragmToF.UseBetaEdges();
+	HefragmNaF.UseBetaEdges();
+	HefragmAgl.UseBetaEdges();
 
 
 

@@ -51,6 +51,8 @@ void EffCorr::SaveResults(FileSaver finalhistos){
  	finalhistos.Add(GlobalCorrectionpid);
  	finalhistos.Add(Stat_Err);
  	finalhistos.Add(Syst_Err);
+	finalhistos.Add(CorrectionModel);
+	finalhistos.Add(CorrectionModel_Spline);
 
 
 
@@ -85,11 +87,11 @@ void EffCorr::Eval_Errors(){
 		Stat_Err->SetBinError(i+1, 0);	
 		Syst_Err->SetBinError(i+1, 0);	
 	}
-
+	/*
 	AddCorrSystError(GlobalCorrection);
 	AddCorrSystError(GlobalCorrection2);
 	AddCorrSystError(GlobalCorrectionpid);
-
+	*/
 }
 
 void EffCorr::Eval_Corrections(){
@@ -122,7 +124,10 @@ void EffCorr::Eval_Corrections(){
 	GlobalCorrection2->Divide(EffMCpid2->GetEfficiency());	
 	GlobalCorrectionpid->Divide(EffMCpid->GetEfficiency());	
 
+	ModelWithSpline();
+	
 	Eval_Errors();
+
 	return;
 }
 
@@ -151,3 +156,57 @@ void EffCorr::SetDefaultOutFile(FileSaver FinalHistos){
 		 
 }
 
+double FitFunc(double *x, double *p){
+	float value;
+	for(int i=0;i<24;i++){
+		if(x[0]>=4*i&&x[0]<4*(i+1)) value = p[i];
+	}
+	return value;
+}
+
+void EffCorr::ModelWithSpline(){
+/*	std::vector<float> X;
+	std::vector<float> Y;
+		
+	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) if(GlobalCorrection->GetBinError(i+1)>0.2) {
+		Y.push_back( GlobalCorrection->GetBinContent(i+1));
+	
+		if(IsEkinCorrection) X.push_back((ForEffCorr.EkPerMasTOIBins()[i+1]+ForEffCorr.EkPerMasTOIBins()[i])/2);
+		else X.push_back((ForEffCorr.RigTOIBins()[i+1]+ForEffCorr.RigTOIBins()[i])/2);
+	}
+	
+	cout<<"************ CORRECTIONS MODELS: "<< basename<<" ****************"<<endl; 
+	for(int i=0;i<X.size();i++){
+	cout<<i<<" "<<X[i]<<" "<<Y[i]<<endl;
+	}
+	cout<<"****************************************************************"<<endl;
+*/
+	//regularization of histo
+	for(int i=0;i<Bins.size();i++) if(GlobalCorrection->GetBinError(i+1)>0.4) GlobalCorrection->SetBinContent(i+1,0);	
+	int nodes = Bins.size()/4+1;
+	double p[nodes];
+	double x[nodes];
+
+	CorrectionModel = new TF1("correctionmodel",FitFunc,0,Bins.size(),nodes);
+	int j=0;
+	for(int i=0;i<Bins.size();i=i+4){
+		p[j]=GlobalCorrection->GetBinContent(i+2);
+		j++;
+	}
+	for(int i=0;i<nodes;i++) {
+	CorrectionModel->SetParameter(i,p[i]);
+	}
+	GlobalCorrection->Fit("correctionmodel");
+
+	cout<<"******** "<<basename<<" ***********"<<endl;
+	for(int i=0;i<nodes;i++) {
+		p[i]= CorrectionModel->Eval(4*i);
+		if(IsEkinCorrection) x[i] = Bins.EkPerMasTOIBins()[4*i];
+		else 		     x[i] = Bins.RigTOIBins()[4*i];	
+			cout<<x[i]<<" "<<p[i]<<endl;
+	}
+
+	CorrectionModel_Spline = new TSpline3((basename+"_CorrSpline").c_str(),x,p,nodes);
+	CorrectionModel_Spline->SetName((basename+"_CorrSpline").c_str());
+	CorrectionModel_Spline->SetTitle((basename+"_CorrSpline").c_str());
+}

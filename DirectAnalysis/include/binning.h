@@ -76,7 +76,7 @@ class Binning {
       std::vector<float> MomTOIBins ()   {  return  mombin_TOI;   }
       std::vector<float> RigTOIBins ()   {  return  rigbin_TOI;   }
       std::vector<float> BetaTOIBins()   {  return betabin_TOI;   }
-      std::vector<float> EkPerMasTOIBins  ()   {  return   ekpermassbin;  }	
+      std::vector<float> EkPerMasTOIBins  ()   {  return   ekpermassbin_TOI;  }	
 
       std::vector<float> EkTOIBinsCent()   { return    ekbincent_TOI; }  ///< bin centers in log
       std::vector<float> EtotTOIBinsCent() { return  etotbincent_TOI; }

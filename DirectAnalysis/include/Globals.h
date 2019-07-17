@@ -36,6 +36,10 @@ extern Binning NaFPB;
 extern Binning AglDB;
 extern Binning AglPB;
 
+extern Binning HefragmToF;
+extern Binning HefragmNaF;
+extern Binning HefragmAgl;
+
 extern Binning DRB;
 extern Binning PRB;
 extern Binning ForAcceptance;

@@ -37,9 +37,14 @@ class EffCorr : public Tool{
 	std::string directory;
 
 	BadEventSimulator * BadEvSim;	
+	
+	TF1 * CorrectionModel;
+	TSpline3 * CorrectionModel_Spline;
+
 
 	protected:
 	Binning Bins;
+	Binning Bins_D;
 
 	public:
 
@@ -47,37 +52,17 @@ class EffCorr : public Tool{
 	
 
 		
-			IsEkinCorrection = ekin;
+		IsEkinCorrection = ekin;
+		SetBinsForCorrections(IsEkinCorrection);
+		Bins = ForEffCorr;
+		Bins_D = ForEffCorr_D;	
 
-		if(IsEkinCorrection) {
-				ForEffCorr.Reset();
-				ForEffCorr_D.Reset();
-				ForEffCorr.setBinsFromEkPerMass(nbinsr,0.5,15,ResponseTOF,0.00347548,5.8474);
-				ForEffCorr_D.setBinsFromEkPerMass(nbinsr,0.5,15,ResponseTOF,0.00347548,5.8474);
-				ForEffCorr.UseREdges();
-				ForEffCorr_D.UseREdges();
-		}
+		EffMC   = new Efficiency(File, (Basename+"_MC" ).c_str(),Directory,Bins, (Cut_before+"&"+Cut_MC  ).c_str(),(Cut_after+"&"+Cut_MC  ).c_str());
+		EffMCpid2 = new Efficiency(File, (Basename+"_MC2").c_str(),Directory,Bins_D, (Cut_before+"&"+Cut_MC2  ).c_str(),(Cut_after+"&"+Cut_MC2  ).c_str());
+		EffMCpid = new Efficiency(File, (Basename+"_MCpid").c_str(),Directory,Bins, (Cut_before+"&"+Cut_MCpid  ).c_str(),(Cut_after+"&"+Cut_MCpid  ).c_str());
 
-		else {
-				ForEffCorr.Reset();
-				ForEffCorr_D.Reset();
-				ForEffCorr.setBinsFromRigidity(nbinsr,0.5,30,ResponseTOF,0.00347548,5.8474);
-				ForEffCorr_D.setBinsFromRigidity(nbinsr,0.5,30,ResponseTOF,0.00347548,5.8474);
-				ForEffCorr.UseREdges();
-				ForEffCorr_D.UseREdges();
-		}
-
-
-
-
-	
-
-		EffMC   = new Efficiency(File, (Basename+"_MC" ).c_str(),Directory,ForEffCorr, (Cut_before+"&"+Cut_MC  ).c_str(),(Cut_after+"&"+Cut_MC  ).c_str());
-		EffMCpid2 = new Efficiency(File, (Basename+"_MC2").c_str(),Directory,ForEffCorr_D, (Cut_before+"&"+Cut_MC2  ).c_str(),(Cut_after+"&"+Cut_MC2  ).c_str());
-		EffMCpid = new Efficiency(File, (Basename+"_MCpid").c_str(),Directory,ForEffCorr, (Cut_before+"&"+Cut_MCpid  ).c_str(),(Cut_after+"&"+Cut_MCpid  ).c_str());
-
-		EffData = new Efficiency(File, (Basename+"_lat").c_str(),Directory,ForEffCorr, (Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str(),LatEdges);
-		EffData_glob = new Efficiency(File, (Basename+"_glob").c_str(),Directory,ForEffCorr,(Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str());
+		EffData = new Efficiency(File, (Basename+"_lat").c_str(),Directory,Bins, (Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str(),LatEdges);
+		EffData_glob = new Efficiency(File, (Basename+"_glob").c_str(),Directory,Bins,(Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str());
 		
 		TFile * file = File.GetFile();
 		if(file){
@@ -90,14 +75,42 @@ class EffCorr : public Tool{
 			GlobalCorrectionpid = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_globpid").c_str());
 			Syst_Err    = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "Syst_Err").c_str());
 			Stat_Err = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "Stat_Err").c_str());
-
-
-
+			CorrectionModel_Spline = (TSpline3 *) file->Get((Directory+"/"+Basename+"/" + Basename + "_CorrSpline").c_str());
 
 		}
 		basename = Basename;	
 		directory = Directory;
-	}	
+	}
+
+	Binning GetBins(){ return Bins;}	
+	bool IsEkin(){return IsEkinCorrection;}
+	TSpline3 * GetCorrectionModel(){return CorrectionModel_Spline;}
+
+	void SetBinsForCorrections(bool ekin){
+		if(ekin) {
+				ForEffCorr.Reset();
+				ForEffCorr_D.Reset();
+				ForEffCorr.setBinsFromEkPerMass(nbinsr,0.15,15,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr_D.setBinsFromEkPerMass(nbinsr,0.15,15,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr.UseREdges();
+				ForEffCorr_D.UseREdges();
+				ForEffCorr.Print();
+				ForEffCorr_D.Print();
+		}
+
+		else {
+				ForEffCorr.Reset();
+				ForEffCorr_D.Reset();
+				ForEffCorr.setBinsFromRigidity(nbinsr,0.5,30,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr_D.setBinsFromRigidity(nbinsr,0.5,30,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr.UseREdges();
+				ForEffCorr_D.UseREdges();
+				ForEffCorr.Print();
+				ForEffCorr_D.Print();
+	
+		}
+
+	}
 
 	virtual void SetUpBadEventSimulator(BadEventSimulator * Sim) {
 		BadEvSim = Sim;
@@ -139,7 +152,8 @@ class EffCorr : public Tool{
 	void SetToConstantValue(float value);
 	void SetDefaultOutFile(FileSaver FinalHistos);
 	void SetAsTrigEffCorr() {IsTrigEffCorr = true;};
-	
+	void ModelWithSpline();
+
 	void Eval_Errors();
 
 	TH1F * GetMCEfficiency()	{return (TH1F*)EffMC  -> GetEfficiency();}
