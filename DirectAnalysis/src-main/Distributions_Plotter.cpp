@@ -61,8 +61,11 @@ int main(int argc, char * argv[])
 	bool Refill = false;
 	if(refill!="") Refill=true;
 
+	TChain * chain_RTI  	= InputFileReader(INPUT1.c_str(),"RTI");
 	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
 	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+	TChain * chainDT_Cpct    = InputFileReader(INPUT1.c_str(),"Compact");
+	TChain * chainMC_Cpct    = InputFileReader(INPUT2.c_str(),"Compact");
 
 	FileSaver finalHistos;
 	finalHistos.setName(OUTPUT.c_str());
@@ -94,12 +97,14 @@ int main(int argc, char * argv[])
 	Plots.BookGenAcceptanceAnalysis();	
 	Plots.BookTrackingEfficiencyAnalysis();
 	Plots.BookRigvsBetaAnalysis();
+	
 	*/
-	Plots.BookAcceptanceMatrixAnalysis();
-	Plots.BookCutVariablesAnalysis();
+	//Plots.BookAcceptanceMatrixAnalysis();
+	//Plots.BookCutVariablesAnalysis();
+	
+	Plots.BookMassResoAnalysis();
 
-
-        if(Refill)	Plots.FillAllAnalyses(chainDT,chainMC);
+        if(Refill)	Plots.FillAllAnalyses(chain_RTI, chainDT,chainMC,chainDT_Cpct,chainMC_Cpct);
 	Plots.DoAllAnalyses();
 
 	return 0;

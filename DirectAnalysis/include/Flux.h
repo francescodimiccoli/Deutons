@@ -8,12 +8,12 @@
 #include "rundb.h"
 #include "Efficiency.h"
 #include "EffCorr.h"
-
+#include "Acceptance.h"
 	
 class Flux{
 
 	private:
-	Efficiency * MCEfficiency;
+	Acceptance * EffAcceptance;
 	TH1F * Counts=0x0;
 	TH1F * Eff_Acceptance=0x0;
 	TH1F * ExposureTime=0x0;
@@ -39,10 +39,17 @@ class Flux{
 	public:
 
 
-	Flux(FileSaver File, FileSaver FileRes, std::string Basename,std::string Effname, std::string EffDir,std::string CountsName,std::string ExposureName, std::string Acceptancename, Binning Bins){
+	Flux(FileSaver File, FileSaver FileRes, std::string Basename,std::string Accname, std::string AccDir,std::string CountsName,std::string ExposureName, Binning Bins){
 	
-		if(FileRes.CheckFile()) ForAcceptance = (TH1F *)FileRes.Get((Acceptancename+"/"+Acceptancename+"/"+Acceptancename+"_after").c_str());	
-		MCEfficiency = new Efficiency(FileRes,Effname,EffDir,Bins);
+		EffAcceptance = new Acceptance(FileRes,Accname,AccDir,"","",Bins);
+		Eff_Acceptance = (TH1F *) EffAcceptance->GetEffAcc();	
+		Acc_StatErr= (TH1F *) EffAcceptance->GetEffAcc_staterr();
+		Acc_SystErr= (TH1F *) EffAcceptance->GetEffAcc_systerr();
+
+		if(Eff_Acceptance) {
+		cout<<"************ EFFECTIVE ACCEPTANCE FOUND: ********************"<<endl;
+		cout<<Eff_Acceptance<<" "<<Acc_StatErr<<" "<<Acc_SystErr<<endl; }
+
 		if(FileRes.CheckFile()) Counts = (TH1F *) FileRes.Get((CountsName).c_str());	 
 		ExposureTime = (TH1F *) File.Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
 		cout<<("Fluxes/"+Basename+"/"+ExposureName).c_str()<<" "<<ExposureTime<<"; File Name: "<<File.GetName()<<endl;
@@ -54,24 +61,31 @@ class Flux{
 
 
 	}
-	Flux(FileSaver FileRes, std::string Basename, std::string Effname, std::string EffDir,std::string CountsName,std::string ExposureName, Binning Bins){
-		MCEfficiency = new Efficiency(FileRes,Effname,EffDir,Bins);
-		TFile * fileres = FileRes.GetFile();
+
+
+	Flux(FileSaver FileRes, std::string Basename, std::string Accname, std::string AccDir,std::string CountsName,std::string ExposureName, Binning Bins){
 		
-		if(FileRes.CheckFile()) {
+		EffAcceptance = new Acceptance(FileRes,Accname,AccDir,"","",Bins);
+		Eff_Acceptance = (TH1F *) EffAcceptance->GetEffAcc();	
+		Acc_StatErr= (TH1F *) EffAcceptance->GetEffAcc_staterr();
+		Acc_SystErr= (TH1F *) EffAcceptance->GetEffAcc_systerr();
+
+		if(Eff_Acceptance) {
+			cout<<"************ EFFECTIVE ACCEPTANCE FOUND: ********************"<<endl;
+			cout<<Eff_Acceptance<<" "<<Acc_StatErr<<" "<<Acc_SystErr<<endl; }
+
+		TFile * fileres = FileRes.GetFile();
+
+		Counts_Err= (TH1F *) fileres->Get(("Fluxes/"+Basename+"/Counts Error").c_str());
+			if(FileRes.CheckFile()) {
 			Counts = (TH1F *) fileres->Get((CountsName).c_str());
 			ExposureTime = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
-		
-			Eff_Acceptance = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/Eff. Acceptance").c_str());	
-			Acc_StatErr= (TH1F *) fileres->Get(("Fluxes/"+Basename+"/Acceptance Stat. Error").c_str());
-			Acc_SystErr= (TH1F *) fileres->Get(("Fluxes/"+Basename+"/Acceptance Syst. Error").c_str());
-			Counts_Err= (TH1F *) fileres->Get(("Fluxes/"+Basename+"/Counts Error").c_str());
+
 			FluxEstim = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str());
 			FluxEstim_rig = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+Basename+"_Flux_rig").c_str());
 			cout<<("Fluxes/"+Basename+"/"+ExposureName).c_str()<<" "<<ExposureTime<<"; File Name: "<<FileRes.GetName()<<endl;
 			EfficiencyCorrections.clear();
 			EfficiencyFromData.clear();
-
 		
 		}
 		bins = Bins;		
@@ -104,7 +118,6 @@ class Flux{
 	TH1F * GetFlux_rig(){return FluxEstim_rig;}
 
 	TH1F * GetEffAcceptance(){return Eff_Acceptance;}
-
 	TH1F * GetAcc_StatErr() { return  Acc_StatErr;}
 	TH1F * GetAcc_SystErr()	{return Acc_SystErr;}
 	TH1F * GetCounts_Err() {return Counts_Err;}

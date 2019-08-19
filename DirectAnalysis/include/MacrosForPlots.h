@@ -5,6 +5,10 @@
 #include "reweight.h"
 #include "Variables.hpp"
 
+float GammaFromBeta (float beta){ return 1/(sqrt(1-beta*beta)); }
+float EkFromBeta (float beta, float mass) {return GammaFromBeta(beta)*mass - mass;}
+
+
 void DrawBins(TVirtualPad * c1, TH2F* histo, std::vector<float> orizontal_set,std::vector<float> vertical_set,int col_oriz, int col_vert) {
 		c1->cd();
 		std::vector< TLine *> oriz_lines;
@@ -370,6 +374,72 @@ TH1D * GetMeans(TH2F * h1){
 
 }
 
+TH1D * GetSTD(TH2F * h1){
+	string nameh1 = h1->GetName();
+	nameh1 = nameh1 + "_2";
+	TH1D * h1_1 = (TH1D*)gDirectory->Get(nameh1.c_str());	
+	return h1_1;
+
+}
+
+void DrawMassRes(FileSaver finalHistos,FileSaver finalResults){
+
+	TH2F * h1 = (TH2F*)finalHistos.Get("MassvsBetaTOF/MassvsBetaTOF");
+	TH2F * h2 = (TH2F*)finalHistos.Get("MassvsBetaNaF/MassvsBetaNaF");
+	TH2F * h3 = (TH2F*)finalHistos.Get("MassvsBetaAgl/MassvsBetaAgl");
+
+	cout<<h1<<" "<<h2<<" "<<h3<<endl;
+	h1->FitSlicesY(0,20,h1->GetNbinsX(),5);
+	h2->FitSlicesY(0,20,h2->GetNbinsX(),5);
+	h3->FitSlicesY(0,20,h3->GetNbinsX(),5);
+
+	TH1D * h1_1 = GetSTD(h1);	
+	TH1D * h2_1 = GetSTD(h2);	
+	TH1D * h3_1 = GetSTD(h3);	
+
+	h1_1->Rebin(4);
+	h2_1->Rebin(4);
+	h3_1->Rebin(4);;
+
+	h1_1->Scale(1/4.);
+	h2_1->Scale(1/4.);
+	h3_1->Scale(1/4.);;
+
+	h1_1->Smooth();
+	h2_1->Smooth();
+	h3_1->Smooth();;
+
+
+	TH2F * Frame = new TH2F("Frame","Frame", 1000,0,25,1000,0,1);
+	TGraphErrors * ResoTOF = new TGraphErrors();
+	TGraphErrors * ResoNaF = new TGraphErrors();
+	TGraphErrors * ResoAgl = new TGraphErrors();
+	int j=0;
+	for(int i=0;i<h1_1->GetNbinsX();i++) if(h1_1->GetBinContent(i+1)>0 && h1_1->GetBinError(i+1)<0.05){ ResoTOF->SetPoint(j,EkFromBeta(h1_1->GetBinCenter(i+1),0.938) ,2*h1_1->GetBinContent(i+1)); j++;}
+	j=0;                                                                                        
+	for(int i=0;i<h1_1->GetNbinsX();i++) if(h2_1->GetBinContent(i+1)>0 && h2_1->GetBinError(i+1)<0.05){ ResoNaF->SetPoint(j,EkFromBeta(h2_1->GetBinCenter(i+1),0.938) ,2*h2_1->GetBinContent(i+1)); j++;}
+	j=0;                                                                                        
+	for(int i=0;i<h1_1->GetNbinsX();i++) if(h2_1->GetBinContent(i+1)>0 && h2_1->GetBinError(i+1)<0.05){ ResoAgl->SetPoint(j,EkFromBeta(h3_1->GetBinCenter(i+1),0.938) ,2*h3_1->GetBinContent(i+1)); j++;}
+
+	
+	TCanvas *c1 = new TCanvas("MassresoTOF");
+	gPad->SetLogx();
+	Frame->Draw();
+	ResoTOF->SetLineColor(2);
+        ResoNaF->SetLineColor(3);
+        ResoAgl->SetLineColor(4);
+
+	ResoTOF->SetLineWidth(2);
+        ResoNaF->SetLineWidth(2);
+        ResoAgl->SetLineWidth(2);
+
+	ResoTOF->Draw("PLsame");
+	ResoNaF->Draw("PLsame");
+	ResoAgl->Draw("PLsame");	
+
+	finalResults.Add(c1);
+	finalResults.writeObjsInFolder("MassReso/TOF");
+}
 
 void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 

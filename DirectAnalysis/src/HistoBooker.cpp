@@ -37,7 +37,8 @@ void SingleScatter::FillEventByEventScatter(Variables * vars, float (*var) (Vari
 	
 	 if(ApplyCuts(cut,vars)){
         	 float weight=1;
-               if(ApplyCuts("IsMC",vars)) weight = vars->mcweight;
+        	cout<<"ecco"<<endl;
+	       if(ApplyCuts("IsMC",vars)) weight = vars->mcweight;
                else weight = vars->PrescaleFactor;
 	       ((TH2F*)Histos[0])->Fill(var(vars),secondvar(vars),weight);
         }

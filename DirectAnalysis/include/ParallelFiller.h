@@ -184,17 +184,18 @@ class ParallelFiller{
 
     void LoopOnGeneric(DBarReader reader, Variables * vars){
         if(!Refill) return;
-        if(reader.GetTree()->GetNbranches()>11) {LoopOnGeneric(reader.GetTree(),vars); return;}
+        if(!reader.GetTree() && !reader.GetCompactTree()) return;
+        if(reader.GetTree()) if(reader.GetTree()->GetNbranches()>11) {LoopOnGeneric(reader.GetTree(),vars); return;}
         else
         cout<<" Generic Filling ..."<< endl;
-        for(int i=0;i<reader.GetTreeEntries();i++){
+        for(int i=0;i<reader.GetCompactEntries();i++){
 	    if(i%(int)FRAC!=0) continue; // WTF ?!
-            UpdateProgressBar(i, reader.GetTreeEntries());
+            UpdateProgressBar(i, reader.GetCompactEntries());
      	    vars->ResetVariables();	
-            if(reader.GetTree()->GetNbranches()>2) reader.FillVariables(i,vars);
-            else reader.FillCompact(i,vars);
+	    //if(reader.GetTree()>0&&reader.GetTree()->GetNbranches()>2) reader.FillVariables(i,vars);
+            /*else*/ reader.FillCompact(i,vars);
 
-	     vars->Update();
+	    vars->Update();
             //vars->PrintCurrentState();
             for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
                 if(SecondFillinVariables[nobj]) Objects2beFilled[nobj]->FillEventByEventScatter(vars,FillinVariables[nobj],SecondFillinVariables[nobj],DiscrimVariables[nobj]);

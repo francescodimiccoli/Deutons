@@ -6,6 +6,7 @@
 #include "Globals.h"
 #include "EffCorr.h"
 #include "rundb.h"
+
 struct MCPar{
 	float Rmin,Rmax,Trigrate,gen_factor,art_ratio;
 	long int tot_ev,tot_trig;
@@ -69,7 +70,11 @@ class Acceptance : public Tool{
 	void Save();
 	void SaveResults(FileSaver finalhistos);
 	void SetDefaultOutFile(FileSaver FinalHistos);
-	void EvalEffAcc();	
+	void EvalEffAcc();
+	TH1F * GetEffAcc() {return EffAcceptance;}
+	TH1F * GetEffAcc_staterr() {return Acc_StatErr;}
+	TH1F * GetEffAcc_systerr() {return Acc_SystErr;}
+		
 };
 
 #endif

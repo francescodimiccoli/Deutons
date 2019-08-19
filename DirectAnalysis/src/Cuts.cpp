@@ -96,7 +96,7 @@ bool IsDownGoing    (Variables * vars)    	{ return (vars->beta_SA > 0.3); }
 bool IsGoodChi2	    (Variables * vars) 		{ return ( ((int)vars->joinCutmask&16)==16);}
 bool IsLUT2         (Variables * vars)          { return (((int)vars->joinCutmask&4)==4);} 
 bool IsPhysTrig     (Variables * vars)		{ return ((int)vars->joinCutmask&1)==1;}
-bool IsGoodTrack    (Variables * vars) 		{return /*vars->R!=0 && HasL2(vars) &&*/ IsGoodTrackPattern(vars) ;}
+bool IsGoodTrack    (Variables * vars) 		{return vars->R>=0.55 && IsGoodTrackPattern(vars) ;}
 bool IsCharge1Track (Variables * vars) 		{return (vars->qInner>0.8&&vars->qInner<1.3);}
 bool IsCharge1TrackLoose (Variables * vars) 	{return (vars->qInner>0.&&vars->qInner<2.);}
 

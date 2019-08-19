@@ -117,7 +117,7 @@ print "Time bins: ".scalar(@bartels)."\n";
 
 $jobsrunning = 0;
 
-for($i=10;$i<25;$i++){
+for($i=1;$i<8;$i++){
 
 	print $bartels[$i]."\n";
 	system("perl Launch_all.pl $bartels[$i] $bartels[$i+1] 40 0");

@@ -6,12 +6,13 @@ chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
 $datapath  = "/data1/home/data/v6_pass7/Compact_data/";
+#$mcP_path  = "/data1/home/data/v6_pass7/MC/pr.pl1ph.021000";
 $mcP_path  = "/data1/home/data/v6_pass7/MC/pr.pl1phpsa.0550.4_00";
 $mcD_path  = "";
 $mcHe_path = "";
 $mcT_path  = "";
 
-$FRAC = 1;
+$FRAC = 0;
 $OFFSET = $ARGV[3];
 $out_path  = "/eos/ams/user/f/fdimicco/";
 

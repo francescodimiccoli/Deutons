@@ -28,7 +28,7 @@ class Plotter{
  
 	public:
 	Plotter(FileSaver finalhistos,FileSaver finalresults) {finalHistos = finalhistos; finalResults = finalresults;}
-	void FillAllAnalyses(TChain * chainDT,TChain *chainMC);
+	void FillAllAnalyses(TChain * chain_RTI, TChain * chainDT,TChain *chainMC,TChain * chainDT_Cpct,TChain *chainMC_Cpct);
 	void BookMassAnalysis();
 	void BookCleaningCutsAnalysis();
 	void BookRichBDTAnalysis();
@@ -38,15 +38,16 @@ class Plotter{
 	void BookRigvsBetaAnalysis();
 	void BookAcceptanceMatrixAnalysis();
 	void BookCutVariablesAnalysis();	
+	void BookMassResoAnalysis();
 
 	void DoAllAnalyses();
 };
 
-void Plotter::FillAllAnalyses(TChain * chainDT,TChain *chainMC){
-	Booker.FillEverything(DBarReader(chainDT, false));
-	Booker.SaveEverything(finalHistos);
+void Plotter::FillAllAnalyses(TChain * chain_RTI, TChain * chainDT,TChain *chainMC,TChain * chainDT_Cpct,TChain *chainMC_Cpct){
+//	Booker.FillEverything(DBarReader(chainDT, false,chain_RTI,chainDT_Cpct));
+//	Booker.SaveEverything(finalHistos);
 	
-	BookerMC.FillEverything(DBarReader(chainMC, true));
+	BookerMC.FillEverything(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct));
         BookerMC.SaveEverything(finalHistos);
 }
 
@@ -206,6 +207,15 @@ void Plotter::BookAcceptanceMatrixAnalysis(){
 	BookerMC.BookBinnedScatter("Acceptance Matrix v8",PRB,"IsProtonMC&IsStandardSel_v8",GetGenMomentum,GetRigidity);
 
 	plottingfunctions.push_back(DrawAcceptanceMatrix);
+}
+
+
+void Plotter::BookMassResoAnalysis(){
+	 BookerMC.BookSingleScatter(     "MassvsBetaTOF",100,0.3,0.95,100,0,4.5,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsOnlyFromToF",GetBetaTOF,GetRecMassTOF,GetRecMassTOF);
+	 BookerMC.BookSingleScatter(     "MassvsBetaNaF",100,0.8,0.995,100,0,4.5,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",GetBetaRICH,GetRecMassRICH,GetRecMassRICH);
+	 BookerMC.BookSingleScatter(     "MassvsBetaAgl",100,0.96,0.998,100,0,4.5,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",GetBetaRICH,GetRecMassRICH,GetRecMassRICH);
+	
+	plottingfunctions.push_back(DrawMassRes);
 }
 
 

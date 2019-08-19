@@ -432,6 +432,8 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	/////////////////////////////// TRACKER ////////////////////////////////////
 
 	vars->R     = ntpCompact->trk_rig_kalman[1]; // 1 -- Inner tracker (Kalman)
+//	vars->R     = ntpCompact->trk_rig_choutko; // 1 -- Inner tracker (choutko - no MS)
+
 
 	vars->Chisquare         = ntpCompact->trk_chisqn[0]; // 1 = Inner      , 0 = X side
 	vars->Chisquare_y       = ntpCompact->trk_chisqn[1]; // 1 = Inner      , 1 = Y side
