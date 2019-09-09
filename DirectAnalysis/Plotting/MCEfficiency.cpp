@@ -58,9 +58,9 @@ int main(int argc, char * argv[]){
 
         cout<<"****************************** PLOTTING EFFICIENCIES ***************************************"<<endl;
 
-	AllRangesEfficiency * FullSetTOT_P = new AllRangesEfficiency(finalHistos,"FullSetTOT_P","FullSetTOT",ToFPB,NaFPB,AglPB);
+	AllRangesEfficiency * FullSetTOT_P = new AllRangesEfficiency(finalHistos,"FullSetTOT_P","FullSetTOT",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
 
-        AllRangesEfficiency * FullSetTOT_D = new AllRangesEfficiency(finalHistos,"FullSetTOT_D","FullSetTOT",ToFDB,NaFDB,AglDB);
+        AllRangesEfficiency * FullSetTOT_D = new AllRangesEfficiency(finalHistos,"FullSetTOT_D","FullSetTOT",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
 
         Efficiency * Cascade1 = new Efficiency(finalHistos,"Cascade1","Cascade1",PRB);
         Efficiency * Cascade2 = new Efficiency(finalHistos,"Cascade2","Cascade2",PRB);
@@ -71,34 +71,34 @@ int main(int argc, char * argv[]){
         Efficiency * Cascade7 = new Efficiency(finalHistos,"Cascade7","Cascade7",PRB);
         Efficiency * Cascade8 = new Efficiency(finalHistos,"Cascade8","Cascade8",PRB);
 
-        AllRangesEfficiency * Trigger_P = new AllRangesEfficiency(finalHistos,"Trigger_P","Trigger",ToFPB,NaFPB,AglPB);
-        AllRangesEfficiency * Trigger_D = new AllRangesEfficiency(finalHistos,"Trigger_D","Trigger",ToFDB,NaFDB,AglDB);
-        AllRangesEfficiency * MinimBias_P = new AllRangesEfficiency(finalHistos,"MinimBias_P","MinimBias",ToFPB,NaFPB,AglPB);
-        AllRangesEfficiency * MinimBias_D = new AllRangesEfficiency(finalHistos,"MinimBias_D","MinimBias",ToFDB,NaFDB,AglDB);
-        AllRangesEfficiency * Cleaning_P = new AllRangesEfficiency(finalHistos,"Cleaning_P","Cleaning",ToFPB,NaFPB,AglPB);
-        AllRangesEfficiency * Cleaning_D = new AllRangesEfficiency(finalHistos,"Cleaning_D","Cleaning",ToFDB,NaFDB,AglDB);
-        AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICH_P","RICH",ToFPB,NaFPB,AglPB);
-        AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICH_D","RICH",ToFDB,NaFDB,AglDB);
-        AllRangesEfficiency * RICHQual_P = new AllRangesEfficiency(finalHistos,"RICHQual_P","RICHQual",ToFPB,NaFPB,AglPB);
-        AllRangesEfficiency * RICHQual_D = new AllRangesEfficiency(finalHistos,"RICHQual_D","RICHQual",ToFDB,NaFDB,AglDB);
-	AllRangesEfficiency * GoldenTOF_P = new AllRangesEfficiency(finalHistos,"GoldenTOF_P","GoldenTOF",ToFPB,NaFPB,AglPB);
-	AllRangesEfficiency * GoldenTOF_D = new AllRangesEfficiency(finalHistos,"GoldenTOF_D","GoldenTOF",ToFDB,NaFDB,AglDB);
+        AllRangesEfficiency * Trigger_P = new AllRangesEfficiency(finalHistos,"Trigger_P","Trigger",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+        AllRangesEfficiency * Trigger_D = new AllRangesEfficiency(finalHistos,"Trigger_D","Trigger",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
+        AllRangesEfficiency * MinimBias_P = new AllRangesEfficiency(finalHistos,"MinimBias_P","MinimBias",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+        AllRangesEfficiency * MinimBias_D = new AllRangesEfficiency(finalHistos,"MinimBias_D","MinimBias",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
+        AllRangesEfficiency * Cleaning_P = new AllRangesEfficiency(finalHistos,"Cleaning_P","Cleaning",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+        AllRangesEfficiency * Cleaning_D = new AllRangesEfficiency(finalHistos,"Cleaning_D","Cleaning",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
+        AllRangesEfficiency * RICH_P = new AllRangesEfficiency(finalHistos,"RICH_P","RICH",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+        AllRangesEfficiency * RICH_D = new AllRangesEfficiency(finalHistos,"RICH_D","RICH",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
+        AllRangesEfficiency * RICHQual_P = new AllRangesEfficiency(finalHistos,"RICHQual_P","RICHQual",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+        AllRangesEfficiency * RICHQual_D = new AllRangesEfficiency(finalHistos,"RICHQual_D","RICHQual",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
+	AllRangesEfficiency * GoldenTOF_P = new AllRangesEfficiency(finalHistos,"GoldenTOF_P","GoldenTOF",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+	AllRangesEfficiency * GoldenTOF_D = new AllRangesEfficiency(finalHistos,"GoldenTOF_D","GoldenTOF",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
 
-	AllRangesEfficiency * Trigger_P_PID = new AllRangesEfficiency(finalHistos,"Trigger_P_PID","Trigger",ToFPB,NaFPB,AglPB);
-        AllRangesEfficiency * Trigger_D_PID = new AllRangesEfficiency(finalHistos,"Trigger_D_PID","Trigger",ToFDB,NaFDB,AglDB);
-        AllRangesEfficiency * MinimBias_P_PID = new AllRangesEfficiency(finalHistos,"MinimBias_P_PID","MinimBias",ToFPB,NaFPB,AglPB);
-        AllRangesEfficiency * MinimBias_D_PID = new AllRangesEfficiency(finalHistos,"MinimBias_D_PID","MinimBias",ToFDB,NaFDB,AglDB);
-        AllRangesEfficiency * Cleaning_P_PID = new AllRangesEfficiency(finalHistos,"Cleaning_P_PID","Cleaning",ToFPB,NaFPB,AglPB);
-        AllRangesEfficiency * Cleaning_D_PID = new AllRangesEfficiency(finalHistos,"Cleaning_D_PID","Cleaning",ToFDB,NaFDB,AglDB);
-        AllRangesEfficiency * RICH_P_PID = new AllRangesEfficiency(finalHistos,"RICH_P_PID","RICH",ToFPB,NaFPB,AglPB);
-        AllRangesEfficiency * RICH_D_PID = new AllRangesEfficiency(finalHistos,"RICH_D_PID","RICH",ToFDB,NaFDB,AglDB);
-        AllRangesEfficiency * RICHQual_P_PID = new AllRangesEfficiency(finalHistos,"RICHQual_P_PID","RICHQual",ToFPB,NaFPB,AglPB);
-        AllRangesEfficiency * RICHQual_D_PID = new AllRangesEfficiency(finalHistos,"RICHQual_D_PID","RICHQual",ToFDB,NaFDB,AglDB);
-	AllRangesEfficiency * GoldenTOF_P_PID = new AllRangesEfficiency(finalHistos,"GoldenTOF_P_PID","GoldenTOF",ToFPB,NaFPB,AglPB);
-	AllRangesEfficiency * GoldenTOF_D_PID = new AllRangesEfficiency(finalHistos,"GoldenTOF_D_PID","GoldenTOF",ToFDB,NaFDB,AglDB);
+	AllRangesEfficiency * Trigger_P_PID = new AllRangesEfficiency(finalHistos,"Trigger_P_PID","Trigger",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+        AllRangesEfficiency * Trigger_D_PID = new AllRangesEfficiency(finalHistos,"Trigger_D_PID","Trigger",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
+        AllRangesEfficiency * MinimBias_P_PID = new AllRangesEfficiency(finalHistos,"MinimBias_P_PID","MinimBias",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+        AllRangesEfficiency * MinimBias_D_PID = new AllRangesEfficiency(finalHistos,"MinimBias_D_PID","MinimBias",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
+        AllRangesEfficiency * Cleaning_P_PID = new AllRangesEfficiency(finalHistos,"Cleaning_P_PID","Cleaning",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+        AllRangesEfficiency * Cleaning_D_PID = new AllRangesEfficiency(finalHistos,"Cleaning_D_PID","Cleaning",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
+        AllRangesEfficiency * RICH_P_PID = new AllRangesEfficiency(finalHistos,"RICH_P_PID","RICH",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+        AllRangesEfficiency * RICH_D_PID = new AllRangesEfficiency(finalHistos,"RICH_D_PID","RICH",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
+        AllRangesEfficiency * RICHQual_P_PID = new AllRangesEfficiency(finalHistos,"RICHQual_P_PID","RICHQual",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+        AllRangesEfficiency * RICHQual_D_PID = new AllRangesEfficiency(finalHistos,"RICHQual_D_PID","RICHQual",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
+	AllRangesEfficiency * GoldenTOF_P_PID = new AllRangesEfficiency(finalHistos,"GoldenTOF_P_PID","GoldenTOF",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+	AllRangesEfficiency * GoldenTOF_D_PID = new AllRangesEfficiency(finalHistos,"GoldenTOF_D_PID","GoldenTOF",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
 	
-	AllRangesEfficiency * Fragmentation_P = new AllRangesEfficiency(finalHistos,"Fragmentation_P","Fragmentation",ToFPB,NaFPB,AglPB);
-	AllRangesEfficiency * Fragmentation_D = new AllRangesEfficiency(finalHistos,"Fragmentation_D","Fragmentation",ToFDB,NaFDB,AglDB);
+	AllRangesEfficiency * Fragmentation_P = new AllRangesEfficiency(finalHistos,"Fragmentation_P","Fragmentation",Global.GetToFPBins(),Global.GetNaFPBins(),Global.GetAglPBins());
+	AllRangesEfficiency * Fragmentation_D = new AllRangesEfficiency(finalHistos,"Fragmentation_D","Fragmentation",Global.GetToFDBins(),Global.GetNaFDBins(),Global.GetAglDBins());
 
 
 
@@ -249,21 +249,21 @@ void DrawEfficiencyComparison( AllRangesEfficiency * EffP,AllRangesEfficiency * 
 	c3_up->cd();
 	
 	//fix legend
-	PlotTH1FintoGraph(gPad,ToFPB, (TH1F*)EffP->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"TOF range",8);
-	PlotTH1FintoGraph(gPad,NaFPB, (TH1F*)EffP->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"NaF range",22);
-	PlotTH1FintoGraph(gPad,AglPB, (TH1F*)EffP->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"Agl range",29);
+	PlotTH1FintoGraph(gPad,Global.GetToFPBins(), (TH1F*)EffP->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"TOF range",8);
+	PlotTH1FintoGraph(gPad,Global.GetNaFPBins(), (TH1F*)EffP->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"NaF range",22);
+	PlotTH1FintoGraph(gPad,Global.GetAglPBins(), (TH1F*)EffP->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",1,true,"Psame",0.1,10,1e-6,1,"Agl range",29);
 
-	PlotTH1FintoGraph(gPad,ToFPB, (TH1F*)EffP->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons",8);
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)EffD->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons",8);
+	PlotTH1FintoGraph(gPad,Global.GetToFPBins(), (TH1F*)EffP->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Protons",8);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), (TH1F*)EffD->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons",8);
 	//	
 
-	PlotTH1FintoGraph(gPad,ToFPB, (TH1F*)EffP->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"TOF range",8,true);
-	PlotTH1FintoGraph(gPad,NaFPB, (TH1F*)EffP->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"NaF range",22,true);
-	PlotTH1FintoGraph(gPad,AglPB, (TH1F*)EffP->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Agl range",29,true);
+	PlotTH1FintoGraph(gPad,Global.GetToFPBins(), (TH1F*)EffP->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"TOF range",8,true);
+	PlotTH1FintoGraph(gPad,Global.GetNaFPBins(), (TH1F*)EffP->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"NaF range",22,true);
+	PlotTH1FintoGraph(gPad,Global.GetAglPBins(), (TH1F*)EffP->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",2,true,"Psame",0.1,10,1e-6,1,"Agl range",29,true);
 
-	PlotTH1FintoGraph(gPad,ToFDB, (TH1F*)EffD->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons TOF",8,true);
-	PlotTH1FintoGraph(gPad,NaFDB, (TH1F*)EffD->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons NaF",22,true);
-	PlotTH1FintoGraph(gPad,AglDB, (TH1F*)EffD->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons Agl",29,true);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), (TH1F*)EffD->EffTOF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons TOF",8,true);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), (TH1F*)EffD->EffNaF->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons NaF",22,true);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), (TH1F*)EffD->EffAgl->GetEfficiency(),"Kinetic Energy [GeV/nucl.]", "Efficiency",4,true,"Psame",0.1,10,1e-6,1,"Deutons Agl",29,true);
 	
 	c3_do->cd();
 	gPad->SetGridy();
@@ -275,9 +275,9 @@ void DrawEfficiencyComparison( AllRangesEfficiency * EffP,AllRangesEfficiency * 
 	RatioNaF ->Divide( (TH1F*)EffD->EffNaF->GetEfficiency()->Clone());
 	RatioAgl ->Divide( (TH1F*)EffD->EffAgl->GetEfficiency()->Clone());
 
-	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.6,1.3,"TOF range",8,true);
-	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.6,1.3,"NaF range",22,true);
-	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.6,1.3,"Agl range",29,true);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), RatioTOF,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.6,1.3,"TOF range",8,true);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), RatioNaF,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.6,1.3,"NaF range",22,true);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), RatioAgl,"", "P/D Eff. ratio",1,true,"Psame",0.1,10,0.6,1.3,"Agl range",29,true);
 
 
 

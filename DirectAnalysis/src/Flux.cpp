@@ -7,8 +7,10 @@ void Flux::Eval_Flux(){
 	// COUNTS
 	cout<<endl;
 	cout<<"********************************************"<<endl;
-	cout<<"Counts "<<Counts<<" "<<Counts->GetName()<<endl;	
-	if(Counts>0) {			FluxEstim = (TH1F *) Counts->Clone();
+	if(Counts>0) {	
+					cout<<"Counts "<<Counts->GetName()<<" "<<endl;	
+	
+					FluxEstim = (TH1F *) Counts->Clone();
 					Counts_Err  = (TH1F *) Counts->Clone();
 					for(int i=0;i<Counts_Err->GetNbinsX();i++) {
 						if(Counts_Err->GetBinContent(i+1)>0&&Counts_Err->GetBinError(i+1)>0)
@@ -31,7 +33,7 @@ void Flux::Eval_Flux(){
 	if(ExposureTime) FluxEstim -> Divide(ExposureTime);
 	////
 	//ACCEPTANCE
-	if(Eff_Acceptance) FluxEstim -> Divide(Eff_Acceptance);
+//	if(Eff_Acceptance) FluxEstim -> Divide(Eff_Acceptance);
 
 	// DeltaE (CONV IN RIG)
 	FluxEstim_rig = (TH1F*) FluxEstim ->Clone();

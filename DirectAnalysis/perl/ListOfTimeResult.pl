@@ -26,4 +26,25 @@ for($i=0;$i<scalar(@files);$i++) {
 	print OUT ",\n\" $files[$i]\"";
 }
 
+print OUT "};\n\n";
+
+
+chomp (@files_group = `ls $workdir/AnalysisFiles/Grouped/1*_Results`);
+
+for($i=0;$i<scalar(@files_group);$i++) {
+	print "$files_group[$i]\n";
+}
+
+
+print OUT "std::vector<std::string> GroupedFiles { \n";
+
+for($i=0;$i<scalar(@files_group);$i++) {
+	if($i==0) {
+		print OUT "\" $files_group[$i]\"";
+	}
+	print OUT ",\n\" $files_group[$i]\"";
+}
+
 print OUT "};";
+
+

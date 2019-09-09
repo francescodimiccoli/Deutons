@@ -74,7 +74,7 @@ void TemplateFIT::FillEventByEventData(Variables * vars, float (*var) (Variables
 	cout<<"******************"<<endl;
 */
 				
-	if(ApplyCuts(cut,vars)&&kbin>=0){
+	if(ApplyCuts((cut+"&RigSafetyCut").c_str(),vars)&&kbin>=0){
 		//vars->PrintCurrentState();
 		for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
@@ -149,14 +149,14 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 					float mass=0;
 					mass = vars->R/betasmear * pow((1-pow(betasmear,2)),0.5);
 	
-					if(ApplyCuts(cutP,vars)&&kbin>=0)  fits[kbin][i][j]->Templ_P->Fill(mass,mctotalweight);		
-					if(ApplyCuts(cutD,vars)&&kbin>=0)  fits[kbin][i][j]->Templ_D->Fill( (1.875/0.938)*mass,mctotalweight);
+					if(ApplyCuts((cutP+"&RigSafetyCut").c_str(),vars)&&kbin>=0)  fits[kbin][i][j]->Templ_P->Fill(mass,mctotalweight);		
+					if(ApplyCuts((cutD+"&RigSafetyCut").c_str(),vars)&&kbin>=0)  fits[kbin][i][j]->Templ_D->Fill( (1.875/0.938)*mass,mctotalweight);
 					if(ApplyCuts(cutHe,vars)&&kbin>=0) fits[kbin][i][j]->Templ_He->Fill((2.793/0.938)*mass,mctotalweight);
 					}
 				    else {
 				   	kbin = bins.GetBin(discr_var(vars));
-					if(ApplyCuts(cutP,vars)&&kbin>=0)  fits[kbin][i][j]->Templ_P->Fill(betasmear,mctotalweight);
-                                        if(ApplyCuts(cutD,vars)&&kbin>=0)  fits[kbin][i][j]->Templ_D->Fill(betasmear,mctotalweight);
+					if(ApplyCuts((cutP+"&RigSafetyCut").c_str(),vars)&&kbin>=0)   fits[kbin][i][j]->Templ_P->Fill(betasmear,mctotalweight);
+                                        if(ApplyCuts((cutD+"&RigSafetyCut").c_str(),vars)&&kbin>=0)   fits[kbin][i][j]->Templ_D->Fill(betasmear,mctotalweight);
                                         if(ApplyCuts(cutHe,vars)&&kbin>=0) fits[kbin][i][j]->Templ_He->Fill(betasmear,mctotalweight);
 
 				   }	
@@ -167,8 +167,8 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 						kbin = bins.GetBin(betasmear);
 						float mass = vars->R/betasmear * pow((1-pow(betasmear,2)),0.5);		
 
-						if(ApplyCuts(cutP,vars)&&kbin>=0)  fits[kbin][i][j]->Templ_P->Fill(mass,mctotalweight);		
-						if(ApplyCuts(cutD,vars)&&kbin>=0)  fits[kbin][i][j]->Templ_D->Fill( (1.875/0.938)*mass,vars->mcweight);
+						if(ApplyCuts((cutP+"&RigSafetyCut").c_str(),vars)&&kbin>=0)  fits[kbin][i][j]->Templ_P->Fill(mass,mctotalweight);		
+						if(ApplyCuts((cutD+"&RigSafetyCut").c_str(),vars)&&kbin>=0)  fits[kbin][i][j]->Templ_D->Fill( (1.875/0.938)*mass,vars->mcweight);
 						if(ApplyCuts(cutHe,vars)&&kbin>=0) fits[kbin][i][j]->Templ_He->Fill((2.793/0.938)*mass,vars->mcweight);
 
 						float betabad = betasmear;
@@ -176,13 +176,13 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 							kbin = bins.GetBin(betabad);
 						}
 						float mass_bad = vars->R/betabad * pow((1-pow(betabad,2)),0.5);
-						if(ApplyCuts(cutP,vars)&&kbin>=0)  fits[kbin][i][j]->Templ_Noise->Fill(mass_bad,mctotalweight);
+						if(ApplyCuts((cutP+"&RigSafetyCut").c_str(),vars)&&kbin>=0)  fits[kbin][i][j]->Templ_Noise->Fill(mass_bad,mctotalweight);
 					}					
 					else {
 						if(BadEvSim) betasmear=BadEvSim->SimulateBadEvents(betasmear);
 						kbin = bins.GetBin(discr_var(vars));
-						if(ApplyCuts(cutP,vars)&&kbin>=0)  fits[kbin][i][j]->Templ_P->Fill(betasmear,mctotalweight);
-	                                        if(ApplyCuts(cutD,vars)&&kbin>=0)  fits[kbin][i][j]->Templ_D->Fill(betasmear,vars->mcweight);
+						if(ApplyCuts((cutP+"&RigSafetyCut").c_str(),vars)&&kbin>=0)  fits[kbin][i][j]->Templ_P->Fill(betasmear,mctotalweight);
+	                                        if(ApplyCuts((cutD+"&RigSafetyCut").c_str(),vars)&&kbin>=0)  fits[kbin][i][j]->Templ_D->Fill(betasmear,vars->mcweight);
         	                                if(ApplyCuts(cutHe,vars)&&kbin>=0) fits[kbin][i][j]->Templ_He->Fill(betasmear,vars->mcweight);
 					}
 				}

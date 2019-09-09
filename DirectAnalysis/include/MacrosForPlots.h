@@ -502,9 +502,9 @@ void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 	TCanvas * BinningTOF = new TCanvas("binningTOF");
 	BinningTOF->Divide(2,0);
 
-	std::vector<float> orizontal_set=ToFPB.BetaBins ();
-	std::vector<float> vertical_set_P=ToFPB.BetaTOIBins () ;
-	std::vector<float> vertical_set_D=ToFDB.BetaTOIBins () ;
+	std::vector<float> orizontal_set=Global.GetToFPBins().BetaBins ();
+	std::vector<float> vertical_set_P=Global.GetToFPBins().BetaTOIBins () ;
+	std::vector<float> vertical_set_D=Global.GetToFDBins().BetaTOIBins () ;
 
 	BinningTOF->cd(1);
 	gPad->SetLogz();
@@ -646,9 +646,9 @@ void DrawBetavsRig(FileSaver finalHistos,FileSaver finalResults){
 	RigvsBeta_TOFD->Draw();
 	RigvsBeta_TOFP->Draw("same");
 	
-	std::vector<float> orizontal_set=ToFPB.BetaBins ();
-	std::vector<float> vertical_set_P=ToFPB.RigBins () ;
-	std::vector<float> vertical_set_D=ToFDB.RigBins () ;
+	std::vector<float> orizontal_set=Global.GetToFPBins().BetaBins ();
+	std::vector<float> vertical_set_P=Global.GetToFPBins().RigBins () ;
+	std::vector<float> vertical_set_D=Global.GetToFDBins().RigBins () ;
 	
 	DrawBins(c1,RigvsBeta_TOFP,orizontal_set,vertical_set_P,1,2);
 	DrawBins(c1,RigvsBeta_TOFD,orizontal_set,vertical_set_D,1,4);

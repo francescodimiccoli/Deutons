@@ -98,23 +98,23 @@ int main(int argc, char * argv[]){
 
 	cout<<"****************************** PLOTTING ***************************************"<<endl;	 
 
-	DrawFits(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots);
-	DrawFits(finalHistos.GetFile(),"HeContNaF",NaFDB,Plots);
-	DrawFits(finalHistos.GetFile(),"HeContAgl",AglDB,Plots);
+	DrawFits(finalHistos.GetFile(),"HeContTOF",Global.GetToFDBins(),Plots);
+	DrawFits(finalHistos.GetFile(),"HeContNaF",Global.GetNaFDBins(),Plots);
+	DrawFits(finalHistos.GetFile(),"HeContAgl",Global.GetAglDBins(),Plots);
 
 	ToverPFract fractions[6];
 
-	ToverPFract check = DrawBranching(finalHistos.GetFile(),"HeContCheck9",ToFDB,Plots,0,ToFDB.size());
+	ToverPFract check = DrawBranching(finalHistos.GetFile(),"HeContCheck9",Global.GetToFDBins(),Plots,0,Global.GetToFDBins().size());
 
-	fractions[0]=DrawBranching(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots,3,7);
-	fractions[1]=DrawBranching(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots,7,10);
-	fractions[2]=DrawBranching(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots,10,ToFDB.size());
+	fractions[0]=DrawBranching(finalHistos.GetFile(),"HeContTOF",Global.GetToFDBins(),Plots,3,7);
+	fractions[1]=DrawBranching(finalHistos.GetFile(),"HeContTOF",Global.GetToFDBins(),Plots,7,10);
+	fractions[2]=DrawBranching(finalHistos.GetFile(),"HeContTOF",Global.GetToFDBins(),Plots,10,Global.GetToFDBins().size());
 		cout<<"SONO QUI!!!"<<endl<<endl;
-	fractions[3]=DrawBranching(finalHistos.GetFile(),"HeContNaF",NaFDB,Plots,0,NaFDB.size());
-	fractions[4]=DrawBranching(finalHistos.GetFile(),"HeContAgl",AglDB,Plots,0,8);
-	fractions[5]=DrawBranching(finalHistos.GetFile(),"HeContAgl",AglDB,Plots,8,AglDB.size());
+	fractions[3]=DrawBranching(finalHistos.GetFile(),"HeContNaF",Global.GetNaFDBins(),Plots,0,Global.GetNaFDBins().size());
+	fractions[4]=DrawBranching(finalHistos.GetFile(),"HeContAgl",Global.GetAglDBins(),Plots,0,8);
+	fractions[5]=DrawBranching(finalHistos.GetFile(),"HeContAgl",Global.GetAglDBins(),Plots,8,Global.GetAglDBins().size());
 		cout<<"SONO QUI!!!"<<endl<<endl;
-	DrawBranching(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots,3,ToFDB.size());
+	DrawBranching(finalHistos.GetFile(),"HeContTOF",Global.GetToFDBins(),Plots,3,Global.GetToFDBins().size());
 
 	TGraphErrors * branching = new TGraphErrors();
  	for(int i=0;i<6;i++){
@@ -137,22 +137,22 @@ int main(int argc, char * argv[]){
 
 /*        for(int i=0;i<10;i++){
                  std::string basename = "HeContCheck" + to_string(i);
-		 DrawBranching(finalHistos.GetFile(),basename.c_str(),ToFDB,Plots);
+		 DrawBranching(finalHistos.GetFile(),basename.c_str(),Global.GetToFDBins(),Plots);
 	} 
    
 */
-	DrawFragments(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots,3,7);
-	DrawFragments(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots,7,10);
-	DrawFragments(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots,10,ToFDB.size());
-	DrawFragments(finalHistos.GetFile(),"HeContNaF",NaFDB,Plots,0,NaFDB.size());
-	DrawFragments(finalHistos.GetFile(),"HeContAgl",AglDB,Plots,0,8);
-	DrawFragments(finalHistos.GetFile(),"HeContAgl",AglDB,Plots,8,AglDB.size());
-	DrawFragments(finalHistos.GetFile(),"HeContTOF",ToFDB,Plots,3,ToFDB.size());
+	DrawFragments(finalHistos.GetFile(),"HeContTOF",Global.GetToFDBins(),Plots,3,7);
+	DrawFragments(finalHistos.GetFile(),"HeContTOF",Global.GetToFDBins(),Plots,7,10);
+	DrawFragments(finalHistos.GetFile(),"HeContTOF",Global.GetToFDBins(),Plots,10,Global.GetToFDBins().size());
+	DrawFragments(finalHistos.GetFile(),"HeContNaF",Global.GetNaFDBins(),Plots,0,Global.GetNaFDBins().size());
+	DrawFragments(finalHistos.GetFile(),"HeContAgl",Global.GetAglDBins(),Plots,0,8);
+	DrawFragments(finalHistos.GetFile(),"HeContAgl",Global.GetAglDBins(),Plots,8,Global.GetAglDBins().size());
+	DrawFragments(finalHistos.GetFile(),"HeContTOF",Global.GetToFDBins(),Plots,3,Global.GetToFDBins().size());
 	
 
 
 
-	DrawFragmentsCheck(finalHistos.GetFile(),"HeContCheck",ToFDB,Plots);
+	DrawFragmentsCheck(finalHistos.GetFile(),"HeContCheck",Global.GetToFDBins(),Plots);
 
 }
 

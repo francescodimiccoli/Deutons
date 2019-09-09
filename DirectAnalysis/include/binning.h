@@ -104,10 +104,7 @@ class Binning {
       bool IsUsingBetaEdges() {return (Betaedges || BetaTOIedges);}
       bool IsUsingTOIEdges()  {return (BetaTOIedges || RTOIedges);}	
 
-   private:
-      Particle particle;
-
-      std::vector<float> ekbin ;
+     std::vector<float> ekbin ;
       std::vector<float> etotbin ;
       std::vector<float> mombin ;
       std::vector<float> rigbin ;
@@ -134,6 +131,10 @@ class Binning {
       std::vector<float> rigbincent_TOI ;
       std::vector<float> betabincent_TOI ;
       std::vector<float> ekpermassbincent_TOI ;
+
+      private:
+      Particle particle;
+
 
 
       inline void pushBackVelocities ();

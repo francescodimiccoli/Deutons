@@ -515,8 +515,8 @@ void PlotMergedRanges(TVirtualPad * c, TH1F * ValuesTOF, TH1F* ValuesNaF, TH1F* 
 	int a=0;
 	for(int i=0;i<18;i++){
 		if(ValuesTOF->GetBinContent(i+1)!=0){
-			if(Ekin) Graph->SetPoint(a,ToFDB.EkPerMassBinCent(i), ValuesTOF->GetBinContent(i+1));
-			else Graph->SetPoint(a,ToFDB.GetBinCenter(i), ValuesTOF->GetBinContent(i+1));
+			if(Ekin) Graph->SetPoint(a,Global.GetToFDBins().EkPerMassBinCent(i), ValuesTOF->GetBinContent(i+1));
+			else Graph->SetPoint(a,Global.GetToFDBins().GetBinCenter(i), ValuesTOF->GetBinContent(i+1));
 			Graph->SetPointError(a,0,ValuesTOF->GetBinError(i+1));
 			if(cleanhigherrors) if(ValuesTOF->GetBinError(i+1)/ValuesTOF->GetBinContent(i+1)>0.05) Graph->RemovePoint(a);
 			a++;
@@ -525,8 +525,8 @@ void PlotMergedRanges(TVirtualPad * c, TH1F * ValuesTOF, TH1F* ValuesNaF, TH1F* 
 
 	for(int i=1;i<17;i++){
 		if(ValuesNaF->GetBinContent(i+1)!=0){
-			if(Ekin) Graph->SetPoint(a,NaFDB.EkPerMassBinCent(i), ValuesNaF->GetBinContent(i+1));
-			else Graph->SetPoint(a,NaFDB.GetBinCenter(i), ValuesNaF->GetBinContent(i+1));
+			if(Ekin) Graph->SetPoint(a,Global.GetNaFDBins().EkPerMassBinCent(i), ValuesNaF->GetBinContent(i+1));
+			else Graph->SetPoint(a,Global.GetNaFDBins().GetBinCenter(i), ValuesNaF->GetBinContent(i+1));
 			Graph->SetPointError(a,0,ValuesNaF->GetBinError(i+1));
 			if(cleanhigherrors) if(ValuesNaF->GetBinError(i+1)/ValuesNaF->GetBinContent(i+1)>0.05) Graph->RemovePoint(a);
 			a++;
@@ -534,8 +534,8 @@ void PlotMergedRanges(TVirtualPad * c, TH1F * ValuesTOF, TH1F* ValuesNaF, TH1F* 
 	}	
 	for(int i=5;i<17;i++){
 		if(ValuesAgl->GetBinContent(i+1)!=0){
-			if(Ekin) Graph->SetPoint(a,AglDB.EkPerMassBinCent(i), ValuesAgl->GetBinContent(i+1));
-			else Graph->SetPoint(a,AglDB.GetBinCenter(i), ValuesAgl->GetBinContent(i+1));
+			if(Ekin) Graph->SetPoint(a,Global.GetAglDBins().EkPerMassBinCent(i), ValuesAgl->GetBinContent(i+1));
+			else Graph->SetPoint(a,Global.GetAglDBins().GetBinCenter(i), ValuesAgl->GetBinContent(i+1));
 			Graph->SetPointError(a,0,ValuesAgl->GetBinError(i+1));
 			if(cleanhigherrors) if(ValuesAgl->GetBinError(i+1)/ValuesAgl->GetBinContent(i+1)>0.05) Graph->RemovePoint(a);
 			a++;

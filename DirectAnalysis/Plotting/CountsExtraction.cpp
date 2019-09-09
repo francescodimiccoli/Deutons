@@ -27,7 +27,7 @@
 #include "../include/Cuts.h"
 #include "../include/filesaver.h"
 #include "../include/TemplateFITbetasmear.h"
-
+#include "RangeMerger.h"
 #include "../include/PlottingFunctions.h"
 #include <sstream>
 
@@ -107,13 +107,13 @@ int main(int argc, char * argv[]){
         cout<<"****************************** PLOTTING FITS ***************************************"<<endl;
 
 //	TemplateFIT * SmearingCheck = new TemplateFIT(finalHistos,"SmearingCheck",PRB);
-	TemplateFIT * ToFfits= new TemplateFIT(finalHistos,"TOFDfits",ToFDB);
-	TemplateFIT * NaFfits= new TemplateFIT(finalHistos,"NaFDfits",NaFDB);
-	TemplateFIT * Aglfits= new TemplateFIT(finalHistos,"AglDfits",AglDB);
+	TemplateFIT * ToFfits= new TemplateFIT(finalHistos,"TOFDfits",Global.GetToFDBins());
+	TemplateFIT * NaFfits= new TemplateFIT(finalHistos,"NaFDfits",Global.GetNaFDBins());
+	TemplateFIT * Aglfits= new TemplateFIT(finalHistos,"AglDfits",Global.GetAglDBins());
 
-	TemplateFIT * ToFfits_P= new TemplateFIT(finalHistos,"TOFPfits",ToFPB);
-	TemplateFIT * NaFfits_P= new TemplateFIT(finalHistos,"NaFPfits",NaFPB);
-	TemplateFIT * Aglfits_P= new TemplateFIT(finalHistos,"AglPfits",AglPB);
+	TemplateFIT * ToFfits_P= new TemplateFIT(finalHistos,"TOFPfits",Global.GetToFPBins());
+	TemplateFIT * NaFfits_P= new TemplateFIT(finalHistos,"NaFPfits",Global.GetNaFPBins());
+	TemplateFIT * Aglfits_P= new TemplateFIT(finalHistos,"AglPfits",Global.GetAglPBins());
 
 
 //	DrawFits(SmearingCheck,finalHistos,Plots,false,true);
@@ -159,29 +159,29 @@ int main(int argc, char * argv[]){
 	
 
 	
-	PlotTH1FintoGraph(gPad,ToFDB, DCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,2*DCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Deuteron Counts (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFDB, DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglDB, DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (Agl)",29);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,2*DCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Deuteron Counts (TOF)",8);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (NaF)",22);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (Agl)",29);
 
-	PlotTH1FintoGraph(gPad,ToFDB, DCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
-	PlotTH1FintoGraph(gPad,NaFDB, DCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
-	PlotTH1FintoGraph(gPad,AglDB, DCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
 
 
 	TCanvas * c4_ = new TCanvas("Proton Counts");
         c4_->SetCanvasSize(2000,1500);
 
-	PlotTH1FintoGraph(gPad,ToFDB, PCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,2*PCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Proton Counts (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFDB, PCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Proton Counts (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglDB, PCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Proton Counts (Agl)",29);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), PCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,2*PCountsTOF->GetBinContent(DCountsTOF->GetMaximumBin()),"Proton Counts (TOF)",8);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), PCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Proton Counts (NaF)",22);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), PCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Proton Counts (Agl)",29);
 
-	PlotTH1FintoGraph(gPad,ToFDB, PCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
-	PlotTH1FintoGraph(gPad,NaFDB, PCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
-	PlotTH1FintoGraph(gPad,AglDB, PCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), PCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), PCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), PCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",2,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
 
-	PlotTH1FintoGraph(gPad,ToFDB, PCountsPrimTOF_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (TOF)",4);
-	PlotTH1FintoGraph(gPad,NaFDB, PCountsPrimNaF_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (NaF)",26);
-	PlotTH1FintoGraph(gPad,AglDB, PCountsPrimAgl_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (Agl)",30);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), PCountsPrimTOF_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), PCountsPrimNaF_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), PCountsPrimAgl_rigbins,"Kinetic Energy [GeV/nucl.]", "Counts",1,true,"Psame",0.1,10,10,7e4,"RigBin Counts (Agl)",30);
 
 
 	Plots.Add(c4);
@@ -201,9 +201,9 @@ int main(int argc, char * argv[]){
 	TH1F * RatioAgl = (TH1F*)DCountsPrimAgl->Clone();
 	RatioAgl->Divide(PCountsPrimAgl);
 
-	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglDB, RatioAgl,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (Agl)",29);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), RatioTOF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (TOF)",8);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (NaF)",22);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), RatioAgl,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (Agl)",29);
 
 
 	Plots.Add(c5);
@@ -220,10 +220,10 @@ int main(int argc, char * argv[]){
 	RatioAgl_T->Divide(DCountsAgl);
 
 
-	for(int i=0;i<ToFDB.size();i++) cout<<"Tritium: "<<RatioTOF_T->GetBinContent(i+1)<<endl;
-	PlotTH1FintoGraph(gPad,ToFDB, RatioTOF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (TOF)",8);
-	PlotTH1FintoGraph(gPad,NaFDB, RatioNaF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (NaF)",22);
-	PlotTH1FintoGraph(gPad,AglDB, RatioAgl_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (Agl)",29);
+	for(int i=0;i<Global.GetToFDBins().size();i++) cout<<"Tritium: "<<RatioTOF_T->GetBinContent(i+1)<<endl;
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), RatioTOF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (TOF)",8);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), RatioNaF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (NaF)",22);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), RatioAgl_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (Agl)",29);
 
 
 	Plots.Add(c5_);
@@ -356,21 +356,21 @@ int main(int argc, char * argv[]){
 	gPad->SetLogx();
 	gPad->SetLogy();
 
-	for(int i=0; i<ToFPB.size();i++) PCountsPrim_rigTOF->SetBinContent(i+1,PCountsPrim_rigTOF->GetBinContent(i+1)/(ToFPB.RigTOIBins()[i+1]-ToFPB.RigTOIBins()[i])); 
-	for(int i=0; i<NaFPB.size();i++) PCountsPrim_rigNaF->SetBinContent(i+1,PCountsPrim_rigNaF->GetBinContent(i+1)/(NaFPB.RigTOIBins()[i+1]-NaFPB.RigTOIBins()[i])); 
-	for(int i=0; i<AglPB.size();i++) PCountsPrim_rigAgl->SetBinContent(i+1,PCountsPrim_rigAgl->GetBinContent(i+1)/(AglPB.RigTOIBins()[i+1]-AglPB.RigTOIBins()[i])); 
+	for(int i=0; i<Global.GetToFPBins().size();i++) PCountsPrim_rigTOF->SetBinContent(i+1,PCountsPrim_rigTOF->GetBinContent(i+1)/(Global.GetToFPBins().RigTOIBins()[i+1]-Global.GetToFPBins().RigTOIBins()[i])); 
+	for(int i=0; i<Global.GetNaFPBins().size();i++) PCountsPrim_rigNaF->SetBinContent(i+1,PCountsPrim_rigNaF->GetBinContent(i+1)/(Global.GetNaFPBins().RigTOIBins()[i+1]-Global.GetNaFPBins().RigTOIBins()[i])); 
+	for(int i=0; i<Global.GetAglPBins().size();i++) PCountsPrim_rigAgl->SetBinContent(i+1,PCountsPrim_rigAgl->GetBinContent(i+1)/(Global.GetAglPBins().RigTOIBins()[i+1]-Global.GetAglPBins().RigTOIBins()[i])); 
 
-	PlotTH1FintoGraph(gPad,ToFPB, PCountsPrim_rigTOF,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (TOF)",4);
-	PlotTH1FintoGraph(gPad,NaFPB, PCountsPrim_rigNaF,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (NaF)",26);
-	PlotTH1FintoGraph(gPad,AglPB, PCountsPrim_rigAgl,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (Agl)",30);
+	PlotTH1FintoGraph(gPad,Global.GetToFPBins(), PCountsPrim_rigTOF,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,Global.GetNaFPBins(), PCountsPrim_rigNaF,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,Global.GetAglPBins(), PCountsPrim_rigAgl,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (Agl)",30);
 
-	for(int i=0; i<ToFDB.size();i++) DCountsPrimTOF->SetBinContent(i+1,DCountsPrimTOF->GetBinContent(i+1)/(ToFDB.RigTOIBins()[i+1]-ToFDB.RigTOIBins()[i])); 
-	for(int i=0; i<NaFDB.size();i++) DCountsPrimNaF->SetBinContent(i+1,DCountsPrimNaF->GetBinContent(i+1)/(NaFDB.RigTOIBins()[i+1]-NaFDB.RigTOIBins()[i])); 
-	for(int i=0; i<AglDB.size();i++) DCountsPrimAgl->SetBinContent(i+1,DCountsPrimAgl->GetBinContent(i+1)/(AglDB.RigTOIBins()[i+1]-AglDB.RigTOIBins()[i])); 
+	for(int i=0; i<Global.GetToFDBins().size();i++) DCountsPrimTOF->SetBinContent(i+1,DCountsPrimTOF->GetBinContent(i+1)/(Global.GetToFDBins().RigTOIBins()[i+1]-Global.GetToFDBins().RigTOIBins()[i])); 
+	for(int i=0; i<Global.GetNaFDBins().size();i++) DCountsPrimNaF->SetBinContent(i+1,DCountsPrimNaF->GetBinContent(i+1)/(Global.GetNaFDBins().RigTOIBins()[i+1]-Global.GetNaFDBins().RigTOIBins()[i])); 
+	for(int i=0; i<Global.GetAglDBins().size();i++) DCountsPrimAgl->SetBinContent(i+1,DCountsPrimAgl->GetBinContent(i+1)/(Global.GetAglDBins().RigTOIBins()[i+1]-Global.GetAglDBins().RigTOIBins()[i])); 
 
-	PlotTH1FintoGraph(gPad,ToFDB, DCountsPrimTOF,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (TOF)",4);
-	PlotTH1FintoGraph(gPad,NaFDB, DCountsPrimNaF,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (NaF)",26);
-	PlotTH1FintoGraph(gPad,AglDB, DCountsPrimAgl,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (Agl)",30);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DCountsPrimTOF,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DCountsPrimNaF,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DCountsPrimAgl,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (Agl)",30);
 
 	Plots.Add(d4);
 	Plots.writeObjsInFolder("Results Rig");
@@ -381,9 +381,9 @@ int main(int argc, char * argv[]){
 
 
 	
-	DrawParameters(finalHistos,Plots,pathresTOF,ToFDB,"Parameters TOF","Measured #beta","[ps]",0.45,0.9,-100,100,-40,180);
-	DrawParameters(finalHistos,Plots,pathresNaF,NaFDB,"Parameters NaF","Measured #beta","[rad/10^{4}]",0.7,0.98,-1000,1000,-1000,2000);
-	DrawParameters(finalHistos,Plots,pathresAgl,AglDB,"Parameters Agl","Measured #beta","[rad/10^{4}]",0.95,1.005,-230,230,-150,400);
+	DrawParameters(finalHistos,Plots,pathresTOF,Global.GetToFDBins(),"Parameters TOF","Measured #beta","[ps]",0.45,0.9,-100,100,-40,180);
+	DrawParameters(finalHistos,Plots,pathresNaF,Global.GetNaFDBins(),"Parameters NaF","Measured #beta","[rad/10^{4}]",0.7,0.98,-1000,1000,-1000,2000);
+	DrawParameters(finalHistos,Plots,pathresAgl,Global.GetAglDBins(),"Parameters Agl","Measured #beta","[rad/10^{4}]",0.95,1.005,-230,230,-150,400);
 
 
 /*
@@ -471,9 +471,8 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 	CollectiveView2->SetCanvasSize(3000,2000);
 
 
-
 	for(int i=0; i<FIT->GetBinning().size();i++){
-		
+			
 		std::string pathbinP    = pathtemplP + "/Bin"+to_string(i);
 		std::string pathbinD    = pathtemplD + "/Bin"+to_string(i);
 		std::string pathbinHe   = pathtemplHe+ "/Bin"+to_string(i);
@@ -494,7 +493,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 		TCanvas * c1 = new TCanvas("Modified Templates");
 		c1->SetCanvasSize(2000,1500);
-		std::string bintitle = ("Kin. Energy: " + Convert(FIT->GetBinning().EkPerMassBinCent(i)) + " GeV/n");
+		std::string bintitle = ("Kin. Energy: " + Convert(FIT->GetBinning().rigbincent_TOI[i]) + " GV");
 		TPaveLabel* title = new TPaveLabel(0.35,0.94,0.6,0.97,bintitle.c_str(),"brndc");
 		title->SetFillColor(0);
 		title->SetLineColor(0);

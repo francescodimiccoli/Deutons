@@ -28,6 +28,9 @@ cpp12 = ../src/particle.cpp
 cpp13 = ../src/Efficiency.cpp
 cpp14 = ../src/TemplateFITbetasmear.cpp
 cpp15 = ../src/effcorr.cpp
+cpp16 = ../src/RangeMerger.cpp
+cpp17 = ../src/Acceptance.cpp
+
 
 #file to compile
 CC = CountsExtraction.cpp
@@ -44,11 +47,11 @@ DBARPATH=/data1/home/fdimicco/Deutons/data_reduction
 
 rootlibs=`root-config --libs --cflags` 
 all:
-#	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe)  $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC)   $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp 
-	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe1) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC1)  $(rootlibs) -lTMVA -I../include  -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp 
+	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe)  $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(cpp16) $(CC)   $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp 
+#	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe1) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC1)  $(rootlibs) -lTMVA -I../include  -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp 
 #	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe2) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC2)  $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp
-#	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe3) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC3)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
+#	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe3) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(cpp16) $(cpp17) $(CC3)  $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp
 #	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe4) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC4)  $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp
 #	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe6) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC6)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
-#	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe7) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC7)  $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp
+	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe7) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(cpp16) $(cpp17) $(CC7)  $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp
 #	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe8) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC8)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp

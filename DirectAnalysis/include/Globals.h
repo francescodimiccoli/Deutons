@@ -5,6 +5,7 @@
 #include "TF1.h"
 #include "particle.h"
 #include "binning.h"
+#include "RangeMerger.h"
 #include <TMVA/Reader.h>
 #include <TMVA/Tools.h>
 #include "TRandom3.h"
@@ -28,14 +29,7 @@ extern TRandom3 * Rand;
 extern Particle proton;  
 extern Particle deuton; 
 
-
-extern Binning ToFDB;
-extern Binning ToFPB;
-extern Binning NaFDB;
-extern Binning NaFPB;
-extern Binning AglDB;
-extern Binning AglPB;
-
+extern RangeMerger Global;
 extern Binning HefragmToF;
 extern Binning HefragmNaF;
 extern Binning HefragmAgl;

@@ -106,17 +106,17 @@ int main(int argc, char * argv[])
 	TestReweigthingHe->Save(finalResults);
 	*/
 
-	ChargeFitter * HeContTOF = new ChargeFitter(finalHistos,"HeContTOF",ToFDB,"IsPositive&IsPreselectedInner&TofBetaSafetyCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&TofBetaSafetyCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&TofBetaSafetyCut","IsPositive&IsPreselectedHe&IsCleaning&TofBetaSafetyCut","IsPositive&IsPreselected&IsCleaning&TofBetaSafetyCut",300,0,4);
+	ChargeFitter * HeContTOF = new ChargeFitter(finalHistos,"HeContTOF",Global.GetToFDBins(),"IsPositive&IsPreselectedInner&TofBetaSafetyCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&TofBetaSafetyCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&TofBetaSafetyCut","IsPositive&IsPreselectedHe&IsCleaning&TofBetaSafetyCut","IsPositive&IsPreselected&IsCleaning&TofBetaSafetyCut",300,0,4);
 
-	ChargeFitter * HeContNaF = new ChargeFitter(finalHistos,"HeContNaF",NaFDB,"IsPositive&IsPreselectedInner&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselectedHe&IsCleaning&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselected&IsCleaning&IsFromNaF&RICHBDTCut&NafBetaSafetyCut",300,0,4);
+	ChargeFitter * HeContNaF = new ChargeFitter(finalHistos,"HeContNaF",Global.GetNaFDBins(),"IsPositive&IsPreselectedInner&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselectedHe&IsCleaning&IsFromNaF&RICHBDTCut&NafBetaSafetyCut","IsPositive&IsPreselected&IsCleaning&IsFromNaF&RICHBDTCut&NafBetaSafetyCut",300,0,4);
 
-	ChargeFitter * HeContAgl = new ChargeFitter(finalHistos,"HeContAgl",AglDB,"IsPositive&IsPreselectedInner&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselectedHe&IsCleaning&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselected&IsCleaning&IsFromAgl&RICHBDTCut&AglBetaSafetyCut",300,0,4);
+	ChargeFitter * HeContAgl = new ChargeFitter(finalHistos,"HeContAgl",Global.GetAglDBins(),"IsPositive&IsPreselectedInner&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselected&IsClearQ1ExceptL2&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselectedHe&IsCleaning&IsFromAgl&RICHBDTCut&AglBetaSafetyCut","IsPositive&IsPreselected&IsCleaning&IsFromAgl&RICHBDTCut&AglBetaSafetyCut",300,0,4);
 
 	ChargeFitter * HeContTOFCheck[10];
 	for(int i=0;i<10;i++){
 		 std::string basename = "HeContCheck" + to_string(i);
 		 std::string FragmentCut = "IsPositive&IsCleaning&IsPreselectedHe" + to_string(i);
-		 HeContTOFCheck[i] = new ChargeFitter(finalHistos,basename,ToFDB,"IsPositive&IsPreselectedInner","IsPositive&IsPreselected&IsClearQ1ExceptL2","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2",FragmentCut,"IsPositive&IsPreselected&IsCleaning",300,0,4);
+		 HeContTOFCheck[i] = new ChargeFitter(finalHistos,basename,Global.GetToFDBins(),"IsPositive&IsPreselectedInner","IsPositive&IsPreselected&IsClearQ1ExceptL2","IsPositive&IsPreselectedHe&IsClearQ2ExceptL2",FragmentCut,"IsPositive&IsPreselected&IsCleaning",300,0,4);
 	}
 
 

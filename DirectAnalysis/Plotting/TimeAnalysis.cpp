@@ -38,7 +38,128 @@
 #include <chrono>
 #include <iomanip>
 #include <ctime>
-int start =2;
+
+int start =0;
+
+std::string Convert (float number){
+    std::ostringstream buff;
+    buff<<number;
+    std::string output= buff.str();
+    output.erase(4,output.end()-output.begin()-4);	
+    return output;   
+}
+
+
+int bartels = (
+1307750400,
+1310083200,
+1312416000,
+1314748800,
+1317081600,
+1319414400,
+1321747200,
+1324080000,
+1326412800,
+1328745600,
+1331078400,
+1333411200,
+1335744000,
+1338076800,
+1340409600,
+1342742400,
+1345075200,
+1347408000,
+1349740800,
+1352073600,
+1354406400,
+1356739200,
+1359072000,
+1361404800,
+1363737600,
+1366070400,
+1368403200,
+1370736000,
+1373068800,
+1375401600,
+1377734400,
+1380067200,
+1382400000,
+1384732800,
+1387065600,
+1389398400,
+1391731200,
+1394064000,
+1396396800,
+1398729600,
+1401062400,
+1403395200,
+1405728000,
+1408060800,
+1410393600,
+1412726400,
+1415059200,
+1417392000,
+1419724800,
+1422057600,
+1424390400,
+1426723200,
+1429056000,
+1431388800,
+1433721600,
+1436054400,
+1438387200,
+1440720000,
+1443052800,
+1445385600,
+1447718400,
+1450051200,
+1452384000,
+1454716800,
+1457049600,
+1459382400,
+1461715200,
+1464048000,
+1466380800,
+1468713600,
+1471046400,
+1473379200,
+1475712000,
+1478044800,
+1480377600,
+1482710400,
+1485043200,
+1487376000,
+1489708800,
+1492041600,
+1494417600,
+1496750400,
+1499083200,
+1501416000,
+1503748800,
+1506081600,
+1508414400,
+1510747200,
+1513080000,
+1515412800,
+1517745600,
+1520078400,
+1522411200,
+1524744000,
+1527076800,
+1529409600,
+1531915200,
+1534075200,
+1536408000,
+1538740800,
+1541073600,
+1543406400,
+1545739200,
+1548072000
+);
+
+
+
+
 void DrawGalpropRatio(TVirtualPad *c){
 	c->cd();
 	float x,y=0;
@@ -191,8 +312,8 @@ void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_e
 	TimeDepP->GetXaxis()->	SetTimeDisplay(1);
 	TimeDepP->GetXaxis()->  SetTimeOffset(0,"gmt");  
 	TimeDepP->GetXaxis()->  SetTimeFormat("%b%y");
-	TimeDepP->GetXaxis()->SetLabelSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
-	TimeDepP->GetXaxis()->SetLabelFont(21);
+//	TimeDepP->GetXaxis()->SetLabelSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
+//	TimeDepP->GetXaxis()->SetLabelFont(21);
 	
 
 	c->cd();
@@ -230,7 +351,7 @@ void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_e
 
 }
 
-void PlotTimeRatio(TVirtualPad * c, float D[], float D_err[], float P[], float P_err[], std::vector <int> Times, int col) {
+void PlotTimeRatio(TVirtualPad * c, float D[], float D_err[], float P[], float P_err[], std::vector <int> Times, int col, std::string title) {
 	TGraphErrors * TimeDepP = (TGraphErrors * ) gPad->FindObject("Time");
 	TGraphErrors * TimeDepR = new TGraphErrors();
 	
@@ -239,8 +360,8 @@ void PlotTimeRatio(TVirtualPad * c, float D[], float D_err[], float P[], float P
 		TimeDepR->SetPointError(i-start,0,pow(pow(D_err[i]/D[i],2) + pow (P_err[i]/P[i],2),0.5)*D[i]/(P[i]) );
 	
 	}
-	TimeDepR->SetName("Time");
-	 TimeDepR->SetTitle("Time");
+	TimeDepR->SetName(title.c_str());
+	 TimeDepR->SetTitle(title.c_str());
 
 	TimeDepR->SetMarkerStyle(8);
 	TimeDepR->SetMarkerSize(1.5);
@@ -252,8 +373,8 @@ void PlotTimeRatio(TVirtualPad * c, float D[], float D_err[], float P[], float P
 	TimeDepR->GetXaxis()->  SetTimeOffset(0,"gmt");  
 	TimeDepR->GetXaxis()->  SetTimeFormat("%b%y");
 	TimeDepR->GetYaxis()->SetLabelColor(1);
-	TimeDepR->GetYaxis()->SetLabelSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
-	TimeDepR->GetYaxis()->SetLabelFont(21);
+	TimeDepR->GetYaxis()->SetLabelSize(0.015*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
+	TimeDepR->GetYaxis()->SetLabelFont(11);
 	
 
 	c->cd();
@@ -261,133 +382,6 @@ void PlotTimeRatio(TVirtualPad * c, float D[], float D_err[], float P[], float P
 	else      TimeDepR->Draw("Psame");
 	
 	gPad->Update();
-}
-
-void DrawPDCountsRatio(FileSaver Plots, std::vector<TFile *> Files ){
-
-	TStyle* m_gStyle= new TStyle();;
-	m_gStyle->SetPalette(55);
-	int nColors = m_gStyle->GetNumberOfColors();
-	
-	std::vector<int> Times;
-	std::vector<std::string> Dates;
-
-
-	for(int i=0;i<Files.size();i++){
-		Times.push_back(std::atoi(TimeFiles[i].substr(TimeFiles[i].find("-")+1,10).c_str()) );
-		std::uint32_t time_date_stamp = Times[i];
-		std::time_t temp = time_date_stamp;
-		std::tm* t = std::gmtime(&temp);
-		char buffer [10];
-		sprintf(buffer,"%d/%d", t->tm_mon+1, t->tm_year-100);
-		Dates.push_back(buffer);
-		std::cout<<Times[i]<<" "<<Dates[i]<<endl;
-	}
-	
-	TCanvas *c3 = new TCanvas("D/P Counts");
-	c3->SetCanvasSize(2000,1500);
-	gPad->SetLogx();
-
-	TH1F * RatioTOF[Files.size()];
-	TH1F * RatioNaF[Files.size()];
-	TH1F * RatioAgl[Files.size()];
-
-	TH1F * DCountsTOF[Files.size()];
-	TH1F * DCountsNaF[Files.size()];
-	TH1F * DCountsAgl[Files.size()];
-
-	for(int i=start;i<Files.size();i++){
-		DCountsTOF[i]=(TH1F*)Files[i]->Get("TOFfits/Fit Results/Primary Deuteron Counts");
-		DCountsNaF[i]=(TH1F*)Files[i]->Get("NaFfits/Fit Results/Primary Deuteron Counts");
-		DCountsAgl[i]=(TH1F*)Files[i]->Get("Aglfits/Fit Results/Primary Deuteron Counts");
-	}
-
-	TH1F * PCountsTOF[Files.size()];
-	TH1F * PCountsNaF[Files.size()];
-	TH1F * PCountsAgl[Files.size()];
-
-	for(int i=start;i<Files.size();i++){
-		PCountsTOF[i]=(TH1F*)Files[i]->Get("TOFfits/Fit Results/Primary Proton Counts");
-		PCountsNaF[i]=(TH1F*)Files[i]->Get("NaFfits/Fit Results/Primary Proton Counts");
-		PCountsAgl[i]=(TH1F*)Files[i]->Get("Aglfits/Fit Results/Primary Proton Counts");
-	}
-
-	for(int i=start;i<Files.size();i++){
-	RatioTOF[i] 	= (TH1F*)DCountsTOF[i]->Clone();
-	RatioNaF[i]	= (TH1F*)DCountsNaF[i]->Clone();
-	RatioAgl[i]	= (TH1F*)DCountsAgl[i]->Clone();
-	RatioTOF[i]->Divide(PCountsTOF[i]	);
-	RatioNaF[i]->Divide(PCountsNaF[i]	);
-        RatioAgl[i]->Divide(PCountsAgl[i]	);
-	}
-
-	for(int i=start;i<Files.size();i++){
-		PlotMergedRanges(gPad,RatioTOF[i] ,RatioNaF[i] ,RatioAgl[i] ,"Ekin [GeV/n]", "Primary Counts (D/P)",m_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)),true,"Psame",0.1,10,0.00001,0.4,Dates[i],8);	
-	}	
-
-        Plots.Add(c3);
-        Plots.writeObjsInFolder("Counts");
-
-
-	float DTOF[Files.size()];
-	float DTOF_err[Files.size()];
-	float PTOF[Files.size()];
-	float PTOF_err[Files.size()];
-
-	for(int i=start;i<Files.size();i++){
-		DTOF[i]=DCountsTOF[i]->GetBinContent(4);
-		DTOF_err[i] = DCountsTOF[i]->GetBinError(4);		
-		PTOF[i]=PCountsTOF[i]->GetBinContent(18);
-		PTOF_err[i] = PCountsTOF[i]->GetBinError(18);		
-	}
-
-	float DNaF[Files.size()];
-	float DNaF_err[Files.size()];
-	float PNaF[Files.size()];
-	float PNaF_err[Files.size()];
-
-	for(int i=start;i<Files.size();i++){
-		DNaF[i]=DCountsNaF[i]->GetBinContent(5);
-		DNaF_err[i] = DCountsNaF[i]->GetBinError(5);		
-		PNaF[i]=PCountsNaF[i]->GetBinContent(15);
-		PNaF_err[i] = PCountsNaF[i]->GetBinError(15);		
-	}
-	float DAgl[Files.size()];
-	float DAgl_err[Files.size()];
-	float PAgl[Files.size()];
-	float PAgl_err[Files.size()];
-
-	for(int i=start;i<Files.size();i++){
-		DAgl[i]=DCountsAgl[i]->GetBinContent(4);
-		DAgl_err[i] = DCountsAgl[i]->GetBinError(4);		
-		PAgl[i]=PCountsAgl[i]->GetBinContent(13);
-		PAgl_err[i] = PCountsAgl[i]->GetBinError(13);		
-	}
-
-
-	TCanvas *c4 = new TCanvas("Time Dep. 1.3 GV");
-	c4->SetCanvasSize(1000,300);
-	PlotTimeDep(c4,DTOF,DTOF_err,PTOF,PTOF_err, Times);
-	
-	Plots.Add(c4);
-	Plots.writeObjsInFolder("Counts");
-
-	TCanvas *c5 = new TCanvas("Time Dep. 3.5 GV");
-	c5->SetCanvasSize(1000,300);
-	PlotTimeDep(c5,DNaF,DNaF_err,PNaF,PNaF_err, Times);
-	
-	Plots.Add(c5);
-	Plots.writeObjsInFolder("Counts");
-
-	TCanvas *c6 = new TCanvas("Time Dep. 7.8 GV");
-	c6->SetCanvasSize(1000,300);
-	PlotTimeDep(c6,DAgl,DAgl_err,PAgl,PAgl_err, Times);
-	
-	Plots.Add(c6);
-	Plots.writeObjsInFolder("Counts");
-
-
-	return;
 }
 
 
@@ -413,7 +407,6 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
         }
 
 
-
 	std::vector<int> Times;
 	std::vector<std::string> Dates;
 	std::vector<Flux *> FluxesPTOF;
@@ -425,13 +418,13 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	
 	for(int i=0;i<Files.size();i++){
 
-		Flux * DFluxTOF = new Flux(Files[i], "DFluxTOF", "FullsetEff_D_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Deuteron Counts","ExposureTOF",ToFDB);
-		Flux * DFluxNaF = new Flux(Files[i], "DFluxNaF", "FullsetEff_D_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF",NaFDB);
-		Flux * DFluxAgl = new Flux(Files[i], "DFluxAgl", "FullsetEff_D_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl",AglDB);
+		Flux * DFluxTOF = new Flux(Files[i], "DFluxTOF", "FullsetEff_D_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Deuteron Counts","ExposureTOF",Global.GetToFDBins());
+		Flux * DFluxNaF = new Flux(Files[i], "DFluxNaF", "FullsetEff_D_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Deuteron Counts","ExposureNaF",Global.GetNaFDBins());
+		Flux * DFluxAgl = new Flux(Files[i], "DFluxAgl", "FullsetEff_D_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Deuteron Counts","ExposureAgl",Global.GetAglDBins());
 
-		Flux * PFluxTOF = new Flux(Files[i], "PFluxTOF", "FullsetEff_P_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF",ToFPB);
-		Flux * PFluxNaF = new Flux(Files[i], "PFluxNaF", "FullsetEff_P_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF",NaFPB);
-		Flux * PFluxAgl = new Flux(Files[i], "PFluxAgl", "FullsetEff_P_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl",AglPB);
+		Flux * PFluxTOF = new Flux(Files[i], "PFluxTOF", "FullsetEff_P_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Proton Counts","ExposureTOF",Global.GetToFPBins());
+		Flux * PFluxNaF = new Flux(Files[i], "PFluxNaF", "FullsetEff_P_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF",Global.GetNaFPBins());
+		Flux * PFluxAgl = new Flux(Files[i], "PFluxAgl", "FullsetEff_P_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl",Global.GetAglPBins());
 
 		FluxesPTOF.push_back(PFluxTOF);
 		FluxesPNaF.push_back(PFluxNaF);
@@ -443,7 +436,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	}
 
 	for(int i=0;i<Files.size();i++){
-		Times.push_back(std::atoi(TimeFiles[i].substr(TimeFiles[i].find("-")+1,10).c_str()) );
+		Times.push_back(std::atoi(GroupedFiles[i].substr(GroupedFiles[i].find("-")+1,10).c_str()) );
 		std::uint32_t time_date_stamp = Times[i];
 		std::time_t temp = time_date_stamp;
 		std::tm* t = std::gmtime(&temp);
@@ -456,10 +449,6 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	TCanvas *c3 = new TCanvas("D/P FluxRatio");
 	c3->SetCanvasSize(2000,1500);
 	gPad->SetLogx();
-
-	TH1F * RatioTOF[Files.size()];
-	TH1F * RatioNaF[Files.size()];
-	TH1F * RatioAgl[Files.size()];
 
 	TH1F * DCountsTOF[Files.size()];
 	TH1F * DCountsNaF[Files.size()];
@@ -481,159 +470,68 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 		PCountsAgl[i]=(TH1F*)FluxesPAgl[i]->GetFlux();
 	}
 
-	for(int i=start;i<Files.size();i++){
-	RatioTOF[i] 	= (TH1F*)DCountsTOF[i]->Clone();
-	RatioNaF[i]	= (TH1F*)DCountsNaF[i]->Clone();
-	RatioAgl[i]	= (TH1F*)DCountsAgl[i]->Clone();
-	RatioTOF[i]->Divide(PCountsTOF[i]	);
-	RatioNaF[i]->Divide(PCountsNaF[i]	);
-        RatioAgl[i]->Divide(PCountsAgl[i]	);
-	}
-
-	for(int i=start;i<Files.size();i++){
-		PlotMergedRanges(gPad,RatioTOF[i] ,RatioNaF[i] ,RatioAgl[i] ,"Ekin [GeV/n]", "Primary Counts (D/P)",f_gStyle->GetColorPalette( ((float)nColors/Dates.size()) *(i+1)),true,"Psame",0.1,10,0.00001,0.15,Dates[i],8);	
-	}	
-
-        TLegend * leg2 = new TLegend();
-
-        for(uint n=0;n<PD_Graphs.size();n++){
-                PD_Graphs[n] ->Draw("Psame");
-                PD_Graphs[n]->SetMarkerSize(2);
-                leg2->AddEntry(PD_Graphs[n],PD_Graphs[n]->GetTitle(),"p");
-        }
-	leg2->Draw("same");
-
-	DrawGalpropRatio(c3);
-        Plots.Add(c3);
-        Plots.writeObjsInFolder("Flux");
-
-/*	TCanvas *c4_ = new TCanvas("D/P Double Ratio");
-	c4_->SetCanvasSize(1000,600);
-	gPad->SetLogx();
-
-	TH1F * RatioTOF_start = (TH1F*) RatioTOF[start]->Clone();
-	TH1F * RatioNaF_start = (TH1F*) RatioNaF[start]->Clone();
-	TH1F * RatioAgl_start = (TH1F*) RatioAgl[start]->Clone();
-
-	for(int i=start;i<Files.size();i++){
-		RatioTOF[i] 	->Divide(RatioTOF_start); 
-		RatioNaF[i]	->Divide(RatioNaF_start);  
-		RatioAgl[i]	->Divide(RatioAgl_start);  
-	}
-
-
-	for(int i=start;i<Files.size();i++){
-		PlotMergedRanges(gPad,RatioTOF[i] ,RatioNaF[i] ,RatioAgl[i] ,"Ekin [GeV/n]", "Primary Counts (D/P)",1,true,"Psame",0.1,10,0.1,4,Dates[i],8);	
-	}	
-
-
-	
-	Plots.Add(c4_);
-        Plots.writeObjsInFolder("Flux");
-*/
 
 	TH1F * DCountsTOF_rig[Files.size()];
 	TH1F * DCountsNaF_rig[Files.size()];
 	TH1F * DCountsAgl_rig[Files.size()];
+	TH1F * Merged_D[Files.size()];
+	
 
 	for(int i=start;i<Files.size();i++){
 		DCountsTOF_rig[i]=(TH1F*) FluxesDTOF[i]->GetFlux_rig();
 		DCountsNaF_rig[i]=(TH1F*) FluxesDNaF[i]->GetFlux_rig();
 		DCountsAgl_rig[i]=(TH1F*) FluxesDAgl[i]->GetFlux_rig();
+		Merged_D[i] = Global.MergeSubDResult_D(DCountsTOF_rig[i],DCountsNaF_rig[i],DCountsAgl_rig[i]);
 	}
+
 
 	TH1F * PCountsTOF_rig[Files.size()];
 	TH1F * PCountsNaF_rig[Files.size()];
 	TH1F * PCountsAgl_rig[Files.size()];
 
+	TH1F * Merged_P[Files.size()];
+	
 	for(int i=start;i<Files.size();i++){
 		PCountsTOF_rig[i]=(TH1F*)FluxesPTOF[i]->GetFlux_rig();
 		PCountsNaF_rig[i]=(TH1F*)FluxesPNaF[i]->GetFlux_rig();
 		PCountsAgl_rig[i]=(TH1F*)FluxesPAgl[i]->GetFlux_rig();
+		Merged_P[i] = Global.MergeSubDResult_P(PCountsTOF_rig[i],PCountsNaF_rig[i],PCountsAgl_rig[i]);
+	}
+
+	float Bin_D[6][Files.size()];
+	float Bin_P[6][Files.size()];
+	float Bin_D_err[6][Files.size()];
+	float Bin_P_err[6][Files.size()];
+	int binselected[6]= {3,7,11,15,22,29};
+	int binselected_P[6]= {3,7,11,15,22,29};
+
+
+
+	for(int j=0;j<6;j++){
+		for(int i=start;i<Files.size();i++){
+			Bin_D[j][i]= Merged_D[i]->GetBinContent(binselected[j]);
+			Bin_P[j][i]= Merged_P[i]->GetBinContent(binselected[j]);
+			Bin_D_err[j][i]= Merged_D[i]->GetBinError(binselected[j]);
+			Bin_P_err[j][i]= Merged_P[i]->GetBinError(binselected[j]);
+		}
 	}
 
 
-
-	float DTOF[Files.size()];
-	float DTOF_err[Files.size()];
-	float PTOF[Files.size()];
-	float PTOF_err[Files.size()];
-
-	for(int i=start;i<Files.size();i++){
-		DTOF[i]=DCountsTOF_rig[i]->GetBinContent(4);
-		DTOF_err[i] = DCountsTOF_rig[i]->GetBinError(4);		
-		PTOF[i]=PCountsTOF_rig[i]->GetBinContent(18);
-		PTOF_err[i] = PCountsTOF_rig[i]->GetBinError(18);		
-	}
-
-	float DNaF[Files.size()];
-	float DNaF_err[Files.size()];
-	float PNaF[Files.size()];
-	float PNaF_err[Files.size()];
-
-	for(int i=start;i<Files.size();i++){
-		DNaF[i]=DCountsNaF_rig[i]->GetBinContent(5);
-		DNaF_err[i] = DCountsNaF_rig[i]->GetBinError(5);		
-		PNaF[i]=PCountsNaF_rig[i]->GetBinContent(15);
-		PNaF_err[i] = PCountsNaF_rig[i]->GetBinError(15);		
-	}
-	float DAgl[Files.size()];
-	float DAgl_err[Files.size()];
-	float PAgl[Files.size()];
-	float PAgl_err[Files.size()];
-
-	for(int i=start;i<Files.size();i++){
-		DAgl[i]=DCountsAgl_rig[i]->GetBinContent(4);
-		DAgl_err[i] = DCountsAgl_rig[i]->GetBinError(4);		
-		PAgl[i]=PCountsAgl_rig[i]->GetBinContent(13);
-		PAgl_err[i] = PCountsAgl_rig[i]->GetBinError(13);		
-	}
-
-/*
-	TCanvas *c4 = new TCanvas("Time Dep. 1.3 GV");
-	c4->SetCanvasSize(1000,700);
-	c4->Divide(1,2);
-	c4->cd(1);	
-	PlotTimeDep(gPad,DTOF,DTOF_err,PTOF,PTOF_err, Times);
-	c4->cd(2);
-	PlotTimeRatio(gPad,DTOF,DTOF_err,PTOF,PTOF_err, Times);
-
-	Plots.Add(c4);
-	Plots.writeObjsInFolder("Flux");
-
-	TCanvas *c5 = new TCanvas("Time Dep. 3.5 GV");
-	c5->SetCanvasSize(1000,700);
-	c5->Divide(1,2);
-	c5->cd(1);	
-	PlotTimeDep(gPad,DNaF,DNaF_err,PNaF,PNaF_err, Times);
-	c5->cd(2);
-	PlotTimeRatio(gPad,DNaF,DNaF_err,PNaF,PNaF_err, Times);
-	
-	Plots.Add(c5);
-	Plots.writeObjsInFolder("Flux");
-
-
-	TCanvas *c6 = new TCanvas("Time Dep. 7.8 GV");
-	c6->SetCanvasSize(1000,700);
-	c6->Divide(1,2);
-	c6->cd(1);	
-	PlotTimeDep(gPad,DAgl,DAgl_err,PAgl,PAgl_err, Times);
-	c6->cd(2);
-	PlotTimeRatio(gPad,DAgl,DAgl_err,PAgl,PAgl_err, Times);
-
-
-	Plots.Add(c6);
-	Plots.writeObjsInFolder("Flux");
-*/
 	TCanvas *c = new TCanvas("Time Dep. Allbins");
 	c->SetCanvasSize(1000,700);
-	c->Divide(1,3);
+	c->Divide(1,6,0,0);
 	c->cd(1);	
-	PlotTimeDep(gPad,DTOF,DTOF_err,PTOF,PTOF_err, Times);
-	c->cd(2);      
-        PlotTimeDep(gPad,DNaF,DNaF_err,PNaF,PNaF_err, Times);
-	c->cd(3);      
-        PlotTimeDep(gPad,DAgl,DAgl_err,PAgl,PAgl_err, Times);		
+	PlotTimeDep(gPad,Bin_D[0],Bin_D_err[0],Bin_P[0],Bin_P_err[0], Times);
+	c->cd(2);                                      
+       	PlotTimeDep(gPad,Bin_D[1],Bin_D_err[1],Bin_P[1],Bin_P_err[1], Times);
+	c->cd(3);                                      
+       	PlotTimeDep(gPad,Bin_D[2],Bin_D_err[2],Bin_P[2],Bin_P_err[2], Times);
+	c->cd(4);	                               
+ 	PlotTimeDep(gPad,Bin_D[3],Bin_D_err[3],Bin_P[3],Bin_P_err[3], Times);
+	c->cd(5);                                      
+ 	PlotTimeDep(gPad,Bin_D[4],Bin_D_err[4],Bin_P[4],Bin_P_err[4], Times);
+	c->cd(6);                                      
+ 	PlotTimeDep(gPad,Bin_D[5],Bin_D_err[5],Bin_P[5],Bin_P_err[5], Times);
 	
 	Plots.Add(c);
         Plots.writeObjsInFolder("Flux");
@@ -641,10 +539,32 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	TCanvas *c1 = new TCanvas("Time Ratio Allbins");
 	c1->SetCanvasSize(1000,700);
 	c1->cd();
-	PlotTimeRatio(gPad,DTOF,DTOF_err,PTOF,PTOF_err, Times, 1);
-	PlotTimeRatio(gPad,DNaF,DNaF_err,PNaF,PNaF_err, Times, 12);
-	PlotTimeRatio(gPad,DAgl,DAgl_err,PAgl,PAgl_err, Times, 15);
-
+	c1->Divide(1,6,0,0);
+	c1->cd(1);	
+	gPad->SetTickx();
+	gPad->SetTicky();
+	PlotTimeRatio(gPad,Bin_D[0],Bin_D_err[0],Bin_P[0],Bin_P_err[0], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[0]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[0]+1]) + "GV").c_str());
+	c1->cd(2);                                      
+       	gPad->SetTickx();
+	gPad->SetTicky();
+	PlotTimeRatio(gPad,Bin_D[1],Bin_D_err[1],Bin_P[1],Bin_P_err[1], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[1]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[1]+1]) + "GV").c_str());
+	c1->cd(3);                                      
+       	gPad->SetTickx();
+	gPad->SetTicky();
+	PlotTimeRatio(gPad,Bin_D[2],Bin_D_err[2],Bin_P[2],Bin_P_err[2], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[2]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[2]+1]) + "GV").c_str());
+	c1->cd(4);	                               
+ 	gPad->SetTickx();
+	gPad->SetTicky();
+	PlotTimeRatio(gPad,Bin_D[3],Bin_D_err[3],Bin_P[3],Bin_P_err[3], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[3]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[3]+1]) + "GV").c_str());
+	c1->cd(5);                                      
+ 	gPad->SetTickx();
+	gPad->SetTicky();
+	PlotTimeRatio(gPad,Bin_D[4],Bin_D_err[4],Bin_P[4],Bin_P_err[4], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[4]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[4]+1]) + "GV").c_str());
+	c1->cd(6);                                      
+ 	gPad->SetTickx();
+	gPad->SetTicky();
+	PlotTimeRatio(gPad,Bin_D[5],Bin_D_err[5],Bin_P[5],Bin_P_err[5], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[5]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[5]+1]) + "GV").c_str());
+	
 	Plots.Add(c1);
         Plots.writeObjsInFolder("Flux");
 
@@ -657,15 +577,15 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 int main(int argc, char * argv[]){
 
 	std::vector<TFile *> Files;
-	for(int i=0; i< TimeFiles.size(); i++){
-		TFile * f = TFile::Open(TimeFiles[i].c_str()); 
+	for(int i=0; i< GroupedFiles.size(); i++){
+		TFile * f = TFile::Open(GroupedFiles[i].c_str()); 
 		Files.push_back(f);
 	}
 	cout<<"Files stored: "<<Files.size()<<endl;
 	std::vector<FileSaver> files;
-	for(int i=0; i< TimeFiles.size(); i++){
+	for(int i=0; i< GroupedFiles.size(); i++){
 		FileSaver f;
-		f.setName(TimeFiles[i].c_str());
+		f.setName(GroupedFiles[i].c_str());
 		files.push_back(f);
 	}
 	cout<<"files stored: "<<files.size()<<endl;
@@ -678,6 +598,5 @@ int main(int argc, char * argv[]){
 	cout<<"**************** PLOTTING *****************"<<endl;
 	//DrawDPRatio(Plots,Files );
 	DrawPDFluxRatio(Plots,files);
-	//DrawPDCountsRatio(Plots,Files);
 	return 0;
 }

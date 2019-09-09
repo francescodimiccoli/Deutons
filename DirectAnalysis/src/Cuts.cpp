@@ -91,12 +91,16 @@ bool LikelihoodCut (Variables * vars){ return ((vars->BetaRICH_new<=0)||(vars->B
 
 bool IsGoodTrackPattern (Variables * vars) {return ((vars->patty&0x2)!=0)&&((vars->patty&0xc)!=0)&&((vars->patty&0x30)!=0)&&((vars->patty&0xc0)!=0);  }
 
+bool RigSafetyCut(Variables * vars) {return vars->R>=0.55;}
+bool RigSafetyCut_D(Variables * vars) {return vars->R>=0.275;}
+
+
 //baseline eff. corr
 bool IsDownGoing    (Variables * vars)    	{ return (vars->beta_SA > 0.3); } 
 bool IsGoodChi2	    (Variables * vars) 		{ return ( ((int)vars->joinCutmask&16)==16);}
 bool IsLUT2         (Variables * vars)          { return (((int)vars->joinCutmask&4)==4);} 
 bool IsPhysTrig     (Variables * vars)		{ return ((int)vars->joinCutmask&1)==1;}
-bool IsGoodTrack    (Variables * vars) 		{return vars->R>=0.55 && IsGoodTrackPattern(vars) ;}
+bool IsGoodTrack    (Variables * vars) 		{return vars->R>=0.0 && IsGoodTrackPattern(vars) ;}
 bool IsCharge1Track (Variables * vars) 		{return (vars->qInner>0.8&&vars->qInner<1.3);}
 bool IsCharge1TrackLoose (Variables * vars) 	{return (vars->qInner>0.&&vars->qInner<2.);}
 
@@ -317,6 +321,10 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 	
 
 		if(spl[i]=="IsCleaning" ) IsPassed=IsPassed && IsCleaning (Vars);
+		if(spl[i]=="RigSafetyCut" ) IsPassed=IsPassed && RigSafetyCut (Vars);
+		if(spl[i]=="RigSafetyCut_D" ) IsPassed=IsPassed && RigSafetyCut_D (Vars);
+
+
 
 		if(spl[i]=="IsOnlyFromToF" ) IsPassed=IsPassed && IsOnlyFromToF (Vars);
 		if(spl[i]=="IsFromNaF"	   ) IsPassed=IsPassed && IsFromNaF     (Vars);
