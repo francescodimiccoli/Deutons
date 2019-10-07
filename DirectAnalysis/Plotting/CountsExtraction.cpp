@@ -221,9 +221,9 @@ int main(int argc, char * argv[]){
 
 
 	for(int i=0;i<Global.GetToFDBins().size();i++) cout<<"Tritium: "<<RatioTOF_T->GetBinContent(i+1)<<endl;
-	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), RatioTOF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (TOF)",8);
-	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), RatioNaF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (NaF)",22);
-	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), RatioAgl_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-3,1,"T/D Counts ratio (Agl)",29);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), RatioTOF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-5,1,"T/D Counts ratio (TOF)",8);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), RatioNaF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-5,1,"T/D Counts ratio (NaF)",22);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), RatioAgl_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-5,1,"T/D Counts ratio (Agl)",29);
 
 
 	Plots.Add(c5_);
@@ -493,7 +493,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 		TCanvas * c1 = new TCanvas("Modified Templates");
 		c1->SetCanvasSize(2000,1500);
-		std::string bintitle = ("Kin. Energy: " + Convert(FIT->GetBinning().rigbincent_TOI[i]) + " GV");
+		std::string bintitle = ("Kin. Energy: " + Convert(FIT->GetBinning().EkPerMassBinCent(i)) + " GV");
 		TPaveLabel* title = new TPaveLabel(0.35,0.94,0.6,0.97,bintitle.c_str(),"brndc");
 		title->SetFillColor(0);
 		title->SetLineColor(0);

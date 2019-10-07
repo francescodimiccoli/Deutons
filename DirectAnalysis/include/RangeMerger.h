@@ -87,6 +87,8 @@ class RangeMerger{
 	TH1F * MergeSubDResult_D(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl);
 
 	TH1F * MergedRatio(TH1F * Result_D, TH1F * Result_P);	
+	TH1F * MergedRatio_Ekin(TH1F * Result_D, TH1F * Result_P);	
+
 
 };
 

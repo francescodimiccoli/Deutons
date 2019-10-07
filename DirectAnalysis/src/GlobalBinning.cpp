@@ -32,10 +32,6 @@ Binning PRB(proton);
 
 Binning ForAcceptance(proton);
 
-//resolution binning
-Binning ToFRigB(proton);
-Binning NaFRigB(proton);
-Binning AglRigB(proton);
 
 Binning PResB(proton);
 
@@ -49,6 +45,8 @@ TF1 * ResponseAgl = new TF1("ResponseAgl","x*(1-[0]/x^[1]) - [2]",0,1);
 
 
 RangeMerger Global;
+RangeMerger GlobalRig;
+
 
 void SetBins(){	
 
@@ -56,9 +54,7 @@ void SetBins(){
 	DRB.Reset();
 	PRB.Reset();
 	ForAcceptance.Reset();
-	ToFRigB.Reset();
-	NaFRigB.Reset();
-	AglRigB.Reset();
+	GlobalRig.Reset();
 	PResB  .Reset();
 	HefragmToF.Reset();
 	HefragmNaF.Reset();
@@ -70,26 +66,22 @@ void SetBins(){
 	ForAcceptance.setBinsFromRigidity(2*nbinsr,0.5,250,ResponseTOF,0.00347548,5.8474);
 
 	cout<<"Global Bins"<<endl;
-	Global.setBinsFromRDatacard("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard.data",ResponseTOF,ResponseNaF,ResponseAgl);
+	Global.setBinsFromRDatacard("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard_mod.data",ResponseTOF,ResponseNaF,ResponseAgl);
+	GlobalRig.setBinsFromRDatacard("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard_mod.data",ResponseTOF,ResponseNaF,ResponseAgl);
 	
 	cout<<"TOF bins"<<endl;
 	float ekmin=0.1, ekmax=0.82;
 	float betamin=0.55; float betamax=0.853;
-	ToFRigB.setBinsFromBeta (nbinsToF, betamin, betamax ,ResponseTOF,0.00347548,5.8474);
 	HefragmToF.setBinsFromEkPerMass (4,0.15,0.504,ResponseTOF,0.00347548,5.8474);
 
 	cout<<"NaF bins"<<endl;
 	betamin=0.85, betamax=0.977;
-	NaFRigB.setBinsFromEkPerMass(nbinsNaF, ekmin, ekmax,ResponseNaF,-0.000859132,-30.5065);
 	HefragmNaF.setBinsFromEkPerMass (1,1.5,3,ResponseNaF,0.00347548,5.8474);
 
 
 	cout<<"Agl bins"<<endl;
 	betamin=0.97, betamax=0.995;
-	AglRigB.setBinsFromEkPerMass(nbinsAgl, ekmin, ekmax,ResponseAgl,4.28781e-05,67.8521);
 	HefragmAgl.setBinsFromEkPerMass (2,2.6,11.9,ResponseAgl,0.00347548,5.8474);
-
-
 
 	//PResB.setBinsFromRigidity(60, 0.5, 100,ResponseTOF,0.00347548,5.8474);	
 	//ToFResB.setBinsFromRigidity(25, 1,8,ResponseTOF,0.00347548,5.8474);
@@ -124,10 +116,7 @@ void SetUpUsualBinning(){
 	SetBins();
 
 	Global.UseBetaEdges();
-
-	ToFRigB.UseREdges();
-	NaFRigB.UseREdges();
-	AglRigB.UseREdges();
+	GlobalRig.UseBetaEdges();
 
 	HefragmToF.UseBetaEdges();
 	HefragmNaF.UseBetaEdges();
@@ -144,10 +133,7 @@ void SetUpTOIBinning(){
 	SetBins();
 
 	Global.UseBetaTOIEdges();
-
-	ToFRigB.UseRTOIEdges();
-	NaFRigB.UseRTOIEdges();
-	AglRigB.UseRTOIEdges();
+	GlobalRig.UseRTOIEdges();
 
 
 	PRB.UseRTOIEdges();
@@ -161,10 +147,7 @@ void SetUpRigTOIBinning(){
 	SetBins();
 
 	Global.UseRTOIEdges();
-
-	ToFRigB.UseRTOIEdges();
-	NaFRigB.UseRTOIEdges();
-	AglRigB.UseRTOIEdges();
+	GlobalRig.UseRTOIEdges();
 
 	PRB.UseRTOIEdges();
 	ForAcceptance.UseRTOIEdges();

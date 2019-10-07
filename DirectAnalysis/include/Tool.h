@@ -11,7 +11,6 @@ class Tool{
 
 	public:
 	virtual void SetDefaultOutFile(FileSaver FinalHistos){finalhistos = FinalHistos; return;}
-	
 	virtual void SetUpBadEventSimulator(BadEventSimulator * Sim) {return;};
 	virtual void LoadEventIntoBadEvSim(Variables * vars) { return;}
 	virtual bool ReinitializeHistos(bool refill){ return refill;}

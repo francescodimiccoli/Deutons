@@ -7,7 +7,7 @@ print "Printed: Work Dir. = ".$workdir."\n\n";
 
 $datapath  = "/data1/home/data/v6_pass7/Compact_data/";
 #$mcP_path  = "/data1/home/data/v6_pass7/MC/pr.pl1ph.021000";
-$mcP_path  = "/data1/home/data/v6_pass7/MC/pr.pl1phpsa.0550.4_00";
+$mcP_path  = "/data1/home/data/v6_pass7/MC/";
 $mcD_path  = "";
 $mcHe_path = "";
 $mcT_path  = "";

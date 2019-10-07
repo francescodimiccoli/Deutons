@@ -503,11 +503,6 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 
 
 
-
-
-
-
-
 DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI, TTree * tree_cpct) {
 	Init();
 	Tree = tree;

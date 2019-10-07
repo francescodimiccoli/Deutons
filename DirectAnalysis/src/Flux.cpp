@@ -33,7 +33,7 @@ void Flux::Eval_Flux(){
 	if(ExposureTime) FluxEstim -> Divide(ExposureTime);
 	////
 	//ACCEPTANCE
-//	if(Eff_Acceptance) FluxEstim -> Divide(Eff_Acceptance);
+	if(Eff_Acceptance) FluxEstim -> Divide(Eff_Acceptance);
 
 	// DeltaE (CONV IN RIG)
 	FluxEstim_rig = (TH1F*) FluxEstim ->Clone();

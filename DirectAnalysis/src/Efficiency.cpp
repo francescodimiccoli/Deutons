@@ -131,7 +131,7 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 	if(ApplyCuts("IsData",vars)) return;
 	int kbin;
 	kbin =bins.GetBin(var(vars));
-	if(kbin>0){
+	if(kbin>=0){
 			float weight =1;
 			if(!notweighted) weight = vars->mcweight;
 			if(ApplyCuts(cut_before,vars)){ before->Fill(kbin,weight);}
@@ -139,7 +139,7 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 
 	kbin =bins.GetBin(discr_var(vars));
 
-	if(kbin>0){
+	if(kbin>=0){
 			float weight =1;
 			if(!notweighted) weight = vars->mcweight;
 			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,weight);
@@ -153,7 +153,7 @@ void Efficiency::FillEventByEventData(Variables * vars, float (*var) (Variables 
 	if(!Refill) return;
 	if(!ApplyCuts("IsData",vars)) return;
 	int kbin =bins.GetBin(discr_var(vars));
-	if(kbin>0){
+	if(kbin>=0){
 		if(after->GetNbinsY()==1){
 			if(ApplyCuts(cut_before,vars)) before->Fill(kbin,vars->PrescaleFactor);
 			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,vars->PrescaleFactor);

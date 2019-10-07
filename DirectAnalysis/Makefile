@@ -1,4 +1,4 @@
-all: Analysis Distributions_Plotter HeliumContamination_Parallel 
+all: Analysis  FastCheckSmearing 
 
 DBARPATH=/data1/home/fdimicco/Deutons/data_reduction
 
@@ -21,6 +21,9 @@ Distributions_Plotter:obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/Livetime.o o
 	g++ $^ $(DBARPATH)/obj/RichBDT.o -o $@ $(shell root-config --libs --cflags) -lTMVA -L$(DBARPATH)/lib/ -lntp
 
 Ntuple_Maker: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/Livetime.o obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/Ntuple_Maker.o
+	g++ $^ -o $@ $(shell root-config --libs --cflags) -lTMVA -L$(DBARPATH)/lib/ -lntp
+
+FastCheckSmearing: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/particle.o obj/binning.o obj/Livetime.o obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/RangeMerger.o obj/InputFileReader.o obj/reweight.o obj/FastCheckSmearing.o
 	g++ $^ -o $@ $(shell root-config --libs --cflags) -lTMVA -L$(DBARPATH)/lib/ -lntp
 
 ExtractInfos: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/Livetime.o obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/ExtractInfos.o

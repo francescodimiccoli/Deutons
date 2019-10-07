@@ -117,7 +117,7 @@ print "Time bins: ".scalar(@bartels)."\n";
 
 $jobsrunning = 0;
 
-$start=0;
+$start=90;
 $stop=104;
 
 for($i=$start;$i<$stop;$i++){
@@ -133,7 +133,7 @@ for($i=$start;$i<$stop;$i++){
 		print "bartel nr. $i: Jobs running: $jobsrunning\n";
 	sleep(5);
 	}	
-	system("hadd -f $outdir/$bartels[$i]-$bartels[$i+1]/Counts/Partial_Counts.root $outdir/Templates/Result.root  $outdir/$bartels[$i]-$bartels[$i+1]/*/Analysis*Counts*");
+	system("hadd -f $outdir/$bartels[$i]-$bartels[$i+1]/Counts/Partial_Counts.root $outdir/$bartels[$i]-$bartels[$i+1]/*/Analysis*Counts*");
 	system("hadd -f $outdir/$bartels[$i]-$bartels[$i+1]/Fluxes/Partial_Flux.root   $outdir/$bartels[$i]-$bartels[$i+1]/*/Analysis*Flux*");
 	system("hadd -f $outdir/$bartels[$i]-$bartels[$i+1]/Result.root   $outdir/$bartels[$i]-$bartels[$i+1]/*/Partial_*");
 	#system("$outdir/../Analysis  $outdir/$bartels[$i]-$bartels[$i+1]/Result.root");

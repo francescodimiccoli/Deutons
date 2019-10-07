@@ -170,7 +170,7 @@ class TemplateFIT : public Tool{
 
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=9,float sigma=60,float shift=60){
+	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=9,float sigma=70,float shift=60){
 		
 			ExternalTemplates.setName("/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles/ExternalTemplates.root");		
 			checkfiletemplates = ExternalTemplates.CheckFile();
@@ -205,21 +205,7 @@ class TemplateFIT : public Tool{
 				}
 			}
 		}
-   	 	/*cout<<"CHECK OF POINTERS"<< " "<<Basename.c_str()<<endl;
-		for(int bin=0;bin<Bins.size();bin++){
-			for(int i=0;i<steps;i++){
-				fits[bin].push_back(std::vector<TFit *>());
-				for(int j=0;j<steps;j++){
-				cout<<bin<<" "<<i<<" "<<j<<" "<<fits[bin][i][j]->Data<<" "<<fits[bin][i][j]->Templ_P<<endl;
-				}
-			}
-		}*/
-		cout<<"************************"<<endl;
 		
-
-
-
-	
 		basename=Basename;
 		cut = Cut;
 		cutprimary=Cut+"&IsPrimary";
@@ -262,7 +248,7 @@ class TemplateFIT : public Tool{
 
 	//reading constructor
 
-	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=9,float sigma=60,float shift=60){
+	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=9,float sigma=70,float shift=60){
 
 		TFile * file = File.GetFile();
 		TFile * externalfile;

@@ -70,11 +70,13 @@ void Acceptance::SaveResults(FileSaver finalhistos){
         finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());	
 }
 
+
+
 void Acceptance:: EvalEffAcc(){
 	cout<<"********** MC flux reweighting **********"<<endl;
 	Variables * vars = new Variables();
 	cout<<"********** For_Acceptance **************"<<endl;
-	float normalization = For_Acceptance->GetBefore()->GetEntries()/FRAC*(pow(param.Trigrate,-1));
+	float normalization = For_Acceptance->GetBefore()->GetEntries()*(pow(param.Trigrate,-1));
 	cout<<For_Acceptance->GetBefore()->GetEntries()<<" "<<normalization<<" "<<param.tot_trig<<endl;
 	//float normalization = param.tot_trig/FRAC;
 	
@@ -103,7 +105,7 @@ void Acceptance:: EvalEffAcc(){
 	//total triggers in range
 	for(int i=0;i<bins.size();i++){
 		float bincontent = normalization*(log(bins.RigTOIBins()[i+1])-log(bins.RigTOIBins()[i]))/log(param.Rmax)-log(param.Rmin);
-		float meanweight = Spectrum.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1]) / LogNorm.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1]);
+		float meanweight = 1;//Spectrum.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1]) / LogNorm.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1]);
 		FullSetEff->GetBefore()->SetBinContent(i+1,param.art_ratio*bincontent*meanweight); //vars->reweighter.getWeight(bins.RigTOIBinsCent()[i]));
 		FullSetEff->GetBefore()->SetBinError(i+1,0);
 	}
@@ -117,12 +119,20 @@ void Acceptance:: EvalEffAcc(){
 	EffAcceptance->SetName((basename +"_Eff_Acceptance").c_str());
 	EffAcceptance->SetTitle((basename +"_Eff_Acceptance").c_str());
 	EffAcceptance -> Sumw2();
-	//EffAcceptance -> Scale(47.78/param.gen_factor);
+	EffAcceptance -> Scale(47.78/param.gen_factor);
 
 	EffAcceptanceMC->SetName((basename +"_Eff_AcceptanceMC").c_str());
 	EffAcceptanceMC->SetTitle((basename +"_Eff_AcceptanceMC").c_str());
 	EffAcceptanceMC -> Sumw2();
 	EffAcceptanceMC -> Scale(47.78/param.gen_factor);
+
+	cout<<"*********** Efficiency corrections ************"<<endl;
+	for(int i=0;i<EfficiencyCorrections.size();i++) {
+		for(int j=0; j<EffAcceptance->GetNbinsX(); j++){
+			if(EfficiencyCorrections[i]->IsEkin()) EffAcceptance -> SetBinContent( j+1, EffAcceptance -> GetBinContent(j+1)*EfficiencyCorrections[i]->GetCorrectionModel()->Eval(bins.ekpermassbincent_TOI[j]));
+			else EffAcceptance -> SetBinContent( j+1, EffAcceptance -> GetBinContent(j+1)*EfficiencyCorrections[i]->GetCorrectionModel()->Eval(bins.rigbincent_TOI[j]) );
+		}
+	}	
 
 	cout<<"*********** Eff. Acceptance parameters ************"<<endl;
 	cout<<"TOT. Ev. gen: "<<normalization<<endl;

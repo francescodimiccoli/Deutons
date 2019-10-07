@@ -25,12 +25,6 @@ system ("mkdir $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples");
 system ("mkdir $outdir_plots/$ARGV[0]-$ARGV[1]/Plots");
 system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/LatRew");
 system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency");		
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Counts");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/EffCorr");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Fluxes");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Infos");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Tests");
 
 system ("rm -r $workdir/logs/");
 system ("mkdir $workdir/logs/");
@@ -82,7 +76,8 @@ for($j=0;$j<$njobs;$j++)
 
 			if($bookflux){
 
-				print OUT  "\$WORKDIR/Analysis \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  $outdir/$ARGV[0]-$ARGV[1]/Counts/Analysis$j-$offset.root 1  > \$WORKDIR/logs/log$j.log 2>\$WORKDIR/errs/err$j.err &\n\n";
+				#print OUT  "\$WORKDIR/Analysis \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  $outdir/$ARGV[0]-$ARGV[1]/Analysis$j-$offset.root 1  > \$WORKDIR/logs/log$j.log 2>\$WORKDIR/errs/err$j.err &\n\n";
+				print OUT  "\$WORKDIR/FastCheckSmearing \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  $outdir/$ARGV[0]-$ARGV[1]/FastSmearing$j-$offset.root 1  > \$WORKDIR/logs/log$j.log 2>\$WORKDIR/errs/err$j.err &\n\n";
 			}
 			
 

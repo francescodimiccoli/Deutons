@@ -22,29 +22,25 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 //	for(int i=0;i<10;i++) FluxTests[i] = new Flux(finalhistos,finalresults,("PFluxTests_v"+to_string(i)).c_str(),("CountsTestEff_rig_v" + to_string(i)).c_str(),("CountsTestEff_rig_v" + to_string(i)).c_str(),("HEPTests_v"+to_string(i) + "/HEPTests_v"+to_string(i)+"/HEPTests_v"+to_string(i)+"_after").c_str(),"HEExposure","For_Acceptance_P",PRB);
 
-	Flux * DFluxTOF  = new Flux(finalhistos,finalresults, "DFluxTOF", "FullSetTOT_D_TOF","FullSetTOT","TOFDfits/Fit Results/Primary Deuteron Counts","ExposureTOF",Global.GetToFDBins());
-	Flux * DFluxNaF  = new Flux(finalhistos,finalresults, "DFluxNaF", "FullSetTOT_D_NaF","FullSetTOT","NaFDfits/Fit Results/Primary Deuteron Counts","ExposureNaF",Global.GetNaFDBins());
-	Flux * DFluxAgl  = new Flux(finalhistos,finalresults, "DFluxAgl", "FullSetTOT_D_Agl","FullSetTOT","AglDfits/Fit Results/Primary Deuteron Counts","ExposureAgl",Global.GetAglDBins());
+	Flux * DFluxTOF  = new Flux(finalhistos,finalresults, "DFluxTOF", "Acceptance_DTOF","Acceptance","TOFDfits/Fit Results/Primary Deuteron Counts","ExposureTOF",Global.GetToFDBins());
+	Flux * DFluxNaF  = new Flux(finalhistos,finalresults, "DFluxNaF", "Acceptance_DNaF","Acceptance","NaFDfits/Fit Results/Primary Deuteron Counts","ExposureNaF",Global.GetNaFDBins());
+	Flux * DFluxAgl  = new Flux(finalhistos,finalresults, "DFluxAgl", "Acceptance_DAgl","Acceptance","AglDfits/Fit Results/Primary Deuteron Counts","ExposureAgl",Global.GetAglDBins());
 
-	Flux * HEPFlux   = new Flux(finalhistos,finalresults,"PFluxHE","RigBinBaselineEff_Trig","RigBinBaselineEff_Trig","HEPCounts/HEPCounts/HEPCounts_after","HEExposure",PRB);
-	Flux * HEPFluxL1 = new Flux(finalhistos,finalresults,"PFluxL1HE","RigBinBaselineL1Eff_Trig","RigBinBaselineL1Eff_Trig","HEPCountsL1/HEPCountsL1/HEPCountsL1_after","HEExposure",PRB);
-	Flux * HEPFluxQ  = new Flux(finalhistos,finalresults,"PFluxQHE","RigBinQualEff","RigBinQualEff","HEPCountsQual/HEPCountsQual/HEPCountsQual_after","HEExposure",PRB);
+	Flux * HEPFlux   = new Flux(finalhistos,finalresults,"PFluxHE"  ,"Acceptance_HE"    ,"Acceptance","HEPCounts/HEPCounts/HEPCounts_after","HEExposure"		,GlobalRig.GetGlobalPBins());
+	Flux * HEPFluxL1 = new Flux(finalhistos,finalresults,"PFluxL1HE","Acceptance_L1HE"  ,"Acceptance","HEPCountsL1/HEPCountsL1/HEPCountsL1_after","HEExposure"	,GlobalRig.GetGlobalPBins());
+	Flux * HEPFluxQ  = new Flux(finalhistos,finalresults,"PFluxQHE" ,"Acceptance_QualHE","Acceptance","HEPCountsQual/HEPCountsQual/HEPCountsQual_after","HEExposure",GlobalRig.GetGlobalPBins());
 
-	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFPfits/Fit Results/Primary Proton Counts","ExposureTOF",Global.GetToFPBins());
-	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFPfits/Fit Results/Primary Proton Counts","ExposureNaF",Global.GetNaFPBins());
-	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "FullSetTOT_P_Agl","FullSetTOT","AglPfits/Fit Results/Primary Proton Counts","ExposureAgl",Global.GetAglPBins());
+	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "Acceptance_PTOF","Acceptance","TOFPfits/Fit Results/Primary Proton Counts","ExposureTOF",Global.GetToFPBins());
+	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "Acceptance_PNaF","Acceptance","NaFPfits/Fit Results/Primary Proton Counts","ExposureNaF",Global.GetNaFPBins());
+	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "Acceptance_PAgl","Acceptance","AglPfits/Fit Results/Primary Proton Counts","ExposureAgl",Global.GetAglPBins());
 	
-	Flux * PFluxTOF_Ekin  = new Flux(finalhistos,finalresults, "PFluxTOF_Ekin", "FullSetTOT_P_TOF","FullSetTOT","TOFDfits/Fit Results/Primary Proton Counts","ExposureTOF",Global.GetToFDBins());
-	Flux * PFluxNaF_Ekin  = new Flux(finalhistos,finalresults, "PFluxNaF_Ekin", "FullSetTOT_P_NaF","FullSetTOT","NaFDfits/Fit Results/Primary Proton Counts","ExposureNaF",Global.GetNaFDBins());
-	Flux * PFluxAgl_Ekin  = new Flux(finalhistos,finalresults, "PFluxAgl_Ekin", "FullSetTOT_P_Agl","FullSetTOT","AglDfits/Fit Results/Primary Proton Counts","ExposureAgl",Global.GetAglDBins());
+	Flux * DummyDTOF = new Flux(finalhistos,finalresults, "DummyDTOF", "Acceptance_DTOF","Acceptance","TOFDfits/Fit Results/Primary Deuteron Counts","ExposureTOF",Global.GetToFDBins());
+	Flux * DummyDNaF = new Flux(finalhistos,finalresults, "DummyDNaF", "Acceptance_DNaF","Acceptance","NaFDfits/Fit Results/Primary Deuteron Counts","ExposureNaF",Global.GetNaFDBins());
+	Flux * DummyDAgl = new Flux(finalhistos,finalresults, "DummyDAgl", "Acceptance_DAgl","Acceptance","AglDfits/Fit Results/Primary Deuteron Counts","ExposureAgl",Global.GetAglDBins());
 
-	Flux * DummyDTOF = new Flux(finalhistos,finalresults, "DummyDTOF", "FullSetTOT_D_TOF","FullSetTOT","TOFDfits/Fit Results/Primary Deuteron Counts","ExposureTOF",Global.GetToFDBins());
-	Flux * DummyDNaF = new Flux(finalhistos,finalresults, "DummyDNaF", "FullSetTOT_D_NaF","FullSetTOT","NaFDfits/Fit Results/Primary Deuteron Counts","ExposureNaF",Global.GetNaFDBins());
-	Flux * DummyDAgl = new Flux(finalhistos,finalresults, "DummyDAgl", "FullSetTOT_D_Agl","FullSetTOT","AglDfits/Fit Results/Primary Deuteron Counts","ExposureAgl",Global.GetAglDBins());
-
-	Flux * DummyPTOF = new Flux(finalhistos,finalresults, "DummyPTOF", "FullSetTOT_P_TOF","FullSetTOT","TOFPCounts/TOFPCounts/TOFPCounts_after","ExposureTOF",Global.GetToFPBins());
-	Flux * DummyPNaF = new Flux(finalhistos,finalresults, "DummyPNaF", "FullSetTOT_P_NaF","FullSetTOT","NaFPCounts/NaFPCounts/NaFPCounts_after","ExposureNaF",Global.GetNaFPBins());
-	Flux * DummyPAgl = new Flux(finalhistos,finalresults, "DummyPAgl", "FullSetTOT_P_Agl","FullSetTOT","AglPCounts/AglPCounts/AglPCounts_after","ExposureAgl",Global.GetAglPBins());
+	Flux * DummyPTOF = new Flux(finalhistos,finalresults, "DummyPTOF", "Acceptance_PTOF","Acceptance","TOFPCounts/TOFPCounts/TOFPCounts_after","ExposureTOF",Global.GetToFPBins());
+	Flux * DummyPNaF = new Flux(finalhistos,finalresults, "DummyPNaF", "Acceptance_PNaF","Acceptance","NaFPCounts/NaFPCounts/NaFPCounts_after","ExposureNaF",Global.GetNaFPBins());
+	Flux * DummyPAgl = new Flux(finalhistos,finalresults, "DummyPAgl", "Acceptance_PAgl","Acceptance","AglPCounts/AglPCounts/AglPCounts_after","ExposureAgl",Global.GetAglPBins());
 
 
 	DFluxTOF ->SetDefaultOutFile(finalhistos); 
@@ -59,10 +55,6 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	PFluxTOF ->SetDefaultOutFile(finalhistos);
 	PFluxNaF ->SetDefaultOutFile(finalhistos);
 	PFluxAgl ->SetDefaultOutFile(finalhistos);
-
-	PFluxTOF_Ekin ->SetDefaultOutFile(finalhistos);
-	PFluxNaF_Ekin ->SetDefaultOutFile(finalhistos);
-	PFluxAgl_Ekin ->SetDefaultOutFile(finalhistos);
 
 	DummyDTOF->SetDefaultOutFile(finalhistos);
 	DummyDNaF->SetDefaultOutFile(finalhistos);
@@ -82,9 +74,6 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	Filler_RTI.AddObject2beFilled(PFluxTOF,GetBetaGen,GetBetaGen,"IsProtonMC");
 	Filler_RTI.AddObject2beFilled(PFluxNaF,GetBetaGen,GetBetaGen,"IsProtonMC");
 	Filler_RTI.AddObject2beFilled(PFluxAgl,GetBetaGen,GetBetaGen,"IsProtonMC");
-	Filler_RTI.AddObject2beFilled(PFluxTOF_Ekin,GetBetaGen,GetBetaGen,"IsProtonMC");
-	Filler_RTI.AddObject2beFilled(PFluxNaF_Ekin,GetBetaGen,GetBetaGen,"IsProtonMC");
-	Filler_RTI.AddObject2beFilled(PFluxAgl_Ekin,GetBetaGen,GetBetaGen,"IsProtonMC");
 	Filler_RTI.AddObject2beFilled(HEPFlux,GetGenMomentum,GetGenMomentum,"IsProtonMC");
 	Filler_RTI.AddObject2beFilled(HEPFluxL1,GetGenMomentum,GetGenMomentum,"IsProtonMC");
 	Filler_RTI.AddObject2beFilled(HEPFluxQ,GetGenMomentum,GetGenMomentum,"IsProtonMC");
@@ -129,9 +118,6 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		PFluxTOF-> Eval_Flux();
 		PFluxNaF-> Eval_Flux();
 		PFluxAgl-> Eval_Flux();
-		PFluxTOF_Ekin-> Eval_Flux();
-		PFluxNaF_Ekin-> Eval_Flux();
-		PFluxAgl_Ekin-> Eval_Flux();
 		DummyPTOF-> Eval_Flux();
 		DummyPNaF-> Eval_Flux();
 		DummyPAgl-> Eval_Flux();
@@ -147,22 +133,33 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		PFluxTOF->SaveResults(finalresults);
 		PFluxNaF->SaveResults(finalresults);
 		PFluxAgl->SaveResults(finalresults);
-		PFluxTOF_Ekin->SaveResults(finalresults);
-		PFluxNaF_Ekin->SaveResults(finalresults);
-		PFluxAgl_Ekin->SaveResults(finalresults);
 		DummyPTOF->SaveResults(finalresults);
 		DummyPNaF->SaveResults(finalresults);
 		DummyPAgl->SaveResults(finalresults);
 
-		cout<<"************* D/P RATIO ************"<<endl;
+		cout<<"************* MERGING RANGES ************"<<endl;
+		
+		TH1F * MergedRange_D = Global.MergeSubDResult_D(DFluxTOF->GetFlux(),DFluxNaF->GetFlux(),DFluxAgl->GetFlux());
+		TH1F * MergedRange_P = Global.MergeSubDResult_P(PFluxTOF->GetFlux(),PFluxNaF->GetFlux(),PFluxAgl->GetFlux());
 
-		TH1F * DPRatioTOF = DFluxTOF->Eval_FluxRatio(PFluxTOF_Ekin,"DP ratio TOF");
-		TH1F * DPRatioNaF = DFluxNaF->Eval_FluxRatio(PFluxNaF_Ekin,"DP ratio NaF");
-		TH1F * DPRatioAgl = DFluxAgl->Eval_FluxRatio(PFluxAgl_Ekin,"DP ratio Agl");
+		SetUpRigTOIBinning();		
+		TH1F * MergedRange_rig_D = Global.MergeSubDResult_D(DFluxTOF->GetFlux_rig(),DFluxNaF->GetFlux_rig(),DFluxAgl->GetFlux_rig());
+		TH1F * MergedRange_rig_P = Global.MergeSubDResult_P(PFluxTOF->GetFlux_rig(),PFluxNaF->GetFlux_rig(),PFluxAgl->GetFlux_rig());
 
-		finalresults.Add(DPRatioTOF);
-		finalresults.Add(DPRatioNaF);
-		finalresults.Add(DPRatioAgl);
+		MergedRange_D-> SetTitle("MergedRange_D_Ekin");
+		MergedRange_P-> SetTitle("MergedRange_P_Ekin");
+		MergedRange_D-> SetName("MergedRange_D_Ekin");
+		MergedRange_P-> SetName("MergedRange_P_Ekin");
+
+		TH1F * Ratio_R    = Global.MergedRatio(MergedRange_rig_D,MergedRange_rig_P); 
+		TH1F * Ratio_Ekin = Global.MergedRatio_Ekin(MergedRange_D,MergedRange_P); 
+	
+		finalresults.Add(MergedRange_D);
+		finalresults.Add(MergedRange_rig_D);
+		finalresults.Add(MergedRange_P);
+		finalresults.Add(MergedRange_rig_P);
+		finalresults.Add(Ratio_R);
+		finalresults.Add(Ratio_Ekin);
 
 		finalresults.writeObjsInFolder("Fluxes/");	
 	}

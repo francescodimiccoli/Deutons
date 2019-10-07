@@ -38,18 +38,38 @@ class Acceptance : public Tool{
 	TH1F * EffAcceptanceMC=0x0;
 
 	public:
+	//standard constructor
 	Acceptance(FileSaver File, std::string Basename, std::string Directory,std::string Cut_before,std::string Cut_after,Binning Bins){
 		FullSetEff     = new Efficiency(File, (Basename+"_FullSetMC" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str());
 	        For_Acceptance = new Efficiency(File,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,Cut_before.c_str(),Cut_before.c_str());
       		For_Acceptance->SetNotWeightedMC();
- 		directory = Directory;
+ 		FullSetEff->SetNotWeightedMC(); // da rimuovere quando avrai vera MC di DEUTONI
+		directory = Directory;
 		basename = Basename;
 
 		EffAcceptance = new TH1F((Basename +"_Eff_Acceptance").c_str(),(Basename +"_Eff_Acceptance").c_str(),Bins.size(),0,Bins.size());
+		EffAcceptanceMC = new TH1F((Basename +"_Eff_AcceptanceMC").c_str(),(Basename +"_Eff_AcceptanceMC").c_str(),Bins.size(),0,Bins.size());
 		Acc_StatErr = new TH1F((Basename +"_Acc_StatErr").c_str(),(Basename +"_Acc_StatErr").c_str(),Bins.size(),0,Bins.size());
 		Acc_SystErr = new TH1F((Basename +"_Acc_SystErr").c_str(),(Basename +"_Acc_SystErr").c_str(),Bins.size(),0,Bins.size());
 		bins = Bins;
 	}
+	//reading constructor
+	Acceptance(FileSaver FileRes, std::string Basename, std::string Directory,Binning Bins){
+		FullSetEff     = new Efficiency(FileRes, (Basename+"_FullSetMC" ).c_str(),Directory,Bins);
+	        For_Acceptance = new Efficiency(FileRes,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance);
+      		For_Acceptance->SetNotWeightedMC();
+		FullSetEff->SetNotWeightedMC(); // da rimuovere quando avrai vera MC di DEUTONI
+ 		directory = Directory;
+		basename = Basename;
+
+		EffAcceptance = (TH1F*) FileRes.Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+		EffAcceptanceMC = (TH1F*) FileRes.Get((directory + "/" + basename + "/"+ Basename +"_Eff_AcceptanceMC").c_str());
+		Acc_StatErr = (TH1F*) FileRes.Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+		Acc_SystErr = (TH1F*) FileRes.Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+		bins = Bins;
+	}
+
+
 
 	void Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename, float Art_ratio=1);
 	void ApplyEfficCorr(EffCorr * Correction);
@@ -72,6 +92,7 @@ class Acceptance : public Tool{
 	void SetDefaultOutFile(FileSaver FinalHistos);
 	void EvalEffAcc();
 	TH1F * GetEffAcc() {return EffAcceptance;}
+	TH1F * GetEffAccMC() {return EffAcceptanceMC;}
 	TH1F * GetEffAcc_staterr() {return Acc_StatErr;}
 	TH1F * GetEffAcc_systerr() {return Acc_SystErr;}
 		

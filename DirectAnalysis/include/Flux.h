@@ -41,12 +41,12 @@ class Flux{
 
 	Flux(FileSaver File, FileSaver FileRes, std::string Basename,std::string Accname, std::string AccDir,std::string CountsName,std::string ExposureName, Binning Bins){
 	
-		EffAcceptance = new Acceptance(FileRes,Accname,AccDir,"","",Bins);
+		EffAcceptance = new Acceptance(FileRes,Accname,AccDir,Bins);
 		Eff_Acceptance = (TH1F *) EffAcceptance->GetEffAcc();	
 		Acc_StatErr= (TH1F *) EffAcceptance->GetEffAcc_staterr();
 		Acc_SystErr= (TH1F *) EffAcceptance->GetEffAcc_systerr();
 
-		if(Eff_Acceptance) {
+		if(EffAcceptance) {
 		cout<<"************ EFFECTIVE ACCEPTANCE FOUND: ********************"<<endl;
 		cout<<Eff_Acceptance<<" "<<Acc_StatErr<<" "<<Acc_SystErr<<endl; }
 
@@ -65,12 +65,12 @@ class Flux{
 
 	Flux(FileSaver FileRes, std::string Basename, std::string Accname, std::string AccDir,std::string CountsName,std::string ExposureName, Binning Bins){
 		
-		EffAcceptance = new Acceptance(FileRes,Accname,AccDir,"","",Bins);
+		EffAcceptance = new Acceptance(FileRes,Accname,AccDir,Bins);
 		Eff_Acceptance = (TH1F *) EffAcceptance->GetEffAcc();	
 		Acc_StatErr= (TH1F *) EffAcceptance->GetEffAcc_staterr();
 		Acc_SystErr= (TH1F *) EffAcceptance->GetEffAcc_systerr();
 
-		if(Eff_Acceptance) {
+		if(EffAcceptance) {
 			cout<<"************ EFFECTIVE ACCEPTANCE FOUND: ********************"<<endl;
 			cout<<Eff_Acceptance<<" "<<Acc_StatErr<<" "<<Acc_SystErr<<endl; }
 

@@ -4,6 +4,7 @@ using namespace std;
 
 std::vector<float> LatEdges={0.0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.2};
 
+
 bool IsProtonMC    (Variables * vars){ return (vars->Massa_gen<1&&vars->Massa_gen>0);}
 bool IsDeutonMC    (Variables * vars){ return (vars->Massa_gen<2&&vars->Massa_gen>1);}
 bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>3&&vars->Massa_gen>1);}
@@ -29,8 +30,22 @@ bool IsGoodL2Status (Variables * vars) {return (vars->hitbits&0x2!=0) && (vars->
 bool HasL1 (Variables * vars) {return (vars->hitbits&0x1!=0);}
 bool HasL2 (Variables * vars) {return (vars->hitbits&0x2!=0);}
 
+bool IsGoodTrackPattern (Variables * vars) {return ((vars->patty&0x2)!=0)&&((vars->patty&0xc)!=0)&&((vars->patty&0x30)!=0)&&((vars->patty&0xc0)!=0);  }
+
+
 
 bool IsL1Fiducial   (Variables * vars) {return ((vars->FiducialVolume &0xff)==0xff);}
+
+bool IsTRDExtrapolInsideTracker (Variables * vars){ return (vars->trd_int_inside_tracker & 0xff) == 0xff;}
+
+bool IsCompact_SA(Variables * vars) { return (vars->beta_chiT_SA <10 && vars->beta_ncl_SA==4 && vars->Trd_chi_SA<10 && IsTRDExtrapolInsideTracker(vars));}
+
+bool IsCompact_An(Variables * vars) { return (IsGoodTrackPattern(vars) && IsL1Fiducial(vars) && HasL1(vars) && HasL2(vars));}
+
+bool IsCompact(Variables * vars) { return (IsGoodTrackPattern(vars) && IsL1Fiducial(vars) && HasL1(vars) && HasL2(vars)) || 
+					  (vars->beta_chiT_SA <10 && vars->beta_ncl_SA==4  && vars->Trd_chi_SA<10 && IsTRDExtrapolInsideTracker(vars));}
+
+
 bool IsGoodChiSquareX(Variables * vars) { return(vars->Chisquare<vars->Chi2Xcut->Eval(abs(vars->R)));}
 bool IsGoodChiSquareY(Variables * vars) { return(vars->Chisquare_y<vars->Chi2Ycut->Eval(abs(vars->R)));}
 
@@ -89,8 +104,6 @@ bool DistanceCut   (Variables * vars){ return QualChargeCut(vars);}//(Qualitycut
 
 bool LikelihoodCut (Variables * vars){ return ((vars->BetaRICH_new<=0)||(vars->BetaRICH_new>0&&vars->BDTDiscr>0)); }
 
-bool IsGoodTrackPattern (Variables * vars) {return ((vars->patty&0x2)!=0)&&((vars->patty&0xc)!=0)&&((vars->patty&0x30)!=0)&&((vars->patty&0xc0)!=0);  }
-
 bool RigSafetyCut(Variables * vars) {return vars->R>=0.55;}
 bool RigSafetyCut_D(Variables * vars) {return vars->R>=0.275;}
 
@@ -112,8 +125,8 @@ bool IsCharge1UTOF (Variables * vars) {return (vars->qUtof>0.8&&vars->qUtof<1.3)
 bool IsCharge1LTOF (Variables * vars) {return (vars->qLtof>0.8&&vars->qLtof<1.3);}
 
 //analysis selections
-bool IsBaseline (Variables * vars){ return IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) && IsCharge1Track(vars);}
-bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0 && vars->qL1<2&&HasL1(vars));} 
+bool IsBaseline (Variables * vars){ return IsPhysTrig(vars) && IsCompact_An(vars) && IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) && IsCharge1Track(vars);}
+bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0.2 && vars->qL1<2&&HasL1(vars));} 
 bool IsCleaning	(Variables * vars) { return Is1TrTrack(vars)&&IsMinTOF(vars)&&IsCharge1UTOF(vars)&&IsCharge1LTOF(vars);  }
 bool IsGoodTime (Variables * vars) { return ( ((int)vars->joinCutmask&32)==32);}
 bool IsFromNaF_nosel     (Variables * vars){ return vars->IsFromNaF_nosel();}
@@ -200,16 +213,6 @@ bool IsGoodTOFStandaloneQ1(Variables * vars) {
 		&& vars->qLtof_SA < 1.3 && vars-> qTrd_SA > 0.4 && vars-> qTrd_SA < 1.7);
 
 } 
-
-bool IsTRDExtrapolInsideTracker (Variables * vars){ return (vars->trd_int_inside_tracker & 0xff) == 0xff;}
-
-bool IsCompact_SA(Variables * vars) { return (vars->beta_chiT_SA <10 && vars->beta_ncl_SA==4 && vars->Trd_chi_SA<10 && IsTRDExtrapolInsideTracker(vars));}
-
-bool IsCompact_An(Variables * vars) { return (IsGoodTrackPattern(vars) && IsL1Fiducial(vars) && HasL1(vars));}
-
-bool IsCompact(Variables * vars) { return (IsGoodTrackPattern(vars) && IsL1Fiducial(vars) && HasL1(vars) && HasL2(vars)) || 
-					  (vars->beta_chiT_SA <10 && vars->beta_ncl_SA==4  && vars->Trd_chi_SA<10 && IsTRDExtrapolInsideTracker(vars));}
-
 
 //// L1 pick-up efficicny
 

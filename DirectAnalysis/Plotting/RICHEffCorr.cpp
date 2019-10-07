@@ -99,31 +99,37 @@ void DrawCorrection(EffCorr * Correction, FileSaver Plots, Binning Bins, std::st
 	gPad->SetLogx();
 	gPad->SetGridx();
 	if(Correction->IsEkin()){
-		PlotTH1FintoGraph(gPad,Bins, MCEff,"Ekin [GeV/n]", "Efficiency",2,true,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (P)",8,skipleg);
-		PlotTH1FintoGraph(gPad,Bins, MCEff2,"Ekin [GeV/n]", "Efficiency",4,true,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (D)",8,skipleg);
-		PlotTH1FintoGraph(gPad,Bins, MCEffPID,"Ekin [GeV/n]", "Efficiency",2,true,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (P - PID)",3,skipleg);
-		PlotTH1FintoGraph(gPad,Bins, DataEff,"Ekin [GeV/n]", "Efficiency",1,true,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"Data",8,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, MCEff,"Ekin [GeV/n]", "Efficiency",2,true,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(MCEff->GetMaximumBin()),"MC (P)",8,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, MCEff2,"Ekin [GeV/n]", "Efficiency",4,true,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(MCEff->GetMaximumBin()),"MC (D)",8,skipleg);
+	//	PlotTH1FintoGraph(gPad,Bins, MCEffPID,"Ekin [GeV/n]", "Efficiency",2,true,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(MCEff->GetMaximumBin()),"MC (P - PID)",3,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, DataEff,"Ekin [GeV/n]", "Efficiency",1,true,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(MCEff->GetMaximumBin()),"Data",8,skipleg);
 	}
 	else{
-		PlotTH1FintoGraph(gPad,Bins, MCEff,"R [GV]", "Efficiency",2,false,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (P)",8,skipleg);
-		PlotTH1FintoGraph(gPad,Bins, MCEff2,"R [GV]", "Efficiency",4,false,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (D)",8,skipleg);
-		PlotTH1FintoGraph(gPad,Bins, MCEffPID,"R [GV]", "Efficiency",2,false,"e4Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"MC (P - PID)",3,skipleg);
-		PlotTH1FintoGraph(gPad,Bins, DataEff,"R [GV]", "Efficiency",1,false,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(13),"Data",8,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, MCEff,"R [GV]", "Efficiency",2,false,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(MCEff->GetMaximumBin()),"MC (P)",8,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, MCEff2,"R [GV]", "Efficiency",4,false,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(MCEff->GetMaximumBin()),"MC (D)",8,skipleg);
+	//	PlotTH1FintoGraph(gPad,Bins, MCEffPID,"R [GV]", "Efficiency",2,false,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(MCEff->GetMaximumBin()),"MC (P - PID)",3,skipleg);
+		PlotTH1FintoGraph(gPad,Bins, DataEff,"R [GV]", "Efficiency",1,false,"Psame",rangemin,rangemax,0.5*DataEff->GetBinContent(2),1.3*MCEff->GetBinContent(MCEff->GetMaximumBin()),"Data",8,skipleg);
 	}
 
 
 	c4_do->cd();
 	gPad->SetLogx();
 	gPad->SetGridx();
-	if(Correction->IsEkin())
-	PlotTH1FintoGraph(gPad,Bins, (TH1F*) Correction->GetGlobCorrection(),"", "Eff. (Data/MC)",1,true,"Psame",rangemin,rangemax,0.65*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),1.2*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),"Data",8,true,false);	
-	else
-	PlotTH1FintoGraph(gPad,Bins, (TH1F*) Correction->GetGlobCorrection(),"", "Eff. (Data/MC)",1,false,"Psame",rangemin,rangemax,0.65*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),1.2*(Correction->GetGlobCorrection_noPID()->GetBinContent(10)),"Data",8,true,false); 
-
+	if(Correction->IsEkin()){
+	float ymin = Correction->GetGlobCorrection_noPID()->GetBinContent(Correction->GetGlobCorrection_noPID()->GetMinimumBin());
+	float ymax = Correction->GetGlobCorrection_noPID()->GetBinContent(Correction->GetGlobCorrection_noPID()->GetMaximumBin());
+	PlotTH1FintoGraph(gPad,Bins, (TH1F*) Correction->GetGlobCorrection(),"", "Eff. (Data/MC)",1,true,"Psame",rangemin,rangemax,0.65*ymin,1.2*ymax,"Data",8,true,false);
+	}	
+	else{
+	float ymin = Correction->GetGlobCorrection_noPID()->GetBinContent(Correction->GetGlobCorrection_noPID()->GetMinimumBin());
+	float ymax = Correction->GetGlobCorrection_noPID()->GetBinContent(Correction->GetGlobCorrection_noPID()->GetMaximumBin());
+	PlotTH1FintoGraph(gPad,Bins, (TH1F*) Correction->GetGlobCorrection(),"", "Eff. (Data/MC)",1,false,"Psame",rangemin,rangemax,0.65*ymin,1.2*ymax,"Data",8,true,false); 
+	}
 	TSpline3 * model = (TSpline3 *) Correction->GetCorrectionModel();
 	model->SetLineWidth(3);
 	model->SetLineColor(2);
 	model->Draw("same");
+
 
 	Plots.Add(c3);
 	Plots.Add(c4);

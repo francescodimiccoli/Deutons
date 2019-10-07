@@ -43,9 +43,7 @@ extern Binning ForEffCorr_D;
 
 
 //resolution binning
-extern Binning ToFRigB;
-extern Binning NaFRigB;
-extern Binning AglRigB;
+extern RangeMerger GlobalRig;
 
 extern Binning PResB;
 

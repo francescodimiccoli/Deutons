@@ -119,10 +119,23 @@ void EffCorr::Eval_Corrections(){
 	GlobalCorrectionpid->SetName((basename + "_Corr_globpid").c_str());
 	GlobalCorrectionpid->SetTitle((basename + "_Corr_globpid").c_str());
 
-
 	GlobalCorrection->Divide(EffMC->GetEfficiency());	
 	GlobalCorrection2->Divide(EffMCpid2->GetEfficiency());	
 	GlobalCorrectionpid->Divide(EffMCpid->GetEfficiency());	
+
+
+	for(int i=0; i<GlobalCorrection->GetNbinsX();i++) {
+		if(GlobalCorrection->GetBinError(i+1)>=0.1 || GlobalEfficiency->GetBinContent(i+1)<=0.015){
+			GlobalCorrection->SetBinContent(i+1,0);
+			GlobalCorrection2->SetBinContent(i+1,0);
+			GlobalCorrectionpid->SetBinContent(i+1,0);
+			GlobalCorrection->SetBinError(i+1,2);
+			GlobalCorrection2->SetBinError(i+1,2);
+			GlobalCorrectionpid->SetBinError(i+1,2);
+	
+		}
+
+	}
 
 	ModelWithSpline();
 	
@@ -182,10 +195,8 @@ void EffCorr::ModelWithSpline(){
 	cout<<"****************************************************************"<<endl;
 */
 	//regularization of histo
-	for(int i=0;i<Bins.size();i++) if(GlobalCorrection->GetBinError(i+1)>0.4) GlobalCorrection->SetBinContent(i+1,0);	
 	int nodes = Bins.size()/4+1;
 	double p[nodes];
-	double x[nodes];
 
 	CorrectionModel = new TF1("correctionmodel",FitFunc,0,Bins.size(),nodes);
 	int j=0;
@@ -199,14 +210,29 @@ void EffCorr::ModelWithSpline(){
 	GlobalCorrection->Fit("correctionmodel");
 
 	cout<<"******** "<<basename<<" ***********"<<endl;
+	std::vector<float> spline_x;
+	std::vector<float> spline_y;
 	for(int i=0;i<nodes;i++) {
 		p[i]= CorrectionModel->Eval(4*i);
-		if(IsEkinCorrection) x[i] = Bins.EkPerMasTOIBins()[4*i];
-		else 		     x[i] = Bins.RigTOIBins()[4*i];	
-			cout<<x[i]<<" "<<p[i]<<endl;
+		if(p[i]>0){
+			spline_y.push_back(p[i]);
+			if(IsEkinCorrection) spline_x.push_back(Bins.EkPerMasTOIBins()[4*i+2]);
+			else 		     spline_x.push_back(Bins.RigTOIBins()[4*i+2]);	
+		}
+	}
+	//spline_y.push_back(CorrectionModel->Eval(Bins.size()));
+	//if(IsEkinCorrection) spline_x.push_back(Bins.EkPerMasTOIBins()[Bins.size()]);
+	//else                 spline_x.push_back(Bins.RigTOIBins()[Bins.size()]);
+
+	double Y[spline_y.size()];
+	double X[spline_x.size()];
+	for(int i=0;i<spline_y.size();i++){
+		X[i]=spline_x[i];
+		Y[i]=spline_y[i];
+		cout<<X[i]<<" "<<Y[i]<<endl;
 	}
 
-	CorrectionModel_Spline = new TSpline3((basename+"_CorrSpline").c_str(),x,p,nodes);
+	CorrectionModel_Spline = new TSpline3((basename+"_CorrSpline").c_str(),X,Y,spline_y.size());
 	CorrectionModel_Spline->SetName((basename+"_CorrSpline").c_str());
 	CorrectionModel_Spline->SetTitle((basename+"_CorrSpline").c_str());
 }
