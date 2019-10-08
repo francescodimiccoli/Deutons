@@ -7,7 +7,7 @@ print "Printed: Work Dir. = ".$workdir."\n\n";
 system("rm $workdir/$ARGV[0]/Result_T*");
 
 print "Listing All Data Files..\n";
-chomp (@Rootuple = `ls  $workdir/$ARGV[0] | grep -v "_Results"|grep "_P"`);
+chomp (@Rootuple = `ls  $workdir/$ARGV[0]/Counts | grep -v "_Results"`);
 $num_Rootuple = scalar(@Rootuple);
 
 print "Total Files: ".$num_Rootuple."\n";
@@ -23,10 +23,10 @@ for ($n=0;$n<$nparts; $n++)
 {
 	$command = "hadd -f -k $workdir/$ARGV[0]/Result_T$n ";
 	for($i=($nsummed)*$n;$i<(($nsummed)*($n+1));$i++){
-		$command = $command." ".$workdir."/".$ARGV[0]."/".$Rootuple[$i];
+		$command = $command." ".$workdir."/".$ARGV[0]."/Counts/".$Rootuple[$i];
 	}
-	print $command."/n";
-	system("bsub -q ams1nd $command");	
+	print $command."\n\n";
+	system("$command &");	
 }
 
 

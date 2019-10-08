@@ -14,7 +14,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	check_file = checkfile;
 
 	FileSaver LatWeights;
-	LatWeights.setName("/data1/home/fdimicco/Deutons/DirectAnalysis/LatWeights/Weights.root");
+	LatWeights.setName("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/Weights.root");
 	LatReweighter * weighter = new LatReweighter(LatWeights,"LatWeights");	
 	
 	cout<<"****************************** BINS ***************************************"<<endl;
@@ -33,9 +33,9 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	}
 
 	//simple event count
-	Efficiency * CountsHE     = new Efficiency(finalhistos    ,"HEPCounts"         ,"HEPCounts"      ,GlobalRig.GetGlobalPBins(),"IsPositive&IsPrimary&IsBaseline","IsPositive&IsPrimary&IsBaseline");
-	Efficiency * CountsL1HE   = new Efficiency(finalhistos    ,"HEPCountsL1"       ,"HEPCountsL1"    ,GlobalRig.GetGlobalPBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1");
-	Efficiency * CountsQualHE = new Efficiency(finalhistos    ,"HEPCountsQual"     ,"HEPCountsQual"  ,GlobalRig.GetGlobalPBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning");
+	Efficiency * CountsHE     = new Efficiency(finalhistos    ,"HEPCounts"         ,"HEPCounts"      ,GlobalRig.GetGlobalDBins(),"IsPositive&IsPrimary&IsBaseline","IsPositive&IsPrimary&IsBaseline");
+	Efficiency * CountsL1HE   = new Efficiency(finalhistos    ,"HEPCountsL1"       ,"HEPCountsL1"    ,GlobalRig.GetGlobalDBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1");
+	Efficiency * CountsQualHE = new Efficiency(finalhistos    ,"HEPCountsQual"     ,"HEPCountsQual"  ,GlobalRig.GetGlobalDBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning");
 
 	Efficiency * CountsTOF    = new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,GlobalRig.GetToFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime");
 	Efficiency * CountsNaF    = new Efficiency(finalhistos    ,"NaFPCounts"	   ,"NaFPCounts"	,GlobalRig.GetNaFPBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    );

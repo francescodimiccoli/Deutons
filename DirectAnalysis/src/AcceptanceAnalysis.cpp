@@ -93,9 +93,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	EffCorr * RICHQualEffCorr_Agl = new EffCorr(finalhistos,"RICHqualCorrection_Agl","RICH Qual. Eff. Corr",true,(before+"&IsFromAgl").c_str(),(after+"&IsFromAgl&RICHBDTCut").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 
 	//Acceptance
-	Acceptance * Acceptance_HE     = new Acceptance(finalhistos,"Acceptance_HE"	,"Acceptance","IsProtonMC","IsPositive&IsBaseline"			    ,GlobalRig.GetGlobalPBins());
-	Acceptance * Acceptance_L1HE   = new Acceptance(finalhistos,"Acceptance_L1HE"	,"Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1"	    ,GlobalRig.GetGlobalPBins());
-	Acceptance * Acceptance_QualHE = new Acceptance(finalhistos,"Acceptance_QualHE" ,"Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",GlobalRig.GetGlobalPBins());
+	Acceptance * Acceptance_HE     = new Acceptance(finalhistos,"Acceptance_HE"	,"Acceptance","IsProtonMC","IsPositive&IsBaseline"			    ,GlobalRig.GetGlobalDBins());
+	Acceptance * Acceptance_L1HE   = new Acceptance(finalhistos,"Acceptance_L1HE"	,"Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1"	    ,GlobalRig.GetGlobalDBins());
+	Acceptance * Acceptance_QualHE = new Acceptance(finalhistos,"Acceptance_QualHE" ,"Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",GlobalRig.GetGlobalDBins());
 
 	Acceptance * Acceptance_RigPTOF = new Acceptance(finalhistos,"Acceptance_RigPTOF","Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&RigSafetyCut",GlobalRig.GetToFPBins());
 	Acceptance * Acceptance_RigPNaF = new Acceptance(finalhistos,"Acceptance_RigPNaF","Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",GlobalRig.GetNaFPBins());

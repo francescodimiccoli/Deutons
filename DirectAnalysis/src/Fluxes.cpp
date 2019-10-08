@@ -26,21 +26,17 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	Flux * DFluxNaF  = new Flux(finalhistos,finalresults, "DFluxNaF", "Acceptance_DNaF","Acceptance","NaFDfits/Fit Results/Primary Deuteron Counts","ExposureNaF",Global.GetNaFDBins());
 	Flux * DFluxAgl  = new Flux(finalhistos,finalresults, "DFluxAgl", "Acceptance_DAgl","Acceptance","AglDfits/Fit Results/Primary Deuteron Counts","ExposureAgl",Global.GetAglDBins());
 
-	Flux * HEPFlux   = new Flux(finalhistos,finalresults,"PFluxHE"  ,"Acceptance_HE"    ,"Acceptance","HEPCounts/HEPCounts/HEPCounts_after","HEExposure"		,GlobalRig.GetGlobalPBins());
-	Flux * HEPFluxL1 = new Flux(finalhistos,finalresults,"PFluxL1HE","Acceptance_L1HE"  ,"Acceptance","HEPCountsL1/HEPCountsL1/HEPCountsL1_after","HEExposure"	,GlobalRig.GetGlobalPBins());
-	Flux * HEPFluxQ  = new Flux(finalhistos,finalresults,"PFluxQHE" ,"Acceptance_QualHE","Acceptance","HEPCountsQual/HEPCountsQual/HEPCountsQual_after","HEExposure",GlobalRig.GetGlobalPBins());
+	Flux * HEPFlux   = new Flux(finalhistos,finalresults,"PFluxHE"  ,"Acceptance_HE"    ,"Acceptance","HEPCounts/HEPCounts/HEPCounts_after","HEExposure"		,GlobalRig.GetGlobalDBins());
+	Flux * HEPFluxL1 = new Flux(finalhistos,finalresults,"PFluxL1HE","Acceptance_L1HE"  ,"Acceptance","HEPCountsL1/HEPCountsL1/HEPCountsL1_after","HEExposure"	,GlobalRig.GetGlobalDBins());
+	Flux * HEPFluxQ  = new Flux(finalhistos,finalresults,"PFluxQHE" ,"Acceptance_QualHE","Acceptance","HEPCountsQual/HEPCountsQual/HEPCountsQual_after","HEExposure",GlobalRig.GetGlobalDBins());
 
 	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "Acceptance_PTOF","Acceptance","TOFPfits/Fit Results/Primary Proton Counts","ExposureTOF",Global.GetToFPBins());
 	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "Acceptance_PNaF","Acceptance","NaFPfits/Fit Results/Primary Proton Counts","ExposureNaF",Global.GetNaFPBins());
 	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "Acceptance_PAgl","Acceptance","AglPfits/Fit Results/Primary Proton Counts","ExposureAgl",Global.GetAglPBins());
 	
-	Flux * DummyDTOF = new Flux(finalhistos,finalresults, "DummyDTOF", "Acceptance_DTOF","Acceptance","TOFDfits/Fit Results/Primary Deuteron Counts","ExposureTOF",Global.GetToFDBins());
-	Flux * DummyDNaF = new Flux(finalhistos,finalresults, "DummyDNaF", "Acceptance_DNaF","Acceptance","NaFDfits/Fit Results/Primary Deuteron Counts","ExposureNaF",Global.GetNaFDBins());
-	Flux * DummyDAgl = new Flux(finalhistos,finalresults, "DummyDAgl", "Acceptance_DAgl","Acceptance","AglDfits/Fit Results/Primary Deuteron Counts","ExposureAgl",Global.GetAglDBins());
-
-	Flux * DummyPTOF = new Flux(finalhistos,finalresults, "DummyPTOF", "Acceptance_PTOF","Acceptance","TOFPCounts/TOFPCounts/TOFPCounts_after","ExposureTOF",Global.GetToFPBins());
-	Flux * DummyPNaF = new Flux(finalhistos,finalresults, "DummyPNaF", "Acceptance_PNaF","Acceptance","NaFPCounts/NaFPCounts/NaFPCounts_after","ExposureNaF",Global.GetNaFPBins());
-	Flux * DummyPAgl = new Flux(finalhistos,finalresults, "DummyPAgl", "Acceptance_PAgl","Acceptance","AglPCounts/AglPCounts/AglPCounts_after","ExposureAgl",Global.GetAglPBins());
+	Flux * RigPTOF = new Flux(finalhistos,finalresults, "RigPTOF", "Acceptance_PTOF","Acceptance","TOFPCounts/TOFPCounts/TOFPCounts_after","ExposureTOF",GlobalRig.GetToFPBins());
+	Flux * RigPNaF = new Flux(finalhistos,finalresults, "RigPNaF", "Acceptance_PNaF","Acceptance","NaFPCounts/NaFPCounts/NaFPCounts_after","ExposureNaF",GlobalRig.GetNaFPBins());
+	Flux * RigPAgl = new Flux(finalhistos,finalresults, "RigPAgl", "Acceptance_PAgl","Acceptance","AglPCounts/AglPCounts/AglPCounts_after","ExposureAgl",GlobalRig.GetAglPBins());
 
 
 	DFluxTOF ->SetDefaultOutFile(finalhistos); 
@@ -56,13 +52,10 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	PFluxNaF ->SetDefaultOutFile(finalhistos);
 	PFluxAgl ->SetDefaultOutFile(finalhistos);
 
-	DummyDTOF->SetDefaultOutFile(finalhistos);
-	DummyDNaF->SetDefaultOutFile(finalhistos);
-	DummyDAgl->SetDefaultOutFile(finalhistos);
 
-	DummyPTOF->SetDefaultOutFile(finalhistos);
-	DummyPNaF->SetDefaultOutFile(finalhistos);
-	DummyPAgl->SetDefaultOutFile(finalhistos);
+	RigPTOF->SetDefaultOutFile(finalhistos);
+	RigPNaF->SetDefaultOutFile(finalhistos);
+	RigPAgl->SetDefaultOutFile(finalhistos);
 
 
 
@@ -77,12 +70,9 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	Filler_RTI.AddObject2beFilled(HEPFlux,GetGenMomentum,GetGenMomentum,"IsProtonMC");
 	Filler_RTI.AddObject2beFilled(HEPFluxL1,GetGenMomentum,GetGenMomentum,"IsProtonMC");
 	Filler_RTI.AddObject2beFilled(HEPFluxQ,GetGenMomentum,GetGenMomentum,"IsProtonMC");
-	Filler_RTI.AddObject2beFilled(DummyPTOF,GetBetaGen,GetBetaGen,"IsProtonMC");
-	Filler_RTI.AddObject2beFilled(DummyPNaF,GetBetaGen,GetBetaGen,"IsProtonMC");
-	Filler_RTI.AddObject2beFilled(DummyPAgl,GetBetaGen,GetBetaGen,"IsProtonMC");
-	Filler_RTI.AddObject2beFilled(DummyDTOF,GetBetaGen,GetBetaGen,"IsDeutonMC");
-	Filler_RTI.AddObject2beFilled(DummyDNaF,GetBetaGen,GetBetaGen,"IsDeutonMC");
-	Filler_RTI.AddObject2beFilled(DummyDAgl,GetBetaGen,GetBetaGen,"IsDeutonMC");
+	Filler_RTI.AddObject2beFilled(RigPTOF,GetBetaGen,GetBetaGen,"IsProtonMC");
+	Filler_RTI.AddObject2beFilled(RigPNaF,GetBetaGen,GetBetaGen,"IsProtonMC");
+	Filler_RTI.AddObject2beFilled(RigPAgl,GetBetaGen,GetBetaGen,"IsProtonMC");
 //	for(int i=0;i<10;i++) Filler_RTI.AddObject2beFilled(FluxTests[i],GetGenMomentum,GetGenMomentum,"IsProtonMC");
 	Filler_RTI.ReinitializeAll(refill);
 
@@ -93,20 +83,11 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		DFluxTOF-> Eval_Flux();
 		DFluxNaF-> Eval_Flux();
 		DFluxAgl-> Eval_Flux();
-		DummyDTOF-> Eval_Flux();
-		DummyDNaF-> Eval_Flux();
-		DummyDAgl-> Eval_Flux();
 
-		DummyDTOF->ChangeName("DummyDTOF");
-		DummyDNaF->ChangeName("DummyDNaF");
-		DummyDAgl->ChangeName("DummyDAgl");
 
 		DFluxTOF->SaveResults(finalresults);
 		DFluxNaF->SaveResults(finalresults);
 		DFluxAgl->SaveResults(finalresults);
-		DummyDTOF->SaveResults(finalresults);
-		DummyDNaF->SaveResults(finalresults);
-		DummyDAgl->SaveResults(finalresults);
 
 		cout<<"************* P FLUX ************"<<endl;
 
@@ -118,13 +99,13 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		PFluxTOF-> Eval_Flux();
 		PFluxNaF-> Eval_Flux();
 		PFluxAgl-> Eval_Flux();
-		DummyPTOF-> Eval_Flux();
-		DummyPNaF-> Eval_Flux();
-		DummyPAgl-> Eval_Flux();
+		RigPTOF-> Eval_Flux();
+		RigPNaF-> Eval_Flux();
+		RigPAgl-> Eval_Flux();
 
-		DummyPTOF->ChangeName("DummyPTOF");
-		DummyPNaF->ChangeName("DummyPNaF");
-		DummyPAgl->ChangeName("DummyPAgl");
+		RigPTOF->ChangeName("RigPTOF");
+		RigPNaF->ChangeName("RigPNaF");
+		RigPAgl->ChangeName("RigPAgl");
 
 		HEPFlux ->SaveResults(finalresults);
 		HEPFluxL1 ->SaveResults(finalresults);
@@ -133,9 +114,9 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		PFluxTOF->SaveResults(finalresults);
 		PFluxNaF->SaveResults(finalresults);
 		PFluxAgl->SaveResults(finalresults);
-		DummyPTOF->SaveResults(finalresults);
-		DummyPNaF->SaveResults(finalresults);
-		DummyPAgl->SaveResults(finalresults);
+		RigPTOF->SaveResults(finalresults);
+		RigPNaF->SaveResults(finalresults);
+		RigPAgl->SaveResults(finalresults);
 
 		cout<<"************* MERGING RANGES ************"<<endl;
 		
