@@ -14,7 +14,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	bool checkfile = finalhistos.CheckFile();
         check_file = checkfile;
 	cout<<"****************************** BINS ***************************************"<<endl;
-        SetUpUsualBinning();
+        SetUpTOIBinning();
  
 	cout<<"****************************** Efficiency corr. ANALYIS ******************************************"<<endl;
 
@@ -171,18 +171,19 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Filler.AddObject2beFilled(RICHEffCorr_Agl,GetRigidity,GetRigidity);	
 	Filler.AddObject2beFilled(RICHQualEffCorr_NaF,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(RICHQualEffCorr_Agl,GetRigidity,GetRigidity);	
-	Filler.AddObject2beFilled(Acceptance_PTOF,GetBetaTOF,GetBetaTOF);
-        Filler.AddObject2beFilled(Acceptance_PNaF,GetBetaRICH,GetBetaRICH);
-        Filler.AddObject2beFilled(Acceptance_PAgl,GetBetaRICH,GetBetaRICH);
-	Filler.AddObject2beFilled(Acceptance_DTOF,GetBetaTOF,GetBetaTOF);
-        Filler.AddObject2beFilled(Acceptance_DNaF,GetBetaRICH,GetBetaRICH);
-        Filler.AddObject2beFilled(Acceptance_DAgl,GetBetaRICH,GetBetaRICH);
-	Filler.AddObject2beFilled(Acceptance_RigPTOF 	,GetRigidity,GetRigidity);
-        Filler.AddObject2beFilled(Acceptance_RigPNaF 	,GetRigidity,GetRigidity);
-        Filler.AddObject2beFilled(Acceptance_RigPAgl 	,GetRigidity,GetRigidity);
-	Filler.AddObject2beFilled(Acceptance_HE    	,GetRigidity,GetRigidity);
-        Filler.AddObject2beFilled(Acceptance_L1HE  	,GetRigidity,GetRigidity);
-        Filler.AddObject2beFilled(Acceptance_QualHE	,GetRigidity,GetRigidity);
+
+	Filler.AddObject2beFilled(Acceptance_PTOF,GetBetaGen,GetBetaGen);
+        Filler.AddObject2beFilled(Acceptance_PNaF,GetBetaGen,GetBetaGen);
+        Filler.AddObject2beFilled(Acceptance_PAgl,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Acceptance_DTOF,GetBetaGen,GetBetaGen);
+        Filler.AddObject2beFilled(Acceptance_DNaF,GetBetaGen,GetBetaGen);
+        Filler.AddObject2beFilled(Acceptance_DAgl,GetBetaGen,GetBetaGen);
+	Filler.AddObject2beFilled(Acceptance_RigPTOF 	,GetGenMomentum,GetGenMomentum);
+        Filler.AddObject2beFilled(Acceptance_RigPNaF 	,GetGenMomentum,GetGenMomentum);
+        Filler.AddObject2beFilled(Acceptance_RigPAgl 	,GetGenMomentum,GetGenMomentum);
+	Filler.AddObject2beFilled(Acceptance_HE    	,GetGenMomentum,GetGenMomentum);
+        Filler.AddObject2beFilled(Acceptance_L1HE  	,GetGenMomentum,GetGenMomentum);
+        Filler.AddObject2beFilled(Acceptance_QualHE	,GetGenMomentum,GetGenMomentum);
 
 
 
