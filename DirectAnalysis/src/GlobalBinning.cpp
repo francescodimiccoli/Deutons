@@ -1,6 +1,7 @@
 #include "Globals.h"
+#include "GlobalPaths.h"
 
-
+std::string workdir ="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis";
 int Ev_Num;
 int Timebeg;
 float FRAC =1;
@@ -63,11 +64,11 @@ void SetBins(){
 	cout<<"H.E. bins"<<endl;
 	DRB.setBinsFromRigidity(nbinsr, 0.5, 100,ResponseTOF,0.00347548,5.8474); 
 	PRB.setBinsFromRigidity(nbinsr, 0.5, 100,ResponseTOF,0.00347548,5.8474);
-	ForAcceptance.setBinsFromRigidity(2*nbinsr,0.5,250,ResponseTOF,0.00347548,5.8474);
+	ForAcceptance.setBinsFromRigidity(3*nbinsr,0.5,1250,ResponseTOF,0.00347548,5.8474);
 
 	cout<<"Global Bins"<<endl;
-	Global.setBinsFromRDatacard("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard_mod.data",ResponseTOF,ResponseNaF,ResponseAgl);
-	GlobalRig.setBinsFromRDatacard("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard_mod.data",ResponseTOF,ResponseNaF,ResponseAgl);
+	Global.setBinsFromRDatacard((workdir+"/bindatacard_mod.data").c_str(),ResponseTOF,ResponseNaF,ResponseAgl);
+	GlobalRig.setBinsFromRDatacard((workdir+"/bindatacard_mod.data").c_str(),ResponseTOF,ResponseNaF,ResponseAgl);
 	
 	cout<<"TOF bins"<<endl;
 	float ekmin=0.1, ekmax=0.82;
@@ -116,7 +117,7 @@ void SetUpUsualBinning(){
 	SetBins();
 
 	Global.UseBetaEdges();
-	GlobalRig.UseBetaEdges();
+	GlobalRig.UseREdges();
 
 	HefragmToF.UseBetaEdges();
 	HefragmNaF.UseBetaEdges();

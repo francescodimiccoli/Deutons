@@ -61,11 +61,13 @@ class Acceptance : public Tool{
 		FullSetEff->SetNotWeightedMC(); // da rimuovere quando avrai vera MC di DEUTONI
  		directory = Directory;
 		basename = Basename;
+		TFile * fileres = FileRes.GetFile();
 
-		EffAcceptance = (TH1F*) FileRes.Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
-		EffAcceptanceMC = (TH1F*) FileRes.Get((directory + "/" + basename + "/"+ Basename +"_Eff_AcceptanceMC").c_str());
-		Acc_StatErr = (TH1F*) FileRes.Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
-		Acc_SystErr = (TH1F*) FileRes.Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+
+		EffAcceptance = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+		EffAcceptanceMC = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_AcceptanceMC").c_str());
+		Acc_StatErr = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+		Acc_SystErr = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
 		bins = Bins;
 	}
 

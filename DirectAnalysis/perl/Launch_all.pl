@@ -3,12 +3,12 @@
 use warnings;
 print "Launching codes for Analysis...\n\n";
 #chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
-chomp($workdir = "/data1/home/fdimicco/Deutons/DirectAnalysis");
+chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 $njobs=$ARGV[2];
-$outdir="/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles";
-$outdir_ntuples="/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisNTuples";
-$outdir_plots="/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles";
+$outdir="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisFiles";
+$outdir_ntuples="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisNTuples";
+$outdir_plots="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisFiles";
 #creating sum scripts and output directory
 
 $offset = 0;

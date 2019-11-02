@@ -105,9 +105,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Acceptance * Acceptance_PNaF = new Acceptance(finalhistos,"Acceptance_PNaF","Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",Global.GetNaFPBins());
 	Acceptance * Acceptance_PAgl = new Acceptance(finalhistos,"Acceptance_PAgl","Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",Global.GetAglPBins());
 
-	Acceptance * Acceptance_DTOF = new Acceptance(finalhistos,"Acceptance_DTOF","Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",Global.GetToFDBins());
-	Acceptance * Acceptance_DNaF = new Acceptance(finalhistos,"Acceptance_DNaF","Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",Global.GetNaFDBins());
-	Acceptance * Acceptance_DAgl = new Acceptance(finalhistos,"Acceptance_DAgl","Acceptance","IsProtonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",Global.GetAglDBins());
+	Acceptance * Acceptance_DTOF = new Acceptance(finalhistos,"Acceptance_DTOF","Acceptance","IsDeutonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",Global.GetToFDBins());
+	Acceptance * Acceptance_DNaF = new Acceptance(finalhistos,"Acceptance_DNaF","Acceptance","IsDeutonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",Global.GetNaFDBins());
+	Acceptance * Acceptance_DAgl = new Acceptance(finalhistos,"Acceptance_DAgl","Acceptance","IsDeutonMC","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",Global.GetAglDBins());
 
 
 	
@@ -202,9 +202,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_PNaF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
 		Acceptance_PAgl->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
 
-		Acceptance_DTOF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
-		Acceptance_DNaF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
-		Acceptance_DAgl->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
+		Acceptance_DTOF->Set_MCPar(0.2,1000,1,"D.B1128/d.pl1ph.021000.info");	
+		Acceptance_DNaF->Set_MCPar(0.2,1000,1,"D.B1128/d.pl1ph.021000.info");	
+		Acceptance_DAgl->Set_MCPar(0.2,1000,1,"D.B1128/d.pl1ph.021000.info");	
 
 		Acceptance_RigPTOF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	
 		Acceptance_RigPNaF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info");	

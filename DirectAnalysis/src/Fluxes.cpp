@@ -6,7 +6,6 @@
 #include "AllRangesEfficiency.h"
 #include "Flux.h"
 
-
 //MC parameters taken from /cvmfs/ams.cern.ch/Offline/AMSDataDir/DataManagement/DataSetsDesc
 
 void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill){

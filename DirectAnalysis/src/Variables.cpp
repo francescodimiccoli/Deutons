@@ -2,6 +2,8 @@
 #include "histUtils.h"
 #include "TRandom3.h"
 #include <bitset>
+#include "GlobalPaths.h"
+
 
 Double_t Variables::ChiXcut_X[] = {
 			    0.5461929639082259,
@@ -148,13 +150,13 @@ Double_t Variables::ChiYcut_Y[] = {
 
 
 int GetUnusedLayers(int hitbits){ return 7 - std::bitset<32>(hitbits & 0b1111111).count(); }
-Reweighter ReweightInitializer(std::string galpropfilename="/data1/home/fdimicco/Deutons/DirectAnalysis/include/CRDB_ProtonsAMS_R.galprop",float r_min=0.5, float r_max=100,float norm_at=1.05);
+Reweighter ReweightInitializer(std::string galpropfilename=(workdir+"/include/CRDB_ProtonsAMS_R.galprop").c_str(),float r_min=0.5, float r_max=100,float norm_at=1.05);
 
 
 Variables::Variables(){
     BDTreader();
     reweighter = ReweightInitializer();
-    reweighterHe = ReweightInitializer("/data1/home/fdimicco/Deutons/DirectAnalysis/include/CRDB_HeliumAMS_R.galprop",2,2000,2.05);
+    reweighterHe = ReweightInitializer((workdir+"include/CRDB_HeliumAMS_R.galprop").c_str(),2,2000,2.05);
    	
     Chi2Xcut = new TSpline3("Chi2Xcut", ChiXcut_X,ChiXcut_Y,30);
     Chi2Ycut = new TSpline3("Chi2Ycut", ChiYcut_X,ChiYcut_Y,37);
@@ -190,7 +192,7 @@ void Variables::BDTreader()
 	readerNaF->AddSpectator("R", &R);
     	readerNaF->AddSpectator("BetaRICH_new", &BetaRICH_new);
 
-	readerNaF->BookMVA("BDTmethod", "/data1/home/fdimicco/Deutons/DirectAnalysis/TMVA/New3/QualityNaF_BDT.weights.xml");
+	readerNaF->BookMVA("BDTmethod", (workdir+"/TMVA/New3/QualityNaF_BDT.weights.xml").c_str());
 
 
 	TMVA::Tools::Instance();
@@ -215,7 +217,7 @@ void Variables::BDTreader()
 	readerAgl->AddSpectator("R", &R);
     	readerAgl->AddSpectator("BetaRICH_new", &BetaRICH_new);
 
-	readerAgl->BookMVA("BDTmethod", "/data1/home/fdimicco/Deutons/DirectAnalysis/TMVA/New3/QualityAgl_BDT.weights.xml");
+	readerAgl->BookMVA("BDTmethod", (workdir+"/TMVA/New3/QualityAgl_BDT.weights.xml").c_str());
 }
 
 void Variables::ResetVariables(){

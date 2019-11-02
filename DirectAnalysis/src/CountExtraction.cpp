@@ -6,6 +6,7 @@
 #include "Variables.hpp"
 #include "TemplateFITbetasmear.h"
 #include "Efficiency.h"
+#include "GlobalPaths.h"
 
 void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill)
 {
@@ -14,7 +15,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	check_file = checkfile;
 
 	FileSaver LatWeights;
-	LatWeights.setName("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/Weights.root");
+	LatWeights.setName((workdir+"/LatWeights/Weights.root").c_str());
 	LatReweighter * weighter = new LatReweighter(LatWeights,"LatWeights");	
 	
 	cout<<"****************************** BINS ***************************************"<<endl;

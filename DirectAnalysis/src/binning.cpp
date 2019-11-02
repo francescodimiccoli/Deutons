@@ -1,4 +1,5 @@
 #include "binning.h" 
+#include "GlobalPaths.h"
 
 void Binning::Reset(){
 	
@@ -131,7 +132,7 @@ std::vector<float> Binning::ReadBinDatacard(std::string filename, float min, flo
 	std::string lineData;
     	float tmp;
 	int count;
-	std::ifstream myfile ("/data1/home/fdimicco/Deutons/DirectAnalysis/bindatacard_mod.data", std::ios::in);
+	std::ifstream myfile ((workdir+"/bindatacard_mod.data").c_str(),std::ios::in);
 
 	while(!myfile.eof()) {
 		myfile >> tmp;

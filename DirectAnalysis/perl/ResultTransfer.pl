@@ -109,38 +109,6 @@ use warnings;
 1548072000
 );
 
-$outdir="/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles";
 
+system("scp -r /eos/ams/user/f/fdimicco/AnalysisFiles/$bartels[$ARGV[0]]-$bartels[$ARGV[0]+1] fdimicco\@ams.tifpa.infn.it:/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles");
 
-$size = scalar(@bartels);
-print "Time bins: ".scalar(@bartels)."\n";
-
-$jobsrunning = 0;
-
-$start=90;
-$stop=104;
-
-for($i=$start;$i<$stop;$i++){
-
-	print $bartels[$i]."\n";
-	system("perl Launch_all.pl $bartels[$i] $bartels[$i+1] 40 0");
-	system("sh $outdir/../Jobs.tcsh");
-	$jobsrunning = `ps ux| grep "Analysis "|grep -v "grep"|wc -l`;
-	while($jobsrunning > 1) {
-		$jobsrunning = `ps ux| grep Analysis|grep -v "grep"|wc -l`;
-		print "bartel nr. $i: Jobs running: $jobsrunning\n";
-	sleep(5);
-	}	
-	system("hadd -f $outdir/$bartels[$i]-$bartels[$i+1]/Counts/Partial_Counts.root $outdir/$bartels[$i]-$bartels[$i+1]/*/Analysis*Counts*");
-	system("hadd -f $outdir/$bartels[$i]-$bartels[$i+1]/Fluxes/Partial_Flux.root   $outdir/$bartels[$i]-$bartels[$i+1]/*/Analysis*Flux*");
-	system("hadd -f $outdir/$bartels[$i]-$bartels[$i+1]/Result.root   $outdir/$bartels[$i]-$bartels[$i+1]/*/Partial_*");
-	#system("$outdir/../Analysis  $outdir/$bartels[$i]-$bartels[$i+1]/Result.root");
-}
-
-
-for($i=$start;$i<$stop;$i=$i+4){
-
-	system("hadd -f $outdir/Grouped/$bartels[$i]-$bartels[$i+4].root $outdir/$bartels[$i]-$bartels[$i+1]/Result.root  $outdir/$bartels[$i+1]-$bartels[$i+2]/Result.root $outdir/$bartels[$i+2]-$bartels[$i+3]/Result.root $outdir/$bartels[$i+3]-$bartels[$i+4]/Result.root");
-#	system("$outdir/../Analysis  $outdir/Grouped/$bartels[$i]-$bartels[$i+4].root");
-
-}

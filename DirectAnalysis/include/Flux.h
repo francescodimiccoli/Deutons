@@ -2,8 +2,8 @@
 #define FLUX_H
 
 #include "Livetime.h"
-#include "Cuts.h"
 #include "binning.h"
+#include "Cuts.h"
 #include <fstream>
 #include "rundb.h"
 #include "Efficiency.h"

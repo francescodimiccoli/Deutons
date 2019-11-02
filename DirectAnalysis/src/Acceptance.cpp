@@ -76,7 +76,7 @@ void Acceptance:: EvalEffAcc(){
 	cout<<"********** MC flux reweighting **********"<<endl;
 	Variables * vars = new Variables();
 	cout<<"********** For_Acceptance **************"<<endl;
-	float normalization = For_Acceptance->GetBefore()->GetEntries()*(pow(param.Trigrate,-1));
+	float normalization = For_Acceptance->GetBefore()->GetEntries()*(pow(param.Trigrate,-1)) ;
 	cout<<For_Acceptance->GetBefore()->GetEntries()<<" "<<normalization<<" "<<param.tot_trig<<endl;
 	//float normalization = param.tot_trig/FRAC;
 	

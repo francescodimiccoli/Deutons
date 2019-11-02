@@ -1,9 +1,9 @@
 #ifndef BINNING_H
 #define BINNING_H
 
+
 #include "particle.h"
 #include "printmatrix.h"
-
 #include <fstream>
 #include <vector>
 #include "string.h"
@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 
 /** @brief Class used for all the binning manipulation
  * @author $Author: L. Basara$

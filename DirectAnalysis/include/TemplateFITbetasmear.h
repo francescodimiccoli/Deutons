@@ -172,7 +172,7 @@ class TemplateFIT : public Tool{
 	//standard constructor
 	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=9,float sigma=70,float shift=60){
 		
-			ExternalTemplates.setName("/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles/ExternalTemplates.root");		
+			ExternalTemplates.setName("/eos/ams/user/f/fdimicco/AnalysisFiles/ExternalTemplates.root");		
 			checkfiletemplates = ExternalTemplates.CheckFile();
 
 			if(checkfiletemplates){ 
@@ -221,7 +221,7 @@ class TemplateFIT : public Tool{
         	DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		TritiumCounts  = new TH1F("Tritium Counts","Tritium Counts",bins.size(),0,bins.size()) ;
 
-		TFile * f = TFile::Open("/data1/home/fdimicco/Deutons/DirectAnalysis/LatWeights/ExposureModel.root");		
+		TFile * f = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/ExposureModel.root");		
 		TH1F * Exp = (TH1F*) f->Get("HEExposure");	
 	        Exp->Scale(1/Exp->GetBinContent(Exp->GetMaximumBin()));
 		ExposureTime = GetSplineFromHisto(Exp,PRB);
@@ -253,7 +253,7 @@ class TemplateFIT : public Tool{
 		TFile * file = File.GetFile();
 		TFile * externalfile;
 
-		ExternalTemplates.setName("/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles/ExternalTemplates.root");		
+		ExternalTemplates.setName("/eos/ams/user/f/fdimicco/AnalysisFiles/ExternalTemplates.root");		
 
 		checkfiletemplates = ExternalTemplates.CheckFile();
 				
@@ -311,7 +311,7 @@ class TemplateFIT : public Tool{
 		DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		TritiumCounts    = new TH1F("Tritium Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		
-		TFile * f = TFile::Open("/data1/home/fdimicco/Deutons/DirectAnalysis/LatWeights/ExposureModel.root");		
+		TFile * f = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/LatWeights/ExposureModel.root");		
 		TH1F * Exp = (TH1F*) f->Get("HEExposure");
 		Exp->Scale(1/Exp->GetBinContent(Exp->GetMaximumBin()));
 		ExposureTime = GetSplineFromHisto(Exp,PRB);

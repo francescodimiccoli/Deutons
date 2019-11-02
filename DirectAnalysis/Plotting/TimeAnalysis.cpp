@@ -34,10 +34,23 @@
 #include "TGaxis.h"
 #include "../perl/List.h"
 #include "../include/Flux.h"
-
+#include "../include/TemplateFITbetasmear.h"
 #include <chrono>
 #include <iomanip>
 #include <ctime>
+
+
+double FitTime(double *x, double *p){
+	float value;
+	if(x[0]<1423958400) value = p[0];
+	else value = p[1]*x[0] + ( p[0] - p[1]*1423958400);
+	return value;
+}
+
+
+int Binselected[6]= {0,1,2,3,4,5};
+int Binselected2[6]= {3,7,11,15,27,29};
+
 
 int start =0;
 
@@ -277,7 +290,7 @@ void DrawDPRatio(FileSaver Plots, std::vector<TFile *> Files ){
 
 }
 
-void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_err[], std::vector <int> Times) {
+void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_err[], std::vector <int> Times, std::string title) {
 
 	TGraphErrors * TimeDepD = new TGraphErrors();
 	TGraphErrors * TimeDepP = new TGraphErrors();
@@ -306,7 +319,7 @@ void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_e
 	TimeDepP->GetYaxis()->SetLabelSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
 	TimeDepP->GetYaxis()->SetLabelFont(21);
 	TimeDepP->GetYaxis()->SetAxisColor(2);
-	TimeDepP->GetYaxis()->SetRangeUser(0.4*(TimeDepP->GetHistogram()->GetMinimum() + TimeDepP->GetHistogram()->GetMaximum())/2,1.6*(TimeDepP->GetHistogram()->GetMinimum() + TimeDepP->GetHistogram()->GetMaximum())/2);
+	TimeDepP->GetYaxis()->SetRangeUser( 0.2*(TimeDepP->GetHistogram()->GetMinimum() + TimeDepP->GetHistogram()->GetMaximum())/2,2*(TimeDepP->GetHistogram()->GetMinimum() + TimeDepP->GetHistogram()->GetMaximum())/2);
 
 
 	TimeDepP->GetXaxis()->	SetTimeDisplay(1);
@@ -315,13 +328,17 @@ void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_e
 //	TimeDepP->GetXaxis()->SetLabelSize(0.035*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
 //	TimeDepP->GetXaxis()->SetLabelFont(21);
 	
+	TimeDepP->SetTitle(title.c_str());
+	gStyle->SetTitleFontSize(0.2);
+	TimeDepP->GetXaxis()->  SetLabelSize(0.075);
+	
 
 	c->cd();
 	TPad *p1 = new TPad("p1", "", 0, 0, 1, 1);
 	p1->SetGrid();
 	TPad *p2 = new TPad("p2", "", 0, 0, 1, 1);
 	p2->SetFillStyle(4000); // will be transparent
-	// p2->SetGrid();
+	 p2->SetGrid();
 	
 	p1->Draw();
   	p1->cd();
@@ -331,22 +348,24 @@ void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_e
 
 	Double_t xmin = p1->GetUxmin();
 	Double_t xmax = p1->GetUxmax();
-	Double_t ymin = 0.4*(TimeDepD->GetHistogram()->GetMinimum() + TimeDepD->GetHistogram()->GetMaximum())/2;
-	Double_t ymax = 1.6*(TimeDepD->GetHistogram()->GetMinimum() + TimeDepD->GetHistogram()->GetMaximum())/2;
+	Double_t ymin = 0.2*(TimeDepP->GetHistogram()->GetMinimum() + TimeDepP->GetHistogram()->GetMaximum())/2*D[5]/P[5];
+	Double_t ymax = 2*(TimeDepP->GetHistogram()->GetMinimum() + TimeDepP->GetHistogram()->GetMaximum())/2*D[5]/P[5];
 	Double_t dx = (xmax - xmin) / 0.8; // 10 percent margins left and right
 	Double_t dy = (ymax - ymin) / 0.8; // 10 percent margins top and bottom
 	
 	p2->Range(xmin-0.1*dx, ymin-0.1*dy, xmax+0.1*dx, ymax+0.1*dy);
 	p2->Draw();
 	p2->cd();
-	TimeDepD->GetYaxis()->SetRangeUser(0.4*ymin,1.4*ymax);
+	TimeDepD->GetYaxis()->SetRangeUser(ymin,ymax);
 	TimeDepD->Draw("P");
 	gPad->Update();
 
 	TGaxis *axis = new TGaxis(xmax, ymin, xmax, ymax, ymin, ymax, 510, "+L");
 	axis->SetLineColor(kBlue);
 	axis->SetLabelColor(kBlue);
-	axis->Draw();
+	axis->SetLabelSize(0.05);
+	
+	axis->Draw("same");
 	gPad->Update();
 
 }
@@ -361,7 +380,8 @@ void PlotTimeRatio(TVirtualPad * c, float D[], float D_err[], float P[], float P
 	
 	}
 	TimeDepR->SetName(title.c_str());
-	 TimeDepR->SetTitle(title.c_str());
+	TimeDepR->SetTitle(title.c_str());
+	gStyle->SetTitleFontSize(0.2);
 
 	TimeDepR->SetMarkerStyle(8);
 	TimeDepR->SetMarkerSize(1.5);
@@ -372,10 +392,12 @@ void PlotTimeRatio(TVirtualPad * c, float D[], float D_err[], float P[], float P
 	TimeDepR->GetXaxis()->	SetTimeDisplay(1);
 	TimeDepR->GetXaxis()->  SetTimeOffset(0,"gmt");  
 	TimeDepR->GetXaxis()->  SetTimeFormat("%b%y");
+	TimeDepR->GetXaxis()->  SetLabelSize(0.075);
 	TimeDepR->GetYaxis()->SetLabelColor(1);
 	TimeDepR->GetYaxis()->SetLabelSize(0.015*gPad->GetCanvas()->GetWh()/(float)gPad->YtoPixel(gPad->GetY1()));
 	TimeDepR->GetYaxis()->SetLabelFont(11);
-	
+	TF1 * TimeModel = new TF1("timemodel",FitTime,0,1723958400,2);
+	TimeDepR->Fit("timemodel");	
 
 	c->cd();
 	if(!TimeDepP)	TimeDepR->Draw("AP");
@@ -385,7 +407,7 @@ void PlotTimeRatio(TVirtualPad * c, float D[], float D_err[], float P[], float P
 }
 
 
-void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
+void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files,int binselected[] ){
 
 	TStyle* f_gStyle= new TStyle();
 	f_gStyle->SetPalette(55);
@@ -415,7 +437,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	std::vector<Flux *> FluxesDNaF;
 	std::vector<Flux *> FluxesPAgl;
 	std::vector<Flux *> FluxesDAgl;
-	
+
 	for(int i=0;i<Files.size();i++){
 
 		Flux * DFluxTOF = new Flux(Files[i], "DFluxTOF", "FullsetEff_D_TOF","FullsetEfficiency","TOFfits/Fit Results/Primary Deuteron Counts","ExposureTOF",Global.GetToFDBins());
@@ -426,6 +448,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 		Flux * PFluxNaF = new Flux(Files[i], "PFluxNaF", "FullsetEff_P_NaF","FullsetEfficiency","NaFfits/Fit Results/Primary Proton Counts","ExposureNaF",Global.GetNaFPBins());
 		Flux * PFluxAgl = new Flux(Files[i], "PFluxAgl", "FullsetEff_P_Agl","FullsetEfficiency","Aglfits/Fit Results/Primary Proton Counts","ExposureAgl",Global.GetAglPBins());
 
+
 		FluxesPTOF.push_back(PFluxTOF);
 		FluxesPNaF.push_back(PFluxNaF);
 		FluxesPAgl.push_back(PFluxAgl);
@@ -433,6 +456,8 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 		FluxesDTOF.push_back(DFluxTOF);
 		FluxesDNaF.push_back(DFluxNaF);
 		FluxesDAgl.push_back(DFluxAgl);
+
+
 	}
 
 	for(int i=0;i<Files.size();i++){
@@ -449,6 +474,35 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	TCanvas *c3 = new TCanvas("D/P FluxRatio");
 	c3->SetCanvasSize(2000,1500);
 	gPad->SetLogx();
+
+
+	TH1F * DErrTOF[Files.size()];
+	TH1F * DErrNaF[Files.size()];
+	TH1F * DErrAgl[Files.size()];
+	TH1F * Merged_DErr[Files.size()];
+	
+	TFile * file[Files.size()] ;
+		
+	for(int i=start;i<Files.size();i++){
+		file [i]=  Files[i].GetFile();
+		DErrTOF[i]=(TH1F*) file[i]->Get("TOFDfits/Fit Results/StatErrorD");
+		DErrNaF[i]=(TH1F*) file[i]->Get("NaFDfits/Fit Results/StatErrorD");
+		DErrAgl[i]=(TH1F*) file[i]->Get("AglDfits/Fit Results/StatErrorD");
+		Merged_DErr[i] = Global.MergeSubDResult_D(DErrTOF[i],DErrNaF[i],DErrAgl[i]);
+	}
+
+	TH1F * PErrTOF[Files.size()];
+	TH1F * PErrNaF[Files.size()];
+	TH1F * PErrAgl[Files.size()];
+	TH1F * Merged_PErr[Files.size()];
+	
+	for(int i=start;i<Files.size();i++){
+		PErrTOF[i]=(TH1F*) file[i]->Get("TOFPfits/Fit Results/StatErrorP"); ;
+		PErrNaF[i]=(TH1F*) file[i]->Get("NaFPfits/Fit Results/StatErrorP"); ;
+		PErrAgl[i]=(TH1F*) file[i]->Get("AglPfits/Fit Results/StatErrorP"); ;
+		Merged_PErr[i] = Global.MergeSubDResult_P(PErrTOF[i],PErrNaF[i],PErrAgl[i]);
+	}
+
 
 	TH1F * DCountsTOF[Files.size()];
 	TH1F * DCountsNaF[Files.size()];
@@ -498,21 +552,48 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 		Merged_P[i] = Global.MergeSubDResult_P(PCountsTOF_rig[i],PCountsNaF_rig[i],PCountsAgl_rig[i]);
 	}
 
+	int bin_P[6];
+	int bin_D[6];
+
+	for(int j=0;j<6;j++){
+		float Rtoicenter = Global.GetGlobalDBins().RigTOIBinsCent()[binselected[j]];
+		bin_P[j] = Global.GetGlobalPBins().GetRTOIBin(Rtoicenter);
+		bin_D[j] = Global.GetGlobalDBins().GetRTOIBin(Rtoicenter);
+	
+	}
+
+
 	float Bin_D[6][Files.size()];
 	float Bin_P[6][Files.size()];
 	float Bin_D_err[6][Files.size()];
 	float Bin_P_err[6][Files.size()];
-	int binselected[6]= {3,7,11,15,22,29};
-	int binselected_P[6]= {3,7,11,15,22,29};
 
+	TH1F * DERRAverage = (TH1F*)Merged_DErr[2]->Clone();
+	TH1F * PERRAverage = (TH1F*)Merged_PErr[2]->Clone();
+
+	for(int i=start;i<Files.size();i++){
+		DERRAverage->Add( Merged_DErr[i]);
+		PERRAverage->Add( Merged_PErr[i]);
+	}
+	DERRAverage->Scale(1./Files.size());
+	PERRAverage->Scale(1./Files.size());
 
 
 	for(int j=0;j<6;j++){
 		for(int i=start;i<Files.size();i++){
-			Bin_D[j][i]= Merged_D[i]->GetBinContent(binselected[j]);
-			Bin_P[j][i]= Merged_P[i]->GetBinContent(binselected[j]);
-			Bin_D_err[j][i]= Merged_D[i]->GetBinError(binselected[j]);
-			Bin_P_err[j][i]= Merged_P[i]->GetBinError(binselected[j]);
+			Bin_D[j][i]= Merged_D[i]->GetBinContent(bin_D[j]+1);
+			Bin_P[j][i]= Merged_P[i]->GetBinContent(bin_P[j]+1);
+			float errD = Merged_DErr[i]->GetBinContent(bin_D[j]+1)/DERRAverage->GetBinContent(bin_D[j]+1);
+			float errP = Merged_PErr[i]->GetBinContent(bin_P[j]+1)/PERRAverage->GetBinContent(bin_P[j]+1);
+			float errsubd=0.01;
+			if(Global.GetToFBinD(bin_D[j])>=0) errsubd=0.01;
+			else if (Global.GetNaFBinD(bin_D[j])>=0) errsubd=0.05;
+			else if (Global.GetAglBinD(bin_D[j])>=0) errsubd=0.022;
+			Bin_D_err[j][i]= errD*errsubd*Bin_D[j][i];
+			Bin_P_err[j][i]= errP*errsubd*Bin_P[j][i]*0.66;
+			cout<<"******************ERROR************** "<<i <<" "<<j<<endl;
+			cout<<errD<<endl;//Bin_D_err[j][i]/Bin_D[j][i]<<endl;
+			cout<<errP<<endl;//Bin_P_err[j][i]/Bin_P[j][i]<<endl;
 		}
 	}
 
@@ -521,17 +602,17 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	c->SetCanvasSize(1000,700);
 	c->Divide(1,6,0,0);
 	c->cd(1);	
-	PlotTimeDep(gPad,Bin_D[0],Bin_D_err[0],Bin_P[0],Bin_P_err[0], Times);
+	PlotTimeDep(gPad,Bin_D[0],Bin_D_err[0],Bin_P[0],Bin_P_err[0], Times, (Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[0]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[0]+1]) + "GV").c_str());
 	c->cd(2);                                      
-       	PlotTimeDep(gPad,Bin_D[1],Bin_D_err[1],Bin_P[1],Bin_P_err[1], Times);
+       	PlotTimeDep(gPad,Bin_D[1],Bin_D_err[1],Bin_P[1],Bin_P_err[1], Times,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[1]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[1]+1]) + "GV").c_str());
 	c->cd(3);                                      
-       	PlotTimeDep(gPad,Bin_D[2],Bin_D_err[2],Bin_P[2],Bin_P_err[2], Times);
+       	PlotTimeDep(gPad,Bin_D[2],Bin_D_err[2],Bin_P[2],Bin_P_err[2], Times,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[2]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[2]+1]) + "GV").c_str());
 	c->cd(4);	                               
- 	PlotTimeDep(gPad,Bin_D[3],Bin_D_err[3],Bin_P[3],Bin_P_err[3], Times);
+ 	PlotTimeDep(gPad,Bin_D[3],Bin_D_err[3],Bin_P[3],Bin_P_err[3], Times,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[3]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[3]+1]) + "GV").c_str());
 	c->cd(5);                                      
- 	PlotTimeDep(gPad,Bin_D[4],Bin_D_err[4],Bin_P[4],Bin_P_err[4], Times);
+ 	PlotTimeDep(gPad,Bin_D[4],Bin_D_err[4],Bin_P[4],Bin_P_err[4], Times,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[4]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[4]+1]) + "GV").c_str());
 	c->cd(6);                                      
- 	PlotTimeDep(gPad,Bin_D[5],Bin_D_err[5],Bin_P[5],Bin_P_err[5], Times);
+ 	PlotTimeDep(gPad,Bin_D[5],Bin_D_err[5],Bin_P[5],Bin_P_err[5], Times,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[5]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[5]+1]) + "GV").c_str());
 	
 	Plots.Add(c);
         Plots.writeObjsInFolder("Flux");
@@ -543,28 +624,33 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	c1->cd(1);	
 	gPad->SetTickx();
 	gPad->SetTicky();
-	PlotTimeRatio(gPad,Bin_D[0],Bin_D_err[0],Bin_P[0],Bin_P_err[0], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[0]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[0]+1]) + "GV").c_str());
+	PlotTimeRatio(gPad,Bin_D[0],Bin_D_err[0],Bin_P[0],Bin_P_err[0], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[0]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[0]+1]) + "GV").c_str());
 	c1->cd(2);                                      
        	gPad->SetTickx();
 	gPad->SetTicky();
-	PlotTimeRatio(gPad,Bin_D[1],Bin_D_err[1],Bin_P[1],Bin_P_err[1], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[1]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[1]+1]) + "GV").c_str());
+	PlotTimeRatio(gPad,Bin_D[1],Bin_D_err[1],Bin_P[1],Bin_P_err[1], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[1]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[1]+1]) + "GV").c_str());
 	c1->cd(3);                                      
        	gPad->SetTickx();
 	gPad->SetTicky();
-	PlotTimeRatio(gPad,Bin_D[2],Bin_D_err[2],Bin_P[2],Bin_P_err[2], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[2]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[2]+1]) + "GV").c_str());
+	PlotTimeRatio(gPad,Bin_D[2],Bin_D_err[2],Bin_P[2],Bin_P_err[2], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[2]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[2]+1]) + "GV").c_str());
 	c1->cd(4);	                               
  	gPad->SetTickx();
 	gPad->SetTicky();
-	PlotTimeRatio(gPad,Bin_D[3],Bin_D_err[3],Bin_P[3],Bin_P_err[3], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[3]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[3]+1]) + "GV").c_str());
+	PlotTimeRatio(gPad,Bin_D[3],Bin_D_err[3],Bin_P[3],Bin_P_err[3], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[3]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[3]+1]) + "GV").c_str());
 	c1->cd(5);                                      
  	gPad->SetTickx();
 	gPad->SetTicky();
-	PlotTimeRatio(gPad,Bin_D[4],Bin_D_err[4],Bin_P[4],Bin_P_err[4], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[4]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[4]+1]) + "GV").c_str());
+	PlotTimeRatio(gPad,Bin_D[4],Bin_D_err[4],Bin_P[4],Bin_P_err[4], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[4]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[4]+1]) + "GV").c_str());
 	c1->cd(6);                                      
  	gPad->SetTickx();
 	gPad->SetTicky();
-	PlotTimeRatio(gPad,Bin_D[5],Bin_D_err[5],Bin_P[5],Bin_P_err[5], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[5]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[binselected[5]+1]) + "GV").c_str());
+	PlotTimeRatio(gPad,Bin_D[5],Bin_D_err[5],Bin_P[5],Bin_P_err[5], Times,2,(Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[5]])  + " < R < " + Convert(Global.GetGlobalPBins().RigTOIBins()[bin_P[5]+1]) + "GV").c_str());
 	
+	TCanvas * cerr = new TCanvas("cerr");
+	cerr->cd();
+	for(int i=start;i<Files.size();i++){
+		Merged_PErr[i]->Draw("same");	
+	}	
 	Plots.Add(c1);
         Plots.writeObjsInFolder("Flux");
 
@@ -572,6 +658,97 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files ){
 	return;
 }
 
+
+void DrawMassDistributions(FileSaver Plots, std::vector<FileSaver> Files,int binselected[]){
+
+	TStyle* l_gStyle= new TStyle();
+	l_gStyle->SetPalette(55);
+	int nColors = l_gStyle->GetNumberOfColors();
+
+	TH1F * MassDistrD[Files.size()][6];
+	TH1F * MassDistrP[Files.size()][6];
+
+	int bin_P[6];
+	int bin_D[6];
+
+	for(int j=0;j<6;j++){
+		float Rtoicenter = Global.GetGlobalDBins().RigTOIBinsCent()[binselected[j]];
+		bin_P[j] = Global.GetGlobalPBins().GetRTOIBin(Rtoicenter);
+		bin_D[j] = Global.GetGlobalDBins().GetRTOIBin(Rtoicenter);
+	
+	}
+
+
+
+	for(int i=0;i<Files.size();i++) {
+		for(int j=0;j<6;j++)	{
+
+			if(Global.GetToFBinD(bin_D[j])>=0)
+				MassDistrD[i][j] = (TH1F*) Files[i].Get(("TOFDfits/Fit Results/Data/Bin"+to_string(Global.GetToFBinD(bin_D[j]))+"/TOFDfits_Data_" + to_string(Global.GetToFBinD(bin_D[j]))+" 0 5").c_str()  );
+
+			else if(Global.GetNaFBinD(bin_D[j])>=0)
+				MassDistrD[i][j] = (TH1F*) Files[i].Get(("NaFDfits/Fit Results/Data/Bin"+to_string(Global.GetNaFBinD(bin_D[j]))+"/NaFDfits_Data_" + to_string(Global.GetNaFBinD(bin_D[j]))+" 0 5").c_str()  );
+
+			else if(Global.GetAglBinD(bin_D[j])>=0)
+				MassDistrD[i][j] = (TH1F*) Files[i].Get(("AglDfits/Fit Results/Data/Bin"+to_string(Global.GetAglBinD(bin_D[j]))+"/AglDfits_Data_" + to_string(Global.GetAglBinD(bin_D[j]))+" 0 5").c_str()  );
+
+		}
+			
+	}
+
+	for(int i=0;i<Files.size();i++) {
+		for(int j=0;j<6;j++)	{
+
+			if(Global.GetToFBinP(bin_P[j])>=0)
+				MassDistrP[i][j] = (TH1F*) Files[i].Get(("TOFPfits/Fit Results/Data/Bin"+to_string(Global.GetToFBinP(bin_P[j]))+"/TOFPfits_Data_" + to_string(Global.GetToFBinP(bin_P[j]))+" 0 5").c_str()  );
+
+			else if(Global.GetNaFBinP(bin_P[j])>=0)
+				MassDistrP[i][j] = (TH1F*) Files[i].Get(("NaFPfits/Fit Results/Data/Bin"+to_string(Global.GetNaFBinP(bin_P[j]))+"/NaFPfits_Data_" + to_string(Global.GetNaFBinP(bin_P[j]))+" 0 5").c_str()  );
+
+			else if(Global.GetAglBinP(bin_P[j])>=0)
+				MassDistrP[i][j] = (TH1F*) Files[i].Get(("AglPfits/Fit Results/Data/Bin"+to_string(Global.GetAglBinP(bin_P[j]))+"/AglPfits_Data_" + to_string(Global.GetAglBinP(bin_P[j]))+" 0 5").c_str()  );
+
+		}
+			
+	}
+
+
+
+
+	TCanvas * c[6];
+	for(int j=0;j<6;j++) {
+		c[j]= new TCanvas(("Bin D" + to_string(j)).c_str());
+		float norm = MassDistrD[0][j]->GetBinContent(MassDistrD[0][j]->GetMaximumBin());
+		for(int i=0;i<Files.size();i++){
+			MassDistrD[i][j]->Scale(norm/MassDistrD[i][j]->GetBinContent(MassDistrD[i][j]->GetMaximumBin()));
+			c[j]->cd();
+			gPad->SetLogy();
+			MassDistrD[i][j]->SetLineColor(l_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)));
+			MassDistrD[i][j]->SetMarkerColor(l_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)));
+			MassDistrD[i][j]->SetLineWidth(3);	
+			MassDistrD[i][j]->Draw("same");	
+		}
+		Plots.Add(c[j]);
+	}
+	TCanvas * d[6];
+	for(int j=0;j<6;j++) {
+		d[j]= new TCanvas(("Bin P" + to_string(j)).c_str());
+		float norm = MassDistrP[0][j]->GetBinContent(MassDistrP[0][j]->GetMaximumBin());
+		for(int i=0;i<Files.size();i++){
+			MassDistrP[i][j]->Scale(norm/MassDistrP[i][j]->GetBinContent(MassDistrP[i][j]->GetMaximumBin()));
+			d[j]->cd();
+			gPad->SetLogy();
+			MassDistrP[i][j]->SetLineColor(l_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)));
+			MassDistrP[i][j]->SetMarkerColor(l_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)));
+			MassDistrP[i][j]->SetLineWidth(3);	
+			MassDistrP[i][j]->Draw("same");	
+		}
+		Plots.Add(d[j]);
+	}
+	
+
+	Plots.writeObjsInFolder("MassDistributions");
+}
 
 
 int main(int argc, char * argv[]){
@@ -591,12 +768,15 @@ int main(int argc, char * argv[]){
 	cout<<"files stored: "<<files.size()<<endl;
 	
 	FileSaver Plots;
-	Plots.setName("/data1/home/fdimicco/Deutons/DirectAnalysis/Plotting/Time.root");
+	Plots.setName("/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/Plotting/Time.root");
         cout<<"****************************** BINS ***************************************"<<endl;
 	SetUpTOIBinning();
 	
 	cout<<"**************** PLOTTING *****************"<<endl;
 	//DrawDPRatio(Plots,Files );
-	DrawPDFluxRatio(Plots,files);
+	DrawPDFluxRatio(Plots,files,Binselected);
+	DrawMassDistributions(Plots,files,Binselected);
+	
+	
 	return 0;
 }

@@ -1,14 +1,14 @@
 #!/usr/bin/perl
 
 use warnings;
-chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
-#chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
+#chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
+chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
-$datapath  = "/data1/home/data/v6_pass7/Compact_data/";
+$datapath  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/neg/ISS.B1130/pass7/";
 #$mcP_path  = "/data1/home/data/v6_pass7/MC/pr.pl1ph.021000";
-$mcP_path  = "/data1/home/data/v6_pass7/MC/";
-$mcD_path  = "";
+$mcP_path  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/full/Pr.B1200/pr.pl1.05100.4_00/";
+$mcD_path  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/full/D.B1128/d.pl1ph.021000/";
 $mcHe_path = "";
 $mcT_path  = "";
 
@@ -27,7 +27,8 @@ $ntuplepathMC  = "/eos/ams/user/f/fdimicco/AnalysisNTuples/MC-MC/Ntuples";
 
 
 #use warnings;
-system("rm $workdir/InputFileLists/*"); 
+system("rm -r $workdir/InputFileLists/$ARGV[0]-$ARGV[1]"); 
+system("mkdir $workdir/InputFileLists/$ARGV[0]-$ARGV[1]");
 
 print "Listing All Data Files..\n";
 
@@ -86,7 +87,7 @@ for ($n=0;$n<$njobs; $n++)
 		}
 	}
 	else{
-		open(OUT,">","$workdir/InputFileLists/FileListDT$n.txt");
+		open(OUT,">","$workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT$n.txt");
 		for ($j=($num_rootuple)/$njobs*$n + $OFFSET; $j<($num_rootuple)/$njobs*($n+1) + $OFFSET; $j++)
 		{
 			$j=$j+$FRAC;
@@ -101,7 +102,7 @@ for ($n=0;$n<$njobs; $n++)
 
 print "Listing All MC Files..\n";
 chomp (@MC_P = `ls  $mcP_path | grep -v "log" |grep root|  sed s/.root//g`);
-$num_MC_P = scalar(@MC_P);
+$num_MC_P = scalar(@MC_P)/5;
 
 print "Total Files MC P: ".$num_MC_P."\n";
 
@@ -134,7 +135,7 @@ for ($n=0;$n<$njobs; $n++)
 		}
 	}
 	else{
-		open(OUT,">","$workdir/InputFileLists/FileListMC$n.txt");
+		open(OUT,">","$workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC$n.txt");
 
 		for ($j=($num_MC_P)/$njobs*$n + $OFFSET ; $j<($num_MC_P)/$njobs*($n+1) +$OFFSET ; $j++)
 		{

@@ -451,7 +451,7 @@ float CalculateAmountOfHighMassComponent(TH1F * Data, TH1F* First, TH1F * Third,
 
 float GetChiSquare(TH1 * Result, TH1 * Data, float min, float max){
 
-	int binmin = Data->FindBin(min);
+	int binmin = Data->FindBin(0.9);
 	int binmax = Data->FindBin(max);
 	float chi = 0;
 	float err = 0;
