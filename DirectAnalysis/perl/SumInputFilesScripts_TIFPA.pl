@@ -5,10 +5,10 @@ use warnings;
 chomp($workdir = "/data1/home/fdimicco/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
-$datapath  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/neg/ISS.B1130/pass7/";
+$datapath  = "/data1/home/data/v6_pass7/data/";
 #$mcP_path  = "/data1/home/data/v6_pass7/MC/pr.pl1ph.021000";
-$mcP_path  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/full/Pr.B1200/pr.pl1.05100.4_00/";
-$mcD_path  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/full/D.B1128/d.pl1ph.021000/";
+$mcP_path  = "/data1/home/data/v6_pass7/MC";
+$mcD_path  = "";
 $mcHe_path = "";
 $mcT_path  = "";
 

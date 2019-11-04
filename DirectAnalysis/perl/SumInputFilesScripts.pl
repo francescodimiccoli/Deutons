@@ -32,7 +32,7 @@ system("mkdir $workdir/InputFileLists/$ARGV[0]-$ARGV[1]");
 
 print "Listing All Data Files..\n";
 
-chomp (@Rootuple = `ls $datapath | grep root | grep -v "log" |  sed s/.root//g`);
+chomp (@Rootuple = `ssh fdimicco\@lxplus.cern.ch "ls $datapath | grep root | grep -v "log" |  sed s/.root//g"`);
 $num_Rootuple = scalar(@Rootuple);
 
 chomp (@NTuple = `ls  $ntuplepath | grep -v "log" |grep -v "check" |  sed s/.root//g`);

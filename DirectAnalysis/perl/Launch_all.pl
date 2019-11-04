@@ -15,7 +15,7 @@ $offset = 0;
 
 print "Resetting work directories...\n";
 
-system ("$workdir/perl/SumInputFilesScripts.pl $ARGV[0] $ARGV[1] $ARGV[2] $offset");
+system ("$workdir/perl/SumInputFilesScripts_TIFPA.pl $ARGV[0] $ARGV[1] $ARGV[2] $offset");
 system ("mkdir $outdir/$ARGV[0]-$ARGV[1]");
 system ("mkdir $outdir_ntuples/$ARGV[0]-$ARGV[1]");
 system ("mkdir $outdir_plots/$ARGV[0]-$ARGV[1]");
