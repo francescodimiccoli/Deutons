@@ -15,7 +15,6 @@ chomp (@RootupleCounts = `ls  $outdir/$ARGV[0]/* | grep -v "Result"| grep -v "Pa
 chomp (@RootupleFlux = `ls  $outdir/$ARGV[0]/* 	 | grep -v "Result"| grep -v "Partial"|grep _Flux`);
 chomp (@RootupleCorr = `ls  $outdir/$ARGV[0]/*   | grep -v "Result"| grep -v "Partial"|grep _Corr`);
 
-
 $num_Rootuplecounts = scalar(@RootupleCounts);
 $num_Rootupleflux = scalar(@RootupleFlux);
 $num_Rootuplecorr = scalar(@RootupleCorr);
@@ -24,13 +23,12 @@ $num_Rootuplecorr = scalar(@RootupleCorr);
 
 print "Total Files Counts: ".$num_Rootuplecounts."\n";
 print "Total Files Flux: ".$num_Rootupleflux."\n";
-print "Total Files Eff: ".$num_RootupleCorr."\n";
+print "Total Files Eff: ".$num_Rootuplecorr."\n";
 
 
 
 @rootuple;$i=0;
 $nparts = 10;
-$nsummed = $num_Rootuplecounts/$nparts;
 $command;
 
 
@@ -39,6 +37,7 @@ system("source /cvmfs/sft.cern.ch/lcg/views/LCG_88/x86_64-slc6-gcc49-opt/setup.s
 
 if(scalar(@RootupleCounts)>0){
 	if($command eq"") { $command = "hadd -f -k $outdir/$ARGV[0]/Partial$n ";}
+	$nsummed = $num_Rootuplecounts/$nparts;
 	for($i=($nsummed)*$n;$i<(($nsummed)*($n+1));$i++){
 		$command = $command." ".$outdir."/".$ARGV[0]."/*/".$RootupleCounts[$i];
 	}
@@ -46,6 +45,7 @@ if(scalar(@RootupleCounts)>0){
 
 if(scalar(@RootupleFlux)>0){
 	if($command eq "") { $command = "hadd -f -k $outdir/$ARGV[0]/Partial$n ";}
+	$nsummed = $num_Rootupleflux/$nparts;
 	for($i=($nsummed)*$n;$i<(($nsummed)*($n+1));$i++){
 		$command = $command." ".$outdir."/".$ARGV[0]."/*/".$RootupleFlux[$i];
 	}
@@ -53,6 +53,7 @@ if(scalar(@RootupleFlux)>0){
 
 if(scalar(@RootupleCorr)>0){
 	if($command eq "") { $command = "hadd -f -k $outdir/$ARGV[0]/Partial$n ";}
+	$nsummed = $num_Rootuplecorr/$nparts;
 	for($i=($nsummed)*$n;$i<(($nsummed)*($n+1));$i++){
 		$command = $command." ".$outdir."/".$ARGV[0]."/*/".$RootupleCorr[$i];
 	}

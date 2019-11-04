@@ -1,0 +1,10 @@
+./DoAllPartialsi$1.sh 0  >> 0.out &
+./DoAllPartialsi$1.sh 1  >> 1.out &
+./DoAllPartialsi$1.sh 2  >> 2.out &
+./DoAllPartialsi$1.sh 3  >> 3.out &
+./DoAllPartialsi$1.sh 4  >> 4.out &
+./DoAllPartialsi$1.sh 5  >> 5.out &
+./DoAllPartialsi$1.sh 6  >> 6.out &
+./DoAllPartialsi$1.sh 7  >> 7.out &
+./DoAllPartialsi$1.sh 8  >> 8.out &
+./DoAllPartialsi$1.sh 9  >> 9.out &
