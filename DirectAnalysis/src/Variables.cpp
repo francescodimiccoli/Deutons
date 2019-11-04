@@ -156,7 +156,7 @@ Reweighter ReweightInitializer(std::string galpropfilename=(workdir+"/include/CR
 Variables::Variables(){
     BDTreader();
     reweighter = ReweightInitializer();
-    reweighterHe = ReweightInitializer((workdir+"include/CRDB_HeliumAMS_R.galprop").c_str(),2,2000,2.05);
+    reweighterHe = ReweightInitializer((workdir+"/include/CRDB_HeliumAMS_R.galprop").c_str(),2,2000,2.05);
    	
     Chi2Xcut = new TSpline3("Chi2Xcut", ChiXcut_X,ChiXcut_Y,30);
     Chi2Ycut = new TSpline3("Chi2Ycut", ChiYcut_X,ChiYcut_Y,37);

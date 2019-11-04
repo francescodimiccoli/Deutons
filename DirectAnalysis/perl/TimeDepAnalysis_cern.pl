@@ -126,9 +126,9 @@ $jobsrunning = 0;
 $start=$ARGV[0];
 $stop=$ARGV[1];
 
-$launchana=1;
+$launchana=0;
 $launchsum=0;
-$organizeoutput=0;
+$organizeoutput=1;
 $finalanalysis=0;
 
 for($i=$start;$i<$stop;$i++){
@@ -156,27 +156,31 @@ if($launchana==1){
 	}	
 }
 
-open(OUT,">","$workdir/perl/SumScripts/DoAllPartials.sh");
-
 if($launchsum==1){
-	for($i=$start;$i<$stop;$i++){
-		chdir "$outdir/$bartels[$i]-$bartels[$i+1]";
+
+	for($k=0;$k<4;$k++){
+		open(OUT,">","$workdir/perl/SumScripts/DoAllPartialsi$k.sh");
+		for($i=$start + (($stop-$start)/4)*$k  ;$i< $start + (($stop-$start)/4)*($k+1);$i++){
+			chdir "$outdir/$bartels[$i]-$bartels[$i+1]";
 			print $i."\n";
 			print OUT "$workdir/perl/SumScripts/script$bartels[$i]-$bartels[$i+1].sh \$1\n";
 		}	
+		close(OUT);
+		system("chmod +x $workdir/perl/SumScripts/DoAllPartialsi$k.sh")	;
+	}
 }
-close(OUT);
+
 
 if($organizeoutput==1){
-#	for($i=$start;$i<$stop;$i++){
-#		chdir "$outdir/$bartels[$i]-$bartels[$i+1]";
-#		system("mv $outdir/$bartels[$i]-$bartels[$i+1]/Counts/*_Flux $outdir/$bartels[$i]-$bartels[$i+1]/Flux");
-#		system("mv $outdir/$bartels[$i]-$bartels[$i+1]/Counts/*_Corr $outdir/$bartels[$i]-$bartels[$i+1]/EffCorr");
-#		system("hadd -f -k Result.root Partial*");
-#
-#	}
+	for($i=$start;$i<$stop;$i++){
+		chdir "$outdir/$bartels[$i]-$bartels[$i+1]";
+		system("mv $outdir/$bartels[$i]-$bartels[$i+1]/Counts/*_Flux $outdir/$bartels[$i]-$bartels[$i+1]/Flux");
+		system("mv $outdir/$bartels[$i]-$bartels[$i+1]/Counts/*_Corr $outdir/$bartels[$i]-$bartels[$i+1]/EffCorr");
+		system("hadd -f -k Result.root Partial* ../ExternalMCEff.root");
+
+	}
 	for($i=$start;$i<=$stop;$i=$i+4){
-#		system("hadd -f $outdir/Grouped/$bartels[$i]-$bartels[$i+4].root $outdir/$bartels[$i]-$bartels[$i+1]/Result.root  $outdir/$bartels[$i+1]-$bartels[$i+2]/Result.root $outdir/$bartels[$i+2]-$bartels[$i+3]/Result.root $outdir/$bartels[$i+3]-$bartels[$i+4]/Result.root");
+		system("hadd -f $outdir/Grouped/$bartels[$i]-$bartels[$i+4].root $outdir/$bartels[$i]-$bartels[$i+1]/Result.root  $outdir/$bartels[$i+1]-$bartels[$i+2]/Result.root $outdir/$bartels[$i+2]-$bartels[$i+3]/Result.root $outdir/$bartels[$i+3]-$bartels[$i+4]/Result.root");
 	}
 }
 
