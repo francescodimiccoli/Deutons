@@ -3,6 +3,8 @@
 
 #include <string>
 
-extern std::string workdir;// ="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis";
+extern std::string workdir;
+extern std::string outdir;
+
 
 #endif

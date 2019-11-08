@@ -1,7 +1,9 @@
 #include "Globals.h"
 #include "GlobalPaths.h"
 
-std::string workdir ="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis";
+std::string workdir ="/data1/home/fdimicco/Deutons/DirectAnalysis";
+std::string outdir ="/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles";
+
 int Ev_Num;
 int Timebeg;
 float FRAC =1;

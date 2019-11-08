@@ -14,22 +14,21 @@
 
 	//cuts
 
-	//L1pickup
-	string beforecutMC =  (IsDownGoing + "&&" + IsPhysTrig + "&&" + IsL1HitNearExtrapol + "&&" + IsCleanL1Hit + "&&" + IsGoodTOFStandaloneQ1 + "&&" + IsGoodTrackPattern + "&&" + IsNotL1HitMultiplX).c_str(); 
-	string aftercutMC  =  (IsDownGoing + "&&" + IsPhysTrig + "&&" + IsL1HitNearExtrapol + "&&" + IsCleanL1Hit + "&&" + IsGoodTOFStandaloneQ1 + "&&" + IsGoodTrackPattern + "&&" + IsNotL1HitMultiplX + "&&" + HasL1).c_str(); 
-	string beforecutDT =  (IsDownGoing + "&&" + IsPhysTrig + "&&" + IsL1HitNearExtrapol + "&&" + IsCleanL1Hit + "&&" + IsGoodTOFStandaloneQ1 + "&&" + IsGoodTrackPattern  + "&&" + IsNotL1HitMultiplX).c_str(); 
-	string aftercutDT  =  (IsDownGoing + "&&" + IsPhysTrig + "&&" + IsL1HitNearExtrapol + "&&" + IsCleanL1Hit + "&&" + IsGoodTOFStandaloneQ1 + "&&" + IsGoodTrackPattern  + "&&" + IsNotL1HitMultiplX + "&&" + HasL1).c_str(); 
+	string beforecutMC =  (IsDownGoing + "&&" + IsPhysTrig + "&&" +  IsCompact_SA + "&&" + IsGoodTrackPattern + "&&" + HasL2 + "&&" + HasL1 +"&&" + qInnerCut+"&&" + qUToFCut+"&&" + qLToFCut).c_str(); 
+	string aftercutMC  =  (IsDownGoing + "&&" + IsUnbias i + "&&" +  IsCompact_SA + "&&" + IsGoodTrackPattern + "&&" + HasL2 + "&&" + HasL1 +"&&" + qInnerCut+"&&" + qUToFCut+"&&" + qLToFCut).c_str(); 
+	string beforecutDT =  (IsDownGoing + "&&" + IsPhysTrig + "&&" +  IsCompact_SA + "&&" + IsGoodTrackPattern + "&&" + HasL2 + "&&" + HasL1 +"&&" + qInnerCut+"&&" + qUToFCut+"&&" + qLToFCut).c_str(); 
+	string aftercutDT  =  (IsDownGoing + "&&" + IsUnbias   + "&&" +  IsCompact_SA + "&&" + IsGoodTrackPattern + "&&" + HasL2 + "&&" + HasL1 +"&&" + qInnerCut+"&&" + qUToFCut+"&&" + qLToFCut).c_str(); 
 	
 	
-	TH1F * hbeforeMC = new TH1F("hbeforeMC","hbeforeMC",30,-1,2);
-	TH1F * hafterMC   = new TH1F("hafterMC","hafterMC",30,-1,2) ; 
-	TH1F * hbeforeDT = new TH1F("hbeforeDT","hbeforeDT",30,-1,2);
-	TH1F * hafterDT   = new TH1F("hafterDT","hafterDT",30,-1,2) ; 
+	TH1F * hbeforeMC = new TH1F("hbeforeMC","hbeforeMC",30,-1,3);
+	TH1F * hafterMC   = new TH1F("hafterMC","hafterMC",30,-1,3) ; 
+	TH1F * hbeforeDT = new TH1F("hbeforeDT","hbeforeDT",30,-1,3);
+	TH1F * hafterDT   = new TH1F("hafterDT","hafterDT",30,-1,3) ; 
 
-	chainMC->Draw("log10(trk_rig_kalman[1])>>hbeforeMC",beforecutMC.c_str());
-	chainMC->Draw("log10(trk_rig_kalman[1])>>hafterMC",aftercutMC.c_str());
-	chainDT->Draw("log10(trk_rig_kalman[1])>>hbeforeDT",beforecutDT.c_str());
-	chainDT->Draw("log10(trk_rig_kalman[1])>>hafterDT",aftercutDT.c_str());
+	chainMC->Draw("1>>hbeforeMC",beforecutMC.c_str());
+	chainMC->Draw("1>>hafterMC",aftercutMC.c_str());
+	chainDT->Draw("1>>hbeforeDT",beforecutDT.c_str());
+	chainDT->Draw("1>>hafterDT",aftercutDT.c_str());
 
 	TH1F * MCEff     = (TH1F*) hafterMC->Clone("RatioMC");
 
@@ -43,7 +42,6 @@
 
 	DTEff->SetLineColor(1);	
 	MCEff->Draw();	
-	DTEff->Draw("same");	
-
+	DTEff->Draw("same");
 
 }
