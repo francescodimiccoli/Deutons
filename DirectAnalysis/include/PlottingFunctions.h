@@ -428,7 +428,7 @@ void PlotFunction(TVirtualPad * c, TSpline3 * Function, std::string Xaxis, std::
 	return;
 }
 
-void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname="",int dotstyle=8,bool skipleg=false, bool cleanhigherrors=false){
+void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname="",int dotstyle=8,bool skipleg=false, bool cleanhigherrors=false, TH1F* ErrUp=0x0, TH1F* ErrDw =0x0){
 
 	c->cd();
 	c->SetTopMargin(0.1);
@@ -437,14 +437,19 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	gPad->SetTickx();
 	gPad->SetTicky();
 	
-	TGraphErrors * Graph = new TGraphErrors();
+	TGraphAsymmErrors * Graph = new TGraphAsymmErrors();
 	int a=0;
 	for(int i=0;i<Values->GetNbinsX();i++){
 		if(Values->GetBinContent(i+1)!=0){
 			if(Ekin) Graph->SetPoint(a,bins.EkPerMassBinCent(i), Values->GetBinContent(i+1));
 			else Graph->SetPoint(a,bins.GetBinCenter(i), Values->GetBinContent(i+1));
-			Graph->SetPointError(a,0,Values->GetBinError(i+1));
-			if(cleanhigherrors) if(Values->GetBinError(i+1)/Values->GetBinContent(i+1)>0.05) Graph->RemovePoint(a);
+			if(!ErrUp&&!ErrDw){
+				Graph->SetPointError(a,0,0,Values->GetBinError(i+1),Values->GetBinError(i+1));
+				if(cleanhigherrors) if(Values->GetBinError(i+1)/Values->GetBinContent(i+1)>0.05) Graph->RemovePoint(a);
+			}
+			else{
+				Graph->SetPointError(a,0,0,ErrUp->GetBinContent(i+1),ErrDw->GetBinContent(i+1));	
+			}
 			a++;
 		}
 	}	
@@ -500,6 +505,11 @@ void PlotTH1FintoGraph(TVirtualPad * c, Binning bins, TH1F * Values, std::string
 	
 	return;
 }
+
+
+
+
+
 
 
 void PlotMergedRanges(TVirtualPad * c, TH1F * ValuesTOF, TH1F* ValuesNaF, TH1F* ValuesAgl, std::string Xaxis, std::string Yaxis, int color,bool Ekin=false, std::string options="same", float xmin=-1,float xmax=-1,float ymin=-1,float ymax=-1,std::string legendname="",int dotstyle=8,bool skipleg=false, bool cleanhigherrors=false){

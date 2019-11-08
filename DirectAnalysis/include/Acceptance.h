@@ -40,10 +40,10 @@ class Acceptance : public Tool{
 	public:
 	//standard constructor
 	Acceptance(FileSaver File, std::string Basename, std::string Directory,std::string Cut_before,std::string Cut_after,Binning Bins){
-		FullSetEff     = new Efficiency(File, (Basename+"_FullSetMC" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str());
-	        For_Acceptance = new Efficiency(File,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,Cut_before.c_str(),Cut_before.c_str());
+		FullSetEff     = new Efficiency(File, (Basename+"_FullSetMC" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str(),true);
+	        For_Acceptance = new Efficiency(File,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,Cut_before.c_str(),Cut_before.c_str(),true);
       		For_Acceptance->SetNotWeightedMC();
- 		FullSetEff->SetNotWeightedMC(); // da rimuovere quando avrai vera MC di DEUTONI
+ 	//	FullSetEff->SetNotWeightedMC(); // da rimuovere quando avrai vera MC di DEUTONI
 		directory = Directory;
 		basename = Basename;
 
@@ -55,10 +55,10 @@ class Acceptance : public Tool{
 	}
 	//reading constructor
 	Acceptance(FileSaver FileRes, std::string Basename, std::string Directory,Binning Bins){
-		FullSetEff     = new Efficiency(FileRes, (Basename+"_FullSetMC" ).c_str(),Directory,Bins);
-	        For_Acceptance = new Efficiency(FileRes,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance);
+		FullSetEff     = new Efficiency(FileRes, (Basename+"_FullSetMC" ).c_str(),Directory,Bins,true);
+	        For_Acceptance = new Efficiency(FileRes,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,true);
       		For_Acceptance->SetNotWeightedMC();
-		FullSetEff->SetNotWeightedMC(); // da rimuovere quando avrai vera MC di DEUTONI
+	//	FullSetEff->SetNotWeightedMC(); // da rimuovere quando avrai vera MC di DEUTONI
  		directory = Directory;
 		basename = Basename;
 		TFile * fileres = FileRes.GetFile();

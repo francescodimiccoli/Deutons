@@ -7,6 +7,8 @@
 #include "TGraphErrors.h"
 #include "filesaver.h"
 #include "Tool.h"
+#include "GlobalPaths.h"
+
 
 class Tool;
 
@@ -35,7 +37,7 @@ class Efficiency : public Tool{
 	bool Refill = true;
 	public:
 
-	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after){
+	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,bool external = false){
 		file=File;
 		bins=Bins;
 		basename=Basename;
@@ -43,12 +45,12 @@ class Efficiency : public Tool{
 		cut_after=Cut_after;
 		directory=Directory;
 
-		ReadFile();		
+		ReadFile(external);		
 		before = new TH1F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size());
 		after  = new TH1F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size());
 	};
 
-	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::vector<float> LatZones){
+	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins, std::string Cut_before,std::string Cut_after,std::vector<float> LatZones, bool external = false){
 		file=File;
 		bins=Bins;
 		basename=Basename;
@@ -56,22 +58,24 @@ class Efficiency : public Tool{
 		cut_after=Cut_after;
 		directory=Directory;
 		
-		ReadFile();
+		ReadFile(external);
 		before = new TH2F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size(),LatZones.size(),0,LatZones.size());
 		after  = new TH2F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size(),LatZones.size(),0,LatZones.size());
 	};
 
-	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins){
+	Efficiency(FileSaver  File, std::string Basename,std::string Directory, Binning Bins,bool external = false){
 		file=File;
 		bins=Bins;
 		basename=Basename;
 		directory=Directory;
 	
-		ReadFile();
+		ReadFile(external);
 	}
 
-	void ReadFile(){
-		TFile * ff = file.GetFile();
+	void ReadFile(bool external = false){
+		TFile * ff;
+		if(external) ff = TFile::Open((outdir+"/ExternalTemplates.root").c_str());
+		ff = file.GetFile();
 		if(ff){
 			before =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_before").c_str());
                 	after  =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_after").c_str());

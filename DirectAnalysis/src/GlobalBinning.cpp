@@ -1,8 +1,8 @@
 #include "Globals.h"
 #include "GlobalPaths.h"
 
-std::string workdir ="/data1/home/fdimicco/Deutons/DirectAnalysis";
-std::string outdir ="/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles";
+std::string workdir ="/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis";
+std::string outdir ="/eos/ams/user/f/fdimicco/AnalysisFiles/";
 
 int Ev_Num;
 int Timebeg;

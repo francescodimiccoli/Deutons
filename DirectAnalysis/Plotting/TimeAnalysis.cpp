@@ -35,9 +35,66 @@
 #include "../perl/List.h"
 #include "../include/Flux.h"
 #include "../include/TemplateFITbetasmear.h"
+#include "../include/EffCorr.h"
 #include <chrono>
 #include <iomanip>
 #include <ctime>
+
+int Binselected[6]= {0,1,2,3,4,5};
+int Binselected2[6]= {3,7,11,15,27,29};
+
+
+int start =0;
+
+
+
+struct TimeResult{
+	TH1F * Mean;
+	TH1F * VariabilityUp;
+	TH1F * VariabilityDw;
+	
+};
+
+
+TimeResult GetTimeMean(std::vector<TH1F*>Ratios){
+
+	TH1F * RatioMean = (TH1F*)Ratios[0] -> Clone();
+	TH1F * RatioMin  = (TH1F*)Ratios[0] -> Clone();
+	TH1F * RatioMax  = (TH1F*)Ratios[0] -> Clone();
+
+	for(int j=0;j<RatioMean->GetNbinsX();j++){
+		for(int i=start+1;i<Ratios.size();i++){
+			if(Ratios[i]->GetBinContent(j+1)<RatioMin->GetBinContent(j+1)&&!(Ratios[i]->GetBinContent(j+1)<0.2*Ratios[1] ->GetBinContent(j+1))) 
+				RatioMin->SetBinContent(j+1, Ratios[i]->GetBinContent(j+1));
+			if(Ratios[i]->GetBinContent(j+1)>RatioMax->GetBinContent(j+1) &&!(Ratios[i]->GetBinContent(j+1)>3*Ratios[1] ->GetBinContent(j+1))) 
+				RatioMax->SetBinContent(j+1, Ratios[i]->GetBinContent(j+1));
+		}
+	}
+	
+	int n =0;
+	for(int i=start+1;i<Ratios.size();i++){
+		if(!(Ratios[i]->GetBinContent(Ratios[i]->GetMaximumBin())>3*(Ratios[1]->GetBinContent(Ratios[i]->GetMaximumBin())))){
+			if(!(Ratios[i]->GetBinContent(Ratios[i]->GetMinimumBin())<0.2*(Ratios[1]->GetBinContent(Ratios[i]->GetMinimumBin()))))	{
+				RatioMean->Add(Ratios[i]);
+				n++;
+			}	
+		}	
+	}
+	RatioMean->Scale(1./n);
+
+	TimeResult Result;
+	Result.Mean = (TH1F*) RatioMean->Clone();
+	Result.VariabilityUp = (TH1F*) RatioMax->Clone();
+	Result.VariabilityDw = (TH1F*) RatioMean->Clone();
+
+	Result.VariabilityUp->Add(Result.Mean,-1);
+	Result.VariabilityDw->Add(RatioMin,-1);
+	
+	Result.VariabilityUp->Smooth();
+	Result.VariabilityDw->Smooth();
+		
+	return Result;
+}
 
 
 double FitTime(double *x, double *p){
@@ -47,12 +104,6 @@ double FitTime(double *x, double *p){
 	return value;
 }
 
-
-int Binselected[6]= {0,1,2,3,4,5};
-int Binselected2[6]= {3,7,11,15,27,29};
-
-
-int start =0;
 
 std::string Convert (float number){
     std::ostringstream buff;
@@ -167,7 +218,7 @@ int bartels = (
 1541073600,
 1543406400,
 1545739200,
-1548072000
+1548979200
 );
 
 
@@ -217,7 +268,7 @@ void DrawGalpropRatio(TVirtualPad *c){
 
 }
 
-void DrawDPRatio(FileSaver Plots, std::vector<TFile *> Files ){
+void DrawDPRatioEkin(FileSaver Plots, std::vector<FileSaver> Files ){
 	TStyle* m_gStyle= new TStyle();;
 	m_gStyle->SetPalette(55);
 	int nColors = m_gStyle->GetNumberOfColors();
@@ -238,21 +289,20 @@ void DrawDPRatio(FileSaver Plots, std::vector<TFile *> Files ){
         }
 
 
-	TCanvas *c3 = new TCanvas("D/P ratio");
-	c3->SetCanvasSize(2000,1500);
-	TH1F * RatiosTOF[Files.size()];
-	TH1F * RatiosNaF[Files.size()];
-	TH1F * RatiosAgl[Files.size()];
+	TCanvas *c3 = new TCanvas("D/P ratio Ekin");
+	c3->cd();	
+	std::vector<TH1F *> Ratios;
 
 	for(int i=start;i<Files.size();i++){
-		RatiosTOF[i]=(TH1F*)Files[i]->Get("Fluxes/DP ratio TOF");
-		RatiosNaF[i]=(TH1F*)Files[i]->Get("Fluxes/DP ratio NaF");
-		RatiosAgl[i]=(TH1F*)Files[i]->Get("Fluxes/DP ratio Agl");
+		TFile * f = Files[i].GetFile();
+		Ratios.push_back( (TH1F*)f->Get("Fluxes/Ratio_Ekin"));
 	}
-	
-/*	for(int i=start;i<Files.size();i++){
-		PlotMergedRanges(gPad,RatiosTOF[i] ,RatiosNaF[i] ,RatiosAgl[i] ,"Kinetic Energy [GeV/nucl.]", "Flux",m_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)),true,"Psame",0.1,10,0.00001,0.12,"This Work (TOF)",8);	
-	}	
+	TimeResult Ratio = GetTimeMean(Ratios);
+
+
+	PlotTH1FintoGraph(gPad,Global.GetGlobalDBins(),Ratio.Mean,"Kinetic Energy [GeV/nucl.]", "D/p ratio",2,true,"Psame",0.05,12,0.001,0.1,"",8);
+	PlotTH1FintoGraph(gPad,Global.GetGlobalDBins(),Ratio.Mean,"Kinetic Energy [GeV/n]","D/p ratio", 2,true,"e4Psame", 0.05,12,0.001,0.1,"",8,true,false,Ratio.VariabilityUp,Ratio.VariabilityDw);
+
 
         TLegend * leg = (TLegend*) gPad->FindObject("leg");
 
@@ -263,29 +313,10 @@ void DrawDPRatio(FileSaver Plots, std::vector<TFile *> Files ){
         }
 
 	DrawGalpropRatio(c3);
-*/
+
         Plots.Add(c3);
         Plots.writeObjsInFolder("Fluxes");
 	
-
-
-	TCanvas *c4 = new TCanvas("Double ratio");
-	c4->SetCanvasSize(1000,700);
-	
-	for(int i=start;i<Files.size();i++){
-		RatiosTOF[i]->Divide(RatiosTOF[start]);
-		RatiosNaF[i]->Divide(RatiosNaF[start]);
-		RatiosAgl[i]->Divide(RatiosAgl[start]);
-
-	}
-	
-
-	 for(int i=start;i<Files.size();i++){
-                PlotMergedRanges(gPad,RatiosTOF[i] ,RatiosNaF[i] ,RatiosAgl[i] ,"Kinetic Energy [GeV/nucl.]", "Flux",m_gStyle->GetColorPalette( ((float)nColors/Files.size()) *(i+1)),true,"Psame",0.1,10,0.1,5,"This Work (TOF)",8);
-        }
-
-	Plots.Add(c4);
-        Plots.writeObjsInFolder("Fluxes");
 
 
 }
@@ -590,7 +621,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files,int binselect
 			else if (Global.GetNaFBinD(bin_D[j])>=0) errsubd=0.05;
 			else if (Global.GetAglBinD(bin_D[j])>=0) errsubd=0.022;
 			Bin_D_err[j][i]= errD*errsubd*Bin_D[j][i];
-			Bin_P_err[j][i]= errP*errsubd*Bin_P[j][i]*0.66;
+			Bin_P_err[j][i]= errP*errsubd*Bin_P[j][i];
 			cout<<"******************ERROR************** "<<i <<" "<<j<<endl;
 			cout<<errD<<endl;//Bin_D_err[j][i]/Bin_D[j][i]<<endl;
 			cout<<errP<<endl;//Bin_P_err[j][i]/Bin_P[j][i]<<endl;
@@ -598,7 +629,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files,int binselect
 	}
 
 
-	TCanvas *c = new TCanvas("Time Dep. Allbins");
+	TCanvas *c = new TCanvas(("Time Dep." +to_string(binselected[0])+"_"+to_string(binselected[5])).c_str());
 	c->SetCanvasSize(1000,700);
 	c->Divide(1,6,0,0);
 	c->cd(1);	
@@ -617,7 +648,7 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files,int binselect
 	Plots.Add(c);
         Plots.writeObjsInFolder("Flux");
 
-	TCanvas *c1 = new TCanvas("Time Ratio Allbins");
+	TCanvas *c1 = new TCanvas(("Time Ratio." +to_string(binselected[0])+"_"+to_string(binselected[5])).c_str());
 	c1->SetCanvasSize(1000,700);
 	c1->cd();
 	c1->Divide(1,6,0,0);
@@ -747,9 +778,160 @@ void DrawMassDistributions(FileSaver Plots, std::vector<FileSaver> Files,int bin
 	}
 	
 
-	Plots.writeObjsInFolder("MassDistributions");
+	Plots.writeObjsInFolder(("Mass Distr." +to_string(binselected[0])+"_"+to_string(binselected[5])).c_str());
 }
 
+
+
+void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
+
+	TStyle* r_gStyle= new TStyle();
+	r_gStyle->SetPalette(55);
+	int nColors = r_gStyle->GetNumberOfColors();
+
+	std::vector<int> Times;
+	std::vector<std::string> Dates;
+	std::vector<TSpline3 *> TriggerTSpline3_HE  ;
+	std::vector<TSpline3 *> L1PickUpTSpline3_HE ;
+	std::vector<TSpline3 *> GoodQTrack_HE      ;
+	std::vector<TSpline3 *> GoodChi_HE  	     ;
+	std::vector<TSpline3 *> TrackerTSpline3_HE  ;
+	std::vector<TSpline3 *> StatusL1Check_HE   ;
+	std::vector<TSpline3 *> Good1Track_HE      ;
+	std::vector<TSpline3 *> GoodLtof_HE  	     ;
+	std::vector<TSpline3 *> GoodUtof_HE  	     ;
+	std::vector<TSpline3 *> GoodTime_TOF 	     ;
+	std::vector<TSpline3 *> RICHTSpline3_NaF    ;
+	std::vector<TSpline3 *> RICHTSpline3_Agl    ;
+	std::vector<TSpline3 *> RICHQualTSpline3_NaF;
+	std::vector<TSpline3 *> RICHQualTSpline3_Agl;
+
+
+	for(int i=0;i<Files.size();i++){
+	TFile * file = Files[i].GetFile();
+	TSpline3 *	riggerTSpline3_HE  	= (TSpline3 *)file->Get("Trigger Eff. Corr/TriggerEffCorr_HE/TriggerEffCorr_HE_CorrSpline");
+	TSpline3 *	PickUpTSpline3_HE  	= (TSpline3 *)file->Get("L1PickUp Eff. Corr/L1PickUpEffCorr_HE/L1PickUpEffCorr_HE _CorrSpline");
+	TSpline3 *	oodQTrack_HE   		= (TSpline3 *)file->Get("GoodQTrack Eff. Corr/GoodQTrackEffCorr_HE/GoodQTrackEffCorr_HE_CorrSpline");
+	TSpline3 *	oodChi_HE   		= (TSpline3 *)file->Get("GoodChi Eff. Corr/GoodChiEffCorr_HE/GoodChiEffCorr_HE_CorrSpline");
+	TSpline3 *	rackerTSpline3_HE  	= (TSpline3 *)file->Get("Tracker Eff. Corr/TrackerEffCorr_HE/TrackerEffCorr_HE_CorrSpline");
+	TSpline3 *	tatusL1Check_HE  	= (TSpline3 *)file->Get("StatusL1Check Eff. Corr/StatusL1Check_HE/StatusL1Check_HE_CorrSpline");
+	TSpline3 *	ood1Track_HE  		= (TSpline3 *)file->Get("Good1Track Eff. Corr/Good1TrackEffCorr_HE/Good1TrackEffCorr_HE_CorrSpline");
+	TSpline3 *	oodLtof_HE   		= (TSpline3 *)file->Get("GoodLtof Eff. Corr/GoodLTOFEffCorr_HE/GoodLTOFEffCorr_HE_CorrSpline");
+	TSpline3 *	oodUtof_HE   		= (TSpline3 *)file->Get("GoodUtof Eff. Corr/GoodUtofEffCorr_HE/GoodUtofEffCorr_HE_CorrSpline");
+	TSpline3 *	oodTime_TOF  		= (TSpline3 *)file->Get("GoodTime Eff. Corr/GoodTimeEffCorr_TOF/GoodTimeEffCorr_TOF_CorrSpline");
+	TSpline3 *	ICHTSpline3_NaF  	= (TSpline3 *)file->Get("RICH Eff. Corr/RICHCorrection_NaF/RICHCorrection_NaF_CorrSpline");
+	TSpline3 *	ICHTSpline3_Agl  	= (TSpline3 *)file->Get("RICH Eff. Corr/RICHCorrection_Agl/RICHCorrection_Agl_CorrSpline");
+	TSpline3 *	ICHQualTSpline3_NaF 	= (TSpline3 *)file->Get("RICH Qual Eff. Corr/RICHQualCorrection_NaF/RICHQualCorrection_NaF_CorrSpline");
+	TSpline3 *	ICHQualTSpline3_Agl 	= (TSpline3 *)file->Get("RICH Qual. Eff. Corr/RICHqualCorrection_Agl/RICHqualCorrection_Agl_CorrSpline");
+
+	TriggerTSpline3_HE .push_back(		riggerTSpline3_HE  ); 
+	L1PickUpTSpline3_HE .push_back(          PickUpTSpline3_HE );
+	GoodQTrack_HE      	.push_back(     oodQTrack_HE   	  );
+	GoodChi_HE  	  .push_back(           oodChi_HE   	  );
+	TrackerTSpline3_HE  .push_back(          rackerTSpline3_HE  );
+	StatusL1Check_HE   .push_back(          tatusL1Check_HE   );
+	Good1Track_HE      .push_back(          ood1Track_HE  	  );
+	GoodLtof_HE  	  .push_back(           oodLtof_HE   	  );
+	GoodUtof_HE  	  .push_back(           oodUtof_HE   	  );
+	GoodTime_TOF 	  .push_back(           oodTime_TOF  	  );
+	RICHTSpline3_NaF    .push_back(          ICHTSpline3_NaF    );
+	RICHTSpline3_Agl    .push_back(          ICHTSpline3_Agl    );
+	RICHQualTSpline3_NaF.push_back(          ICHQualTSpline3_NaF);
+	RICHQualTSpline3_Agl.push_back(          ICHQualTSpline3_Agl);
+
+	}
+
+
+	TCanvas * f = new TCanvas("Track Quality");
+	f->Divide(1,3);
+	f->cd(1);
+	for(int i=0;i<Files.size();i++) {
+		GoodQTrack_HE[i]->SetLineWidth(3);
+		GoodQTrack_HE[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		if(i==0) GoodQTrack_HE[i]->Draw();
+		else GoodQTrack_HE[i]->Draw("same");
+	}
+	f->cd(2);
+	for(int i=0;i<Files.size();i++) {
+		GoodChi_HE[i]->SetLineWidth(3);
+		GoodChi_HE[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		if(i==0) GoodChi_HE[i]->Draw();
+		else GoodChi_HE[i]->Draw("same");
+	}
+	f->cd(3);
+	for(int i=0;i<Files.size();i++) {
+		Good1Track_HE[i]->SetLineWidth(3);
+		Good1Track_HE[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		if(i==0) Good1Track_HE[i]->Draw();
+		else Good1Track_HE[i]->Draw("same");
+	}
+	
+	
+	TCanvas * c = new TCanvas("TOF");
+	c->Divide(1,3);
+	c->cd(1);
+	for(int i=0;i<Files.size();i++) {
+		GoodUtof_HE[i]->SetLineWidth(3);
+		GoodUtof_HE[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		if(i==0) GoodUtof_HE[i]->Draw();
+		else GoodUtof_HE[i]->Draw("same");
+	}
+	c->cd(2);
+	for(int i=0;i<Files.size();i++) {
+		GoodLtof_HE[i]->SetLineWidth(3);
+		GoodLtof_HE[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		if(i==0) GoodLtof_HE[i]->Draw();
+		else GoodLtof_HE[i]->Draw("same");
+	}
+	c->cd(3);
+	for(int i=0;i<Files.size();i++) {
+		GoodTime_TOF[i]->SetLineWidth(3);
+		GoodTime_TOF[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		if(i==0) GoodTime_TOF[i]->Draw();
+		else GoodTime_TOF[i]->Draw("same");
+	}
+	
+	TCanvas * c1 = new TCanvas("RICH BDT");
+	c1->Divide(1,2);
+	c1->cd(1);
+	for(int i=0;i<Files.size();i++) {
+		RICHQualTSpline3_NaF[i]->SetLineWidth(3);
+		RICHQualTSpline3_NaF[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		if(i==0) RICHQualTSpline3_NaF[i]->Draw();
+		else RICHQualTSpline3_NaF[i]->Draw("same");
+	}
+	c1->cd(2);
+	for(int i=0;i<Files.size();i++) {
+		RICHQualTSpline3_Agl[i]->SetLineWidth(3);
+		RICHQualTSpline3_Agl[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size() *(i+1)));
+		if(i==0)RICHQualTSpline3_Agl[i]->Draw();
+		else RICHQualTSpline3_Agl[i]->Draw("same");
+	}
+	
+	TCanvas * c2 = new TCanvas("RICH CIEMAT");
+	c2->Divide(1,2);
+	c2->cd(1);
+	for(int i=0;i<Files.size();i++) {
+		RICHTSpline3_NaF[i]->SetLineWidth(3);
+		RICHTSpline3_NaF[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		if(i==0) RICHTSpline3_NaF[i]->Draw();
+		else RICHTSpline3_NaF[i]->Draw("same");
+	}
+	c2->cd(2);
+	for(int i=0;i<Files.size();i++) {
+		RICHTSpline3_Agl[i]->SetLineWidth(3);
+		RICHTSpline3_Agl[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size() *(i+1)));
+		if(i==0)RICHTSpline3_Agl[i]->Draw();
+		else RICHTSpline3_Agl[i]->Draw("same");
+	}
+
+	Plots.Add(f);
+	Plots.Add(c);
+	Plots.Add(c2);
+	Plots.Add(c1);
+	Plots.writeObjsInFolder("Eff. Corrections");
+
+}	
 
 int main(int argc, char * argv[]){
 
@@ -772,11 +954,13 @@ int main(int argc, char * argv[]){
         cout<<"****************************** BINS ***************************************"<<endl;
 	SetUpTOIBinning();
 	
-	cout<<"**************** PLOTTING *****************"<<endl;
+	cout<<"**************** plotting *****************"<<endl;
 	//DrawDPRatio(Plots,Files );
-	DrawPDFluxRatio(Plots,files,Binselected);
-	DrawMassDistributions(Plots,files,Binselected);
+	//DrawPDFluxRatio(Plots,files,Binselected);
+	//DrawMassDistributions(Plots,files,Binselected);
+	DrawTimeEffCorr(Plots,files);
+	DrawDPRatioEkin(Plots,files);
 	
-	
+
 	return 0;
 }

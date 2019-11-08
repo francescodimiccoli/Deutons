@@ -2,7 +2,7 @@
 
 use warnings;
 
-$njobs=40;
+$njobs=160;
 
 @bartels = (
 1307750400.0,
@@ -176,7 +176,7 @@ if($organizeoutput==1){
 		chdir "$outdir/$bartels[$i]-$bartels[$i+1]";
 		system("mv $outdir/$bartels[$i]-$bartels[$i+1]/Counts/*_Flux $outdir/$bartels[$i]-$bartels[$i+1]/Flux");
 		system("mv $outdir/$bartels[$i]-$bartels[$i+1]/Counts/*_Corr $outdir/$bartels[$i]-$bartels[$i+1]/EffCorr");
-		system("hadd -f -k Result.root Partial* ../ExternalMCEff.root");
+#		system("hadd -f -k Result.root Partial*");
 
 	}
 	for($i=$start;$i<=$stop;$i=$i+4){
@@ -186,6 +186,7 @@ if($organizeoutput==1){
 
 if($finalanalysis==1){
 	for($i=$start;$i<=$stop;$i=$i+4){
+	print "ECCO\n";
 	system("$workdir/Analysis  $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+4].root >> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+4].out 2> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+4].err &");
 	}
 }
