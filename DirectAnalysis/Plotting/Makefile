@@ -42,12 +42,12 @@ CC6= P_Fluxes.cpp
 CC7= TimeAnalysis.cpp
 CC8= PlotBinnedHisto.cpp
 
-DBARPATH=/data1/home/fdimicco/Deutons/data_reduction
+DBARPATH=/afs/cern.ch/work/f/fdimicco/private/Deutons/data_reduction
 
 
 rootlibs=`root-config --libs --cflags` 
 all:
-	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe)  $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(cpp16) $(CC)   $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp 
+#	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe)  $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(cpp16) $(CC)   $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp 
 #	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe1) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC1)  $(rootlibs) -lTMVA -I../include  -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp 
 #acceptance	
 	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe2) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(cpp16) $(cpp17) $(CC2)  $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp
@@ -56,5 +56,7 @@ all:
 #effcorr
 #	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe4) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(cpp16) $(cpp17) $(CC4)  $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp
 #	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe6) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC6)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
+
+#timeanalysis
 #	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe7) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(cpp16) $(cpp17) $(CC7)  $(rootlibs) -lTMVA -I../include -I$(DBARPATH)/include -L$(DBARPATH)/lib/ -lntp
 #	$(Compiler) $(FLAGS) $(DBARPATH)/obj/RichBDT.o  -o  $(exe8) $(cpp) $(cpp2) $(cpp3) $(cpp4) $(cpp5) $(cpp6)  $(cpp7)  $(cpp8)  $(cpp9)  $(cpp10) $(cpp11) $(cpp12)  $(cpp13) $(cpp14) $(cpp15) $(CC8)  $(rootlibs) -lTMVA -I../include  -L$(DBARPATH)/lib/ -lntp
