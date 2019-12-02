@@ -63,11 +63,12 @@ class Acceptance : public Tool{
 		basename = Basename;
 		TFile * fileres = FileRes.GetFile();
 
-
-		EffAcceptance = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
-		EffAcceptanceMC = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_AcceptanceMC").c_str());
-		Acc_StatErr = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
-		Acc_SystErr = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+		if(fileres){
+			EffAcceptance = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+			EffAcceptanceMC = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_AcceptanceMC").c_str());
+			Acc_StatErr = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+			Acc_SystErr = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+		}
 		bins = Bins;
 	}
 

@@ -6,7 +6,13 @@
 #include <TMVA/Tools.h>
 #include "Globals.h"
 #include "TF1.h"
+#include "TH1.h"
+#include "TH2.h"
+
+
 #include "TSpline.h"
+#include <TFile.h>
+#include <binning.h>
 
 using namespace std;
 
@@ -25,7 +31,7 @@ struct Variables{
     TSpline3 * Chi2Xcut; 	
     TSpline3 * Chi2Ycut; 	
 
-
+    TH2F * CutoffWeights;
 
     // Event info
     int        Run;
@@ -160,6 +166,7 @@ struct Variables{
     float      Momento_gen_RICH;
     float      Massa_gen;
     float      mcweight=0;
+    float      mc_cutoffweight=0;
     float      GenX, GenY, GenZ;
     float      GenPX, GenPY, GenPZ;
     UInt_t     MCClusterGeantPids; 	

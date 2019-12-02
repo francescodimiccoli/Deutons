@@ -11,13 +11,6 @@ TSpline3 * GetSplineFromHisto(TH1F * Graph, Binning bins){
         return Exposure;
 }
 
-float TemplateFIT::GetCutoffWeight(float particle_m, float beta, float m){
-	float weight =0;
-	if(m<=particle_m) weight = ExposureTime->Eval(m*beta*sqrt(1/(1-beta*beta)));
-	else weight = ExposureTime->Eval(particle_m*beta*sqrt(1/(1-beta*beta)));
-	if (weight<0) return 0;
-	else return weight;
-}
 
 
 void TemplateFIT::Eval_TransferFunction(){
@@ -194,11 +187,6 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 
 void TemplateFIT::Save(){
 
-	ExposureTime->SetName("Exposure");
-	ExposureTime->SetTitle("Exposure");
-	finalhistos.Add(ExposureTime);
-	finalhistos.writeObjsInFolder((basename + "/ExposureTime").c_str(),false);	
-
 	for(int bin=0;bin<bins.size();bin++){ 
 		finalhistos.Add(fits[bin][0][5]->Data);
 		finalhistos.Add(fits[bin][0][5]->DataPrim);
@@ -247,8 +235,6 @@ void TemplateFIT::Save(){
 
 void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 
-	finalhistos.Add(ExposureTime);
-	finalhistos.writeObjsInFolder((basename+"/ExposureModel").c_str());
 	
 	//save best
 	for(int bin=0;bin<bins.size();bin++){
@@ -687,32 +673,6 @@ void  TemplateFIT::RebinAll(int f){
 	}
 };
 
-void TemplateFIT::ConvoluteTempletesWithCutoff(){
-	for(int bin=0;bin<bins.size();bin++){
-		TH1F * WeightD = (TH1F*) fits[bin][0][0]->Templ_D->Clone();
-		WeightD->Reset("ICESM"); 
-		TH1F * WeightP = (TH1F*) fits[bin][0][0]->Templ_P->Clone();
-		WeightP->Reset("ICESM"); 
-		for(int i=0;i<WeightP->GetNbinsX();i++){
-			float m = WeightP->GetBinLowEdge(i);
-			float beta = bins.BetaBin(bin);
-			float countsD = GetCutoffWeight(1.875,beta,m);
-			float countsP = GetCutoffWeight(0.938,beta,m);
-			WeightP->SetBinContent(i+1,countsP);				
-			WeightD->SetBinContent(i+1,countsD);	
-			WeightP->SetBinError(i+1,0.01*countsP);				
-			WeightD->SetBinError(i+1,0.01*countsD);	
-		}
-		for(int sigma=0;sigma<systpar.steps;sigma++)
-			for(int shift=0;shift<systpar.steps;shift++){
-				fits[bin][sigma][shift]->Templ_DPrim=(TH1F*) fits[bin][sigma][shift]->Templ_D->Clone();
-				fits[bin][sigma][shift]->Templ_PPrim=(TH1F*) fits[bin][sigma][shift]->Templ_P->Clone();
-				fits[bin][sigma][shift]->Templ_DPrim->Multiply(WeightD);				
-				fits[bin][sigma][shift]->Templ_PPrim->Multiply(WeightP);	
-			}
-	}
-	return;
-}
 
 
 void TemplateFIT::SimpleExtractPrimaries(){
@@ -735,15 +695,13 @@ void TemplateFIT::SimpleExtractPrimaries(){
 
 
 void TemplateFIT::ExtractCounts(FileSaver finalhistos){
-	//modifying templates for cutoff
-	//ConvoluteTempletesWithCutoff();
 				
 	for(int bin=0;bin<bins.size();bin++){
 
 		for(int sigma=0;sigma<systpar.steps;sigma++){
 			for(int shift=0;shift<systpar.steps;shift++){
 
-			// Template Fit for Ambients
+			// Template Fit for Ambient
 				if(!fitDisabled) {
 					cout<<endl;
 					cout<<"Bin: "<<bin<<": "<<sigma<<" "<<shift<<endl;

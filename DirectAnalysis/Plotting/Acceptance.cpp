@@ -102,6 +102,10 @@ int main(int argc, char * argv[]){
         c2->SetCanvasSize(2000,1500);
 	gPad->SetLogy();
 	gPad->SetLogx();
+	
+	Acceptance * Acceptance_HE     = new Acceptance(finalHistos,"Acceptance_HE"	,"Acceptance",PRB);
+	Acceptance * Acceptance_L1HE   = new Acceptance(finalHistos,"Acceptance_L1HE"	,"Acceptance",PRB);
+	Acceptance * Acceptance_QualHE = new Acceptance(finalHistos,"Acceptance_QualHE" ,"Acceptance",PRB);
 
 	Acceptance * Acceptance_PTOF = new Acceptance(finalHistos,"Acceptance_PTOF","Acceptance",Global.GetToFPBins());
         Acceptance * Acceptance_PNaF = new Acceptance(finalHistos,"Acceptance_PNaF","Acceptance",Global.GetNaFPBins());
@@ -127,6 +131,9 @@ int main(int argc, char * argv[]){
 	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(),   Acceptance_DNaF->GetEffAcc(), "Ekin [GeV/n]", "Acceptance [m^2 sr]",4,true,"Csame",0.1,50,1e-4,3,"",8,true);	
 	PlotTH1FintoGraph(gPad,Global.GetAglDBins(),   Acceptance_DAgl->GetEffAcc(), "Ekin [GeV/n]", "Acceptance [m^2 sr]",4,true,"Csame",0.1,50,1e-4,3,"",8,true);	
 
+	PlotTH1FintoGraph(gPad,PRB,   Acceptance_L1HE  ->GetEffAccMC(), "Ekin [GeV/n]", "Acceptance [m^2 sr]",1,true,"Csame",0.1,50,1e-4,3,"",8,true);	
+	PlotTH1FintoGraph(gPad,PRB,   Acceptance_QualHE->GetEffAccMC(), "Ekin [GeV/n]", "Acceptance [m^2 sr]",1,true,"Csame",0.1,50,1e-4,3,"",8,true);	
+
 
 	Plots.Add(c2);
 	Plots.writeObjsInFolder("Effective Acceptance");
@@ -137,21 +144,24 @@ int main(int argc, char * argv[]){
 	gPad->SetLogx();
 
 	SetUpRigTOIBinning();
-	PlotTH1FintoGraph(gPad,Global.GetToFPBins(),   Acceptance_PTOF->GetEffAccMC(), "R [GeV/n]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"Proton",8);	
-	PlotTH1FintoGraph(gPad,Global.GetNaFPBins(),   Acceptance_PNaF->GetEffAccMC(), "R [GeV/n]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"",8,true);	
-	PlotTH1FintoGraph(gPad,Global.GetAglPBins(),   Acceptance_PAgl->GetEffAccMC(), "R [GeV/n]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"",8,true);	
+	PlotTH1FintoGraph(gPad,Global.GetToFPBins(),   Acceptance_PTOF->GetEffAccMC(), "R [GV]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"Proton",8);	
+	PlotTH1FintoGraph(gPad,Global.GetNaFPBins(),   Acceptance_PNaF->GetEffAccMC(), "R [GV]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"",8,true);	
+	PlotTH1FintoGraph(gPad,Global.GetAglPBins(),   Acceptance_PAgl->GetEffAccMC(), "R [GV]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"",8,true);	
 	
-	PlotTH1FintoGraph(gPad,Global.GetToFDBins(),   Acceptance_DTOF->GetEffAccMC(), "R [GeV/n]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"Deuton",8);	
-	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(),   Acceptance_DNaF->GetEffAccMC(), "R [GeV/n]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"",8,true);	
-	PlotTH1FintoGraph(gPad,Global.GetAglDBins(),   Acceptance_DAgl->GetEffAccMC(), "R [GeV/n]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"",8,true);	
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(),   Acceptance_DTOF->GetEffAccMC(), "R [GV]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"Deuton",8);	
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(),   Acceptance_DNaF->GetEffAccMC(), "R [GV]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"",8,true);	
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(),   Acceptance_DAgl->GetEffAccMC(), "R [GV]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"",8,true);	
 
-	PlotTH1FintoGraph(gPad,Global.GetToFPBins(),   Acceptance_PTOF->GetEffAcc(), "R [GeV/n]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"Proton",8);	
-	PlotTH1FintoGraph(gPad,Global.GetNaFPBins(),   Acceptance_PNaF->GetEffAcc(), "R [GeV/n]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"",8,true);	
-	PlotTH1FintoGraph(gPad,Global.GetAglPBins(),   Acceptance_PAgl->GetEffAcc(), "R [GeV/n]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"",8,true);	
+	PlotTH1FintoGraph(gPad,Global.GetToFPBins(),   Acceptance_PTOF->GetEffAcc(), "R [GV]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"Proton",8);	
+	PlotTH1FintoGraph(gPad,Global.GetNaFPBins(),   Acceptance_PNaF->GetEffAcc(), "R [GV]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"",8,true);	
+	PlotTH1FintoGraph(gPad,Global.GetAglPBins(),   Acceptance_PAgl->GetEffAcc(), "R [GV]", "Acceptance [m^2 sr]",2,false,"Csame",0.1,50,1e-4,3,"",8,true);	
 	
-	PlotTH1FintoGraph(gPad,Global.GetToFDBins(),   Acceptance_DTOF->GetEffAcc(), "R [GeV/n]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"Deuton",8);	
-	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(),   Acceptance_DNaF->GetEffAcc(), "R [GeV/n]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"",8,true);	
-	PlotTH1FintoGraph(gPad,Global.GetAglDBins(),   Acceptance_DAgl->GetEffAcc(), "R [GeV/n]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"",8,true);	
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(),   Acceptance_DTOF->GetEffAcc(), "R [GV]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"Deuton",8);	
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(),   Acceptance_DNaF->GetEffAcc(), "R [GV]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"",8,true);	
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(),   Acceptance_DAgl->GetEffAcc(), "R [GV]", "Acceptance [m^2 sr]",4,false,"Csame",0.1,50,1e-4,3,"",8,true);	
+
+	PlotTH1FintoGraph(gPad,PRB,   Acceptance_L1HE->GetEffAccMC(), "R [GV]", "Acceptance [m^2 sr]",1,false,"Csame",0.1,50,1e-4,3,"",8,true);	
+	PlotTH1FintoGraph(gPad,PRB,   Acceptance_QualHE->GetEffAccMC(), "R [GV]", "Acceptance [m^2 sr]",1,false,"Csame",0.1,50,1e-4,3,"",8,true);	
 
 
 	Plots.Add(c3);

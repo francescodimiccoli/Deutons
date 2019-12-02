@@ -44,7 +44,7 @@ extern Binning ForAcceptance;
 extern Binning ForEffCorr;
 extern Binning ForEffCorr_D;
 
-
+extern Binning ForCutoff;
 
 //resolution binning
 extern RangeMerger GlobalRig;

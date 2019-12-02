@@ -106,8 +106,10 @@ void Acceptance:: EvalEffAcc(){
 	for(int i=0;i<bins.size();i++){
 		float bincontent = normalization*(log(bins.RigTOIBins()[i+1])-log(bins.RigTOIBins()[i]))/log(param.Rmax)-log(param.Rmin);
 		float meanweight = Spectrum.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1]) / LogNorm.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1]);
-		FullSetEff->GetBefore()->SetBinContent(i+1,param.art_ratio*bincontent*meanweight); //vars->reweighter.getWeight(bins.RigTOIBinsCent()[i]));
-		FullSetEff->GetBefore()->SetBinError(i+1,0);
+		if(LogNorm.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1])){
+				FullSetEff->GetBefore()->SetBinContent(i+1,param.art_ratio*bincontent*meanweight); //vars->reweighter.getWeight(bins.RigTOIBinsCent()[i]));
+				FullSetEff->GetBefore()->SetBinError(i+1,0);
+		}
 	}
 	//Denominator->Scale(param.art_ratio*rangefactor*normalization/(Denominator->Integral()));
 

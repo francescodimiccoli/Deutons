@@ -44,10 +44,7 @@ int main(int argc, char * argv[])
     bool Refill = false;
     if(refill!="") Refill=true;
     
-   //TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-  TChain * chainDT = InputFileReader(INPUT1.c_str(),"template_stuff");
-  //TChain * chainDT = InputFileReader(INPUT1.c_str(),"parametri_geo");
-
+   TChain * chainDT = InputFileReader(INPUT1.c_str(),"RTI");
 
     FileSaver finalHistos;
     finalHistos.setName(OUTPUT.c_str());
@@ -71,7 +68,7 @@ int main(int argc, char * argv[])
     LatReweighter * weighter = new LatReweighter("LatWeights","IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",500,0,150);
 
     if(Refill){	
-    	weighter->LoopOnData(chainDT,vars,Refill);
+    	weighter->LoopOnRTI(DBarReader(chainDT, false ),vars,Refill);
     }
     else weighter = new LatReweighter(finalHistos,"LatWeights");	
 	

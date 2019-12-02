@@ -34,13 +34,13 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	}
 
 	//simple event count
-	Efficiency * CountsHE     = new Efficiency(finalhistos    ,"HEPCounts"         ,"HEPCounts"      ,GlobalRig.GetGlobalDBins(),"IsPositive&IsPrimary&IsBaseline","IsPositive&IsPrimary&IsBaseline");
-	Efficiency * CountsL1HE   = new Efficiency(finalhistos    ,"HEPCountsL1"       ,"HEPCountsL1"    ,GlobalRig.GetGlobalDBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1");
-	Efficiency * CountsQualHE = new Efficiency(finalhistos    ,"HEPCountsQual"     ,"HEPCountsQual"  ,GlobalRig.GetGlobalDBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning");
+	Efficiency * CountsHE     = new Efficiency(finalhistos    ,"HEPCounts"         ,"HEPCounts"      ,PRB,"IsPositive&IsPrimary&IsBaseline&RigSafetyCut","IsPositive&IsPrimary&IsBaseline&RigSafetyCut");
+	Efficiency * CountsL1HE   = new Efficiency(finalhistos    ,"HEPCountsL1"       ,"HEPCountsL1"    ,PRB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&RigSafetyCut","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&RigSafetyCut");
+	Efficiency * CountsQualHE = new Efficiency(finalhistos    ,"HEPCountsQual"     ,"HEPCountsQual"  ,PRB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&RigSafetyCut","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&RigSafetyCut");
 
-	Efficiency * CountsTOF    = new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,GlobalRig.GetToFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime");
-	Efficiency * CountsNaF    = new Efficiency(finalhistos    ,"NaFPCounts"	   ,"NaFPCounts"	,GlobalRig.GetNaFPBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"    );
-	Efficiency * CountsAgl    = new Efficiency(finalhistos    ,"AglPCounts"	   ,"AglPCounts"	,GlobalRig.GetAglPBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"    );
+	Efficiency * CountsTOF    = new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,GlobalRig.GetToFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&RigSafetyCut","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&RigSafetyCut");
+	Efficiency * CountsNaF    = new Efficiency(finalhistos    ,"NaFPCounts"	   ,"NaFPCounts"	,GlobalRig.GetNaFPBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut&RigSafetyCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut&RigSafetyCut"    );
+	Efficiency * CountsAgl    = new Efficiency(finalhistos    ,"AglPCounts"	   ,"AglPCounts"	,GlobalRig.GetAglPBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut&RigSafetyCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut&RigSafetyCut"    );
 
 	// Extraction of counts with Template Fit
 
@@ -85,37 +85,37 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		//SmearingCheck->SaveFitResults(finalresults);
 
 		TOFfits->SetFitRange(0.6,4);
-//		TOFfits->DisableFit();
+		//TOFfits->DisableFit();
 		TOFfits->SetFitConstraints(0.9,1,0.015,0.16,0.005,0.02,true);
 		TOFfits->ExtractCounts(finalhistos);	
 		TOFfits->SaveFitResults(finalresults);
 
 		NaFfits->SetFitRange(0.6,6);
-//		NaFfits->DisableFit();
+		//NaFfits->DisableFit();
 		NaFfits->SetFitConstraints(0.9,1,0.001,0.1,0.0005,0.02,true);
 		NaFfits->ExtractCounts(finalhistos);
 		NaFfits->SaveFitResults(finalresults);
 
 		Aglfits->SetFitRange(0.6,5);
-//		Aglfits->DisableFit();
+		//Aglfits->DisableFit();
 		Aglfits->SetFitConstraints(0.9,1,0.001,0.1,0.0005,0.02,true);
 		Aglfits->ExtractCounts(finalhistos);
 		Aglfits->SaveFitResults(finalresults);	
 
 		TOFfits_P->SetFitRange(0.6,4);
-//		TOFfits_P->DisableFit();
+		//TOFfits_P->DisableFit();
 		TOFfits_P->SetFitConstraints(0.9,1,0.015,0.16,0.005,0.02,true);
 		TOFfits_P->ExtractCounts(finalhistos);	
 		TOFfits_P->SaveFitResults(finalresults);
 
 		NaFfits_P->SetFitRange(0.6,6);
-//		NaFfits_P->DisableFit();
+		//NaFfits_P->DisableFit();
 		NaFfits_P->SetFitConstraints(0.9,1,0.001,0.1,0.0005,0.02,true);
 		NaFfits_P->ExtractCounts(finalhistos);
 		NaFfits_P->SaveFitResults(finalresults);
 
 		Aglfits_P->SetFitRange(0.6,5);
-//		Aglfits_P->DisableFit();
+		//Aglfits_P->DisableFit();
 		Aglfits_P->SetFitConstraints(0.9,1,0.001,0.1,0.0005,0.02,true);
 		Aglfits_P->ExtractCounts(finalhistos);
 		Aglfits_P->SaveFitResults(finalresults);	

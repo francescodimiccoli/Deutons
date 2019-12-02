@@ -81,9 +81,9 @@ int main(int argc, char * argv[])
 	
   Analyzer analyzer(INPUT1,INPUT2);	 
 
-     //analyzer.BookCountsAnalysis(finalHistosCounts,finalResults,Refill);	
-     analyzer.BookAcceptanceAnalysis(finalHistosCorr,finalResults,Refill);	
-     //analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
+   analyzer.BookCountsAnalysis(finalHistosCounts,finalResults,Refill);	
+   analyzer.BookAcceptanceAnalysis(finalHistosCorr,finalResults,Refill);	
+   analyzer.BookFluxAnalysis(finalHistosFlux,finalResults,Refill);	
      //analyzer.BookTestCascade(finalHistosTest,finalResults,Refill);   
 
     if(Refill || !analyzer.CheckFile()){ 

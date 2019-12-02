@@ -17,6 +17,8 @@
 #include <TVector3.h>
 #include "TMath.h"
 #include "TGraphErrors.h"
+#include "TGraphAsymmErrors.h"
+
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TRandom3.h"

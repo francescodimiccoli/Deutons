@@ -157,7 +157,9 @@ Variables::Variables(){
     BDTreader();
     reweighter = ReweightInitializer();
     reweighterHe = ReweightInitializer((workdir+"/include/CRDB_HeliumAMS_R.galprop").c_str(),2,2000,2.05);
-   	
+    TFile * LatFile = TFile::Open((workdir+"/LatWeights/Weights.root").c_str());
+    CutoffWeights = (TH2F*)LatFile->Get("Spectra/LatWeights_ExpoM");  
+ 	
     Chi2Xcut = new TSpline3("Chi2Xcut", ChiXcut_X,ChiXcut_Y,30);
     Chi2Ycut = new TSpline3("Chi2Ycut", ChiYcut_X,ChiYcut_Y,37);
 
@@ -354,6 +356,7 @@ void Variables::ResetVariables(){
     Momento_gen_RICH       = 0;
     Massa_gen              = 0;
     mcweight               = 0;
+    mc_cutoffweight        = 0;
     MCClusterGeantPids     = 0;
     Charge_gen             = 0;
     GenX  = 0; GenY  = 0; GenZ  = 0;
@@ -628,6 +631,9 @@ void Variables::Update(){
 				if(Massa_gen>2&&Massa_gen<4) mcweight = reweighterHe.getWeight(fabs(Momento_gen));
 			}
 	}	
+  mc_cutoffweight = CutoffWeights->GetBinContent(ForCutoff.GetRBin(fabs(R))+1,ForCutoff.GetRBin(Momento_gen)+1)/CutoffWeights->GetBinContent(ForCutoff.GetRBin(Momento_gen)+1,ForCutoff.GetRBin(Momento_gen)+1)  ;	
+  if(Momento_gen>45) mc_cutoffweight=1;  
+ 
 
 }
 

@@ -34,8 +34,7 @@ Binning DRB(deuton);
 Binning PRB(proton);
 
 Binning ForAcceptance(proton);
-
-
+Binning ForCutoff(proton);  
 Binning PResB(proton);
 
 TMVA::Reader *readerTOF;
@@ -62,10 +61,11 @@ void SetBins(){
 	HefragmToF.Reset();
 	HefragmNaF.Reset();
 	HefragmAgl.Reset();
+	ForCutoff.Reset();
 
 	cout<<"H.E. bins"<<endl;
-	DRB.setBinsFromRigidity(nbinsr, 0.5, 100,ResponseTOF,0.00347548,5.8474); 
-	PRB.setBinsFromRigidity(nbinsr, 0.5, 100,ResponseTOF,0.00347548,5.8474);
+	DRB.setBinsFromRigidity(nbinsr, 1, 30,ResponseTOF,0.00347548,5.8474); 
+	PRB.setBinsFromRigidity(nbinsr, 1, 30,ResponseTOF,0.00347548,5.8474);
 	ForAcceptance.setBinsFromRigidity(3*nbinsr,0.5,1250,ResponseTOF,0.00347548,5.8474);
 
 	cout<<"Global Bins"<<endl;
@@ -86,29 +86,27 @@ void SetBins(){
 	betamin=0.97, betamax=0.995;
 	HefragmAgl.setBinsFromEkPerMass (2,2.6,11.9,ResponseAgl,0.00347548,5.8474);
 
-	//PResB.setBinsFromRigidity(60, 0.5, 100,ResponseTOF,0.00347548,5.8474);	
-	//ToFResB.setBinsFromRigidity(25, 1,8,ResponseTOF,0.00347548,5.8474);
-	//NaFResB.setBinsFromRigidity(25, 3,13,ResponseNaF,-0.000859132,-30.5065);
-	//AglResB.setBinsFromRigidity(25, 6,25,ResponseAgl,4.28781e-05,67.8521);
-
+	ForCutoff.setBinsFromRigidity(100,0.5,50,ResponseTOF,0.00347548,5.8474);
+	ForCutoff.UseREdges();
+		
 	cout<<"**TOF**"<<endl;
-	Global.GetToFPBins().Print();
-	Global.GetToFDBins().Print();
+	GlobalRig.GetToFPBins().Print();
+	GlobalRig.GetToFDBins().Print();
 
 
 	cout<<"**NaF**"<<endl;
-	Global.GetNaFPBins().Print();
-	Global.GetNaFDBins().Print();
+	GlobalRig.GetNaFPBins().Print();
+	GlobalRig.GetNaFDBins().Print();
 
 
 	cout<<"**Agl**"<<endl;
-	Global.GetAglPBins().Print();
-	Global.GetAglDBins().Print();
+	GlobalRig.GetAglPBins().Print();
+	GlobalRig.GetAglDBins().Print();
 
 
 	cout<<"**Global**"<<endl;
-	Global.GetGlobalPBins().Print();
-	Global.GetGlobalDBins().Print();
+	GlobalRig.GetGlobalPBins().Print();
+	GlobalRig.GetGlobalDBins().Print();
 
 
 	return;

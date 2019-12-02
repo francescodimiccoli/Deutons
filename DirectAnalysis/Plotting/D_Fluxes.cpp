@@ -40,6 +40,30 @@
 
 #include "RangeMerger.h"
 
+TSpline3 * GetFluxSpline(TGraphAsymmErrors * Graph){
+	int AMSpointnr=1;
+	double a,b;
+	while (Graph->GetPoint(AMSpointnr,a,b)>0) AMSpointnr++;
+
+	double X[AMSpointnr-1];
+	double Y[AMSpointnr-1];
+
+	for(int i=0; i<AMSpointnr-1; i++)	int c= Graph->GetPoint(i+1,X[i],Y[i]);
+	TSpline3 *AMSFlux = new TSpline3("AMSFlux",X,Y,AMSpointnr-1);
+	return AMSFlux;	
+}
+
+
+TSpline3 * GetFluxSpline(TH1F * Graph, Binning bins){
+
+	double X[Graph->GetNbinsX()];
+	double Y[Graph->GetNbinsX()];
+
+	for(int i=0; i<Graph->GetNbinsX(); i++){	X[i]=bins.EkPerMassBinCent(i); Y[i]=Graph->GetBinContent(i+1);}
+	TSpline3 *AMSFlux = new TSpline3("AMSFlux",X,Y,Graph->GetNbinsX());
+	return AMSFlux;	
+}
+
 
 int main(int argc, char * argv[]){
 	cout<<"****************************** FILES OPENING ***************************************"<<endl;
@@ -70,13 +94,24 @@ int main(int argc, char * argv[]){
 	string filename4="./database_PD.root";
 	TFile * file4 = TFile::Open(filename4.c_str(),"READ");
 
+	std::vector<TGraphAsymmErrors *> P_Graphs;
 	std::vector<TGraphAsymmErrors *> D_Graphs;
 	std::vector<TGraphAsymmErrors *> PD_Graphs;
+
+        TList *ExperimentsP = file2->GetListOfKeys();
+        TIter nextP(ExperimentsP);
+        TKey * keyP;
+	TObject * obj;
+
+        while((keyP = (TKey*)nextP())){
+                obj = file2->Get(keyP->GetName());
+                if(obj->InheritsFrom("TGraphAsymmErrors")) P_Graphs.push_back((TGraphAsymmErrors *)obj);
+        }
+
 
 	TList *ExperimentsD = file3->GetListOfKeys();
 	TIter nextD(ExperimentsD);
 	TKey * keyD;
-	TObject * obj;
 
 	while((keyD = (TKey*)nextD())){
 		obj = file3->Get(keyD->GetName());
@@ -95,8 +130,10 @@ int main(int argc, char * argv[]){
 
 	cout<<"****************************** PLOTTING FLUXES ***************************************"<<endl;
 
-	Flux * HEPFlux   = new Flux(finalResults,"PFluxHE","RigBinBaselineEff_Trig","RigBinBaselineEff_Trig","HEPCounts/HEPCounts/HEPCounts_after","HEExposure",PRB);
-	
+	Flux * HEPFluxL1 = new Flux(finalResults,"PFluxL1HE","Acceptance_L1HE"  ,"Acceptance","HEPCountsL1/HEPCountsL1/HEPCountsL1_after","HEExposure"	,PRB);
+	Flux * HEPFluxQ  = new Flux(finalResults,"PFluxQHE" ,"Acceptance_QualHE","Acceptance","HEPCountsQual/HEPCountsQual/HEPCountsQual_after","HEExposure",PRB);
+
+
 	Flux * DFluxTOF  = new Flux(finalResults, "DFluxTOF", "Acceptance_DTOF","Acceptance","TOFDfits/Fit Results/Primary Deuteron Counts","ExposureTOF",Global.GetToFDBins());
 	Flux * DFluxNaF  = new Flux(finalResults, "DFluxNaF", "Acceptance_DNaF","Acceptance","NaFDfits/Fit Results/Primary Deuteron Counts","ExposureNaF",Global.GetNaFDBins());
 	Flux * DFluxAgl  = new Flux(finalResults, "DFluxAgl", "Acceptance_DAgl","Acceptance","AglDfits/Fit Results/Primary Deuteron Counts","ExposureAgl",Global.GetAglDBins());
@@ -109,14 +146,15 @@ int main(int argc, char * argv[]){
 	TCanvas *c1_ = new TCanvas("Exposure Time");
 	c1_->SetCanvasSize(3000,1500);
 
+	PlotTH1FintoGraph(gPad,PRB, HEPFluxL1->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",4,true,"Psame",0.1,50,1,2*HEPFluxL1->GetExposureTime()->GetBinContent(30),"HE range",8,true);
+	
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DFluxTOF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",4,true,"Psame",0.1,50,1,2*HEPFluxL1->GetExposureTime()->GetBinContent(30),"TOF range",8,true);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DFluxNaF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",4,true,"Psame",0.1,50,1,2*HEPFluxL1->GetExposureTime()->GetBinContent(30),"NaF range",22,true);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DFluxAgl->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",4,true,"Psame",0.1,50,1,2*HEPFluxL1->GetExposureTime()->GetBinContent(30),"Agl range",29,true);
 
-	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DFluxTOF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",4,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"TOF range",8,true);
-	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DFluxNaF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",4,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"NaF range",22,true);
-	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DFluxAgl->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",4,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"Agl range",29,true);
-
-	PlotTH1FintoGraph(gPad,Global.GetToFPBins(), PFluxTOF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",2,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"TOF range",8,true);
-	PlotTH1FintoGraph(gPad,Global.GetNaFPBins(), PFluxNaF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",2,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"NaF range",22,true);
-	PlotTH1FintoGraph(gPad,Global.GetAglPBins(), PFluxAgl->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",2,true,"Psame",0.1,50,1,2*HEPFlux->GetExposureTime()->GetBinContent(30),"Agl range",29,true);
+	PlotTH1FintoGraph(gPad,Global.GetToFPBins(), PFluxTOF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",2,true,"Psame",0.1,50,1,2*HEPFluxL1->GetExposureTime()->GetBinContent(30),"TOF range",8,true);
+	PlotTH1FintoGraph(gPad,Global.GetNaFPBins(), PFluxNaF->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",2,true,"Psame",0.1,50,1,2*HEPFluxL1->GetExposureTime()->GetBinContent(30),"NaF range",22,true);
+	PlotTH1FintoGraph(gPad,Global.GetAglPBins(), PFluxAgl->GetExposureTime(),"Kinetic Energy [GeV/nucl.]", "Exposure Time [sec]",2,true,"Psame",0.1,50,1,2*HEPFluxL1->GetExposureTime()->GetBinContent(30),"Agl range",29,true);
 
 	Plots.Add(c1_);
 	Plots.writeObjsInFolder("Fluxes");
@@ -124,7 +162,7 @@ int main(int argc, char * argv[]){
 
 
 	float potenza = 0;
-	TCanvas *c2 = new TCanvas("Deuteron Primary Flux");
+	/*TCanvas *c2 = new TCanvas("Deuteron Primary Flux");
 	c2->SetCanvasSize(2000,1500);
 
 	TH2F * Frame = CreateFrame(gPad,0.01,25,0.0001,100,"Kin.En./nucl. [GeV/nucl.]","Flux [(m^2 sr GeV/nucl.)^{-1}]");	
@@ -177,24 +215,26 @@ int main(int argc, char * argv[]){
 
 	TLegend * leg =new TLegend(0.8, 0.1,0.95,0.95);
 	leg->SetName("leg");
-	for(uint n=0;n<D_Graphs.size();n++){
-		D_Graphs[n] ->Draw("Psame");
-		D_Graphs[n]->SetMarkerSize(2); 
-		leg->AddEntry(D_Graphs[n],D_Graphs[n]->GetTitle(),"p");
-	}
+        for(uint n=0;n<D_Graphs.size();n++){
+                D_Graphs[n] ->Draw("Psame");
+                D_Graphs[n]->SetMarkerSize(2); 
+                leg->AddEntry(D_Graphs[n],D_Graphs[n]->GetTitle(),"p");
+        }
 
 	leg->SetFillColor(0);
 	leg->SetLineWidth(2);
 	leg->Draw("same");
+       
 
 
-	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DFluxTOF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.0001,100,"This Work (TOF)",8);
-	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DFluxNaF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.0001,100,"This Work (NaF)",22);
-	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DFluxAgl->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.0001,100,"This Work (Agl)",29);
-
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DFluxTOF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.0001,100,"This Work (TOF)",8,true);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DFluxNaF->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.0001,100,"This Work (NaF)",22,true);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DFluxAgl->GetFlux(),"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.0001,100,"This Work (Agl)",29,true);
 
 	Plots.Add(c2);
 	Plots.writeObjsInFolder("Fluxes/Fluxes Ekin");
+
+
 
 	TCanvas *c3 = new TCanvas("Deuteron Primary Flux - Merged");
 	c3->SetCanvasSize(2000,1500);
@@ -207,26 +247,78 @@ int main(int argc, char * argv[]){
 
 	PlotTH1FintoGraph(gPad,Global.GetGlobalDBins(), MergedRange,"Kinetic Energy [GeV/nucl.]", "Flux",2,true,"Psame",0.1,100,0.0001,10*MergedRange->GetBinContent(MergedRange->GetMaximumBin()),"This Work",8);
 
+
+	for(uint n=0;n<D_Graphs.size();n++){
+		D_Graphs[n] ->Draw("Psame");
+		D_Graphs[n]->SetMarkerSize(2); 
+	}
+
 	Plots.Add(c3);
 	Plots.writeObjsInFolder("Fluxes/Fluxes Ekin");
 
+*/
+
 	TCanvas *c3_ = new TCanvas("Proton Primary Flux - Merged");
-	c3_->SetCanvasSize(2000,1500);
+	c3_->SetCanvasSize(2500,1500);
+	TPad * c3_up = new TPad("upperPad", "upperPad",0.0,0.3,1.0,1.0);
+	c3_up->Draw();
+
+	TPad * c3_do = new TPad("lowerPad", "lowerPad",0.0,0.0,1.0,0.3);
+	c3_do->Draw();
+
+	c3_up->cd();
+
 	gPad->SetLogx();
 	gPad->SetLogy();
 	gPad->SetGridx();
 	gPad->SetGridy();
 
-	TH1F * MergedRange_P = Global.MergeSubDResult_P(PFluxTOF->GetFlux(),PFluxNaF->GetFlux(),PFluxAgl->GetFlux());
+//	TH1F * MergedRange_P = Global.MergeSubDResult_P(PFluxTOF->GetFlux(),PFluxNaF->GetFlux(),PFluxAgl->GetFlux());
 
-	PlotTH1FintoGraph(gPad,Global.GetGlobalPBins(), MergedRange_P,"Kinetic Energy [GeV/nucl.]", "Flux",2,true,"Psame",0.1,100,0.0001,10*MergedRange_P->GetBinContent(MergedRange_P->GetMaximumBin()),"This Work",8);
+//	PlotTH1FintoGraph(gPad,Global.GetGlobalPBins(), MergedRange_P,"Kinetic Energy [GeV/nucl.]", "Flux",2,true,"Psame",0.1,100,0.0001,10*MergedRange_P->GetBinContent(MergedRange_P->GetMaximumBin()),"This Work",8);
+	PlotTH1FintoGraph(gPad,HEPFluxL1->GetBins(),HEPFluxL1->GetFlux() ,"Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,100,0.0001,10*HEPFluxL1->GetFlux()->GetBinContent(HEPFluxL1->GetFlux()->GetMaximumBin()),"HE Baseline + L1",8);
+	PlotTH1FintoGraph(gPad,HEPFluxQ->GetBins() ,HEPFluxQ->GetFlux() ,"Kinetic Energy [GeV/nucl.]", "Flux",4,true,"Psame",0.1,100,0.0001,10*HEPFluxL1->GetFlux()->GetBinContent(HEPFluxL1->GetFlux()->GetMaximumBin()),"HE Interactions",8);
 
-	Plots.Add(c3);
+	TSpline3 *AMSFlux = GetFluxSpline(P_Graphs[1]);
+	AMSFlux->Draw("same");	
+
+	for(uint n=0;n<P_Graphs.size();n++){
+		P_Graphs[n] ->Draw("Psame");
+		P_Graphs[n]->SetMarkerSize(2); 
+	}
+
+	c3_do->cd();
+	gPad->SetLogx();
+        gPad->SetGridx();
+        gPad->SetGridy();
+
+	
+
+
+	TGraphAsymmErrors * ErrorPubl = new TGraphAsymmErrors();
+	for(int i=0;i<P_Graphs[1]->GetN();i++){
+		int s=0;
+		double x,y=1;
+		s=P_Graphs[1]->GetPoint(i+1,x,y);
+		ErrorPubl->SetPoint(i+1,x,1);
+		ErrorPubl->SetPointError(i+1,0,0,1.3*P_Graphs[1]->GetErrorYlow(i+1)/y,1.3*P_Graphs[1]->GetErrorYhigh(i+1)/y);
+	}
+	ErrorPubl->SetLineColor(1);
+	ErrorPubl->SetLineWidth(3);
+
+	PlotRatioWithSplineintoGraph(gPad,PRB,    HEPFluxL1->GetFlux() ,AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",1,true,"Psame",0.1,50,0.5,1.5,"(H.E. - Baseline + L1)",8);
+	PlotRatioWithSplineintoGraph(gPad,PRB,    HEPFluxQ ->GetFlux() ,AMSFlux, "Kinetic Energy [GeV/nucl.]", "Flux",4,true,"Psame",0.1,50,0.5,1.5,"(H.E. - Interactions)",8);
+	ErrorPubl->Draw("Psame");
+
+
+
+
+//	Plots.Add(c3);
 	Plots.Add(c3_);
 	Plots.writeObjsInFolder("Fluxes/Fluxes Ekin");
 
 
-
+/*
 	SetUpRigTOIBinning();
 
 	TCanvas *c4 = new TCanvas("Deuteron Primary Flux");
@@ -285,7 +377,15 @@ int main(int argc, char * argv[]){
 
 	TH1F * MergedRange_rig_P = Global.MergeSubDResult_P(PFluxTOF->GetFlux_rig(),PFluxNaF->GetFlux_rig(),PFluxAgl->GetFlux_rig());
 
-	PlotTH1FintoGraph(gPad,Global.GetGlobalPBins(), MergedRange_rig_P,"R T.o.I. [GV]", "Flux",2,false,"Psame",0.1,15,0.0001,2000,"This Work",8);
+	PlotTH1FintoGraph(gPad,Global.GetGlobalPBins(), MergedRange_rig_P,"R T.o.I. [GV]", "Flux",2,false,"Psame",0.4,35,0.0001,10000,"This Work",8);
+	PlotTH1FintoGraph(gPad,PRB, HEPFluxL1->GetFlux_rig(),"R T.o.I. [GV]", "Flux",1,false,"Psame",0.4,35,0.0001,10000,"This Work",8);
+	PlotTH1FintoGraph(gPad,PRB, HEPFluxQ->GetFlux_rig(),"R T.o.I. [GV]", "Flux",1,false,"Psame",0.4,35,0.0001,10000,"This Work",8);
+
+
+
+
+
+	
 
 	Plots.Add(c5_);
 	Plots.writeObjsInFolder("Fluxes/Fluxes R");
@@ -305,7 +405,7 @@ int main(int argc, char * argv[]){
 	Plots.writeObjsInFolder("Fluxes/Fluxes R");
 
 
-
+*/
 	/*
 	   TCanvas *c3 = new TCanvas("D/P ratio");
 	   c3->SetCanvasSize(2000,1500);

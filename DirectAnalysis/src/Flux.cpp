@@ -8,13 +8,15 @@ void Flux::Eval_Flux(){
 	cout<<endl;
 	cout<<"********************************************"<<endl;
 	if(Counts>0) {	
-					cout<<"Counts "<<Counts->GetName()<<" "<<endl;	
+					cout<<"Counts "<<Counts->GetName()<<" "<<Counts->GetEntries()<<endl;	
 	
 					FluxEstim = (TH1F *) Counts->Clone();
 					Counts_Err  = (TH1F *) Counts->Clone();
 					for(int i=0;i<Counts_Err->GetNbinsX();i++) {
+						//FluxEstim->SetBinContent(i+1,1);
+						FluxEstim->SetBinError(i+1,0);
 						if(Counts_Err->GetBinContent(i+1)>0&&Counts_Err->GetBinError(i+1)>0)
-							Counts_Err->SetBinContent(i+1,Counts_Err->GetBinError(i+1)/Counts_Err->GetBinContent(i+1));
+							Counts_Err->SetBinContent(i+1,0);//Counts_Err->GetBinError(i+1)/Counts_Err->GetBinContent(i+1));
 						else Counts_Err->SetBinContent(i+1,0);	
 						Counts_Err->SetBinError(i+1,0);
 					}
@@ -41,10 +43,12 @@ void Flux::Eval_Flux(){
 	FluxEstim_rig -> SetTitle((basename+"_Flux_rig").c_str());
 	FluxEstim_rig -> Sumw2();
 	for(int i=0;i<bins.size();i++){
+		if((bins.EkPerMasTOIBins()[i+1]-bins.EkPerMasTOIBins()[i])>0){
 		FluxEstim->SetBinError(i+1,FluxEstim->GetBinError(i+1)/(bins.EkPerMasTOIBins()[i+1]-bins.EkPerMasTOIBins()[i]));
 		FluxEstim->SetBinContent(i+1,FluxEstim->GetBinContent(i+1)/(bins.EkPerMasTOIBins()[i+1]-bins.EkPerMasTOIBins()[i]));
 		FluxEstim_rig->SetBinError(i+1,FluxEstim_rig->GetBinError(i+1)/(bins.RigTOIBins()[i+1]-bins.RigTOIBins()[i]));
 		FluxEstim_rig->SetBinContent(i+1,FluxEstim_rig->GetBinContent(i+1)/(bins.RigTOIBins()[i+1]-bins.RigTOIBins()[i]));
+		}
 	}
 	///
 	return;		

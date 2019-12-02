@@ -13,24 +13,6 @@ class Tool;
 
 using namespace std;
 
-// not used
-/*TSpline3 * ExtractCutoffWeight(TH1F * ExposureTime){
-
-        ExposureTime->Scale(1/ExposureTime->GetBinContent(ExposureTime->GetMaximumBin()));
-
-        double x[ExposureTime->GetNbinsX()];
-        double y[ExposureTime->GetNbinsX()];
-
-        for(int i=0;i<ExposureTime->GetNbinsX();i++){
-                x[i]=ExposureTime->GetBinCenter(i+1);
-                y[i]=ExposureTime->GetBinContent(i+1);
-        }
-
-        TSpline3 * CutoffWeight = new TSpline3("CutoffWeight",x,y,ExposureTime->GetNbinsX());
-        CutoffWeight->SetName("CutoffWeight");
-        return CutoffWeight;
-
-}*/
 
 struct TFit {
    TH1F * Templ_P =0x0;
@@ -152,7 +134,6 @@ class TemplateFIT : public Tool{
 
 	std::string basename;
 
-	TSpline3 * ExposureTime;
 	LatReweighter * Latweighter = new LatReweighter("LatWeights","",500,0,150);
 
 	Systpar systpar;
@@ -222,10 +203,6 @@ class TemplateFIT : public Tool{
         	DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		TritiumCounts  = new TH1F("Tritium Counts","Tritium Counts",bins.size(),0,bins.size()) ;
 
-		TFile * f = TFile::Open((workdir+"/LatWeights/ExposureModel.root").c_str());		
-		TH1F * Exp = (TH1F*) f->Get("HEExposure");	
-	        Exp->Scale(1/Exp->GetBinContent(Exp->GetMaximumBin()));
-		ExposureTime = GetSplineFromHisto(Exp,PRB);
 
 		ProtonCountsPrim    = new TH1F("Primary Proton Counts","Primary Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCountsPrim  = new TH1F("Primary Deuteron Counts","Primary Deuteron Counts",bins.size(),0,bins.size()) ;
@@ -312,10 +289,6 @@ class TemplateFIT : public Tool{
 		DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		TritiumCounts    = new TH1F("Tritium Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		
-		TFile * f = TFile::Open((workdir+"/LatWeights/ExposureModel.root").c_str());		
-		TH1F * Exp = (TH1F*) f->Get("HEExposure");
-		Exp->Scale(1/Exp->GetBinContent(Exp->GetMaximumBin()));
-		ExposureTime = GetSplineFromHisto(Exp,PRB);
 
 		ProtonCountsPrim    = new TH1F("Primary Proton Counts","Primary Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCountsPrim  = new TH1F("Primary Deuteron Counts","Primary Deuteron Counts",bins.size(),0,bins.size()) ;

@@ -68,12 +68,18 @@ void Efficiency::CloneEfficiency(Efficiency * Second){
 
 bool Efficiency::ReinitializeHistos(bool refill){
 	bool allfound = false;
-	cout<<" FOUND: "<<(directory+"/"+basename+"/"+basename+"_after").c_str()<<endl;;
+	TFile* File;
+	if(IsExtern){
+		File = TFile::Open((outdir+"/ExternalMCEff.root").c_str());
+		if(!File)  return allfound;
+	} 
 	
-	if(!file.CheckFile()) return allfound;
-	TFile * File = file.GetFile();
+	else{
+		if(!file.CheckFile()) return allfound;
+		File = file.GetFile();
+	}
 	if(( (TH1F*)  File->Get((directory+"/"+basename+"/"+basename+"_before").c_str()) &&
-                                (TH1F*)  File->Get((directory+"/"+basename+"/"+basename+"_after").c_str()) ) && !refill) {
+			          (TH1F*)  File->Get((directory+"/"+basename+"/"+basename+"_after").c_str()) ) && !refill) {
                 before =(TH1F *) File->Get((directory+"/"+basename+"/"+basename+"_before").c_str());
                 after  =(TH1F *) File->Get((directory+"/"+basename+"/"+basename+"_after").c_str());
 		cout<<" FOUND: "<<(directory+"/"+basename+"/"+basename+"_after").c_str()<<endl;;

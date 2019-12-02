@@ -29,6 +29,7 @@ class Efficiency : public Tool{
 	std::string basename;
 	std::string directory;
 	bool fitrequested=false;
+	bool IsExtern = false;
 	BadEventSimulator * BadEvSim=0x0;
 
 	TH1F * Stat_Error=0x0;
@@ -44,6 +45,7 @@ class Efficiency : public Tool{
 		cut_before=Cut_before;
 		cut_after=Cut_after;
 		directory=Directory;
+		IsExtern = external;
 
 		ReadFile(external);		
 		before = new TH1F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size());
@@ -57,7 +59,9 @@ class Efficiency : public Tool{
 		cut_before=Cut_before;
 		cut_after=Cut_after;
 		directory=Directory;
-		
+		IsExtern = external;
+
+	
 		ReadFile(external);
 		before = new TH2F((basename+"_before").c_str(),(basename+"_before").c_str(),bins.size(),0,bins.size(),LatZones.size(),0,LatZones.size());
 		after  = new TH2F((basename+"_after" ).c_str(),(basename+"_after" ).c_str(),bins.size(),0,bins.size(),LatZones.size(),0,LatZones.size());
@@ -68,20 +72,25 @@ class Efficiency : public Tool{
 		bins=Bins;
 		basename=Basename;
 		directory=Directory;
-	
+		IsExtern = external;
 		ReadFile(external);
 	}
 
 	void ReadFile(bool external = false){
 		TFile * ff;
-		if(external) ff = TFile::Open((outdir+"/ExternalTemplates.root").c_str());
-		ff = file.GetFile();
+		if(external) { ff = TFile::Open((outdir+"/ExternalMCEff.root").c_str());
+			cout<<"*********************** EXTERNAL MC FILE FOUND: "<<ff<<"***********************"<<endl;
+			if(!ff) ff = file.GetFile();
+		}
+
+		else ff = file.GetFile();
 		if(ff){
 			before =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_before").c_str());
                 	after  =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_after").c_str());
                 	Eff    =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
         		Stat_Error = (TH1F *) ff->Get((directory+"/"+basename+"/"+basename+"_Stat_Error").c_str());
 			Syst_Error = (TH1F *) ff->Get((directory+"/"+basename+"/"+basename+"_Syst_Error").c_str());
+			cout<<"before: "<<before->Integral()<<" after: "<<after->Integral()<<endl; 
 		}
 		
 	}

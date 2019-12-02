@@ -29,6 +29,8 @@ bool IsGoodL2Status (Variables * vars) {return (vars->hitbits&0x2!=0) && (vars->
 
 bool HasL1 (Variables * vars) {return (vars->hitbits&0x1!=0);}
 bool HasL2 (Variables * vars) {return (vars->hitbits&0x2!=0);}
+bool HasL9 (Variables * vars) {return (vars->hitbits&0x100!=0);}
+
 
 bool IsGoodTrackPattern (Variables * vars) {return ((vars->patty&0x2)!=0)&&((vars->patty&0xc)!=0)&&((vars->patty&0x30)!=0)&&((vars->patty&0xc0)!=0);  }
 
@@ -127,7 +129,7 @@ bool IsCharge1LTOF (Variables * vars) {return (vars->qLtof>0.8&&vars->qLtof<1.3)
 //analysis selections
 bool IsBaseline (Variables * vars){ return IsPhysTrig(vars) && IsCompact_An(vars) && IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) && IsCharge1Track(vars);}
 bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0.2 && vars->qL1<2&&HasL1(vars));} 
-bool IsCleaning	(Variables * vars) { return Is1TrTrack(vars)&&IsMinTOF(vars)&&IsCharge1UTOF(vars)&&IsCharge1LTOF(vars);  }
+bool IsCleaning	(Variables * vars) { return Is1TrTrack(vars)/*&&IsMinTOF(vars)*/&&IsCharge1UTOF(vars)&&IsCharge1LTOF(vars);  }
 bool IsGoodTime (Variables * vars) { return ( ((int)vars->joinCutmask&32)==32);}
 bool IsFromNaF_nosel     (Variables * vars){ return vars->IsFromNaF_nosel();}
 bool IsFromAgl_nosel     (Variables * vars){ return vars->IsFromAgl_nosel();}
