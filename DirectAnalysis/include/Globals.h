@@ -4,7 +4,7 @@
 
 #include "TF1.h"
 #include "binning.h"
-
+#include "TH1.h"
 //#include "GlobalPaths.h"
 #include "particle.h"
 #include "RangeMerger.h"
@@ -19,6 +19,10 @@ using namespace std;
 extern int Ev_Num;
 extern int Timebeg;
 extern float FRAC;
+
+extern float RcutoffCut;
+extern float BetacutoffCut;
+
 
 extern int nbinsr;
 extern int nbinsToF;
@@ -66,4 +70,5 @@ void SetUpEffCorrBinning();
 void SetUpTOIBinning();
 void SetUpRigTOIBinning();
 
+int FindTimeIndex(std::string input);
 #endif

@@ -76,14 +76,15 @@ class Flux{
 
 		TFile * fileres = FileRes.GetFile();
 
-		Counts_Err= (TH1F *) fileres->Get(("Fluxes/"+Basename+"/Counts Error").c_str());
+			Counts_Err= (TH1F *) fileres->Get(("Fluxes/"+Basename+"/Counts Error").c_str());
 			if(FileRes.CheckFile()) {
 			Counts = (TH1F *) fileres->Get((CountsName).c_str());
 			ExposureTime = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
 
 			FluxEstim = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str());
 			FluxEstim_rig = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+Basename+"_Flux_rig").c_str());
-			cout<<("Fluxes/"+Basename+"/"+ExposureName).c_str()<<" "<<ExposureTime<<"; File Name: "<<FileRes.GetName()<<endl;
+			cout<<("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str()<<" "<<FluxEstim<<"; File Name: "<<FileRes.GetName()<<endl;
+			cout<<("Fluxes/"+Basename+"/"+Basename+"_Flux_rig").c_str()<<" "<<FluxEstim_rig<<"; File Name: "<<FileRes.GetName()<<endl;
 			EfficiencyCorrections.clear();
 			EfficiencyFromData.clear();
 		

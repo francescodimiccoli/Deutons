@@ -34,8 +34,8 @@ system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Flux");
 system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Infos");
 system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Tests");
 
-
-system ("mkdir $workdir/perl/AnalysisScripts/");
+system ("rm -r $workdir/perl/AnalysisScripts/*.log");
+system ("rm -r $workdir/perl/AnalysisScripts/*.out");
 system ("rm -r $workdir/err/");
 system ("mkdir $workdir/err/");	
 system ("rm -r $workdir/logs/");
@@ -88,7 +88,7 @@ $bookinfos=0;
 
 			if($bookflux){
 
-				print OUT  "\$WORKDIR/Analysis \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT\$1.txt \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC\$1.txt \$PWD//Analysis\$1-$ARGV[0]-$ARGV[1].root 1 > $workdir/logs/log\$1.log 2> $workdir/err/err\$1.log \n\n";
+				print OUT  "\$WORKDIR/Analysis \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT\$1.txt \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC\$1.txt  $outdir/$ARGV[0]-$ARGV[1]//Analysis\$1-$ARGV[0]-$ARGV[1].root 1 > $workdir/logs/log\$1.log 2> $workdir/err/err\$1.log \n\n";
 			}
 			
 
@@ -98,7 +98,8 @@ $bookinfos=0;
 system("chmod +x $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh");
 
 
-open(OUT,">","$outdir/$ARGV[0]-$ARGV[1]/Counts/Condor_script.sub");
+#open(OUT,">","$outdir/$ARGV[0]-$ARGV[1]/Counts/Condor_script.sub");
+open(OUT,">","$workdir/perl/AnalysisScripts/Condor_script$ARGV[0]-$ARGV[1].sub");
 print OUT "executable	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh\narguments	= \$(ProcId)\noutput	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).out\nerror	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).err\nlog	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).log\n+JobFlavour = \"tomorrow\"\nqueue $njobs"; 
 
 

@@ -8,6 +8,7 @@
 #include "InputFileReader.h"
 #include "DBarReader.h"
 #include "Flux.h"
+#include "Globals.h"
 
 
 class Analyzer{
@@ -20,6 +21,7 @@ class Analyzer{
         TChain * chainMC;  
 	TChain * chainDT_Cpct;  
         TChain * chainMC_Cpct;  
+	int timeindex=0;
 	
 	ParallelFiller<Tool *> Filler;
 	ParallelFiller<Flux *> Filler_RTI;
@@ -33,6 +35,7 @@ class Analyzer{
 		chainMC    	= InputFileReader(INPUT2.c_str(),"Event");
 		chainDT_Cpct    = InputFileReader(INPUT1.c_str(),"Compact");
 		chainMC_Cpct    = InputFileReader(INPUT2.c_str(),"Compact");
+		timeindex = FindTimeIndex(INPUT1);
 	};
 	bool CheckFile() {return check_file;}
 	void FillAll();
@@ -43,5 +46,6 @@ class Analyzer{
 	void BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill);
 	void BookTestCascade(FileSaver finalhistos, FileSaver finalresults, bool refill);
 };
+
 
 #endif

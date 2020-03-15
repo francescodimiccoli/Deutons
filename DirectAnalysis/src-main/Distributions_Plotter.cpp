@@ -76,35 +76,36 @@ int main(int argc, char * argv[])
 
 	bool checkfile = finalHistos.CheckFile();
 
-	
+	int timeindex=0;
+	timeindex = FindTimeIndex(INPUT1);	
 	cout<<"****************************** BINS ***************************************"<<endl;
 	SetUpUsualBinning();
 
 	cout<<"****************************** VARIABLES ***************************************"<<endl;
-	Variables * vars = new Variables();
+	Variables * vars = new Variables(timeindex);
 
 	cout<<"****************************** ANALYIS ******************************************"<<endl;
 
 	Plotter Plots(finalHistos,finalResults);
 
-	/*
-	Plots.BookMassAnalysis();
-        Plots.BookCleaningCutsAnalysis();
-        Plots.BookRichBDTAnalysis();
-        Plots.BookBetaResMatrixAnalysis();
-	Plots.BookAcceptanceMatrixAnalysis();
-
-	Plots.BookGenAcceptanceAnalysis();	
-	Plots.BookTrackingEfficiencyAnalysis();
-	Plots.BookRigvsBetaAnalysis();
 	
-	*/
+	//Plots.BookMassAnalysis();
+        //Plots.BookCleaningCutsAnalysis();
+        //Plots.BookRichBDTAnalysis();
+        Plots.BookBetaResMatrixAnalysis();
+	//Plots.BookAcceptanceMatrixAnalysis();
+
+	//Plots.BookGenAcceptanceAnalysis();	
+	//Plots.BookTrackingEfficiencyAnalysis();
+	//Plots.BookRigvsBetaAnalysis();
+	
+	
 	//Plots.BookAcceptanceMatrixAnalysis();
 	//Plots.BookCutVariablesAnalysis();
-	
-	Plots.BookMassResoAnalysis();
+	//Plots.BookMassResoAnalysis();
 
-        if(Refill)	Plots.FillAllAnalyses(chain_RTI, chainDT,chainMC,chainDT_Cpct,chainMC_Cpct);
+
+        if(Refill)	Plots.FillAllAnalyses(chain_RTI, chainDT,chainMC,chainDT_Cpct,chainMC_Cpct,vars);
 	Plots.DoAllAnalyses();
 
 	return 0;

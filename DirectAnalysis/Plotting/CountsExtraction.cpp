@@ -107,6 +107,7 @@ int main(int argc, char * argv[]){
         cout<<"****************************** PLOTTING FITS ***************************************"<<endl;
 
 //	TemplateFIT * SmearingCheck = new TemplateFIT(finalHistos,"SmearingCheck",PRB);
+	
 	TemplateFIT * ToFfits= new TemplateFIT(finalHistos,"TOFDfits",Global.GetToFDBins());
 	TemplateFIT * NaFfits= new TemplateFIT(finalHistos,"NaFDfits",Global.GetNaFDBins());
 	TemplateFIT * Aglfits= new TemplateFIT(finalHistos,"AglDfits",Global.GetAglDBins());
@@ -163,9 +164,9 @@ int main(int argc, char * argv[]){
 	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (NaF)",22);
 	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Deuteron Counts (Agl)",29);
 
-	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DCountsPrimTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
-	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DCountsPrimNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
-	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DCountsPrimAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DCountsTOF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DCountsNaF,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DCountsAgl,"Kinetic Energy [GeV/nucl.]", "Counts",4,true,"Psame",0.1,10,10,7e4,"Primary Counts (Agl)",30);
 
 
 	TCanvas * c4_ = new TCanvas("Proton Counts");
@@ -194,12 +195,12 @@ int main(int argc, char * argv[]){
 	TCanvas * c5 = new TCanvas("D/P Raw Counts ratio");
         c5->SetCanvasSize(2000,1500);
 	
-	TH1F * RatioTOF = (TH1F*)DCountsPrimTOF->Clone();
-	RatioTOF->Divide(PCountsPrimTOF);
-	TH1F * RatioNaF = (TH1F*)DCountsPrimNaF->Clone();
-	RatioNaF->Divide(PCountsPrimNaF);
-	TH1F * RatioAgl = (TH1F*)DCountsPrimAgl->Clone();
-	RatioAgl->Divide(PCountsPrimAgl);
+	TH1F * RatioTOF = (TH1F*)DCountsTOF->Clone();
+	RatioTOF->Divide(PCountsTOF);
+	TH1F * RatioNaF = (TH1F*)DCountsNaF->Clone();
+	RatioNaF->Divide(PCountsNaF);
+	TH1F * RatioAgl = (TH1F*)DCountsAgl->Clone();
+	RatioAgl->Divide(PCountsAgl);
 
 	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), RatioTOF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (TOF)",8);
 	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), RatioNaF,"Kinetic Energy [GeV/nucl.]", "Counts ratio",2,true,"Psame",0.1,10,1e-3,1,"D/P Counts ratio (NaF)",22);
@@ -219,11 +220,14 @@ int main(int argc, char * argv[]){
 	TH1F * RatioAgl_T = (TH1F*)TCountsAgl->Clone();
 	RatioAgl_T->Divide(DCountsAgl);
 
+	for(int i=0;i<RatioTOF_T->GetNbinsX();i++) RatioTOF_T->SetBinError(i+1,RatioTOF_T->GetBinError(i+1)/2);
+	for(int i=0;i<RatioNaF_T->GetNbinsX();i++) RatioNaF_T->SetBinError(i+1,RatioNaF_T->GetBinError(i+1)/2);
+	for(int i=0;i<RatioAgl_T->GetNbinsX();i++) RatioAgl_T->SetBinError(i+1,RatioAgl_T->GetBinError(i+1)/2);
 
-	for(int i=0;i<Global.GetToFDBins().size();i++) cout<<"Tritium: "<<RatioTOF_T->GetBinContent(i+1)<<endl;
-	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), RatioTOF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-5,1,"T/D Counts ratio (TOF)",8);
-	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), RatioNaF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-5,1,"T/D Counts ratio (NaF)",22);
-	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), RatioAgl_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-5,1,"T/D Counts ratio (Agl)",29);
+
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), RatioTOF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-6,0.1,"T/D Counts ratio (TOF)",8);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), RatioNaF_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-6,0.1,"T/D Counts ratio (NaF)",22);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), RatioAgl_T,"Kinetic Energy [GeV/nucl.]", "Counts ratio",3,true,"Psame",0.1,10,1e-6,0.1,"T/D Counts ratio (Agl)",29);
 
 
 	Plots.Add(c5_);
@@ -346,9 +350,9 @@ int main(int argc, char * argv[]){
 	SetUpRigTOIBinning();
 
 
-	TH1F * PCountsPrim_rigTOF = (TH1F*) finalHistos.Get((pathresTOF_P+"Primary Proton Counts").c_str());
-	TH1F * PCountsPrim_rigNaF = (TH1F*) finalHistos.Get((pathresNaF_P+"Primary Proton Counts").c_str());
-	TH1F * PCountsPrim_rigAgl = (TH1F*) finalHistos.Get((pathresAgl_P+"Primary Proton Counts").c_str());
+	TH1F * PCountsPrim_rigTOF = (TH1F*) finalHistos.Get((pathresTOF_P+"Proton Counts").c_str());
+	TH1F * PCountsPrim_rigNaF = (TH1F*) finalHistos.Get((pathresNaF_P+"Proton Counts").c_str());
+	TH1F * PCountsPrim_rigAgl = (TH1F*) finalHistos.Get((pathresAgl_P+"Proton Counts").c_str());
 
 	TCanvas * d4 = new TCanvas("Rigidity Counts");
         d4->SetCanvasSize(2000,1500);
@@ -364,13 +368,13 @@ int main(int argc, char * argv[]){
 	PlotTH1FintoGraph(gPad,Global.GetNaFPBins(), PCountsPrim_rigNaF,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (NaF)",26);
 	PlotTH1FintoGraph(gPad,Global.GetAglPBins(), PCountsPrim_rigAgl,"R [GV]", "Counts density [GV^{-1}]",2,false,"Psame",0.5,20,10,10*PCountsPrim_rigTOF->GetBinContent(PCountsPrim_rigTOF->GetMaximumBin()),"P Counts (Agl)",30);
 
-	for(int i=0; i<Global.GetToFDBins().size();i++) DCountsPrimTOF->SetBinContent(i+1,DCountsPrimTOF->GetBinContent(i+1)/(Global.GetToFDBins().RigTOIBins()[i+1]-Global.GetToFDBins().RigTOIBins()[i])); 
-	for(int i=0; i<Global.GetNaFDBins().size();i++) DCountsPrimNaF->SetBinContent(i+1,DCountsPrimNaF->GetBinContent(i+1)/(Global.GetNaFDBins().RigTOIBins()[i+1]-Global.GetNaFDBins().RigTOIBins()[i])); 
-	for(int i=0; i<Global.GetAglDBins().size();i++) DCountsPrimAgl->SetBinContent(i+1,DCountsPrimAgl->GetBinContent(i+1)/(Global.GetAglDBins().RigTOIBins()[i+1]-Global.GetAglDBins().RigTOIBins()[i])); 
+	for(int i=0; i<Global.GetToFDBins().size();i++) DCountsTOF->SetBinContent(i+1,DCountsTOF->GetBinContent(i+1)/(Global.GetToFDBins().RigTOIBins()[i+1]-Global.GetToFDBins().RigTOIBins()[i])); 
+	for(int i=0; i<Global.GetNaFDBins().size();i++) DCountsNaF->SetBinContent(i+1,DCountsNaF->GetBinContent(i+1)/(Global.GetNaFDBins().RigTOIBins()[i+1]-Global.GetNaFDBins().RigTOIBins()[i])); 
+	for(int i=0; i<Global.GetAglDBins().size();i++) DCountsAgl->SetBinContent(i+1,DCountsAgl->GetBinContent(i+1)/(Global.GetAglDBins().RigTOIBins()[i+1]-Global.GetAglDBins().RigTOIBins()[i])); 
 
-	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DCountsPrimTOF,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (TOF)",4);
-	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DCountsPrimNaF,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (NaF)",26);
-	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DCountsPrimAgl,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (Agl)",30);
+	PlotTH1FintoGraph(gPad,Global.GetToFDBins(), DCountsTOF,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (TOF)",4);
+	PlotTH1FintoGraph(gPad,Global.GetNaFDBins(), DCountsNaF,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (NaF)",26);
+	PlotTH1FintoGraph(gPad,Global.GetAglDBins(), DCountsAgl,"R [GV]", "Counts density [GV^{-1}]",4,false,"Psame",0.5,20,10,7e4,"D Counts (Agl)",30);
 
 	Plots.Add(d4);
 	Plots.writeObjsInFolder("Results Rig");
@@ -493,7 +497,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 
 		TCanvas * c1 = new TCanvas("Modified Templates");
 		c1->SetCanvasSize(2000,1500);
-		std::string bintitle = ("Kin. Energy: " + Convert(FIT->GetBinning().EkPerMassBinCent(i)) + " GV");
+		std::string bintitle = ("R: ");// + Convert(FIT->GetBinning().RigTOIBins()[i]) + " GV");
 		TPaveLabel* title = new TPaveLabel(0.35,0.94,0.6,0.97,bintitle.c_str(),"brndc");
 		title->SetFillColor(0);
 		title->SetLineColor(0);
@@ -515,7 +519,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		TCanvas * c2 = new TCanvas("Modified T. Fits");
                 c2->SetCanvasSize(2000,1500);
 
-		PlotDistribution(gPad, TemplatesP[0], "Reconstructed Mass [GeV/c^2]","Counts",2,"same",1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,3,"Original Protons MC Template");
+		PlotDistribution(gPad, TemplatesP[1], "Reconstructed Mass [GeV/c^2]","Counts",1,"same",3,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,3,"Original Protons MC Template");
 		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesD[0], "Reconstructed Mass [GeV/c^2]","Counts",4,"same",1,1e5,3,"Original Deuterons MC Template");
 		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[0],"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1,1e5,3,"Original He Fragm. MC Template");
 
@@ -557,7 +561,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 		if(!IsSmearingCheck) PlotDistribution(gPad, TemplatesHe[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",3,"esame",1,1e5,2,"Best #chi^{2} Tritium MC Template");
 		if(IsFitNoise) {
 			TH1F * NoiseD = CreateNoiseD(TemplatesNoise[1],TemplatesP[1],TemplatesD[1]);
-			PlotDistribution(gPad, TemplatesNoise[1],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",kRed-9,"esame",1e-1,1e5,1,"Noise P Template",true);
+			PlotDistribution(gPad, TemplatesNoise[2],"Reconstructed Mass [GeV/c^{2}]","Weighted Counts",kRed-9,"esame",1e-1,1e5,1,"Noise P Template",true);
 			PlotDistribution(gPad, NoiseD,"Reconstructed Mass [GeV/c^{2}]","Counts",kBlue-7,"esame",1e-1,1e5,1,"Noise D Template",true);
 		}		
 		
@@ -626,9 +630,9 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
                 c6->SetCanvasSize(2000,1500);
 		gPad->SetLogy();
 	
-		TH1F * OverCutoffP = (TH1F *) TemplatesP[2]->Clone();
-		TH1F * OverCutoffD = (TH1F *) TemplatesD[2]->Clone();
-		TH1F * OverCutoffHe = (TH1F *) TemplatesHe[2]->Clone();
+		TH1F * OverCutoffP = (TH1F *) TemplatesP[1]->Clone();
+		TH1F * OverCutoffD = (TH1F *) TemplatesD[1]->Clone();
+		TH1F * OverCutoffHe = (TH1F *) TemplatesHe[1]->Clone();
 		TH1F * NoCutoffP = (TH1F *) TemplatesP[2]->Clone();
 
 		NoCutoffP->Scale(
@@ -636,7 +640,7 @@ void DrawFits(TemplateFIT * FIT,FileSaver finalHistos,FileSaver Plots,bool IsFit
 			NoCutoffP->GetBinContent(NoCutoffP->GetMaximumBin()) );
 
 		PlotDistribution(gPad, NoCutoffP,"Reconstructed Mass [GeV/c^2]","Primary Counts",2,"same",1e-1,Datas[1]->GetBinContent(Datas[1]->GetMaximumBin())*1.13,3,"Best #chi^{2} Protons MC Template");
-		PlotDistribution(gPad, OverCutoffP,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,10,"Best #chi^{2} Protons MC (Cutoff filtered)");
+		PlotDistribution(gPad, OverCutoffP,"Reconstructed Mass [GeV/c^2]","Counts",2,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,6,"Best #chi^{2} Protons MC (Cutoff filtered)");
 		if(!IsSmearingCheck) PlotDistribution(gPad, OverCutoffD,"Reconstructed Mass [GeV/c^2]","Counts",4,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,4,"Best #chi^{2} Deutons MC (Cutoff filtered)");
 		if(!IsSmearingCheck) 
 			if(!IsFitNoise) PlotDistribution(gPad, OverCutoffHe,"Reconstructed Mass [GeV/c^2]","Counts",3,"same",1e-1,Datas[0]->GetBinContent(Datas[0]->GetMaximumBin())*1.13,4,"Best #chi^{2} Deutons MC (Cutoff filtered)");

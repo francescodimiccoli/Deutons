@@ -21,15 +21,21 @@ bool IsFragmentedDMC 	   (Variables * vars) {return !(IsPureDMC(vars));}
 bool IsFragmentedPMC 	   (Variables * vars) {return !(IsPurePMC(vars));}
 
 bool IsFragmentedPfromDMC  (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
-bool IsPrimary	   (Variables * vars){ return (vars->R>1.2*vars->Rcutoff_RTI && IsData(vars)); }
+bool IsPrimary	   (Variables * vars){ return (vars->R>RcutoffCut*vars->Rcutoff_IGRFRTI && IsData(vars)); }
+bool IsPrimaryBetaTOFP	   (Variables * vars){ return (vars->Beta>GetBetaFromR(0.938,BetacutoffCut*vars->Rcutoff_IGRFRTI)&& IsData(vars)); }
+bool IsPrimaryBetaTOFD	   (Variables * vars){ return (vars->Beta>GetBetaFromR(1.875,BetacutoffCut*vars->Rcutoff_IGRFRTI)&& IsData(vars)); ; }
+bool IsPrimaryBetaRICP	   (Variables * vars){ return (vars->BetaRICH_new>GetBetaFromR(0.938,BetacutoffCut*vars->Rcutoff_IGRFRTI)&& IsData(vars)); }
+bool IsPrimaryBetaRICD	   (Variables * vars){ return (vars->BetaRICH_new>GetBetaFromR(1.875,BetacutoffCut*vars->Rcutoff_IGRFRTI)&& IsData(vars)); ; }
+
+
 bool IsMC          (Variables * vars){ return (vars->Massa_gen>0);} 
 bool IsData        (Variables * vars){ return (vars->Massa_gen==0);}
 bool IsGoodL1Status (Variables * vars) {return vars->R_L1>0 && (vars->qL1Status==0);}
 bool IsGoodL2Status (Variables * vars) {return (vars->hitbits&0x2!=0) && (vars->qL2Status==0);}
 
-bool HasL1 (Variables * vars) {return (vars->hitbits&0x1!=0);}
-bool HasL2 (Variables * vars) {return (vars->hitbits&0x2!=0);}
-bool HasL9 (Variables * vars) {return (vars->hitbits&0x100!=0);}
+bool HasL1 (Variables * vars) {return ((vars->hitbits&0x1)!=0);}
+bool HasL2 (Variables * vars) {return ((vars->hitbits&0x2)!=0);}
+bool HasL9 (Variables * vars) {return ((vars->hitbits&0x100)!=0);}
 
 
 bool IsGoodTrackPattern (Variables * vars) {return ((vars->patty&0x2)!=0)&&((vars->patty&0xc)!=0)&&((vars->patty&0x30)!=0)&&((vars->patty&0xc0)!=0);  }
@@ -136,6 +142,7 @@ bool IsFromAgl_nosel     (Variables * vars){ return vars->IsFromAgl_nosel();}
 bool IsFromNaF     (Variables * vars){ return vars->IsFromNaF();}
 bool IsFromAgl     (Variables * vars){ return vars->IsFromAgl();}
 bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,999999,-0.26,-0.25);  }
+bool QualityTOF(Variables * vars) { return (vars->Richtothits<20 && vars->EdepECAL<10 && vars->qLtof>0.92 && vars->NAnticluster<=2);  }
 //////////////////////
 
 
@@ -276,6 +283,7 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsGoodL2Status")            IsPassed=IsPassed && IsGoodL2Status     (Vars);	
 		if(spl[i]=="HasL1")            IsPassed=IsPassed && HasL1     (Vars);
 		if(spl[i]=="HasL2")            IsPassed=IsPassed && HasL2     (Vars);	
+		if(spl[i]=="HasL9")            IsPassed=IsPassed && HasL9     (Vars);	
 	
 		if(spl[i]=="IsL1Fiducial")            IsPassed=IsPassed && IsL1Fiducial     (Vars);	
 		if(spl[i]=="IsGoodChiSquareX")            IsPassed=IsPassed && IsGoodChiSquareX     (Vars);	
@@ -283,6 +291,7 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 
 		if(spl[i]=="IsGoodChi2" )            IsPassed=IsPassed && IsGoodChi2    (Vars);
 		if(spl[i]=="IsGoodTime" )            IsPassed=IsPassed && IsGoodTime    (Vars);
+		 if(spl[i]=="QualityTOF" )            IsPassed=IsPassed && QualityTOF    (Vars);
 		if(spl[i]=="IsCharge1Track" )            IsPassed=IsPassed && IsCharge1Track    (Vars);
 		if(spl[i]=="IsCharge1TrackLoose" )            IsPassed=IsPassed && IsCharge1TrackLoose    (Vars);
 		
@@ -290,7 +299,6 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsClearQ1ExceptL2")   IsPassed=IsPassed && IsClearQ1ExceptL2     (Vars);
 		if(spl[i]=="IsClearQ2ExceptL2")   IsPassed=IsPassed && IsClearQ2ExceptL2     (Vars);
 
-		if(spl[i]=="IsPrimary"	   ) IsPassed=IsPassed && IsPrimary     (Vars);
 		if(spl[i]=="IsMC"          ) IsPassed=IsPassed && IsMC          (Vars);
 		if(spl[i]=="IsDownGoing" )            IsPassed=IsPassed && IsDownGoing    (Vars);
 		if(spl[i]=="IsGoodTrack" )            IsPassed=IsPassed && IsGoodTrack    (Vars);	
@@ -300,6 +308,12 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsClearQ2ExceptL2")   IsPassed=IsPassed && IsClearQ2ExceptL2     (Vars);
 
 		if(spl[i]=="IsPrimary"	   ) IsPassed=IsPassed && IsPrimary     (Vars);
+		if(spl[i]=="IsPrimaryBetaTOFP"	   ) IsPassed=IsPassed && IsPrimaryBetaTOFP     (Vars);
+		if(spl[i]=="IsPrimaryBetaTOFD"	   ) IsPassed=IsPassed && IsPrimaryBetaTOFD     (Vars);
+		if(spl[i]=="IsPrimaryBetaRICP"	   ) IsPassed=IsPassed && IsPrimaryBetaRICP     (Vars);
+		if(spl[i]=="IsPrimaryBetaRICD"	   ) IsPassed=IsPassed && IsPrimaryBetaRICD     (Vars);
+
+
 		if(spl[i]=="IsMC"          ) IsPassed=IsPassed && IsMC          (Vars);
 		if(spl[i]=="IsData"	   ) IsPassed=IsPassed && IsData        (Vars);
 	

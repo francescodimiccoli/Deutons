@@ -77,7 +77,7 @@ class HistoBooker{
         void BookBinnedScatter(std::string CollectionName, Binning Bins,std::string Cut, GetFillinVariable var=0x0, GetDiscrimVariable discr_var=0x0);
 	
 
-	void FillEverything(DBarReader reader);
+	void FillEverything(DBarReader reader,Variables * vars);
 	void SaveEverything(FileSaver finalhisto);	
 };
 

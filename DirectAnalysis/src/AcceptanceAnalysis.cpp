@@ -42,10 +42,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
         after  = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsPhysTrig";
 	EffCorr * TriggerEffCorr_HE  = new EffCorr(finalhistos,"TriggerEffCorr_HE" ,"Trigger Eff. Corr",true  ,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC"); 
 
-        before = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsLUT2&HasL9";
-        after  = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&IsPhysTrigi&HasL9";
-	//EffCorr * TriggerFullSpan_HE  = new EffCorr(finalhistos,"TriggerFullSpan_HE" ,"Trigger Full Span",true  ,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC"); 
-
+        before = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&HasL9&IsLUT2";
+        after  = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&L1LooseCharge1&HasL9&IsPhysTrig";
+	EffCorr * TriggerFullSpan_HE  = new EffCorr(finalhistos,"TriggerFullSpan_HE" ,"Trigger Full Span",true  ,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC"); 
 
 	before = "IsDownGoing&IsPhysTrig&IsL1HitNearExtrapol&IsCleanL1Hit&IsGoodTOFStandaloneQ1&IsGoodTrackPattern";
         after  = "IsDownGoing&IsPhysTrig&IsL1HitNearExtrapol&IsCleanL1Hit&IsGoodTOFStandaloneQ1&IsGoodTrackPattern&HasL1";
@@ -86,6 +85,10 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
         after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime"; 
 	EffCorr * GoodTime_TOF = new EffCorr(finalhistos,"GoodTimeEffCorr_TOF","GoodTime Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+
+	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime";
+        after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF"; 
+	EffCorr * Quality_TOF = new EffCorr(finalhistos,"QualityEffCorr_TOF","Quality TOF Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 	
 	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
         after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
@@ -106,11 +109,11 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Acceptance * Acceptance_RigPNaF = new Acceptance(finalhistos,"Acceptance_RigPNaF","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",GlobalRig.GetNaFPBins());
 	Acceptance * Acceptance_RigPAgl = new Acceptance(finalhistos,"Acceptance_RigPAgl","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",GlobalRig.GetAglPBins());
 
-	Acceptance * Acceptance_PTOF = new Acceptance(finalhistos,"Acceptance_PTOF","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&RigSafetyCut",Global.GetToFPBins());
+	Acceptance * Acceptance_PTOF = new Acceptance(finalhistos,"Acceptance_PTOF","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&RigSafetyCut&QualityTOF",Global.GetToFPBins());
 	Acceptance * Acceptance_PNaF = new Acceptance(finalhistos,"Acceptance_PNaF","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",Global.GetNaFPBins());
 	Acceptance * Acceptance_PAgl = new Acceptance(finalhistos,"Acceptance_PAgl","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",Global.GetAglPBins());
 
-	Acceptance * Acceptance_DTOF = new Acceptance(finalhistos,"Acceptance_DTOF","Acceptance","IsDeutonMC","IsPureDMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",Global.GetToFDBins());
+	Acceptance * Acceptance_DTOF = new Acceptance(finalhistos,"Acceptance_DTOF","Acceptance","IsDeutonMC","IsPureDMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF",Global.GetToFDBins());
 	Acceptance * Acceptance_DNaF = new Acceptance(finalhistos,"Acceptance_DNaF","Acceptance","IsDeutonMC","IsPureDMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",Global.GetNaFDBins());
 	Acceptance * Acceptance_DAgl = new Acceptance(finalhistos,"Acceptance_DAgl","Acceptance","IsDeutonMC","IsPureDMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",Global.GetAglDBins());
 
@@ -126,7 +129,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Cascade7 	 ->SetDefaultOutFile(finalhistos);
 	Cascade8 	 ->SetDefaultOutFile(finalhistos);
 	TriggerEffCorr_HE	->SetDefaultOutFile(finalhistos); 
-	//TriggerFullSpan_HE	->SetDefaultOutFile(finalhistos); 
+	TriggerFullSpan_HE	->SetDefaultOutFile(finalhistos); 
 	L1PickUpEffCorr_HE ->SetDefaultOutFile(finalhistos); 
 	TrackerEffCorr_HE ->SetDefaultOutFile(finalhistos); 
 	StatusL1Check_HE ->SetDefaultOutFile(finalhistos); 
@@ -140,6 +143,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	RICHEffCorr_Agl 	->SetDefaultOutFile(finalhistos); 
 	RICHQualEffCorr_NaF 	->SetDefaultOutFile(finalhistos); 
 	RICHQualEffCorr_Agl 	->SetDefaultOutFile(finalhistos); 
+	Quality_TOF      	->SetDefaultOutFile(finalhistos); 
 	Acceptance_PTOF 	->SetDefaultOutFile(finalhistos); 
  	Acceptance_PNaF 	->SetDefaultOutFile(finalhistos); 
  	Acceptance_PAgl 	->SetDefaultOutFile(finalhistos); 
@@ -164,7 +168,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Filler.AddObject2beFilled(Cascade7,GetGenMomentum,GetGenMomentum);
 	Filler.AddObject2beFilled(Cascade8,GetGenMomentum,GetGenMomentum);
 	Filler.AddObject2beFilled(TriggerEffCorr_HE,GetRigidity,GetRigidity);
-//	Filler.AddObject2beFilled(TriggerFullSpan_HE,GetRigidity,GetRigidity);
+	Filler.AddObject2beFilled(TriggerFullSpan_HE,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(L1PickUpEffCorr_HE,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(TrackerEffCorr_HE,GetMomentumProxy,GetMomentumProxy);
 	Filler.AddObject2beFilled(StatusL1Check_HE,GetMomentumProxy,GetMomentumProxy);
@@ -174,17 +178,18 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Filler.AddObject2beFilled(GoodQTrack_HE,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(Good1Track_HE,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(GoodTime_TOF,GetRigidity,GetRigidity);	
+	Filler.AddObject2beFilled(Quality_TOF,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(RICHEffCorr_NaF,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(RICHEffCorr_Agl,GetRigidity,GetRigidity);	
 	Filler.AddObject2beFilled(RICHQualEffCorr_NaF,GetRigidity,GetRigidity);
 	Filler.AddObject2beFilled(RICHQualEffCorr_Agl,GetRigidity,GetRigidity);	
 
-	Filler.AddObject2beFilled(Acceptance_PTOF,GetBetaTOF,GetBetaTOF);
-        Filler.AddObject2beFilled(Acceptance_PNaF,GetBetaRICH,GetBetaRICH);
-        Filler.AddObject2beFilled(Acceptance_PAgl,GetBetaRICH,GetBetaRICH);
-	Filler.AddObject2beFilled(Acceptance_DTOF,GetBetaTOF,GetBetaTOF);
-        Filler.AddObject2beFilled(Acceptance_DNaF,GetBetaRICH,GetBetaRICH);
-        Filler.AddObject2beFilled(Acceptance_DAgl,GetBetaRICH,GetBetaRICH);
+	Filler.AddObject2beFilled(Acceptance_PTOF,GetSmearedBetaTOF,GetSmearedBetaTOF);
+        Filler.AddObject2beFilled(Acceptance_PNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
+        Filler.AddObject2beFilled(Acceptance_PAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
+	Filler.AddObject2beFilled(Acceptance_DTOF,GetSmearedBetaTOF,GetSmearedBetaTOF);
+        Filler.AddObject2beFilled(Acceptance_DNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
+        Filler.AddObject2beFilled(Acceptance_DAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
 	Filler.AddObject2beFilled(Acceptance_RigPTOF 	,GetRigidity,GetRigidity);
         Filler.AddObject2beFilled(Acceptance_RigPNaF 	,GetRigidity,GetRigidity);
         Filler.AddObject2beFilled(Acceptance_RigPAgl 	,GetRigidity,GetRigidity);
@@ -243,7 +248,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Cascade8 	->SaveResults(finalresults);
 		
 		AnalyzeEffCorr(	TriggerEffCorr_HE  , finalhistos, finalresults,true);
-		//AnalyzeEffCorr(	TriggerFullSpan_HE  , finalhistos, finalresults,true);
+		AnalyzeEffCorr(	TriggerFullSpan_HE  , finalhistos, finalresults,true);
 		AnalyzeEffCorr(	L1PickUpEffCorr_HE , finalhistos, finalresults);
 		AnalyzeEffCorr(	TrackerEffCorr_HE , finalhistos, finalresults);
 		AnalyzeEffCorr(	StatusL1Check_HE , finalhistos, finalresults);
@@ -253,6 +258,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		AnalyzeEffCorr(	GoodQTrack_HE , finalhistos, finalresults);
 		AnalyzeEffCorr(	Good1Track_HE , finalhistos, finalresults);
 		AnalyzeEffCorr(	GoodTime_TOF , finalhistos, finalresults);
+		AnalyzeEffCorr(	Quality_TOF , finalhistos, finalresults);
 		AnalyzeEffCorr(	RICHEffCorr_NaF , finalhistos, finalresults);
 		AnalyzeEffCorr(	RICHEffCorr_Agl , finalhistos, finalresults);
 		AnalyzeEffCorr(	RICHQualEffCorr_NaF , finalhistos, finalresults);
@@ -280,6 +286,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_PTOF->ApplyEfficCorr(GoodTime_TOF);
 		Acceptance_DTOF->ApplyEfficCorr(GoodTime_TOF);
 
+		Acceptance_PTOF->ApplyEfficCorr(Quality_TOF);
+		Acceptance_DTOF->ApplyEfficCorr(Quality_TOF);
+
 	        Acceptance_PNaF->ApplyEfficCorr(RICHEffCorr_NaF);
                 Acceptance_PAgl->ApplyEfficCorr(RICHEffCorr_Agl);
                 Acceptance_DNaF->ApplyEfficCorr(RICHEffCorr_NaF);
@@ -290,33 +299,33 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
                 Acceptance_DNaF->ApplyEfficCorr(RICHQualEffCorr_NaF);
 	        Acceptance_DAgl->ApplyEfficCorr(RICHQualEffCorr_Agl);
 		
-		Acceptance_PTOF 	->  EvalEffAcc();
-	        Acceptance_PNaF 	->  EvalEffAcc();
-                Acceptance_PAgl 	->  EvalEffAcc();
+		Acceptance_PTOF 	->  EvalEffAcc(timeindex);
+	        Acceptance_PNaF 	->  EvalEffAcc(timeindex);
+                Acceptance_PAgl 	->  EvalEffAcc(timeindex);
 		
 		Acceptance_PTOF 	->SaveResults(finalresults);
                 Acceptance_PNaF 	->SaveResults(finalresults);
                 Acceptance_PAgl 	->SaveResults(finalresults);
 
-		Acceptance_DTOF 	->  EvalEffAcc();
-	        Acceptance_DNaF 	->  EvalEffAcc();
-                Acceptance_DAgl 	->  EvalEffAcc();
+		Acceptance_DTOF 	->  EvalEffAcc(timeindex);
+	        Acceptance_DNaF 	->  EvalEffAcc(timeindex);
+                Acceptance_DAgl 	->  EvalEffAcc(timeindex);
 		
 		Acceptance_DTOF 	->SaveResults(finalresults);
                 Acceptance_DNaF 	->SaveResults(finalresults);
                 Acceptance_DAgl 	->SaveResults(finalresults);
 
-		Acceptance_RigPTOF 	->  EvalEffAcc();
-	        Acceptance_RigPNaF 	->  EvalEffAcc();
-                Acceptance_RigPAgl 	->  EvalEffAcc();
+		Acceptance_RigPTOF 	->  EvalEffAcc(timeindex);
+	        Acceptance_RigPNaF 	->  EvalEffAcc(timeindex);
+                Acceptance_RigPAgl 	->  EvalEffAcc(timeindex);
 		
 		Acceptance_RigPTOF 	->SaveResults(finalresults);
                 Acceptance_RigPNaF 	->SaveResults(finalresults);
                 Acceptance_RigPAgl 	->SaveResults(finalresults);
 
-		Acceptance_HE     	->  EvalEffAcc();
-	        Acceptance_L1HE   	->  EvalEffAcc();
-                Acceptance_QualHE 	->  EvalEffAcc();
+		Acceptance_HE     	->  EvalEffAcc(timeindex);
+	        Acceptance_L1HE   	->  EvalEffAcc(timeindex);
+                Acceptance_QualHE 	->  EvalEffAcc(timeindex);
 		
 		Acceptance_HE     	->SaveResults(finalresults);
                 Acceptance_L1HE   	->SaveResults(finalresults);

@@ -85,4 +85,5 @@ void UpdateProgressBar(int currentevent, int totalentries)
                 std::cout<<'\r' << "Progress : "<< newratio+1 << " %"<< std::flush; //+1 pour finir a 100%
 }
 
+
 #endif

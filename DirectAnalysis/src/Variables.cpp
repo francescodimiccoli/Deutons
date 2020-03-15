@@ -6,159 +6,64 @@
 
 
 Double_t Variables::ChiXcut_X[] = {
-			    0.5461929639082259,
-                            0.6117777913465905,
-                            0.7071657262317889,
-                            0.782162253849283,
-                            0.8542806062673918,
-                            0.8705795905154753,
-                            0.9041164064765199,
-                            0.9330485467088381,
-                            0.993719979859955,
-                            1.058336569791599,
-                            1.1705755610785775,
-                            1.2624994283643205,
-                            1.3702471441944273,
-                            1.6141144911444367,
-                            2.0250210803940845,
-                            2.5565879564232303,
-                            3.011592241466872,
-                            3.6152599901105105,
-                            4.593108484692199,
-                            5.798796836339215,
-                            7.555252339430445,
-                            9.905947748010938,
-                            13.65937777980889,
-                            19.19436436007669,
-                            23.187454671790675,
-                            27.660527949179535,
-                            31.374732184749277,
-                            38.484163777366675,
-                            60.41179653368272,
-				120} ;
+				} ;
 
-Double_t Variables::ChiXcut_Y[] = {15.712800278053805,
-                            16.510284425867916,
-                            17.695234763854792,
-                            18.675191718987424,
-                            19.678012360917403,
-                            19.88313051150314,
-                            19.518122513000353,
-                            19.10754310056725,
-                            18.263582972769445,
-                            17.419622844971638,
-                            15.95984038642349,
-                            15.024612663033551,
-                            14.36296938288989,
-                            13.108086731397353,
-                            11.647680434191704,
-                            10.43805727730074,
-                            9.479591563918955,
-                            8.361423154217372,
-                            7.584993561093857,
-                            7.241819915603543,
-                            6.9896955221752375,
-                            6.7831425426772505,
-                            6.507936118921474,
-                            6.392245239888245,
-                            6.3685081789704,
-                            6.3448335019183055,
-                            6.344209663260806,
-                            6.366543087199277,
-                            6.3865683081050015,
-			6.4	};
+Double_t Variables::ChiXcut_Y[] = {
+				};
 
 Double_t Variables::ChiYcut_X[] = {  
-	0.554988920241520,
-	0.665321398928230,
-	0.766094503809641,
-	0.873268284254038,
-	0.908899716158968,
-	0.974650079710933,
-	1.045112844951578,
-	1.189765779872607,
-	1.3019451667854716,
-	1.3966580111639908,
-	1.6236359122399298,
-	1.9460478452088468,
-	2.404375851115271,
-	2.659348043437154,
-	2.9710860026813823,
-	3.2197752528619903,
-	3.3855176480162017,
-	3.6322634550753348,
-	4.0169394677244465,
-	4.625074192712959,
-	5.43426215771492,
-	5.9501497260948515,
-	6.580995144088139,
-	7.654857043964374,
-	8.552185815608533,
-	9.65086191304605,
-	10.67383860718517,
-	11.338151440439248,
-	12.289778294130334,
-	13.320434925356826,
-	15.968890034503692,
-	10.337539385333123,
-	24.381694092636632,
-	28.937574569441463,
-	32.98652862434818,
-	40.75800294332464,
-	120
 };
 
 Double_t Variables::ChiYcut_Y[] = {
-	14.975966562173461,  
-	14.888192267502614,
-	14.829676071055385,
-	14.741901776384534,
-	14.303030303030305,
-	13.337513061650995,
-	12.313479623824453,
-	10.411703239289448,
-	9.592476489028215, 
-	9.153605015673982, 
-	8.363636363636363, 
-	8.012539184952981, 
-	7.836990595611286, 
-	7.866248693834902, 
-	7.866248693834902, 
-	7.544409613375131, 
-	7.281086729362593, 
-	7.017763845350053, 
-	6.871473354231974, 
-	6.725182863113898, 
-	6.725182863113898, 
-	6.725182863113898, 
-	6.725182863113898, 
-	6.725182863113898, 
-	6.725182863113898, 
-	6.637408568443052, 
-	6.608150470219436, 
-	6.491118077324974, 
-	6.46185997910136,
-	6.344827586206896, 
-	6.286311389759667, 
-	6.25705329153605,
-	6.227795193312436, 
-	6.227795193312436, 
-	6.169278996865205, 
-	6.081504702194359, 
-	6};
+	};
 
-
+int Times[27]{
+1307750400,
+1317081600,
+1326412800,
+1335744000,
+1345075200,
+1354406400,
+1363737600,
+1373068800,
+1382400000,
+1391731200,
+1401062400,
+1410393600,
+1419724800,
+1429056000,
+1438387200,
+1447718400,
+1457049600,
+1466380800,
+1475712000,
+1485043200,
+1494417600,
+1503748800,
+1513080000,
+1522411200,
+1531915200,
+1541073600,
+1700000000
+};
 
 int GetUnusedLayers(int hitbits){ return 7 - std::bitset<32>(hitbits & 0b1111111).count(); }
 Reweighter ReweightInitializer(std::string galpropfilename=(workdir+"/include/CRDB_ProtonsAMS_R.galprop").c_str(),float r_min=0.5, float r_max=100,float norm_at=1.05);
 
 
-Variables::Variables(){
+Variables::Variables(int time){
     BDTreader();
     reweighter = ReweightInitializer();
     reweighterHe = ReweightInitializer((workdir+"/include/CRDB_HeliumAMS_R.galprop").c_str(),2,2000,2.05);
-    TFile * LatFile = TFile::Open((workdir+"/LatWeights/Weights.root").c_str());
-    CutoffWeights = (TH2F*)LatFile->Get("Spectra/LatWeights_ExpoM");  
+
+    int timeindex=0;
+    for(int i=0;i<27;i++) if(Times[i]>time) {timeindex=i; break;}
+    FileSaver LatWeights;
+    LatWeights.setName((workdir+"/LatWeights/"+to_string(Times[timeindex-1])+"-"+to_string(Times[timeindex])+".root_Results").c_str());
+
+	cout<<"TIME STRING: "<<LatWeights.GetName()<<endl;
+
+    latweighter = new LatReweighter(LatWeights,"LatWeights");	
  	
     Chi2Xcut = new TSpline3("Chi2Xcut", ChiXcut_X,ChiXcut_Y,30);
     Chi2Ycut = new TSpline3("Chi2Ycut", ChiYcut_X,ChiYcut_Y,37);
@@ -356,7 +261,6 @@ void Variables::ResetVariables(){
     Momento_gen_RICH       = 0;
     Massa_gen              = 0;
     mcweight               = 0;
-    mc_cutoffweight        = 0;
     MCClusterGeantPids     = 0;
     Charge_gen             = 0;
     GenX  = 0; GenY  = 0; GenZ  = 0;
@@ -631,11 +535,16 @@ void Variables::Update(){
 				if(Massa_gen>2&&Massa_gen<4) mcweight = reweighterHe.getWeight(fabs(Momento_gen));
 			}
 	}	
-  mc_cutoffweight = CutoffWeights->GetBinContent(ForCutoff.GetRBin(fabs(R))+1,ForCutoff.GetRBin(Momento_gen)+1)/CutoffWeights->GetBinContent(ForCutoff.GetRBin(Momento_gen)+1,ForCutoff.GetRBin(Momento_gen)+1)  ;	
-  if(Momento_gen>45) mc_cutoffweight=1;  
  
 
 }
+
+float Variables::GetCutoffCleaningWeight(float Rmeas, float Rgen, float SF){
+	return latweighter->GetCleaningWeight(Rmeas,Rgen,1.05);
+}
+
+
+float Variables::GetTimeDepWeight(float R) { return latweighter->GetTimeDepWeight(R);}
 
 void Variables::PrintCurrentState(){
 
@@ -714,6 +623,8 @@ void Variables::Eval_Discriminants(){
 }
 
 
+
+
 float GetInverseRigidity (Variables * vars) {return 1/vars->R-1/vars->Momento_gen;}
 float GetGenMomentum     (Variables * vars) {return vars->Momento_gen;}
 
@@ -725,8 +636,8 @@ float GetInverseEdepTRD  (Variables * vars) {return 1/vars->EdepTRD;}
 
 
 float GetBetaGen         (Variables * vars) {return pow((pow((vars->Momento_gen/vars->Massa_gen),2)/(pow((vars->Momento_gen/vars->Massa_gen),2)+1)),0.5);}
-float GetInverseBetaTOF  (Variables * vars) {return 1/vars->Beta - 1/GetBetaGen(vars);}
-float GetInverseBetaRICH (Variables * vars) {return 1/vars->BetaRICH_new - 1/GetBetaGen(vars);}
+float GetInverseBetaTOF  (Variables * vars) {return 1/vars->Beta ;}
+float GetInverseBetaRICH (Variables * vars) {return 1/vars->BetaRICH_new;}
 float GetBetaMeas        (Variables * vars) { if(!(vars->IsFromNaF()) && !(vars->IsFromAgl())) return GetBetaTOF(vars); else return GetBetaRICH(vars); }
 float GetBetaTOF         (Variables * vars) {return vars->Beta;}
 float GetBetaRICH        (Variables * vars) {return vars->BetaRICH_new;}
@@ -834,6 +745,31 @@ float GetBetaGen_SlowDownAgl(Variables * vars) {
 	ResponseAgl->SetParameter(1,67.8521);
 	ResponseAgl->SetParameter(2,0);
 	return beta-(0.9/vars->Massa_gen)*ResponseNaF->Eval(beta);				
+}
+
+float GetBetaFromR      (float m, float R) {
+
+	return 	pow(pow(R/m,2)/(1+pow(R/m,2)),0.5);
+
+}
+float GetRFromBeta      (float m, float beta){
+	if(beta<1)
+	return m*(beta*1/pow(1-pow(beta,2),0.5)); 
+	return 0;
+}
+
+float GetSmearedBetaTOF(Variables * vars){
+
+	float time = 1.2/(vars->Beta*3e-4);
+	float sigma = ToFsmearSigma;
+	float smeartime = (ToFsmearShift + Rand->Gaus(0,(float)sigma));
+	time = time + smeartime;
+	return 1.2/(time*3e-4);
+}
+
+
+float GetSmearedBetaRICH(Variables * vars){
+	return vars->BetaRICH_new;
 }
 
 

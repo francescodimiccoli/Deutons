@@ -72,9 +72,9 @@ void Acceptance::SaveResults(FileSaver finalhistos){
 
 
 
-void Acceptance:: EvalEffAcc(){
+void Acceptance:: EvalEffAcc(int timeindex){
 	cout<<"********** MC flux reweighting **********"<<endl;
-	Variables * vars = new Variables();
+	Variables * vars = new Variables(timeindex);
 	cout<<"********** For_Acceptance **************"<<endl;
 	float normalization = For_Acceptance->GetBefore()->GetEntries()*(pow(param.Trigrate,-1)) ;
 	cout<<For_Acceptance->GetBefore()->GetEntries()<<" "<<normalization<<" "<<param.tot_trig<<endl;
@@ -106,8 +106,13 @@ void Acceptance:: EvalEffAcc(){
 	for(int i=0;i<bins.size();i++){
 		float bincontent = normalization*(log(bins.RigTOIBins()[i+1])-log(bins.RigTOIBins()[i]))/log(param.Rmax)-log(param.Rmin);
 		float meanweight = Spectrum.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1]) / LogNorm.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1]);
+		float MCweight = 1;
+	
+		MCweight *= vars->GetCutoffCleaningWeight(bins.RigTOIBins()[i],bins.RigTOIBins()[i],1);
+		MCweight *= vars->GetTimeDepWeight(bins.RigTOIBins()[i]);				      
+	
 		if(LogNorm.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1])){
-				FullSetEff->GetBefore()->SetBinContent(i+1,param.art_ratio*bincontent*meanweight); //vars->reweighter.getWeight(bins.RigTOIBinsCent()[i]));
+				FullSetEff->GetBefore()->SetBinContent(i+1,param.art_ratio*bincontent*meanweight*MCweight); //vars->reweighter.getWeight(bins.RigTOIBinsCent()[i]));
 				FullSetEff->GetBefore()->SetBinError(i+1,0);
 		}
 	}

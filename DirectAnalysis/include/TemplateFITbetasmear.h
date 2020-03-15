@@ -1,7 +1,6 @@
 #ifndef TEMPLATEFITBETASMEAR_H
 #define TEMPLATEFITBETASMEAR_H
 
-#include "BadEventSimulator.h"
 #include "LatReweighter.h" 
 #include "Livetime.h"
 #include "TFractionFitter.h"
@@ -20,16 +19,19 @@ struct TFit {
    TH1F * Templ_DPrim=0x0;
    TH1F * Templ_PPrim=0x0;
    TH1F * Templ_He=0x0;
+   TH1F * Templ_HePrim=0x0;
+  
    TH1F * Templ_Noise=0x0; 	
 
    TH1F * Data =0x0;
+   TH1F * DataAmbient =0x0;
    TH1F * DataPrim=0x0;	
 
 
    float wheightP,wheightD,wheightHe,wheightNoise;
    float ContribP,ContribD,ContribHe,ContribNoise;
    float errP,errD,errHe,errNoise;
-   float fitrangemin = 0.6;
+   float fitrangemin = 0.7;
    float fitrangemax = 3.5;
 		
    TFractionFitter *Tfit;
@@ -54,7 +56,9 @@ struct TFit {
 
 
    TFit(){}	
-   TFit(TH1F * templ_P, TH1F * templ_D, TH1F * data, TH1F * dataPrim) { Templ_P= templ_P; Templ_D=templ_D; Data=data; DataPrim=dataPrim; }
+   TFit(TH1F * templ_P, TH1F * templ_D, TH1F * data, TH1F * dataPrim, TH1F* dataAmbient) { Templ_P= templ_P; Templ_D=templ_D; Data=data; DataPrim=dataPrim; DataAmbient = dataAmbient; }
+  TFit(TH1F * templ_P, TH1F * templ_D, TH1F * data, TH1F * dataPrim) { Templ_P= templ_P; Templ_D=templ_D; Data=data; DataPrim=dataPrim; }
+
 
 };
 
@@ -68,21 +72,13 @@ struct Systpar{
 struct BestChi {
 	int i=0;
 	int j=0;
+	int z=0;
 	float chimin=0;
 	void FindMinimum(TH2F * Histo, TH2F * relerr) {
-		float meanErr = relerr->Integral()/(Histo->GetNbinsY()*Histo->GetNbinsX());
-		float Best = 9999999;
-		for(int x=0;x<Histo->GetNbinsX();x++)
-			for(int y=0;y<Histo->GetNbinsY();y++)
-				if(Histo->GetBinContent(x+1,y+1)<Best){
-					if(relerr->GetBinContent(x+1,y+1)<2*meanErr){
-						Best=Histo->GetBinContent(x+1,y+1);
-						i=x;
-						j=y;
-						chimin=Best;	
-					}
-				}
-	}
+			Histo->GetMinimumBin(i,j,z);
+			i--;
+			j--;
+		}
 };
 
 void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constrain_min[], float constrain_max[], bool isfitnoise, bool highmasstailconstrain, bool IsFitPrim=false );
@@ -129,12 +125,12 @@ class TemplateFIT : public Tool{
 
 	Binning bins;
         std::string cut;
+	std::string cutoff;
 	std::string cutprimary;
 	std::string discr_var;
 
 	std::string basename;
 
-	LatReweighter * Latweighter = new LatReweighter("LatWeights","",500,0,150);
 
 	Systpar systpar;
 	bool fitDisabled=false;
@@ -147,20 +143,10 @@ class TemplateFIT : public Tool{
 	int ActualTime=0;
 
 
-	FileSaver ExternalTemplates;
-	bool checkfiletemplates=false;
-
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=9,float sigma=70,float shift=60){
+	TemplateFIT(std::string Basename,Binning Bins, std::string Cut,std::string Cutoff, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=9,float sigma=70,float shift=60){
 		
-			ExternalTemplates.setName((outdir+"/ExternalTemplates.root").c_str());		
-			checkfiletemplates = ExternalTemplates.CheckFile();
-
-			if(checkfiletemplates){ 
-				cout<<"External Template file found: "<<endl; 
-			}
-	
 			for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
 			for(int i=0;i<steps;i++){
@@ -169,6 +155,7 @@ class TemplateFIT : public Tool{
 
 					TFit * fit = new TFit;
 					string named    =Basename + "_Data_" +to_string(bin)+" "+to_string(i)+" "+to_string(j);
+					string namedamb =Basename + "_DataAmbient_" +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string namedprim=Basename + "_DataPrim_" +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameP    =Basename + "_MCP_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameD    =Basename + "_MCD_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
@@ -183,6 +170,7 @@ class TemplateFIT : public Tool{
 					fit->Templ_Noise=  new TH1F(nameNo.c_str(),nameNo.c_str(),Nbins,Xmin,Xmax);
 					fit->Data    =  new TH1F(named.c_str(),named.c_str(),Nbins,Xmin,Xmax);
 					fit->DataPrim=  new TH1F(namedprim.c_str(),namedprim.c_str(),Nbins,Xmin,Xmax);
+					fit->DataAmbient=  new TH1F(namedamb.c_str(),namedprim.c_str(),Nbins,Xmin,Xmax);
 					fits[bin][i].push_back(fit);
 				}
 			}
@@ -190,6 +178,7 @@ class TemplateFIT : public Tool{
 		
 		basename=Basename;
 		cut = Cut;
+		cutoff = Cutoff;
 		cutprimary=Cut+"&IsPrimary";
 		bins=Bins;
 		
@@ -229,16 +218,7 @@ class TemplateFIT : public Tool{
 	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich=false, int steps=9,float sigma=70,float shift=60){
 
 		TFile * file = File.GetFile();
-		TFile * externalfile;
 
-		ExternalTemplates.setName((outdir+"/ExternalTemplates.root").c_str());		
-
-		checkfiletemplates = ExternalTemplates.CheckFile();
-				
-		if(checkfiletemplates){ externalfile=ExternalTemplates.GetFile();
-			cout<<"External Template file found: "<<externalfile<<endl; 
-		}
-			
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
 			for(int i=0;i<steps;i++){
@@ -247,28 +227,22 @@ class TemplateFIT : public Tool{
 
 					TFit * fit = new TFit;
 					string named    =Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_Data_" +to_string(bin)+" "+to_string(0)+" "+to_string(5);
-					string namedprim=Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_DataPrim_" +to_string(bin)+" "+to_string(0)+" "+to_string(5);
+					string namedamb =Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_DataPrim_" +to_string(bin)+" "+to_string(0)+" "+to_string(5);
+					string namedprim=Basename + "/Bin "+ to_string(bin)+"/Data/" + Basename + "_DataAmbient_" +to_string(bin)+" "+to_string(0)+" "+to_string(5);
 					string nameP    =Basename + "/Bin "+ to_string(bin)+"/TemplateP/" + Basename + "_MCP_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameD    =Basename + "/Bin "+ to_string(bin)+"/TemplateD/" + Basename + "_MCD_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameHe    =Basename + "/Bin "+ to_string(bin)+"/TemplateHe/" + Basename + "_MCHe_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameNo    =Basename + "/Bin "+ to_string(bin)+"/TemplateNoise/" + Basename + "_MCNoise_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 
-					if(checkfiletemplates) {
-						fit->Templ_P    =  (TH1F *)externalfile->Get(nameP.c_str());
-						fit->Templ_D 	=  (TH1F *)externalfile->Get(nameD.c_str());
-						fit->Templ_He	=  (TH1F *)externalfile->Get(nameHe.c_str());
-						fit->Templ_Noise=  (TH1F *)externalfile->Get(nameNo.c_str());
-					}
-
-					else {
-						fit->Templ_P    =  (TH1F *)file->Get(nameP.c_str());
-						fit->Templ_D 	=  (TH1F *)file->Get(nameD.c_str());
-						fit->Templ_He	=  (TH1F *)file->Get(nameHe.c_str());
-						fit->Templ_Noise=  (TH1F *)file->Get(nameNo.c_str());
-					}
+					fit->Templ_P    =  (TH1F *)file->Get(nameP.c_str());
+					fit->Templ_D 	=  (TH1F *)file->Get(nameD.c_str());
+					fit->Templ_He	=  (TH1F *)file->Get(nameHe.c_str());
+					fit->Templ_Noise=  (TH1F *)file->Get(nameNo.c_str());
 
 					fit->Data    	=  (TH1F *)file->Get(named.c_str());
 					fit->DataPrim	=  (TH1F *)file->Get(namedprim.c_str());
+					fit->DataAmbient	=  (TH1F *)file->Get(namedamb.c_str());
+
 
 
 					fits[bin][i].push_back(fit);
@@ -331,7 +305,6 @@ class TemplateFIT : public Tool{
 
 	float GetCutoffWeight(float particle_m, float beta, float m);
 	void ConvoluteTempletesWithCutoff();
-	void SimpleExtractPrimaries();
 	void ExtractCounts(FileSaver finalhistos);
 	void EvalFinalParameters();
 	void EvalFinalErrors();
@@ -339,7 +312,7 @@ class TemplateFIT : public Tool{
 	void Save();	
 	void SaveFitResults(FileSaver finalhistos);
 	void SumUpMassDistrib(FileSaver finalhistos);
-
+	void SimpleExtractPrimaries();
 	void SetUpBadEventSimulator(BadEventSimulator * Sim) {BadEvSim = Sim; return; };
 	void SetFitWithNoiseMode(){IsFitNoise = true; if(BadEvSim)  BadEvSim->SetFrequency(1); return;}
 
@@ -355,7 +328,6 @@ class TemplateFIT : public Tool{
 	void SetHeliumContamination(TF1 * HelimCont) {HeContModel=HelimCont; return;};
 	BadEventSimulator * GetBadEventSimulator() {return BadEvSim;}
 	void LoadEventIntoBadEvSim(Variables * vars) {if(BadEvSim) BadEvSim->LoadEvent(vars);}
-	void SetLatitudeReweighter(LatReweighter * weighter) { Latweighter = weighter;}
 	void Eval_ContError();
 	std::string GetName(){return basename;}
 	TH1F * GetStatErrorP(){ return StatErrorP;}

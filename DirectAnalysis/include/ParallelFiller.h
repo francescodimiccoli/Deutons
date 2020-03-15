@@ -133,7 +133,7 @@ class ParallelFiller{
             vars->ResetVariables();
 	    treeDT->GetEvent(i);
             //vars->Update();
-            for(int nobj=0;nobj<Objects2beFilled.size();nobj++) {
+           for(int nobj=0;nobj<Objects2beFilled.size();nobj++) {
 			if(SecondFillinVariables[nobj]) Objects2beFilled[nobj]->FillEventByEventScatter(vars,FillinVariables[nobj],SecondFillinVariables[nobj],DiscrimVariables[nobj]);
 			else Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
        		}
@@ -238,7 +238,7 @@ class ParallelFiller{
 		    reader.FillVariables(i,vars);
 		    vars->Update();
 		    for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
-			    if(vars->good_RTI==0&&vars->isinsaa==0) UpdateZoneLivetime(vars->Livetime_RTI,vars->Rcutoff_RTI,Objects2beFilled[nobj]->GetExposureTime(),Objects2beFilled[nobj]->GetBins());
+			    if(vars->good_RTI==0&&vars->isinsaa==0) UpdateZoneLivetime(vars->Livetime_RTI,vars->Rcutoff_IGRFRTI,Objects2beFilled[nobj]->GetExposureTime(),Objects2beFilled[nobj]->GetBins());
 	    }
 	    for(int nobj=0;nobj<Objects2beFilled.size();nobj++){ 
 		    Objects2beFilled[nobj]->GetOutFileSaver().Add(Objects2beFilled[nobj]->GetExposureTime());

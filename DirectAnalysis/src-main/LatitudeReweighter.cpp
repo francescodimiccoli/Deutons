@@ -33,18 +33,30 @@ int main(int argc, char * argv[])
 
     TH1::SetDefaultSumw2();     	
     cout<<"****************************** FILES OPENING ***************************************"<<endl;
-    
-    string INPUT1(argv[1]);
-    string INPUT2(argv[2]);
-    string OUTPUT(argv[3]);
+     string INPUT1 = "";
+     string INPUT2 = "";
+     string OUTPUT = "";
+
+  
+    if(argc<=2) { 
+	    OUTPUT = argv[1];
+    }	
+
+    else{
+	    INPUT1=argv[1];
+	    INPUT2=argv[2];
+	    OUTPUT=argv[3];
+    }
 
     string refill="";
     if(argc > 4 ) 	refill = argv[4];	
-    
+
     bool Refill = false;
     if(refill!="") Refill=true;
     
-   TChain * chainDT = InputFileReader(INPUT1.c_str(),"RTI");
+   TChain * chainRTI = InputFileReader(INPUT1.c_str(),"RTI");
+   TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
+
 
     FileSaver finalHistos;
     finalHistos.setName(OUTPUT.c_str());
@@ -61,20 +73,23 @@ int main(int argc, char * argv[])
     SetUpUsualBinning();
     
     cout<<"****************************** VARIABLES ***************************************"<<endl;
-    Variables * vars = new Variables();
+//    Variables * vars = new Variables(1);
 
 
     cout<<"****************************** ANALYSIS ***************************************"<<endl;
-    LatReweighter * weighter = new LatReweighter("LatWeights","IsPositive&IsPreselected&LikelihoodCut&DistanceCut&IsOnlyFromToF",500,0,150);
+    LatReweighter * weighter = new LatReweighter("LatWeights","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",500,0,150);
 
     if(Refill){	
-    	weighter->LoopOnRTI(DBarReader(chainDT, false ),vars,Refill);
+	//bisogna fare un loop senza variables
+//    	weighter->LoopOnRTI(DBarReader(chainRTI, false ),vars,Refill);
+//     	weighter->LoopOnData(DBarReader(chainDT, false ),vars,Refill);
     }
     else weighter = new LatReweighter(finalHistos,"LatWeights");	
 	
     weighter->CalculateWeights();	
-    weighter->Save(finalHistos);
-
+    if(Refill) weighter->Save(finalHistos);
+    else  weighter->SaveResults(finalResults);
+	
     return 0;
 }
 

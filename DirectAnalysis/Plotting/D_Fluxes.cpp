@@ -162,7 +162,7 @@ int main(int argc, char * argv[]){
 
 
 	float potenza = 0;
-	/*TCanvas *c2 = new TCanvas("Deuteron Primary Flux");
+	TCanvas *c2 = new TCanvas("Deuteron Primary Flux");
 	c2->SetCanvasSize(2000,1500);
 
 	TH2F * Frame = CreateFrame(gPad,0.01,25,0.0001,100,"Kin.En./nucl. [GeV/nucl.]","Flux [(m^2 sr GeV/nucl.)^{-1}]");	
@@ -256,7 +256,7 @@ int main(int argc, char * argv[]){
 	Plots.Add(c3);
 	Plots.writeObjsInFolder("Fluxes/Fluxes Ekin");
 
-*/
+
 
 	TCanvas *c3_ = new TCanvas("Proton Primary Flux - Merged");
 	c3_->SetCanvasSize(2500,1500);
@@ -318,7 +318,7 @@ int main(int argc, char * argv[]){
 	Plots.writeObjsInFolder("Fluxes/Fluxes Ekin");
 
 
-/*
+
 	SetUpRigTOIBinning();
 
 	TCanvas *c4 = new TCanvas("Deuteron Primary Flux");
@@ -405,7 +405,7 @@ int main(int argc, char * argv[]){
 	Plots.writeObjsInFolder("Fluxes/Fluxes R");
 
 
-*/
+
 	/*
 	   TCanvas *c3 = new TCanvas("D/P ratio");
 	   c3->SetCanvasSize(2000,1500);
@@ -471,7 +471,7 @@ int main(int argc, char * argv[]){
 
 	Plots.Add(c3);
 	Plots.writeObjsInFolder("Fluxes");
-
 */
+
 	return 0;
 }

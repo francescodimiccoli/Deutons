@@ -17,6 +17,11 @@ int nbinsAgl=18;
 float ToFsmearSigma= 79.8;
 float ToFsmearShift= -1.5;
 
+float RcutoffCut = 1.2;
+float BetacutoffCut = 1.08;
+
+
+
 TRandom3 * Rand= new TRandom3(time(0));
 
 Particle proton(0.9382720813, 1, 1);  // proton mass 938 MeV

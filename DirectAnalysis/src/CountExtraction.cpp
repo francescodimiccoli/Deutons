@@ -14,10 +14,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	bool checkfile = finalhistos.CheckFile();
 	check_file = checkfile;
 
-	FileSaver LatWeights;
-	LatWeights.setName((workdir+"/LatWeights/Weights.root").c_str());
-	LatReweighter * weighter = new LatReweighter(LatWeights,"LatWeights");	
-	
+
 	cout<<"****************************** BINS ***************************************"<<endl;
     	SetUpUsualBinning();
  
@@ -25,6 +22,8 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 
 	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
 	BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
+
+
 
 	//proton flux tests
 	Efficiency * CountsTests[9];
@@ -38,20 +37,22 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	Efficiency * CountsL1HE   = new Efficiency(finalhistos    ,"HEPCountsL1"       ,"HEPCountsL1"    ,PRB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&RigSafetyCut","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&RigSafetyCut");
 	Efficiency * CountsQualHE = new Efficiency(finalhistos    ,"HEPCountsQual"     ,"HEPCountsQual"  ,PRB,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&RigSafetyCut","IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&RigSafetyCut");
 
-	Efficiency * CountsTOF    = new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,GlobalRig.GetToFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&RigSafetyCut","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&RigSafetyCut");
+	Efficiency * CountsTOF    = new Efficiency(finalhistos    ,"TOFPCounts"	   ,"TOFPCounts"	,GlobalRig.GetToFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF&RigSafetyCut&QualityTOF","IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF&RigSafetyCut&QualityTOF");
 	Efficiency * CountsNaF    = new Efficiency(finalhistos    ,"NaFPCounts"	   ,"NaFPCounts"	,GlobalRig.GetNaFPBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut&RigSafetyCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut&RigSafetyCut"    );
 	Efficiency * CountsAgl    = new Efficiency(finalhistos    ,"AglPCounts"	   ,"AglPCounts"	,GlobalRig.GetAglPBins(),"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut&RigSafetyCut"    ,"IsPositive&IsPrimary&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut&RigSafetyCut"    );
 
 	// Extraction of counts with Template Fit
 
-	//TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsOnlyFromToF",60,0.3,1.6);	  
-	TemplateFIT * TOFfits= new TemplateFIT("TOFDfits",Global.GetToFDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime"       ,150,0.4,7.5,false,11);
-	TemplateFIT * NaFfits= new TemplateFIT("NaFDfits",Global.GetNaFDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"           ,60,0.4,5,true,11,250,150);
-	TemplateFIT * Aglfits= new TemplateFIT("AglDfits",Global.GetAglDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,11,75,55);	
+	TemplateFIT * SmearingCheck = new TemplateFIT("SmearingCheck",PRB,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsOnlyFromToF","IsPrimary",60,0.3,1.6);	  
+	TemplateFIT * TOFfits_old= new TemplateFIT("TOFDfits_old",Global.GetToFDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime","IsPrimaryBetaTOFD"       ,150,0.4,7.5,false,11);
+	
+	TemplateFIT * TOFfits= new TemplateFIT("TOFDfits",Global.GetToFDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF","IsPrimaryBetaTOFD"       ,150,0.4,7.5,false,11);
+	TemplateFIT * NaFfits= new TemplateFIT("NaFDfits",Global.GetNaFDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut","IsPrimaryBetaRICD"           ,60,0.4,5,true,11,250,150);
+	TemplateFIT * Aglfits= new TemplateFIT("AglDfits",Global.GetAglDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut","IsPrimaryBetaRICD"           ,60,0.4,5,true,11,75,55);	
 
-	TemplateFIT * TOFfits_P= new TemplateFIT("TOFPfits",Global.GetToFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime"       ,150,0.4,7.5,false,11);
-	TemplateFIT * NaFfits_P= new TemplateFIT("NaFPfits",Global.GetNaFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"           ,60,0.4,5,true,11,250,150);
-	TemplateFIT * Aglfits_P= new TemplateFIT("AglPfits",Global.GetAglPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"           ,60,0.4,5,true,11,75,55);	
+	TemplateFIT * TOFfits_P= new TemplateFIT("TOFPfits",Global.GetToFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTimei&QualityTOF","IsPrimaryBetaTOFP"       ,150,0.4,7.5,false,11);
+	TemplateFIT * NaFfits_P= new TemplateFIT("NaFPfits",Global.GetNaFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut","IsPrimaryBetaRICP"           ,60,0.4,5,true,11,250,150);
+	TemplateFIT * Aglfits_P= new TemplateFIT("AglPfits",Global.GetAglPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut","IsPrimaryBetaRICP"           ,60,0.4,5,true,11,75,55);	
 
 
 	if(!refill&&checkfile) {	
@@ -64,7 +65,9 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
                 CountsAgl   ->ReinitializeHistos(refill); 
 		for(int i=0;i<10;i++)  CountsTests[i] ->ReinitializeHistos(refill);
 
-		//TemplateFIT * SmearingCheck = new TemplateFIT(finalhistos,"SmearingCheck",PRB);
+		TemplateFIT * SmearingCheck = new TemplateFIT(finalhistos,"SmearingCheck",PRB);
+		TOFfits_old= new TemplateFIT(finalhistos,"TOFDfits_old",Global.GetToFDBins(),false,11);
+	
 		TOFfits= new TemplateFIT(finalhistos,"TOFDfits",Global.GetToFDBins(),false,11);
 		NaFfits= new TemplateFIT(finalhistos,"NaFDfits",Global.GetNaFDBins(),true,11,250,150);
 		Aglfits= new TemplateFIT(finalhistos,"AglDfits",Global.GetAglDBins(),true,11,75,55);
@@ -140,7 +143,8 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	}
 
 
-	//SmearingCheck -> SetDefaultOutFile(finalhistos);
+	SmearingCheck -> SetDefaultOutFile(finalhistos);
+	TOFfits_old	    -> SetDefaultOutFile(finalhistos);
 	TOFfits	    -> SetDefaultOutFile(finalhistos);
 	NaFfits	    -> SetDefaultOutFile(finalhistos);
 	Aglfits	    -> SetDefaultOutFile(finalhistos);
@@ -158,21 +162,13 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	CountsAgl	-> SetDefaultOutFile(finalhistos);
 
 
-	//SmearingCheck->SetLatitudeReweighter(weighter);
-	TOFfits	 ->SetLatitudeReweighter(weighter);	
-	NaFfits	 ->SetLatitudeReweighter(weighter);	
-	Aglfits	 ->SetLatitudeReweighter(weighter);	
-	TOFfits_P	 ->SetLatitudeReweighter(weighter);	
-	NaFfits_P	 ->SetLatitudeReweighter(weighter);	
-	Aglfits_P	 ->SetLatitudeReweighter(weighter);	
-
 	NaFfits->SetUpBadEventSimulator(NaFBadEvSimulator);
 	Aglfits->SetUpBadEventSimulator(AglBadEvSimulator);
 	NaFfits_P->SetUpBadEventSimulator(NaFBadEvSimulator);
 	Aglfits_P->SetUpBadEventSimulator(AglBadEvSimulator);
 
 
-	//Filler.AddObject2beFilled(SmearingCheck,GetBetaTOF,GetRigidity);
+	//Filler.AddObject2beFilled(SmearingCheck,GetInverseBetaTOF,GetRigidity);
 	Filler.AddObject2beFilled(TOFfits,GetRecMassTOF ,GetBetaTOF);
 	Filler.AddObject2beFilled(NaFfits,GetRecMassRICH,GetBetaRICH);
 	Filler.AddObject2beFilled(Aglfits,GetRecMassRICH,GetBetaRICH);

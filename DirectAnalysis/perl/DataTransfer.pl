@@ -5,8 +5,8 @@ chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 #chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
-#$datapath  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/full/Pr.B1200/pr.pl1.05100.4_00/";
-$datapath = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/neg/ISS.B1130/pass7/";
+$datapath  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/full/Be.B1200/be7.pl1.l1.48000.4_00";
+#$datapath = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/neg/ISS.B1130/pass7/";
 
 $out_path  = "/eos/ams/group/dbar/TrentoNTuples/v6_pass7/data";
 
@@ -32,7 +32,7 @@ $i=0;
 
 $njobs = $ARGV[2];
 
-for($n=0;$n<$num_Rootuple;$n++){
+for($n=0;$n<$num_Rootuple;$n=$n+2){
 	if($Rootuple[$n]>$ARGV[0]&& $Rootuple[$n]<$ARGV[1]){ 
 		$rootuple[$i]=$Rootuple[$n];
 		$i++;
@@ -53,7 +53,7 @@ for ($n=0;$n<$njobs; $n++)
 			source /cvmfs/sft.cern.ch/lcg/views/LCG_88/x86_64-slc6-gcc49-opt/setup.sh;\n";
 
 	for ($j=($num_rootuple)/$njobs*$n ; $j<($num_rootuple)/$njobs*($n+1) ; $j++){
-	print OUT "scp $datapath/$rootuple[$j].root fdimicco\@ams.tifpa.infn.it:/data1/home/data/v6_pass7/data\n";
+	print OUT "scp $datapath/$rootuple[$j].root fdimicco\@ams.tifpa.infn.it:/data1/home/data/v6_pass7/MC/be7.pl1.l1.48000.4_00\n";
 	}
 
 }

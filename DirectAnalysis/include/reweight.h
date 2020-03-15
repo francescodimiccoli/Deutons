@@ -2,6 +2,7 @@
 #define REWEIGHT_H
 
 #include "histogram.h"
+int FindTimeIndex(std::string input);
 
 class Reweighter {
 public:

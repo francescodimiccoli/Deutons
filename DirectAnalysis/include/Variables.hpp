@@ -9,10 +9,10 @@
 #include "TH1.h"
 #include "TH2.h"
 
-
 #include "TSpline.h"
 #include <TFile.h>
 #include <binning.h>
+#include "LatReweighter.h" 
 
 using namespace std;
 
@@ -22,6 +22,7 @@ struct Variables{
 
     Reweighter reweighter;
     Reweighter reweighterHe;
+    LatReweighter * latweighter;
 
    static Double_t ChiXcut_X[];
    static Double_t ChiXcut_Y[];
@@ -30,8 +31,6 @@ struct Variables{
 
     TSpline3 * Chi2Xcut; 	
     TSpline3 * Chi2Ycut; 	
-
-    TH2F * CutoffWeights;
 
     // Event info
     int        Run;
@@ -139,6 +138,7 @@ struct Variables{
 
     // RICH 
     float      BetaRICH_new;
+    float Richtothits;
     float        Richtotused;
     float      RichPhEl;
     float      RICHprob;
@@ -166,7 +166,6 @@ struct Variables{
     float      Momento_gen_RICH;
     float      Massa_gen;
     float      mcweight=0;
-    float      mc_cutoffweight=0;
     float      GenX, GenY, GenZ;
     float      GenPX, GenPY, GenPZ;
     UInt_t     MCClusterGeantPids; 	
@@ -207,7 +206,7 @@ struct Variables{
     TMVA::Reader *readerNaF;
     TMVA::Reader *readerAgl;
 
-    Variables();
+    Variables(int time=0);
 
     void ResetVariables();
     void ReadBranches(TTree * tree);
@@ -222,7 +221,10 @@ struct Variables{
     inline bool IsFromNaF_nosel     (){ return ((((int)joinCutmask>>11)&1024/*1921*/)==1024&&BetaRICH_new>0);}
     inline bool IsFromAgl_nosel     (){ return ((((int)joinCutmask>>11)&1024)==0&&BetaRICH_new>0);}
 
+    float GetCutoffCleaningWeight(float Rmeas, float Rgen, float SF);
+    float GetTimeDepWeight(float R);	
 };
+
 
 float GetInverseRigidity (Variables * vars); 
 float GetGenMomentum     (Variables * vars); 
@@ -236,7 +238,8 @@ float GetBetaGen         (Variables * vars);
 float GetBetaSlowTOF     (Variables * vars);
 float GetBetaSlowRICH    (Variables * vars);
 float GetRigSlow         (Variables * vars);
-
+float GetBetaFromR 	(float m, float R);
+float GetRFromBeta      (float m, float beta);
 
 float GetInverseBetaTOF  (Variables * vars);
 float GetInverseBetaRICH (Variables * vars);
@@ -290,6 +293,10 @@ float GetTofChisqcn (Variables * vars) ;
 float GetTofChisqtn  (Variables * vars); 
 float GetNTracks (Variables * vars) ;
 float GetTofOnTime (Variables * vars);  
+
+float GetSmearedBetaTOF(Variables* vars);
+float GetSmearedBetaRICH(Variables* vars);
+
 
 
 #endif

@@ -90,7 +90,7 @@ class Efficiency : public Tool{
                 	Eff    =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
         		Stat_Error = (TH1F *) ff->Get((directory+"/"+basename+"/"+basename+"_Stat_Error").c_str());
 			Syst_Error = (TH1F *) ff->Get((directory+"/"+basename+"/"+basename+"_Syst_Error").c_str());
-			cout<<"before: "<<before->Integral()<<" after: "<<after->Integral()<<endl; 
+			//cout<<"EFFICIENCY PROVA: "<<basename.c_str()<<" "<<before->GetEntries()<<" "<<after->GetEntries()<<endl;
 		}
 		
 	}

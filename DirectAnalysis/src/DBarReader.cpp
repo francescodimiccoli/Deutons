@@ -308,6 +308,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     /////////////////////////////// RICH ////////////////////////////////////
     vars->BetaRICH_new      = ntpRich->beta_corrected;
     vars->RICHmask_new      = RICHmaskConverter();
+    vars->Richtothits       = ntpHeader->nrichhit;
     vars->Richtotused       = ntpHeader->nrichhit-ntpRich->nhit;
     if(ntpRich->np_uncorr>0) vars->RichPhEl = ntpRich->np_exp_uncorr/ntpRich->np_uncorr; else vars->RichPhEl = 0;
     vars->RICHprob          = ntpRich->prob;
@@ -372,23 +373,17 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	
 	long long  int status = ntpCompact->status; 
 
-	vars->NTRDSegments = ((long int)(status/100000000));
-	status -= ((long int)(status/100000000) * 100000000); 	  
+	vars->NTRDSegments = (status%1000000000)/100000000; 
 	
-	vars->NTRDclusters = ((long int)(status/1000000));
-	status -= ((long int)(status/1000000) * 1000000);			
+	vars->NTRDclusters = (status%100000000)/1000000; 
 	
-	vars->NTrackHits  = ((long int)(status/10000));
-	status -= ((long int)(status/10000) * 10000); 
+	vars->NTrackHits  = (status%100000)/10000; 
 	
-	vars->NTracks  = ((long int)(status/1000));
-	status -= ((long int)(status/1000) * 1000);  
+	vars->NTracks  = (status%10000)/1000; 
 	
-	vars->NAnticluster      = ((long int)(status/10));
-	status -= ((int)(status/10) * 10);
+	vars->NAnticluster   = (status%100)/10; 
 	
-	if(vars->NTracks<0) cout<<"ECCO! "<<status<<" "<<ntpCompact->status<<" "<<vars->NTracks<<endl;
-	
+	//cout<<vars->NAnticluster<<" "<<vars->NTracks<<endl;	
 	/////////////////////////////////// UNBIAS ////////////////////////////////////////
 	vars->PhysBPatt = ntpCompact->sublvl1;
 	vars->JMembPatt = ntpCompact->trigpatt;
@@ -482,7 +477,7 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	richstatus -= ((int)richstatus/100)*100;	 
 
 	nrich_hits = richstatus;	
-
+        vars->Richtothits       = nrich_hits;
 	vars->Richtotused       = nrich_hits-rich_usedhits;
 	if(ntpCompact->rich_np>0) vars->RichPhEl = ntpCompact->rich_np_exp/ntpCompact->rich_np; else vars->RichPhEl = 0; 
 	vars->RICHprob          = ntpCompact->rich_prob;

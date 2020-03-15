@@ -2,16 +2,16 @@
 
 use warnings;
 
-$njobs=160;
+$njobs=200;
 $grouping = 4;
 
 $start=$ARGV[0];
 $stop=$ARGV[1];
 
-$launchana=0;
-$launchsum=0;
+$launchana=$ARGV[2];
+$launchsum=$ARGV[2]-1;
 $organizeoutput=0;
-$finalanalysis=1;
+$finalanalysis=0;
 
 
 @bartels = (
@@ -126,7 +126,6 @@ $outdir="/eos/ams/user/f/fdimicco/AnalysisFiles";
 $workdir="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/";
 
 
-
 $size = scalar(@bartels);
 print "Time bins: ".scalar(@bartels)."\n";
 
@@ -151,38 +150,25 @@ if($launchana==1){
 	system("rm $workdir/perl/*.out");
 		
 	for($i=$start;$i<$stop;$i=$i+$grouping){
-		chdir "$outdir/$bartels[$i]-$bartels[$i+$grouping]/Counts";
-		system("condor_submit Condor_script.sub");
+		#chdir "$outdir/$bartels[$i]-$bartels[$i+$grouping]/Counts";
+		system("condor_submit $workdir/perl/AnalysisScripts/Condor_script$bartels[$i]-$bartels[$i+$grouping].sub");
 	}	
-}
-
-if($launchsum==1){
-
-		open(OUT,">","$workdir/perl/SumScripts/DoAllPartials.sh");
-		for($i=$start ;$i<$stop; $i=$i+$grouping){
-			chdir "$outdir/$bartels[$i]-$bartels[$i+$grouping]";
-			print $i."\n";
-			print OUT "$workdir/perl/SumScripts/script$bartels[$i]-$bartels[$i+$grouping].sh \$1\n";
-		}	
-		close(OUT);
-		system("chmod +x $workdir/perl/SumScripts/DoAllPartials.sh")	;
 }
 
 
 if($organizeoutput==1){
+	open(OUT,">","$workdir/perl/SumScripts/DoAllPartials.sh");
 	for($i=$start;$i<$stop;$i=$i+$grouping){
 		chdir "$outdir/$bartels[$i]-$bartels[$i+$grouping]";
-		system("mv $outdir/$bartels[$i]-$bartels[$i+$grouping]/Counts/*_Flux $outdir/$bartels[$i]-$bartels[$i+$grouping]/Flux");
-		system("mv $outdir/$bartels[$i]-$bartels[$i+$grouping]/Counts/*_Corr $outdir/$bartels[$i]-$bartels[$i+$grouping]/EffCorr");
-		system("hadd -f -k ../Grouped/$bartels[$i]-$bartels[$i+$grouping].root Partial*");
-i		
+		print OUT "hadd -f -k $outdir/$bartels[$i]-$bartels[$i+$grouping]/../Grouped/$bartels[$i]-$bartels[$i+$grouping].root  $outdir/$bartels[$i]-$bartels[$i+$grouping]/Partial* &"."\n";
 	}
+	close (OUT);
 }
 
 if($finalanalysis==1){
 	for($i=$start;$i<=$stop;$i=$i+$grouping){
 	print "ECCO\n";
-	system("$workdir/Analysis  $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+$grouping].root >> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].out 2> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].err &");
+	system("$workdir/Analysis  $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+$grouping].root >> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].out 2> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].err");
 	}
 }
 

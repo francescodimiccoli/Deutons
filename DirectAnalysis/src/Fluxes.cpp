@@ -21,17 +21,17 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 //	for(int i=0;i<10;i++) FluxTests[i] = new Flux(finalhistos,finalresults,("PFluxTests_v"+to_string(i)).c_str(),("CountsTestEff_rig_v" + to_string(i)).c_str(),("CountsTestEff_rig_v" + to_string(i)).c_str(),("HEPTests_v"+to_string(i) + "/HEPTests_v"+to_string(i)+"/HEPTests_v"+to_string(i)+"_before").c_str(),"HEExposure","For_Acceptance_P",PRB);
 
-	Flux * DFluxTOF  = new Flux(finalhistos,finalresults, "DFluxTOF", "Acceptance_DTOF","Acceptance","TOFDfits/Fit Results/Primary Deuteron Counts","ExposureTOF",Global.GetToFDBins());
-	Flux * DFluxNaF  = new Flux(finalhistos,finalresults, "DFluxNaF", "Acceptance_DNaF","Acceptance","NaFDfits/Fit Results/Primary Deuteron Counts","ExposureNaF",Global.GetNaFDBins());
-	Flux * DFluxAgl  = new Flux(finalhistos,finalresults, "DFluxAgl", "Acceptance_DAgl","Acceptance","AglDfits/Fit Results/Primary Deuteron Counts","ExposureAgl",Global.GetAglDBins());
+	Flux * DFluxTOF  = new Flux(finalhistos,finalresults, "DFluxTOF", "Acceptance_DTOF","Acceptance","TOFDfits/Fit Results/Deuteron Counts","ExposureTOF",Global.GetToFDBins());
+	Flux * DFluxNaF  = new Flux(finalhistos,finalresults, "DFluxNaF", "Acceptance_DNaF","Acceptance","NaFDfits/Fit Results/Deuteron Counts","ExposureNaF",Global.GetNaFDBins());
+	Flux * DFluxAgl  = new Flux(finalhistos,finalresults, "DFluxAgl", "Acceptance_DAgl","Acceptance","AglDfits/Fit Results/Deuteron Counts","ExposureAgl",Global.GetAglDBins());
 
 	Flux * HEPFlux   = new Flux(finalhistos,finalresults,"PFluxHE"  ,"Acceptance_HE"    ,"Acceptance","HEPCounts/HEPCounts/HEPCounts_before","HEExposure"		,PRB);
 	Flux * HEPFluxL1 = new Flux(finalhistos,finalresults,"PFluxL1HE","Acceptance_L1HE"  ,"Acceptance","HEPCountsL1/HEPCountsL1/HEPCountsL1_before","HEExposure"	,PRB);
 	Flux * HEPFluxQ  = new Flux(finalhistos,finalresults,"PFluxQHE" ,"Acceptance_QualHE","Acceptance","HEPCountsQual/HEPCountsQual/HEPCountsQual_before","HEExposure",PRB);
 
-	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "Acceptance_PTOF","Acceptance","TOFPfits/Fit Results/Primary Proton Counts","ExposureTOF",Global.GetToFPBins());
-	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "Acceptance_PNaF","Acceptance","NaFPfits/Fit Results/Primary Proton Counts","ExposureNaF",Global.GetNaFPBins());
-	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "Acceptance_PAgl","Acceptance","AglPfits/Fit Results/Primary Proton Counts","ExposureAgl",Global.GetAglPBins());
+	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "Acceptance_PTOF","Acceptance","TOFPfits/Fit Results/Proton Counts","ExposureTOF",Global.GetToFPBins());
+	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "Acceptance_PNaF","Acceptance","NaFPfits/Fit Results/Proton Counts","ExposureNaF",Global.GetNaFPBins());
+	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "Acceptance_PAgl","Acceptance","AglPfits/Fit Results/Proton Counts","ExposureAgl",Global.GetAglPBins());
 	
 	Flux * RigPTOF = new Flux(finalhistos,finalresults, "RigPTOF", "Acceptance_PTOF","Acceptance","TOFPCounts/TOFPCounts/TOFPCounts_before","ExposureTOF",GlobalRig.GetToFPBins());
 	Flux * RigPNaF = new Flux(finalhistos,finalresults, "RigPNaF", "Acceptance_PNaF","Acceptance","NaFPCounts/NaFPCounts/NaFPCounts_before","ExposureNaF",GlobalRig.GetNaFPBins());

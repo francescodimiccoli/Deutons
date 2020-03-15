@@ -137,19 +137,21 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 	if(ApplyCuts("IsData",vars)) return;
 	int kbin;
 	kbin =bins.GetBin(var(vars));
-	if(kbin>=0){
-			float weight =1;
-			if(!notweighted) weight = vars->mcweight;
-			if(ApplyCuts(cut_before,vars)){ before->Fill(kbin,weight);}
+	//MCWeighting
+	float weight =1;
+	if(!notweighted){ 
+		weight = vars->mcweight;
+		if(bins.IsUsingBetaEdges()) weight *= vars->GetCutoffCleaningWeight(GetRFromBeta(bins.getParticle().getMass(),var(vars)),vars->Momento_gen,BetacutoffCut);
+		else weight *= vars->GetCutoffCleaningWeight(vars->R,vars->Momento_gen,RcutoffCut);
+		weight *= vars->GetTimeDepWeight(vars->Momento_gen);				      
 	}
+		
+	if(kbin>=0) if(ApplyCuts(cut_before,vars)){ before->Fill(kbin,weight);}
 
 	kbin =bins.GetBin(discr_var(vars));
 
-	if(kbin>=0){
-			float weight =1;
-			if(!notweighted) weight = vars->mcweight;
-			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,weight);
-	}
+	if(kbin>=0)	if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,weight);
+
 
 return;
 }
@@ -190,6 +192,7 @@ void Efficiency::Eval_Efficiency(){
 	Eff -> Divide(before);
 	Eff ->SetName((basename+"_Eff").c_str());
 	Eff ->SetTitle((basename+" Efficiency").c_str());
+	cout<<"EFFIC CALC "<<basename<<" "<<before->GetEntries()<<" "<<after->GetEntries()<<endl;
 	return;
 }
 

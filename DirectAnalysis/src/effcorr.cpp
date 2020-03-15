@@ -178,22 +178,7 @@ double FitFunc(double *x, double *p){
 }
 
 void EffCorr::ModelWithSpline(){
-/*	std::vector<float> X;
-	std::vector<float> Y;
-		
-	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) if(GlobalCorrection->GetBinError(i+1)>0.2) {
-		Y.push_back( GlobalCorrection->GetBinContent(i+1));
 	
-		if(IsEkinCorrection) X.push_back((ForEffCorr.EkPerMasTOIBins()[i+1]+ForEffCorr.EkPerMasTOIBins()[i])/2);
-		else X.push_back((ForEffCorr.RigTOIBins()[i+1]+ForEffCorr.RigTOIBins()[i])/2);
-	}
-	
-	cout<<"************ CORRECTIONS MODELS: "<< basename<<" ****************"<<endl; 
-	for(int i=0;i<X.size();i++){
-	cout<<i<<" "<<X[i]<<" "<<Y[i]<<endl;
-	}
-	cout<<"****************************************************************"<<endl;
-*/
 	//regularization of histo
 	int nodes = Bins.size()/4+1;
 	double p[nodes];

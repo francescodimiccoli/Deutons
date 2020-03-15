@@ -4,7 +4,7 @@ use warnings;
 print "Listing available result files...\n\n";
 #chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 #chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
-chomp($workdir = "/data1/home/fdimicco/Deutons/DirectAnalysis");
+chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
 chomp (@files = `ls $workdir/AnalysisFiles/1*/Result.root_Results`);

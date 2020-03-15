@@ -11,3 +11,6 @@ lsf
 CodesforAnalysis/CALIBRAZIONI/*
 DSTcern/lsf/*
 DSTcern/Launch/*
+DirectAnalysis/perl/SumScripts/*
+DirectAnalysis/perl/AnalysisScripts/*
+DirectAnalysis/AnalysisFiles/*

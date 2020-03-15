@@ -105,7 +105,6 @@ TH1F * RangeMerger::MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 				if(i>=0&&ResultTOF->GetBinContent(i+1)>0){
 					Merged->SetBinContent(j+1,ResultTOF->GetBinContent(i+1));
 					Merged->SetBinError(j+1,ResultTOF->GetBinError(i+1));
-					std::cout<<"Global BIN: "<<j<<" TOF BIN: "<<GetToFBinP(j)<<std::endl;
 				}
 				continue;
 			}
@@ -114,7 +113,6 @@ TH1F * RangeMerger::MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 				if(i>=0&&ResultNaF->GetBinContent(i+1)>0){
 					Merged->SetBinContent(j+1,ResultNaF->GetBinContent(i+1));
 					Merged->SetBinError(j+1,ResultNaF->GetBinError(i+1));
-					std::cout<<"Global BIN: "<<j<<" NaF BIN: "<<GetNaFBinP(j)<<std::endl;
 				}
 				continue;
 			}
@@ -123,7 +121,6 @@ TH1F * RangeMerger::MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 				if(i>=0&&ResultAgl->GetBinContent(i+1)>0){
 					Merged->SetBinContent(j+1,ResultAgl->GetBinContent(i+1));
 					Merged->SetBinError(j+1,ResultAgl->GetBinError(i+1));
-					std::cout<<"Global BIN: "<<j<<" Agl BIN: "<<GetAglBinP(j)<<std::endl;
 				}
 			}
 		}
@@ -137,14 +134,12 @@ TH1F * RangeMerger::MergeSubDResult_D(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 		TH1F * Merged = new TH1F("MergedRange_RTOI_D","MergedRange_RTOI_D",Global_D.size(),0,Global_D.size());
 		std::cout<<"GLOBAL D SIZE: "<<Global_D.size()<<std::endl;	
 		for(int j =0; j<Global_D.size(); j++){
-			std::cout<<j<<std::endl;
 			int i=0;
 			if(GetToFBinD(j)>=0) {
 				i=GetToFBinD(j);
 				if(i>=0&&ResultTOF->GetBinContent(i+1)>0){
 					Merged->SetBinContent(j+1,ResultTOF->GetBinContent(i+1));
 					Merged->SetBinError(j+1,ResultTOF->GetBinError(i+1));
-					std::cout<<"Global BIN: "<<j<<" TOF BIN: "<<GetToFBinD(j)<<std::endl;
 				}
 				continue;
 			}
@@ -153,17 +148,14 @@ TH1F * RangeMerger::MergeSubDResult_D(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 				if(i>=0&&ResultNaF->GetBinContent(i+1)>0){
 					Merged->SetBinContent(j+1,ResultNaF->GetBinContent(i+1));
 					Merged->SetBinError(j+1,ResultNaF->GetBinError(i+1));
-					std::cout<<"Global BIN: "<<j<<" NaF BIN: "<<GetNaFBinD(j)<<std::endl;
 				}
 				continue;
 			}
-			std::cout<<GetAglBinD(j)<<std::endl;
 			if(GetAglBinD(j)>=0) {
 				i=GetAglBinD(j);
 				if(i>=0&&ResultAgl->GetBinContent(i+1)>0){
 					Merged->SetBinContent(j+1,ResultAgl->GetBinContent(i+1));
 					Merged->SetBinError(j+1,ResultAgl->GetBinError(i+1));
-					std::cout<<"Global BIN: "<<j<<" Agl BIN: "<<GetAglBinD(j)<<std::endl;
 				}
 			}
 		}

@@ -30,6 +30,7 @@ struct TFit {
    TH1F * DataPrim;	
 
 
+
    float wheightP,wheightD,wheightHe;
    TFractionFitter *Tfit;
    int Tfit_outcome;
@@ -104,6 +105,7 @@ class TemplateFIT {
         std::string var;
         std::string cut;
 	std::string cutprimary;
+	std::string cutoff;
 	std::string discr_var;
 
 	std::string basename;
@@ -119,7 +121,7 @@ class TemplateFIT {
 
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,std::string HeContname,Binning Bins, std::string Cut, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=50,float shift=40,TH1F * ExposureTime=0x0){
+	TemplateFIT(std::string Basename,std::string HeContname,Binning Bins, std::string Cut, std::string Cutoff, int Nbins, float Xmin, float Xmax, bool IsRich=false ,int steps=11,float sigma=50,float shift=40,TH1F * ExposureTime=0x0){
 		
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
@@ -144,6 +146,7 @@ class TemplateFIT {
 		basename=Basename;
 		hecontname=HeContname;
 		cut = Cut;
+		cutoff = Cutoff;
 		cutprimary=Cut+"&IsPrimary";
 		bins=Bins;
 		

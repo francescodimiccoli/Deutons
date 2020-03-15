@@ -2,14 +2,15 @@
 #define LATREW_H
 
 #include <TF1.h>
+#include "TH1.h"
 #include "Globals.h"
-#include "BadEventSimulator.h"
+#include "GlobalPaths.h"
 #include "binning.h"
 #include "Livetime.h"
 #include "filesaver.h"
-#include "DBarReader.h"
+//#include "DBarReader.h"
 #include "filesaver.h"
-
+//#include "Variables.hpp"
 
 
 class LatReweighter{
@@ -19,7 +20,8 @@ class LatReweighter{
 	TH1F * HighLat;
 	TH1F * Weights;
 	TH1F * ExposureTime;
-	TH2F * ExposureMatrix;
+	TH1F * Reference;
+	TF1  * WeightModel;	
 	std::string cut;
 	std::string basename;
 	Binning Bins;
@@ -39,18 +41,21 @@ class LatReweighter{
 		HighLat = new TH1F((Basename+"_HighLat").c_str(),(Basename+"_HighLat").c_str(),Nbins,xmin,xmax);
 		Weights = new TH1F((Basename+"_Weights").c_str(),(Basename+"_Weights").c_str(),Nbins,xmin,xmax);
 		ExposureTime = new TH1F ((Basename+"_Weights").c_str(),(Basename+"_Weights").c_str(),Bins.size(),0,Bins.size());
-		ExposureMatrix = new TH2F ((Basename+"_ExpoM").c_str(),(Basename+"_ExpoM").c_str(),Bins.size(),0,Bins.size(),Bins.size(),0,Bins.size());
 		basename = Basename;
 		cut = Cut;
 	};
 
 	LatReweighter(FileSaver FinalHisto,std::string Basename);
-	void LoopOnData(TTree * treeDT, Variables * vars, bool Refill);
+/*	void LoopOnData(TTree * treeDT, Variables * vars, bool Refill);
 	void LoopOnData(DBarReader readerDT, Variables * vars, bool Refill);
 	void LoopOnRTI(DBarReader readerDT, Variables * vars,bool Refill);
-	void Save(FileSaver finalhisto);	
+*/	void Save(FileSaver finalhisto);	
 	void CalculateWeights();
-	float GetWeight( float R);
+	float GetCleaningWeight(float Rmeas, float Rgen, float SF);
+	float GetTimeDepWeight( float R);
+	void ModelWithSpline();
+	void SaveResults(FileSaver finalhisto);	
+
 };
 
 #endif

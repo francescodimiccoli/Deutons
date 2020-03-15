@@ -40,8 +40,8 @@ class Acceptance : public Tool{
 	public:
 	//standard constructor
 	Acceptance(FileSaver File, std::string Basename, std::string Directory,std::string Cut_before,std::string Cut_after,Binning Bins){
-		FullSetEff     = new Efficiency(File, (Basename+"_FullSetMC" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str(),true);
-	        For_Acceptance = new Efficiency(File,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,Cut_before.c_str(),Cut_before.c_str(),true);
+		FullSetEff     = new Efficiency(File, (Basename+"_FullSetMC" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str(),false);
+	        For_Acceptance = new Efficiency(File,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,Cut_before.c_str(),Cut_before.c_str(),false);
       		For_Acceptance->SetNotWeightedMC();
  	//	FullSetEff->SetNotWeightedMC(); // da rimuovere quando avrai vera MC di DEUTONI
 		directory = Directory;
@@ -55,8 +55,8 @@ class Acceptance : public Tool{
 	}
 	//reading constructor
 	Acceptance(FileSaver FileRes, std::string Basename, std::string Directory,Binning Bins){
-		FullSetEff     = new Efficiency(FileRes, (Basename+"_FullSetMC" ).c_str(),Directory,Bins,true);
-	        For_Acceptance = new Efficiency(FileRes,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,true);
+		FullSetEff     = new Efficiency(FileRes, (Basename+"_FullSetMC" ).c_str(),Directory,Bins,false);
+	        For_Acceptance = new Efficiency(FileRes,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,false);
       		For_Acceptance->SetNotWeightedMC();
 	//	FullSetEff->SetNotWeightedMC(); // da rimuovere quando avrai vera MC di DEUTONI
  		directory = Directory;
@@ -93,7 +93,7 @@ class Acceptance : public Tool{
 	void Save();
 	void SaveResults(FileSaver finalhistos);
 	void SetDefaultOutFile(FileSaver FinalHistos);
-	void EvalEffAcc();
+	void EvalEffAcc(int timeindex);
 	TH1F * GetEffAcc() {return EffAcceptance;}
 	TH1F * GetEffAccMC() {return EffAcceptanceMC;}
 	TH1F * GetEffAcc_staterr() {return Acc_StatErr;}

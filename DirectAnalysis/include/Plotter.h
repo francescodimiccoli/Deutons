@@ -28,7 +28,7 @@ class Plotter{
  
 	public:
 	Plotter(FileSaver finalhistos,FileSaver finalresults) {finalHistos = finalhistos; finalResults = finalresults;}
-	void FillAllAnalyses(TChain * chain_RTI, TChain * chainDT,TChain *chainMC,TChain * chainDT_Cpct,TChain *chainMC_Cpct);
+	void FillAllAnalyses(TChain * chain_RTI, TChain * chainDT,TChain *chainMC,TChain * chainDT_Cpct,TChain *chainMC_Cpct,Variables * vars);
 	void BookMassAnalysis();
 	void BookCleaningCutsAnalysis();
 	void BookRichBDTAnalysis();
@@ -43,11 +43,11 @@ class Plotter{
 	void DoAllAnalyses();
 };
 
-void Plotter::FillAllAnalyses(TChain * chain_RTI, TChain * chainDT,TChain *chainMC,TChain * chainDT_Cpct,TChain *chainMC_Cpct){
-//	Booker.FillEverything(DBarReader(chainDT, false,chain_RTI,chainDT_Cpct));
+void Plotter::FillAllAnalyses(TChain * chain_RTI, TChain * chainDT,TChain *chainMC,TChain * chainDT_Cpct,TChain *chainMC_Cpct,Variables * vars){
+//	Booker.FillEverything(DBarReader(chainDT, false,chain_RTI,chainDT_Cpct),vars);
 //	Booker.SaveEverything(finalHistos);
 	
-	BookerMC.FillEverything(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct));
+	BookerMC.FillEverything(DBarReader(chainMC, true ,chain_RTI,chainMC_Cpct),vars);
         BookerMC.SaveEverything(finalHistos);
 }
 
@@ -79,6 +79,9 @@ void Plotter::BookMassAnalysis(){
 
 	plottingfunctions.push_back(DrawMasses);
 }
+
+
+
 
 void Plotter::BookCleaningCutsAnalysis(){
 	Booker.BookSingleScatter("MassTOFvsRupdown",100,0,1,50,1,5,"IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning",GetRupdown,GetRecMassTOF);
@@ -133,21 +136,21 @@ void Plotter::BookRichBDTAnalysis(){
 
 void Plotter::BookBetaResMatrixAnalysis(){
 	
-	BookerMC.BookSingleScatter("BetagenvsBetaMeasTOFP",300,0.3,1,300,0.3,1,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"          ,GetBetaGen,GetBetaTOF,GetBetaTOF);
-        BookerMC.BookSingleScatter("BetagenvsBetaMeasNaFP",300,0.7,1,300,0.7,1,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",GetBetaGen,GetBetaRICH,GetBetaRICH);
-        BookerMC.BookSingleScatter("BetagenvsBetaMeasAglP",300,0.9,1,300,0.9,1,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",GetBetaGen,GetBetaRICH,GetBetaRICH);
-        BookerMC.BookSingleScatter("BetagenvsBetaMeasTOFD",300,0.3,1,300,0.3,1,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"                    ,GetBetaGen,GetBetaTOF,GetBetaTOF);
-        BookerMC.BookSingleScatter("BetagenvsBetaMeasNaFD",300,0.7,1,300,0.7,1,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"          ,GetBetaGen,GetBetaRICH,GetBetaRICH);
-        BookerMC.BookSingleScatter("BetagenvsBetaMeasAglD",300,0.9,1,300,0.9,1,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"          ,GetBetaGen,GetBetaRICH,GetBetaRICH);
+	BookerMC.BookSingleScatter("BetagenvsBetaMeasTOFP",300,0.3,1,300,0.3,1,"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",GetBetaGen,GetBetaTOF,GetBetaTOF);
+        BookerMC.BookSingleScatter("BetagenvsBetaMeasNaFP",300,0.7,1,300,0.7,1,"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF",GetBetaGen,GetBetaRICH,GetBetaRICH);
+        BookerMC.BookSingleScatter("BetagenvsBetaMeasAglP",300,0.9,1,300,0.9,1,"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl",GetBetaGen,GetBetaRICH,GetBetaRICH);
+        BookerMC.BookSingleScatter("BetagenvsBetaMeasTOFD",300,0.3,1,300,0.3,1,"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",GetBetaGen,GetBetaTOF,GetBetaTOF);
+        BookerMC.BookSingleScatter("BetagenvsBetaMeasNaFD",300,0.7,1,300,0.7,1,"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF",GetBetaGen,GetBetaRICH,GetBetaRICH);
+        BookerMC.BookSingleScatter("BetagenvsBetaMeasAglD",300,0.9,1,300,0.9,1,"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl",GetBetaGen,GetBetaRICH,GetBetaRICH);
 
-	BookerMC.BookSingleScatter("BetaSlowvsBetaMeasTOFP",300,0.3,1,300,-0.5,0.5,  "IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"          ,GetBetaTOF,GetBetaSlowTOF,GetBetaSlowTOF);
-        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasNaFP",300,0.7,1,300,-0.05,0.05,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
-        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasAglP",300,0.9,1,300,-0.05,0.05,"IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
-        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasTOFD",300,0.3,1,300,-0.5,0.5,  "IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"                    ,GetBetaTOF,GetBetaSlowTOF,GetBetaSlowTOF);
-        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasNaFD",300,0.7,1,300,-0.05,0.05,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut"          ,GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
-        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasAglD",300,0.9,1,300,-0.05,0.05,"IsPureDMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut"          ,GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
+	BookerMC.BookSingleScatter("BetaSlowvsBetaMeasTOFP",300,0.3,1,300,-0.5,0.5,"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",GetBetaTOF,GetBetaSlowTOF,GetBetaSlowTOF);
+        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasNaFP",300,0.7,1,300,-0.05,0.05,"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF",GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
+        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasAglP",300,0.9,1,300,-0.05,0.05,"IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl",GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
+        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasTOFD",300,0.3,1,300,-0.5,0.5,"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime",GetBetaTOF,GetBetaSlowTOF,GetBetaSlowTOF);
+        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasNaFD",300,0.7,1,300,-0.05,0.05,"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF",GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
+        BookerMC.BookSingleScatter("BetaSlowvsBetaMeasAglD",300,0.9,1,300,-0.05,0.05,"IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl",GetBetaRICH,GetBetaSlowRICH,GetBetaSlowRICH);
 
-	BookerMC.BookSingleScatter("RSlowvsRMeas",1000,0.3,100,300,-3,3,  "IsPurePMC&IsPhysTrig&IsMinimumBias&IsLooseCharge1&IsCleaning&IsGoodTime"          ,GetRigidity,GetRigSlow,GetRigSlow);
+	BookerMC.BookSingleScatter("RSlowvsRMeas",1000,0.3,100,300,-3,3,  "IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime"  ,GetRigidity,GetRigSlow,GetRigSlow);
        
 
 	plottingfunctions.push_back(DrawBetaRes);

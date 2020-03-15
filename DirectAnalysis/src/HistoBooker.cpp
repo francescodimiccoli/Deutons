@@ -36,8 +36,7 @@ SingleScatter::SingleScatter(std::string CollectionName, int nbinsx, float xmin,
 void SingleScatter::FillEventByEventScatter(Variables * vars, float (*var) (Variables * vars), float (*secondvar) (Variables * vars),float (*discr_var) (Variables * vars)){
 	
 	 if(ApplyCuts(cut,vars)){
-        	 float weight=1;
-        	cout<<"ecco"<<endl;
+         	 float weight=1;
 	       if(ApplyCuts("IsMC",vars)) weight = vars->mcweight;
                else weight = vars->PrescaleFactor;
 	       ((TH2F*)Histos[0])->Fill(var(vars),secondvar(vars),weight);
@@ -53,6 +52,7 @@ BinnedHisto::BinnedHisto(std::string CollectionName, Binning Bins,std::string Cu
 	cut  = Cut;
 	bins = Bins;
 }
+
 void BinnedHisto::FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)){
 
 	int kbin;
@@ -170,8 +170,7 @@ void HistoBooker::BookScatterBinCollection(std::string CollectionName, Binning B
 	Histos.push_back(tmp);
         Filler.AddObject2beFilled(tmp,var,discr_var,"",secondvar);
 };
-void HistoBooker::FillEverything(DBarReader reader){
-	Variables * vars = new Variables;	
+void HistoBooker::FillEverything(DBarReader reader, Variables * vars){
 	Filler.LoopOnGeneric(reader,vars);	
 };
 

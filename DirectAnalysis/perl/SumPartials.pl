@@ -37,9 +37,10 @@ print "Creating job files...";
 system("chmod +x $workdir/perl/SumScripts/script$ARGV[0]-$ARGV[1].sh");
 
 
-open(OUT,">","$outdir/$ARGV[0]-$ARGV[1]/Condor_sum.sub");
+open(OUT,">","$workdir/perl/SumScripts/Condor_sum$ARGV[0]-$ARGV[1].sub");
 print OUT "executable	= $workdir/perl/SumScripts/script$ARGV[0]-$ARGV[1].sh\narguments	= \$(ProcId)\noutput	= $workdir/perl/SumScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).out\nerror	= $workdir/perl/SumScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).err\nlog	= $workdir/perl/SumScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).log\n+JobFlavour = \"microcentury\"\nqueue $njobs"; 
 
-
-
-
+close (OUT);
+chdir "$workdir/perl/SumScripts/";
+system("condor_submit Condor_sum$ARGV[0]-$ARGV[1].sub");
+chdir "$workdir/perl/";

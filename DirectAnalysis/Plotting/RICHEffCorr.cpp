@@ -198,6 +198,7 @@ cout<<"****************************** FILES OPENING ****************************
         after  = ""; 
 
 	EffCorr * TriggerEffCorr_HE  = new EffCorr(finalHistos,"TriggerEffCorr_HE" ,"Trigger Eff. Corr",true  ,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * TriggerFullSpan_HE  = new EffCorr(finalHistos,"TriggerFullSpan_HE" ,"Trigger Full Span",true  ,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 	EffCorr * L1PickUpEffCorr_HE = new EffCorr(finalHistos,"L1PickUpEffCorr_HE","L1PickUp Eff. Corr",false,before,after,"IsPrimary",    "IsProtonMC","IsPureDMC","IsPurePMC");
 	EffCorr * GoodQTrack_HE  = new EffCorr(finalHistos,"GoodQTrackEffCorr_HE","GoodQTrack Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 	EffCorr * GoodChi_HE  = new EffCorr(finalHistos,"GoodChiEffCorr_HE","GoodChi Eff. Corr",false,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
@@ -207,12 +208,14 @@ cout<<"****************************** FILES OPENING ****************************
 	EffCorr * GoodLtof_HE  = new EffCorr(finalHistos,"GoodLTOFEffCorr_HE" ,"GoodLtof Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 	EffCorr * GoodUtof_HE  = new EffCorr(finalHistos,"GoodUtofEffCorr_HE" ,"GoodUtof Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 	EffCorr * GoodTime_TOF = new EffCorr(finalHistos,"GoodTimeEffCorr_TOF","GoodTime Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
+	EffCorr * Quality_TOF = new EffCorr(finalHistos,"QualityEffCorr_TOF","Quality TOF Eff. Corr",true,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 	EffCorr * RICHEffCorr_NaF = new EffCorr(finalHistos,"RICHCorrection_NaF","RICH Eff. Corr",true,before,(after+"&IsFromNaF").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 	EffCorr * RICHEffCorr_Agl = new EffCorr(finalHistos,"RICHCorrection_Agl","RICH Eff. Corr",true,before,(after+"&IsFromAgl").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 	EffCorr * RICHQualEffCorr_NaF = new EffCorr(finalHistos,"RICHQualCorrection_NaF","RICH Qual Eff. Corr",true,(before+"&IsFromNaF").c_str(),(after+"&IsFromNaF&RICHBDTCut").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 	EffCorr * RICHQualEffCorr_Agl = new EffCorr(finalHistos,"RICHqualCorrection_Agl","RICH Qual. Eff. Corr",true,(before+"&IsFromAgl").c_str(),(after+"&IsFromAgl&RICHBDTCut").c_str(),"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 
 	DrawCorrection(TriggerEffCorr_HE,Plots,"TriggerEffCorr","HE",0.1,40);
+	DrawCorrection(TriggerFullSpan_HE,Plots,"TriggerFullSpan","HE",0.1,40);
 	DrawCorrection(L1PickUpEffCorr_HE,Plots,"L1PickUpEffCorr","HE",0.1,40);
 	DrawCorrection(TrackerEffCorr_HE,Plots,"TrackerEffCorr","HE",0.1,40);
 	DrawCorrection(GoodChi_HE,Plots,"GoodChi_HE_EffCorr","HE",0.1,40);
@@ -223,6 +226,7 @@ cout<<"****************************** FILES OPENING ****************************
 	DrawCorrection(Good1Track_HE,Plots,"Good1Track_HE_EffCorr","HE",0.1,40);
 	
 	DrawCorrection(GoodTime_TOF,Plots, "GoodTime","TOF",0.1,40);
+	DrawCorrection(Quality_TOF,Plots, "QualityTOF","TOF",0.1,40);
 	DrawCorrection(RICHEffCorr_NaF,Plots,"RICHEffCorr","NaF",0.1,40);
 	DrawCorrection(RICHEffCorr_Agl,Plots,"RICHEffCorr","Agl",0.1,40);
 	DrawCorrection(RICHQualEffCorr_NaF,Plots,"RICHQualEffCorr","NaF",0.1,40);

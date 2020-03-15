@@ -19,6 +19,7 @@
 #include "TLegend.h"
 #include "TRandom3.h"
 #include "../include/Globals.h"
+#include "../include/GlobalPaths.h"
 #include "TKey.h"
 #include "TFractionFitter.h"
 #include "TPaveLabel.h"
@@ -52,6 +53,10 @@ struct TimeResult{
 	TH1F * Mean;
 	TH1F * VariabilityUp;
 	TH1F * VariabilityDw;
+
+	void Scale(float s){Mean->Scale(s); VariabilityUp->Scale(s); VariabilityDw->Scale(s);};
+	void Smooth(){Mean->Smooth(); VariabilityUp->Smooth(); VariabilityDw->Smooth();};
+
 	
 };
 
@@ -298,10 +303,15 @@ void DrawDPRatioEkin(FileSaver Plots, std::vector<FileSaver> Files ){
 		Ratios.push_back( (TH1F*)f->Get("Fluxes/Ratio_Ekin"));
 	}
 	TimeResult Ratio = GetTimeMean(Ratios);
+	Ratio.Mean->Smooth();
+
+	for(int i=start;i<Files.size();i++){
+		PlotTH1FintoGraph(gPad,Global.GetGlobalDBins(),Ratios[i],"Kinetic Energy [GeV/nucl.]", "D/p ratio",1,true,"Psame",0.05,12,0.001,0.1,"",8);
+	}
 
 
-	PlotTH1FintoGraph(gPad,Global.GetGlobalDBins(),Ratio.Mean,"Kinetic Energy [GeV/nucl.]", "D/p ratio",2,true,"Psame",0.05,12,0.001,0.1,"",8);
-	PlotTH1FintoGraph(gPad,Global.GetGlobalDBins(),Ratio.Mean,"Kinetic Energy [GeV/n]","D/p ratio", 2,true,"e4Psame", 0.05,12,0.001,0.1,"",8,true,false,Ratio.VariabilityUp,Ratio.VariabilityDw);
+//PlotTH1FintoGraph(gPad,Global.GetGlobalDBins(),Ratio.Mean,"Kinetic Energy [GeV/nucl.]", "D/p ratio",2,true,"Psame",0.05,12,0.001,0.1,"",8);
+	PlotTH1FintoGraph(gPad,Global.GetGlobalDBins(),Ratio.Mean,"Kinetic Energy [GeV/n]","D/p ratio", 2,true,"e4Psame", 0.05,12,0.001,0.1,"",8,true,false,Ratio.VariabilityDw,Ratio.VariabilityUp);
 
 
         TLegend * leg = (TLegend*) gPad->FindObject("leg");
@@ -321,6 +331,163 @@ void DrawDPRatioEkin(FileSaver Plots, std::vector<FileSaver> Files ){
 
 }
 
+
+void DrawPFluxEkin(FileSaver Plots, std::vector<FileSaver> Files ){
+	TStyle* m_gStyle= new TStyle();;
+	m_gStyle->SetPalette(55);
+
+	string filename2="./database_P.root";
+	TFile * file2 = TFile::Open(filename2.c_str(),"READ");
+
+	std::vector<TGraphAsymmErrors *> P_Graphs;
+	 TList *ExperimentsP = file2->GetListOfKeys();
+        TIter nextP(ExperimentsP);
+        TKey * keyP;
+	TObject * obj;
+
+        while((keyP = (TKey*)nextP())){
+                obj = file2->Get(keyP->GetName());
+                if(obj->InheritsFrom("TGraphAsymmErrors")) P_Graphs.push_back((TGraphAsymmErrors *)obj);
+        }
+
+
+
+	TCanvas *c3 = new TCanvas("P Flux Ekin");
+	c3->cd();	
+	gPad->SetLogx();
+	gPad->SetLogy();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	
+	std::vector<TH1F *> Ratios;
+
+	TH2F * Frame = CreateFrame(gPad,0.01,60,0.01,4000,"Ekin [GeV/nucl.]","Flux [(m^2 sr GeV/nucl.)^{-1}]");	
+
+	Frame->Draw();	
+	for(int i=start;i<Files.size();i++){
+		TFile * f = Files[i].GetFile();
+		Ratios.push_back( (TH1F*)f->Get("Fluxes/PFluxQHE/PFluxQHE_Flux"));
+	}
+	TimeResult Ratio = GetTimeMean(Ratios);
+
+	TLegend * leg =new TLegend(0.8, 0.1,0.95,0.95);
+	leg->SetName("leg");
+        for(uint n=0;n<P_Graphs.size();n++){
+                P_Graphs[n] ->Draw("Psame");
+                P_Graphs[n]->SetMarkerSize(2); 
+                leg->AddEntry(P_Graphs[n],P_Graphs[n]->GetTitle(),"p");
+        }
+
+	leg->SetFillColor(0);
+	leg->SetLineWidth(2);
+	leg->Draw("same");
+	     
+  	Ratio.Scale(0.84);
+	PlotTH1FintoGraph(gPad,PRB,Ratio.Mean,"Kinetic Energy [GeV/nucl.]", "D/p ratio",2,true,"Psame",0.1,60,0.001,4000,"",8);
+	PlotTH1FintoGraph(gPad,PRB,Ratio.Mean,"Kinetic Energy [GeV/n]","D/p ratio", 2,true,"e4Psame", 0.1,60,0.01,4000,"",8,true,false,Ratio.VariabilityUp,Ratio.VariabilityDw);
+
+        Plots.Add(c3);
+        Plots.writeObjsInFolder("Fluxes");
+	
+
+
+}
+
+
+void DrawDFluxEkin(FileSaver Plots, std::vector<FileSaver> Files ){
+	TStyle* m_gStyle= new TStyle();;
+	m_gStyle->SetPalette(55);
+
+	string filename2="./database_D.root";
+	TFile * file2 = TFile::Open(filename2.c_str(),"READ");
+
+	std::vector<TGraphAsymmErrors *> D_Graphs;
+	 TList *ExperimentsD = file2->GetListOfKeys();
+        TIter nextD(ExperimentsD);
+        TKey * keyD;
+	TObject * obj;
+
+        while((keyD = (TKey*)nextD())){
+                obj = file2->Get(keyD->GetName());
+                if(obj->InheritsFrom("TGraphAsymmErrors")) D_Graphs.push_back((TGraphAsymmErrors *)obj);
+        }
+
+
+
+	TCanvas *c3 = new TCanvas("D Flux Ekin");
+	c3->cd();	
+	gPad->SetLogx();
+	gPad->SetLogy();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	
+	std::vector<TH1F *> Ratios;
+
+	TH2F * Frame = CreateFrame(gPad,0.01,30,0.01,300,"Ekin [GeV/nucl.]","Flux [(m^2 sr GeV/nucl.)^{-1}]");	
+
+	Frame->Draw();	
+	for(int i=start;i<Files.size();i++){
+		TFile * f = Files[i].GetFile();
+		Ratios.push_back( (TH1F*)f->Get("Fluxes/MergedRange_D_Ekin"));
+	}
+	TimeResult Ratio = GetTimeMean(Ratios);
+
+	TLegend * leg =new TLegend(0.8, 0.1,0.95,0.95);
+	leg->SetName("leg");
+        for(uint n=0;n<D_Graphs.size();n++){
+                D_Graphs[n] ->Draw("Psame");
+                D_Graphs[n]->SetMarkerSize(2); 
+                leg->AddEntry(D_Graphs[n],D_Graphs[n]->GetTitle(),"p");
+        }
+
+	leg->SetFillColor(0);
+	leg->SetLineWidth(2);
+	leg->Draw("same");
+	     
+//  	Ratio.Scale(2.38);
+	PlotTH1FintoGraph(gPad,Global.GetGlobalDBins(),Ratio.Mean,"Kinetic Energy [GeV/nucl.]", "D/p ratio",4,true,"Psame",0.01,30,0.01,300,"",8);
+	PlotTH1FintoGraph(gPad,Global.GetGlobalDBins(),Ratio.Mean,"Kinetic Energy [GeV/n]","D/p ratio", 4,true,"e4Psame", 0.01,30,0.01,300,"",8,true,false,Ratio.VariabilityUp,Ratio.VariabilityDw);
+
+        Plots.Add(c3);
+        Plots.writeObjsInFolder("Fluxes");
+	
+
+
+}
+
+
+void DrawLatWeights(FileSaver Plots, std::vector<FileSaver> Files ){
+
+	TStyle* z_gStyle= new TStyle();
+	z_gStyle->SetPalette(55);
+	int nColors = z_gStyle->GetNumberOfColors();
+
+
+	std::vector<TF1*> Ratios;
+	for(int i=start;i<Files.size();i++){
+		TFile * f = Files[i].GetFile();
+		Ratios.push_back( (TF1*)f->Get("Spectra/weightmodel"));
+	}
+
+	TCanvas *c3 = new TCanvas("Weights time dep");
+	c3->cd();	
+	gPad->SetLogx();
+	gPad->SetGridx();
+	gPad->SetGridy();
+	TH2F * Frame = CreateFrame(gPad,0,150,0.01,20,"R [GV]","Event Weight");	
+	Frame->Draw();
+
+	for(int i=start;i<Files.size();i++){
+		Ratios[i]->SetLineColor(z_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		Ratios[i]->SetLineWidth(3);
+		Ratios[i]->Draw("same");
+	}
+	Plots.Add(c3);
+        Plots.writeObjsInFolder("LatWeights");
+	
+}
+
+	
 void PlotTimeDep(TVirtualPad * c, float D[], float D_err[], float P[], float P_err[], std::vector <int> Times, std::string title) {
 
 	TGraphErrors * TimeDepD = new TGraphErrors();
@@ -561,11 +728,11 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files,int binselect
 	TH1F * DCountsAgl_rig[Files.size()];
 	TH1F * Merged_D[Files.size()];
 	
-
 	for(int i=start;i<Files.size();i++){
 		DCountsTOF_rig[i]=(TH1F*) FluxesDTOF[i]->GetFlux_rig();
 		DCountsNaF_rig[i]=(TH1F*) FluxesDNaF[i]->GetFlux_rig();
 		DCountsAgl_rig[i]=(TH1F*) FluxesDAgl[i]->GetFlux_rig();
+		cout<<DCountsTOF_rig[i]<<" "<<DCountsNaF_rig[i]<<" "<<DCountsAgl_rig[i]<<endl;
 		Merged_D[i] = Global.MergeSubDResult_D(DCountsTOF_rig[i],DCountsNaF_rig[i],DCountsAgl_rig[i]);
 	}
 
@@ -684,6 +851,30 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files,int binselect
 	}	
 	Plots.Add(c1);
         Plots.writeObjsInFolder("Flux");
+
+	SetUpRigTOIBinning();
+	TCanvas *c5 = new TCanvas("D/P ratio R");
+	c5->cd();	
+
+
+
+	std::vector<TH1F *> Ratios;
+
+	for(int i=start;i<Files.size();i++){
+		Ratios.push_back(Global.MergedRatio(Merged_D[i],Merged_P[i]) );
+	}
+	TimeResult Ratio = GetTimeMean(Ratios);
+
+	//Ratio.Mean->Smooth();
+
+       	PlotTH1FintoGraph(gPad,GlobalRig.GetGlobalPBins(),Ratio.Mean,"Kinetic Energy [GeV/nucl.]", "D/p ratio",2,false,"Psame",0.5,20,0.001,0.1,"",8);
+	PlotTH1FintoGraph(gPad,GlobalRig.GetGlobalPBins(),Ratio.Mean,"Kinetic Energy [GeV/n]","D/p ratio", 2,false,"e4Psame", 0.5,20,0.001,0.1,"",8,true,false,Ratio.VariabilityUp,Ratio.VariabilityDw);
+
+
+	Plots.Add(c5);
+        Plots.writeObjsInFolder("Fluxes");
+
+	
 
 
 	return;
@@ -950,17 +1141,19 @@ int main(int argc, char * argv[]){
 	cout<<"files stored: "<<files.size()<<endl;
 	
 	FileSaver Plots;
-	Plots.setName("/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/Plotting/Time.root");
+	Plots.setName("/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/Plotting/Time_LatW.root");
         cout<<"****************************** BINS ***************************************"<<endl;
 	SetUpTOIBinning();
 	
 	cout<<"**************** plotting *****************"<<endl;
 	//DrawDPRatio(Plots,Files );
 	//DrawPDFluxRatio(Plots,files,Binselected);
-	//DrawMassDistributions(Plots,files,Binselected);
-	DrawTimeEffCorr(Plots,files);
-	DrawDPRatioEkin(Plots,files);
-	
+//	DrawMassDistributions(Plots,files,Binselected);
+	//DrawTimeEffCorr(Plots,files);
+	//DrawDPRatioEkin(Plots,files);
+	//DrawPFluxEkin(Plots,files);
+	//DrawDFluxEkin(Plots,files);
+	DrawLatWeights(Plots,files);
 
 	return 0;
 }

@@ -33,7 +33,7 @@ void Flux::Eval_Flux(){
 
 	// EXPOSURE TIME	
 	if(ExposureTime) FluxEstim -> Divide(ExposureTime);
-	////
+	//
 	//ACCEPTANCE
 	if(Eff_Acceptance) FluxEstim -> Divide(Eff_Acceptance);
 
