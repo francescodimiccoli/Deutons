@@ -385,7 +385,7 @@ int main(int argc, char * argv[]){
 
 
 	
-	DrawParameters(finalHistos,Plots,pathresTOF,Global.GetToFDBins(),"Parameters TOF","Measured #beta","[ps]",0.45,0.9,-100,100,-40,180);
+	DrawParameters(finalHistos,Plots,pathresTOF,Global.GetToFDBins(),"Parameters TOF","Measured #beta","[ps]",0.45,0.9,-200,200,-40,180);
 	DrawParameters(finalHistos,Plots,pathresNaF,Global.GetNaFDBins(),"Parameters NaF","Measured #beta","[rad/10^{4}]",0.7,0.98,-1000,1000,-1000,2000);
 	DrawParameters(finalHistos,Plots,pathresAgl,Global.GetAglDBins(),"Parameters Agl","Measured #beta","[rad/10^{4}]",0.95,1.005,-230,230,-150,400);
 
@@ -432,8 +432,9 @@ void DrawParameters(FileSaver finalHistos,FileSaver Plots,std::string path, Binn
 	TPad * c7_do = new TPad("lowerPad", "lowerPad",0.0,0.0,1.0,0.5);
 	c7_do->Draw();
 
-	PlotTH1FintoGraph(c7_up,bins, ShiftBest, x.c_str(),  ("Mean shift "+x_udm).c_str(),2,false,"ep",xmin,xmax,y1min,y1max,"Best #chi^{2} Shift");
-	PlotTH1FintoGraph(c7_do,bins, SigmaBest, x.c_str(),  ("Additive #sigma "+x_udm).c_str(),4,false,"ep",xmin,xmax,y2min,y2max,"Best #chi^{2} #sigma");
+	
+	PlotTH1FintoGraph(c7,bins, ShiftBest, x.c_str(),  ("Mean shift "+x_udm).c_str(),2,false,"ep",xmin,xmax,y1min,y1max,"Best #chi^{2} Shift",8,false,false);
+//	PlotTH1FintoGraph(c7_do,bins, SigmaBest, x.c_str(),  ("Additive #sigma "+x_udm).c_str(),4,false,"ep",xmin,xmax,y2min,y2max,"Best #chi^{2} #sigma");
 		
 
 	Plots.Add(c7);

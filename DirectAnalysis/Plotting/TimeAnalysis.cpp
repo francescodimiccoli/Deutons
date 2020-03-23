@@ -781,14 +781,21 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files,int binselect
 		for(int i=start;i<Files.size();i++){
 			Bin_D[j][i]= Merged_D[i]->GetBinContent(bin_D[j]+1);
 			Bin_P[j][i]= Merged_P[i]->GetBinContent(bin_P[j]+1);
-			float errD = Merged_DErr[i]->GetBinContent(bin_D[j]+1)/DERRAverage->GetBinContent(bin_D[j]+1);
-			float errP = Merged_PErr[i]->GetBinContent(bin_P[j]+1)/PERRAverage->GetBinContent(bin_P[j]+1);
+		//	float errD = Merged_DErr[i]->GetBinContent(bin_D[j]+1)/DERRAverage->GetBinContent(bin_D[j]+1);
+		//	float errP = Merged_PErr[i]->GetBinContent(bin_P[j]+1)/PERRAverage->GetBinContent(bin_P[j]+1);
+		
+			float errD = Merged_D[i]->GetBinError(bin_D[j]+1);
+			float errP = Merged_P[i]->GetBinError(bin_P[j]+1);
+			
 			float errsubd=0.01;
 			if(Global.GetToFBinD(bin_D[j])>=0) errsubd=0.01;
 			else if (Global.GetNaFBinD(bin_D[j])>=0) errsubd=0.05;
 			else if (Global.GetAglBinD(bin_D[j])>=0) errsubd=0.022;
-			Bin_D_err[j][i]= errD*errsubd*Bin_D[j][i];
-			Bin_P_err[j][i]= errP*errsubd*Bin_P[j][i];
+			//Bin_D_err[j][i]= errD*errsubd*Bin_D[j][i];
+			//Bin_P_err[j][i]= errP*errsubd*Bin_P[j][i];
+			Bin_D_err[j][i]= errD;
+			Bin_P_err[j][i]= errP;
+		
 			cout<<"******************ERROR************** "<<i <<" "<<j<<endl;
 			cout<<errD<<endl;//Bin_D_err[j][i]/Bin_D[j][i]<<endl;
 			cout<<errP<<endl;//Bin_P_err[j][i]/Bin_P[j][i]<<endl;
@@ -879,6 +886,58 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files,int binselect
 
 	return;
 }
+
+
+void DrawParameters(FileSaver Plots, std::vector<FileSaver> Files){
+
+	TH1F * ChiSquareTOF[Files.size()];
+	TH1F * ChiSquareNaF[Files.size()];
+	TH1F * ChiSquareAgl[Files.size()];
+	float bins[5]={2,5,9,11,13};
+
+	for(int i=0;i<Files.size();i++) {
+		ChiSquareTOF[i] = (TH1F*) Files[i].Get("TOFDfits/Fit Results/Best ChiSquare");
+		ChiSquareNaF[i] = (TH1F*) Files[i].Get("NaFDfits/Fit Results/Best ChiSquare");
+		ChiSquareAgl[i] = (TH1F*) Files[i].Get("AglDfits/Fit Results/Best ChiSquare");
+	}	
+	TH1F * TimeChiSquareTOF[5]; 
+	TH1F * TimeChiSquareNaF[5]; 
+	TH1F * TimeChiSquareAgl[5]; 
+
+	for(int j=0;j<5;j++){
+		TimeChiSquareTOF[j] = new TH1F(("TimeChiSquareTOF_"+to_string(j)).c_str(),("TimeChiSquareTOF_"+to_string(j)).c_str(),Files.size(),0,Files.size());
+		TimeChiSquareNaF[j] = new TH1F(("TimeChiSquareNaF_"+to_string(j)).c_str(),("TimeChiSquareNaF_"+to_string(j)).c_str(),Files.size(),0,Files.size());
+		TimeChiSquareAgl[j] = new TH1F(("TimeChiSquareAgl_"+to_string(j)).c_str(),("TimeChiSquareAgl_"+to_string(j)).c_str(),Files.size(),0,Files.size());
+	}
+	for(int j=0;j<5;j++)
+		for(int i=0;i<Files.size();i++) {
+			TimeChiSquareTOF[j]->SetBinContent(i+1,ChiSquareTOF[i]->GetBinContent(bins[j]+1));
+			TimeChiSquareTOF[j]->SetBinError(i+1,0.2);
+			TimeChiSquareNaF[j]->SetBinContent(i+1,ChiSquareNaF[i]->GetBinContent(bins[j]+1));
+			TimeChiSquareNaF[j]->SetBinError(i+1,0.2);
+			TimeChiSquareAgl[j]->SetBinContent(i+1,ChiSquareAgl[i]->GetBinContent(bins[j]+1));
+			TimeChiSquareAgl[j]->SetBinError(i+1,0.2);
+		}	
+
+
+		
+	TCanvas * c1 = new TCanvas("Chi2 TOF");
+	for(int j=4;j>=0;j--)
+		TimeChiSquareTOF[j]->Draw("same");
+	TCanvas * c2 = new TCanvas("Chi2 NaF");
+	for(int j=4;j>=0;j--)
+		TimeChiSquareNaF[j]->Draw("same");
+	TCanvas * c3 = new TCanvas("Chi2 Agl");
+	for(int j=4;j>=0;j--)
+		TimeChiSquareAgl[j]->Draw("same");
+	
+	Plots.Add(c1);
+	Plots.Add(c2);
+	Plots.Add(c3);
+	Plots.writeObjsInFolder("Parameters/FitChi2");
+}
+
+
 
 
 void DrawMassDistributions(FileSaver Plots, std::vector<FileSaver> Files,int binselected[]){
@@ -992,6 +1051,7 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 	std::vector<TSpline3 *> GoodLtof_HE  	     ;
 	std::vector<TSpline3 *> GoodUtof_HE  	     ;
 	std::vector<TSpline3 *> GoodTime_TOF 	     ;
+	std::vector<TSpline3 *> Quality_TOF 	     ;
 	std::vector<TSpline3 *> RICHTSpline3_NaF    ;
 	std::vector<TSpline3 *> RICHTSpline3_Agl    ;
 	std::vector<TSpline3 *> RICHQualTSpline3_NaF;
@@ -1010,6 +1070,8 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 	TSpline3 *	oodLtof_HE   		= (TSpline3 *)file->Get("GoodLtof Eff. Corr/GoodLTOFEffCorr_HE/GoodLTOFEffCorr_HE_CorrSpline");
 	TSpline3 *	oodUtof_HE   		= (TSpline3 *)file->Get("GoodUtof Eff. Corr/GoodUtofEffCorr_HE/GoodUtofEffCorr_HE_CorrSpline");
 	TSpline3 *	oodTime_TOF  		= (TSpline3 *)file->Get("GoodTime Eff. Corr/GoodTimeEffCorr_TOF/GoodTimeEffCorr_TOF_CorrSpline");
+	TSpline3 *	uality_TOF  		= (TSpline3 *)file->Get("Quality TOF Eff. Corr/QualityEffCorr_TOF/QualityEffCorr_TOF_CorrSpline");
+
 	TSpline3 *	ICHTSpline3_NaF  	= (TSpline3 *)file->Get("RICH Eff. Corr/RICHCorrection_NaF/RICHCorrection_NaF_CorrSpline");
 	TSpline3 *	ICHTSpline3_Agl  	= (TSpline3 *)file->Get("RICH Eff. Corr/RICHCorrection_Agl/RICHCorrection_Agl_CorrSpline");
 	TSpline3 *	ICHQualTSpline3_NaF 	= (TSpline3 *)file->Get("RICH Qual Eff. Corr/RICHQualCorrection_NaF/RICHQualCorrection_NaF_CorrSpline");
@@ -1025,6 +1087,7 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 	GoodLtof_HE  	  .push_back(           oodLtof_HE   	  );
 	GoodUtof_HE  	  .push_back(           oodUtof_HE   	  );
 	GoodTime_TOF 	  .push_back(           oodTime_TOF  	  );
+	Quality_TOF       .push_back(           uality_TOF       );
 	RICHTSpline3_NaF    .push_back(          ICHTSpline3_NaF    );
 	RICHTSpline3_Agl    .push_back(          ICHTSpline3_Agl    );
 	RICHQualTSpline3_NaF.push_back(          ICHQualTSpline3_NaF);
@@ -1059,7 +1122,7 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 	
 	
 	TCanvas * c = new TCanvas("TOF");
-	c->Divide(1,3);
+	c->Divide(1,2);
 	c->cd(1);
 	for(int i=0;i<Files.size();i++) {
 		GoodUtof_HE[i]->SetLineWidth(3);
@@ -1074,12 +1137,23 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 		if(i==0) GoodLtof_HE[i]->Draw();
 		else GoodLtof_HE[i]->Draw("same");
 	}
-	c->cd(3);
+
+
+	TCanvas * c0 = new TCanvas("Time Of Flight");
+        c0->Divide(1,2);
+        c0->cd(1);
 	for(int i=0;i<Files.size();i++) {
 		GoodTime_TOF[i]->SetLineWidth(3);
 		GoodTime_TOF[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
 		if(i==0) GoodTime_TOF[i]->Draw();
 		else GoodTime_TOF[i]->Draw("same");
+	}
+	c0->cd(2);
+	for(int i=0;i<Files.size();i++) {
+		Quality_TOF[i]->SetLineWidth(3);
+		Quality_TOF[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		if(i==0) Quality_TOF[i]->Draw();
+		else Quality_TOF[i]->Draw("same");
 	}
 	
 	TCanvas * c1 = new TCanvas("RICH BDT");
@@ -1118,6 +1192,7 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 
 	Plots.Add(f);
 	Plots.Add(c);
+	Plots.Add(c0);
 	Plots.Add(c2);
 	Plots.Add(c1);
 	Plots.writeObjsInFolder("Eff. Corrections");
@@ -1128,6 +1203,7 @@ int main(int argc, char * argv[]){
 
 	std::vector<TFile *> Files;
 	for(int i=0; i< GroupedFiles.size(); i++){
+		cout<<GroupedFiles[i].c_str()<<endl;
 		TFile * f = TFile::Open(GroupedFiles[i].c_str()); 
 		Files.push_back(f);
 	}
@@ -1141,19 +1217,20 @@ int main(int argc, char * argv[]){
 	cout<<"files stored: "<<files.size()<<endl;
 	
 	FileSaver Plots;
-	Plots.setName("/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/Plotting/Time_LatW.root");
+	Plots.setName("/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/Plotting/Time.root");
         cout<<"****************************** BINS ***************************************"<<endl;
 	SetUpTOIBinning();
 	
 	cout<<"**************** plotting *****************"<<endl;
 	//DrawDPRatio(Plots,Files );
-	//DrawPDFluxRatio(Plots,files,Binselected);
-//	DrawMassDistributions(Plots,files,Binselected);
-	//DrawTimeEffCorr(Plots,files);
+	DrawPDFluxRatio(Plots,files,Binselected2);
+	//DrawMassDistributions(Plots,files,Binselected);
+	DrawTimeEffCorr(Plots,files);
 	//DrawDPRatioEkin(Plots,files);
 	//DrawPFluxEkin(Plots,files);
-	//DrawDFluxEkin(Plots,files);
-	DrawLatWeights(Plots,files);
+//	DrawDFluxEkin(Plots,files);
+//	DrawLatWeights(Plots,files);
+	DrawParameters(Plots,files);
 
 	return 0;
 }

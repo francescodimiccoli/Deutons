@@ -29,5 +29,4 @@ std::vector<std::string> GroupedFiles {
 " /afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis//AnalysisFiles/Grouped/1503748800-1513080000.root_Results",
 " /afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis//AnalysisFiles/Grouped/1513080000-1522411200.root_Results",
 " /afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis//AnalysisFiles/Grouped/1522411200-1531915200.root_Results",
-" /afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis//AnalysisFiles/Grouped/1531915200-1541073600.root_Results",
-" /afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis//AnalysisFiles/Grouped/1541073600-1700000000.root_Results"};
+" /afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis//AnalysisFiles/Grouped/1531915200-1541073600.root_Results"};

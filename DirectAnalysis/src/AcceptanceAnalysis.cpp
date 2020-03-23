@@ -58,8 +58,8 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
         after  = "IsDownGoing&IsPhysTrig&IsGoodTrack&IsCharge1Track&L1LooseCharge1&IsGoodChi2"; 
 	EffCorr * GoodChi_HE  = new EffCorr(finalhistos,"GoodChiEffCorr_HE","GoodChi Eff. Corr",false,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");
 
-//        before = "IsDownGoing&IsPhysTrig&IsCompact&IsGoodTOFStandaloneQ1";
-//        after  = "IsDownGoing&IsPhysTrig&IsCompact&IsGoodTOFStandaloneQ1&IsGoodTrack"; 
+//      before = "IsDownGoing&IsPhysTrig&IsCompact&IsGoodTOFStandaloneQ1";
+//      after  = "IsDownGoing&IsPhysTrig&IsCompact&IsGoodTOFStandaloneQ1&IsGoodTrack"; 
 	before = "IsPhysTrig&IsCompact";
         after  = "IsPhysTrig&IsCompact&IsCompact_An"; 
 	EffCorr * TrackerEffCorr_HE = new EffCorr(finalhistos,"TrackerEffCorr_HE","Tracker Eff. Corr",false,before,after,"IsPrimary","IsProtonMC","IsPureDMC","IsPurePMC");

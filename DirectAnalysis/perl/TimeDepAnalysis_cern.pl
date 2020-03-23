@@ -10,8 +10,8 @@ $stop=$ARGV[1];
 
 $launchana=$ARGV[2];
 $launchsum=$ARGV[2]-1;
-$organizeoutput=0;
-$finalanalysis=0;
+$organizeoutput=$ARGV[2]-2;
+$finalanalysis=$ARGV[2]-3;
 
 
 @bartels = (
@@ -135,7 +135,7 @@ for($i=$start;$i<$stop;$i=$i+$grouping){
 
 	if($launchana==1){
 		print $bartels[$i]."\n";
-		system("perl $workdir/perl/Create_condorscripts.pl $bartels[$i] $bartels[$i+$grouping] $njobs 0");
+	#	system("perl $workdir/perl/Create_condorscripts.pl $bartels[$i] $bartels[$i+$grouping] $njobs 0");
 	}
 	if($launchsum==1) {
 		system("perl $workdir/perl/SumPartials.pl $bartels[$i] $bartels[$i+$grouping] 10" );
@@ -159,16 +159,55 @@ if($launchana==1){
 if($organizeoutput==1){
 	open(OUT,">","$workdir/perl/SumScripts/DoAllPartials.sh");
 	for($i=$start;$i<$stop;$i=$i+$grouping){
-		chdir "$outdir/$bartels[$i]-$bartels[$i+$grouping]";
 		print OUT "hadd -f -k $outdir/$bartels[$i]-$bartels[$i+$grouping]/../Grouped/$bartels[$i]-$bartels[$i+$grouping].root  $outdir/$bartels[$i]-$bartels[$i+$grouping]/Partial* &"."\n";
 	}
 	close (OUT);
 }
 
+
 if($finalanalysis==1){
 	for($i=$start;$i<=$stop;$i=$i+$grouping){
-	print "ECCO\n";
-	system("$workdir/Analysis  $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+$grouping].root >> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].out 2> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].err");
+
+		open(OUT,">","$workdir/perl/AnalysisResults/Condor_Ana$bartels[$i]-$bartels[$i+$grouping].sub");
+		print OUT "executable	= $workdir/Analysis \narguments	= $workdir/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListDT12,txt $workdir/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListMC12,txt $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+$grouping].root \noutput	= $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].out\nerror	= $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].err\nlog	= $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].log\n+JobFlavour = \"microcentury\"\nqueue 1"; 
+		close (OUT);
+#	chdir "$workdir/perl/SumScripts/";
+#	system("condor_submit Condor_sum$ARGV[0]-$ARGV[1].sub");
+#	chdir "$workdir/perl/";
 	}
 }
+
+
+
+if($finalanalysis==1){
+
+	open(OUT3,">","$workdir/perl/AnalysisResults/FinalFlux.sh");
+
+	for($i=$start;$i<=$stop;$i=$i+$grouping){
+
+		print OUT3 "$workdir/Analysis $workdir/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListDT0.txt $workdir/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListMC0.txt $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+$grouping].root\n";
+
+		open(OUT,">","$workdir/perl/AnalysisResults/script$bartels[$i]-$bartels[$i+$grouping].sh");
+
+		print OUT "#!/bin/bash
+
+			export WORKDIR=$workdir;
+		source \$WORKDIR/mysetenv.sh;\n";
+
+		print OUT  "\$WORKDIR/Analysis \$WORKDIR/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListDT0.txt \$WORKDIR/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListMC0.txt $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+$grouping].root  > $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].out 2> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].err \n\n";
+
+		close (OUT);
+		
+		system("chmod +x $workdir/perl/AnalysisResults/script$bartels[$i]-$bartels[$i+$grouping].sh");
+
+		open(OUT2,">","$workdir/perl/AnalysisResults/Condor_Ana$bartels[$i]-$bartels[$i+$grouping].sub");
+		print OUT2 "executable	= $workdir/perl/AnalysisResults/script$bartels[$i]-$bartels[$i+$grouping].sh \narguments	= \noutput	= $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].out\nerror	= $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].err\nlog	= $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].log\n+JobFlavour = \"microcentury\"\nqueue 1"; 
+		close (OUT2);
+	chdir "$workdir/perl/AnalysisResults/";
+#	system("condor_submit $workdir/perl/AnalysisResults/Condor_Ana$bartels[$i]-$bartels[$i+$grouping].sub");
+	chdir "$workdir/perl/";
+	}
+	close(OUT3)
+}
+
 

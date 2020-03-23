@@ -78,6 +78,7 @@ struct BestChi {
 			Histo->GetMinimumBin(i,j,z);
 			i--;
 			j--;
+			chimin = Histo->GetBinContent(i+1,j+1);
 		}
 };
 
