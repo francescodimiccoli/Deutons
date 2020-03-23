@@ -39,6 +39,7 @@ void SingleScatter::FillEventByEventScatter(Variables * vars, float (*var) (Vari
          	 float weight=1;
 	       if(ApplyCuts("IsMC",vars)) weight = vars->mcweight;
                else weight = vars->PrescaleFactor;
+	 
 	       ((TH2F*)Histos[0])->Fill(var(vars),secondvar(vars),weight);
         }
 }
@@ -57,7 +58,7 @@ void BinnedHisto::FillEventByEventData(Variables * vars, float (*var) (Variables
 
 	int kbin;
         kbin =  bins.GetBin(var(vars));
-        if(ApplyCuts(cut,vars)&&kbin>0){
+        if(ApplyCuts(cut,vars)&&kbin>=0){
 		float weight=1;
 	       if(ApplyCuts("IsMC",vars)) weight = vars->mcweight;
 	       else weight = vars->PrescaleFactor;		 
@@ -102,7 +103,7 @@ HistoBinCollection::HistoBinCollection(std::string CollectionName, Binning Bins,
 void HistoBinCollection::FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)){
 	int kbin;
 	kbin =  bins.GetBin(discr_var(vars));
-	if(ApplyCuts(cut,vars)&&kbin>0){
+	if(ApplyCuts(cut,vars)&&kbin>=0){
 		float weight=1;
 	       if(ApplyCuts("IsMC",vars)) weight = vars->mcweight;
 	       else weight = vars->PrescaleFactor;		 
@@ -124,7 +125,7 @@ ScatterBinCollection::ScatterBinCollection(std::string CollectionName, Binning B
 void ScatterBinCollection::FillEventByEventScatter(Variables * vars, float (*var) (Variables * vars),float (*secondvar) (Variables * vars),float (*discr_var) (Variables * vars)){
 	int kbin;
 	kbin =  bins.GetBin(discr_var(vars));
-	if(ApplyCuts(cut,vars)&&kbin>0){
+	if(ApplyCuts(cut,vars)&&kbin>=0){
 		 float weight=1;
                if(ApplyCuts("IsMC",vars)) weight = vars->mcweight;
                else weight = vars->PrescaleFactor;

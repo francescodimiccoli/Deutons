@@ -115,7 +115,6 @@ bool LikelihoodCut (Variables * vars){ return ((vars->BetaRICH_new<=0)||(vars->B
 bool RigSafetyCut(Variables * vars) {return vars->R>=0.55;}
 bool RigSafetyCut_D(Variables * vars) {return vars->R>=0.275;}
 
-
 //baseline eff. corr
 bool IsDownGoing    (Variables * vars)    	{ return (vars->beta_SA > 0.3); } 
 bool IsGoodChi2	    (Variables * vars) 		{ return ( ((int)vars->joinCutmask&16)==16);}
@@ -183,7 +182,7 @@ bool IsPositiveCharged (Variables * vars) {return (vars->Beta>0&&vars->R>0);}
 bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->qInner>1.6 && vars->qInner<2.6 &&  vars->qUtof>1.6 && vars->qUtof<2.6 &&  vars->qLtof>1.6 && vars->qLtof<2.6);}
 
 bool IsInLatZone   (Variables * vars, int lat) { return (vars->Latitude>=LatEdges[lat]&&vars->Latitude<LatEdges[lat+1]);}
-bool IsHighEn	(Variables * vars) {return vars->R>30;}
+bool IsHighEn	(Variables * vars) {return vars->R>40;}
 
 
 bool TofBetaSafetyCut (Variables * vars) {return vars->Beta>0.45 && vars->Beta<0.78 ;}

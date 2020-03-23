@@ -131,7 +131,7 @@ class ParallelFiller{
             if(i%(int)FRAC!=0) continue; // WTF ?!
             UpdateProgressBar(i, treeDT->GetEntries());
             vars->ResetVariables();
-	    treeDT->GetEvent(i);
+    treeDT->GetEvent(i);
             //vars->Update();
            for(int nobj=0;nobj<Objects2beFilled.size();nobj++) {
 			if(SecondFillinVariables[nobj]) Objects2beFilled[nobj]->FillEventByEventScatter(vars,FillinVariables[nobj],SecondFillinVariables[nobj],DiscrimVariables[nobj]);
@@ -192,12 +192,11 @@ class ParallelFiller{
 	    if(i%(int)FRAC!=0) continue; // WTF ?!
             UpdateProgressBar(i, reader.GetCompactEntries());
      	    vars->ResetVariables();	
-	    //if(reader.GetTree()>0&&reader.GetTree()->GetNbranches()>2) reader.FillVariables(i,vars);
-            /*else*/ reader.FillCompact(i,vars);
-
+	    reader.FillVariables(i,vars);
+            //reader.FillCompact(i,vars);
 	    vars->Update();
             //vars->PrintCurrentState();
-            for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
+	    for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
                 if(SecondFillinVariables[nobj]) Objects2beFilled[nobj]->FillEventByEventScatter(vars,FillinVariables[nobj],SecondFillinVariables[nobj],DiscrimVariables[nobj]);
 		else Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
         }

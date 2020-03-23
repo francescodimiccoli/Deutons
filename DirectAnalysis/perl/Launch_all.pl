@@ -3,12 +3,12 @@
 use warnings;
 print "Launching codes for Analysis...\n\n";
 #chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
-chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis");
+chomp($workdir = "/data1/home/fdimicco/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 $njobs=$ARGV[2];
-$outdir="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisFiles";
-$outdir_ntuples="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisNTuples";
-$outdir_plots="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/AnalysisFiles";
+$outdir="/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles";
+$outdir_ntuples="/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisNTuples";
+$outdir_plots="/data1/home/fdimicco/Deutons/DirectAnalysis/AnalysisFiles";
 #creating sum scripts and output directory
 
 $offset = 0;
@@ -35,10 +35,10 @@ system ("mkdir $workdir/errs/");
 
 
 $bookntuples=0;
-$bookplots=0;
+$bookplots=1;
 $booklat=0;
 $bookhecont=0;
-$bookflux=1;
+$bookflux=0;
 $bookinfos=0;
 
 
@@ -62,7 +62,7 @@ for($j=0;$j<$njobs;$j++)
 			}
 		
 			if($bookplots){
-				print OUT  "\$WORKDIR/Distributions_Plotter \$WORKDIR/InputFileLists/FileListDT$j.txt \$WORKDIR/InputFileLists/FileListMC$j.txt  $outdir/$ARGV[0]-$ARGV[1]/Plots/Plots$j-$offset.root 1  > \$WORKDIR/logs/log$j.log 2>\$WORKDIR/errs/err$j.err &\n\n";
+				print OUT  "\$WORKDIR/Distributions_Plotter \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT$j.txt \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC$j.txt  $outdir/$ARGV[0]-$ARGV[1]/Plots/Plots$j-$offset.root 1  > \$WORKDIR/logs/log$j.log 2>\$WORKDIR/errs/err$j.err &\n\n";
 	
 			}               
 		
