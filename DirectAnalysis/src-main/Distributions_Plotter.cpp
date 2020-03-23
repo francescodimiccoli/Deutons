@@ -92,7 +92,8 @@ int main(int argc, char * argv[])
 	//Plots.BookMassAnalysis();
         //Plots.BookCleaningCutsAnalysis();
         //Plots.BookRichBDTAnalysis();
-        Plots.BookBetaResMatrixAnalysis();
+        //Plots.BookBetaResMatrixAnalysis();
+	Plots.BookSmearingAnalysis();
 	//Plots.BookAcceptanceMatrixAnalysis();
 
 	//Plots.BookGenAcceptanceAnalysis();	

@@ -7,7 +7,7 @@ print "Printed: Work Dir. = ".$workdir."\n\n";
 
 $datapath  = "/data1/home/data/v6_pass7/data/";
 #$mcP_path  = "/data1/home/data/v6_pass7/MC/pr.pl1ph.021000";
-$mcP_path  = "/data1/home/data/v6_pass7/MC";
+$mcP_path  = "/data1/home/data/v6_pass7/MC/protons";
 $mcD_path  = "";
 $mcHe_path = "";
 $mcT_path  = "";
@@ -102,7 +102,7 @@ for ($n=0;$n<$njobs; $n++)
 
 print "Listing All MC Files..\n";
 chomp (@MC_P = `ls  $mcP_path | grep -v "log" |grep root|  sed s/.root//g`);
-$num_MC_P = scalar(@MC_P)/5;
+$num_MC_P = scalar(@MC_P);
 
 print "Total Files MC P: ".$num_MC_P."\n";
 

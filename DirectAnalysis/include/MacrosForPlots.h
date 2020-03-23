@@ -441,6 +441,66 @@ void DrawMassRes(FileSaver finalHistos,FileSaver finalResults){
 	finalResults.writeObjsInFolder("MassReso/TOF");
 }
 
+void DrawBetaSmear(FileSaver finalHistos,FileSaver finalResults){
+
+   TH1F * htof = (TH1F*)finalHistos.Get("BetaTOF_HE/BetaTOF_HE");
+   TH1F * hnaf = (TH1F*)finalHistos.Get("BetaNaF_HE/BetaNaF_HE");
+   TH1F * hagl = (TH1F*)finalHistos.Get("BetaAgl_HE/BetaAgl_HE");
+   TH1F * htof_mc = (TH1F*)finalHistos.Get("BetaTOF_HE_MC/BetaTOF_HE_MC"); 
+   TH1F * hnaf_mc = (TH1F*)finalHistos.Get("BetaNaF_HE_MC/BetaNaF_HE_MC");
+   TH1F * hagl_mc = (TH1F*)finalHistos.Get("BetaAgl_HE_MC/BetaAgl_HE_MC"); 
+   TH1F * hagl_mc_s = (TH1F*)finalHistos.Get("BetaAgl_HE_MC_Smeared/BetaAgl_HE_MC_Smeared"); 
+   TH1F * htof_mc_s = (TH1F*)finalHistos.Get("BetaTOF_HE_MC_Smeared/BetaTOF_HE_MC_Smeared"); 
+ 
+cout<<htof_mc<<" "<<hnaf_mc<<" "<<hagl_mc<<" "<<hagl_mc_s<<endl;   
+
+  htof_mc->Scale(htof->Integral()/htof_mc->Integral());
+  htof_mc->SetLineColor(2);
+  hnaf_mc->Scale(hnaf->Integral()/hnaf_mc->Integral());
+  hnaf_mc->SetLineColor(2);
+  hagl_mc->Scale(hagl->Integral()/hagl_mc->Integral());
+  hagl_mc->SetLineColor(2);
+
+
+  hagl_mc_s->Scale(hagl->Integral()/hagl_mc_s->Integral());
+  hagl_mc_s->SetLineColor(1);
+  htof_mc_s->Scale(htof->Integral()/htof_mc_s->Integral());
+  htof_mc_s->SetLineColor(1);
+
+
+  TCanvas * c1 = new TCanvas("Beta TOF");
+  c1->cd();
+  gPad->SetLogy();
+  htof->Draw();
+  htof_mc->Draw("same");		
+  htof_mc_s->Draw("same");		
+
+
+  TCanvas * c2 = new TCanvas("Beta NaF");
+  c2->cd();
+  gPad->SetLogy();
+  hnaf->Draw();
+  hnaf_mc->Draw("same");		
+
+  TCanvas * c3 = new TCanvas("Beta Agl");
+  c3->cd();
+  gPad->SetLogy();
+  hagl->Draw();
+  hagl_mc->Draw("same");		
+  hagl_mc->Draw("same");		
+  hagl_mc_s->Draw("same");		
+
+
+	finalResults.Add(c1);
+	finalResults.Add(c2);
+	finalResults.Add(c3);
+	finalResults.writeObjsInFolder("BetaSmear");
+
+
+
+
+}
+
 void DrawBetaRes(FileSaver finalHistos,FileSaver finalResults){
 
    TH2F * h1 = (TH2F*)finalHistos.Get("BetagenvsBetaMeasTOFP/BetagenvsBetaMeasTOFP");

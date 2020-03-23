@@ -762,16 +762,31 @@ float GetSmearedBetaTOF(Variables * vars){
 
 	float time = 1.2/(vars->Beta*3e-4);
 	float sigma = ToFsmearSigma;
-	float smeartime = (ToFsmearShift + Rand->Gaus(0,(float)sigma));
+	float norm = Rand->Rndm();
+	float smeartime;
+	if (norm<=20382/29279.6)
+		smeartime = (ToFsmearShift + Rand->Gaus(0,(float)sigma));
+	else if (norm<=((20382+8880)/29279.6))
+		smeartime = (ToFsmearShift + Rand->Gaus(1.2/(0.001*3e-4),(float)1.72834*sigma));
+	else    smeartime = (ToFsmearShift + Rand->Gaus(1.2/(0.0274*3e-4),(float)3.84716*sigma));
 	time = time + smeartime;
 	return 1.2/(time*3e-4);
 }
 
 
 float GetSmearedBetaRICH(Variables * vars){
-	return vars->BetaRICH_new;
+	float delta = (1/vars->BetaRICH_new - 1/GetBetaGen(vars))/1.36634e-03;
+
+	return 1/(1/GetBetaGen(vars) +1.31694e-03*delta - (1.00035 - 1.00022) );
 }
 
+float GetInverseBetaTOF_Smear(Variables * vars){
+	return 1/GetSmearedBetaTOF(vars);
+} 
+
+float GetInverseBetaRICH_Smear(Variables * vars){
+	return 1/GetSmearedBetaRICH(vars);
+}
 
 
 // Tests of the Variables

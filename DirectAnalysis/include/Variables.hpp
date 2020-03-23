@@ -23,7 +23,7 @@ struct Variables{
     Reweighter reweighter;
     Reweighter reweighterHe;
     LatReweighter * latweighter;
-
+	
    static Double_t ChiXcut_X[];
    static Double_t ChiXcut_Y[];
    static Double_t ChiYcut_X[];
@@ -296,6 +296,11 @@ float GetTofOnTime (Variables * vars);
 
 float GetSmearedBetaTOF(Variables* vars);
 float GetSmearedBetaRICH(Variables* vars);
+
+
+float GetInverseBetaTOF_Smear(Variables * vars);
+
+float GetInverseBetaRICH_Smear(Variables * vars);
 
 
 
