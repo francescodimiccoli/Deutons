@@ -8,7 +8,7 @@ obj/%.o: src/%.cpp
 obj/%.o: src-main/%.cpp 
 	g++ -std=c++11 -o $@ -c -I$(DBARPATH)/include/ -Iinclude $(shell root-config  --cflags) $^                  
 
-Analysis: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/particle.o obj/binning.o obj/Livetime.o  obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/LatReweighter.o obj/InputFileReader.o obj/RangeMerger.o  obj/Efficiency.o obj/TemplateFITbetasmear.o obj/FluxRebin.o obj/effcorr.o  obj/rundb.o obj/Analyzer.o obj/CountExtraction.o  obj/Flux.o obj/AcceptanceAnalysis.o obj/Fluxes.o obj/Acceptance.o obj/TFractionFitter.o obj/Analysis.o 
+Analysis: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/particle.o obj/binning.o obj/Livetime.o  obj/GlobalBinning.o obj/DBarReader.o obj/PlottingFunctions.o obj/Variables.o obj/reweight.o obj/LatReweighter.o obj/InputFileReader.o obj/RangeMerger.o  obj/Efficiency.o obj/TemplateFITbetasmear.o obj/FluxRebin.o obj/effcorr.o  obj/rundb.o obj/Unfolding.o  obj/Analyzer.o obj/CountExtraction.o  obj/Flux.o obj/AcceptanceAnalysis.o obj/Fluxes.o obj/Acceptance.o obj/TFractionFitter.o obj/Analysis.o 
 	g++ $^ $(DBARPATH)/obj/RichBDT.o -o $@ $(shell root-config --libs --cflags) -lTMVA -L$(DBARPATH)/lib/ -lntp -lgsl -lgslcblas 
 
 LatitudeReweighter: obj/GCR_data.o obj/filesaver.o obj/Cuts.o obj/particle.o obj/binning.o obj/Livetime.o  obj/GlobalBinning.o obj/DBarReader.o obj/Variables.o obj/reweight.o obj/LatReweighter.o obj/InputFileReader.o obj/RangeMerger.o  obj/BetaSmearing.o obj/Efficiency.o obj/TemplateFITbetasmear.o obj/FluxRebin.o obj/effcorr.o  obj/rundb.o obj/Analyzer.o obj/CountExtraction.o  obj/Flux.o obj/AcceptanceAnalysis.o obj/Fluxes.o obj/Acceptance.o obj/TFractionFitter.o  obj/LatitudeReweighter.o

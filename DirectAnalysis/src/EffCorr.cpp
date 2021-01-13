@@ -6,7 +6,7 @@
 #include "Acceptance.h"
 
 
-void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults,bool IsTrig=false);
+void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults, float syststat =0; bool IsTrig=false);
 
 void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults, bool refill)
 {
@@ -183,23 +183,23 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 		Cascade7 	->SaveResults(finalresults);
 		Cascade8 	->SaveResults(finalresults);
 		
-		AnalyzeEffCorr(	TriggerEffCorr_HE  , finalhistos, finalresults,true);
+		AnalyzeEffCorr(	TriggerEffCorr_HE  , finalhistos, finalresults,0,true);
 		AnalyzeEffCorr(	L1PickUpEffCorr_HE , finalhistos, finalresults);
 		AnalyzeEffCorr(	TrackerEffCorr_HE , finalhistos, finalresults);
 		AnalyzeEffCorr(	StatusL1Check_HE , finalhistos, finalresults);
-		AnalyzeEffCorr(	GoodChi_HE  , finalhistos, finalresults);  
-		AnalyzeEffCorr(	GoodUtof_HE , finalhistos, finalresults);
-		AnalyzeEffCorr(	GoodLtof_HE  , finalhistos, finalresults);
-		AnalyzeEffCorr(	GoodQTrack_HE , finalhistos, finalresults);
-		AnalyzeEffCorr(	Good1Track_HE , finalhistos, finalresults);
-		AnalyzeEffCorr(	GoodTime_TOF , finalhistos, finalresults);
-		AnalyzeEffCorr(	RICHEffCorr_NaF , finalhistos, finalresults);
+		AnalyzeEffCorr(	GoodChi_HE  , finalhistos, finalresults,0.0001636);  
+		AnalyzeEffCorr(	GoodUtof_HE , finalhistos, finalresults,0.001125);
+		AnalyzeEffCorr(	GoodLtof_HE  , finalhistos, finalresults,0.002038);
+		AnalyzeEffCorr(	GoodQTrack_HE , finalhistos, finalresults,0.0001782);
+		AnalyzeEffCorr(	Good1Track_HE , finalhistos, finalresults,0.001118);
+		AnalyzeEffCorr(	GoodTime_TOF , finalhistos, finalresults,0.003253);
+		AnalyzeEffCorr(	RICHEffCorr_NaF , finalhistos, finalresults,);
 		AnalyzeEffCorr(	RICHEffCorr_Agl , finalhistos, finalresults);
 		AnalyzeEffCorr(	RICHQualEffCorr_NaF , finalhistos, finalresults);
 		AnalyzeEffCorr(	RICHQualEffCorr_Agl , finalhistos, finalresults);
 
 		Acceptance_PTOF 	->  EvalEffAcc();
-	        Acceptance_PNaF 	->  EvalEffAcc();
+	        Acceptance_PNaF 	->  EvalEffAcc();:w
                 Acceptance_PAgl 	->  EvalEffAcc();
 		
 		Acceptance_PTOF 	->SaveResults(finalresults);
@@ -211,8 +211,9 @@ void Analyzer::BookEffCorrAnalysis(FileSaver finalhistos, FileSaver finalresults
 }
 
 
-void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults, bool IsTrig){
+void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults, float syststat, bool IsTrig){
 	if(IsTrig) Correction   -> SetAsTrigEffCorr();
+	Correction   -> Set_SystStat(syststat);
 	Correction   -> Eval_Efficiencies();
 	Correction   -> Eval_Corrections();
 	Correction   -> SaveResults(finalresults);

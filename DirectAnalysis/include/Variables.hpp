@@ -92,7 +92,7 @@ struct Variables{
     float exthit_closest_q;
     
     // Track
-    float      R_pre;  // ?
+    float      RInner;  // ?
     float      Rup;
     float      Rdown;
     float      R;
@@ -102,6 +102,8 @@ struct Variables{
     float      Chisquare_L1;
     float      Chisquare_y;
     float      Chisquare_L1_y;
+    float      Chisquare_Inner;
+    float      Chisquare_Inner_y;
     int        hitbits;
     int 	patty;
     int      FiducialVolume;	 	    
@@ -112,6 +114,7 @@ struct Variables{
     float      qL2;
     float      qL1InnerNoL2;	   
     float      qL1Status;
+    float      qL1Status_SA;
     float      qL2Status;
     float      qInner;
 
@@ -202,6 +205,8 @@ struct Variables{
     float  nTrTracks;
     float  sumclsn; 
 
+    bool is_compact;	 
+
     TMVA::Reader *readerTOF;
     TMVA::Reader *readerNaF;
     TMVA::Reader *readerAgl;
@@ -252,6 +257,7 @@ float GetNegRecMassTOF	 (Variables * vars);
 float GetNegRecMassRICH  (Variables * vars);
 
 float GetRigidity (Variables * vars);
+float GetRigidityInner (Variables * vars);
 float GetRigiditySecondTrack (Variables * vars);
 
 

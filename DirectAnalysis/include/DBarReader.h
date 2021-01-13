@@ -33,6 +33,7 @@ private:
     void Init();
     UInt_t getPackedLayers_1to4();
     bool minTOF();
+    bool minTOF_Cpct();
     bool goldenTOF();
     int RICHmaskConverter();
     bool goldenTOF_Cpct();

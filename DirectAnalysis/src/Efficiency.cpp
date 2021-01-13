@@ -141,19 +141,21 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 	float weight =1;
 	if(!notweighted){ 
 		weight = vars->mcweight;
-		if(bins.IsUsingBetaEdges()) weight *= vars->GetCutoffCleaningWeight(GetRFromBeta(bins.getParticle().getMass(),var(vars)),vars->Momento_gen,BetacutoffCut);
-		else weight *= vars->GetCutoffCleaningWeight(vars->R,vars->Momento_gen,RcutoffCut);
+		//if(bins.IsUsingBetaEdges()) weight *= vars->GetCutoffCleaningWeight(GetRFromBeta(bins.getParticle().getMass(),var(vars)),vars->Momento_gen,BetacutoffCut);
+		//else weight *= vars->GetCutoffCleaningWeight(vars->RInner,vars->Momento_gen,RcutoffCut);
 		weight *= vars->GetTimeDepWeight(vars->Momento_gen);				      
 	}
-		
-	if(kbin>=0) if(ApplyCuts(cut_before,vars)){ before->Fill(kbin,weight);}
+	else {
+		if(((int)vars->joinCutmask&1)!=1 &&  (((int)vars->joinCutmask&4)==4)) weight = 1/100.;	
+	}		
+	if(kbin>=0) if(ApplyCuts(cut_before,vars)){before->Fill(kbin,weight);}
 
 	kbin =bins.GetBin(discr_var(vars));
 
 	if(kbin>=0)	if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,weight);
 
 
-return;
+	return;
 }
 
 
@@ -162,6 +164,11 @@ void Efficiency::FillEventByEventData(Variables * vars, float (*var) (Variables 
 	if(!ApplyCuts("IsData",vars)) return;
 	int kbin =bins.GetBin(discr_var(vars));
 	if(kbin>=0){
+		//se la richiesta di essere primario è attiva, escludo gli eventi con cutoff intra-bin
+		/*if(cut_before.find("Primary")!=std::string::npos){
+			if(bins.IsUsingBetaEdges()) { if(BetacutoffCut * vars->Rcutoff_IGRFRTI > bins.RigBin(kbin)) return; }
+			else { if(RcutoffCut * vars->Rcutoff_IGRFRTI > bins.RigBin(kbin)) return;}
+		}*/
 		if(after->GetNbinsY()==1){
 			if(ApplyCuts(cut_before,vars)) before->Fill(kbin,vars->PrescaleFactor);
 			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,vars->PrescaleFactor);

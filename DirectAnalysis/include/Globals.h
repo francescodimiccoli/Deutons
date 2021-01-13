@@ -50,6 +50,9 @@ extern Binning ForEffCorr_D;
 
 extern Binning ForCutoff;
 
+extern float con_min;
+extern float con_max;
+
 //resolution binning
 extern RangeMerger GlobalRig;
 
@@ -69,6 +72,17 @@ void SetUpUsualBinning();
 void SetUpEffCorrBinning();
 void SetUpTOIBinning();
 void SetUpRigTOIBinning();
+
+//unfolding binning
+extern Binning UnfoldingToF;
+extern Binning UnfoldingNaF;
+extern Binning UnfoldingAgl;
+
+extern Binning UnfoldingToF_D;
+extern Binning UnfoldingNaF_D;
+extern Binning UnfoldingAgl_D;
+
+
 
 int FindTimeIndex(std::string input);
 #endif

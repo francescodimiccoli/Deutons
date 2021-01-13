@@ -2,7 +2,7 @@
 
 use warnings;
 
-$njobs=200;
+$njobs=600;
 $grouping = 4;
 
 $start=$ARGV[0];
@@ -135,7 +135,7 @@ for($i=$start;$i<$stop;$i=$i+$grouping){
 
 	if($launchana==1){
 		print $bartels[$i]."\n";
-	#	system("perl $workdir/perl/Create_condorscripts.pl $bartels[$i] $bartels[$i+$grouping] $njobs 0");
+		system("perl $workdir/perl/Create_condorscripts.pl $bartels[$i] $bartels[$i+$grouping] $njobs 0");
 	}
 	if($launchsum==1) {
 		system("perl $workdir/perl/SumPartials.pl $bartels[$i] $bartels[$i+$grouping] 10" );
@@ -151,6 +151,7 @@ if($launchana==1){
 		
 	for($i=$start;$i<$stop;$i=$i+$grouping){
 		#chdir "$outdir/$bartels[$i]-$bartels[$i+$grouping]/Counts";
+		system("mkdir $outdir/$bartels[$i]-$bartels[$i+$grouping]");
 		system("condor_submit $workdir/perl/AnalysisScripts/Condor_script$bartels[$i]-$bartels[$i+$grouping].sub");
 	}	
 }
@@ -204,7 +205,7 @@ if($finalanalysis==1){
 		print OUT2 "executable	= $workdir/perl/AnalysisResults/script$bartels[$i]-$bartels[$i+$grouping].sh \narguments	= \noutput	= $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].out\nerror	= $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].err\nlog	= $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].log\n+JobFlavour = \"microcentury\"\nqueue 1"; 
 		close (OUT2);
 	chdir "$workdir/perl/AnalysisResults/";
-#	system("condor_submit $workdir/perl/AnalysisResults/Condor_Ana$bartels[$i]-$bartels[$i+$grouping].sub");
+	system("condor_submit $workdir/perl/AnalysisResults/Condor_Ana$bartels[$i]-$bartels[$i+$grouping].sub");
 	chdir "$workdir/perl/";
 	}
 	close(OUT3)

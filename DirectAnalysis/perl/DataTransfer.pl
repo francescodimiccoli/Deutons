@@ -5,8 +5,8 @@ chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 #chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
-$datapath  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/full/Be.B1200/be7.pl1.l1.48000.4_00";
-#$datapath = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/neg/ISS.B1130/pass7/";
+#$datapath  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/full/Be.B1200/be7.pl1.l1.48000.4_00";
+$datapath = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/neg/ISS.B1130/pass7/";
 
 $out_path  = "/eos/ams/group/dbar/TrentoNTuples/v6_pass7/data";
 
@@ -50,10 +50,11 @@ for ($n=0;$n<$njobs; $n++)
 	print OUT "#!/bin/bash
 
 			export WORKDIR=$workdir;
-			source /cvmfs/sft.cern.ch/lcg/views/LCG_88/x86_64-slc6-gcc49-opt/setup.sh;\n";
+			source \$WORKDIR/mysetenv.sh;\n";
 
 	for ($j=($num_rootuple)/$njobs*$n ; $j<($num_rootuple)/$njobs*($n+1) ; $j++){
-	print OUT "scp $datapath/$rootuple[$j].root fdimicco\@ams.tifpa.infn.it:/data1/home/data/v6_pass7/MC/be7.pl1.l1.48000.4_00\n";
+#		print OUT "root -q -b /afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/perl/filtertree.C\\(\\\"$datapath/$rootuple[$j].root\\\",\\\"/eos/ams/group/dbar/TrentoNTuples/FilteredQ2/$rootuple[$j].root\\\",\\\"Event\\\",\\\"q_inn\\\[0\\\]\\\",\\\"2.50\\\"\\);\n";
+		print OUT "scp /eos/ams/group/dbar/TrentoNTuples/FilteredQ2/$rootuple[$j].root fdimicco\@ams.tifpa.infn.it:/data1/home/data/prova\n";
 	}
 
 }

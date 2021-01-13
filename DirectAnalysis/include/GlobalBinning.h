@@ -33,6 +33,14 @@ Binning AglPB(proton);
 Binning DRB(deuton);
 Binning PRB(proton);
 
+Binning UnfoldingToF(proton);
+Binning UnfoldingNaF(proton);
+Binning UnfoldingAgl(proton);
+
+Binning UnfoldingToF_D(proton);
+Binning UnfoldingNaF_D(proton);
+Binning UnfoldingAgl_D(proton);
+
 
 //resolution binning
 Binning ToFResB(deuton);

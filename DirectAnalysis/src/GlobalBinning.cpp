@@ -9,7 +9,7 @@ int Timebeg;
 float FRAC =1;
 int OFFSET =0;
 
-int nbinsr=43;
+int nbinsr=44;
 int nbinsToF=18;
 int nbinsNaF=18;
 int nbinsAgl=18;
@@ -18,9 +18,10 @@ float ToFsmearSigma= 79.8;
 float ToFsmearShift= -1.5;
 
 float RcutoffCut = 1.2;
-float BetacutoffCut = 1.08;
+float BetacutoffCut = 1.2;
 
-
+float con_min=0.4;
+float con_max=1.4;
 
 TRandom3 * Rand= new TRandom3(time(0));
 
@@ -33,6 +34,15 @@ Binning ForEffCorr_D(deuton);
 Binning HefragmToF(deuton);
 Binning HefragmNaF(deuton);
 Binning HefragmAgl(deuton);
+
+
+Binning UnfoldingToF(proton);
+Binning UnfoldingNaF(proton);
+Binning UnfoldingAgl(proton);
+
+Binning UnfoldingToF_D(deuton);
+Binning UnfoldingNaF_D(deuton);
+Binning UnfoldingAgl_D(deuton);
 
 	
 Binning DRB(deuton);
@@ -67,33 +77,56 @@ void SetBins(){
 	HefragmNaF.Reset();
 	HefragmAgl.Reset();
 	ForCutoff.Reset();
-
+	UnfoldingToF.Reset();
+	UnfoldingNaF.Reset();
+	UnfoldingAgl.Reset();
+	UnfoldingToF_D.Reset();
+	UnfoldingNaF_D.Reset();
+	UnfoldingAgl_D.Reset();
+	
 	cout<<"H.E. bins"<<endl;
-	DRB.setBinsFromRigidity(nbinsr, 1, 30,ResponseTOF,0.00347548,5.8474); 
-	PRB.setBinsFromRigidity(nbinsr, 1, 30,ResponseTOF,0.00347548,5.8474);
+	DRB.setBinsFromRDatacard ((workdir+"/bindatacard_PMIT.data").c_str(), 0.1, 0.9999999 ,ResponseTOF,0.00347548,5.8474); 
+	PRB.setBinsFromRDatacard ((workdir+"/bindatacard_PMIT.data").c_str(), 0.1, 0.9999999 ,ResponseTOF,0.00347548,5.8474);
 	ForAcceptance.setBinsFromRigidity(3*nbinsr,0.5,1250,ResponseTOF,0.00347548,5.8474);
 
 	cout<<"Global Bins"<<endl;
-	Global.setBinsFromRDatacard((workdir+"/bindatacard_mod.data").c_str(),ResponseTOF,ResponseNaF,ResponseAgl);
-	GlobalRig.setBinsFromRDatacard((workdir+"/bindatacard_mod.data").c_str(),ResponseTOF,ResponseNaF,ResponseAgl);
+	Global.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(),ResponseTOF,ResponseNaF,ResponseAgl);
+	GlobalRig.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(),ResponseTOF,ResponseNaF,ResponseAgl);
 	
 	cout<<"TOF bins"<<endl;
 	float ekmin=0.1, ekmax=0.82;
 	float betamin=0.55; float betamax=0.853;
 	HefragmToF.setBinsFromEkPerMass (4,0.15,0.504,ResponseTOF,0.00347548,5.8474);
+	UnfoldingToF.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.555, 0.91 ,ResponseTOF,0.00347548,5.8474);
+	UnfoldingToF_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.555, 0.91 ,ResponseTOF,0.00347548,5.8474);
+
 
 	cout<<"NaF bins"<<endl;
 	betamin=0.85, betamax=0.977;
 	HefragmNaF.setBinsFromEkPerMass (1,1.5,3,ResponseNaF,0.00347548,5.8474);
+//	UnfoldingNaF.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.813, 0.9878 ,ResponseNaF,0.00347548,5.8474);
+//	UnfoldingNaF_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.813, 0.9878 ,ResponseNaF,0.00347548,5.8474);
+	UnfoldingNaF.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.75, 0.9878 ,ResponseNaF,0.00347548,5.8474);
+	UnfoldingNaF_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.75, 0.9878 ,ResponseNaF,0.00347548,5.8474);
+
 
 
 	cout<<"Agl bins"<<endl;
 	betamin=0.97, betamax=0.995;
 	HefragmAgl.setBinsFromEkPerMass (2,2.6,11.9,ResponseAgl,0.00347548,5.8474);
+//	UnfoldingAgl.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.953,0.9977 ,ResponseNaF,0.00347548,5.8474);
+//	UnfoldingAgl_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.953,0.9977 ,ResponseNaF,0.00347548,5.8474);
+	UnfoldingAgl.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.945,0.9977 ,ResponseNaF,0.00347548,5.8474);
+	UnfoldingAgl_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.945,0.9977 ,ResponseNaF,0.00347548,5.8474);
+
+
+
 
 	ForCutoff.setBinsFromRigidity(100,0.5,50,ResponseTOF,0.00347548,5.8474);
 	ForCutoff.UseREdges();
-		
+
+	cout<<"**H.E.**"<<endl;
+	PRB.Print();
 	cout<<"**TOF**"<<endl;
 	GlobalRig.GetToFPBins().Print();
 	GlobalRig.GetToFDBins().Print();
@@ -113,7 +146,17 @@ void SetBins(){
 	GlobalRig.GetGlobalPBins().Print();
 	GlobalRig.GetGlobalDBins().Print();
 
+	cout<<"*** For Unfolding ***"<<endl;
 
+	cout<<"**TOF**"<<endl;
+	UnfoldingToF.Print();
+	
+	cout<<"**NaF**"<<endl;
+	UnfoldingNaF.Print();
+	
+	cout<<"**Agl**"<<endl;
+	UnfoldingAgl.Print();
+	
 	return;
 }
 

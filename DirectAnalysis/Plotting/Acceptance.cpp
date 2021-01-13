@@ -85,7 +85,7 @@ int main(int argc, char * argv[]){
 
 	//for(int i=0;i<8;i++) Cascadehistos[i]->Divide(Cascadehistos[0]);
 
-	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[0],"Kinetic Energy [GeV/n.]", "Efficiency",1,true,"same",0.1,50,5e-4,1.1,"MinimumBias",8);
+/*	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[0],"Kinetic Energy [GeV/n.]", "Efficiency",1,true,"same",0.1,50,5e-4,1.1,"MinimumBias",8);
 	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[1],"Kinetic Energy [GeV/n.]", "Efficiency",2,true,"same",0.1,50,5e-4,1.1,"LooseQ1",8);
 	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[2],"Kinetic Energy [GeV/n.]", "Efficiency",3,true,"same",0.1,50,5e-4,1.1,"Cleaning",8);
 	PlotTH1FintoGraph(gPad,PRB, (TH1F*)Cascadehistos[3],"Kinetic Energy [GeV/n.]", "Efficiency",4,true,"same",0.1,50,5e-4,1.1,"Good Time",8);
@@ -96,7 +96,7 @@ int main(int argc, char * argv[]){
 
 	Plots.Add(c1);
 	Plots.writeObjsInFolder("Efficiency Cascade");
-
+*/
 	//Acceptance
 	TCanvas * c2 = new TCanvas("Effective Acceptance Ekin"); 
         c2->SetCanvasSize(2000,1500);

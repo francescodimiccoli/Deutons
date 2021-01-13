@@ -22,7 +22,9 @@ class Analyzer{
 	TChain * chainDT_Cpct;  
         TChain * chainMC_Cpct;  
 	int timeindex=0;
-	
+	std::string filelistMC;	
+	std::string filelistDT;	
+	ParallelFiller<Acceptance *> FillerAcc;
 	ParallelFiller<Tool *> Filler;
 	ParallelFiller<Flux *> Filler_RTI;
 	std::vector<ComputingFunction> ComputingFunctions;	
@@ -36,6 +38,9 @@ class Analyzer{
 		chainDT_Cpct    = InputFileReader(INPUT1.c_str(),"Compact");
 		chainMC_Cpct    = InputFileReader(INPUT2.c_str(),"Compact");
 		timeindex = FindTimeIndex(INPUT1);
+		filelistMC = INPUT2.c_str();
+		filelistDT = INPUT1.c_str();
+
 	};
 	bool CheckFile() {return check_file;}
 	void FillAll();

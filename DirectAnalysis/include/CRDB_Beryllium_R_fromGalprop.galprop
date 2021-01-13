@@ -1,0 +1,110 @@
+# Data export from the Cosmic-Ray database (http://lpsc.in2p3.fr/crdb)
+# Please cite Maurin, Melot, Taillet, arXiv:1302.5525
+# Date: 2016/06/08
+# Format: GALPROP code (see at the bottom of the file)
+#
+  Ref.  experiment    units              value        Energy        value error                  Z.A sec   |     Z.A pri    [comments]
+X      Y              name   <E>   low    high number    -        +
+==================================================================================================================================== 
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  1.9  1.9  2.15   1.343  1.343  1.343  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  2.1  2.1  2.40   1.343  1.343  1.343  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  2.4  2.4  2.67   1.268  1.268  1.268  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  2.6  2.6  2.97   1.205  1.205  1.205  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  2.9  2.9  3.29   1.128  1.128  1.128  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  3.2  3.2  3.64   1.003  1.003  1.003  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  3.6  3.6  4.02   8.879  8.879  8.879  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  4.0  4.0  4.43   7.661  7.661  7.661  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  4.4  4.4  4.88   6.578  6.578  6.578  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  4.8  4.8  5.37   5.613  5.613  5.613  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  5.3  5.3  5.90   4.661  4.661  4.661  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  5.9  5.9  6.47   3.879  3.879  3.879  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  6.4  6.4  7.09   3.190  3.190  3.190  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  7.0  7.0  7.76   2.597  2.597  2.597  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  7.7  7.7  8.48   2.080  2.080  2.080  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  8.4  8.4  9.26   1.704  1.704  1.704  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  9.2  9.2  10.1   1.381  1.381  1.381  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  10.  10.  11.0   1.108  1.108  1.108  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  11.  11.  12.0   8.755  8.755  8.755  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  12.  12.  13.0   7.209  7.209  7.209  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  13.  13.  14.1   5.778  5.778  5.778  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  14.  14.  15.3   4.626  4.626  4.626  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  15.  15.  16.6   3.717  3.717  3.717  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  16.  16.  18.0   3.030  3.030  3.030  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  18.  18.  19.5   2.385  2.385  2.385  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  19.  19.  21.1   1.932  1.932  1.932  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  21.  21.  22.8   1.560  1.560  1.560  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  22.  22.  24.7   1.230  1.230  1.230  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  24.  24.  26.7   9.664  9.664  9.664  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  26.  26.  28.8   7.775  7.775  7.775  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  28.  28.  31.1   6.284  6.284  6.284  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  31.  31.  33.5   5.114  5.114  5.114  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  33.  33.  36.1   4.045  4.045  4.045  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  36.  36.  38.9   3.259  3.259  3.259  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  38.  38.  41.9   2.608  2.608  2.608  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  41.  41.  45.1   2.035  2.035  2.035  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  45.  45.  48.5   1.670  1.670  1.670  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  48.  48.  52.2   1.321  1.321  1.321  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  52.  52.  56.1   1.057  1.057  1.057  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  56.  56.  60.3   8.505  8.505  8.505  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  60.  60.  64.8   6.925  6.925  6.925  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  64.  64.  69.7   5.271  5.271  5.271  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  69.  69.  74.9   4.422  4.422  4.422  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  74.  74.  80.5   3.349  3.349  3.349  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  80.  80.  86.5   2.813  2.813  2.813  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  86.  86.  93.0   2.365  2.365  2.365  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  93.  93.  100    1.826  1.826  1.826  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  100  100  108    1.402  1.402  1.402  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  108  108  116    1.130  1.130  1.130  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  116  116  125    8.855  8.855  8.855  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  125  125  135    6.307  6.307  6.307  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  135  135  147    5.607  5.607  5.607  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  147  147  160    3.874  3.874  3.874  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  160  160  175    3.308  3.308  3.308  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  175  175  192    2.152  2.152  2.152  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  192  192  211    1.595  1.595  1.595  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  211  211  233    1.443  1.443  1.443  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  233  233  259    1.015  1.015  1.015  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  259  259  291    7.463  7.463  7.463  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  291  291  330    4.781  4.781  4.781  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  330  330  379    3.076  3.076  3.076  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  379  379  441    2.394  2.394  2.394  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  441  441  525    1.231  1.231  1.231  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  525  525  660    7.740  7.740  7.740  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  660  660  880    3.603  3.603  3.603  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  880  880  1300   1.250  1.250  1.250  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+  Ag15 AMS02(2011/06-2013/11)                        GeV 1/m2/sr/GeV flux  1300 1300 3300   0.140  0.140  0.140  a 0.0 0.0 0.0         | 1.-1 0.0 0.0        H                                   
+#---------------------------------------------------------------------------------------------------------------------------------------------
+# =====================
+# Explanation of format
+# =====================
+# c++ software to read and use this data is available from the author.
+#
+# The columns are aligned but the reading routines allow for some flexibility - it is sufficient to use blanks to separate horizontal entries
+# The '#' sign indicates a comment and is ignored
+#
+#  Ref.  experiment    units              value        Energy        value         error                  Z.A sec   |     Z.A pri    [comments]
+#                    X      Y              name   <E>   low    high    number    -        +    
+#====================================================================================================================================
+# Ag02  AMS01     GeV  1/m2/sr/MeV       flux   0.265  0.22   0.31    154.e-2 13.4e-2  0.0   a    0.00  0.00   0.0 | 1.01  0.0   0.0 Table 4.8 linear sum errors
+# ACEW  CRIS      MeV  1/cm2/sr/MeV      ratio 188.0 114.   310.      4.22e-2 0.36e-2  0.0   a   13.26  0.00   0.0 |13.-1  0.0   0.0
+# |     |         |                      |      |      |     |        |      |         |     |   |                 |                 |
+# | Reference key (4 characters) from which data was taken,  as in table at end
+#       | Experiment name (or acronym to distinguish different results from same experiment)
+#                 | units  (energy per nucleon) (MeV,GeV)
+#                      | units of flux (cm2,m2/MeV,GeV)
+#                                        | type of measurement: flux (for spectra e.g. for elements) or ratio (e.g. for B/C)
+#                                               | mean energy as given by authors or computed from low,high
+#                                                      | low energy of range
+#                                                            | high energy of range
+#                                                                     | flux or ratio value
+#                                                                             | error bar -
+#                                                                                       |error bar + (if 0.0 assumed symmetrical)
+#                                                                                            | type of measurment: a=absolute, r=ratio 
+#                                                                                                | secondary Z.A if ratio: up to 3 values to be combined.
+#                                                                                                  A=-1 means all A for given Z e.g. 13.-1=Al elemental
+#                                                                                                                  | primary Z.A if ratio, or isotope Z.A if spectrum 
+#                                                                                                                    up to 3 values to be combined
+#                                                                                                                    A=-1 means all A for given Z e.g. 13.-1=Al elemental
+#                                                                                                                                   | free for comments on this entry
+#
+######################################################################################################################################################################

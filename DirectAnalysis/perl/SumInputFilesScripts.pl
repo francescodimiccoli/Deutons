@@ -5,14 +5,20 @@ use warnings;
 chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/");
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
-$datapath  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/neg/ISS.B1130/pass7/";
+$listpath = "/eos/ams/group/dbar/TrentoNTuples/FilteredQ2";
+$datapath  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/neg/ISS.B1130/pass7";
+#$datapath  = "./FileList.txt";
 #$mcP_path  = "/data1/home/data/v6_pass7/MC/pr.pl1ph.021000";
-$mcP_path  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/full/Pr.B1200/pr.pl1.05100.4_00/";
-$mcD_path  = "/eos/ams/group/dbar/release_v6/e2_vdev_190525/full/D.B1128/d.pl1ph.021000/";
+$mcP_path  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/Pr.B1200/pr.pl1.05100.4_00/";
+$mcD_path  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/D.B1220/d.pl1.05100/";
+#$mcD_path  = "";
 $mcHe_path = "";
 $mcT_path  = "";
 
-$FRAC = 0;
+$FRAC =1;
+$FRACDT =1;
+
+
 $OFFSET = $ARGV[3];
 $out_path  = "/eos/ams/user/f/fdimicco/";
 
@@ -32,7 +38,8 @@ system("mkdir $workdir/InputFileLists/$ARGV[0]-$ARGV[1]");
 
 print "Listing All Data Files..\n";
 
-chomp (@Rootuple = `ls $datapath | grep root | grep -v "log" |  sed s/.root//g`);
+#chomp (@Rootuple = `ls $listpath | grep root | grep -v "log" |  sed s/.root//g`);
+chomp (@Rootuple = `cat ./FileList.txt`);
 $num_Rootuple = scalar(@Rootuple);
 
 chomp (@NTuple = `ls  $ntuplepath | grep -v "log" |grep -v "check" |  sed s/.root//g`);
@@ -90,8 +97,9 @@ for ($n=0;$n<$njobs; $n++)
 		open(OUT,">","$workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT$n.txt");
 		for ($j=($num_rootuple)/$njobs*$n + $OFFSET; $j<($num_rootuple)/$njobs*($n+1) + $OFFSET; $j++)
 		{
-			$j=$j+$FRAC;
-				$out = `ls -d $datapath/$rootuple[$j].root`;	
+				$j=$j+$FRACDT;
+				#$out = `ls -d $datapath/$rootuple[$j].root`;	
+				$out = "$datapath/$rootuple[$j].root\n";	
 				print  OUT  "$out";
 				$rootuple[$j]="";	
 		}
@@ -102,7 +110,7 @@ for ($n=0;$n<$njobs; $n++)
 
 print "Listing All MC Files..\n";
 chomp (@MC_P = `ls  $mcP_path | grep -v "log" |grep root|  sed s/.root//g`);
-$num_MC_P = scalar(@MC_P)/5;
+$num_MC_P = scalar(@MC_P);
 
 print "Total Files MC P: ".$num_MC_P."\n";
 
@@ -145,7 +153,7 @@ for ($n=0;$n<$njobs; $n++)
 		}
 		for ($j=($num_MC_D)/$njobs*$n + $OFFSET  ; $j<($num_MC_D)/$njobs*($n+1) + $OFFSET  ; $j++)
 		{
-						$j=$j+$FRAC;
+						$j=$j;
 	
 			print OUT  "$mcD_path/$MC_D[$j].root\n"
 		}
@@ -164,6 +172,8 @@ for ($n=0;$n<$njobs; $n++)
 	}
 }
 
+system ("cat $workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC* >> $workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC_TOT.txt");
+system ("cat $workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT* >> $workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT_TOT.txt");
 
 
 

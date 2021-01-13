@@ -132,14 +132,16 @@ std::vector<float> Binning::ReadBinDatacard(std::string filename, float min, flo
 	std::string lineData;
     	float tmp;
 	int count;
-	std::ifstream myfile ((workdir+"/bindatacard_mod.data").c_str(),std::ios::in);
+	std::ifstream myfile (filename.c_str(),std::ios::in);
 
 	while(!myfile.eof()) {
 		myfile >> tmp;
 		if(tmp>particle.RigFromEk(particle.EkFromBeta(min)) && tmp< particle.RigFromEk(particle.EkFromBeta(max))) { 
-			vedg.push_back(tmp);
-			std::cout << tmp << std::endl;
-		} 
+				if(vedg.size()>0) if(tmp==vedg[vedg.size()-1]) return vedg;
+				vedg.push_back(tmp);
+				std::cout << tmp << std::endl;
+			
+		}
 	}
 	return vedg;
 
@@ -241,9 +243,9 @@ void Binning::pushBackCentralVelocities ()
 void Binning::Print()
 {
    printMatrix::print(
-      { ekbin, mombin, rigbin, betabin ,ekbin_TOI, mombin_TOI, rigbin_TOI, betabin_TOI, betabincent_TOI},
+      { ekpermassbin, mombin, rigbin, betabin ,ekpermassbin_TOI, mombin_TOI, rigbin_TOI, betabin_TOI, betabincent_TOI},
 
-      {"Ekin", "Momentum", "Rigidity", "Beta", "EkinTOI", "MomTOI", "RigTOI", "BetaTOI", "BetaCTOI"}
+      {"Ekin/n", "Momentum", "Rigidity", "Beta", "EkinTOI/n", "MomTOI", "RigTOI", "BetaTOI", "BetaCTOI"}
     
       //{betabin},
      // {"Beta"}

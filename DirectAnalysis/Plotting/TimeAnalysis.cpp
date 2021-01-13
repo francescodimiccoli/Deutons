@@ -889,16 +889,18 @@ void DrawPDFluxRatio(FileSaver Plots, std::vector<FileSaver> Files,int binselect
 
 
 void DrawParameters(FileSaver Plots, std::vector<FileSaver> Files){
+	float bins[5]={2,5,9,11,13};
+
 
 	TH1F * ChiSquareTOF[Files.size()];
 	TH1F * ChiSquareNaF[Files.size()];
 	TH1F * ChiSquareAgl[Files.size()];
-	float bins[5]={2,5,9,11,13};
 
 	for(int i=0;i<Files.size();i++) {
 		ChiSquareTOF[i] = (TH1F*) Files[i].Get("TOFDfits/Fit Results/Best ChiSquare");
 		ChiSquareNaF[i] = (TH1F*) Files[i].Get("NaFDfits/Fit Results/Best ChiSquare");
 		ChiSquareAgl[i] = (TH1F*) Files[i].Get("AglDfits/Fit Results/Best ChiSquare");
+		cout<<ChiSquareTOF[i]<<" "<<ChiSquareNaF[i]<<" "<<ChiSquareAgl[i]<<" "<<Files[i].GetName()<<endl;
 	}	
 	TH1F * TimeChiSquareTOF[5]; 
 	TH1F * TimeChiSquareNaF[5]; 
@@ -917,24 +919,93 @@ void DrawParameters(FileSaver Plots, std::vector<FileSaver> Files){
 			TimeChiSquareNaF[j]->SetBinError(i+1,0.2);
 			TimeChiSquareAgl[j]->SetBinContent(i+1,ChiSquareAgl[i]->GetBinContent(bins[j]+1));
 			TimeChiSquareAgl[j]->SetBinError(i+1,0.2);
+
+			TimeChiSquareTOF[j]->SetLineColor(j+1);
+			TimeChiSquareTOF[j]->SetMarkerColor(j+1);
+			TimeChiSquareTOF[j]->SetMarkerStyle(8);
+			TimeChiSquareNaF[j]->SetLineColor(j+1);
+			TimeChiSquareNaF[j]->SetMarkerColor(j+1);
+			TimeChiSquareNaF[j]->SetMarkerStyle(8);
+			TimeChiSquareAgl[j]->SetLineColor(j+1);
+			TimeChiSquareAgl[j]->SetMarkerColor(j+1);
+			TimeChiSquareAgl[j]->SetMarkerStyle(8);
+	
+
+
 		}	
 
-
-		
 	TCanvas * c1 = new TCanvas("Chi2 TOF");
 	for(int j=4;j>=0;j--)
-		TimeChiSquareTOF[j]->Draw("same");
+		TimeChiSquareTOF[j]->Draw("Psame");
 	TCanvas * c2 = new TCanvas("Chi2 NaF");
 	for(int j=4;j>=0;j--)
-		TimeChiSquareNaF[j]->Draw("same");
+		TimeChiSquareNaF[j]->Draw("Psame");
 	TCanvas * c3 = new TCanvas("Chi2 Agl");
 	for(int j=4;j>=0;j--)
-		TimeChiSquareAgl[j]->Draw("same");
+		TimeChiSquareAgl[j]->Draw("Psame");
 	
 	Plots.Add(c1);
 	Plots.Add(c2);
 	Plots.Add(c3);
 	Plots.writeObjsInFolder("Parameters/FitChi2");
+
+
+	TH1F * SmearingTOF[Files.size()];
+	TH1F * SmearingNaF[Files.size()];
+	TH1F * SmearingAgl[Files.size()];
+
+	for(int i=0;i<Files.size();i++) {
+		SmearingTOF[i] = (TH1F*) Files[i].Get("TOFDfits/Fit Results/Best Fit Sigma");
+		SmearingNaF[i] = (TH1F*) Files[i].Get("NaFDfits/Fit Results/Best Fit Sigma");
+		SmearingAgl[i] = (TH1F*) Files[i].Get("AglDfits/Fit Results/Best Fit Sigma");
+	}	
+	TH1F * TimeSmearingTOF[5]; 
+	TH1F * TimeSmearingNaF[5]; 
+	TH1F * TimeSmearingAgl[5]; 
+
+	for(int j=0;j<5;j++){
+		TimeSmearingTOF[j] = new TH1F(("TimeSmearingTOF_"+to_string(j)).c_str(),("TimeSmearingTOF_"+to_string(j)).c_str(),Files.size(),0,Files.size());
+		TimeSmearingNaF[j] = new TH1F(("TimeSmearingNaF_"+to_string(j)).c_str(),("TimeSmearingNaF_"+to_string(j)).c_str(),Files.size(),0,Files.size());
+		TimeSmearingAgl[j] = new TH1F(("TimeSmearingAgl_"+to_string(j)).c_str(),("TimeSmearingAgl_"+to_string(j)).c_str(),Files.size(),0,Files.size());
+	}
+	for(int j=0;j<5;j++)
+		for(int i=0;i<Files.size();i++) {
+			TimeSmearingTOF[j]->SetBinContent(i+1,SmearingTOF[i]->GetBinContent(bins[j]+1));
+			TimeSmearingTOF[j]->SetBinError(i+1,SmearingTOF[i]->GetBinError(bins[j]+1));
+			TimeSmearingNaF[j]->SetBinContent(i+1,SmearingNaF[i]->GetBinContent(bins[j]+1));
+			TimeSmearingNaF[j]->SetBinError(i+1,SmearingNaF[i]->GetBinError(bins[j]+1));
+			TimeSmearingAgl[j]->SetBinContent(i+1,SmearingAgl[i]->GetBinContent(bins[j]+1));
+			TimeSmearingAgl[j]->SetBinError(i+1,SmearingAgl[i]->GetBinError(bins[j]+1));
+			TimeSmearingTOF[j]->SetLineColor(j+1);
+			TimeSmearingTOF[j]->SetMarkerColor(j+1);
+			TimeSmearingTOF[j]->SetMarkerStyle(8);
+			TimeSmearingNaF[j]->SetLineColor(j+1);
+			TimeSmearingNaF[j]->SetMarkerColor(j+1);
+			TimeSmearingNaF[j]->SetMarkerStyle(8);
+			TimeSmearingAgl[j]->SetLineColor(j+1);
+			TimeSmearingAgl[j]->SetMarkerColor(j+1);
+			TimeSmearingAgl[j]->SetMarkerStyle(8);
+		}	
+
+	TCanvas * d1 = new TCanvas("Smearing TOF");
+	for(int j=4;j>=2;j--)
+		TimeSmearingTOF[j]->Draw("Psame");
+	TCanvas * d2 = new TCanvas("Smearing NaF");
+	for(int j=4;j>=2;j--)
+		TimeSmearingNaF[j]->Draw("Psame");
+	TCanvas * d3 = new TCanvas("Smearing Agl");
+	for(int j=4;j>=2;j--)
+		TimeSmearingAgl[j]->Draw("Psame");
+	
+	Plots.Add(d1);
+	Plots.Add(d2);
+	Plots.Add(d3);
+	Plots.writeObjsInFolder("Parameters/Smearing");
+
+
+
+
+
 }
 
 
@@ -1032,6 +1103,23 @@ void DrawMassDistributions(FileSaver Plots, std::vector<FileSaver> Files,int bin
 }
 
 
+float ExtractSystErr(TGraphErrors * g, std::string func){
+
+	g->SetMarkerStyle(8);
+
+	TF1 * fitfunc = new TF1(func.c_str(),func.c_str(),0,1590000000);
+	g->Fit(func.c_str());
+	float systerr=0;
+	for(int i=0;i<g->GetN();i++){
+		double x,y;
+		g->GetPoint(i,x,y);
+		systerr+=pow(y-fitfunc->Eval(x),2);
+	}
+	systerr/=g->GetN();
+	
+	return pow(systerr,0.5);
+}
+
 
 void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 
@@ -1057,7 +1145,17 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 	std::vector<TSpline3 *> RICHQualTSpline3_NaF;
 	std::vector<TSpline3 *> RICHQualTSpline3_Agl;
 
-
+	for(int i=0;i<Files.size();i++){
+		Times.push_back(std::atoi(GroupedFiles[i].substr(GroupedFiles[i].find("-")+1,10).c_str()) );
+		std::uint32_t time_date_stamp = Times[i];
+		std::time_t temp = time_date_stamp;
+		std::tm* t = std::gmtime(&temp);
+		char buffer [10];
+		sprintf(buffer,"%d/%d", t->tm_mon+1, t->tm_year-100);
+		Dates.push_back(buffer);
+		std::cout<<Times[i]<<" "<<Dates[i]<<endl;
+	}
+	
 	for(int i=0;i<Files.size();i++){
 	TFile * file = Files[i].GetFile();
 	TSpline3 *	riggerTSpline3_HE  	= (TSpline3 *)file->Get("Trigger Eff. Corr/TriggerEffCorr_HE/TriggerEffCorr_HE_CorrSpline");
@@ -1071,7 +1169,6 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 	TSpline3 *	oodUtof_HE   		= (TSpline3 *)file->Get("GoodUtof Eff. Corr/GoodUtofEffCorr_HE/GoodUtofEffCorr_HE_CorrSpline");
 	TSpline3 *	oodTime_TOF  		= (TSpline3 *)file->Get("GoodTime Eff. Corr/GoodTimeEffCorr_TOF/GoodTimeEffCorr_TOF_CorrSpline");
 	TSpline3 *	uality_TOF  		= (TSpline3 *)file->Get("Quality TOF Eff. Corr/QualityEffCorr_TOF/QualityEffCorr_TOF_CorrSpline");
-
 	TSpline3 *	ICHTSpline3_NaF  	= (TSpline3 *)file->Get("RICH Eff. Corr/RICHCorrection_NaF/RICHCorrection_NaF_CorrSpline");
 	TSpline3 *	ICHTSpline3_Agl  	= (TSpline3 *)file->Get("RICH Eff. Corr/RICHCorrection_Agl/RICHCorrection_Agl_CorrSpline");
 	TSpline3 *	ICHQualTSpline3_NaF 	= (TSpline3 *)file->Get("RICH Qual Eff. Corr/RICHQualCorrection_NaF/RICHQualCorrection_NaF_CorrSpline");
@@ -1097,7 +1194,7 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 
 
 	TCanvas * f = new TCanvas("Track Quality");
-	f->Divide(1,3);
+	f->Divide(1,2);
 	f->cd(1);
 	for(int i=0;i<Files.size();i++) {
 		GoodQTrack_HE[i]->SetLineWidth(3);
@@ -1112,17 +1209,10 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 		if(i==0) GoodChi_HE[i]->Draw();
 		else GoodChi_HE[i]->Draw("same");
 	}
-	f->cd(3);
-	for(int i=0;i<Files.size();i++) {
-		Good1Track_HE[i]->SetLineWidth(3);
-		Good1Track_HE[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
-		if(i==0) Good1Track_HE[i]->Draw();
-		else Good1Track_HE[i]->Draw("same");
-	}
+
 	
-	
-	TCanvas * c = new TCanvas("TOF");
-	c->Divide(1,2);
+	TCanvas * c = new TCanvas("NoInteraction");
+	c->Divide(1,3);
 	c->cd(1);
 	for(int i=0;i<Files.size();i++) {
 		GoodUtof_HE[i]->SetLineWidth(3);
@@ -1138,7 +1228,14 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 		else GoodLtof_HE[i]->Draw("same");
 	}
 
-
+	c->cd(3);
+	for(int i=0;i<Files.size();i++) {
+		Good1Track_HE[i]->SetLineWidth(3);
+		Good1Track_HE[i]->SetLineColor(r_gStyle->GetColorPalette((float)nColors/Files.size()*(i+1) ));
+		if(i==0) Good1Track_HE[i]->Draw();
+		else Good1Track_HE[i]->Draw("same");
+	}
+	
 	TCanvas * c0 = new TCanvas("Time Of Flight");
         c0->Divide(1,2);
         c0->cd(1);
@@ -1197,6 +1294,158 @@ void DrawTimeEffCorr(FileSaver Plots, std::vector<FileSaver> Files ){
 	Plots.Add(c1);
 	Plots.writeObjsInFolder("Eff. Corrections");
 
+	ForEffCorr.Reset();
+	ForEffCorr.setBinsFromEkPerMass(nbinsr,0.15,15,ResponseTOF,0.00347548,5.8474);
+	ForEffCorr.UseREdges();
+	ForEffCorr.Print();
+
+
+	TH1F * GoodQTrack_Err  = CreateHisto("GoodQTrack_Err",ForEffCorr,false);	
+	TH1F * GoodChi_Err     = CreateHisto("GoodChi_Err",ForEffCorr,false);	
+	TH1F * Good1Track_Err  = CreateHisto("Good1Track_Err",ForEffCorr,true);	
+	TH1F * GoodLtof_Err    = CreateHisto("GoodLtof_Err",ForEffCorr,true);	
+	TH1F * GoodUtof_Err    = CreateHisto("GoodUtof_Err",ForEffCorr,true);	
+	TH1F * GoodTime_Err    = CreateHisto("GoodTime_Err",ForEffCorr,true);	
+	TH1F * QualityTime_Err = CreateHisto("QualityTime_Err",ForEffCorr,true);	
+	TH1F * RICHNTime_Err   = CreateHisto("RICHNTime_Err",ForEffCorr,true);	
+	TH1F * RICHATime_Err   = CreateHisto("RICHATime_Err",ForEffCorr,true);	
+	TH1F * RICHQNTime_Err  = CreateHisto("RICHQNTime_Err",ForEffCorr,true);	
+	TH1F * RICHQATime_Err  = CreateHisto("RICHQATime_Err",ForEffCorr,true);	
+
+
+	for(int bin=0;bin<ForEffCorr.size();bin++){
+
+		TGraphErrors * TriggerTSpline3_time  =new TGraphErrors("Trigger");
+		TGraphErrors * L1PickUpTSpline3_time =new TGraphErrors("L1Pickup");
+		TGraphErrors * GoodQTrack_time       =new TGraphErrors("QTrack");
+		TGraphErrors * GoodChi_time  	     =new TGraphErrors("ChiTrack");
+		TGraphErrors *  TrackerTSpline3_time =new TGraphErrors("Tracking");
+		TGraphErrors *  StatusL1Check_time   =new TGraphErrors("StatusL1");
+		TGraphErrors *  Good1Track_time      =new TGraphErrors("1Track");
+		TGraphErrors *  GoodLtof_time  	     =new TGraphErrors("Ltof");
+		TGraphErrors * GoodUtof_time  	     =new TGraphErrors("Utof");
+		TGraphErrors * GoodTime_time 	     =new TGraphErrors("Time");
+		TGraphErrors * Quality_time 	     =new TGraphErrors("TofQual");
+		TGraphErrors * RICHTSpline3_Ntime     =new TGraphErrors("BDTNaf");
+		TGraphErrors * RICHTSpline3_Atime     =new TGraphErrors("BDTAgl");
+		TGraphErrors * RICHQualTSpline3_Ntime =new TGraphErrors("RICHNaf");
+		TGraphErrors * RICHQualTSpline3_Atime =new TGraphErrors("RICHAgl");
+
+		TriggerTSpline3_time 	 ->SetName		("Trigger");   
+		L1PickUpTSpline3_time    ->SetName              ("L1Pickup");
+		GoodQTrack_time         ->SetName               ("QTrack");
+		GoodChi_time  	          ->SetName              ("ChiTrack");
+		TrackerTSpline3_time    ->SetName                ("Tracking");
+		StatusL1Check_time       ->SetName               ("StatusL1");
+		Good1Track_time         ->SetName                ("1Track");
+		GoodLtof_time  	   ->SetName               ("Ltof");
+		GoodTime_time 	            ->SetName              ("Time");
+		Quality_time 	           ->SetName               ("TofQual");
+		RICHTSpline3_Ntime         ->SetName              ("BDTNaf");
+		RICHTSpline3_Atime         ->SetName              ("BDTAgl");
+		RICHQualTSpline3_Ntime      ->SetName             ("RICHNaf");
+		RICHQualTSpline3_Atime     ->SetName              ("RICHAgl");
+
+
+
+
+		//for(int i=0;i<Files.size();i++) TriggerTSpline3_time      ->SetPoint(i,Times[i],TriggerTSpline3_HE[i]       ->Eval(ForEffCorr.RigBinCent(bin)));
+		//for(int i=0;i<Files.size();i++) L1PickUpTSpline3_time     ->SetPoint(i,Times[i],L1PickUpTSpline3_HE[i]      ->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++) GoodQTrack_time           ->SetPoint(i,Times[i],GoodQTrack_HE[i]                ->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++) GoodChi_time  	         ->SetPoint(i,Times[i], GoodChi_HE[i]  	               ->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++)  TrackerTSpline3_time     ->SetPoint(i,Times[i], TrackerTSpline3_HE[i]          ->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++) Good1Track_time      ->SetPoint(i,Times[i],Good1Track_HE[i]      ->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++) GoodLtof_time        ->SetPoint(i,Times[i],GoodLtof_HE[i]        ->Eval(ForEffCorr.RigBinCent(bin) ));
+		for(int i=0;i<Files.size();i++) GoodUtof_time        ->SetPoint(i,Times[i],GoodUtof_HE[i]            ->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++) GoodTime_time        ->SetPoint(i,Times[i],GoodTime_TOF[i]           ->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++) Quality_time         ->SetPoint(i,Times[i],Quality_TOF[i]            ->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++) RICHTSpline3_Ntime    ->SetPoint(i,Times[i],RICHTSpline3_NaF[i]    ->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++) RICHTSpline3_Atime    ->SetPoint(i,Times[i],RICHTSpline3_Agl[i]    ->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++) RICHQualTSpline3_Ntime->SetPoint(i,Times[i],RICHQualTSpline3_NaF[i]->Eval(ForEffCorr.RigBinCent(bin)));
+		for(int i=0;i<Files.size();i++) RICHQualTSpline3_Atime->SetPoint(i,Times[i],RICHQualTSpline3_Agl[i]->Eval(ForEffCorr.RigBinCent(bin)));
+
+
+
+		GoodQTrack_Err->SetBinContent(bin+1,ExtractSystErr(GoodQTrack_time,"pol1"));
+		GoodChi_Err->SetBinContent(bin+1,ExtractSystErr(GoodChi_time,"pol1"));
+		Good1Track_Err->SetBinContent(bin+1,ExtractSystErr(Good1Track_time,"pol2"));
+		GoodLtof_Err  ->SetBinContent(bin+1,ExtractSystErr(GoodLtof_time,"pol1"));
+		GoodUtof_Err  ->SetBinContent(bin+1,ExtractSystErr(GoodUtof_time,"pol1"));
+		GoodTime_Err  ->SetBinContent(bin+1,ExtractSystErr(GoodTime_time,"pol1"));
+		QualityTime_Err  ->SetBinContent(bin+1,ExtractSystErr(Quality_time,"pol4"));
+		RICHNTime_Err ->SetBinContent(bin+1,ExtractSystErr(RICHTSpline3_Ntime,"pol1"));
+		RICHATime_Err ->SetBinContent(bin+1,ExtractSystErr(RICHTSpline3_Atime,"pol1"));
+		RICHQNTime_Err->SetBinContent(bin+1,ExtractSystErr(RICHQualTSpline3_Ntime,"pol1"));
+		RICHQATime_Err->SetBinContent(bin+1,ExtractSystErr(RICHQualTSpline3_Atime,"pol1"));
+
+
+		TCanvas * f_ = new TCanvas(("Track Quality Trend"+to_string(bin)).c_str());
+		f_->Divide(1,2);
+		f_->cd(1);
+		GoodQTrack_time->Draw("AP");
+		f_->cd(2);
+		GoodChi_time->Draw("AP");
+		TCanvas * c_ = new TCanvas(("NoInteraction Trend"+to_string(bin)).c_str());
+		c_->Divide(1,3);
+		c_->cd(1);
+		GoodUtof_time->Draw("AP");
+		c_->cd(2);
+		GoodLtof_time->Draw("AP");
+		c_->cd(3);
+		Good1Track_time->Draw("AP");
+
+		TCanvas * c0_ = new TCanvas(("Time Of Flight Trend"+to_string(bin)).c_str());
+		c0_->Divide(1,2);
+		c0_->cd(1);
+		GoodTime_time->Draw("AP");
+		c0_->cd(2);
+		Quality_time->Draw("AP");
+		TCanvas * c1_ = new TCanvas(("RICH BDT Trend"+to_string(bin)).c_str());
+		c1_->Divide(1,2);
+		c1_->cd(1);
+		RICHQualTSpline3_Ntime->Draw("AP");
+		c1_->cd(2);
+		RICHQualTSpline3_Atime->Draw("AP");
+		TCanvas * c2_ = new TCanvas(("RICH CIEMAT Trend"+to_string(bin)).c_str());
+		c2_->Divide(1,2);
+		c2_->cd(1);
+		RICHTSpline3_Ntime->Draw("AP");
+		c2_->cd(2);
+		RICHTSpline3_Atime->Draw("AP");
+
+		Plots.Add(f_);
+		Plots.Add(GoodQTrack_Err);
+		Plots.Add(GoodChi_Err);
+		Plots.writeObjsInFolder("Eff. Corrections Sys/Track Quality");
+		Plots.Add(c_);
+		Plots.Add(GoodUtof_Err);
+		Plots.Add(GoodLtof_Err);
+		Plots.Add(Good1Track_Err);
+		Plots.writeObjsInFolder("Eff. Corrections Sys/NoInteraction");
+		Plots.Add(c0_);
+		Plots.Add(GoodTime_Err);
+		Plots.Add(QualityTime_Err);
+		Plots.writeObjsInFolder("Eff. Corrections Sys/TOF");
+		Plots.Add(c2_);
+		Plots.Add(RICHNTime_Err);
+		Plots.Add(RICHATime_Err);
+		Plots.writeObjsInFolder("Eff. Corrections Sys/RICH CIEMAT");
+		Plots.Add(c1_);
+		Plots.Add(RICHQNTime_Err);
+		Plots.Add(RICHQATime_Err);
+		Plots.writeObjsInFolder("Eff. Corrections Sys/RICH BDT");
+
+
+
+
+	}
+
+
+
+
+
+
+
 }	
 
 int main(int argc, char * argv[]){
@@ -1215,22 +1464,22 @@ int main(int argc, char * argv[]){
 		files.push_back(f);
 	}
 	cout<<"files stored: "<<files.size()<<endl;
-	
+
 	FileSaver Plots;
 	Plots.setName("/afs/cern.ch/user/f/fdimicco/Work/Deutons/DirectAnalysis/Plotting/Time.root");
-        cout<<"****************************** BINS ***************************************"<<endl;
+	cout<<"****************************** BINS ***************************************"<<endl;
 	SetUpTOIBinning();
-	
+
 	cout<<"**************** plotting *****************"<<endl;
 	//DrawDPRatio(Plots,Files );
-	DrawPDFluxRatio(Plots,files,Binselected2);
+	//DrawPDFluxRatio(Plots,files,Binselected2);
 	//DrawMassDistributions(Plots,files,Binselected);
 	DrawTimeEffCorr(Plots,files);
 	//DrawDPRatioEkin(Plots,files);
 	//DrawPFluxEkin(Plots,files);
-//	DrawDFluxEkin(Plots,files);
-//	DrawLatWeights(Plots,files);
-	DrawParameters(Plots,files);
+	//	DrawDFluxEkin(Plots,files);
+	//	DrawLatWeights(Plots,files);
+	//DrawParameters(Plots,files);
 
 	return 0;
 }

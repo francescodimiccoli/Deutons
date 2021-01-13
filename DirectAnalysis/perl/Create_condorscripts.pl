@@ -100,7 +100,7 @@ system("chmod +x $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh");
 
 #open(OUT,">","$outdir/$ARGV[0]-$ARGV[1]/Counts/Condor_script.sub");
 open(OUT,">","$workdir/perl/AnalysisScripts/Condor_script$ARGV[0]-$ARGV[1].sub");
-print OUT "executable	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh\narguments	= \$(ProcId)\noutput	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).out\nerror	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).err\nlog	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).log\n+JobFlavour = \"tomorrow\"\nqueue $njobs"; 
+print OUT "executable	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh\narguments	= \$(ProcId)\noutput	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).out\nerror	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).err\nlog	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).log\n+JobFlavour = \"testmatch\"\nqueue $njobs"; 
 
 
 

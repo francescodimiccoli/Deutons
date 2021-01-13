@@ -17,7 +17,8 @@ Double_t Variables::ChiYcut_X[] = {
 Double_t Variables::ChiYcut_Y[] = {
 	};
 
-int Times[27]{
+int Times[28]{
+1107750400,
 1307750400,
 1317081600,
 1326412800,
@@ -194,7 +195,7 @@ void Variables::ResetVariables(){
 
 
     // Track
-    R_pre              = 0;
+    RInner              = 0;
     Rup                = 0;
     Rdown              = 0;
     R                  = 0;
@@ -203,6 +204,8 @@ void Variables::ResetVariables(){
     Chisquare_L1       = 0;
     Chisquare_y        = 0;
     Chisquare_L1_y     = 0;
+    Chisquare_Inner        = 0;
+    Chisquare_Inner_y     = 0;
     hitbits            = 0;
     patty	       =0;
     FiducialVolume     = 0;	   
@@ -211,6 +214,7 @@ void Variables::ResetVariables(){
     // Tracker Charge
     qL1                = 0;
     qL1Status          = 0;
+    qL1Status_SA       = 0;
     qL2Status          = 0;
     qInner             = 0;
     qL2                = 0;	
@@ -276,7 +280,7 @@ void Variables::ResetVariables(){
     chisqtn  = -1; 
     nTrTracks= -1;
     sumclsn  = -1; 
-
+    is_compact = false;
 
 
 
@@ -535,7 +539,8 @@ void Variables::Update(){
 				if(Massa_gen>2&&Massa_gen<4) mcweight = reweighterHe.getWeight(fabs(Momento_gen));
 			}
 	}	
- 
+   //simulation of unbias trigger pre-scaling
+   if(((int)joinCutmask&1)!=1 &&  (((int)joinCutmask&4)==4)) mcweight = mcweight/100.;
 
 }
 
@@ -648,6 +653,7 @@ float GetNegRecMassRICH     (Variables * vars) {return (-vars->R/vars->BetaRICH_
 
 
 float GetRigidity (Variables * vars) {return vars->R;}
+float GetRigidityInner (Variables * vars) {return vars->RInner;}
 float GetRigiditySecondTrack (Variables * vars) {return vars->R_sec;}
 
 
@@ -707,9 +713,8 @@ float GetEdepECAL(Variables * vars) {return vars->EdepECAL;}
 
 float GetMomentumProxy(Variables *vars) {
 	float momproxy = -1;
-	if(vars->beta_SA>0 && vars->beta_SA<0.8) momproxy = (1/0.983) * vars->beta_SA/pow((1-pow(vars->beta_SA,2)),0.5);
-	if(vars->beta_SA>0 &&vars->EdepECAL>0.45) momproxy = pow((vars->EdepECAL/0.3),(float)(1/1.1));
-
+	if(sqrt(pow(4*vars->EdepECAL,2)-pow(0.938,2)) >1.5) momproxy =  sqrt(pow(4*vars->EdepECAL,2)-pow(0.938,2));
+	else if(0.938*vars->beta_SA/sqrt(1-vars->beta_SA*vars->beta_SA) <= 1.5) momproxy = 0.938*vars->beta_SA/sqrt(1-vars->beta_SA*vars->beta_SA);
 	return momproxy;	
 }
 
@@ -772,7 +777,6 @@ float GetSmearedBetaTOF(Variables * vars){
 	time = time + smeartime;
 	return 1.2/(time*3e-4);
 }
-
 
 float GetSmearedBetaRICH(Variables * vars){
 	float delta = (1/vars->BetaRICH_new - 1/GetBetaGen(vars))/1.36634e-03;

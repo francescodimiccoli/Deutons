@@ -84,13 +84,13 @@ class Efficiency : public Tool{
 		}
 
 		else ff = file.GetFile();
+		cout<<ff<<endl;
 		if(ff){
 			before =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_before").c_str());
                 	after  =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_after").c_str());
                 	Eff    =(TH1 *) ff->Get((directory+"/"+basename+"/"+basename+"_Eff").c_str());
         		Stat_Error = (TH1F *) ff->Get((directory+"/"+basename+"/"+basename+"_Stat_Error").c_str());
 			Syst_Error = (TH1F *) ff->Get((directory+"/"+basename+"/"+basename+"_Syst_Error").c_str());
-			//cout<<"EFFICIENCY PROVA: "<<basename.c_str()<<" "<<before->GetEntries()<<" "<<after->GetEntries()<<endl;
 		}
 		
 	}
@@ -118,6 +118,7 @@ class Efficiency : public Tool{
 	virtual void Eval_StatError();
 	virtual void Eval_SystError(Efficiency * First,  Efficiency * Second);
 	
+	Binning GetBins() {return bins;}	
 	TH1 * GetEfficiency() {return Eff;}
 	TGraphErrors * GetFittedEfficiency() {return FittedEff;}
 	TH1 * GetBefore()     {return before;}
