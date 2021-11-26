@@ -66,8 +66,8 @@ Variables::Variables(int time){
 
     latweighter = new LatReweighter(LatWeights,"LatWeights");	
  	
-    Chi2Xcut = new TSpline3("Chi2Xcut", ChiXcut_X,ChiXcut_Y,30);
-    Chi2Ycut = new TSpline3("Chi2Ycut", ChiYcut_X,ChiYcut_Y,37);
+ //   Chi2Xcut = new TSpline3("Chi2Xcut", ChiXcut_X,ChiXcut_Y,30);
+//    Chi2Ycut = new TSpline3("Chi2Ycut", ChiYcut_X,ChiYcut_Y,37);
 
 
 }
@@ -162,6 +162,7 @@ void Variables::ResetVariables(){
     betapatt_SA=0;	
     beta_ncl_SA=0;
     beta_chiT_SA=0;
+    beta_chiS_SA=0;
     Trd_chi_SA=0;	
     qUtof_SA=0;
     qLtof_SA=0;			
@@ -233,6 +234,8 @@ void Variables::ResetVariables(){
     BetaRICH_new           = 0;
     Richtotused            = 0;
     RichPhEl               = 0;
+     RichPhEl_tot               = 0;
+     RichPhEl_ring               = 0;
     RICHprob               = 0;
     RICHPmts               = 0;
     RICHcollovertotal      = 0;
@@ -260,6 +263,7 @@ void Variables::ResetVariables(){
 	
     //MC vars
     Momento_gen            = 0;
+    Momento_gen_cpct       = 0;
     Momento_gen_UTOF       = 0;
     Momento_gen_LTOF       = 0;
     Momento_gen_RICH       = 0;
@@ -632,6 +636,8 @@ void Variables::Eval_Discriminants(){
 
 float GetInverseRigidity (Variables * vars) {return 1/vars->R-1/vars->Momento_gen;}
 float GetGenMomentum     (Variables * vars) {return vars->Momento_gen;}
+float GetGenMomentum_10     (Variables * vars) {return vars->Momento_gen + 10;}
+float GetGenRigidity(Variables * vars) {return vars->Momento_gen/vars->Charge_gen;}
 
 float GetInverseEdepUToF (Variables * vars) {return 1/vars->EdepTOFU;}
 float GetInverseEdepLToF (Variables * vars) {return 1/vars->EdepTOFD;}
@@ -641,6 +647,7 @@ float GetInverseEdepTRD  (Variables * vars) {return 1/vars->EdepTRD;}
 
 
 float GetBetaGen         (Variables * vars) {return pow((pow((vars->Momento_gen/vars->Massa_gen),2)/(pow((vars->Momento_gen/vars->Massa_gen),2)+1)),0.5);}
+float GetBetaGen_cpct    (Variables * vars) {return pow((pow((vars->Momento_gen_cpct/vars->Massa_gen),2)/(pow((vars->Momento_gen_cpct/vars->Massa_gen),2)+1)),0.5);}
 float GetInverseBetaTOF  (Variables * vars) {return 1/vars->Beta ;}
 float GetInverseBetaRICH (Variables * vars) {return 1/vars->BetaRICH_new;}
 float GetBetaMeas        (Variables * vars) { if(!(vars->IsFromNaF()) && !(vars->IsFromAgl())) return GetBetaTOF(vars); else return GetBetaRICH(vars); }
@@ -718,6 +725,14 @@ float GetMomentumProxy(Variables *vars) {
 	return momproxy;	
 }
 
+float GetMomentumProxyHe(Variables *vars) {
+	float momproxy = -1;
+	if(sqrt(pow(4*vars->EdepECAL,2)-pow(0.938,2)) >1.5) momproxy =  sqrt(pow(4*vars->EdepECAL,2)-pow(0.938,2));
+	else if(0.938*vars->beta_SA/sqrt(1-vars->beta_SA*vars->beta_SA) <= 1.5) momproxy = 0.938*vars->beta_SA/sqrt(1-vars->beta_SA*vars->beta_SA);
+	return momproxy/2;	
+}
+
+
 float GetBetaSlowTOF     (Variables * vars) { return GetBetaGen(vars) - GetBetaTOF(vars);}
 
 float GetBetaSlowRICH    (Variables * vars) { return GetBetaGen(vars) - GetBetaRICH(vars);}
@@ -752,9 +767,9 @@ float GetBetaGen_SlowDownAgl(Variables * vars) {
 	return beta-(0.9/vars->Massa_gen)*ResponseNaF->Eval(beta);				
 }
 
-float GetBetaFromR      (float m, float R) {
+float GetBetaFromR      (float m, float R, int Z) {
 
-	return 	pow(pow(R/m,2)/(1+pow(R/m,2)),0.5);
+	return 	pow(pow(R*Z/m,2)/(1+pow(R*Z/m,2)),0.5);
 
 }
 float GetRFromBeta      (float m, float beta){
@@ -802,4 +817,18 @@ float GetTofChisqcn (Variables * vars) {return vars->chisqcn; }
 float GetTofChisqtn  (Variables * vars) {return vars->chisqtn; }
 float GetNTracks (Variables * vars) {return vars->nTrTracks; }
 float GetTofOnTime (Variables * vars) {return vars->sumclsn; } 
+
+
+//RICH Variables
+float GetNRichTOThits(Variables * vars) {return vars->Richtothits;}
+float GetNRichUSEDhits(Variables * vars) {return vars->Richtotused;}
+float GetNRichPMTs(Variables * vars) {return vars->RICHPmts;}
+float GetRICHProb(Variables * vars) {return vars->RICHprob;}
+float GetRICHCollovertotal(Variables * vars) {return vars->RICHcollovertotal;}
+float GetRICHTOFBetaConsistency(Variables * vars) {return vars->RICHTOFBetaConsistency;}
+float GetRICHTotPhel(Variables * vars) {return vars->RichPhEl_tot;}
+
+
+
+
 

@@ -23,84 +23,81 @@ system ("mkdir $outdir_ntuples/$ARGV[0]-$ARGV[1]");
 system ("mkdir $outdir_plots/$ARGV[0]-$ARGV[1]");
 
 
-system ("mkdir $outdir_ntuples/$ARGV[0]-$ARGV[1]/Ntuples");
-system ("mkdir $outdir_plots/$ARGV[0]-$ARGV[1]/Plots");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/LatRew");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/MCEfficiency");		
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Counts");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/EffCorr");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Flux");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Infos");
-system ("mkdir $outdir/$ARGV[0]-$ARGV[1]/Tests");
+system ("rm -rf $workdir/perl/AnalysisScripts/$ARGV[0]-$ARGV[1]");
+system ("mkdir  $workdir/perl/AnalysisScripts/$ARGV[0]-$ARGV[1]");
 
-system ("rm -r $workdir/perl/AnalysisScripts/*.log");
-system ("rm -r $workdir/perl/AnalysisScripts/*.out");
-system ("rm -r $workdir/err/");
-system ("mkdir $workdir/err/");	
-system ("rm -r $workdir/logs/");
-system ("mkdir $workdir/logs/");	
-system ("rm -r $outdir/../logs/$ARGV[0]-$ARGV[1]");
-system ("mkdir $outdir/../logs/$ARGV[0]-$ARGV[1]");
+system ("mkdir $workdir/perl/AnalysisScripts/$ARGV[0]-$ARGV[1]/logs");
+system ("mkdir $workdir/perl/AnalysisScripts/$ARGV[0]-$ARGV[1]/out");
+system ("mkdir $workdir/perl/AnalysisScripts/$ARGV[0]-$ARGV[1]/err");
+
+
+system ("rm -rf $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]");
+system ("mkdir  $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]");
+
+system ("mkdir $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/logs");
+system ("mkdir $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/out");
+system ("mkdir $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/err");
+
 
 print "Creating job files...";
 
 $bookntuples=0;
-$bookplots=0;
+$bookplots=1;
 $booklat=0;
 $bookhecont=0;
 $bookflux=1;
 $bookinfos=0;
 
+if($bookflux) {
+	open(OUT,">","$workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh");
 
-		open(OUT,">","$workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh");
+	print OUT "#!/bin/bash
 
-		print OUT "#!/bin/bash
+		WDIR=`mktemp -d -p \$PWD`;
+	cd \$WDIR;
+	export WORKDIR=$workdir;
+	source \$WORKDIR/mysetenv.sh;\n";
 
-			export WORKDIR=$workdir;
-			source \$WORKDIR/mysetenv.sh;\n";
+	print OUT  "\$WORKDIR/Analysis \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT\$1.txt \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC\$1.txt  \$WDIR/Analysis\$1-$ARGV[0]-$ARGV[1].root 1;  \n\n";
 
-			if($bookinfos){
-				print OUT  "\$WORKDIR/ExtractInfos \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT\$1.txt \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC\$1.txt  $outdir/$ARGV[0]-$ARGV[1]/Infos$j-$offset.txt 1 >> /tmp/fdimicco/log\$1.log;\n\n";
-				print OUT "cp /tmp/fdimicco/Infos\$1-$offset.txt $outdir/$ARGV[0]-$ARGV[1]/Infos;\n";
-			}
-		
+	print OUT "cp *.root* $outdir/$ARGV[0]-$ARGV[1]/;\n
+		rm -fr \$WDIR;\n";
 
-			if($bookntuples){
-				print OUT  "\$WORKDIR/Ntuple_Maker \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT\$1.txt \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC\$1.txt  $outdir/$ARGV[0]-$ARGV[1]/ 1 >> $workdir/logs/log\$1.log;\n\n";
-			}
-		
-			if($bookplots){
-
-				print OUT  "\$WORKDIR/Distributions_Plotter \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT\$1.txt \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC\$1.txt  $outdir/$ARGV[0]-$ARGV[1]//Plots\$1-$offset.root 1 >> $workdir/logs/log\$1.log;\n\n";
-			}               
-		
-			if($booklat){
-
-				print OUT  "\$WORKDIR/LatitudeReweighter \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT\$1.txt \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC\$1.txt  $outdir/$ARGV[0]-$ARGV[1]//LatRew\$1-$offset.root 1 >> $workdir/logs/log\$1.log;\n\n";
-			}
-		
-			if($bookhecont){
-
-				print OUT  "\$WORKDIR/HeliumContamination_Parallel \$WORKDIR/InputNtupleLists/FileListDT\$1.txt \$WORKDIR/InputNtupleLists/FileListMC\$1.txt  $outdir/$ARGV[0]-$ARGV[1]/HeliumFragm\$1-$offset.root 1 >> $workdir/logs/log\$1.log;\n\n";
-			}
-		
-
-			if($bookflux){
-
-				print OUT  "\$WORKDIR/Analysis \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT\$1.txt \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC\$1.txt  $outdir/$ARGV[0]-$ARGV[1]//Analysis\$1-$ARGV[0]-$ARGV[1].root 1 > $workdir/logs/log\$1.log 2> $workdir/err/err\$1.log \n\n";
-			}
-			
-
-		close (OUT);
+	close (OUT);
+	system("chmod +x $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh");
 
 
-system("chmod +x $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh");
+	open(OUT,">","$workdir/perl/AnalysisScripts/Condor_script$ARGV[0]-$ARGV[1].sub");
+	print OUT "executable	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh\narguments	= \$(ProcId)\noutput	= $workdir/perl/AnalysisScripts/$ARGV[0]-$ARGV[1]/out/script$ARGV[0]-$ARGV[1].\$(ProcId).out\nerror	= $workdir/perl/AnalysisScripts/$ARGV[0]-$ARGV[1]/err/script$ARGV[0]-$ARGV[1].\$(ProcId).err\nlog	= $workdir/perl/AnalysisScripts/$ARGV[0]-$ARGV[1]/logs/script$ARGV[0]-$ARGV[1].\$(ProcId).log\n+JobFlavour = \"testmatch\"\nqueue $njobs"; 
 
 
-#open(OUT,">","$outdir/$ARGV[0]-$ARGV[1]/Counts/Condor_script.sub");
-open(OUT,">","$workdir/perl/AnalysisScripts/Condor_script$ARGV[0]-$ARGV[1].sub");
-print OUT "executable	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].sh\narguments	= \$(ProcId)\noutput	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).out\nerror	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).err\nlog	= $workdir/perl/AnalysisScripts/script$ARGV[0]-$ARGV[1].\$(ProcId).log\n+JobFlavour = \"testmatch\"\nqueue $njobs"; 
+}
+
+
+if($bookplots) {
+	open(OUT2,">","$workdir/perl/PlottingScripts/script$ARGV[0]-$ARGV[1].sh");
+
+	print OUT2 "#!/bin/bash
+
+		WDIR=`mktemp -d -p \$PWD`;
+	cd \$WDIR;
+	export WORKDIR=$workdir;
+	source \$WORKDIR/mysetenv.sh;\n";
+
+	print OUT2  "\$WORKDIR/Distributions_Plotter \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListDT\$1.txt \$WORKDIR/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC\$1.txt  \$WDIR/Analysis\$1-$ARGV[0]-$ARGV[1].root 1;  \n\n";
+
+	print OUT2 "cp *.root* $outdir_plots/$ARGV[0]-$ARGV[1];\n
+		rm -fr \$WDIR;\n";
+
+	close (OUT2);
+	system("chmod +x $workdir/perl/PlottingScripts/script$ARGV[0]-$ARGV[1].sh");
+
+
+	open(OUT2,">","$workdir/perl/PlottingScripts/Condor_script$ARGV[0]-$ARGV[1].sub");
+	print OUT2 "executable	= $workdir/perl/PlottingScripts/script$ARGV[0]-$ARGV[1].sh\narguments	= \$(ProcId)\noutput	= $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/out/script$ARGV[0]-$ARGV[1].\$(ProcId).out\nerror	= $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/err/script$ARGV[0]-$ARGV[1].\$(ProcId).err\nlog	= $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/logs/script$ARGV[0]-$ARGV[1].\$(ProcId).log\n+JobFlavour = \"testmatch\"\nqueue $njobs"; 
+
+
+}
 
 
 

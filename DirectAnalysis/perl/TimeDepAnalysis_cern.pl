@@ -2,7 +2,7 @@
 
 use warnings;
 
-$njobs=600;
+$njobs=200;
 $grouping = 4;
 
 $start=$ARGV[0];
@@ -119,6 +119,7 @@ $finalanalysis=$ARGV[2]-3;
 1543406400,
 1545739200,
 1548072000,
+1550358000,
 1700000000
 );
 
@@ -130,6 +131,8 @@ $size = scalar(@bartels);
 print "Time bins: ".scalar(@bartels)."\n";
 
 $jobsrunning = 0;
+
+print $bartels[$start]." ". $bartels[$stop]."\n"; 
 
 for($i=$start;$i<$stop;$i=$i+$grouping){
 
@@ -183,10 +186,10 @@ if($finalanalysis==1){
 if($finalanalysis==1){
 
 	open(OUT3,">","$workdir/perl/AnalysisResults/FinalFlux.sh");
-
+	$fixed=36;
 	for($i=$start;$i<=$stop;$i=$i+$grouping){
 
-		print OUT3 "$workdir/Analysis $workdir/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListDT0.txt $workdir/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListMC0.txt $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+$grouping].root\n";
+		print OUT3 "$workdir/Analysis $workdir/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListDT0.txt $workdir/InputFileLists/$bartels[$fixed]-$bartels[$fixed+$grouping]/FileListMC0.txt $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+$grouping].root\n";
 
 		open(OUT,">","$workdir/perl/AnalysisResults/script$bartels[$i]-$bartels[$i+$grouping].sh");
 
@@ -195,7 +198,7 @@ if($finalanalysis==1){
 			export WORKDIR=$workdir;
 		source \$WORKDIR/mysetenv.sh;\n";
 
-		print OUT  "\$WORKDIR/Analysis \$WORKDIR/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListDT0.txt \$WORKDIR/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListMC0.txt $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+$grouping].root  > $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].out 2> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].err \n\n";
+		print OUT  "\$WORKDIR/Analysis \$WORKDIR/InputFileLists/$bartels[$i]-$bartels[$i+$grouping]/FileListDT0.txt \$WORKDIR/InputFileLists/$bartels[$fixed]-$bartels[$fixed+$grouping]/FileListMC0.txt $workdir/AnalysisFiles/Grouped/$bartels[$i]-$bartels[$i+$grouping].root  > $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].out 2> $workdir/perl/AnalysisResults/$bartels[$i]-$bartels[$i+$grouping].err \n\n";
 
 		close (OUT);
 		

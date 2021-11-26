@@ -45,7 +45,7 @@ public:
     DBarReader(TTree * f, bool isMC);
     
     void FillVariables(int NEvent, Variables * vars);
-    void FillCompact(int NEvent, Variables * vars);
+    void FillCompact(int NEvent, Variables * vars, float massgen=1);
     
     int GetTreeEntries(){return Tree->GetEntries();}; 	
     int GetCompactEntries(){return Tree_Cpct->GetEntries();}; 	

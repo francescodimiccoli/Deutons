@@ -61,11 +61,14 @@ int main(int argc, char * argv[])
 	bool Refill = false;
 	if(refill!="") Refill=true;
 
-	TChain * chain_RTI  	= InputFileReader(INPUT1.c_str(),"RTI");
-	TChain * chainDT = InputFileReader(INPUT1.c_str(),"Event");
-	TChain * chainMC = InputFileReader(INPUT2.c_str(),"Event");
+	TChain * chain_RTI  	 = InputFileReader(INPUT1.c_str(),"RTI");
+	TChain * chainDT 	 = InputFileReader(INPUT1.c_str(),"Event");
+	TChain * chainMC 	 = InputFileReader((INPUT2+"_P").c_str(),"Event");
 	TChain * chainDT_Cpct    = InputFileReader(INPUT1.c_str(),"Compact");
-	TChain * chainMC_Cpct    = InputFileReader(INPUT2.c_str(),"Compact");
+	TChain * chainMC1_Cpct  = InputFileReader((INPUT2+"_P").c_str(),"Compact");
+        TChain * chainMC2_Cpct 	= InputFileReader((INPUT2+"_D").c_str(),"Compact");
+        TChain * chainMC3_Cpct  = InputFileReader((INPUT2+"_He").c_str(),"Compact");
+
 
 	FileSaver finalHistos;
 	finalHistos.setName(OUTPUT.c_str());
@@ -92,21 +95,21 @@ int main(int argc, char * argv[])
 	//Plots.BookMassAnalysis();
         //Plots.BookCleaningCutsAnalysis();
         //Plots.BookRichBDTAnalysis();
-        //Plots.BookBetaResMatrixAnalysis();
-	Plots.BookSmearingAnalysis();
-	//Plots.BookAcceptanceMatrixAnalysis();
-
+        //Plots.BookAcceptanceMatrixAnalysis();
 	//Plots.BookGenAcceptanceAnalysis();	
 	//Plots.BookTrackingEfficiencyAnalysis();
-	//Plots.BookRigvsBetaAnalysis();
-	
-	
 	//Plots.BookAcceptanceMatrixAnalysis();
 	//Plots.BookCutVariablesAnalysis();
 	//Plots.BookMassResoAnalysis();
 
-
-        if(Refill)	Plots.FillAllAnalyses(chain_RTI, chainDT,chainMC,chainDT_Cpct,chainMC_Cpct,vars);
+	//Checked
+	//Plots.BookSmearingAnalysis();
+        //Plots.BookRichBDTAnalysis();
+//	Plots.BookHeliumRICHVariablesAnalysis();
+ //	Plots.BookRigvsBetaAnalysis();
+	Plots.BookBetaResMatrixAnalysis();
+	
+        if(Refill)	Plots.FillAllAnalyses(chain_RTI, chainDT,chainMC,chainDT_Cpct,chainMC1_Cpct,chainMC2_Cpct,chainMC3_Cpct,vars);
 	Plots.DoAllAnalyses();
 
 	return 0;

@@ -57,19 +57,19 @@ void RangeMerger::Reset(){
 
 	}
 
-void RangeMerger::setBinsFromRDatacard(std::string datacard, TF1 * ResponseTOF, TF1 * ResponseNaF, TF1 * ResponseAgl){
+void RangeMerger::setBinsFromRDatacard(std::string datacard, TF1 * ResponseTOF, TF1 * ResponseNaF, TF1 * ResponseAgl,float a, float b){
 		float betamin=0.555; float betamax=0.87;
-		ToFD.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseTOF,0.00347548,5.8474);
-		ToFP.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseTOF,0.00347548,5.8474);
+		ToFD.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseTOF,a,b);
+		ToFP.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseTOF,a,b);
 		betamin=0.86, betamax=0.977;
-		NaFD.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseNaF,0.00347548,5.8474);
-		NaFP.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseNaF,0.00347548,5.8474);
+		NaFD.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseNaF,a,b);
+		NaFP.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseNaF,a,b);
 		betamin=0.97, betamax=0.995;
-		AglD.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseAgl,0.00347548,5.8474);
-		AglP.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseAgl,0.00347548,5.8474);
+		AglD.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseAgl,a,b);
+		AglP.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseAgl,a,b);
 		
-		Global_D.setBinsFromRDatacard (datacard.c_str(), 0.55, 0.995 ,ResponseTOF,0.00347548,5.8474);
-		Global_P.setBinsFromRDatacard (datacard.c_str(), 0.55, 0.995 ,ResponseTOF,0.00347548,5.8474);
+		Global_D.setBinsFromRDatacard (datacard.c_str(), 0.55, 0.995 ,ResponseTOF,a,b);
+		Global_P.setBinsFromRDatacard (datacard.c_str(), 0.55, 0.995 ,ResponseTOF,a,b);
 		
 	}
 
@@ -140,7 +140,8 @@ TH1F * RangeMerger::MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 				}
 			}
 		}
-
+		std::cout<<"end merging"<<std::endl;
+	
 		return Merged;	
 
 }
@@ -148,7 +149,7 @@ TH1F * RangeMerger::MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 
 TH1F * RangeMerger::MergeSubDResult_D(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl) {
 	
-		std::cout<<ResultTOF<<" "<<ResultNaF<<" "<<ResultAgl<<std::endl;
+		std::cout<<ResultTOF->GetName()<<" "<<ResultNaF<<" "<<ResultAgl<<std::endl;
 		
 		TH1F * Merged = new TH1F("MergedRange_RTOI_D","MergedRange_RTOI_D",Global_D.size(),0,Global_D.size());
 		std::cout<<"GLOBAL D SIZE: "<<Global_D.size()<<std::endl;	
@@ -194,7 +195,7 @@ TH1F * RangeMerger::MergeSubDResult_D(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 				}
 			}
 		}
-
+		std::cout<<"end merging"<<std::endl;
 		return Merged;	
 
 }

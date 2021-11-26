@@ -26,11 +26,8 @@ class RangeMerger{
         Binning AglP;
 
 	public:
-	RangeMerger(){
+	RangeMerger(Particle proton, Particle deuton){
 		
-		Particle proton(0.9382720813, 1, 1);  // proton mass 938 MeV
-		Particle deuton(1.8756129   , 1, 2);  // deuterium mass 1876 MeV, Z=1, A=2
-
 		 Binning       global_P(proton);
                  Binning       global_D(deuton);
                  Binning       toFD(deuton);
@@ -61,7 +58,7 @@ class RangeMerger{
 
 
 	void Reset();
-	void setBinsFromRDatacard(std::string datacard, TF1 * ResponseTOF, TF1 * ResponseNaF, TF1 * ResponseAgl);
+	void setBinsFromRDatacard(std::string datacard, TF1 * ResponseTOF, TF1 * ResponseNaF, TF1 * ResponseAgl, float a=0.00347548, float b=5.8474);
 	
 	void UseBetaEdges();
 	void UseREdges();

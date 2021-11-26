@@ -138,16 +138,20 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 	int kbin;
 	kbin =bins.GetBin(var(vars));
 	//MCWeighting
+
 	float weight =1;
-	if(!notweighted){ 
+	if(notweighted) weight=1;
+
+	else if(notweighted_phtr) {
+		if(((int)vars->joinCutmask&1)!=1 &&  (((int)vars->joinCutmask&4)==4)) weight = 1/100.;	
+	}		
+	else{ 
 		weight = vars->mcweight;
 		//if(bins.IsUsingBetaEdges()) weight *= vars->GetCutoffCleaningWeight(GetRFromBeta(bins.getParticle().getMass(),var(vars)),vars->Momento_gen,BetacutoffCut);
 		//else weight *= vars->GetCutoffCleaningWeight(vars->RInner,vars->Momento_gen,RcutoffCut);
 		weight *= vars->GetTimeDepWeight(vars->Momento_gen);				      
 	}
-	else {
-		if(((int)vars->joinCutmask&1)!=1 &&  (((int)vars->joinCutmask&4)==4)) weight = 1/100.;	
-	}		
+
 	if(kbin>=0) if(ApplyCuts(cut_before,vars)){before->Fill(kbin,weight);}
 
 	kbin =bins.GetBin(discr_var(vars));
@@ -171,13 +175,12 @@ void Efficiency::FillEventByEventData(Variables * vars, float (*var) (Variables 
 		}*/
 		if(after->GetNbinsY()==1){
 			if(ApplyCuts(cut_before,vars)) before->Fill(kbin,vars->PrescaleFactor);
-			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,vars->PrescaleFactor);
+			if(ApplyCuts(cut_after ,vars)) after ->Fill(kbin,vars->PrescaleFactor); 
 		}
 		else{
 			if(ApplyCuts(cut_before,vars)) ((TH2*)before)->Fill(kbin,GetLatitude(vars),vars->PrescaleFactor);
-			if(ApplyCuts(cut_after ,vars)) ((TH2*)after) ->Fill(kbin,GetLatitude(vars),vars->PrescaleFactor);
+			if(ApplyCuts(cut_after ,vars)) ((TH2*)after) ->Fill(kbin,GetLatitude(vars),vars->PrescaleFactor); 
 		}
-
 	}
 	return;
 }
@@ -193,10 +196,26 @@ void Efficiency::Save(){
 
 
 void Efficiency::Eval_Efficiency(){
+
+
 	Eff = (TH1 *)after->Clone();
 	Eff -> Sumw2();
-	for(int i=0;i<Eff->GetNbinsX();i++) Eff->SetBinError(i+1,0);
 	Eff -> Divide(before);
+
+	TH1F * Err = (TH1F *)after->Clone();
+	Err->Reset();
+	
+	for(int i=0;i<Err->GetNbinsX();i++) {
+		float b = before->GetBinContent(i+1);
+		float a = after->GetBinContent(i+1);
+		float db = before->GetBinError(i+1);
+		float da=after->GetBinError(i+1);
+		if(a!=0&&b!=0 && (da*da/(b*b) + pow(a,2)/pow(b,4)*db*db - 2*db*da*a/pow(b,3))>0) 
+			Err->SetBinContent(i+1,pow(da*da/(b*b) + pow(a,2)/pow(b,4)*db*db - 2*db*da*a/pow(b,3) ,0.5));
+	}
+	Err->Smooth();
+	for(int i=0;i<Eff->GetNbinsX();i++) Eff->SetBinError(i+1,Err->GetBinContent(i+1));
+
 	Eff ->SetName((basename+"_Eff").c_str());
 	Eff ->SetTitle((basename+" Efficiency").c_str());
 	cout<<"EFFIC CALC "<<basename<<" "<<before->GetEntries()<<" "<<after->GetEntries()<<endl;
@@ -207,11 +226,11 @@ void Efficiency::Eval_TrigEfficiency(){
 	TH1 * Unbias = (TH1 *) before->Clone();
 	Unbias->Sumw2();
 	Unbias->Add(after,-1);
-	for(int i=0; i<Unbias->GetNbinsX();i++) 
-		Unbias->SetBinError(i+1,2*pow(Unbias->GetBinContent(i+1),0.5));
-
 	Unbias->Scale(100);
-	
+	for(int i=0; i<Unbias->GetNbinsX();i++) 
+		Unbias->SetBinError(i+1,0.5*pow(Unbias->GetBinContent(i+1),0.5));
+
+
 	TH1 * Denominator = (TH1F *) after->Clone();
 	Denominator->Sumw2();
 	Denominator->Add(Unbias);
@@ -219,7 +238,17 @@ void Efficiency::Eval_TrigEfficiency(){
 	Eff = (TH1 *)after->Clone();	
 	Eff -> Sumw2();
         Eff -> Divide(Denominator);
-        Eff ->SetName((basename+"_Eff").c_str());
+       	for(int i=0;i<Eff->GetNbinsX();i++) {
+		float a = Unbias->GetBinContent(i+1);
+		float b = after->GetBinContent(i+1);
+		float da = Unbias->GetBinError(i+1);
+		float db=  after->GetBinError(i+1);
+		if(a!=0&&b!=0) 
+			Eff->SetBinError(i+1,100*a/pow((b+100*a),2)*db+(100*b/pow((b+100*a),2))*da);
+	}
+
+
+	Eff ->SetName((basename+"_Eff").c_str());
         Eff ->SetTitle((basename+" Efficiency").c_str());
 
 }
@@ -242,6 +271,12 @@ void Efficiency::Eval_FittedEfficiency(){
 }
 
 void Efficiency::SaveResults(FileSaver finalhistos){
+	if(before->GetNbinsY()<=1){
+	if(before)	before = ConvertBinnedHisto((TH1F*)before,before->GetTitle(),bins,true);	
+	if(after)	after = ConvertBinnedHisto((TH1F*)after,after->GetTitle(),bins,true);	
+	if(Eff)		Eff= ConvertBinnedHisto((TH1F*)Eff,Eff->GetTitle(),bins,true);
+	}
+
 	finalhistos.Add(before);
         finalhistos.Add(after);
 	if(Eff)	finalhistos.Add(Eff); 	

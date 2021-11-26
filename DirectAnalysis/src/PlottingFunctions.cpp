@@ -21,7 +21,7 @@ void SetCanvas(TCanvas *c1){
 TH1F * CreateHisto(std::string name,  Binning Bins,bool IsEkin){
 	float x[Bins.size()+1];
 	if(IsEkin) for(int i=0;i<Bins.size()+1;i++) x[i]=Bins.EkPerMasTOIBins()[i];
-	else for(int i=0;i<Bins.size()+1;i++) { x[i]=Bins.RigTOIBins()[i]; cout<<x[i]<<endl; }
+	else for(int i=0;i<Bins.size()+1;i++) x[i]=Bins.RigTOIBins()[i]; 
 	
 	TH1F * hist = new TH1F(name.c_str(),name.c_str(),Bins.size(),x);
 	if(IsEkin) hist->GetXaxis()->SetTitle("Ekin [GeV/n]");
@@ -30,6 +30,17 @@ TH1F * CreateHisto(std::string name,  Binning Bins,bool IsEkin){
 	return hist;
 }
 
+TH1D * CreateHistoD(std::string name,  Binning Bins,bool IsEkin){
+	float x[Bins.size()+1];
+	if(IsEkin) for(int i=0;i<Bins.size()+1;i++) x[i]=Bins.EkPerMasTOIBins()[i];
+	else for(int i=0;i<Bins.size()+1;i++) x[i]=Bins.RigTOIBins()[i]; 
+	
+	TH1D * hist = new TH1D(name.c_str(),name.c_str(),Bins.size(),x);
+	if(IsEkin) hist->GetXaxis()->SetTitle("Ekin [GeV/n]");
+	else hist->GetXaxis()->SetTitle("R [GV]");
+	
+	return hist;
+}
 
 TH1F * ConvertBinnedHisto(TH1F * histo,std::string name,  Binning Bins,bool IsEkin){
 	TH1F * plot = CreateHisto(name,Bins,IsEkin);
@@ -40,6 +51,14 @@ TH1F * ConvertBinnedHisto(TH1F * histo,std::string name,  Binning Bins,bool IsEk
 	return plot;
 }
 
+TH1D * ConvertBinnedHisto(TH1D * histo,std::string name,  Binning Bins,bool IsEkin){
+	TH1D * plot = CreateHistoD(name,Bins,IsEkin);
+	for(int bin=0;bin<histo->GetNbinsX();bin++){
+		plot->SetBinContent(bin+1,histo->GetBinContent(bin+1));
+		plot->SetBinError(bin+1,histo->GetBinError(bin+1));
+	}
+	return plot;
+}
 
 TH2F* CreateFrame (TVirtualPad * c,float xmin,float xmax,float ymin, float ymax,std::string Xaxis,std::string Yaxis){
 	

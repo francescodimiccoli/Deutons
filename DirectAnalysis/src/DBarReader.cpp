@@ -139,8 +139,9 @@ Long64_t DBarReader::ProtonCandidateSelection() {
 
 void DBarReader::FillVariables(int NEvent, Variables * vars){
 
-    Tree->GetEntry(NEvent);
-
+    int w = Tree->GetEntry(NEvent);
+    if(!(w>0)) { return;}
+	
     vars->ResetVariables();
 
     ////////////////////// EVENT INFORMATION ///////////////////////////////////////
@@ -182,6 +183,8 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 	    vars->Momento_gen_UTOF = ntpMCHeader->momentum[6];
 	    vars->Momento_gen_LTOF = ntpMCHeader->momentum[16];
 	    vars->Momento_gen_RICH = ntpMCHeader->momentum[18];
+	    vars->Momento_gen_cpct = ntpMCHeader->momentum[0];
+	
 
 	    vars->GenX = ntpMCHeader->coo[0][0];  vars->GenPX = ntpMCHeader->dir[0];;
 	    vars->GenY = ntpMCHeader->coo[0][1];  vars->GenPY = ntpMCHeader->dir[1];;
@@ -251,7 +254,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->RInner= ntpTracker->rig[6][1];  // 7 -- Inner tracker
     vars->R_sec = ntpTracker-> sec_inn_rig; // rig secondary track;
 
-    vars->Chisquare         = ntpTracker->chisqn[1][0]; // 1 = Inner      , 0 = X side
+      vars->Chisquare         = ntpTracker->chisqn[1][0]; // 1 = Inner      , 0 = X side
     vars->Chisquare_L1      = ntpTracker->chisqn[4][0]; // 4 = L1 + Inner , 0 = X side
     vars->Chisquare_y       = ntpTracker->chisqn[1][1]; // 1 = Inner      , 1 = Y side
     vars->Chisquare_L1_y    = ntpTracker->chisqn[4][1]; // 4 = L1 + Inner , 1 = Y side
@@ -333,7 +336,9 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->RICHPmts          = ntpRich->npmt;
     if(ntpRich->tot_p_uncorr>0) vars->RICHcollovertotal = ntpRich->np_uncorr/ntpRich->tot_p_uncorr; else vars->RICHcollovertotal=0;
     vars->RICHgetExpected   = ntpRich->np_exp_uncorr;
-
+	vars->RichPhEl_tot = ntpRich->np_uncorr;
+	vars->RichPhEl_ring = ntpRich->tot_p_uncorr;
+	
     vars->RICHLipBetaConsistency = fabs(ntpRich->lip_beta-ntpRich->beta_corrected);	
     vars->RICHTOFBetaConsistency = fabs(ntpRich->beta_corrected - ntpTof->beta)/ntpRich->beta_corrected;
     vars->RICHChargeConsistency  = ntpRich->q_consistency;
@@ -361,26 +366,34 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
 
 
-void DBarReader::FillCompact(int NEvent, Variables * vars){
-	Tree_Cpct->GetEntry(NEvent);
+void DBarReader::FillCompact(int NEvent, Variables * vars, float massgen){
+	int w = Tree_Cpct->GetEntry(NEvent);
+	if(!(w>0)) { cout<<"I/O error event: "<<NEvent<<endl; return;}
 	vars->ResetVariables();
 
 	///////////////////// MONTE CARLO //////////////////////////
 	if(isMC) {
-	    vars->Momento_gen = ntpCompact->mc_momentum; 	
 	    vars->mcweight =1;
-	    vars->Charge_gen   = ntpMCHeader->charge;
-	    vars->Massa_gen     = ntpMCHeader->mass;
-	    vars->Momento_gen = ntpMCHeader->momentum[0];
+
+	    vars->Massa_gen     = massgen;
+
+	    if(vars->Massa_gen<2) vars->Charge_gen=1;
+	    else vars->Charge_gen=2;	
+
+	    vars->Momento_gen = ntpCompact->mc_momentum;
+	    vars->Momento_gen_cpct = ntpCompact->mc_momentum;
 	    vars->Momento_gen_UTOF = ntpMCHeader->momentum[6];
 	    vars->Momento_gen_LTOF = ntpMCHeader->momentum[16];
 	    vars->Momento_gen_RICH = ntpMCHeader->momentum[18];
+
 
 	    vars->GenX = ntpMCHeader->coo[0][0];  vars->GenPX = ntpMCHeader->dir[0];;
 	    vars->GenY = ntpMCHeader->coo[0][1];  vars->GenPY = ntpMCHeader->dir[1];;
 	    vars->GenZ = ntpMCHeader->coo[0][2];  vars->GenPZ = ntpMCHeader->dir[2];;
 	    vars->MCClusterGeantPids = getPackedLayers_1to4();
 	}
+
+	//cout<<NEvent<<" "<<vars->Momento_gen<<endl;
 
 	////////////////////// EVENT INFORMATION ///////////////////////////////////////
 	vars->PrescaleFactor    = 1; 
@@ -456,13 +469,14 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
         vars->R_noMS= ntpCompact->trk_rig[4]; // 9 -- Inner tracker NoMS
         vars->RInner= ntpCompact->trk_rig[3]; // 6 -- Inner tracker 
 
-
 	vars->Chisquare         = ntpCompact->trk_kal_chisqn[0]; // 1 = Inner      , 0 = X side
 	vars->Chisquare_L1      = ntpCompact->trk_chisqn[1][0]; // 4 = L1 + Inner , 0 = X side
 	vars->Chisquare_y       = ntpCompact->trk_kal_chisqn[1]; // 1 = Inner      , 1 = Y side
 	vars->Chisquare_L1_y    = ntpCompact->trk_chisqn[1][1]; // 4 = L1 + Inner , 1 = Y side
 	vars->Chisquare_Inner   = ntpCompact->trk_chisqn[3][0];
     	vars->Chisquare_Inner_y = ntpCompact->trk_chisqn[3][1];
+
+	//if(vars->R!=0) cout<<vars->Momento_gen<<" "<<vars->R<<" "<<vars->Momento_gen_cpct<<endl;
 
 	vars->hitbits           = ntpCompact->trk_pattxy; 
 	vars->patty		= ntpCompact->trk_patty;
@@ -514,8 +528,11 @@ void DBarReader::FillCompact(int NEvent, Variables * vars){
 	if(ntpCompact->rich_np>0) vars->RichPhEl = ntpCompact->rich_np_exp/ntpCompact->rich_np; else vars->RichPhEl = 0; 
 	vars->RICHprob          = ntpCompact->rich_prob;
 	vars->RICHPmts          = rich_pmts;
-	if(ntpCompact->rich_np>0) vars->RICHcollovertotal = ntpCompact->rich_tot_np/ntpCompact->rich_np; else vars->RICHcollovertotal=0; 
-	vars->RICHgetExpected   = ntpCompact->rich_np_exp;;
+	if(ntpCompact->rich_np>0) vars->RICHcollovertotal = ntpCompact->rich_np/ntpCompact->rich_tot_np; else vars->RICHcollovertotal=0; 
+	vars->RICHgetExpected   = ntpCompact->rich_np_exp;
+	vars->RichPhEl_tot = ntpCompact->rich_tot_np;
+	vars->RichPhEl_ring = ntpCompact->rich_np;
+	
 
 	vars->RICHTOFBetaConsistency = fabs(ntpCompact->rich_beta - ntpCompact->tof_beta)/ntpCompact->rich_beta;
 
@@ -557,15 +574,20 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI, TTree * tree_
 		Tree_Cpct->SetAutoFlush( 0 );
 		Tree_Cpct->SetBranchAddress( "SHeader" , &ntpSHeader    );
 		Tree_Cpct->SetBranchAddress( "Compact" , &ntpCompact  );
-		Tree->BuildIndex("SHeader.run","SHeader.event");
-		if(_isMC) if(Tree) Tree_Cpct->AddFriend(Tree);				
+		//Tree->BuildIndex("SHeader.run","SHeader.event");
+		//Tree_Cpct->BuildIndex("SHeader.run","SHeader.event");
+		//if(_isMC) if(Tree) Tree_Cpct->AddFriend(Tree);				
 	}	
 	if(!_isMC){
 		if(Tree_RTI){
 			Tree_RTI->SetAutoFlush( 0 );
 			Tree_RTI->SetBranchAddress( "RTIInfo" , &rtiInfo  );		
 			Tree_RTI->BuildIndex("SHeader.utime");
-			if(Tree) Tree->AddFriend(Tree_RTI);
+			//Tree_Cpct->BuildIndex("SHeader.utime");
+			if(Tree)  {
+			//	Tree->BuildIndex("SHeader.utime");
+				Tree->AddFriend(Tree_RTI);
+			}
 			Tree_Cpct->AddFriend(Tree_RTI);
 		}	
 	}

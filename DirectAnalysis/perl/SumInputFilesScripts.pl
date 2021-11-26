@@ -12,7 +12,7 @@ $datapath  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/neg/ISS.B1130/pass7"
 $mcP_path  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/Pr.B1200/pr.pl1.05100.4_00/";
 $mcD_path  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/D.B1220/d.pl1.05100/";
 #$mcD_path  = "";
-$mcHe_path = "";
+$mcHe_path = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/He.B1200/he4.pl1.21000.4_00/";
 $mcT_path  = "";
 
 $FRAC =1;
@@ -99,7 +99,7 @@ for ($n=0;$n<$njobs; $n++)
 		{
 				$j=$j+$FRACDT;
 				#$out = `ls -d $datapath/$rootuple[$j].root`;	
-				$out = "$datapath/$rootuple[$j].root\n";	
+				$out = "root://eosams.cern.ch/$datapath/$rootuple[$j].root\n";	
 				print  OUT  "$out";
 				$rootuple[$j]="";	
 		}
@@ -143,30 +143,34 @@ for ($n=0;$n<$njobs; $n++)
 		}
 	}
 	else{
-		open(OUT,">","$workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC$n.txt");
+		open(OUT,">","$workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC$n.txt_P");
 
 		for ($j=($num_MC_P)/$njobs*$n + $OFFSET ; $j<($num_MC_P)/$njobs*($n+1) +$OFFSET ; $j++)
 		{
 						$j=$j+$FRAC;
 	
-			print OUT  "$mcP_path/$MC_P[$j].root\n"
+			print OUT  "root://eosams.cern.ch/$mcP_path$MC_P[$j].root\n"
 		}
+		open(OUT2,">","$workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC$n.txt_D");
 		for ($j=($num_MC_D)/$njobs*$n + $OFFSET  ; $j<($num_MC_D)/$njobs*($n+1) + $OFFSET  ; $j++)
 		{
 						$j=$j;
 	
-			print OUT  "$mcD_path/$MC_D[$j].root\n"
+			print OUT2  "root://eosams.cern.ch/$mcD_path$MC_D[$j].root\n"
 		}
-		for ($j=($num_MC_He)/$njobs*$n  + $OFFSET ; $j<($num_MC_He)/$njobs*($n+1)  + $OFFSET ; $j++)
-		{			$j=$j+$FRAC;
+
+		open(OUT3,">","$workdir/InputFileLists/$ARGV[0]-$ARGV[1]/FileListMC$n.txt_He");
+		for ($j=($num_MC_He)/$njobs*$n + $OFFSET  ; $j<($num_MC_He)/$njobs*($n+1) + $OFFSET  ; $j++)
+		{
+						$j=$j+$FRAC;
 	
-			print OUT  "$mcHe_path/$MC_He[$j].root\n"
+			print OUT3  "root://eosams.cern.ch/$mcHe_path$MC_He[$j].root\n"
 		}
-		for ($j=($num_MC_T)/$njobs*$n  + $OFFSET ; $j<($num_MC_T)/$njobs*($n+1)  + $OFFSET ; $j++)
-		{			$j=$j+$FRAC;
-	
-			print OUT  "$mcT_path/$MC_T[$j].root\n"
-		}
+
+
+
+
+
 
 
 	}

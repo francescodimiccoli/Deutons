@@ -29,9 +29,13 @@ using namespace std;
 void SetCanvas(TCanvas *c1);
 
 TH1F * CreateHisto(std::string name,  Binning Bins,bool IsEkin=false);
+TH1D * CreateHistoD(std::string name,  Binning Bins,bool IsEkin=false);
+
 
 
 TH1F * ConvertBinnedHisto(TH1F * histo,std::string name,  Binning Bins,bool IsEkin=false);
+TH1D * ConvertBinnedHisto(TH1D * histo,std::string name,  Binning Bins,bool IsEkin=false);
+
 
 TH2F* CreateFrame (TVirtualPad * c,float xmin,float xmax,float ymin, float ymax,std::string Xaxis,std::string Yaxis);
 

@@ -36,14 +36,20 @@ extern TRandom3 * Rand;
 
 extern Particle proton;  
 extern Particle deuton; 
+extern Particle helium3;  
+extern Particle helium4; 
+
 
 extern RangeMerger Global;
+extern RangeMerger Global_He;
+extern RangeMerger Global_HeRig;
 extern Binning HefragmToF;
 extern Binning HefragmNaF;
 extern Binning HefragmAgl;
 
 extern Binning DRB;
 extern Binning PRB;
+extern Binning HeRB;
 extern Binning ForAcceptance;
 extern Binning ForEffCorr;
 extern Binning ForEffCorr_D;
@@ -81,6 +87,10 @@ extern Binning UnfoldingAgl;
 extern Binning UnfoldingToF_D;
 extern Binning UnfoldingNaF_D;
 extern Binning UnfoldingAgl_D;
+
+extern Binning UnfoldingToF_He;
+extern Binning UnfoldingNaF_He;
+extern Binning UnfoldingAgl_He;
 
 
 

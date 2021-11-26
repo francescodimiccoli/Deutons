@@ -25,9 +25,13 @@ class EffCorr : public Tool{
 	TH1F * LatEfficiencies[10];
 	
 	TH1F * GlobalEfficiency;
+	TH1F * GlobalEfficiency_plot;
 
 	TH1F * GlobalCorrection;
 	TH1F * GlobalCorrectionpid;
+
+	TGraphErrors * GlobalCorrection_timeavg;
+	
 	
 	TH1F * Syst_Err;
         TH1F * Stat_Err;
@@ -42,8 +46,13 @@ class EffCorr : public Tool{
 	BadEventSimulator * BadEvSim;	
 	
 	TF1 * CorrectionModel;
+	TF1 * DataEffModel;
 	TSpline3 * CorrectionModel_Spline;
-	TH1F * syst_stat;
+	TSpline3 * DataEffModel_Spline;
+
+	TH1F * syst_stat=0x0;
+	TH2F * avg_time=0x0;
+	int time=1429054000;
 
 	protected:
 	Binning Bins;
@@ -51,24 +60,19 @@ class EffCorr : public Tool{
 
 	public:
 
-	EffCorr(FileSaver  File, std::string Basename,std::string Directory, bool ekin, std::string Cut_before,std::string Cut_after,std::string Cut_Data,bool notweighted = false){
+	EffCorr(FileSaver  File, std::string Basename,std::string Directory, bool ekin, int nucl, std::string Cut_before,std::string Cut_after,std::string Cut_Data,bool notweighted = false,std::string cut_MC="IsProtonMC"){
 	
 
 		
 		IsEkinCorrection = ekin;
 		SetBinsForCorrections(IsEkinCorrection);
-		Bins = ForEffCorr;
-		Bins_D = ForEffCorr_D;	
-		std::string Cut_MC = "IsProtonMC";
-		std::string Cut_MC2 = "IsDeutonMC";
+		if(nucl<2) Bins = ForEffCorr;
+		else Bins = ForEffCorr_D;
+		std::string Cut_MC = cut_MC;
 		std::string Cut_MCpid = "IsPurePMC";
-		std::string Cut_MCpid2 = "IsPureDMC";
-
 
 		EffMC     = new Efficiency(File, (Basename+"_MC" ).c_str(),Directory,Bins, (Cut_before+"&"+Cut_MC  ).c_str(),(Cut_after+"&"+Cut_MC  ).c_str(),false);
 		EffMCpid  = new Efficiency(File, (Basename+"_MCpid").c_str(),Directory,Bins, (Cut_before+"&"+Cut_MCpid  ).c_str(),(Cut_after+"&"+Cut_MCpid  ).c_str(),false);
-		EffMC2    = new Efficiency(File, (Basename+"_MC2" ).c_str(),Directory,Bins_D, (Cut_before+"&"+Cut_MC2  ).c_str(),(Cut_after+"&"+Cut_MC2  ).c_str(),false);
-		EffMCpid2 = new Efficiency(File, (Basename+"_MCpid2").c_str(),Directory,Bins_D, (Cut_before+"&"+Cut_MCpid2  ).c_str(),(Cut_after+"&"+Cut_MCpid2  ).c_str(),false);
 	
 		EffData = new Efficiency(File, (Basename+"_lat").c_str(),Directory,Bins, (Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str(),LatEdges);
 		EffData_glob = new Efficiency(File, (Basename+"_glob").c_str(),Directory,Bins,(Cut_before+"&"+Cut_Data).c_str(),(Cut_after+"&"+Cut_Data).c_str());
@@ -80,38 +84,40 @@ class EffCorr : public Tool{
 	
 			GlobalEfficiency = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_glob_Eff").c_str());
 			GlobalCorrection = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_glob").c_str());
+			GlobalCorrection_timeavg = (TGraphErrors*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_avgtime").c_str());
 			GlobalCorrectionpid = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "_Corr_globpid").c_str());
 			Syst_Err    = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "Syst_Err").c_str());
 			Stat_Err = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "Stat_Err").c_str());
 			Syst_Stat = (TH1F*) file->Get((Directory+"/"+Basename+"/" + Basename + "Syst_Stat").c_str());
 			CorrectionModel_Spline = (TSpline3 *) file->Get((Directory+"/"+Basename+"/" + Basename + "_CorrSpline").c_str());
+			DataEffModel_Spline = (TSpline3 *) file->Get((Directory+"/"+Basename+"/" + Basename + "_EffSpline").c_str());
+
 
 		}
 		basename = Basename;	
 		directory = Directory;
 	
 		if(notweighted){
-			EffMC     ->SetNotWeightedMC();	
-			EffMCpid  ->SetNotWeightedMC();	
-			EffMC2    ->SetNotWeightedMC();	
-			EffMCpid2 ->SetNotWeightedMC();	
+			EffMC     ->SetNotWeightedMC_phtr();	
+			EffMCpid  ->SetNotWeightedMC_phtr();	
 		}
 	}
 
 	Binning GetBins(){ return Bins;}	
 	bool IsEkin(){return IsEkinCorrection;}
 	TF1 * GetCorrectionModel(){return CorrectionModel;}
+	TF1 * GetDataEffModel(){return DataEffModel;}
 	std::string  GetName(){return basename;}
 
 	void SetBinsForCorrections(bool ekin){
 		if(ekin) {
 				ForEffCorr.Reset();
 				ForEffCorr_D.Reset();
-				ForEffCorr.setBinsFromEkPerMass(nbinsr+15,0.15,50,ResponseTOF,0.00347548,5.8474);
-				ForEffCorr_D.setBinsFromEkPerMass(nbinsr+15,0.15,50,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr.setBinsFromRDatacard ((workdir+"/bindatacard_PMIT.data").c_str(), 0.1, 0.9999999 ,ResponseTOF,0.00347548,5.8474); ;
+				ForEffCorr_D.setBinsFromRDatacard ((workdir+"/bindatacard_PMIT.data").c_str(), 0.1, 0.9999999 ,ResponseTOF,0.00347548,5.8474); 
 				ForEffCorr.UseREdges();
 				ForEffCorr_D.UseREdges();
-				cout<<"FOREFFCORRBINS: "<<endl;
+				cout<<"FOREFFCORRBINS: "<<basename<<endl;
 				ForEffCorr.Print();
 				ForEffCorr_D.Print();
 		}
@@ -119,11 +125,11 @@ class EffCorr : public Tool{
 		else {
 				ForEffCorr.Reset();
 				ForEffCorr_D.Reset();
-				ForEffCorr.setBinsFromRigidity(nbinsr+15,0.5,50,ResponseTOF,0.00347548,5.8474);
-				ForEffCorr_D.setBinsFromRigidity(nbinsr+15,0.5,50,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr.setBinsFromRDatacard ((workdir+"/bindatacard_PMIT.data").c_str(), 0.1, 0.9999999 ,ResponseTOF,0.00347548,5.8474); ;
+				ForEffCorr_D.setBinsFromRDatacard ((workdir+"/bindatacard_PMIT.data").c_str(), 0.1, 0.9999999 ,ResponseTOF,0.00347548,5.8474); 
 				ForEffCorr.UseREdges();
 				ForEffCorr_D.UseREdges();
-				cout<<"FOREFFCORRBINS: "<<endl;
+				cout<<"FOREFFCORRBINS: "<<basename<<endl;
 				ForEffCorr.Print();
 				ForEffCorr_D.Print();
 	
@@ -137,17 +143,13 @@ class EffCorr : public Tool{
 	
 	virtual void LoadEventIntoBadEvSim(Variables * vars) {
 		EffMC->LoadEventIntoBadEvSim(vars);
-		EffMC2->LoadEventIntoBadEvSim(vars);
-		EffMCpid2->LoadEventIntoBadEvSim(vars);
 		EffMCpid->LoadEventIntoBadEvSim(vars);
 	}
 	virtual bool ReinitializeHistos(bool refill){
 		bool checkifsomeismissing=false;
 		bool allfound=true;
 		if(!(EffMC -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
-         	if(!(EffMCpid2 -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
 		if(!(EffMCpid -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
-		if(!(EffMC2 -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
 	        if(!(EffData -> ReinitializeHistos(refill))) checkifsomeismissing = true;
 		if(!(EffData_glob -> ReinitializeHistos(refill))) checkifsomeismissing = true;
 	 	 
@@ -155,10 +157,10 @@ class EffCorr : public Tool{
 		return allfound;
 	}
 	virtual void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
-		EffMC ->  FillEventByEventMC(vars,GetGenMomentum,GetGenMomentum);
-		EffMC2 -> FillEventByEventMC(vars,GetGenMomentum,GetGenMomentum);
-		EffMCpid2 -> FillEventByEventMC(vars,GetGenMomentum,GetGenMomentum);
-		EffMCpid -> FillEventByEventMC(vars ,GetGenMomentum,GetGenMomentum);
+	//	EffMC ->  FillEventByEventMC(vars,GetGenRigidity,GetGenRigidity);
+	//	EffMCpid -> FillEventByEventMC(vars ,GetGenRigidity,GetGenRigidity);
+		EffMC ->  FillEventByEventMC(vars,var,discr_var);
+		EffMCpid -> FillEventByEventMC(vars ,var,discr_var);
 	}
 	
 	virtual void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
@@ -177,28 +179,28 @@ class EffCorr : public Tool{
 	void ModelWithSpline(float shift);
 
 	void Eval_Errors();
-	void Set_SystStat(TH1F * syst) { if(syst) syst_stat = (TH1F*) syst->Clone();}
+	void Set_SystStat(TH1F * syst, TH2F * avg,std::string timename) { 
+		if(syst) syst_stat = (TH1F*) syst->Clone();  
+		if(avg)  avg_time=(TH2F*)avg->Clone();
+		time=std::atoi(timename.substr(timename.find("-")+1,10).c_str())-4665600;
+		std::cout<<"Set_SystPar: "<<time<<" "<<syst_stat<<" "<<avg_time<<std::endl;
+	}
 
 	TH1F * GetMCEfficiency()	{return (TH1F*)EffMC     -> GetEfficiency();}
-	TH1F * GetMCEfficiency2()	{return (TH1F*)EffMC2    -> GetEfficiency();}
 	TH1F * GetMCEfficiency_noPID()	{return (TH1F*)EffMCpid  -> GetEfficiency();}
-	TH1F * GetMCEfficiency_noPID2()	{return (TH1F*)EffMCpid2 -> GetEfficiency();}
 
 
 	TH1F * GetMCBefore()		{return (TH1F*)EffMC  -> GetBefore();}
-	TH1F * GetMCBefore2()		{return (TH1F*)EffMC2  -> GetBefore();}
 	TH1F * GetMCBefore_noPID()	{return (TH1F*)EffMCpid  -> GetBefore();}
-	TH1F * GetMCBefore_noPID2()	{return (TH1F*)EffMCpid2  -> GetBefore();}
 	
 	TH1F * GetMCAfter()		{return (TH1F*)EffMC  -> GetAfter();}
-	TH1F * GetMCAfter2()		{return (TH1F*)EffMC2  -> GetAfter();}
 	TH1F * GetMCAfter_noPID()	{return (TH1F*)EffMCpid  -> GetAfter();}
-	TH1F * GetMCAfter_noPID2()	{return (TH1F*)EffMCpid2  -> GetAfter();}
 	
 	TH1F * GetCorrectionLat(int lat)  {return LatCorrections[lat];}
 	TH1F * GetEfficiencyLat(int lat)  {return LatEfficiencies[lat];}
 	
 	TH1F * GetGlobEfficiency()	  {return GlobalEfficiency;}
+	TH1F * GetGlobEfficiency_plot()	  {return GlobalEfficiency_plot;}
 	TH1F * GetGlobCorrection()	  {return GlobalCorrection;}
 	TH1F * GetGlobCorrection_noPID()  {return GlobalCorrectionpid;}
 
@@ -206,8 +208,8 @@ class EffCorr : public Tool{
 	TH1F * GetSyst_Err() 		  {return Syst_Err;}
 	TH1F * GetSyst_Stat() 		  {return Syst_Stat;}
 
-
-
+	TH2F * Get_AvgTime() 		{return avg_time;}
+	TGraphErrors * Get_TimeAvgCorrection() {return GlobalCorrection_timeavg;}
 };
 
 class Model{

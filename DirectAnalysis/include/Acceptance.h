@@ -9,7 +9,7 @@
 #include "rundb.h"
 
 struct MCPar{
-	float Rmin,Rmax,Trigrate,gen_factor,art_ratio;
+	float Rmin,Rmax,Trigrate,gen_factor,art_ratio,compact_event_ratio;
 	long int tot_ev,tot_trig;
 	std::string filename;
 	std::string runlist;
@@ -27,6 +27,8 @@ class Acceptance : public Tool{
 	std::string directory;
 	std::string basename;
 	std::string cut;
+	std::string dataeff_cut;
+	
 	Binning bins;
 	Binning binsfu;
 	MCPar param;
@@ -40,15 +42,21 @@ class Acceptance : public Tool{
 
 	std::vector<EffCorr*> EfficiencyCorrections;
 	std::vector<EffCorr*> EfficiencyFromData;
+	std::vector<float> EffCorrshift;
+	std::vector<float> EffDatashift;
+
 
 	FileSaver finalhistos;
 
-	TH1F * EffAcceptance  =0x0;
-	TH1F * EffAcceptanceMC=0x0;
+	TH1F * EffAcceptance  	  =0x0;
+	TH1F * EffAcceptanceMC	  =0x0;
+	TH1F * EffAcceptance_gen  =0x0;
+	TH1F * EffAcceptanceMC_gen=0x0;
+
 
 	public:
 	//standard constructor
-	Acceptance(FileSaver File, std::string Basename, std::string Directory,std::string Cut_before,std::string Cut_after,Binning Bins,Binning BinsForUnfolding){
+	Acceptance(FileSaver File, std::string Basename, std::string Directory,std::string Cut_before,std::string Cut_after,Binning Bins,Binning BinsForUnfolding,std::string dataeffcut=""){
 		FullSetEff     = new Efficiency(File, (Basename+"_FullSetMC" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str(),false);
 		FullSetEff_gen     = new Efficiency(File, (Basename+"_FullSetMCgen" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str(),false);
 	        For_Acceptance = new Efficiency(File,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,Cut_before.c_str(),Cut_before.c_str(),false);
@@ -59,9 +67,11 @@ class Acceptance : public Tool{
 		directory = Directory;
 		basename = Basename;
 		cut = Cut_after;
-
+		dataeff_cut=dataeffcut;
 		EffAcceptance = new TH1F((Basename +"_Eff_Acceptance").c_str(),(Basename +"_Eff_Acceptance").c_str(),Bins.size(),0,Bins.size());
 		EffAcceptanceMC = new TH1F((Basename +"_Eff_AcceptanceMC").c_str(),(Basename +"_Eff_AcceptanceMC").c_str(),Bins.size(),0,Bins.size());
+		EffAcceptance_gen = new TH1F((Basename +"_Eff_Acceptance_gen").c_str(),(Basename +"_Eff_Acceptance_gen").c_str(),Bins.size(),0,Bins.size());
+		EffAcceptanceMC_gen = new TH1F((Basename +"_Eff_AcceptanceMC_gen").c_str(),(Basename +"_Eff_AcceptanceMC_gen").c_str(),Bins.size(),0,Bins.size());
 		bins = Bins;
 
 		binsfu=BinsForUnfolding;
@@ -80,6 +90,7 @@ class Acceptance : public Tool{
 		TFile * file = finalhistos.GetFile();
 		if(file) 
 		{
+			cout<<basename<<endl;
 			Migr_rig = (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_UnfoldingRig").c_str());
                        	Migr_beta= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_Unfolding").c_str());
 		        Migr_R= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_R").c_str());
@@ -111,9 +122,12 @@ class Acceptance : public Tool{
 		TFile * fileres = FileRes.GetFile();
 
 		if(fileres){
-			EffAcceptance   = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
-			EffAcceptanceMC = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_AcceptanceMC").c_str());
+			EffAcceptance       = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance").c_str());
+			EffAcceptanceMC     = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_AcceptanceMC").c_str());
+			EffAcceptance_gen   = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance_gen").c_str());
+			EffAcceptanceMC_gen = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_AcceptanceMC_gen").c_str());
 	
+
 			Migr_rig = (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_UnfoldingRig").c_str());
                        	Migr_beta= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Unfolding").c_str());
 		        Migr_R= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_R").c_str());
@@ -128,9 +142,9 @@ class Acceptance : public Tool{
 
 
 
-	void Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename, std::string Runlist, float Art_ratio=1);
-	void ApplyEfficCorr(EffCorr * Correction);
-	void ApplyEfficFromData(EffCorr * Correction);
+	void Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename, std::string Runlist, float Compact_event_ratio, float Art_ratio=1);
+	void ApplyEfficCorr(EffCorr * Correction,float shift=0);
+	void ApplyEfficFromData(EffCorr * Correction,float shift=0);
 
 	bool ReinitializeHistos(bool refill){
 		bool checkifsomeismissing=false;
@@ -158,19 +172,20 @@ class Acceptance : public Tool{
 		if(checkifsomeismissing||refill) allfound=false;
 		return allfound;
 	}
+	
 	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
 		FullSetEff 	-> FillEventByEventMC(vars,var,discr_var);
 
-		if(FullSetEff_gen->GetBins().IsUsingBetaEdges()) FullSetEff_gen 	-> FillEventByEventMC(vars,GetBetaGen,GetBetaGen);
-		else FullSetEff_gen        -> FillEventByEventMC(vars,GetGenMomentum,GetGenMomentum);
+		if(FullSetEff_gen->GetBins().IsUsingBetaEdges()) FullSetEff_gen 	-> FillEventByEventMC(vars,GetBetaGen_cpct,GetBetaGen_cpct);
+		else FullSetEff_gen        -> FillEventByEventMC(vars,GetGenRigidity,GetGenRigidity);
 
-	//	For_Acceptance  -> FillEventByEventMC(vars,GetGenMomentum,GetGenMomentum);
+		For_Acceptance  -> FillEventByEventMC(vars,GetGenMomentum_10,GetGenMomentum_10);
 
-		if(ApplyCuts(cut,vars)){
-			Migr_rig->Fill(GetGenMomentum(vars),GetRigidity(vars),vars->mcweight);
-			Migr_beta->Fill(GetGenMomentum(vars),var(vars),vars->mcweight);
-			Migr_R->Fill(GetGenMomentum(vars),GetRigidity(vars),vars->mcweight);
-			Migr_B->Fill(GetGenMomentum(vars),var(vars),vars->mcweight);
+		if(ApplyCuts((cut+"&"+dataeff_cut).c_str(),vars)){
+			Migr_rig->Fill(GetGenRigidity(vars),GetRigidity(vars),vars->mcweight);
+			Migr_beta->Fill(GetGenRigidity(vars),var(vars),vars->mcweight);
+			Migr_R->Fill(GetGenRigidity(vars),GetRigidity(vars),vars->mcweight);
+			Migr_B->Fill(GetGenRigidity(vars),var(vars),vars->mcweight);
 		}		
 
 	}
@@ -181,9 +196,11 @@ class Acceptance : public Tool{
 	void Save();
 	void SaveResults(FileSaver finalhistos);
 	void SetDefaultOutFile(FileSaver FinalHistos);
-	void EvalEffAcc(int timeindex,float SF);
+	void EvalEffAcc(int timeindex,float SF, bool IsHe=false);
 	TH1F * GetEffAcc() {return EffAcceptance;}
 	TH1F * GetEffAccMC() {return EffAcceptanceMC;}
+	TH1F * GetEffAcc_gen() {return EffAcceptance_gen;}
+	TH1F * GetEffAccMC_gen() {return EffAcceptanceMC_gen;}
 	TH2F * GetMigr_rig() {return Migr_rig;}	
 	TH2F * GetMigr_beta() {return Migr_beta;}	
 

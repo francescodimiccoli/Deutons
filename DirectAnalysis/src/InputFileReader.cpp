@@ -14,7 +14,8 @@ TChain * InputFileReader(std::string listfilename,std::string treename)
     		max++;
 		std::istringstream iss(line);
     		std::cout<<line.c_str()<<std::endl;
-		if(max<=100)chain->Add(line.c_str());
+		if(max<=100) { int c = chain->Add(line.c_str(),-1);
+				if(c<=0) cout<<"Warning: Error reading file!"<<endl; }
 		else{cout<<"Warning: File List too long!"<<endl;}	
 	}
 	cout<<"Chain: "<<chain<<endl;

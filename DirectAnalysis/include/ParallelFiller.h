@@ -49,6 +49,9 @@ class ParallelFiller{
 	else Refill = false;
     }
 
+
+	//// Looping on simple ntuples
+
     void LoopOnMC(TTree * treeMC, Variables * vars){
         if(!Refill) return;
         cout<<" MC Filling from Ntuples ..."<< endl;
@@ -80,50 +83,8 @@ class ParallelFiller{
             for(int nobj=0;nobj<Objects2beFilled.size();nobj++) Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
         }
     }
-   /* 	
-   void LoopOnMC(DBarReader readerMC, Variables * vars){
-        if(!Refill) return;
-        cout<<" MC Filling ..."<< endl;
-	if(!readerMC.GetTree()) return;
-        if(readerMC.GetTree()->GetNbranches()>11) {LoopOnMC(readerMC.GetTree(),vars); return;}
-	else{
-	for(int i=0;i<readerMC.GetTreeEntries();i++){
-            if(i%(int)FRAC!=0) continue; // WTF ?!
-            UpdateProgressBar(i, readerMC.GetTreeEntries());
-            vars->ResetVariables();
-	    readerMC.FillVariables(i,vars);	
-            vars->Update();
-	    //vars->PrintCurrentState();
-            for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
-                Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
-                Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
-            }
-        }
-	}
-    }
- */ 
-   	 
-    void LoopOnMC(DBarReader readerMC, Variables * vars){
-        if(!Refill) return;
-        cout<<" MC Filling ..."<< endl;
-	if(!readerMC.GetTree()) return;
-        if(readerMC.GetTree()->GetNbranches()>11) {LoopOnMC(readerMC.GetTree(),vars); return;}
-	else{
-	for(int i=0;i<readerMC.GetCompactEntries();i++){
-            if(i%(int)FRAC!=0) continue; // WTF ?!
-            UpdateProgressBar(i, readerMC.GetCompactEntries());
-            vars->ResetVariables();
-	    readerMC.FillCompact(i,vars);	
-            vars->Update();
-//	   vars->PrintCurrentState();
- 	for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
-                Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
-                Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
-            }
-        }
-	}
-    }
- 
+
+
   void LoopOnGeneric(TTree * treeDT, Variables * vars){
         if(!Refill) return;
         cout<<" DATA Filling from NTuples ..."<< endl;
@@ -132,7 +93,7 @@ class ParallelFiller{
             if(i%(int)FRAC!=0) continue; // WTF ?!
             UpdateProgressBar(i, treeDT->GetEntries());
             vars->ResetVariables();
-    treeDT->GetEvent(i);
+    		treeDT->GetEvent(i);
             //vars->Update();
            for(int nobj=0;nobj<Objects2beFilled.size();nobj++) {
 			if(SecondFillinVariables[nobj]) Objects2beFilled[nobj]->FillEventByEventScatter(vars,FillinVariables[nobj],SecondFillinVariables[nobj],DiscrimVariables[nobj]);
@@ -142,15 +103,145 @@ class ParallelFiller{
     }
 
 
+
+
+
+   //looping On DBar Ntuples
+
+
+ 
+   void LoopOnMCVariables(DBarReader readerMC_P, DBarReader readerMC_D,DBarReader readerMC_He, Variables * vars){
+        if(!Refill) return;
+        cout<<" MC Filling ..."<< endl;
+	if(!readerMC_P.GetTree()) return;
+        if(readerMC_P.GetTree()->GetNbranches()>11) {LoopOnMC(readerMC_P.GetTree(),vars); return;}
+	else{
+	for(int i=0;i<readerMC_P.GetTreeEntries();i++){
+              UpdateProgressBar(i, readerMC_P.GetTreeEntries());
+	    if(i%(int)FRAC!=0) continue; // WTF ?!
+            vars->ResetVariables();
+	    readerMC_P.FillVariables(i,vars);	
+            vars->Update();
+	    //vars->PrintCurrentState();
+            for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
+                Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
+                Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+            }
+        }
+	
+
+	for(int i=0;i<readerMC_D.GetTreeEntries();i++){
+            UpdateProgressBar(i, readerMC_D.GetTreeEntries());
+           if(i%(int)FRAC!=0) continue; // WTF ?!
+             vars->ResetVariables();
+	    readerMC_D.FillVariables(i,vars);	
+            vars->Update();
+	    //vars->PrintCurrentState();
+            for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
+                Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
+                Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+            }
+        }
+	
+ 
+	for(int i=0;i<readerMC_He.GetTreeEntries();i++){
+           UpdateProgressBar(i, readerMC_He.GetTreeEntries());
+            if(i%(int)FRAC!=0) continue; // WTF ?!
+             vars->ResetVariables();
+	    readerMC_He.FillVariables(i,vars);	
+            vars->Update();
+	    //vars->PrintCurrentState();
+            for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
+                Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
+                Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+            }
+        }
+	}
+ 
+   }
+   	 
+    void LoopOnMC(DBarReader readerMC, Variables * vars){
+        if(!Refill) return;
+        cout<<" MC Filling ..."<< endl;
+	if(!readerMC.GetTree()) return;
+        if(readerMC.GetTree()->GetNbranches()>11) {LoopOnMC(readerMC.GetTree(),vars); return;}
+	else{
+	for(int i=0;i<readerMC.GetCompactEntries();i++){
+            
+	    if(i%(int)FRAC!=0) continue; // WTF ?!
+            UpdateProgressBar(i, readerMC.GetCompactEntries());
+            vars->ResetVariables();
+	    readerMC.FillCompact(i,vars);	
+            vars->Update();
+	   //vars->PrintCurrentState();
+				
+
+ 	for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
+                Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
+                Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+            }
+        }
+	}
+    }
+ 
+    void LoopOnMC(DBarReader readerMC_P, DBarReader readerMC_D,DBarReader readerMC_He, Variables * vars){
+	    if(!Refill) return;
+	    cout<<" MC Filling ..."<< endl;
+	    if(!readerMC_P.GetTree()) return;
+	    if(readerMC_P.GetTree()->GetNbranches()>11) {LoopOnMC(readerMC_P.GetTree(),vars); return;}
+	    else{
+		    for(int i=0;i<readerMC_P.GetCompactEntries();i++){
+			    if(i%(int)FRAC!=0) continue; // WTF ?!
+			    UpdateProgressBar(i, readerMC_P.GetCompactEntries());
+			    vars->ResetVariables();
+			    readerMC_P.FillCompact(i,vars,0.938);	
+			    vars->Update();
+			    //vars->PrintCurrentState();
+			    for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
+				    Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
+				    Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+			    }
+		    }
+		
+		    for(int i=0;i<readerMC_D.GetCompactEntries();i++){
+			    if(i%(int)FRAC!=0) continue; // WTF ?!
+			    UpdateProgressBar(i, readerMC_D.GetCompactEntries());
+			    vars->ResetVariables();
+			    readerMC_D.FillCompact(i,vars,1.875);	
+			    vars->Update();
+			    //vars->PrintCurrentState();
+			    for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
+				    Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
+				    Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+			    }
+		    }
+		
+		    for(int i=0;i<readerMC_He.GetCompactEntries();i++){
+			    if(i%(int)FRAC!=0) continue; // WTF ?!
+			    UpdateProgressBar(i, readerMC_He.GetCompactEntries());
+			    vars->ResetVariables();
+			    readerMC_He.FillCompact(i,vars,4*0.938);	
+			    vars->Update();
+			    //vars->PrintCurrentState();
+			    for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
+				    Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
+				    Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+			    }
+		    }
+
+
+	    }
+    }
+
     void LoopOnData(DBarReader readerDT, Variables * vars){
         if(!Refill) return;
 	if(!readerDT.GetTree() && !readerDT.GetCompactTree()) return;
 	if(readerDT.GetTree()) if(readerDT.GetTree()->GetNbranches()>11) {LoopOnData(readerDT.GetTree(),vars); return;}
 	cout<<" DATA Filling ..."<< endl;
         for(int i=0;i<readerDT.GetCompactEntries();i++){
-	    if(i%(int)FRAC!=0) continue; // WTF ?!
-            UpdateProgressBar(i, readerDT.GetCompactEntries());
-            vars->ResetVariables();
+	     UpdateProgressBar(i, readerDT.GetCompactEntries());
+            if(i%(int)FRAC!=0) continue; // WTF ?!
+             vars->ResetVariables();
             readerDT.FillCompact(i,vars); 
             vars->Update();
 	    //vars->PrintCurrentState();
@@ -184,7 +275,7 @@ class ParallelFiller{
 
 
     void LoopOnGeneric(DBarReader reader, Variables * vars){
-        if(!Refill) return;
+         if(!Refill) return;
         if(!reader.GetTree() && !reader.GetCompactTree()) return;
         if(reader.GetTree()) if(reader.GetTree()->GetNbranches()>11) {LoopOnGeneric(reader.GetTree(),vars); return;}
         else
@@ -193,14 +284,61 @@ class ParallelFiller{
 	    if(i%(int)FRAC!=0) continue; // WTF ?!
             UpdateProgressBar(i, reader.GetCompactEntries());
      	    vars->ResetVariables();	
-	    reader.FillVariables(i,vars);
-            //reader.FillCompact(i,vars);
+	    //reader.FillVariables(i,vars);
+            reader.FillCompact(i,vars);
 	    vars->Update();
             //vars->PrintCurrentState();
 	    for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
                 if(SecondFillinVariables[nobj]) Objects2beFilled[nobj]->FillEventByEventScatter(vars,FillinVariables[nobj],SecondFillinVariables[nobj],DiscrimVariables[nobj]);
 		else Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
         }
+    }
+
+    void LoopOnGeneric(DBarReader reader1,DBarReader reader2,DBarReader reader3, Variables * vars){
+	    if(!Refill) return;
+	    if(!reader1.GetTree() && !reader1.GetCompactTree()) return;
+	    if(reader1.GetTree()) if(reader1.GetTree()->GetNbranches()>11) {LoopOnGeneric(reader1.GetTree(),vars); return;}
+	    else
+		    cout<<" Generic Filling MC ..."<< endl;
+	    for(int i=0;i<reader1.GetCompactEntries();i++){
+		    if(i%(int)FRAC!=0) continue; // WTF ?!
+		    UpdateProgressBar(i, reader1.GetCompactEntries());
+		    vars->ResetVariables();	
+		    //reader.FillVariables(i,vars);
+		    reader1.FillCompact(i,vars,0.938);
+		    vars->Update();
+		    //vars->PrintCurrentState();
+		    for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
+			    if(SecondFillinVariables[nobj]) Objects2beFilled[nobj]->FillEventByEventScatter(vars,FillinVariables[nobj],SecondFillinVariables[nobj],DiscrimVariables[nobj]);
+			    else Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+	    }
+
+	    for(int i=0;i<reader2.GetCompactEntries();i++){
+		    if(i%(int)FRAC!=0) continue; // WTF ?!
+		    UpdateProgressBar(i, reader2.GetCompactEntries());
+		    vars->ResetVariables();	
+		    //reader.FillVariables(i,vars);
+		    reader2.FillCompact(i,vars,1.875);
+		    vars->Update();
+		    //vars->PrintCurrentState();
+		    for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
+			    if(SecondFillinVariables[nobj]) Objects2beFilled[nobj]->FillEventByEventScatter(vars,FillinVariables[nobj],SecondFillinVariables[nobj],DiscrimVariables[nobj]);
+			    else Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+	    }
+		
+	    for(int i=0;i<reader3.GetCompactEntries();i++){
+		    if(i%(int)FRAC!=0) continue; // WTF ?!
+		    UpdateProgressBar(i, reader3.GetCompactEntries());
+		    vars->ResetVariables();	
+		    //reader.FillVariables(i,vars);
+		    reader3.FillCompact(i,vars,4*0.938);
+		    vars->Update();
+		    //vars->PrintCurrentState();
+		    for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
+			    if(SecondFillinVariables[nobj]) Objects2beFilled[nobj]->FillEventByEventScatter(vars,FillinVariables[nobj],SecondFillinVariables[nobj],DiscrimVariables[nobj]);
+			    else Objects2beFilled[nobj]->FillEventByEventData(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+	    }
+
     }
 
 
@@ -246,7 +384,6 @@ class ParallelFiller{
 
 
     void LoopOnMCForGenAcceptance(DBarReader reader, Variables * vars){
-		cout<<"CAZZOCULO "<<reader.GetTreeEntries()<<endl;
 	    if(!Refill) return;
 	    for(int i=0;i<reader.GetTreeEntries();i++){
 		    if(i%(int)20!=0) continue; // WTF ?!

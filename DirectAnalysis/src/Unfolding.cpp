@@ -5,7 +5,7 @@ int slicenormalizex(TH2F * h){
         for(int i=0;i<h->GetNbinsX();i++){
 		TH1D * proj = h->ProjectionY("proj",i+1,i+1);
 		for(int j=0;j<h->GetNbinsY();j++){
-			cout<<"proj: "<<proj->Integral()<<" "<<h->GetEntries()<<endl;
+		//	cout<<"proj: "<<proj->Integral()<<" "<<h->GetEntries()<<endl;
 			if(proj->Integral()>0){ 
 				h->SetBinContent(i+1,j+1, h->GetBinContent(i+1,j+1)/proj->Integral());
 				h->SetBinError(i+1,j+1, h->GetBinError(i+1,j+1)/proj->Integral());
@@ -35,13 +35,14 @@ double Folder::foldwithmatrix(TSpline3* flux, float x){
 	int bin = Migr_matr->GetXaxis()->FindBin(x);
 	float delta = Migr_matr->GetXaxis()->GetBinLowEdge(bin+1)-Migr_matr->GetXaxis()->GetBinLowEdge(bin);
 	float expo_x = Expo->Eval(Migr_matr->GetXaxis()->GetBinCenter(bin));
+	float acce_x = Acce->Eval(Migr_matr->GetXaxis()->GetBinCenter(bin));
 	for(int i=0; i< Migr_matr->GetNbinsX();i++) {
 
 			float expo_i = Expo->Eval(Migr_matr->GetXaxis()->GetBinCenter(i+1));
 			float delta_i =  Migr_matr->GetXaxis()->GetBinLowEdge(i+2)-Migr_matr->GetXaxis()->GetBinLowEdge(i+1);
-			result += (splineIntegral(flux,Migr_matr->GetXaxis()->GetBinLowEdge(i+1),Migr_matr->GetXaxis()->GetBinLowEdge(i+2)))*expo_x*Migr_matr->GetBinContent(i+1,bin);
+			result += (splineIntegral(flux,Migr_matr->GetXaxis()->GetBinLowEdge(i+1),Migr_matr->GetXaxis()->GetBinLowEdge(i+2)))*expo_x*acce_x*Migr_matr->GetBinContent(i+1,bin);
 	}
-	return result/(delta*expo_x);
+	return result/(delta*expo_x*acce_x);
 }
 
 
@@ -65,7 +66,7 @@ float Folder::GetXknot(int indx){
 	//return min +(max-min)*edges[indx];
 	float center;
 	if(indx<(knots-1)) center = fit_min + offset + ((fit_max-fit_min)/(knots-1))*indx;
-	else center = fit_max+ (max-fit_max)/3;
+	else center = fit_max+ (max-fit_max)/6;
 
 	return Migr_matr->GetXaxis()->GetBinCenter(Migr_matr->GetXaxis()->FindBin(center));
 }
@@ -77,9 +78,9 @@ void Folder::SetKnots(double *y, std::string name) {
 }
 
 
-UnfoldRes Unfold(TH2* migr_matr_norm, TH1 * measured_R, TGraph * expo, float fit_min,float fit_max,int knots,float offset){
+UnfoldRes Unfold(TH2* migr_matr_norm, TH1 * measured_R, TGraph * expo, TGraph* acce, float fit_min,float fit_max,int knots,float offset){
          	UnfoldRes Res;
-	        Folder * F = new Folder(migr_matr_norm,measured_R, expo, fit_min,fit_max,knots,offset);
+	        Folder * F = new Folder(migr_matr_norm,measured_R, expo, acce, fit_min,fit_max,knots,offset);
                 int iter=100;
                 TF1 * f[iter];
 
@@ -97,7 +98,7 @@ UnfoldRes Unfold(TH2* migr_matr_norm, TH1 * measured_R, TGraph * expo, float fit
 		                      f[att]->SetParLimits(i,0.7*measured_R->GetBinContent(measured_R->GetXaxis()->FindBin(F->GetXknot(i))),
                                                        1.2*measured_R->GetBinContent(measured_R->GetXaxis()->FindBin(F->GetXknot(i))));}
                                 else f[att]->SetParLimits(i,0.4*measured_R->GetBinContent(measured_R->GetNbinsX()),
-                                                       1.1*measured_R->GetBinContent(measured_R->GetNbinsX()));
+                                                       0.9*measured_R->GetBinContent(measured_R->GetNbinsX()));
 				}
 
 
@@ -124,8 +125,8 @@ UnfoldRes Unfold(TH2* migr_matr_norm, TH1 * measured_R, TGraph * expo, float fit
 			TVirtualFitter::Fitter(measured_R)->SetMaxIterations(100000);
                         measured_R->Fit(("f"+to_string(att)).c_str(),"NQWLM0","",fit_min,fit_max);
                         chi2fit[att] =f[att]->GetChisquare();
-                        cout<<att<<" "<<chi2fit[att]<<" "<<counter<<endl;
-                        
+                        cout<<att<<" "<<chi2fit[att]<<" "<<counter<<" "<<knots<<endl;
+        			                
         
                         if(chi2fit[att]<value){
                                 value=chi2fit[att];
@@ -134,9 +135,8 @@ UnfoldRes Unfold(TH2* migr_matr_norm, TH1 * measured_R, TGraph * expo, float fit
                 }
                 cout<<"*********** FINAL FIT ********"<<endl;
                 cout<<"minimum chi2: "<<min<<" attempt: "<<chi2fit[min]/((measured_R->GetNbinsX()-F->GetNknots()+1))<<endl; 
-	 	measured_R->Fit(("f"+to_string(min)).c_str(),"QWLM","",fit_min,fit_max);
-               	cout<<f[min]->GetChisquare()/(measured_R->GetNbinsX()-F->GetNknots())<<endl;         
-		
+		measured_R->Fit(("f"+to_string(min)).c_str(),"WLM0","",fit_min,fit_max);
+             	cout<<f[min]->GetChisquare()/(measured_R->GetNbinsX()-F->GetNknots())<<endl;         
                 double y[F->GetNknots()];
         
                 for(int i=0; i<F->GetNknots();i++){

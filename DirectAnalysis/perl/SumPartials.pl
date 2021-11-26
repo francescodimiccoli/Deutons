@@ -28,7 +28,7 @@ print "Creating job files...";
 			export WORKDIR=$workdir;
 			source \$WORKDIR/mysetenv.sh;\n";
 
-				print OUT  "$workdir/perl/SumResults.pl $ARGV[0]-$ARGV[1] \$1";
+				print OUT  "$workdir/perl/SumResults.pl $ARGV[0]-$ARGV[1] $njobs \$1";
 			
 
 		close (OUT);

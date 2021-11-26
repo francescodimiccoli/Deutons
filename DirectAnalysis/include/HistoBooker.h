@@ -78,7 +78,9 @@ class HistoBooker{
 	
 
 	void FillEverything(DBarReader reader,Variables * vars);
+	void FillEverything(DBarReader reader_P,DBarReader reader_D,DBarReader reader_He, Variables * vars);
 	void SaveEverything(FileSaver finalhisto);	
+
 };
 
 #endif

@@ -20,7 +20,7 @@ void SingleHisto::Save(FileSaver finalhisto){
 void SingleHisto::FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars)){
 	if(ApplyCuts(cut,vars)){
      		float weight=1;
-               if(ApplyCuts("IsMC",vars)) weight = vars->mcweight;
+               if(ApplyCuts("IsMC",vars)) weight = 1;//vars->mcweight;
                else weight = vars->PrescaleFactor;
 	    Histos[0]->Fill(var(vars),weight);	
         }
@@ -171,9 +171,15 @@ void HistoBooker::BookScatterBinCollection(std::string CollectionName, Binning B
 	Histos.push_back(tmp);
         Filler.AddObject2beFilled(tmp,var,discr_var,"",secondvar);
 };
+
 void HistoBooker::FillEverything(DBarReader reader, Variables * vars){
 	Filler.LoopOnGeneric(reader,vars);	
 };
+
+void HistoBooker::FillEverything(DBarReader reader_P,DBarReader reader_D,DBarReader reader_He, Variables * vars){
+	Filler.LoopOnGeneric(reader_P,reader_D,reader_He,vars);	
+};
+
 
 void HistoBooker::SaveEverything(FileSaver finalhisto){
 	for(int n=0;n<Histos.size();n++)

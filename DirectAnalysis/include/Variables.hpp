@@ -128,6 +128,7 @@ struct Variables{
     float      TOFchisq_t;	
     float      NBadTOF;
     float beta_chiT_SA;
+    float	 beta_chiS_SA;
     float 	beta_ncl_SA; 
     
     // TRD
@@ -144,6 +145,8 @@ struct Variables{
     float Richtothits;
     float        Richtotused;
     float      RichPhEl;
+    float      RichPhEl_tot;
+    float      RichPhEl_ring;
     float      RICHprob;
     float        RICHPmts;
     float      RICHcollovertotal;
@@ -164,6 +167,7 @@ struct Variables{
 
     //MC vars
     float      Momento_gen;
+    float      Momento_gen_cpct;
     float      Momento_gen_UTOF;
     float      Momento_gen_LTOF;
     float      Momento_gen_RICH;
@@ -233,6 +237,8 @@ struct Variables{
 
 float GetInverseRigidity (Variables * vars); 
 float GetGenMomentum     (Variables * vars); 
+float GetGenMomentum_10    (Variables * vars); 
+float GetGenRigidity   (Variables * vars); 
 
 float GetInverseEdepUToF (Variables * vars); 
 float GetInverseEdepLToF (Variables * vars); 
@@ -240,10 +246,11 @@ float GetInverseEdepTrack(Variables * vars);
 float GetInverseEdepTRD  (Variables * vars); 
 
 float GetBetaGen         (Variables * vars);
+float GetBetaGen_cpct     (Variables * vars);
 float GetBetaSlowTOF     (Variables * vars);
 float GetBetaSlowRICH    (Variables * vars);
 float GetRigSlow         (Variables * vars);
-float GetBetaFromR 	(float m, float R);
+float GetBetaFromR 	(float m, float R, int Z=1);
 float GetRFromBeta      (float m, float beta);
 
 float GetInverseBetaTOF  (Variables * vars);
@@ -291,6 +298,8 @@ float GetRICHBDT(Variables* vars);
 
 float GetEdepECAL(Variables * vars);
 float GetMomentumProxy(Variables *vars); 
+float GetMomentumProxyHe(Variables *vars); 
+
 
 float GetNToFClusters(Variables * vars);; 
 float GetUtofQ	(Variables * vars) ;
@@ -308,6 +317,13 @@ float GetInverseBetaTOF_Smear(Variables * vars);
 
 float GetInverseBetaRICH_Smear(Variables * vars);
 
+float GetNRichTOThits(Variables * vars); 
+float GetNRichUSEDhits(Variables * vars) ;
+float GetNRichPMTs(Variables * vars); 
+float GetRICHProb(Variables * vars); 
+float GetRICHCollovertotal(Variables * vars);
+float GetRICHTOFBetaConsistency(Variables * vars);
+float GetRICHTotPhel(Variables * vars);
 
 
 #endif

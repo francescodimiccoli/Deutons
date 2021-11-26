@@ -26,6 +26,7 @@ class Folder {
         TH2F * Migr_matr;
         TSpline3 * UnfoldedCounts;
 	TGraph * Expo;
+       	TGraph * Acce;
         int knots;
 	TRandom3 * rand;
 	float fit_min;
@@ -33,10 +34,11 @@ class Folder {
 	float offset;
 
         public:
-        Folder (TH2 * Migr, TH1* counts,TGraph *expo, float fitmin, float fitmax,int Knots,float Offset) {
+        Folder (TH2 * Migr, TH1* counts,TGraph *expo, TGraph *acce, float fitmin, float fitmax,int Knots,float Offset) {
                 Counts = (TH1F*) counts;
                 Migr_matr = (TH2F*) Migr;
               Expo = expo;
+		Acce = acce;
 		  knots = Knots;
 		offset=Offset;
 		fit_min=fitmin;
@@ -61,6 +63,6 @@ class Folder {
         void SetKnots(double *y,std::string name);
 };
 
-UnfoldRes Unfold(TH2* migr_matr_norm, TH1 * measured_R, TGraph *expo, float fit_min, float fit_max,int Knots, float Offset);
+UnfoldRes Unfold(TH2* migr_matr_norm, TH1 * measured_R, TGraph *expo, TGraph * acce, float fit_min, float fit_max,int Knots, float Offset);
 
 #endif

@@ -8,7 +8,7 @@
 #include "Tool.h"
 #include "GlobalPaths.h"
 #include "PlottingFunctions.h"
-
+#include "ShiftPeak.h"
 
 class Tool;
 
@@ -62,6 +62,7 @@ struct TFit {
    TFit(TH1F * templ_P, TH1F * templ_D, TH1F * data, TH1F * dataPrim, TH1F* dataAmbient) { Templ_P= templ_P; Templ_D=templ_D; Data=data; DataPrim=dataPrim; DataAmbient = dataAmbient; }
   TFit(TH1F * templ_P, TH1F * templ_D, TH1F * data, TH1F * dataPrim) { Templ_P= templ_P; Templ_D=templ_D; Data=data; DataPrim=dataPrim; }
   void RegularizeTemplateError();
+  void AddSysttoTempl();
 
 };
 
@@ -89,11 +90,22 @@ struct BestChi {
 			j--;
 			chimin = Histo->GetBinContent(i+1,j+1);
 		}
+	void FindMinimum(TH2F * Histo, int fixed_i) {
+			TH1D * s = (TH1D*) (Histo->ProjectionY("s",fixed_i+1,fixed_i+1));
+			j=s->GetMinimumBin();
+			j--;
+			i=fixed_i;
+			chimin = Histo->GetBinContent(fixed_i+1,j+1);
+			}
+
+
 };
 	
 void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constrain_min[], float constrain_max[], bool isfitnoise, bool highmasstailconstrain, bool IsFitPrim=false );
 
 TSpline3 * GetSplineFromHisto(TH1F * Graph, Binning bins);
+
+void AdjustErrorsforFullStat(TH1F* histo,int ntimebins);
 
 class TemplateFIT : public Tool{
 
@@ -140,6 +152,12 @@ class TemplateFIT : public Tool{
 	std::string cutoff;
 	std::string cutprimary;
 	std::string discr_var;
+	std::string cutP; 
+        std::string cutD ;
+        std::string cutHe;
+
+
+
 
 	std::string basename;
 
@@ -154,10 +172,22 @@ class TemplateFIT : public Tool{
 	bool highmassconstrain=false;
 	int ActualTime=0;
 	bool IsLocalFit=false;
+	bool IsLocalConstrainedFit=false;
+
+
+	float template1scalefactor1=1;
+	float template1scalefactor2=1;
+	float template1scalefactor3=1;
+
+
+
+
+	bool IsExtern = false;
+
 
 	public:	
 	//standard constructor
-	TemplateFIT(std::string Basename,Binning Bins, std::string Cut,std::string Cutoff, int Nbins, float Xmin, float Xmax, bool IsRich,int steps,float sigma,float shift,int smearingmode){
+	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, std::string CutP, std::string CutD, std::string CutHe,std::string Cutoff, int Nbins, float Xmin, float Xmax, bool IsRich,int steps,float sigma,float shift,int smearingmode){
 		
 			for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
@@ -204,12 +234,20 @@ class TemplateFIT : public Tool{
 		MCmodel->SetParameter(3,0.161477);
 
 		IsLocalFit = false;
+		IsLocalConstrainedFit=false;
 		basename=Basename;
 		cut = Cut;
 		cutoff = Cutoff;
 		cutprimary=Cut+"&IsPrimary";
 		bins=Bins;
-		
+	
+		cutP=CutP;
+		cutD=CutD;
+		cutHe=CutHe;
+		cutP=cut+cutP;
+		cutD=cut+cutD;
+		cutHe=cut+cutHe;
+
 		StatErrorP  = new TH1F("StatErrorP","StatErrorP",bins.size(),0,bins.size()) ;
 		StatErrorD  = new TH1F("StatErrorD","StatErrorD",bins.size(),0,bins.size()) ;
 		StatErrorT  = new TH1F("StatErrorT","StatErrorT",bins.size(),0,bins.size()) ;
@@ -247,12 +285,24 @@ class TemplateFIT : public Tool{
 
 	//reading constructor
 
-	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich, int steps,float sigma,float shift,int smearingmode){
+	TemplateFIT(FileSaver  File, std::string Basename,Binning Bins, bool IsRich, int steps,float sigma,float shift,int smearingmode,int ntimebins=1){
 
-		TFile * file = File.GetFile();
+		cout<<"Templates: "<<Basename<<endl;
+		TFile * filecurrent = File.GetFile();
+		TFile * fileextern = TFile::Open((workdir+"/ExternalTemplatesMC.root").c_str()); 			
+	
+		TFile * file;
+	/*	if(!IsExtern) {
+			if(fileextern)	file = fileextern;
+			else file = filecurrent;
+			}
+		else file = filecurrent;
+*/
+		file = filecurrent;
 
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
+			cout<<"Reading Bin: "<<bin<<endl;
 			for(int i=0;i<steps;i++){
 				fits[bin].push_back(std::vector<TFit *>());
 				for(int j=0;j<steps;j++){
@@ -266,21 +316,56 @@ class TemplateFIT : public Tool{
 					string nameHe    =Basename + "/Bin "+ to_string(bin)+"/TemplateHe/" + Basename + "_MCHe_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 					string nameNo    =Basename + "/Bin "+ to_string(bin)+"/TemplateNoise/" + Basename + "_MCNoise_"      +to_string(bin)+" "+to_string(i)+" "+to_string(j);
 
-					fit->Templ_P    =  (TH1F *)file->Get(nameP.c_str());
-					fit->Templ_D 	=  (TH1F *)file->Get(nameD.c_str());
-					fit->Templ_He	=  (TH1F *)file->Get(nameHe.c_str());
-					fit->Templ_Noise=  (TH1F *)file->Get(nameNo.c_str());
+					if(i==0&&j==5){
+						fit->Templ_P    =  (TH1F *)filecurrent->Get(nameP.c_str());
+						fit->Templ_D 	=  (TH1F *)filecurrent->Get(nameD.c_str());
+						fit->Templ_He	=  (TH1F *)filecurrent->Get(nameHe.c_str());
+						fit->Templ_Noise=  (TH1F *)filecurrent->Get(nameNo.c_str());
+					}
 
-					fit->Data    	=  (TH1F *)file->Get(named.c_str());
-					fit->DataPrim	=  (TH1F *)file->Get(namedprim.c_str());
-					fit->DataAmbient	=  (TH1F *)file->Get(namedamb.c_str());
+					else{
+						fit->Templ_P    =  (TH1F *)file->Get(nameP.c_str());
+						fit->Templ_D 	=  (TH1F *)file->Get(nameD.c_str());
+						fit->Templ_He	=  (TH1F *)file->Get(nameHe.c_str());
+						fit->Templ_Noise=  (TH1F *)file->Get(nameNo.c_str());
+					}
+
+					/*AdjustErrorsforFullStat(fit->Templ_P ,ntimebins);	
+					  AdjustErrorsforFullStat(fit->Templ_D ,ntimebins);	
+					  AdjustErrorsforFullStat(fit->Templ_He,ntimebins);	
+					 */
+					
+					fit->Data    	=  (TH1F *)filecurrent->Get(named.c_str());
+					fit->DataPrim	=  (TH1F *)filecurrent->Get(namedprim.c_str());
+					fit->DataAmbient	=  (TH1F *)filecurrent->Get(namedamb.c_str());
 
 
 
 					fits[bin][i].push_back(fit);
 				}
 			}
-		}	
+		}
+
+		if(IsExtern){
+		for(int bin=0;bin<Bins.size();bin++){
+			for(int i=0;i<steps;i++){
+				for(int j=0;j<steps;j++){
+
+					string nameP    =Basename + "/Bin "+ to_string(bin)+"/TemplateP/" + Basename + "_MCP_"      +to_string(bin)+" "+to_string(0)+" "+to_string(5);
+					string nameD    =Basename + "/Bin "+ to_string(bin)+"/TemplateD/" + Basename + "_MCD_"      +to_string(bin)+" "+to_string(0)+" "+to_string(5);
+					string nameHe    =Basename + "/Bin "+ to_string(bin)+"/TemplateHe/" + Basename + "_MCHe_"      +to_string(bin)+" "+to_string(0)+" "+to_string(5);
+		
+						fits[bin][i][j]->Templ_P    	=  BuildTemplateFromExternal(fits[bin][0][5]->Templ_P,(TH1F *)file->Get(nameP.c_str()),  fits[bin][i][j]->Templ_P);
+						fits[bin][i][j]->Templ_D 	=  BuildTemplateFromExternal(fits[bin][0][5]->Templ_D,(TH1F *)file->Get(nameD.c_str()),  fits[bin][i][j]->Templ_D);
+						fits[bin][i][j]->Templ_He	=  BuildTemplateFromExternal(fits[bin][0][5]->Templ_He,(TH1F *)file->Get(nameHe.c_str()),fits[bin][i][j]->Templ_He);
+						cout<<i<<" "<<j<<fits[bin][i][j]->Templ_P->Integral()<<endl;
+				}
+			}
+		}
+
+		}
+
+	
 		basename=Basename;
 
 		bins=Bins; 
@@ -304,7 +389,9 @@ class TemplateFIT : public Tool{
 
 		isrich=IsRich;
 		IsLocalFit = false;
+		IsLocalConstrainedFit = false;
 	
+
 		if(smearingmode==0 && !IsRich) systpar.mode=0;
 		if(smearingmode==1 && !IsRich) systpar.mode=1;
 		if(smearingmode==0 &&  IsRich) systpar.mode=2;
@@ -325,6 +412,8 @@ class TemplateFIT : public Tool{
 		SetFitConstraints(0.9,1,0.015,0.06,0.0001,0.005);
 
 	}
+
+	TH1F * BuildTemplateFromExternal(TH1F* core, TH1F *reference, TH1F* external);
 
 	void SetFitConstraints(float minP, float maxP,float minD,float maxD,float minHe,float maxHe, bool highmasstailconstrain=false) {
 		constrainmin[0]=minP; constrainmin[1]=minD; constrainmin[2]=minHe; 
@@ -376,15 +465,20 @@ class TemplateFIT : public Tool{
 	TH1F * GetStatErrorD(){ return StatErrorD;}
 	TH1F * GetStatErrorT(){ return StatErrorT;}
 
+	void SetTemplateScaleFactor(float scale1,float scale2, float scale3) {template1scalefactor1=scale1; template1scalefactor2=scale2; template1scalefactor3=scale3;}
 	TH1F * GetSystError() { return SystError;}	
 	Binning  GetBinning() {return bins;}
 	void  RebinAll(int f=2);	
 	float GetHeContaminationWeight(int bin) { return fits[bin][BestChiSquare->i][BestChiSquare->j]->ContribHe; }
 	float GetHeContaminationErr   (int bin) { return fits[bin][BestChiSquare->i][BestChiSquare->j]->errHe; }
 	void SetLocalFit(){IsLocalFit = true; }
+	void SetLocalConstrainedFit(){IsLocalConstrainedFit = true; }
 	TH2F * GetDCountsSpread(int bin)	{ return DCountsSpread[bin];}
 	TH2F * GetChiSquareSpread(int bin)      { return TFitChisquare[bin];}	
 	TH1F * GetWeightedDCounts(int bin)     { return WeightedDCounts[bin];}
+	
+	bool SetAsExtern() {IsExtern=true;}
+
 
 };
 

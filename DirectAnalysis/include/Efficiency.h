@@ -8,6 +8,7 @@
 #include "filesaver.h"
 #include "Tool.h"
 #include "GlobalPaths.h"
+#include "PlottingFunctions.h"
 
 
 class Tool;
@@ -16,6 +17,7 @@ class Efficiency : public Tool{
 
 	private:
 
+	bool notweighted_phtr = false;
 	bool notweighted = false;
 	TH1 * before;
 	TH1 * after;
@@ -101,6 +103,8 @@ class Efficiency : public Tool{
 	virtual void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
 	virtual void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars));
 	virtual void SetNotWeightedMC(){notweighted = true; return;}
+	virtual void SetNotWeightedMC_phtr(){notweighted_phtr = true; return;}
+
 
 	virtual void SetUpBadEventSimulator(BadEventSimulator * Sim) {BadEvSim = Sim; return; };
 	BadEventSimulator * GetBadEventSimulator() {return BadEvSim;};
