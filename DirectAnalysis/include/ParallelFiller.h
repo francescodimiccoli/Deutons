@@ -169,7 +169,7 @@ class ParallelFiller{
 	for(int i=0;i<readerMC.GetCompactEntries();i++){
             
 	    if(i%(int)FRAC!=0) continue; // WTF ?!
-            UpdateProgressBar(i, readerMC.GetCompactEntries());
+            //UpdateProgressBar(i, readerMC.GetCompactEntries());
             vars->ResetVariables();
 	    readerMC.FillCompact(i,vars);	
             vars->Update();
@@ -192,7 +192,7 @@ class ParallelFiller{
 	    else{
 		    for(int i=0;i<readerMC_P.GetCompactEntries();i++){
 			    if(i%(int)FRAC!=0) continue; // WTF ?!
-			    UpdateProgressBar(i, readerMC_P.GetCompactEntries());
+			   // UpdateProgressBar(i, readerMC_P.GetCompactEntries());
 			    vars->ResetVariables();
 			    readerMC_P.FillCompact(i,vars,0.938);	
 			    vars->Update();
@@ -218,7 +218,7 @@ class ParallelFiller{
 		
 		    for(int i=0;i<readerMC_He.GetCompactEntries();i++){
 			    if(i%(int)FRAC!=0) continue; // WTF ?!
-			    UpdateProgressBar(i, readerMC_He.GetCompactEntries());
+		//	    UpdateProgressBar(i, readerMC_He.GetCompactEntries());
 			    vars->ResetVariables();
 			    readerMC_He.FillCompact(i,vars,4*0.938);	
 			    vars->Update();
@@ -239,7 +239,7 @@ class ParallelFiller{
 	if(readerDT.GetTree()) if(readerDT.GetTree()->GetNbranches()>11) {LoopOnData(readerDT.GetTree(),vars); return;}
 	cout<<" DATA Filling ..."<< endl;
         for(int i=0;i<readerDT.GetCompactEntries();i++){
-	     UpdateProgressBar(i, readerDT.GetCompactEntries());
+	    UpdateProgressBar(i, readerDT.GetCompactEntries());
             if(i%(int)FRAC!=0) continue; // WTF ?!
              vars->ResetVariables();
             readerDT.FillCompact(i,vars); 
@@ -348,13 +348,17 @@ class ParallelFiller{
 	    if(reader.GetTree()->GetNbranches()>11) {ExposureTimeFilling(reader.GetTree(),vars); return;}
 	    else
 		    cout<<" Exposure Time Filling ..."<< endl;
+	    int n_of_seconds =0;	
 	    for(int i=0;i<reader.GetTreeEntries();i++){
 		    UpdateProgressBar(i, reader.GetTreeEntries());
 		    reader.FillVariables(i,vars);
 		    vars->Update();
 		    for(int nobj=0;nobj<Objects2beFilled.size();nobj++) 
 			    if(vars->good_RTI==0&&vars->isinsaa==0) UpdateZoneLivetime(vars->Livetime_RTI,vars->Rcutoff_IGRFRTI,Objects2beFilled[nobj]->GetExposureTime(),Objects2beFilled[nobj]->GetBins());
+		    if(vars->good_RTI==0&&vars->isinsaa==0) n_of_seconds++;
+		   	
 	    }
+	    cout<<" Seconds in te RUN: "<<n_of_seconds<<endl;
 	    for(int nobj=0;nobj<Objects2beFilled.size();nobj++){ 
 		    Objects2beFilled[nobj]->GetOutFileSaver().Add(Objects2beFilled[nobj]->GetExposureTime());
 		    Objects2beFilled[nobj]->GetOutFileSaver().writeObjsInFolder(("Fluxes/"+Objects2beFilled[nobj]->GetName()).c_str());

@@ -179,6 +179,10 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Acceptance * Acceptance_HeNaF = new Acceptance(finalhistos,"Acceptance_HeNaF","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromNaF&RICHHeCutNaF",Global_He.GetNaFDBins(),UnfoldingNaF_He);
 	Acceptance * Acceptance_HeAgl = new Acceptance(finalhistos,"Acceptance_HeAgl","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromAgl&RICHHeCutAgl",Global_He.GetAglDBins(),UnfoldingAgl_He);
 
+	Acceptance * Acceptance_He3TOF = new Acceptance(finalhistos,"Acceptance_He3TOF","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsGoodTimeHe",Global_He.GetToFPBins(),UnfoldingToF_He);
+	Acceptance * Acceptance_He3NaF = new Acceptance(finalhistos,"Acceptance_He3NaF","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromNaF&RICHHeCutNaF",Global_He.GetNaFPBins(),UnfoldingNaF_He);
+	Acceptance * Acceptance_He3Agl = new Acceptance(finalhistos,"Acceptance_He3Agl","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromAgl&RICHHeCutAgl",Global_He.GetAglPBins(),UnfoldingAgl_He);
+
 
 	TriggerEffCorr_HE	->SetDefaultOutFile(finalhistos); 
 	TriggerEffCorr_Z2	->SetDefaultOutFile(finalhistos); 
@@ -224,6 +228,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Acceptance_HeTOF 	->SetDefaultOutFile(finalhistos); 
  	Acceptance_HeNaF 	->SetDefaultOutFile(finalhistos); 
  	Acceptance_HeAgl 	->SetDefaultOutFile(finalhistos); 
+	Acceptance_He3TOF 	->SetDefaultOutFile(finalhistos); 
+ 	Acceptance_He3NaF 	->SetDefaultOutFile(finalhistos); 
+ 	Acceptance_He3Agl 	->SetDefaultOutFile(finalhistos); 
 	Acceptance_RigPTOF 	->SetDefaultOutFile(finalhistos); 
  	Acceptance_RigPNaF 	->SetDefaultOutFile(finalhistos); 
  	Acceptance_RigPAgl 	->SetDefaultOutFile(finalhistos); 
@@ -284,6 +291,10 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Filler.AddObject2beFilled(Acceptance_HeTOF,GetSmearedBetaTOF ,GetSmearedBetaTOF );
         Filler.AddObject2beFilled(Acceptance_HeNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
         Filler.AddObject2beFilled(Acceptance_HeAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
+	Filler.AddObject2beFilled(Acceptance_He3TOF,GetSmearedBetaTOF ,GetSmearedBetaTOF );
+        Filler.AddObject2beFilled(Acceptance_He3NaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
+        Filler.AddObject2beFilled(Acceptance_He3Agl,GetSmearedBetaRICH,GetSmearedBetaRICH);
+
 
 	Filler.AddObject2beFilled(Acceptance_RigPTOF, 	GetRigidity,GetRigidity);
         Filler.AddObject2beFilled(Acceptance_RigPNaF,	GetRigidity,GetRigidity);
@@ -336,6 +347,11 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_HeNaF->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 		Acceptance_HeAgl->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 
+		Acceptance_He3TOF->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
+		Acceptance_He3NaF->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
+		Acceptance_He3Agl->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
+
+
 		Acceptance_RigPTOF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
 		Acceptance_RigPNaF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
 		Acceptance_RigPAgl->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
@@ -354,12 +370,35 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_HeQualHE->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 
 
-	
-		Fragmentation_P->Eval_Efficiency();
-	        Fragmentation_D->Eval_Efficiency();
+		Acceptance_PTOF->SetModeled();
+		Acceptance_PNaF->SetModeled();
+		Acceptance_PAgl->SetModeled();
 
-		Fragmentation_P->SaveResults(finalresults);
-	        Fragmentation_D->SaveResults(finalresults);
+		Acceptance_DTOF->SetModeled();
+		Acceptance_DNaF->SetModeled();
+		Acceptance_DAgl->SetModeled();
+
+		Acceptance_HeTOF->SetModeled();
+		Acceptance_HeNaF->SetModeled();
+		Acceptance_HeAgl->SetModeled();
+
+		Acceptance_He3TOF->SetModeled();
+		Acceptance_He3NaF->SetModeled();
+		Acceptance_He3Agl->SetModeled();
+
+		Acceptance_RigPTOF->SetModeled();
+		Acceptance_RigPNaF->SetModeled();
+		Acceptance_RigPAgl->SetModeled();
+
+		Acceptance_RigBetaPTOF->SetModeled();
+		Acceptance_RigBetaPNaF->SetModeled();
+		Acceptance_RigBetaPAgl->SetModeled();
+
+		Fragmentation_P->Eval_Efficiency();
+		Fragmentation_D->Eval_Efficiency();
+
+		//Fragmentation_P->SaveResults(finalresults);
+	        //Fragmentation_D->SaveResults(finalresults);
 
 		TFile * EffSystFile = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/EffSyst/Time.root");
 			
@@ -369,7 +408,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		AnalyzeEffCorr(	TriggerFullSpan_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,true);
 		AnalyzeEffCorr(	L1PickUpEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
 		AnalyzeEffCorr(	L1PickUpGeom_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
-		AnalyzeEffCorr(	TrackerEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
+		AnalyzeEffCorr(	TrackerEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),3.);
 		AnalyzeEffCorr(	KalmanEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
 		AnalyzeEffCorr(	GoodChi_HE  , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/Track Quality/","GoodChi_Err"		,"GoodChi_timeavg"	,filelistDT.c_str(),0.8);  
 		AnalyzeEffCorr(	GoodUtof_HE , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/NoInteraction/","GoodUtof_Err"	,"GoodUtof_timeavg"	,filelistDT.c_str(),0.65);
@@ -488,6 +527,20 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_HeAgl->ApplyEfficCorr(GoodChi_Z2);
 		Acceptance_HeAgl->ApplyEfficCorr(KalmanEffCorr_Z2);
 
+		Acceptance_He3TOF->ApplyEfficCorr(TrackerEffCorr_Z2);
+		Acceptance_He3TOF->ApplyEfficCorr(GoodQTrack_Z2);
+		Acceptance_He3TOF->ApplyEfficCorr(GoodChi_Z2);
+		Acceptance_He3TOF->ApplyEfficCorr(KalmanEffCorr_Z2);
+		Acceptance_He3NaF->ApplyEfficCorr(TrackerEffCorr_Z2);
+		Acceptance_He3NaF->ApplyEfficCorr(GoodQTrack_Z2);
+		Acceptance_He3NaF->ApplyEfficCorr(GoodChi_Z2);
+		Acceptance_He3NaF->ApplyEfficCorr(KalmanEffCorr_Z2);
+		Acceptance_He3Agl->ApplyEfficCorr(TrackerEffCorr_Z2);
+		Acceptance_He3Agl->ApplyEfficCorr(GoodQTrack_Z2);
+		Acceptance_He3Agl->ApplyEfficCorr(GoodChi_Z2);
+		Acceptance_He3Agl->ApplyEfficCorr(KalmanEffCorr_Z2);
+
+
 		Acceptance_RigHeTOF->ApplyEfficCorr(TrackerEffCorr_Z2);
 		Acceptance_RigHeTOF->ApplyEfficCorr(GoodQTrack_Z2);
 		Acceptance_RigHeTOF->ApplyEfficCorr(GoodChi_Z2);
@@ -500,8 +553,6 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_RigHeAgl->ApplyEfficCorr(GoodQTrack_Z2);
 		Acceptance_RigHeAgl->ApplyEfficCorr(GoodChi_Z2);
 		Acceptance_RigHeAgl->ApplyEfficCorr(KalmanEffCorr_Z2);
-
-
 
 
 		//L1 effcorr
@@ -544,6 +595,14 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_HeNaF->ApplyEfficCorr(L1PickUpEffCorr_Z2);
 		Acceptance_HeAgl->ApplyEfficCorr(L1PickUpGeom_Z2);
 		Acceptance_HeAgl->ApplyEfficCorr(L1PickUpEffCorr_Z2);
+
+		Acceptance_He3TOF->ApplyEfficCorr(L1PickUpGeom_Z2);
+		Acceptance_He3TOF->ApplyEfficCorr(L1PickUpEffCorr_Z2);
+		Acceptance_He3NaF->ApplyEfficCorr(L1PickUpGeom_Z2);
+		Acceptance_He3NaF->ApplyEfficCorr(L1PickUpEffCorr_Z2);
+		Acceptance_He3Agl->ApplyEfficCorr(L1PickUpGeom_Z2);
+		Acceptance_He3Agl->ApplyEfficCorr(L1PickUpEffCorr_Z2);
+
 
 		Acceptance_RigHeTOF->ApplyEfficCorr(L1PickUpGeom_Z2);
 		Acceptance_RigHeTOF->ApplyEfficCorr(L1PickUpEffCorr_Z2);
@@ -608,6 +667,16 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_HeNaF->ApplyEfficCorr(Good1Track_Z2);
 		Acceptance_HeAgl->ApplyEfficCorr(Good1Track_Z2);
 	
+		Acceptance_He3TOF->ApplyEfficCorr(GoodUtof_Z2);
+		Acceptance_He3NaF->ApplyEfficCorr(GoodUtof_Z2);
+		Acceptance_He3Agl->ApplyEfficCorr(GoodUtof_Z2);
+		Acceptance_He3TOF->ApplyEfficCorr(GoodLtof_Z2);
+		Acceptance_He3NaF->ApplyEfficCorr(GoodLtof_Z2);
+		Acceptance_He3Agl->ApplyEfficCorr(GoodLtof_Z2);
+		Acceptance_He3TOF->ApplyEfficCorr(Good1Track_Z2);
+		Acceptance_He3NaF->ApplyEfficCorr(Good1Track_Z2);
+		Acceptance_He3Agl->ApplyEfficCorr(Good1Track_Z2);
+
 		Acceptance_RigHeTOF->ApplyEfficCorr(GoodUtof_Z2);
 		Acceptance_RigHeNaF->ApplyEfficCorr(GoodUtof_Z2);
 		Acceptance_RigHeAgl->ApplyEfficCorr(GoodUtof_Z2);
@@ -617,6 +686,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_RigHeTOF->ApplyEfficCorr(Good1Track_Z2);
 		Acceptance_RigHeNaF->ApplyEfficCorr(Good1Track_Z2);
 		Acceptance_RigHeAgl->ApplyEfficCorr(Good1Track_Z2);
+		
 			
 		//Trigger effcorr
 		Acceptance_L1HE	 	->ApplyEfficCorr(TriggerEffCorr_HE);
@@ -637,6 +707,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_HeTOF	->ApplyEfficCorr(TriggerEffCorr_Z2);
 		Acceptance_HeNaF	->ApplyEfficCorr(TriggerEffCorr_Z2);
 		Acceptance_HeAgl	->ApplyEfficCorr(TriggerEffCorr_Z2);
+		Acceptance_He3TOF	->ApplyEfficCorr(TriggerEffCorr_Z2);
+		Acceptance_He3NaF	->ApplyEfficCorr(TriggerEffCorr_Z2);
+		Acceptance_He3Agl	->ApplyEfficCorr(TriggerEffCorr_Z2);
 		Acceptance_RigHeTOF	->ApplyEfficCorr(TriggerEffCorr_Z2);
 		Acceptance_RigHeNaF	->ApplyEfficCorr(TriggerEffCorr_Z2);
 		Acceptance_RigHeAgl	->ApplyEfficCorr(TriggerEffCorr_Z2);
@@ -659,235 +732,240 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 
 		Acceptance_DTOF->ApplyEfficCorr(GoodTime_TOF);
 		Acceptance_DTOF->ApplyEfficCorr(Quality_TOF);
+
 	        Acceptance_DNaF->ApplyEfficCorr(RICHEffCorr_NaF);
                 Acceptance_DAgl->ApplyEfficCorr(RICHEffCorr_Agl);//,0.2);
+
 	        Acceptance_DNaF->ApplyEfficCorr(RICHQualEffCorr_NaF);
           	Acceptance_DAgl->ApplyEfficCorr(RICHQualEffCorr_Agl);//,0.2);
 	
+
 		Acceptance_HeTOF->ApplyEfficCorr(GoodTimeZ2_TOF);
 	        Acceptance_HeNaF->ApplyEfficCorr(RICHEffCorrZ2_NaF);
                 Acceptance_HeAgl->ApplyEfficCorr(RICHEffCorrZ2_Agl);
 	        Acceptance_HeNaF->ApplyEfficCorr(RICHQualEffCorrZ2_NaF);
                 Acceptance_HeAgl->ApplyEfficCorr(RICHQualEffCorrZ2_Agl);
 	
+		Acceptance_He3TOF->ApplyEfficCorr(GoodTimeZ2_TOF);
+	        Acceptance_He3NaF->ApplyEfficCorr(RICHEffCorrZ2_NaF);
+                Acceptance_He3Agl->ApplyEfficCorr(RICHEffCorrZ2_Agl);
+	        Acceptance_He3NaF->ApplyEfficCorr(RICHQualEffCorrZ2_NaF);
+                Acceptance_He3Agl->ApplyEfficCorr(RICHQualEffCorrZ2_Agl);
+	
+
 
 		Acceptance_PTOF 	->  EvalEffAcc(timeindex,1.2);
 		Acceptance_PNaF 	->  EvalEffAcc(timeindex,1.2);
 		Acceptance_PAgl 	->  EvalEffAcc(timeindex,1.2);
 		
-		Acceptance_PTOF 	->SaveResults(finalresults);
-                Acceptance_PNaF 	->SaveResults(finalresults);
-                Acceptance_PAgl 	->SaveResults(finalresults);
+	Acceptance_PTOF 	->SaveResults(finalresults);
+        Acceptance_PNaF 	->SaveResults(finalresults);
+        Acceptance_PAgl 	->SaveResults(finalresults);
 
-		Acceptance_DTOF 	->  EvalEffAcc(timeindex,1.2);
-	        Acceptance_DNaF 	->  EvalEffAcc(timeindex,1.2);
-                Acceptance_DAgl 	->  EvalEffAcc(timeindex,1.2);
-	
-		Acceptance_DTOF 	->SaveResults(finalresults);
-                Acceptance_DNaF 	->SaveResults(finalresults);
-                Acceptance_DAgl 	->SaveResults(finalresults);
+	Acceptance_DTOF 	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_DNaF 	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_DAgl 	->  EvalEffAcc(timeindex,1.2);
 
-		Acceptance_HeTOF 	->  EvalEffAcc(timeindex,1.2,true);
-	        Acceptance_HeNaF 	->  EvalEffAcc(timeindex,1.2,true);
-                Acceptance_HeAgl 	->  EvalEffAcc(timeindex,1.2,true);
-			
-		Acceptance_HeTOF 	->SaveResults(finalresults);
-                Acceptance_HeNaF 	->SaveResults(finalresults);
-                Acceptance_HeAgl 	->SaveResults(finalresults);
+	Acceptance_DTOF 	->SaveResults(finalresults);
+        Acceptance_DNaF 	->SaveResults(finalresults);
+        Acceptance_DAgl 	->SaveResults(finalresults);
 
-		Acceptance_RigPTOF 	->  EvalEffAcc(timeindex,1.2);
-	        Acceptance_RigPNaF 	->  EvalEffAcc(timeindex,1.2);
-                Acceptance_RigPAgl 	->  EvalEffAcc(timeindex,1.2);
+	Acceptance_HeTOF 	->  EvalEffAcc(timeindex,1.2,true);
+        Acceptance_HeNaF 	->  EvalEffAcc(timeindex,1.2,true);
+        Acceptance_HeAgl 	->  EvalEffAcc(timeindex,1.2,true);
 		
-		Acceptance_RigPTOF 	->SaveResults(finalresults);
-                Acceptance_RigPNaF 	->SaveResults(finalresults);
-                Acceptance_RigPAgl 	->SaveResults(finalresults);
+	Acceptance_HeTOF 	->SaveResults(finalresults);
+        Acceptance_HeNaF 	->SaveResults(finalresults);
+        Acceptance_HeAgl 	->SaveResults(finalresults);
 
-		Acceptance_RigBetaPTOF 	->  EvalEffAcc(timeindex,1.2);
-	        Acceptance_RigBetaPNaF 	->  EvalEffAcc(timeindex,1.2);
-                Acceptance_RigBetaPAgl 	->  EvalEffAcc(timeindex,1.2);
+	Acceptance_He3TOF 	->  EvalEffAcc(timeindex,1.2,true);
+        Acceptance_He3NaF 	->  EvalEffAcc(timeindex,1.2,true);
+        Acceptance_He3Agl 	->  EvalEffAcc(timeindex,1.2,true);
 		
-		Acceptance_RigBetaPTOF 	->SaveResults(finalresults);
-                Acceptance_RigBetaPNaF 	->SaveResults(finalresults);
-                Acceptance_RigBetaPAgl 	->SaveResults(finalresults);
+	Acceptance_He3TOF 	->SaveResults(finalresults);
+        Acceptance_He3NaF 	->SaveResults(finalresults);
+        Acceptance_He3Agl 	->SaveResults(finalresults);
+
+	Acceptance_RigPTOF 	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_RigPNaF 	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_RigPAgl 	->  EvalEffAcc(timeindex,1.2);
+	
+	Acceptance_RigPTOF 	->SaveResults(finalresults);
+        Acceptance_RigPNaF 	->SaveResults(finalresults);
+        Acceptance_RigPAgl 	->SaveResults(finalresults);
+
+	Acceptance_RigBetaPTOF 	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_RigBetaPNaF 	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_RigBetaPAgl 	->  EvalEffAcc(timeindex,1.2);
+	
+	Acceptance_RigBetaPTOF 	->SaveResults(finalresults);
+        Acceptance_RigBetaPNaF 	->SaveResults(finalresults);
+        Acceptance_RigBetaPAgl 	->SaveResults(finalresults);
 
 
-		Acceptance_RigHeTOF 	->  EvalEffAcc(timeindex,1.2);
-	        Acceptance_RigHeNaF 	->  EvalEffAcc(timeindex,1.2);
-                Acceptance_RigHeAgl 	->  EvalEffAcc(timeindex,1.2);
+	Acceptance_RigHeTOF 	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_RigHeNaF 	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_RigHeAgl 	->  EvalEffAcc(timeindex,1.2);
+	
+	Acceptance_RigHeTOF 	->SaveResults(finalresults);
+        Acceptance_RigHeNaF 	->SaveResults(finalresults);
+        Acceptance_RigHeAgl 	->SaveResults(finalresults);
+
+
+	Acceptance_HE     	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_L1HE   	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_QualHE 	->  EvalEffAcc(timeindex,1.2);
+	
+	Acceptance_HE     	->SaveResults(finalresults);
+        Acceptance_L1HE   	->SaveResults(finalresults);
+        Acceptance_QualHE 	->SaveResults(finalresults);
+
+
+
+
+	//Plotting EffCorr
 		
-		Acceptance_RigHeTOF 	->SaveResults(finalresults);
-                Acceptance_RigHeNaF 	->SaveResults(finalresults);
-                Acceptance_RigHeAgl 	->SaveResults(finalresults);
+	//Z1
+	std::vector<EffCorr *> Trigg;
+	Trigg.push_back(TriggerEffCorr_HE);
+	DrawBlockCascade(Trigg,"Z1/Trigger",finalresults,0.1,40);
+	DrawCorrectionBlock(Trigg,"Z1/Trigger",finalresults);
+
+	std::vector<EffCorr *> TriggFS;
+	TriggFS.push_back(TriggerFullSpan_HE);
+	DrawBlockCascade(TriggFS,"Z1/TriggerFS",finalresults,0.1,40);
+	DrawCorrectionBlock(TriggFS,"Z1/TriggerFS",finalresults);
+
+	std::vector<EffCorr *> Track;
+	Track.push_back(TrackerEffCorr_HE);
+	Track.push_back(GoodQTrack_HE);
+	Track.push_back(GoodChi_HE);
+	Track.push_back(KalmanEffCorr_HE);
+	DrawBlockCascade(Track	   ,"Z1/Tracking",finalresults,0.1,40);
+	DrawCorrectionBlock(Track  ,"Z1/Tracking",finalresults);
+
+	std::vector<EffCorr *> L1PickUp;
+	L1PickUp.push_back(L1PickUpGeom_HE);
+	L1PickUp.push_back(L1PickUpEffCorr_HE);
+	DrawBlockCascade(L1PickUp,"Z1/L1PickUp",finalresults,0.1,40);       
+	DrawCorrectionBlock(L1PickUp,"Z1/L1PickUp",finalresults); 
 
 
-		Acceptance_HE     	->  EvalEffAcc(timeindex,1.2);
-	        Acceptance_L1HE   	->  EvalEffAcc(timeindex,1.2);
-                Acceptance_QualHE 	->  EvalEffAcc(timeindex,1.2);
-		
-		Acceptance_HE     	->SaveResults(finalresults);
-                Acceptance_L1HE   	->SaveResults(finalresults);
-                Acceptance_QualHE 	->SaveResults(finalresults);
+	std::vector<EffCorr *> NoInteractions;
+	NoInteractions.push_back(Good1Track_HE);
+	NoInteractions.push_back(GoodUtof_HE);
+	NoInteractions.push_back(GoodLtof_HE);
+	DrawBlockCascade(NoInteractions,"Z1/NoInteractions",finalresults,0.1,40);	
+	DrawCorrectionBlock(NoInteractions,"Z1/NoInteractions",finalresults);	
+
+	std::vector<EffCorr *> GoodBetaTOF;
+	GoodBetaTOF.push_back(GoodTime_TOF);
+	GoodBetaTOF.push_back(Quality_TOF);
+	DrawBlockCascade(GoodBetaTOF,"Z1/GoodBetaTOF",finalresults,0.1,40);	
+	DrawCorrectionBlock(GoodBetaTOF,"Z1/GoodBetaTOF",finalresults);	
 
 
+	std::vector<EffCorr *> GoodBetaNaF;
+	GoodBetaNaF.push_back(RICHEffCorr_NaF);
+	GoodBetaNaF.push_back(RICHQualEffCorr_NaF);
+	DrawBlockCascade(GoodBetaNaF,"Z1/GoodBetaNaF",finalresults,0.1,40);	
+	DrawCorrectionBlock(GoodBetaNaF,"Z1/GoodBetaNaF",finalresults);	
 
 
-		//Plotting EffCorr
-			
-		//Z1
-		std::vector<EffCorr *> Trigg;
-		Trigg.push_back(TriggerEffCorr_HE);
-		DrawBlockCascade(Trigg,"Z1/Trigger",finalresults,0.1,40);
-		DrawCorrectionBlock(Trigg,"Z1/Trigger",finalresults);
-
-		std::vector<EffCorr *> TriggFS;
-		TriggFS.push_back(TriggerFullSpan_HE);
-		DrawBlockCascade(TriggFS,"Z1/TriggerFS",finalresults,0.1,40);
-		DrawCorrectionBlock(TriggFS,"Z1/TriggerFS",finalresults);
-
-		std::vector<EffCorr *> Track;
-		Track.push_back(TrackerEffCorr_HE);
-		Track.push_back(GoodQTrack_HE);
-		Track.push_back(GoodChi_HE);
-		Track.push_back(KalmanEffCorr_HE);
-		DrawBlockCascade(Track	   ,"Z1/Tracking",finalresults,0.1,40);
-		DrawCorrectionBlock(Track  ,"Z1/Tracking",finalresults);
-
-		std::vector<EffCorr *> L1PickUpGeom;
-		L1PickUpGeom.push_back(L1PickUpGeom_HE);
-		DrawBlockCascade(L1PickUpGeom,"Z1/L1PickUpGeom",finalresults,0.1,40);       
-		DrawCorrectionBlock(L1PickUpGeom,"Z1/L1PickUpGeom",finalresults); 
-
-		std::vector<EffCorr *> L1PickUpAss;
-		L1PickUpAss.push_back(L1PickUpEffCorr_HE);
-		DrawBlockCascade(L1PickUpAss,"Z1/L1PickUpAss",finalresults,0.1,40);       
-		DrawCorrectionBlock(L1PickUpAss,"Z1/L1PickUpAss",finalresults); 
+	std::vector<EffCorr *> GoodBetaAgl;
+	GoodBetaAgl.push_back(RICHEffCorr_Agl);
+	GoodBetaAgl.push_back(RICHQualEffCorr_Agl);
+	DrawBlockCascade(GoodBetaAgl,"Z1/GoodBetaAgl",finalresults,0.1,40);	
+	DrawCorrectionBlock(GoodBetaAgl,"Z1/GoodBetaAgl",finalresults);	
 
 
-		std::vector<EffCorr *> NoInteractions;
-		NoInteractions.push_back(Good1Track_HE);
-		NoInteractions.push_back(GoodUtof_HE);
-		NoInteractions.push_back(GoodLtof_HE);
-		DrawBlockCascade(NoInteractions,"Z1/NoInteractions",finalresults,0.1,40);	
-		DrawCorrectionBlock(NoInteractions,"Z1/NoInteractions",finalresults);	
+	std::vector<std::string > Names{"Trigger","L1 PickUp (Geom)","L1 PickUp (Association)","Tracking","NoInteractions","GoodVelocity"};
 
-		std::vector<EffCorr *> GoodBetaTOF;
-		GoodBetaTOF.push_back(GoodTime_TOF);
-		GoodBetaTOF.push_back(Quality_TOF);
-		DrawBlockCascade(GoodBetaTOF,"Z1/GoodBetaTOF",finalresults,0.1,40);	
-		DrawCorrectionBlock(GoodBetaTOF,"Z1/GoodBetaTOF",finalresults);	
+	std::vector<std::vector<EffCorr *>> TotalTOF;
+	TotalTOF.push_back(Trigg);
+	TotalTOF.push_back(L1PickUp);
+	TotalTOF.push_back(Track);
+	TotalTOF.push_back(NoInteractions);
+	TotalTOF.push_back(GoodBetaTOF);
+	DrawTotalUncertainty(TotalTOF,finalresults,"Z1_TOF",Names);
 
+	std::vector<std::vector<EffCorr *>> TotalNaF;
+	TotalNaF.push_back(Trigg);
+	TotalNaF.push_back(L1PickUp);
+	TotalNaF.push_back(Track);
+	TotalNaF.push_back(NoInteractions);
+	TotalNaF.push_back(GoodBetaNaF);
+	DrawTotalUncertainty(TotalNaF,finalresults,"Z1_NaF",Names);
 
-		std::vector<EffCorr *> GoodBetaNaF;
-		GoodBetaNaF.push_back(RICHEffCorr_NaF);
-		GoodBetaNaF.push_back(RICHQualEffCorr_NaF);
-		DrawBlockCascade(GoodBetaNaF,"Z1/GoodBetaNaF",finalresults,0.1,40);	
-		DrawCorrectionBlock(GoodBetaNaF,"Z1/GoodBetaNaF",finalresults);	
+	std::vector<std::vector<EffCorr *>> TotalAgl;
+	TotalAgl.push_back(Trigg);
+	TotalAgl.push_back(L1PickUp);
+	TotalAgl.push_back(Track);
+	TotalAgl.push_back(NoInteractions);
+	TotalAgl.push_back(GoodBetaAgl);
+	DrawTotalUncertainty(TotalAgl,finalresults,"Z1_Agl",Names);
 
+	//Z2
+	std::vector<EffCorr *> TriggHe;
+	TriggHe.push_back(TriggerEffCorr_Z2);
+	DrawBlockCascade(TriggHe,"Z2/Trigger",finalresults,0.1,40);
+	DrawCorrectionBlock(TriggHe,"Z2/Trigger",finalresults);
 
-		std::vector<EffCorr *> GoodBetaAgl;
-		GoodBetaAgl.push_back(RICHEffCorr_Agl);
-		GoodBetaAgl.push_back(RICHQualEffCorr_Agl);
-		DrawBlockCascade(GoodBetaAgl,"Z1/GoodBetaAgl",finalresults,0.1,40);	
-		DrawCorrectionBlock(GoodBetaAgl,"Z1/GoodBetaAgl",finalresults);	
+	std::vector<EffCorr *> TrackHe;
+	TrackHe.push_back(TrackerEffCorr_Z2);
+	TrackHe.push_back(GoodQTrack_Z2);
+	TrackHe.push_back(GoodChi_Z2);
+	TrackHe.push_back(KalmanEffCorr_Z2);
+	DrawBlockCascade(TrackHe	   ,"Z2/Tracking",finalresults,0.1,40);
+	DrawCorrectionBlock(TrackHe  ,"Z2/Tracking",finalresults);
 
-	
-		std::vector<std::string > Names{"Trigger","L1 PickUp (Geom)","L1 PickUp (Association)","Tracking","NoInteractions","GoodVelocity"};
-	
-		std::vector<std::vector<EffCorr *>> TotalTOF;
-		TotalTOF.push_back(Trigg);
-		TotalTOF.push_back(L1PickUpGeom);
-		TotalTOF.push_back(L1PickUpAss);
-		TotalTOF.push_back(Track);
-		TotalTOF.push_back(NoInteractions);
-		TotalTOF.push_back(GoodBetaTOF);
-		DrawTotalUncertainty(TotalTOF,finalresults,"Z1_TOF",Names);
-
-		std::vector<std::vector<EffCorr *>> TotalNaF;
-		TotalNaF.push_back(Trigg);
-		TotalNaF.push_back(L1PickUpGeom);
-		TotalNaF.push_back(L1PickUpAss);
-		TotalNaF.push_back(Track);
-		TotalNaF.push_back(NoInteractions);
-		TotalNaF.push_back(GoodBetaNaF);
-		DrawTotalUncertainty(TotalNaF,finalresults,"Z1_NaF",Names);
-
-		std::vector<std::vector<EffCorr *>> TotalAgl;
-		TotalAgl.push_back(Trigg);
-		TotalAgl.push_back(L1PickUpGeom);
-		TotalAgl.push_back(L1PickUpAss);
-		TotalAgl.push_back(Track);
-		TotalAgl.push_back(NoInteractions);
-		TotalAgl.push_back(GoodBetaAgl);
-		DrawTotalUncertainty(TotalAgl,finalresults,"Z1_Agl",Names);
-
-		//Z2
-		std::vector<EffCorr *> TriggHe;
-		TriggHe.push_back(TriggerEffCorr_Z2);
-		DrawBlockCascade(TriggHe,"Z2/Trigger",finalresults,0.1,40);
-		DrawCorrectionBlock(TriggHe,"Z2/Trigger",finalresults);
-
-		std::vector<EffCorr *> TrackHe;
-		TrackHe.push_back(TrackerEffCorr_Z2);
-		TrackHe.push_back(GoodQTrack_Z2);
-		TrackHe.push_back(GoodChi_Z2);
-		TrackHe.push_back(KalmanEffCorr_Z2);
-		DrawBlockCascade(TrackHe	   ,"Z2/Tracking",finalresults,0.1,40);
-		DrawCorrectionBlock(TrackHe  ,"Z2/Tracking",finalresults);
-
-		std::vector<EffCorr *> L1PickUpGeomHe;
-		L1PickUpGeomHe.push_back(L1PickUpGeom_Z2);
-		DrawBlockCascade(L1PickUpGeomHe,"Z2/L1PickUpGeom",finalresults,0.1,40);       
-		DrawCorrectionBlock(L1PickUpGeomHe,"Z2/L1PickUpGeom",finalresults); 
-
-		std::vector<EffCorr *> L1PickUpAssHe;
-		L1PickUpAssHe.push_back(L1PickUpEffCorr_Z2);
-		DrawBlockCascade(L1PickUpAssHe,"Z2/L1PickUpAss",finalresults,0.1,40);       
-		DrawCorrectionBlock(L1PickUpAssHe,"Z2/L1PickUpAss",finalresults); 
+	std::vector<EffCorr *> L1PickUpHe;
+	L1PickUpHe.push_back(L1PickUpGeom_Z2);
+	L1PickUpHe.push_back(L1PickUpEffCorr_Z2);
+	DrawBlockCascade(L1PickUpHe,"Z2/L1PickUp",finalresults,0.1,40);       
+	DrawCorrectionBlock(L1PickUpHe,"Z2/L1PickUp",finalresults); 
 
 
-		std::vector<EffCorr *> NoInteractionsHe;
-		NoInteractionsHe.push_back(Good1Track_Z2);
-		NoInteractionsHe.push_back(GoodUtof_Z2);
-		NoInteractionsHe.push_back(GoodLtof_Z2);
-		DrawBlockCascade(NoInteractionsHe,"Z2/NoInteractions",finalresults,0.1,40);	
-		DrawCorrectionBlock(NoInteractionsHe,"Z2/NoInteractions",finalresults);	
+	std::vector<EffCorr *> NoInteractionsHe;
+	NoInteractionsHe.push_back(Good1Track_Z2);
+	NoInteractionsHe.push_back(GoodUtof_Z2);
+	NoInteractionsHe.push_back(GoodLtof_Z2);
+	DrawBlockCascade(NoInteractionsHe,"Z2/NoInteractions",finalresults,0.1,40);	
+	DrawCorrectionBlock(NoInteractionsHe,"Z2/NoInteractions",finalresults);	
 
-		std::vector<EffCorr *> GoodBetaTOFHe;
-		GoodBetaTOFHe.push_back(GoodTimeZ2_TOF);
-		DrawBlockCascade(GoodBetaTOFHe,"Z2/GoodBetaTOF",finalresults,0.1,40);	
-		DrawCorrectionBlock(GoodBetaTOFHe,"Z2/GoodBetaTOF",finalresults);	
-
-
-		std::vector<EffCorr *> GoodBetaNaFHe;
-		GoodBetaNaFHe.push_back(RICHEffCorrZ2_NaF);
-		GoodBetaNaFHe.push_back(RICHQualEffCorrZ2_NaF);
-		DrawBlockCascade(GoodBetaNaFHe,"Z2/GoodBetaNaF",finalresults,0.1,40);	
-		DrawCorrectionBlock(GoodBetaNaFHe,"Z2/GoodBetaNaF",finalresults);	
+	std::vector<EffCorr *> GoodBetaTOFHe;
+	GoodBetaTOFHe.push_back(GoodTimeZ2_TOF);
+	DrawBlockCascade(GoodBetaTOFHe,"Z2/GoodBetaTOF",finalresults,0.1,40);	
+	DrawCorrectionBlock(GoodBetaTOFHe,"Z2/GoodBetaTOF",finalresults);	
 
 
-		std::vector<EffCorr *> GoodBetaAglHe;
-		GoodBetaAglHe.push_back(RICHEffCorrZ2_Agl);
-		GoodBetaAglHe.push_back(RICHQualEffCorrZ2_Agl);
-		DrawBlockCascade(GoodBetaAglHe,"Z2/GoodBetaAgl",finalresults,0.1,40);	
-		DrawCorrectionBlock(GoodBetaAglHe,"Z2/GoodBetaAgl",finalresults);	
+	std::vector<EffCorr *> GoodBetaNaFHe;
+	GoodBetaNaFHe.push_back(RICHEffCorrZ2_NaF);
+	GoodBetaNaFHe.push_back(RICHQualEffCorrZ2_NaF);
+	DrawBlockCascade(GoodBetaNaFHe,"Z2/GoodBetaNaF",finalresults,0.1,40);	
+	DrawCorrectionBlock(GoodBetaNaFHe,"Z2/GoodBetaNaF",finalresults);	
 
-	
-		std::vector<std::string > NamesHe{"Trigger","L1 PickUp (Geom)","L1 PickUp (Association)","Tracking","NoInteractions","GoodVelocity"};
-	
-		std::vector<std::vector<EffCorr *>> TotalTOFHe;
-		TotalTOFHe.push_back(TriggHe);
-		TotalTOFHe.push_back(L1PickUpGeomHe);
-		TotalTOFHe.push_back(L1PickUpAssHe);
-		TotalTOFHe.push_back(TrackHe);
-		TotalTOFHe.push_back(NoInteractionsHe);
-		TotalTOFHe.push_back(GoodBetaTOFHe);
-		DrawTotalUncertainty(TotalTOFHe,finalresults,"Z2_TOF",NamesHe);
 
-		std::vector<std::vector<EffCorr *>> TotalNaFHe;
-		TotalNaFHe.push_back(TriggHe);
-		TotalNaFHe.push_back(L1PickUpGeomHe);
-		TotalNaFHe.push_back(L1PickUpAssHe);
+	std::vector<EffCorr *> GoodBetaAglHe;
+	GoodBetaAglHe.push_back(RICHEffCorrZ2_Agl);
+	GoodBetaAglHe.push_back(RICHQualEffCorrZ2_Agl);
+	DrawBlockCascade(GoodBetaAglHe,"Z2/GoodBetaAgl",finalresults,0.1,40);	
+	DrawCorrectionBlock(GoodBetaAglHe,"Z2/GoodBetaAgl",finalresults);	
+
+
+	std::vector<std::string > NamesHe{"Trigger","L1 PickUp (Geom)","L1 PickUp (Association)","Tracking","NoInteractions","GoodVelocity"};
+
+	std::vector<std::vector<EffCorr *>> TotalTOFHe;
+	TotalTOFHe.push_back(TriggHe);
+	TotalTOFHe.push_back(L1PickUpHe);
+	TotalTOFHe.push_back(TrackHe);
+	TotalTOFHe.push_back(NoInteractionsHe);
+	TotalTOFHe.push_back(GoodBetaTOFHe);
+	DrawTotalUncertainty(TotalTOFHe,finalresults,"Z2_TOF",NamesHe);
+
+	std::vector<std::vector<EffCorr *>> TotalNaFHe;
+	TotalNaFHe.push_back(TriggHe);
+	TotalNaFHe.push_back(L1PickUpHe);
 		TotalNaFHe.push_back(TrackHe);
 		TotalNaFHe.push_back(NoInteractionsHe);
 		TotalNaFHe.push_back(GoodBetaNaFHe);
@@ -895,8 +973,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 
 		std::vector<std::vector<EffCorr *>> TotalAglHe;
 		TotalAglHe.push_back(TriggHe);
-		TotalAglHe.push_back(L1PickUpGeomHe);
-		TotalAglHe.push_back(L1PickUpAssHe);
+		TotalAglHe.push_back(L1PickUpHe);
 		TotalAglHe.push_back(TrackHe);
 		TotalAglHe.push_back(NoInteractionsHe);
 		TotalAglHe.push_back(GoodBetaAglHe);
@@ -918,12 +995,12 @@ void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  fin
 	TH1F * syst=0x0;
         TH2F * avg=0x0;
  
-	if(systfile) {
+/*	if(systfile) {
 		syst = (TH1F*)systfile->Get((systdirname+systerrname).c_str());
 	//	avg  = (TH2F*)systfile->Get((systdirname+avgname).c_str());
 		cout<<"AVERAGE EFFCORR: "<<systdirname<<" "<<syst<<" "<<avg<<endl;
 	}
-
+*/
 	if(IsTrig) Correction   -> SetAsTrigEffCorr();
 	Correction   -> Set_SystStat(syst,avg,tima.c_str());
 	Correction   -> Eval_Efficiencies();
@@ -992,7 +1069,7 @@ void DrawCorrectionBlock(std::vector<EffCorr *> block, std::string Blockname,Fil
 	int nColors = m_gStyle->GetNumberOfColors();
 
 
-	TGraph * TotalCorrection = new TGraph();
+	TGraphErrors * TotalCorrection = new TGraphErrors();
 	float y=1;
 	for(int bin=0;bin<block[0]->GetBins().size();bin++){
 		y=1;
@@ -1002,10 +1079,20 @@ void DrawCorrectionBlock(std::vector<EffCorr *> block, std::string Blockname,Fil
 		}
 		if(block[0]->IsEkin()) TotalCorrection->SetPoint(bin,block[0]->GetBins().EkPerMassBinCent(bin),y);
 		else TotalCorrection->SetPoint(bin,block[0]->GetBins().RigBinCent(bin),y); 	
+		float toterr=0;
+		for(int i=0;i<block.size();i++){
+			toterr+=pow(block[i]->GetGlobCorrection()->GetBinError(bin+1),2);
+			toterr+=pow(block[i]->GetSyst_Stat()->GetBinContent(bin+1),2);
+		}
+		TotalCorrection->SetPointError(bin,0,pow(toterr,0.5));
 	}
 	TotalCorrection->SetLineColor(1);
 	TotalCorrection->SetLineWidth(2);	
 	TotalCorrection->SetLineStyle(2);	
+	TotalCorrection->SetFillColor(1);
+	TotalCorrection->SetFillStyle(3002);
+
+
 	TotalCorrection->SetTitle((Blockname+ " Corrections").c_str());
 	TotalCorrection->GetYaxis()->SetRangeUser(0.8*y,1.1*block[0]->GetCorrectionModel()->Eval(5));
 	TotalCorrection->GetYaxis()->SetTitle("Correction");
@@ -1013,9 +1100,45 @@ void DrawCorrectionBlock(std::vector<EffCorr *> block, std::string Blockname,Fil
 	else TotalCorrection->GetXaxis()->SetTitle("R [GV]");
 	
 	TCanvas * c1 = new TCanvas("Correction Block");
-	TotalCorrection->Draw("AC");
+	if(block.size()>1) TotalCorrection->Draw("Ae4C");
 	for(int i=0;i<block.size();i++) block[i]->GetCorrectionModel()->SetLineColor(i+2);	
 	for(int i=0;i<block.size();i++) block[i]->GetCorrectionModel()->Draw("same");
+
+	TGraphErrors * raw_corrections[block.size()];
+	for(int i=0;i<block.size();i++){
+		raw_corrections[i]=new TGraphErrors(block[i]->GetGlobCorrection());
+		for(int j=0;j<block[i]->GetGlobCorrection()->GetNbinsX();j++) {
+			if(block[i]->GetGlobCorrection()->GetBinError(j+1)>3*block[i]->GetGlobCorrection()->GetBinError(j+2)
+				||block[i]->GetGlobCorrection()->GetBinError(j+1)>0.1)
+				raw_corrections[i]->RemovePoint(j);
+			raw_corrections[i]->SetPointError(j,0,raw_corrections[i]->GetErrorY(j));
+		}
+		raw_corrections[i]->SetMarkerColor(i+2);
+		raw_corrections[i]->SetMarkerStyle(8);
+		raw_corrections[i]->SetLineColor(i+2);
+		raw_corrections[i]->SetLineWidth(2);
+	if(block.size()==1)	raw_corrections[i]->Draw("APsame");
+	else	raw_corrections[i]->Draw("Psame");
+	}
+
+	TGraphErrors * correction_err[block.size()];
+	for(int i=0;i<block.size();i++){
+		correction_err[i]=new TGraphErrors();
+	
+		for(int j=0;j<block[i]->GetGlobCorrection()->GetNbinsX();j++) {
+			if(block[i]->IsEkin()) correction_err[i]->SetPoint(j,block[i]->GetBins().EkPerMassBinCent(j),block[i]->GetCorrectionModel()->Eval(block[i]->GetBins().EkPerMassBinCent(j)));
+			else  correction_err[i]->SetPoint(j,block[i]->GetBins().RigBinCent(j),block[i]->GetCorrectionModel()->Eval(block[i]->GetBins().RigBinCent(j)));
+			TH1F* state=block[i]->GetStat_Err();
+			TH1F* syste=block[i]->GetSyst_Stat();
+			correction_err[i]->SetPointError(j,0,pow(pow(state->GetBinContent(j+1),2)+pow(syste->GetBinContent(j+1),2),0.5));
+		}	
+		correction_err[i]->SetFillColor(i+2);
+		correction_err[i]->SetFillStyle(3002);
+		correction_err[i]->SetLineColor(0);
+		correction_err[i]->SetLineWidth(0);
+		correction_err[i]->Draw("e4same");
+	}
+
 
 	Plots.Add(c1);
 	Plots.writeObjsInFolder(("AcceptancePlots/Blocks/"+Blockname).c_str());	

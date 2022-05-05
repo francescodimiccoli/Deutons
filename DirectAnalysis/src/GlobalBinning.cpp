@@ -154,31 +154,33 @@ void SetBins(){
 	ForCutoff.setBinsFromRigidity(100,0.5,50,ResponseTOF,0.00347548,5.8474);
 	ForCutoff.UseREdges();
 
-	cout<<"**H.E.**"<<endl;
+	cout<<"**********H.E.**"<<endl;
 	HeRB.Print();
 	cout<<"**TOF**"<<endl;
 	GlobalRig.GetToFPBins().Print();
 	GlobalRig.GetToFDBins().Print();
 	Global_He.GetToFDBins().Print();
+	Global_He.GetToFPBins().Print();
+
 
 	cout<<"**NaF**"<<endl;
 	GlobalRig.GetNaFPBins().Print();
 	GlobalRig.GetNaFDBins().Print();
 	Global_He.GetNaFDBins().Print();
-
+	Global_He.GetNaFPBins().Print();
 
 
 	cout<<"**Agl**"<<endl;
 	GlobalRig.GetAglPBins().Print();
 	GlobalRig.GetAglDBins().Print();
 	Global_He.GetAglDBins().Print();
+	Global_He.GetAglPBins().Print();
 
 
-
-	cout<<"**Global**"<<endl;
+	/*cout<<"**Global**"<<endl;
 	GlobalRig.GetGlobalPBins().Print();
 	GlobalRig.GetGlobalDBins().Print();
-
+			
 	cout<<"*** For Unfolding ***"<<endl;
 
 	cout<<"**TOF**"<<endl;
@@ -188,7 +190,7 @@ void SetBins(){
 	UnfoldingNaF.Print();
 	
 	cout<<"**Agl**"<<endl;
-	UnfoldingAgl.Print();
+	UnfoldingAgl.Print();*/
 	
 	return;
 }

@@ -1,5 +1,5 @@
 #include "EffCorr.h"
-
+#include "TVirtualFitter.h"
 
 void EffCorr::Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*discr_var) (Variables * vars),bool refill){
 
@@ -62,20 +62,15 @@ void EffCorr::SaveResults(FileSaver finalhistos){
        finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());	
 }
 
-void AddCorrSystError(TH1F * Correction,TH1F * Syst_Err, TH1F * Syst_Stat) {
-	for(int i=0; i<Correction->GetNbinsX(); i++) {
-		float stat = Correction->GetBinError(i+1);
-		float syst = Syst_Err->GetBinContent(i+1)*Correction->GetBinContent(i+1);
-		float syst_stat = Syst_Stat->GetBinContent(i+1)*Correction->GetBinContent(i+1);
-		Correction->SetBinError(i+1, pow(pow(stat,2)+pow(syst,2)+pow(syst_stat,2),0.5));
-	}
-}
 
 void EffCorr::Eval_Errors(){
 
 	Stat_Err = (TH1F *) GlobalCorrection->Clone();
 	Syst_Err = (TH1F *) GlobalCorrection->Clone();
-	Syst_Stat = (TH1F *) GlobalCorrection->Clone();
+	Stat_Err->Reset();
+	Syst_Err->Reset();
+
+	//Syst_Stat = (TH1F *) GlobalCorrection->Clone();
 	Stat_Err->SetName((basename + "Stat_Err").c_str());
 	Stat_Err->SetTitle((basename +"Stat_Err").c_str());
 	Syst_Err->SetName((basename + "Syst_Err").c_str());
@@ -88,19 +83,18 @@ void EffCorr::Eval_Errors(){
 	for(int i=0; i<GlobalCorrection->GetNbinsX(); i++) {
 		cout<<"ECCO "<<EffMC->GetEfficiency()->GetNbinsX()<<" "<<Stat_Err<<" "<<Syst_Err<<" "<<Syst_Stat<<endl;	
 		cout<<i<<endl;
-		float stat = mceff->GetBinError(i+1); 
 		float syst = 0.2*fabs(EffData_glob->GetEfficiency()->GetBinContent(i+1)-EffData_glob->GetEfficiency()->GetBinContent(i));   //fabs(GlobalCorrection->GetBinContent(i+1) - 1);
 		if(GlobalCorrection->GetBinContent(i+1)>0){
-			Stat_Err->SetBinContent(i+1, stat / GlobalCorrection->GetBinContent(i+1));
+			Stat_Err->SetBinContent(i+1, 0 / GlobalCorrection->GetBinContent(i+1));
 			Syst_Err->SetBinContent(i+1, syst / GlobalCorrection->GetBinContent(i+1));
-			Syst_Stat->SetBinContent(i+1, 0);
+		/*	Syst_Stat->SetBinContent(i+1, 0);
 
 			if(syst_stat>0){ 
 				if(ForEffCorr.RigBinCent(i+1)<14)		
 					Syst_Stat->SetBinContent(i+1,syst_stat->GetBinContent( syst_stat->FindBin(ForEffCorr.RigBinCent(i+1) )));
 				else Syst_Stat->SetBinContent(i+1,syst_stat->GetBinContent(syst_stat->FindBin(14))); 	
 			}
-
+		*/
 		}
 		Stat_Err->SetBinError(i+1, 0);	
 		Syst_Err->SetBinError(i+1, 0);	
@@ -108,9 +102,6 @@ void EffCorr::Eval_Errors(){
 		
 	}
 	cout<<"ECCO "<<EffMC<<" "<<Stat_Err<<" "<<Syst_Err<<" "<<Syst_Stat<<endl;	
-	
-	AddCorrSystError(GlobalCorrection,Syst_Err,Syst_Stat);
-	AddCorrSystError(GlobalCorrectionpid,Syst_Err,Syst_Stat);
 	
 }
 
@@ -136,11 +127,20 @@ void EffCorr::Eval_Corrections(float shift){
 	GlobalCorrectionpid->SetName((basename + "_Corr_globpid").c_str());
 	GlobalCorrectionpid->SetTitle((basename + "_Corr_globpid").c_str());
 
-	for(int i=0; i<GlobalCorrection->GetNbinsX();i++) GlobalCorrection->SetBinError(i+1,0);
-	for(int i=0; i<GlobalCorrection->GetNbinsX();i++) GlobalCorrectionpid->SetBinError(i+1,0);
+      
+//	for(int i=0; i<GlobalCorrection->GetNbinsX();i++) GlobalCorrection->SetBinError(i+1,0);
+//	for(int i=0; i<GlobalCorrection->GetNbinsX();i++) GlobalCorrectionpid->SetBinError(i+1,0);
 
-	GlobalCorrection->Divide(EffMC->GetEfficiency());	
-	GlobalCorrectionpid->Divide(EffMCpid->GetEfficiency());	
+	TH1F * MCeff= (TH1F*) EffMC->GetEfficiency();
+	TH1F * MCeff_pid= (TH1F*) EffMCpid->GetEfficiency();
+
+	if(IsTrigEffCorr) {
+		for(int i=0;i<MCeff->GetNbinsX();i++) MCeff->SetBinError(i+1,0);
+		for(int i=0;i<MCeff_pid->GetNbinsX();i++) MCeff_pid->SetBinError(i+1,0);
+	}
+
+	GlobalCorrection->Divide(MCeff);	
+	GlobalCorrectionpid->Divide(MCeff_pid);	
 
 	if(avg_time){
 		TH1F * timeavg;
@@ -152,16 +152,18 @@ void EffCorr::Eval_Corrections(float shift){
 		GlobalCorrection_timeavg->SetName((basename + "_Corr_avgtime").c_str());
 	}
 
+
+	//regularization against "rogue" bins
 	for(int i=0; i<GlobalCorrection->GetNbinsX();i++) {
 		if(GlobalCorrection->GetBinError(i+1)>=0.1 || GlobalEfficiency->GetBinContent(i+1)<=0.015){
 			GlobalCorrection->SetBinContent(i+1,0);
 			GlobalCorrectionpid->SetBinContent(i+1,0);
-			GlobalCorrection->SetBinError(i+1,2);
-			GlobalCorrectionpid->SetBinError(i+1,2);
 	
 		}
 
 	}
+	
+	
 	if(IsEkinCorrection){
 		GlobalCorrection = ConvertBinnedHisto(GlobalCorrection,"Global Correction;Ekin [GeV/n];Correction",Bins,true);
 		GlobalEfficiency_plot = ConvertBinnedHisto(GlobalEfficiency,"Data Efficiency;Ekin [GeV/n];Correction",Bins,true);
@@ -170,8 +172,23 @@ void EffCorr::Eval_Corrections(float shift){
 		GlobalCorrection = ConvertBinnedHisto(GlobalCorrection,"Global Correction;R [GV];Efficiency",Bins,false);
 		GlobalEfficiency_plot = ConvertBinnedHisto(GlobalEfficiency,"Data Efficiency;R [GV];Efficiency",Bins,false);
 	}
+	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) if(GlobalCorrection->GetBinLowEdge(i+1)<shift)	GlobalCorrection->SetBinContent(i+1,GlobalCorrection->GetBinContent(GlobalCorrection->FindBin(shift)));
+
 	ModelWithSpline(shift);
-	
+
+	//incertezza a posteriori
+	float std=0;
+	int nn=0;
+	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) {
+			if(GlobalCorrection->GetBinLowEdge(i+1)>shift ){
+			std+=pow(GlobalCorrection->GetBinContent(i+1)-CorrectionModel->Eval(GlobalCorrection->GetBinCenter(i+1)),2);
+			nn++;
+			}
+		}
+
+	std/=nn;
+	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) GlobalCorrection->SetBinError(i+1,0.6*pow(std,0.5));
+
 	Eval_Errors();
 
 	return;
@@ -254,7 +271,20 @@ void EffCorr::ModelWithSpline(float shift){
 	float endrange=9999;
 	for(int i=GlobalCorrection->GetNbinsX();i>0;i--) if(!(GlobalCorrection->GetBinContent(i+1)>0)) endrange = GlobalCorrection->GetBinLowEdge(i+1); else break;
 
-	GlobalCorrection->Fit((basename+"_Corr").c_str(),"","M",shift,endrange-0.5); 
-	GlobalEfficiency_plot->Fit((basename+"_Eff").c_str(),"","M",shift,endrange-0.5); 
+
+	GlobalCorrection->Fit((basename+"_Corr").c_str(),"","MS",0,endrange-1); 
+
+
+	Syst_Stat = (TH1F *) GlobalCorrection->Clone();
+	Syst_Stat->Reset();
+	for(int i=0;i<Syst_Stat->GetNbinsX();i++ ){
+		double x[1] = {GlobalCorrection->GetBinCenter(i+1)};
+		double c1[1];
+		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.997);
+		if(GlobalCorrection->GetBinContent(i+1)) 
+			Syst_Stat->SetBinContent(i+1,c1[0]/GlobalCorrection->GetBinContent(i+1));		
+	}	
+	GlobalEfficiency_plot->Fit((basename+"_Eff").c_str(),"","WM",shift,endrange-0.5); 
+	
 
 }

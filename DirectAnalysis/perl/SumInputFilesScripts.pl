@@ -6,8 +6,9 @@ chomp($workdir = "/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/")
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
 $listpath = "/eos/ams/group/dbar/TrentoNTuples/FilteredQ2";
-$datapath  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/neg/ISS.B1130/pass7";
-#$datapath  = "./FileList.txt";
+$datapath = "\/eos\/ams\/group\/dbar\/release_v7\/e1_vdev_200421\/neg\/ISS.B1130\/pass7\/";
+
+$filelist  = "./FileList.txt";
 #$mcP_path  = "/data1/home/data/v6_pass7/MC/pr.pl1ph.021000";
 $mcP_path  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/Pr.B1200/pr.pl1.05100.4_00/";
 $mcD_path  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/D.B1220/d.pl1.05100/";
@@ -15,8 +16,8 @@ $mcD_path  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/D.B1220/d.pl1.0
 $mcHe_path = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/He.B1200/he4.pl1.21000.4_00/";
 $mcT_path  = "";
 
-$FRAC =1;
-$FRACDT =1;
+$FRAC =0;
+$FRACDT =0;
 
 
 $OFFSET = $ARGV[3];
@@ -39,7 +40,8 @@ system("mkdir $workdir/InputFileLists/$ARGV[0]-$ARGV[1]");
 print "Listing All Data Files..\n";
 
 #chomp (@Rootuple = `ls $listpath | grep root | grep -v "log" |  sed s/.root//g`);
-chomp (@Rootuple = `cat ./FileList.txt`);
+#chomp (@Rootuple = `xrdfs root://eosams.cern.ch/ ls $datapath | grep root | grep -v "log" |  sed s/.root//g | sed 's/$datapath//g'`);
+chomp (@Rootuple = `cat $filelist`);
 $num_Rootuple = scalar(@Rootuple);
 
 chomp (@NTuple = `ls  $ntuplepath | grep -v "log" |grep -v "check" |  sed s/.root//g`);
@@ -99,7 +101,8 @@ for ($n=0;$n<$njobs; $n++)
 		{
 				$j=$j+$FRACDT;
 				#$out = `ls -d $datapath/$rootuple[$j].root`;	
-				$out = "root://eosams.cern.ch/$datapath/$rootuple[$j].root\n";	
+			#	$out = "root://eosams.cern.ch/$datapath/$rootuple[$j].root\n";	
+				$out = "$datapath/$rootuple[$j].root\n";	
 				print  OUT  "$out";
 				$rootuple[$j]="";	
 		}

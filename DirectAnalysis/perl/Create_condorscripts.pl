@@ -94,7 +94,7 @@ if($bookplots) {
 
 
 	open(OUT2,">","$workdir/perl/PlottingScripts/Condor_script$ARGV[0]-$ARGV[1].sub");
-	print OUT2 "executable	= $workdir/perl/PlottingScripts/script$ARGV[0]-$ARGV[1].sh\narguments	= \$(ProcId)\noutput	= $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/out/script$ARGV[0]-$ARGV[1].\$(ProcId).out\nerror	= $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/err/script$ARGV[0]-$ARGV[1].\$(ProcId).err\nlog	= $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/logs/script$ARGV[0]-$ARGV[1].\$(ProcId).log\n+JobFlavour = \"testmatch\"\nqueue $njobs"; 
+	print OUT2 "executable	= $workdir/perl/PlottingScripts/script$ARGV[0]-$ARGV[1].sh\narguments	= \$(ProcId)\noutput	= $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/out/script$ARGV[0]-$ARGV[1].\$(ProcId).out\nerror	= $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/err/script$ARGV[0]-$ARGV[1].\$(ProcId).err\nlog	= $workdir/perl/PlottingScripts/$ARGV[0]-$ARGV[1]/logs/script$ARGV[0]-$ARGV[1].\$(ProcId).log\n+JobFlavour = \"workday\"\nqueue $njobs"; 
 
 
 }

@@ -149,7 +149,7 @@ void Efficiency::FillEventByEventMC(Variables * vars, float (*var) (Variables * 
 		weight = vars->mcweight;
 		//if(bins.IsUsingBetaEdges()) weight *= vars->GetCutoffCleaningWeight(GetRFromBeta(bins.getParticle().getMass(),var(vars)),vars->Momento_gen,BetacutoffCut);
 		//else weight *= vars->GetCutoffCleaningWeight(vars->RInner,vars->Momento_gen,RcutoffCut);
-		weight *= vars->GetTimeDepWeight(vars->Momento_gen);				      
+//		weight *= vars->GetTimeDepWeight(vars->Momento_gen);				      
 	}
 
 	if(kbin>=0) if(ApplyCuts(cut_before,vars)){before->Fill(kbin,weight);}
@@ -212,6 +212,8 @@ void Efficiency::Eval_Efficiency(){
 		float da=after->GetBinError(i+1);
 		if(a!=0&&b!=0 && (da*da/(b*b) + pow(a,2)/pow(b,4)*db*db - 2*db*da*a/pow(b,3))>0) 
 			Err->SetBinContent(i+1,pow(da*da/(b*b) + pow(a,2)/pow(b,4)*db*db - 2*db*da*a/pow(b,3) ,0.5));
+			//Err->SetBinContent(i+1,sqrt( ( (1-2*a/b)*db*da + a/b*a/b*db*db )/(b*b)));
+
 	}
 	Err->Smooth();
 	for(int i=0;i<Eff->GetNbinsX();i++) Eff->SetBinError(i+1,Err->GetBinContent(i+1));
@@ -227,14 +229,14 @@ void Efficiency::Eval_TrigEfficiency(){
 	Unbias->Sumw2();
 	Unbias->Add(after,-1);
 	Unbias->Scale(100);
-	for(int i=0; i<Unbias->GetNbinsX();i++) 
-		Unbias->SetBinError(i+1,0.5*pow(Unbias->GetBinContent(i+1),0.5));
-
+	for(int i=0; i<Unbias->GetNbinsX();i++) Unbias->SetBinError(i+1,pow(Unbias->GetBinContent(i+1),0.5) );
+	
 
 	TH1 * Denominator = (TH1F *) after->Clone();
 	Denominator->Sumw2();
 	Denominator->Add(Unbias);
-
+//	for(int i=0; i<Denominator->GetNbinsX();i++) Denominator->SetBinError(i+1, (1)/pow(Unbias->GetBinContent(i+1),0.5)*Denominator->GetBinContent(i+1));
+	
 	Eff = (TH1 *)after->Clone();	
 	Eff -> Sumw2();
         Eff -> Divide(Denominator);

@@ -95,7 +95,8 @@ int RangeMerger::GetAglBinD(int globalbin){ return AglD.GetRTOIBin( Global_D.rig
 
 
 TH1F * RangeMerger::MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl) {
-		
+		std::cout<<ResultTOF->GetName()<<" "<<ResultNaF<<" "<<ResultAgl<<std::endl;
+			
 		std::cout<<ResultTOF<<" "<<ResultNaF<<" "<<ResultAgl<<std::endl;
 		TH1F * Merged = new TH1F("MergedRange_RTOI_P","MergedRange_RTOI_P",Global_P.size(),0,Global_P.size());
 		std::cout<<"GLOBAL P SIZE: "<<Global_P.size()<<std::endl;	

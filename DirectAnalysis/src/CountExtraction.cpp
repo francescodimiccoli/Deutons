@@ -18,7 +18,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	cout<<"****************************** BINS ***************************************"<<endl;
     	SetUpUsualBinning();
  
-	cout<<"****************************** Counts ANALYIS ******************************************"<<endl;
+	cout<<"****************************** Counts ANALYSIS ******************************************"<<endl;
 
 	BadEventSimulator * NaFBadEvSimulator= new BadEventSimulator("IsFromNaF",22,0.72,1); 
 	BadEventSimulator * AglBadEvSimulator= new BadEventSimulator("IsFromAgl",250,0.95,1); 
@@ -62,19 +62,25 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 
 	
 	//deuterons
-	TemplateFIT * TOFfits= new TemplateFIT("TOFDfits",Global.GetToFDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF","&IsProtonMC","&IsDeutonMC","&IsProtonMC","IsPrimaryBetaTOFD"       ,150,0.4,7.5,false,9,50,60,1);
-	TemplateFIT * NaFfits= new TemplateFIT("NaFDfits",Global.GetNaFDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut","&IsProtonMC","&IsProtonMC","&IsProtonMC","IsPrimaryBetaRICD"           ,30,0.4,5,true,9,450,300,0);
+	TemplateFIT * TOFfits= new TemplateFIT("TOFDfits",Global.GetToFDBins()  ,"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF","&IsProtonMC","&IsDeutonMC","&IsProtonMC","IsPrimaryBetaTOFD"       ,150,0.4,7.5,false,9,50,60,1);
+	TemplateFIT * NaFfits= new TemplateFIT("NaFDfits",Global.GetNaFDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut","&IsProtonMC","&IsDeutonMC","&IsProtonMC","IsPrimaryBetaRICD"           ,30,0.4,5,true,9,450,300,0);
 	TemplateFIT * Aglfits= new TemplateFIT("AglDfits",Global.GetAglDBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut","&IsProtonMC","&IsDeutonMC","&IsProtonMC","IsPrimaryBetaRICD"           ,80,0.4,10,true,11,20,25,1);	
 
 	//protons
 	TemplateFIT * TOFfits_P= new TemplateFIT("TOFPfits",Global.GetToFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF","&IsProtonMC","&IsDeutonMC","&IsProtonMC","IsPrimaryBetaTOFP"       ,150,0.4,7.5,false,9,50,60,1);
-	TemplateFIT * NaFfits_P= new TemplateFIT("NaFPfits",Global.GetNaFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut","&IsProtonMC","&IsProtonMC","&IsProtonMC","IsPrimaryBetaRICP"           ,30,0.4,5,true,9,450,300,0);
+	TemplateFIT * NaFfits_P= new TemplateFIT("NaFPfits",Global.GetNaFPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut","&IsProtonMC","&IsDeutonMC","&IsProtonMC","IsPrimaryBetaRICP"           ,30,0.4,5,true,9,450,300,0);
 	TemplateFIT * Aglfits_P= new TemplateFIT("AglPfits",Global.GetAglPBins(),"IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut","&IsProtonMC","&IsDeutonMC","&IsProtonMC","IsPrimaryBetaRICP"           ,60,0.4,5.5,true,11,20,25,1);	
 
-	//Helium
-	TemplateFIT * TOFfits_He= new TemplateFIT("TOFHefits",Global_He.GetToFDBins(),"IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsGoodTimeHe" ,"&IsHelimuMC","&IsHelimuMC","&IsHelimuMC","IsPrimaryBetaTOF4He"       ,150,0.4,7.5,false,9,90,90,1);
+	//Helium4
+	TemplateFIT * TOFfits_He= new TemplateFIT("TOFHefits",Global_He.GetToFDBins(),"IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsGoodTimeHe" ,"&IsHeliumMC","&IsHeliumMC","&IsHeliumMC","IsPrimaryBetaTOF4He"       ,150,0.4,7.5,false,9,90,90,1);
 	TemplateFIT * NaFfits_He= new TemplateFIT("NaFHefits",Global_He.GetNaFDBins(),"IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromNaF&RICHHeCutNaF","&IsHeliumMC","&IsHeliumMC","&IsHeliumMC","IsPrimaryBetaRIC4He"           ,30,0.4,5,true,7,250,200,0);
 	TemplateFIT * Aglfits_He= new TemplateFIT("AglHEfits",Global_He.GetAglDBins(),"IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromAgl&RICHHeCutAgl","&IsHeliumMC","&IsHeliumMC","&IsHeliumMC","IsPrimaryBetaRIC4He"           ,60,0.4,5.5,true,11,75,55,0);	
+
+	//Helium3
+	TemplateFIT * TOFfits_He3= new TemplateFIT("TOFHe3fits",Global_He.GetToFPBins(),"IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsGoodTimeHe" ,"&IsHeliumMC","&IsHeliumMC","&IsHeliumMC","IsPrimaryBetaTOF4He"       ,150,0.4,7.5,false,9,90,90,1);
+	TemplateFIT * NaFfits_He3= new TemplateFIT("NaFHe3fits",Global_He.GetNaFPBins(),"IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromNaF&RICHHeCutNaF","&IsHeliumMC","&IsHeliumMC","&IsHeliumMC","IsPrimaryBetaRIC4He"           ,30,0.4,5,true,7,250,200,0);
+	TemplateFIT * Aglfits_He3= new TemplateFIT("AglHE3fits",Global_He.GetAglPBins(),"IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromAgl&RICHHeCutAgl","&IsHeliumMC","&IsHeliumMC","&IsHeliumMC","IsPrimaryBetaRIC4He"           ,60,0.4,5.5,true,11,75,55,0);	
+
 /*
 	TOFfits	 ->SetAsExtern();
 	NaFfits	 ->SetAsExtern();
@@ -88,7 +94,6 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	NaFfits_He->SetAsExtern();
 	Aglfits_He->SetAsExtern();
 */	
-
 
 
 	if(!refill&&checkfile) {	
@@ -116,7 +121,6 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	        CountsHeFitNaF   ->ReinitializeHistos(refill); 
                 CountsHeFitAgl   ->ReinitializeHistos(refill); 
 		
-
 	
 		TOFfits	 = new TemplateFIT(finalhistos,"TOFDfits",Global.GetToFDBins(),false,9,50,60,1);
 		NaFfits	 = new TemplateFIT(finalhistos,"NaFDfits",Global.GetNaFDBins(),true,9,450,300,0);
@@ -130,6 +134,9 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		NaFfits_He= new TemplateFIT(finalhistos,"NaFHefits",Global_He.GetNaFDBins(),true,7,250,200,0);
 		Aglfits_He= new TemplateFIT(finalhistos,"AglHEfits",Global_He.GetAglDBins(),true,11,75,55,0,1);
 
+		TOFfits_He3= new TemplateFIT(finalhistos,"TOFHe3fits",Global_He.GetToFPBins(),false,9,90,90,1);
+		NaFfits_He3= new TemplateFIT(finalhistos,"NaFHe3fits",Global_He.GetNaFPBins(),true,7,250,200,0);
+		Aglfits_He3= new TemplateFIT(finalhistos,"AglHE3fits",Global_He.GetAglPBins(),true,11,75,55,0,1);
 
 		//	NaFfits->SetFitWithNoiseMode();
 		//	Aglfits->SetFitWithNoiseMode();
@@ -143,7 +150,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		TOFfits->ExtractCounts(finalhistos);	
 		if(!disable_fits) TOFfits->SaveFitResults(finalresults);
 	
-	//	disable_fits=false;
+		//disable_fits=false;
 
 
 		NaFfits->SetLocalFit();
@@ -153,17 +160,17 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		NaFfits->ExtractCounts(finalhistos);
 		if(!disable_fits) NaFfits->SaveFitResults(finalresults);
 
-	//	disable_fits=true;
+		//disable_fits=true;
 
 
-		Aglfits->SetLocalConstrainedFit();
+		Aglfits->SetLocalFit();
 		Aglfits->SetFitRange(0.5,8);
 		if(disable_fits)  Aglfits->DisableFit();
 		Aglfits->SetFitConstraints(0.9,1,0.007,0.1,0.0001,0.02,false);
 		Aglfits->ExtractCounts(finalhistos);
 		if(!disable_fits) Aglfits->SaveFitResults(finalresults);	
 
-		//disable_fits=true;
+//		disable_fits=true;
 
 		TOFfits_P->SetLocalFit();
 		TOFfits_P->SetFitRange(0.65,5.5);
@@ -217,6 +224,36 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		Aglfits_He->SetFitConstraints(0.6,1,0.001,0.6,0.0005,0.02,false);
 		Aglfits_He->ExtractCounts(finalhistos);
 		if(!disable_fits) 	Aglfits_He->SaveFitResults(finalresults);	
+
+	//	disable_fits=true;
+
+
+		TOFfits_He3->SetLocalFit();
+		TOFfits_He3->SetFitRange(0.65,5.5);
+		if(disable_fits) TOFfits_He3->DisableFit();
+		TOFfits_He3->SetFitConstraints(0.6,1,0.015,0.6,0.000001,0.02,false);
+		TOFfits_He3->ExtractCounts(finalhistos);	
+		if(!disable_fits) 	TOFfits_He3->SaveFitResults(finalresults);
+		
+//		disable_fits=true;
+
+
+		NaFfits_He3->SetLocalFit();
+		NaFfits_He3->SetFitRange(0.6,6);
+		if(disable_fits) NaFfits_He3->DisableFit();
+		NaFfits_He3->SetFitConstraints(0.6,1,0.001,0.6,0.0005,0.02,false);
+		NaFfits_He3->ExtractCounts(finalhistos);
+		if(!disable_fits) NaFfits_He3->SaveFitResults(finalresults);
+	
+//		disable_fits=true;
+
+		Aglfits_He3->SetLocalFit();
+		Aglfits_He3->SetFitRange(0.5,6);
+		if(disable_fits) Aglfits_He3->DisableFit();
+		Aglfits_He3->SetFitConstraints(0.6,1,0.001,0.6,0.0005,0.02,false);
+		Aglfits_He3->ExtractCounts(finalhistos);
+		if(!disable_fits) 	Aglfits_He3->SaveFitResults(finalresults);	
+
 
 
 		CountsHE	->Eval_Efficiency();	
@@ -279,17 +316,25 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	TOFfits_He	    -> SetDefaultOutFile(finalhistos);
 	NaFfits_He	    -> SetDefaultOutFile(finalhistos);
 	Aglfits_He	    -> SetDefaultOutFile(finalhistos);
+	TOFfits_He3	    -> SetDefaultOutFile(finalhistos);
+	NaFfits_He3	    -> SetDefaultOutFile(finalhistos);
+	Aglfits_He3	    -> SetDefaultOutFile(finalhistos);
+
 
 
 	TOFfits	    	    ->SetTemplateScaleFactor(1,1,3.); 
-	NaFfits		    ->SetTemplateScaleFactor(1,2,3.); 
+	NaFfits		    ->SetTemplateScaleFactor(1,1,3.); 
 	Aglfits	   	    ->SetTemplateScaleFactor(1,1,3.); 
 	TOFfits_P	    ->SetTemplateScaleFactor(1,1,3.); 
-	NaFfits_P	    ->SetTemplateScaleFactor(1,2,3.); 
+	NaFfits_P	    ->SetTemplateScaleFactor(1,1,3.); 
 	Aglfits_P	    ->SetTemplateScaleFactor(1,1,3.); 
 	TOFfits_He	    ->SetTemplateScaleFactor(1,3/4.,0); 
 	NaFfits_He	    ->SetTemplateScaleFactor(1,3/4.,0); 
 	Aglfits_He	    ->SetTemplateScaleFactor(1,3/4.,0); 
+	TOFfits_He3	    ->SetTemplateScaleFactor(1,3/4.,0); 
+	NaFfits_He3	    ->SetTemplateScaleFactor(1,3/4.,0); 
+	Aglfits_He3	    ->SetTemplateScaleFactor(1,3/4.,0); 
+
 
 
 	CountsHE	-> SetDefaultOutFile(finalhistos);
@@ -330,6 +375,9 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	Filler.AddObject2beFilled(TOFfits_He,GetRecMassTOF ,GetBetaTOF);
 	Filler.AddObject2beFilled(NaFfits_He,GetRecMassRICH,GetBetaRICH);
 	Filler.AddObject2beFilled(Aglfits_He,GetRecMassRICH,GetBetaRICH);
+	Filler.AddObject2beFilled(TOFfits_He3,GetRecMassTOF ,GetBetaTOF);
+	Filler.AddObject2beFilled(NaFfits_He3,GetRecMassRICH,GetBetaRICH);
+	Filler.AddObject2beFilled(Aglfits_He3,GetRecMassRICH,GetBetaRICH);
 	
 
 	Filler.AddObject2beFilled(CountsHE,GetRigidity,GetRigidity); 

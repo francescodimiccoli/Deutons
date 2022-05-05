@@ -167,7 +167,11 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->good_RTI   = rtiInfo->good;
     vars->isinsaa = rtiInfo->isinsaa;
 
-    vars->NAnticluster      = ntpHeader->nanti;
+
+   cout<<"CUTOFF: "<<setprecision(5)<<vars->Rcutoff_IGRFRTI<<" "<<rtiInfo->cf[1][2][1]<<endl;
+ 
+
+   vars->NAnticluster      = ntpHeader->nanti;
     vars->NTofClusters      = ntpHeader->ntofh; // NOTE: That sees to be an error
     vars->NTofClustersusati = ntpTof->beta_ncl;
     vars->NTrackHits        = ntpHeader->ntrrechit;
@@ -199,7 +203,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
     vars->PhysBPatt = ntpHeader->sublvl1;
     vars->JMembPatt = ntpHeader->trigpatt;
 
-/*    bool goodChi2 =  (ntpTracker->chisqn[1][0] < vars->Chi2Xcut->Eval(abs(ntpTracker->rig[1][1])) &&
+/*    bool pct
 			ntpTracker->chisqn[1][1] < vars->Chi2Ycut->Eval(abs(ntpTracker->rig[1][1])));	
     */
     bool goodChi2 =  (ntpTracker->chisqn[6][0] < 10 &&
@@ -394,7 +398,8 @@ void DBarReader::FillCompact(int NEvent, Variables * vars, float massgen){
 	}
 
 	//cout<<NEvent<<" "<<vars->Momento_gen<<endl;
-
+        vars->Event             = ntpSHeader->event;
+  
 	////////////////////// EVENT INFORMATION ///////////////////////////////////////
 	vars->PrescaleFactor    = 1; 
 	vars->P_standard_sel    = 0; 	
@@ -405,7 +410,8 @@ void DBarReader::FillCompact(int NEvent, Variables * vars, float massgen){
 	vars->Rcutoff_RTI  =   rtiInfo->cf[0][2][1]; //stoermer
 	vars->Rcutoff_IGRFRTI = rtiInfo->cf[1][2][1]; //IGRF 
 	// vars->Rcutoff_RTI  =   rtiInfo->cf[1][2][1]; //IGRF
-    
+
+   
 	vars->Livetime_RTI =   rtiInfo->lf;    
 	vars->good_RTI   = rtiInfo->good;
 	vars->isinsaa = rtiInfo->isinsaa;
@@ -439,7 +445,7 @@ void DBarReader::FillCompact(int NEvent, Variables * vars, float massgen){
 	if( minTOF_Cpct()                          )  vars->CUTMASK |= 1 << 1; //minTOF already in compact selection
 	if( (ntpCompact->trigpatt & 0x2) != 0)  vars->CUTMASK |= 1 << 2;
 	if( ntpCompact->trk_kal_rig[1] != 0.0          )  vars->CUTMASK |= 1 << 3;
-	if( goodChi2                          )  vars->CUTMASK |= 1 << 4;  
+	if( goodChi2                          )  vars->CUTMASK |= 1 << 4;	
 	if( goldenTOF_Cpct()                       )  vars->CUTMASK |= 1 << 5;  
 	// 6
 	if( vars->NTracks == 1 )  vars->CUTMASK |= 1 << 7;

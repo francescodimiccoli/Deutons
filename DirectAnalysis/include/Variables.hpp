@@ -45,13 +45,13 @@ struct Variables{
     float      PrescaleFactor;
 
     // Cutoffs
-    float      Rcutoff;
-    float      IGRFRcutoff;
+    double      Rcutoff;
+    double      IGRFRcutoff;
 
     //RTI
     int good_RTI;
-    float       Rcutoff_RTI;
-    float 	Rcutoff_IGRFRTI;
+    double       Rcutoff_RTI;
+    double 	Rcutoff_IGRFRTI;
     int isinsaa;
     float	Livetime_RTI;
 
@@ -258,6 +258,10 @@ float GetInverseBetaRICH (Variables * vars);
 float GetBetaMeas        (Variables * vars);
 float GetBetaTOF         (Variables * vars);
 float GetBetaRICH        (Variables * vars);
+float GetEkin_nTOF	(Variables * vars);
+float GetEkin_nRICH	(Variables * vars);
+
+
 float GetRecMassTOF	     (Variables * vars);
 float GetRecMassRICH     (Variables * vars);
 float GetNegRecMassTOF	 (Variables * vars);

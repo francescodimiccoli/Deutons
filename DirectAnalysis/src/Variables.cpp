@@ -663,6 +663,8 @@ float GetRigidity (Variables * vars) {return vars->R;}
 float GetRigidityInner (Variables * vars) {return vars->RInner;}
 float GetRigiditySecondTrack (Variables * vars) {return vars->R_sec;}
 
+float GetEkin_nTOF (Variables * vars) {return 0.938*((1/sqrt(1-pow(vars->Beta,2)))-1); }
+float GetEkin_nRICH (Variables * vars) {return 0.938*((1/sqrt(1-pow(vars->BetaRICH_new,2)))-1); }
 
 
 Reweighter ReweightInitializer(std::string galpropfilename, float r_min, float r_max, float norm_at){

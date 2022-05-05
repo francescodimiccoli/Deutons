@@ -45,11 +45,11 @@ bool IsGoodL1Status_SA (Variables * vars) {return true;}//(vars->qL1Status_SA==0
 bool IsGoodL2Status (Variables * vars) {return (vars->qL2Status==0);}
 
 bool HasL1 (Variables * vars) {return ((vars->hitbits&0x1)!=0 && IsGoodL1Status(vars)) && vars->R_L1>0.0;}
-bool HasL2 (Variables * vars) {return ((vars->patty&0x2)!=0);}
+bool HasL2 (Variables * vars) {return ((vars->hitbits&0x2)!=0);}
 bool HasL9 (Variables * vars) {return ((vars->hitbits&0x100)!=0);}
 
 
-bool IsGoodTrackPattern (Variables * vars) {return ((vars->patty&0x2)!=0)&&((vars->patty&0xc)!=0)&&((vars->patty&0x30)!=0)&&((vars->patty&0xc0)!=0) ;  }
+bool IsGoodTrackPattern (Variables * vars) {return ((vars->patty&0x2)!=0)&&((vars->patty&0xc)!=0)&&((vars->patty&0x30)!=0)&&((vars->patty&0xc0)!=0) && HasL2(vars);  }
 
 
 
@@ -132,7 +132,7 @@ bool IsLUT2         (Variables * vars)          { return (((int)vars->joinCutmas
 bool IsPhysTrig     (Variables * vars)		{ return ((int)vars->joinCutmask&1)==1;}
 bool IsGoodTrack    (Variables * vars) 		{return ( IsGoodTrackPattern(vars) && vars->RInner>0.0&&IsMinTOF(vars)) ;}
 bool IsGoodKalman   (Variables * vars)          {return (vars->R>=0.0 && vars->Chisquare<10 && vars->Chisquare_y<10);}
-bool IsCharge1Track (Variables * vars) 		{return (vars->qInner>0.8&&vars->qInner<1.3);}
+bool IsCharge1Track (Variables * vars) 		{return (vars->qInner>0.75&&vars->qInner<1.3);}
 bool IsCharge1TrackLoose (Variables * vars) 		{return (vars->qInner>0.2&&vars->qInner<1.8);}
 bool IsCharge2Track (Variables * vars) 		{return (vars->qInner>1.8&&vars->qInner<2.3);}
 bool IsCharge2TrackLoose (Variables * vars)     {return (vars->qInner>1.&&vars->qInner<3.);}
@@ -140,16 +140,17 @@ bool IsCharge2TrackLoose (Variables * vars)     {return (vars->qInner>1.&&vars->
 
 //efficiency corrections
 bool Is1TrTrack (Variables * vars)    { return  ( ((int)vars->NTracks)==1);}
-bool IsCharge1UTOF (Variables * vars) {return (vars->qUtof>0.8&&vars->qUtof<1.3);}
-bool IsCharge1LTOF (Variables * vars) {return (vars->qLtof>0.8&&vars->qLtof<1.3);}
+bool IsCharge1UTOF (Variables * vars) {return (vars->qUtof>0.75&&vars->qUtof<1.35);}
+bool IsCharge1LTOF (Variables * vars) {return (vars->qLtof>0.75&&vars->qLtof<1.35);}
 bool IsCharge2UTOF (Variables * vars) {return (vars->qUtof>1.8&&vars->qUtof<2.3);}
 bool IsCharge2LTOF (Variables * vars) {return (vars->qLtof>1.8&&vars->qLtof<2.3);}
 
+//IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF
 
 //analysis selections
 bool IsBaseline (Variables * vars){ return IsPhysTrig(vars) && IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) && IsCharge1Track(vars) && IsGoodKalman(vars) ;}
 bool IsBaselineHe (Variables * vars){ return IsPhysTrig(vars) && IsDownGoing(vars) && IsGoodTrack(vars) && IsGoodChi2(vars) && IsCharge2Track(vars) && IsGoodKalman(vars) ;}
-bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0.2 && vars->qL1<2&&HasL1(vars));} 
+bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0.2 && vars->qL1<1.75&&HasL1(vars));} 
 bool L1LooseCharge2(Variables * vars){ return (vars->qL1>1.2 && vars->qL1<3&&HasL1(vars));} 
 bool IsCleaning	(Variables * vars) { return Is1TrTrack(vars)&&IsCharge1UTOF(vars)&&IsCharge1LTOF(vars);  }
 bool IsCleaningHe	(Variables * vars) { return Is1TrTrack(vars)&&IsCharge2UTOF(vars)&&IsCharge2LTOF(vars);  }
@@ -164,7 +165,7 @@ bool IsFromAgl     (Variables * vars){ return vars->IsFromAgl();}
 
 //bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,999999,-0.275,-0.25);  }
 bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,999999,-0.26,-0.2);  }
-bool QualityTOF(Variables * vars) { return (vars->Richtothits<20 && vars->EdepECAL<10 && vars->qLtof>0.92 && vars->NAnticluster<=2);  }
+bool QualityTOF(Variables * vars) { return (vars->Richtothits<20 && vars->EdepECAL<10 && vars->qLtof>0.92 && vars->NAnticluster<=2); }
 bool RICHHeCutNaF(Variables * vars) { return (vars->RichPhEl_tot>6 && vars->RICHPmts>4 &&  vars->RICHTOFBetaConsistency<0.05 && vars->Richtothits>5);}
 bool RICHHeCutAgl(Variables * vars) { return (vars->RichPhEl_tot>5 && vars->RICHPmts>3 &&  vars->RICHTOFBetaConsistency<0.06 && vars->Richtothits>5);}
 

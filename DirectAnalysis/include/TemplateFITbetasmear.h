@@ -14,7 +14,8 @@ class Tool;
 
 using namespace std;
 
-
+float FindConstraintD(TH1F * dt);
+	
 struct TFit {
    TH1F * Templ_P =0x0;
    TH1F * Templ_D =0x0;
@@ -63,7 +64,7 @@ struct TFit {
   TFit(TH1F * templ_P, TH1F * templ_D, TH1F * data, TH1F * dataPrim) { Templ_P= templ_P; Templ_D=templ_D; Data=data; DataPrim=dataPrim; }
   void RegularizeTemplateError();
   void AddSysttoTempl();
-
+  void AdjoustProtonTail(float factor);
 };
 
 

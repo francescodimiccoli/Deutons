@@ -66,7 +66,7 @@ float Folder::GetXknot(int indx){
 	//return min +(max-min)*edges[indx];
 	float center;
 	if(indx<(knots-1)) center = fit_min + offset + ((fit_max-fit_min)/(knots-1))*indx;
-	else center = fit_max+ (max-fit_max)/6;
+	else center = fit_max+ fabs(max-fit_max)/6;
 
 	return Migr_matr->GetXaxis()->GetBinCenter(Migr_matr->GetXaxis()->FindBin(center));
 }
@@ -81,7 +81,7 @@ void Folder::SetKnots(double *y, std::string name) {
 UnfoldRes Unfold(TH2* migr_matr_norm, TH1 * measured_R, TGraph * expo, TGraph* acce, float fit_min,float fit_max,int knots,float offset){
          	UnfoldRes Res;
 	        Folder * F = new Folder(migr_matr_norm,measured_R, expo, acce, fit_min,fit_max,knots,offset);
-                int iter=100;
+                int iter=40;
                 TF1 * f[iter];
 
                 float params[iter][F->GetNknots()];

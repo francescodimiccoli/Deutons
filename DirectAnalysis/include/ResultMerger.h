@@ -30,13 +30,18 @@ class ResultMerger{
 
 	TH1F* effAcc;
 	TH1F* effAccMC;
+	TH1F* effAccMC_raw;
 	TH1F* counts;
 	TH1F* unfolding;
+	TH1F* roounfolding;
+
 
 	TH1F * statErr;
 	TH1F * systErr;
 	TH1F * accErr;
 	TH1F * unfErr;			
+	TH1F * roounfErr;			
+
 
 	std::string Name;
 

@@ -21,18 +21,24 @@ class Flux{
 	TH1F * Counts_density=0x0;
 	TH1F * Counts_density27=0x0;
 	TH1F * Counts_density_unfolded=0x0;
+	TH1F * Counts_density_roounf=0x0;
 	TH1F * Counts_density_Ekin=0x0;
 	TH1F * Counts_density_Ekin_unf=0x0;
 	TH1F * Unfolding_factor=0x0;
 	TH1F * Unfolding_factor_raw=0x0;
 
+	bool rooUnfolding=false;
+
 
 	TH1F * Unfolding_factor_timeavg=0x0;
 	TH2F * avg_time=0x0;
 	int time=1429054000;
+
+	TH1F * RooUnfolding_factor=0x0;
 	
 	TH1F * Eff_Acceptance=0x0;
 	TH1F * MC_Acceptance=0x0;
+	TH1F * MC_Acceptance_raw=0x0;
 	TH1F * ExposureTime=0x0;
 	TH1F * ForAcceptance=0x0;
 
@@ -63,13 +69,23 @@ class Flux{
 
 	TCanvas * test=0x0;
 
-
 	TH1F * Counts_statErr=0x0;
 	TH1F * Counts_systErr=0x0;
 	TH1F * Acc_Err=0x0;
+	TH1F * Acc_ErrStat=0x0;
 	TH1F * Unfolding_Err=0x0;
+	TH1F * RooUnfolding_Err=0x0;
+
 
 	bool forcefolded = false;
+
+
+	TH2F * migr_matr_rootunfold=0x0;
+	TH1F* roounfold_true=0x0;
+	TH1F* roounfold_meas=0x0;
+
+
+
 
 	public:
 
@@ -78,6 +94,8 @@ class Flux{
 		EffAcceptance = new Acceptance(FileRes,Accname,AccDir,Bins,Bins);
 		Eff_Acceptance = (TH1F *) EffAcceptance->GetEffAcc_gen();	
 		MC_Acceptance = (TH1F *) EffAcceptance->GetEffAccMC_gen();	
+		MC_Acceptance_raw = (TH1F *) EffAcceptance->GetEffAccMC_gen_raw();	
+
 
 
 		if(EffAcceptance) {
@@ -101,6 +119,14 @@ class Flux{
 		
 		cout<<"Matrix: "<<migr_matr<<endl;
 
+
+		if(bins.IsUsingBetaEdges()) {
+			migr_matr_rootunfold = (TH2F*) EffAcceptance->GetMigr_Unf();
+			roounfold_true =  (TH1F*) EffAcceptance->GetMigr_True();
+			roounfold_meas =  (TH1F*) EffAcceptance->GetMigr_Meas();
+		}
+
+
 	}
 
 
@@ -109,6 +135,8 @@ class Flux{
 		EffAcceptance = new Acceptance(FileRes,Accname,AccDir,Bins,Bins);
 		Eff_Acceptance = (TH1F *) EffAcceptance->GetEffAcc_gen();	
 		MC_Acceptance = (TH1F *) EffAcceptance->GetEffAccMC_gen();	
+		MC_Acceptance_raw = (TH1F *) EffAcceptance->GetEffAccMC_gen_raw();	
+
 
 
 		if(EffAcceptance) {
@@ -121,6 +149,10 @@ class Flux{
 			Counts = (TH1F *) fileres->Get((CountsName).c_str());
 			Unfolding_Err = (TH1F *) fileres->Get((CountsName).c_str());
 			Unfolding_Err->Reset();
+			RooUnfolding_Err = (TH1F *) fileres->Get((CountsName).c_str());
+			RooUnfolding_Err->Reset();
+			RooUnfolding_factor = (TH1F *) fileres->Get((CountsName).c_str());
+			RooUnfolding_factor->Reset();
 			ExposureTime = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
 
 			FluxEstim = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str());
@@ -163,12 +195,17 @@ class Flux{
 	void Unfold_Counts(float fit_min, float fit_max,int knots,float offset, bool regularize=false);
 	void ModelAcceptanceWithSpline(float shift);
 
+	void ActivateRooUnfolding(){ rooUnfolding=true;}
+
 	void Set_UnfoldingTime(TH2F * avg,std::string timename) { 
 		if(avg)  avg_time=(TH2F*)avg->Clone();
 		time=std::atoi(timename.substr(timename.find("-")+1,10).c_str())-4665600;
 		std::cout<<"Set_UnfoldingPar: "<<time<<" "<<" "<<avg_time<<std::endl;
 	}
 
+	void Roounfold(int iterations);
+	
+	
 	void SetForceFolded(){forcefolded=true;}
 	TH1F * GetExposureTime(){return ExposureTime;}
 	
@@ -182,12 +219,16 @@ class Flux{
 
 	TH1F * GetEffAcceptance(){return Eff_Acceptance;}
 	TH1F * GetMCAcceptance(){return MC_Acceptance;}
+	TH1F * GetMCAcceptance_raw(){return MC_Acceptance_raw;}
 	TH1F * GetCounts() {return Counts;}
 	TH1F * GetStatError() {return Counts_statErr;}
 	TH1F * GetAccError() {return Acc_Err;}
 	TH1F * GetSystError() {return Counts_systErr;}
 	TH1F * GetUnfError() {return Unfolding_Err;}
 	TH1F * GetUnfoldingFactor() {return Unfolding_factor;}
+	TH1F * GetRooUnfoldingFactor() {return RooUnfolding_factor;}
+	TH1F * GetRooUnfError() {return RooUnfolding_Err;}
+	
 
 	TH1F * Eval_FluxRatio(Flux * Denominator,std::string name);
 

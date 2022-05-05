@@ -1,5 +1,7 @@
 #include "Acceptance.h"
 #include "histUtils.h"
+#include "TVirtualFitter.h"
+
 
 void MCPar::Eval_trigrate(){
 	std::vector<int> runs;
@@ -46,6 +48,10 @@ void MCPar::Eval_trigrate(){
 	for(int i=0; i<triggers.size(); i++) tot_trig+=triggers[i];	
 	Trigrate = tot_ev/(double)tot_trig;
 
+        TOT_EV   = rdb->GetTotEvents();
+        TOT_TRIG = rdb->GetTotTrigg();
+
+
 	cout<<"********MC infos:*******"<<endl;
 	cout<<"*** MC DISTR: ****"<<endl;
 	cout<<"MC name: "<<filename.c_str()<<endl;
@@ -68,7 +74,6 @@ void Acceptance::SetDefaultOutFile(FileSaver FinalHistos){
 
 
 void Acceptance::Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename, std::string Runlist, float compact_event_ratio, float Art_ratio){
-	cout<<"Setting MC parameters"<<endl;
 	param.Rmin=rmin;
 	param.Rmax=rmax;
 	param.filename = Filename;
@@ -107,6 +112,9 @@ void Acceptance::Save(){
         finalhistos.Add(Migr_beta);
        	finalhistos.Add(Migr_R);
         finalhistos.Add(Migr_B);
+        finalhistos.Add(Migr_Unf);
+        finalhistos.Add(Migr_True);
+        finalhistos.Add(Migr_Meas);
         finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());	
 }
 
@@ -119,11 +127,17 @@ void Acceptance::SaveResults(FileSaver finalhistos){
  	if(EffAcceptanceMC)finalhistos.Add(EffAcceptanceMC);
  	if(EffAcceptance_gen)  finalhistos.Add(EffAcceptance_gen ); 
  	if(EffAcceptanceMC_gen)finalhistos.Add(EffAcceptanceMC_gen);
-	
+  	if(EffAcceptanceMC_gen_raw)finalhistos.Add(EffAcceptanceMC_gen_raw);
+ 	if(EffAcceptance_StatErr)  finalhistos.Add(EffAcceptance_StatErr ); 
+  	if(EffAcceptance_SystErr)  finalhistos.Add(EffAcceptance_SystErr ); 
+ 
 	if(Migr_rig) finalhistos.Add(Migr_rig);
 	if(Migr_beta) finalhistos.Add(Migr_beta);
 	if(Migr_R) finalhistos.Add(Migr_R);
 	if(Migr_B) finalhistos.Add(Migr_B);
+	if(Migr_Unf) finalhistos.Add(Migr_Unf);
+	if(Migr_True) finalhistos.Add(Migr_True);
+	if(Migr_Meas) finalhistos.Add(Migr_Meas);
 	
         finalhistos.writeObjsInFolder((directory+"/"+basename).c_str());	
 }
@@ -156,8 +170,8 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 	cout<<"********** MC flux reweighting **********"<<endl;
 	Variables * vars = new Variables(timeindex);
 	cout<<"********** For_Acceptance **************"<<endl;
-	long int normalization = FRAC*(For_Acceptance->GetBefore()->GetEntries()/param.compact_event_ratio)/param.Trigrate;
-	cout<<"Normalization Check:  "<<basename<<" "<<normalization<<" "<<param.tot_trig<<" "<<param.Trigrate<<endl;
+	long int normalization = FRAC*(For_Acceptance->GetBefore()->GetEntries()/param.compact_event_ratio)/param.Trigrate/1.;  
+	cout<<"Normalization Check:  "<<basename<<" "<<normalization<<" "<<param.TOT_TRIG<<" "<<For_Acceptance->GetBefore()->GetEntries()/param.compact_event_ratio<<" "<<param.TOT_EV<<endl;
 	
 	Histogram Spectrum;
 	Histogram LogNorm;
@@ -173,7 +187,9 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 	FullSetEff_gen->GetBefore()->Reset();
 	//total triggers in range
 	for(int i=0;i<bins.size();i++){
-		float bincontent = normalization*(log(bins.RigTOIBins()[i+1])-log(bins.RigTOIBins()[i]))/log(param.Rmax)-log(param.Rmin);
+	
+		float bincontent = normalization*(log(bins.RigTOIBins()[i+1])-log(bins.RigTOIBins()[i]))/(log(param.Rmax)-log(param.Rmin));
+	
 		float meanweight = Spectrum.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1])/LogNorm.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1]);
 		float MCweight = 1;
 		//MCweight *= vars->GetCutoffCleaningWeight(bins.RigBins()[i],bins.RigTOIBins()[i],SF);
@@ -187,11 +203,11 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 	FullSetEff->GetBefore()->Reset();
 	//total triggers in range
 	for(int i=0;i<bins.size();i++){
-		float bincontent = normalization*(log(bins.RigTOIBins()[i+1])-log(bins.RigTOIBins()[i]))/log(param.Rmax)-log(param.Rmin);
+		float bincontent = normalization*(log(bins.RigTOIBins()[i+1])-log(bins.RigTOIBins()[i]))/(log(param.Rmax)-log(param.Rmin));
 		float meanweight = Spectrum.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1])/LogNorm.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1]);
 		float MCweight = 1;
 		//MCweight *= vars->GetCutoffCleaningWeight(bins.RigBins()[i],bins.RigTOIBins()[i],SF);
-		MCweight *= vars->GetTimeDepWeight(bins.RigTOIBins()[i]);				      
+		//MCweight *= vars->GetTimeDepWeight(bins.RigTOIBins()[i]);				      
 	
 		if(LogNorm.integrate(bins.RigTOIBins()[i],bins.RigTOIBins()[i+1])){
 				FullSetEff->GetBefore()->SetBinContent(i+1,bincontent*meanweight*MCweight);
@@ -200,11 +216,29 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 	}
 		
 	cout<<"********** THE DIVISION **********"<<endl;
+
 	FullSetEff_gen->Eval_Efficiency();
 	FullSetEff->Eval_Efficiency();
 
 	EffAcceptance= (TH1F*)FullSetEff->GetEfficiency()->Clone();
 	EffAcceptanceMC= (TH1F*)FullSetEff->GetEfficiency()->Clone();	
+		
+	if(IsModeled){
+	
+		EffAcceptance->Reset();
+		EffAcceptanceMC->Reset();
+		TF1 * fit_fold = new TF1("fit_fold","pol3",0,50);
+		FullSetEff->GetEfficiency()->Fit("fit_fold","S");
+		for(int i=0;i<EffAcceptance->GetNbinsX();i++){
+			double x[1] = {EffAcceptance->GetBinCenter(i+1)};
+			double c1[1];
+			(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.683);
+			EffAcceptance->SetBinContent(i+1,fit_fold->Eval(EffAcceptance->GetBinCenter(i+1)));
+			EffAcceptance->SetBinError(i+1,c1[0]);
+		}	
+		EffAcceptanceMC= (TH1F*)EffAcceptance->Clone();
+	}
+
 	EffAcceptance -> Sumw2();
 	EffAcceptance -> Scale(47.78/param.gen_factor);
 	EffAcceptanceMC -> Sumw2();
@@ -217,15 +251,42 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 
 	EffAcceptance_gen= (TH1F*)FullSetEff_gen->GetEfficiency()->Clone();
 	EffAcceptanceMC_gen= (TH1F*)FullSetEff_gen->GetEfficiency()->Clone();	
+	EffAcceptanceMC_gen_raw= (TH1F*)FullSetEff_gen->GetEfficiency()->Clone();	
+
+
+
+	if(IsModeled){
+	
+		EffAcceptance_gen->Reset();
+		EffAcceptanceMC_gen->Reset();
+		TF1 * fit_gen = new TF1("fit_gen","pol3",0,50);
+		FullSetEff_gen->GetEfficiency()->Fit("fit_gen","S");
+		for(int i=0;i<EffAcceptance_gen->GetNbinsX();i++){
+			double x[1] = {EffAcceptance_gen->GetBinCenter(i+1)};
+			double c1[1];
+			(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.683);
+			EffAcceptance_gen->SetBinContent(i+1,fit_gen->Eval(EffAcceptance_gen->GetBinCenter(i+1)));
+			EffAcceptance_gen->SetBinError(i+1,c1[0]);
+		}	
+		EffAcceptanceMC_gen= (TH1F*)EffAcceptance_gen->Clone();
+	}
+
 	EffAcceptance_gen -> Sumw2();
 	EffAcceptance_gen -> Scale(47.78/param.gen_factor);
 	EffAcceptanceMC_gen -> Sumw2();
 	EffAcceptanceMC_gen -> Scale(47.78/param.gen_factor);
+	EffAcceptanceMC_gen_raw -> Sumw2();
+	EffAcceptanceMC_gen_raw -> Scale(47.78/param.gen_factor);
+
 
 	EffAcceptance_gen->SetName((basename +"_Eff_Acceptance_gen").c_str());
 	EffAcceptance_gen->SetTitle((basename +"_Eff_Acceptance_gen").c_str());
 	EffAcceptanceMC_gen->SetName((basename +"_Eff_AcceptanceMC_gen").c_str());
 	EffAcceptanceMC_gen->SetTitle((basename +"_Eff_AcceptanceMC_gen").c_str());
+	EffAcceptanceMC_gen_raw->SetName((basename +"_Eff_AcceptanceMC_gen_raw").c_str());
+	EffAcceptanceMC_gen_raw->SetTitle((basename +"_Eff_AcceptanceMC_gen_raw").c_str());
+
+
 	cout<<"*********** Efficiency corrections ************"<<endl;
 	/*for(int i=0;i<EfficiencyCorrections.size();i++) {
 		for(int j=0; j<EffAcceptance->GetNbinsX(); j++){
@@ -244,6 +305,7 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 					correction  = GetAverage(EfficiencyCorrections[i]->GetCorrectionModel(),bins.ekpermassbin_TOI[j],bins.ekpermassbin_TOI[j+1]);//EfficiencyCorrections[i]->GetCorrectionModel()->Eval(bins.ekpermassbincent_TOI[j] + EffCorrshift[i]);
 				EffAcceptance -> SetBinContent( j+1, EffAcceptance -> GetBinContent(j+1)*correction);
 				EffAcceptance_gen -> SetBinContent( j+1, EffAcceptance_gen -> GetBinContent(j+1)*correction);
+				cout<<"***********  correction EK nr "<<i<<" "<<EfficiencyCorrections[i]->GetName()<<" "<<correction<<endl;
 				}
 			else { 
 				float correction;
@@ -253,6 +315,7 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 					correction  = GetAverage(EfficiencyCorrections[i]->GetCorrectionModel(),bins.rigbin_TOI[j],bins.rigbin_TOI[j+1]);//EfficiencyCorrections[i]->GetCorrectionModel()->Eval(bins.rigbincent_TOI[j]);
 				EffAcceptance -> SetBinContent( j+1, EffAcceptance -> GetBinContent(j+1)*correction);
 				EffAcceptance_gen -> SetBinContent( j+1, EffAcceptance_gen -> GetBinContent(j+1)*correction);
+				cout<<"***********  correction EK nr "<<i<<" "<<EfficiencyCorrections[i]->GetName()<<" "<<correction<<endl;
 			     }
 		}
 	}	
@@ -270,6 +333,7 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 						    GetAverage(EfficiencyCorrections[i]->GetCorrectionModel(),bins.ekpermassbin_TOI[j],bins.ekpermassbin_TOI[j+1]);
 				EffAcceptance -> SetBinContent( j+1, EffAcceptance -> GetBinContent(j+1)*correction);
 				EffAcceptance_gen -> SetBinContent( j+1, EffAcceptance_gen -> GetBinContent(j+1)*correction);
+
 				}
 
 			else {
@@ -286,31 +350,45 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 		}
 	}	
 
-
-
+	EffAcceptance_StatErr = (TH1F*)EffAcceptance->Clone();
+	EffAcceptance_SystErr = (TH1F*)EffAcceptance->Clone();
+	EffAcceptance_StatErr->Reset();
+	EffAcceptance_SystErr->Reset();
+	EffAcceptance_StatErr->SetName((basename +"_Eff_Acceptance_StatErr").c_str());
+	EffAcceptance_SystErr->SetName((basename +"_Eff_Acceptance_SystErr").c_str());
+	
 	for(int j=0; j<EffAcceptance->GetNbinsX(); j++){
-		float err =0;
+		float err_stat =0;
+		float err_syst =0;
 		for(int i=0;i<EfficiencyCorrections.size();i++) {
 			int bin=-1;
 			if(EfficiencyCorrections[i]->IsEkin()) bin = EfficiencyCorrections[i]->GetGlobCorrection()->FindBin(bins.ekpermassbin_TOI[j]);
 			else bin = EfficiencyCorrections[i]->GetGlobCorrection()->FindBin(bins.rigbin_TOI[j]);
 	
-			if(EfficiencyCorrections[i]->GetStat_Err()->GetBinContent(bin+1)<0.1) err+= pow(EfficiencyCorrections[i]->GetStat_Err()->GetBinContent(bin+1),2);
-			if(EfficiencyCorrections[i]->GetSyst_Err()->GetBinContent(bin+1)<0.1) err+= pow(EfficiencyCorrections[i]->GetSyst_Err()->GetBinContent(bin+1),2);
-			if(EfficiencyCorrections[i]->GetSyst_Stat()->GetBinContent(bin+1)<0.1) err+= pow(EfficiencyCorrections[i]->GetSyst_Stat()->GetBinContent(bin+1),2);
+		if(EfficiencyCorrections[i]->GetStat_Err()->GetBinContent(bin+1)<0.1) err_stat+= pow(EfficiencyCorrections[i]->GetStat_Err()->GetBinContent(bin+1),2);
+			if(EfficiencyCorrections[i]->GetSyst_Err()->GetBinContent(bin+1)<0.1) err_syst+= pow(EfficiencyCorrections[i]->GetSyst_Err()->GetBinContent(bin+1),2);
+			if(EfficiencyCorrections[i]->GetSyst_Stat()->GetBinContent(bin+1)<0.1) err_stat+= pow(EfficiencyCorrections[i]->GetSyst_Stat()->GetBinContent(bin+1),2);
 		}	
 		for(int i=0;i<EfficiencyFromData.size();i++) {
 			int bin=-1;
 			if(EfficiencyFromData[i]->IsEkin()) bin = EfficiencyFromData[i]->GetGlobCorrection()->FindBin(bins.ekpermassbin_TOI[j]);
 			else bin = EfficiencyFromData[i]->GetGlobCorrection()->FindBin(bins.rigbin_TOI[j]);
-				
-			if(EfficiencyFromData[i]->GetStat_Err()->GetBinContent(bin+1)<0.1) err+= pow(EfficiencyFromData[i]->GetStat_Err()->GetBinContent(bin+1),2);
-			if(EfficiencyFromData[i]->GetSyst_Err()->GetBinContent(bin+1)<0.1) err+= pow(EfficiencyFromData[i]->GetSyst_Err()->GetBinContent(bin+1),2);
-			if(EfficiencyFromData[i]->GetSyst_Stat()->GetBinContent(bin+1)<0.1) err+= pow(EfficiencyFromData[i]->GetSyst_Stat()->GetBinContent(bin+1),2);
+	
+			if(EfficiencyFromData[i]->GetStat_Err()->GetBinContent(bin+1)<0.1) err_stat+= pow(EfficiencyFromData[i]->GetStat_Err()->GetBinContent(bin+1),2);
+			if(EfficiencyFromData[i]->GetSyst_Err()->GetBinContent(bin+1)<0.1) err_syst+= pow(EfficiencyFromData[i]->GetSyst_Err()->GetBinContent(bin+1),2);
+			if(EfficiencyFromData[i]->GetSyst_Stat()->GetBinContent(bin+1)<0.1) err_stat+= pow(EfficiencyFromData[i]->GetSyst_Stat()->GetBinContent(bin+1),2);
 		}	
-		err+=pow(0.02,2); //fragmentation syst error
-		EffAcceptance -> SetBinError(j+1,pow(err,0.5)*EffAcceptance -> GetBinContent(j+1));
-		EffAcceptance_gen -> SetBinError(j+1,pow(err,0.5)*EffAcceptance_gen -> GetBinContent(j+1));
+		err_syst+=pow(0.02,2); //fragmentation syst error
+
+		if(EffAcceptance->GetBinContent(j+1)>0) err_syst+= pow(EffAcceptance->GetBinError(j+1)/EffAcceptance->GetBinContent(j+1),2); //MC stat err
+	
+		EffAcceptance -> SetBinError(j+1,pow(err_stat+err_syst,0.5)*EffAcceptance -> GetBinContent(j+1));
+		EffAcceptance_gen -> SetBinError(j+1,pow(err_stat+err_syst,0.5)*EffAcceptance_gen -> GetBinContent(j+1));
+	
+		EffAcceptance_StatErr -> SetBinContent(j+1,pow(err_stat,0.5));
+		EffAcceptance_SystErr -> SetBinContent(j+1,pow(err_syst,0.5));
+
+
 	}
 	
 }

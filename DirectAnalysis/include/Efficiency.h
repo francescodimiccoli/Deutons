@@ -80,7 +80,8 @@ class Efficiency : public Tool{
 
 	void ReadFile(bool external = false){
 		TFile * ff;
-		if(external) { ff = TFile::Open((outdir+"/ExternalMCEff.root").c_str());
+		if(external) { 
+			ff = TFile::Open((outdir+"/ExternalMCEff.root").c_str());
 			cout<<"*********************** EXTERNAL MC FILE FOUND: "<<ff<<"***********************"<<endl;
 			if(!ff) ff = file.GetFile();
 		}
