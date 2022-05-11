@@ -1,0 +1,11 @@
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/G__ntp.dir
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/G__GeomHashes.dir
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/doc.dir
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/ntp.dir
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/rebuild_cache.dir
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/ntpa.dir
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/edit_cache.dir
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/install/strip.dir
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/list_install_components.dir
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/install.dir
+/afs/cern.ch/user/f/fdimicco/Work/Deutons/data_reduction/build/CMakeFiles/install/local.dir
