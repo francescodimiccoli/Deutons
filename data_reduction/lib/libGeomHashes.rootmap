@@ -1,0 +1,7 @@
+[ libGeomHashes.so ]
+# List of selected classes
+class GeomHashBeta
+class GeomHashBetaEnsemble
+class GeomHashNamed
+class GeomHashNamedEnsemble
+header GeomHashes.h
