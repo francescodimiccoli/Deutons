@@ -17,7 +17,7 @@ Double_t Variables::ChiYcut_X[] = {
 Double_t Variables::ChiYcut_Y[] = {
 	};
 
-int Times[28]{
+int Times[35]{
 1107750400,
 1307750400,
 1317081600,
@@ -45,7 +45,14 @@ int Times[28]{
 1522411200,
 1531915200,
 1541073600,
-1700000000
+1550358000,
+1559685600,
+1569016800,
+1578351600,
+1587679200,
+1597010400,
+1606345200,
+1615676400
 };
 
 int GetUnusedLayers(int hitbits){ return 7 - std::bitset<32>(hitbits & 0b1111111).count(); }
@@ -58,7 +65,7 @@ Variables::Variables(int time){
     reweighterHe = ReweightInitializer((workdir+"/include/CRDB_HeliumAMS_R.galprop").c_str(),2,2000,2.05);
 
     int timeindex=0;
-    for(int i=0;i<27;i++) if(Times[i]>time) {timeindex=i; break;}
+    for(int i=0;i<35;i++) if(Times[i]>time) {timeindex=i; break;}
     FileSaver LatWeights;
     LatWeights.setName((workdir+"/LatWeights/"+to_string(Times[timeindex-1])+"-"+to_string(Times[timeindex])+".root_Results").c_str());
 
