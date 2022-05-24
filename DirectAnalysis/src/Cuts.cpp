@@ -7,7 +7,8 @@ std::vector<float> LatEdges={0.0,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.2};
 
 bool IsProtonMC    (Variables * vars){ return (vars->Massa_gen<1&&vars->Massa_gen>0);}
 bool IsDeutonMC    (Variables * vars){ return (vars->Massa_gen<2&&vars->Massa_gen>1);}
-bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>3&&vars->Massa_gen>1);}
+bool IsHeliumMC    (Variables * vars){ return (vars->Massa_gen>3.5&&vars->Massa_gen>1);}
+bool IsHe3MC       (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_gen<3);}
 bool IsTritiumMC   (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_gen<3);}
 
 bool IsFragmentedPfromHeMC (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
@@ -312,7 +313,7 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsDeutonMC"	   ) IsPassed=IsPassed && IsDeutonMC    (Vars);
 		if(spl[i]=="IsHeliumMC"	   ) IsPassed=IsPassed && IsHeliumMC    (Vars);
 		if(spl[i]=="IsTritiumMC"   ) IsPassed=IsPassed && IsTritiumMC    (Vars);
-
+		if(spl[i]=="IsHe3MC"   )     IsPassed=IsPassed && IsHe3MC    (Vars);
 
 		if(spl[i]=="IsFragmentedPfromHeMC") IsPassed=IsPassed && IsFragmentedPfromHeMC    (Vars);
 		if(spl[i]=="IsFragmentedDfromHeMC") IsPassed=IsPassed && IsFragmentedDfromHeMC    (Vars);

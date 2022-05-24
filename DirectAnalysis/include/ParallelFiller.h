@@ -229,6 +229,20 @@ class ParallelFiller{
 			    }
 		    }
 
+		 for(int i=0;i<readerMC_He.GetCompactEntries();i++){
+			    if(i%(int)FRAC!=0) continue; // WTF ?!
+		//	    UpdateProgressBar(i, readerMC_He.GetCompactEntries());
+			    vars->ResetVariables();
+			    readerMC_He.FillCompact(i,vars,3*0.938,3/4.);	
+			    vars->Update();
+			    //vars->PrintCurrentState();
+			    for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
+				    Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
+				    Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
+			    }
+		    }
+
+
 
 	    }
     }

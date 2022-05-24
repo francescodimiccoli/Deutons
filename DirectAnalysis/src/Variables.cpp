@@ -65,7 +65,7 @@ Variables::Variables(int time){
     reweighterHe = ReweightInitializer((workdir+"/include/CRDB_HeliumAMS_R.galprop").c_str(),2,2000,2.05);
 
     int timeindex=0;
-    for(int i=0;i<35;i++) if(Times[i]>time) {timeindex=i; break;}
+    for(int i=0;i<35;i++) {if(Times[i]>time) {timeindex=i; break;}}
     FileSaver LatWeights;
     LatWeights.setName((workdir+"/LatWeights/"+to_string(Times[timeindex-1])+"-"+to_string(Times[timeindex])+".root_Results").c_str());
 

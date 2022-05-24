@@ -179,9 +179,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Acceptance * Acceptance_HeNaF = new Acceptance(finalhistos,"Acceptance_HeNaF","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromNaF&RICHHeCutNaF",Global_He.GetNaFDBins(),UnfoldingNaF_He);
 	Acceptance * Acceptance_HeAgl = new Acceptance(finalhistos,"Acceptance_HeAgl","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromAgl&RICHHeCutAgl",Global_He.GetAglDBins(),UnfoldingAgl_He);
 
-	Acceptance * Acceptance_He3TOF = new Acceptance(finalhistos,"Acceptance_He3TOF","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsGoodTimeHe",Global_He.GetToFPBins(),UnfoldingToF_He);
-	Acceptance * Acceptance_He3NaF = new Acceptance(finalhistos,"Acceptance_He3NaF","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromNaF&RICHHeCutNaF",Global_He.GetNaFPBins(),UnfoldingNaF_He);
-	Acceptance * Acceptance_He3Agl = new Acceptance(finalhistos,"Acceptance_He3Agl","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromAgl&RICHHeCutAgl",Global_He.GetAglPBins(),UnfoldingAgl_He);
+	Acceptance * Acceptance_He3TOF = new Acceptance(finalhistos,"Acceptance_He3TOF","Acceptance","IsHe3MC","IsHe3MC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsGoodTimeHe",Global_He.GetToFPBins(),UnfoldingToF_He);
+	Acceptance * Acceptance_He3NaF = new Acceptance(finalhistos,"Acceptance_He3NaF","Acceptance","IsHe3MC","IsHe3MC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromNaF&RICHHeCutNaF",Global_He.GetNaFPBins(),UnfoldingNaF_He);
+	Acceptance * Acceptance_He3Agl = new Acceptance(finalhistos,"Acceptance_He3Agl","Acceptance","IsHe3MC","IsHe3MC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromAgl&RICHHeCutAgl",Global_He.GetAglPBins(),UnfoldingAgl_He);
 
 
 	TriggerEffCorr_HE	->SetDefaultOutFile(finalhistos); 

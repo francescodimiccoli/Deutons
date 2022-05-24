@@ -370,7 +370,7 @@ void DBarReader::FillVariables(int NEvent, Variables * vars){
 
 
 
-void DBarReader::FillCompact(int NEvent, Variables * vars, float massgen){
+void DBarReader::FillCompact(int NEvent, Variables * vars, float massgen, float momentumscaling){
 	int w = Tree_Cpct->GetEntry(NEvent);
 	if(!(w>0)) { cout<<"I/O error event: "<<NEvent<<endl; return;}
 	vars->ResetVariables();
@@ -384,11 +384,11 @@ void DBarReader::FillCompact(int NEvent, Variables * vars, float massgen){
 	    if(vars->Massa_gen<2) vars->Charge_gen=1;
 	    else vars->Charge_gen=2;	
 
-	    vars->Momento_gen = ntpCompact->mc_momentum;
-	    vars->Momento_gen_cpct = ntpCompact->mc_momentum;
-	    vars->Momento_gen_UTOF = ntpMCHeader->momentum[6];
-	    vars->Momento_gen_LTOF = ntpMCHeader->momentum[16];
-	    vars->Momento_gen_RICH = ntpMCHeader->momentum[18];
+	    vars->Momento_gen 	   = momentumscaling*ntpCompact->mc_momentum;
+	    vars->Momento_gen_cpct = momentumscaling*ntpCompact->mc_momentum;
+	    vars->Momento_gen_UTOF = momentumscaling*ntpMCHeader->momentum[6];
+	    vars->Momento_gen_LTOF = momentumscaling*ntpMCHeader->momentum[16];
+	    vars->Momento_gen_RICH = momentumscaling*ntpMCHeader->momentum[18];
 
 
 	    vars->GenX = ntpMCHeader->coo[0][0];  vars->GenPX = ntpMCHeader->dir[0];;
@@ -470,10 +470,10 @@ void DBarReader::FillCompact(int NEvent, Variables * vars, float massgen){
 
 	/////////////////////////////// TRACKER ////////////////////////////////////
 
-	vars->R     = ntpCompact->trk_kal_rig[1]; // 1 -- Inner tracker (Kalman)
-	vars->R_L1  = ntpCompact->trk_rig[1]; // 4 -- Inner + L1
-        vars->R_noMS= ntpCompact->trk_rig[4]; // 9 -- Inner tracker NoMS
-        vars->RInner= ntpCompact->trk_rig[3]; // 6 -- Inner tracker 
+	vars->R     = momentumscaling*ntpCompact->trk_kal_rig[1]; // 1 -- Inner tracker (Kalman)
+	vars->R_L1  = momentumscaling*ntpCompact->trk_rig[1]; // 4 -- Inner + L1
+        vars->R_noMS= momentumscaling*ntpCompact->trk_rig[4]; // 9 -- Inner tracker NoMS
+        vars->RInner= momentumscaling*ntpCompact->trk_rig[3]; // 6 -- Inner tracker 
 
 	vars->Chisquare         = ntpCompact->trk_kal_chisqn[0]; // 1 = Inner      , 0 = X side
 	vars->Chisquare_L1      = ntpCompact->trk_chisqn[1][0]; // 4 = L1 + Inner , 0 = X side

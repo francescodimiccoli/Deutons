@@ -222,6 +222,7 @@ void TemplateFIT::FillEventByEventData(Variables * vars, float (*var) (Variables
 	//vars->PrintCurrentState();
 	if(ApplyCuts((cut+"&RigSafetyCut").c_str(),vars)/*&&kbin>=0*/){
 		if(!(kbin<0)){
+		//if(vars->BetaRICH_new>0) cout<<vars->Event<<" "<<vars->BetaRICH_new<<endl;
 		for(int i=0;i<systpar.steps;i++)
 			for(int j=0;j<systpar.steps;j++){
 				if(fits[kbin][i][j]->Data){
