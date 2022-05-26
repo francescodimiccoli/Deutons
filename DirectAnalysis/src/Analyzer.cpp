@@ -10,7 +10,7 @@ void Analyzer::FillAll(){
 	cout<<Filler_RTI.GetObjectNr()<<" RTI Objects to be filled... "<< endl;
 	cout<<FillerAcc.GetObjectNr()<<" Acceptance Objects to be filled... "<< endl;
 	if(Filler.GetRefillFlag()&&Filler.GetObjectNr()) {
-		Filler.LoopOnData(DBarReader(chainDT, false,chain_RTI,chainDT_Cpct),vars);
+		//Filler.LoopOnData(DBarReader(chainDT, false,chain_RTI,chainDT_Cpct),vars);
 		Filler.LoopOnMC  (DBarReader(chainMC, true ,chain_RTI,chainMC1_Cpct),DBarReader(chainMC, true ,chain_RTI,chainMC2_Cpct),DBarReader(chainMC, true ,chain_RTI,chainMC3_Cpct),vars);
 	}
 	 

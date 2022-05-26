@@ -7,6 +7,8 @@ print "Printed: Work Dir. = ".$workdir."\n\n";
 
 $listpath = "/eos/ams/group/dbar/TrentoNTuples/FilteredQ2";
 $datapath = "\/eos\/ams\/group\/dbar\/release_v7\/e1_vdev_200421\/neg\/ISS.B1130\/pass7\/";
+$datapath2 = "\/eos\/.ams\/group\/dbar\/release_v7\/e1_vdev_200421\/neg\/ISS.B1130\/pass7\/";
+
 
 $filelist  = "./FileList.txt";
 #$mcP_path  = "/data1/home/data/v6_pass7/MC/pr.pl1ph.021000";
@@ -16,8 +18,8 @@ $mcD_path  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/D.B1220/d.pl1.0
 $mcHe_path = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/He.B1200/he4.pl1.21000.4_00/";
 $mcT_path  = "";
 
-$FRAC =0;
-$FRACDT =0;
+$FRAC =2;
+$FRACDT =2;
 
 
 $OFFSET = $ARGV[3];
@@ -61,6 +63,7 @@ $njobs = $ARGV[2];
 for($n=0;$n<$num_Rootuple;$n++){
 	if($Rootuple[$n]>$ARGV[0]&& $Rootuple[$n]<$ARGV[1]){ 
 		$rootuple[$i]=$Rootuple[$n];
+		#print $rootuple[$i]."\n";
 		$i++;
 	}
 }
@@ -101,9 +104,10 @@ for ($n=0;$n<$njobs; $n++)
 		{
 				$j=$j+$FRACDT;
 				#$out = `ls -d $datapath/$rootuple[$j].root`;	
-			#	$out = "root://eosams.cern.ch/$datapath/$rootuple[$j].root\n";	
+				#$out = "root://eospublic.cern.ch/$datapath2/$rootuple[$j].root\n";	
 				$out = "$datapath/$rootuple[$j].root\n";	
 				print  OUT  "$out";
+				print  "$out";
 				$rootuple[$j]="";	
 		}
 	}
