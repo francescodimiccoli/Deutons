@@ -154,8 +154,11 @@ $finalanalysis=$ARGV[2]-3;
 1622671200
 );
 
-$outdir="/eos/ams/user/f/fdimicco/AnalysisFiles";
-$workdir="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/";
+#$outdir="/eos/ams/user/f/fdimicco/AnalysisFiles";
+#$workdir="/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/";
+$outdir="/storage/gpfs_ams/ams/users/fdimicco/Deutons/DirectAnalysis/AnalysisFiles";
+$workdir="/storage/gpfs_ams/ams/users/fdimicco/Deutons/DirectAnalysis";
+
 
 
 $size = scalar(@bartels);
@@ -186,7 +189,7 @@ if($launchana==1){
 	for($i=$start;$i<$stop;$i=$i+$grouping){
 		#chdir "$outdir/$bartels[$i]-$bartels[$i+$grouping]/Counts";
 		system("mkdir $outdir/$bartels[$i]-$bartels[$i+$grouping]");
-		system("condor_submit $workdir/perl/AnalysisScripts/Condor_script$bartels[$i]-$bartels[$i+$grouping].sub");
+		system("condor_submit -name sn-02.cr.cnaf.infn.it $workdir/perl/AnalysisScripts/Condor_script$bartels[$i]-$bartels[$i+$grouping].sub");
 	}	
 }
 
