@@ -1002,8 +1002,8 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			cout<<"err: "  <<e1<<" "<<e2<<" "<<e3<<endl;
 			cout<<"er c:"  <<Fit -> StatErrP<<" "<<Fit -> StatErrD<<" "<<Fit -> StatErrT<<endl;	
 			
-			//Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Tfit -> GetNDF());
-			Fit -> ChiSquare = GetChiSquare(Sum,Fit->Data,min,max,prioritizetail);
+			Fit -> ChiSquare = Fit -> Tfit -> GetChisquare()/(float) (Fit ->  Tfit -> GetNDF());
+			//Fit -> ChiSquare = GetChiSquare(Sum,Fit->Data,min,max,prioritizetail);
 			Fit->ndf = Fit ->  Data->FindBin(4.5)-Fit ->Data->FindBin(0.85) -3;
 			Fit -> DCounts = Fit ->  Templ_D -> Integral();
 			Fit -> PCounts = Fit ->  Templ_P -> Integral();
@@ -1117,7 +1117,7 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 					cout<<"Bin: "<<bin<<": "<<sigma<<" "<<shift<<endl;
 					fits[bin][sigma][shift]->RegularizeTemplateError();	
 					if(!isrich) fits[bin][sigma][shift]->AddSysttoTempl();
-					if((systpar.mode==2)&&bin>4&&bin<9) fits[bin][sigma][shift]->AdjoustProtonTail(0.3);
+					//if((systpar.mode==2)) fits[bin][sigma][shift]->AdjoustProtonTail(0.3);
 					bool prioritizetail=false;	
 					/*if(bin<=4&&(systpar.mode==3)) fits[bin][sigma][shift]->Templ_P = SimpleShiftHisto(fits[bin][sigma][shift]->Templ_P,-2.7*eq);
 					if(bin<=4&&(systpar.mode==3)) fits[bin][sigma][shift]->Templ_D = SimpleShiftHisto(fits[bin][sigma][shift]->Templ_D,+2.7*eq);

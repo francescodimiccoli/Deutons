@@ -6,7 +6,13 @@ chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
 $listpath = "/eos/ams/group/dbar/TrentoNTuples/FilteredQ2";
+<<<<<<< HEAD
 $datapath = "\/eos\/ams\/group\/dbar\/release_v7\/e1_vdev_200421\/neg\/ISS.B1130\/pass7";
+=======
+$datapath = "\/eos\/ams\/group\/dbar\/release_v7\/e1_vdev_200421\/neg\/ISS.B1130\/pass7\/";
+$datapath2 = "\/eos\/.ams\/group\/dbar\/release_v7\/e1_vdev_200421\/neg\/ISS.B1130\/pass7\/";
+
+>>>>>>> bbf27a87bac3e6b4ff5fed818ee843cb95042e73
 
 $filelist   = "./FileList.txt";
 $filelistP  = "./FileListMCP.txt";
@@ -19,8 +25,8 @@ $mcD_path  = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/D.B1220/d.pl1.0
 $mcHe_path = "/eos/ams/group/dbar/release_v7/e1_vdev_200421/full/He.B1200/he4.pl1.21000.4_00";
 $mcT_path  = "";
 
-$FRAC =0;
-$FRACDT =0;
+$FRAC =2;
+$FRACDT =2;
 
 
 $OFFSET = $ARGV[3];
@@ -64,6 +70,7 @@ $njobs = $ARGV[2];
 for($n=0;$n<$num_Rootuple;$n++){
 	if($Rootuple[$n]>$ARGV[0]&& $Rootuple[$n]<$ARGV[1]){ 
 		$rootuple[$i]=$Rootuple[$n];
+		#print $rootuple[$i]."\n";
 		$i++;
 	}
 }
@@ -104,9 +111,15 @@ for ($n=0;$n<$njobs; $n++)
 		{
 				$j=$j+$FRACDT;
 				#$out = `ls -d $datapath/$rootuple[$j].root`;	
+<<<<<<< HEAD
 				$out = "root://eospublic.cern.ch/$datapath/$rootuple[$j].root\n";	
 			#	$out = "$datapath/$rootuple[$j].root\n";	
+=======
+				#$out = "root://eospublic.cern.ch/$datapath2/$rootuple[$j].root\n";	
+				$out = "$datapath/$rootuple[$j].root\n";	
+>>>>>>> bbf27a87bac3e6b4ff5fed818ee843cb95042e73
 				print  OUT  "$out";
+				print  "$out";
 				$rootuple[$j]="";	
 		}
 	}

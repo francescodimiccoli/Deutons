@@ -2,7 +2,7 @@
 
 use warnings;
 
-$njobs=300;
+$njobs=400;
 $grouping = 4;
 
 $start=$ARGV[0];

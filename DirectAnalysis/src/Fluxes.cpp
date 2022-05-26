@@ -60,9 +60,9 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	Flux * RigBetaHeNaF = new Flux(finalhistos,finalresults, "RigBetaHeNaF", "Acceptance_HeNaF","Acceptance","NaFHeBetaCounts/NaFHeBetaCounts/NaFHeBetaCounts_before","","ExposureNaF",Global_HeRig.GetNaFDBins());
 	Flux * RigBetaHeAgl = new Flux(finalhistos,finalresults, "RigBetaHeAgl", "Acceptance_HeAgl","Acceptance","AglHeBetaCounts/AglHeBetaCounts/AglHeBetaCounts_before","","ExposureAgl",Global_HeRig.GetAglDBins());
 
-	Flux * FitBetaHeTOF = new Flux(finalhistos,finalresults, "FitBetaHeTOF", "Acceptance_HeTOF","Acceptance","TOFHeFitCountsBeta/TOFHeFitCounts/TOFHeFitCounts_before","","ExposureTOF",Global_He.GetToFDBins());
-	Flux * FitBetaHeNaF = new Flux(finalhistos,finalresults, "FitBetaHeNaF", "Acceptance_HeNaF","Acceptance","NaFHeFitCountsBeta/NaFHeFitCounts/NaFHeFitCounts_before","","ExposureNaF",Global_He.GetNaFDBins());
-	Flux * FitBetaHeAgl = new Flux(finalhistos,finalresults, "FitBetaHeAgl", "Acceptance_HeAgl","Acceptance","AglHeFitCountsBeta/AglHeFitCounts/AglHeFitCounts_before","","ExposureAgl",Global_He.GetAglDBins());
+	Flux * FitBetaHeTOF = new Flux(finalhistos,finalresults, "FitBetaHeTOF", "Acceptance_HeTOF","Acceptance","TOFHeFitCounts/TOFHeFitCounts/TOFHeFitCounts_before","","ExposureTOF",Global_He.GetToFDBins());
+	Flux * FitBetaHeNaF = new Flux(finalhistos,finalresults, "FitBetaHeNaF", "Acceptance_HeNaF","Acceptance","NaFHeFitCounts/NaFHeFitCounts/NaFHeFitCounts_before","","ExposureNaF",Global_He.GetNaFDBins());
+	Flux * FitBetaHeAgl = new Flux(finalhistos,finalresults, "FitBetaHeAgl", "Acceptance_HeAgl","Acceptance","AglHeFitCounts/AglHeFitCounts/AglHeFitCounts_before","","ExposureAgl",Global_He.GetAglDBins());
 
 	Flux * He3FluxTOF  = new Flux(finalhistos,finalresults, "He3FluxTOF", "Acceptance_HeTOF","Acceptance","TOFHe3fits/Fit Results/Deuteron Counts","TOFHe3fits/Fit Results/StatErrorD","ExposureTOF",Global_He.GetToFPBins());
 	Flux * He3FluxNaF  = new Flux(finalhistos,finalresults, "He3FluxNaF", "Acceptance_HeNaF","Acceptance","NaFHe3fits/Fit Results/Deuteron Counts","NaFHe3fits/Fit Results/StatErrorD","ExposureNaF",Global_He.GetNaFPBins());
@@ -299,7 +299,16 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		RigBetaHeNaF->SaveResults(finalresults);
 		RigBetaHeAgl->SaveResults(finalresults);
 
-		cout<<"************* 4He FLUX ************"<<endl;
+	
+		FitBetaHeTOF->Eval_Flux(corr_he);//,1.9,3.2,3,0.01);
+		FitBetaHeNaF->Eval_Flux(corr_he);//,3.4,8.2,6,0.01);
+		FitBetaHeAgl->Eval_Flux(corr_he);//,8,17.5,5,0.01);
+
+		FitBetaHeTOF->SaveResults(finalresults);
+		FitBetaHeNaF->SaveResults(finalresults);
+		FitBetaHeAgl->SaveResults(finalresults);
+
+	cout<<"************* 4He FLUX ************"<<endl;
 
 		He4FluxTOF-> Eval_Flux(corr_he);//,1.9,3.2,3,0.01);
 		He4FluxNaF-> Eval_Flux(corr_he);//,3.4,8.2,6,0.01);
@@ -336,6 +345,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		ResultMerger*	He3Res 	    = new ResultMerger(finalresults,"He3Flux",Global_He,He3FluxTOF,He3FluxNaF,He3FluxAgl,proton);
 		ResultMerger*	RigHeRes    = new ResultMerger(finalresults,"RigHeFlux",Global_HeRig,RigHeTOF,RigHeNaF,RigHeAgl,deuton);
 		ResultMerger*	RigBetaHeRes    = new ResultMerger(finalresults,"RigBetaHeFlux",Global_HeRig,RigBetaHeTOF,RigBetaHeNaF,RigBetaHeAgl,deuton);
+		ResultMerger*	FitBetaHeRes    = new ResultMerger(finalresults,"FitBetaHeFlux",Global_HeRig,FitBetaHeTOF,FitBetaHeNaF,FitBetaHeAgl,deuton);
 		
 
 		DeutonRes->SaveResults(finalresults);
@@ -347,6 +357,8 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		He3Res->SaveResults(finalresults);
 		RigHeRes->SaveResults(finalresults);
 		RigBetaHeRes->SaveResults(finalresults);
+		FitBetaHeRes->SaveResults(finalresults);
+
 
 
 

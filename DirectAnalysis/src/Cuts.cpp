@@ -17,6 +17,8 @@ bool IsFragmentedTMC 	   (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL
 bool IsPureDMC 		   (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDatL2(vars))==45&&(GetPIDatL3(vars))==45;}
 bool IsPurePMC 		   (Variables * vars) {return IsProtonMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
 bool IsPureTMC 		   (Variables * vars) {return IsTritiumMC(vars)&&(GetPIDatL2(vars))==46&&(GetPIDatL3(vars))==46;}
+bool IsPureHeMC		   (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==47&&(GetPIDatL3(vars))==47;}
+
 
 bool IsFragmentedDMC 	   (Variables * vars) {return !(IsPureDMC(vars));}
 bool IsFragmentedPMC 	   (Variables * vars) {return !(IsPurePMC(vars));}
@@ -321,6 +323,7 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsPureDMC") 	    IsPassed=IsPassed && IsPureDMC    (Vars);
 		if(spl[i]=="IsPurePMC") 	    IsPassed=IsPassed && IsPurePMC    (Vars);
 		if(spl[i]=="IsPureTMC") 	    IsPassed=IsPassed && IsPureTMC    (Vars);
+		if(spl[i]=="IsPureHeMC") 	    IsPassed=IsPassed && IsPureHeMC    (Vars);
 		
 		if(spl[i]=="IsFragmentedDMC") 	    IsPassed=IsPassed && IsFragmentedDMC    (Vars);
 		if(spl[i]=="IsFragmentedPMC") 	    IsPassed=IsPassed && IsFragmentedPMC    (Vars);
