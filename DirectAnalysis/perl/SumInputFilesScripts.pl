@@ -6,13 +6,8 @@ chomp($workdir =`pwd -P |sed 's\\perl\\\\g '`);
 print "Printed: Work Dir. = ".$workdir."\n\n";
 
 $listpath = "/eos/ams/group/dbar/TrentoNTuples/FilteredQ2";
-<<<<<<< HEAD
-$datapath = "\/eos\/ams\/group\/dbar\/release_v7\/e1_vdev_200421\/neg\/ISS.B1130\/pass7";
-=======
 $datapath = "\/eos\/ams\/group\/dbar\/release_v7\/e1_vdev_200421\/neg\/ISS.B1130\/pass7\/";
 $datapath2 = "\/eos\/.ams\/group\/dbar\/release_v7\/e1_vdev_200421\/neg\/ISS.B1130\/pass7\/";
-
->>>>>>> bbf27a87bac3e6b4ff5fed818ee843cb95042e73
 
 $filelist   = "./FileList.txt";
 $filelistP  = "./FileListMCP.txt";
@@ -111,13 +106,8 @@ for ($n=0;$n<$njobs; $n++)
 		{
 				$j=$j+$FRACDT;
 				#$out = `ls -d $datapath/$rootuple[$j].root`;	
-<<<<<<< HEAD
-				$out = "root://eospublic.cern.ch/$datapath/$rootuple[$j].root\n";	
-			#	$out = "$datapath/$rootuple[$j].root\n";	
-=======
 				#$out = "root://eospublic.cern.ch/$datapath2/$rootuple[$j].root\n";	
 				$out = "$datapath/$rootuple[$j].root\n";	
->>>>>>> bbf27a87bac3e6b4ff5fed818ee843cb95042e73
 				print  OUT  "$out";
 				print  "$out";
 				$rootuple[$j]="";	
