@@ -190,7 +190,7 @@ class ParallelFiller{
 	    if(!readerMC_P.GetTree()) return;
 	    if(readerMC_P.GetTree()->GetNbranches()>11) {LoopOnMC(readerMC_P.GetTree(),vars); return;}
 	    else{
-		    /*for(int i=0;i<readerMC_P.GetCompactEntries();i++){
+		    for(int i=0;i<readerMC_P.GetCompactEntries();i++){
 			    if(i%(int)FRAC!=0) continue; // WTF ?!
 			    UpdateProgressBar(i, readerMC_P.GetCompactEntries());
 			    vars->ResetVariables();
@@ -216,7 +216,7 @@ class ParallelFiller{
 			    }
 		    }
 		
-		  */  for(int i=0;i<readerMC_He.GetCompactEntries();i++){
+		    for(int i=0;i<readerMC_He.GetCompactEntries();i++){
 			    if(i%(int)FRAC!=0) continue; // WTF ?!
 			    UpdateProgressBar(i, readerMC_He.GetCompactEntries());
 			    vars->ResetVariables();
