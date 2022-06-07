@@ -64,7 +64,7 @@ struct TFit {
   TFit(TH1F * templ_P, TH1F * templ_D, TH1F * data, TH1F * dataPrim) { Templ_P= templ_P; Templ_D=templ_D; Data=data; DataPrim=dataPrim; }
   void RegularizeTemplateError();
   void AddSysttoTempl();
-  void AdjoustProtonTail(float factor);
+  TFit * Clone();	
 };
 
 
@@ -112,6 +112,7 @@ class TemplateFIT : public Tool{
 
 	private:
 	std::vector<std::vector<std::vector<TFit *>>> fits;
+	std::vector<std::vector<std::vector<TFit *>>> fitsD;
 	BestChi * BestChiSquare;	
 	std::vector<TH1F *> TransferFunction;
 	double massbins[46]={0.4,0.476667,0.553333,0.63,0.706667,0.783333,0.86,0.936667,1.01333,1.09,1.16667,1.24333,1.32,1.39667,1.47333,1.55,1.62667,1.70333,1.78,1.85667,1.93333,2.01,2.08667,2.16333,2.24,2.31667,2.39333,2.47,2.54667,2.62333,2.7,2.77667,2.85333,2.93,3.00667,3.08333,3.16,3.23667,3.39,3.54333,3.77333,4.00333,4.31,4.61667,4.92333,6};
@@ -122,6 +123,8 @@ class TemplateFIT : public Tool{
 	std::vector<TH2F *> DErrSpread;
 	std::vector<TH1F *> WeightedDCounts;
 	std::vector<TH2F *> TFitChisquare;
+	std::vector<TH2F *> TFitChisquareD;
+
 
 	TH2F* Global_ChiSquare;	
 
@@ -138,6 +141,7 @@ class TemplateFIT : public Tool{
 
 	TH1F * ProtonCounts;
 	TH1F * DeuteronCounts;
+	TH1F * ProtonTail;
 	TH1F * TritiumCounts;
 
 
@@ -180,7 +184,7 @@ class TemplateFIT : public Tool{
 	float template1scalefactor2=1;
 	float template1scalefactor3=1;
 
-
+	float lowstatDmode=false;
 
 
 	bool IsExtern = false;
@@ -192,8 +196,10 @@ class TemplateFIT : public Tool{
 		
 			for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
+			fitsD.push_back(std::vector<std::vector<TFit *>>());
 			for(int i=0;i<steps;i++){
 				fits[bin].push_back(std::vector<TFit *>());
+				fitsD[bin].push_back(std::vector<TFit *>());
 				for(int j=0;j<steps;j++){
 
 					TFit * fit = new TFit;
@@ -224,7 +230,7 @@ class TemplateFIT : public Tool{
 					fit->DataAmbient=  new TH1F(namedamb.c_str(),namedprim.c_str(),Nbins,Xmin,Xmax);
 					}		
 				fits[bin][i].push_back(fit);
-		
+				fitsD[bin][i].push_back(fit);
 				}
 			}
 		}
@@ -257,6 +263,7 @@ class TemplateFIT : public Tool{
 
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+		ProtonTail  = new TH1F("Proton Tail","Proton Tail",bins.size(),0,bins.size()) ;
 		TritiumCounts  = new TH1F("Tritium Counts","Tritium Counts",bins.size(),0,bins.size()) ;
 
 
@@ -303,9 +310,11 @@ class TemplateFIT : public Tool{
 
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
+			fitsD.push_back(std::vector<std::vector<TFit *>>());
 			cout<<"Reading Bin: "<<bin<<endl;
 			for(int i=0;i<steps;i++){
 				fits[bin].push_back(std::vector<TFit *>());
+				fitsD[bin].push_back(std::vector<TFit *>());
 				for(int j=0;j<steps;j++){
 
 					TFit * fit = new TFit;
@@ -343,6 +352,7 @@ class TemplateFIT : public Tool{
 
 
 					fits[bin][i].push_back(fit);
+					fitsD[bin][i].push_back(fit);
 				}
 			}
 		}
@@ -379,6 +389,7 @@ class TemplateFIT : public Tool{
 
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
 		DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+		ProtonTail  = new TH1F("Proton Tail","Proton Tail",bins.size(),0,bins.size()) ;
 		TritiumCounts    = new TH1F("Tritium Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		
 
@@ -452,7 +463,10 @@ class TemplateFIT : public Tool{
 	void SetFitRange(float min, float max){ 
 		for(int bin=0;bin<bins.size();bin++) for(int i=0;i<systpar.steps;i++) for(int j=0;j<systpar.steps;j++) {
 			fits[bin][i][j]->fitrangemin=min; 
-			fits[bin][i][j]->fitrangemax=max; }
+			fits[bin][i][j]->fitrangemax=max; 
+			fitsD[bin][i][j]->fitrangemin=min; 
+			fitsD[bin][i][j]->fitrangemax=max; 
+			}
 			return;
 		}
 	void SetFitRangeByQuantiles(float quant_min,float quant_max);
@@ -474,6 +488,8 @@ class TemplateFIT : public Tool{
 	float GetHeContaminationErr   (int bin) { return fits[bin][BestChiSquare->i][BestChiSquare->j]->errHe; }
 	void SetLocalFit(){IsLocalFit = true; }
 	void SetLocalConstrainedFit(){IsLocalConstrainedFit = true; }
+	void SetLowStatDMode(){lowstatDmode=true;}
+
 	TH2F * GetDCountsSpread(int bin)	{ return DCountsSpread[bin];}
 	TH2F * GetChiSquareSpread(int bin)      { return TFitChisquare[bin];}	
 	TH1F * GetWeightedDCounts(int bin)     { return WeightedDCounts[bin];}

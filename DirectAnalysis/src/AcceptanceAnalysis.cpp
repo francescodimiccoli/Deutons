@@ -343,13 +343,13 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_DNaF->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);	
 		Acceptance_DAgl->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);	
 
-		Acceptance_HeTOF->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
-		Acceptance_HeNaF->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
-		Acceptance_HeAgl->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
+		Acceptance_HeTOF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
+		Acceptance_HeNaF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
+		Acceptance_HeAgl->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 
-		Acceptance_He3TOF->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
-		Acceptance_He3NaF->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
-		Acceptance_He3Agl->Set_MCPar(1,1500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
+		Acceptance_He3TOF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
+		Acceptance_He3NaF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
+		Acceptance_He3Agl->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 
 
 		Acceptance_RigPTOF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
