@@ -145,12 +145,24 @@ void Flux::Unfold_Counts(float fit_min, float fit_max,int knots,float offset,boo
 
 
 void RegularizeRooUnfold(TH1F * unf_factor){
+	TH1F* clone =(TH1F*)unf_factor->Clone();
+ for(int i=0;i<unf_factor->GetNbinsX();i++)
+                if(fabs(unf_factor->GetBinContent(i+1)-1)>0.1) {
+                        int bincomp;
+			if(i==0) bincomp=2;
+			else bincomp=i;
+			unf_factor->SetBinContent(i+1,1+( (unf_factor->GetBinContent(bincomp)-1)/2)  );
+                        unf_factor->SetBinError(i+1,0.5*unf_factor->GetBinError(i+1));
+		}
+//	unf_factor->Smooth();
 
-	for(int i=0;i<unf_factor->GetNbinsX();i++)
-		if(fabs(unf_factor->GetBinContent(i+1)-1)>0.2) {
-			unf_factor->SetBinContent(i+1,1+( (unf_factor->GetBinContent(i)-1)/2)  );
-			unf_factor->SetBinError(i+1,1.5*unf_factor->GetBinError(i+1));}
-	unf_factor->Smooth();
+	TF1 * model = new TF1("model","pol2",0,20);
+	unf_factor->Fit("model");
+	
+	for(int i=0;i<unf_factor->GetNbinsX();i++) {
+		unf_factor->SetBinContent(i+1,model->Eval(unf_factor->GetBinCenter(i+1)));
+		unf_factor->SetBinError(i+1,clone->GetBinError(i+1));
+	}	
 }
 
 
@@ -179,7 +191,6 @@ void Flux::Roounfold(int iterations){
 
 	 TH1D* hReco= (TH1D*) unfold.Hreco();	
 	 cout<<" Unfolding successful"<< hReco->GetNbinsX()<<" "<<Counts_density->GetNbinsX()<<" "<<Counts_density_Ekin->GetNbinsX()<<endl;		
-
 
    
 //	Counts_density_roounf = (TH1F*)hReco->Clone("Counts_density_roounf");
@@ -239,7 +250,7 @@ void Flux::Eval_Flux(float corr_acc, float fit_min, float fit_max,int knots, flo
 	
 	
 	// ROOUNFOLD
-	if(Counts>0) Roounfold(3);	
+	if(Counts>0) Roounfold(6);	
 
 	// DeltaE
 	for(int i=0;i<bins.size();i++){
