@@ -228,7 +228,7 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 		EffAcceptance->Reset();
 		EffAcceptanceMC->Reset();
 		TF1 * fit_fold = new TF1("fit_fold","pol3",0,50);
-		FullSetEff->GetEfficiency()->Fit("fit_fold","S");
+		FullSetEff->GetEfficiency()->Fit("fit_fold","SM");
 		for(int i=0;i<EffAcceptance->GetNbinsX();i++){
 			double x[1] = {EffAcceptance->GetBinCenter(i+1)};
 			double c1[1];
@@ -260,7 +260,7 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 		EffAcceptance_gen->Reset();
 		EffAcceptanceMC_gen->Reset();
 		TF1 * fit_gen = new TF1("fit_gen","pol3",0,50);
-		FullSetEff_gen->GetEfficiency()->Fit("fit_gen","S");
+		FullSetEff_gen->GetEfficiency()->Fit("fit_gen","SM");
 		for(int i=0;i<EffAcceptance_gen->GetNbinsX();i++){
 			double x[1] = {EffAcceptance_gen->GetBinCenter(i+1)};
 			double c1[1];
@@ -380,7 +380,7 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 		}	
 		err_syst+=pow(0.02,2); //fragmentation syst error
 
-		if(EffAcceptance->GetBinContent(j+1)>0) err_syst+= pow(EffAcceptance->GetBinError(j+1)/EffAcceptance->GetBinContent(j+1),2); //MC stat err
+		//if(EffAcceptance->GetBinContent(j+1)>0) err_syst+= pow(EffAcceptance->GetBinError(j+1)/EffAcceptance->GetBinContent(j+1),2); //MC stat err
 	
 		EffAcceptance -> SetBinError(j+1,pow(err_stat+err_syst,0.5)*EffAcceptance -> GetBinContent(j+1));
 		EffAcceptance_gen -> SetBinError(j+1,pow(err_stat+err_syst,0.5)*EffAcceptance_gen -> GetBinContent(j+1));

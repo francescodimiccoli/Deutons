@@ -197,12 +197,14 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 		cout<<"************* P FLUX ************"<<endl;
 
+	if(UnfoldingFile){	
 		avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Proton/sTOF/unfoldingTOFP_timeavg");
 		PFluxTOF->Set_UnfoldingTime(avg,filelistDT.c_str());	
 		avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Proton/sNaF/unfoldingNaFP_timeavg");
 		PFluxNaF->Set_UnfoldingTime(avg,filelistDT.c_str());
 		avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Proton/sAgl/unfoldingAglP_timeavg");
 		PFluxAgl->Set_UnfoldingTime(avg,filelistDT.c_str());
+	}
 
 		PFluxTOF->SetForceFolded(); 
 		PFluxNaF->SetForceFolded(); 
@@ -391,7 +393,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 
 		//Flux_Unfolded
-		TH1F * ratioDP_unf_ = DoRatio_Extended_subtraction(DeutonRes->flux_unf,ProtonRes->flux_unf,HEPFluxL1->GetFlux_unf(),"DPratio_unf");
+		TH1F * ratioDP_unf_ = DoRatio_Extended_subtraction(DeutonRes->flux_unf,ProtonRes->flux_unf,HEPFluxL1->GetFlux_rig(),"DPratio_unf");
 
 
 		//Flux_Folded_stat

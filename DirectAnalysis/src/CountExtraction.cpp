@@ -141,7 +141,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		//	NaFfits->SetFitWithNoiseMode();
 		//	Aglfits->SetFitWithNoiseMode();
 
-		bool disable_fits=false;
+		bool disable_fits=true;
 
 		TOFfits->SetLocalFit();
 		TOFfits->SetFitRange(0.65,5.5);
@@ -150,7 +150,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		TOFfits->ExtractCounts(finalhistos);	
 		if(!disable_fits) TOFfits->SaveFitResults(finalresults);
 	
-		//disable_fits=false;
+		//disable_fits=true;
 
 
 		NaFfits->SetLocalFit();
@@ -161,17 +161,17 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		NaFfits->ExtractCounts(finalhistos);
 		if(!disable_fits) NaFfits->SaveFitResults(finalresults);
 
-		//disable_fits=false;
+		disable_fits=false;
 
 
 		Aglfits->SetLocalFit();
-		Aglfits->SetFitRange(0.5,8);
+		Aglfits->SetFitRange(0.5,5);
 		if(disable_fits)  Aglfits->DisableFit();
 		Aglfits->SetFitConstraints(0.9,1,0.001,0.1,0.0001,0.02,false);
 		Aglfits->ExtractCounts(finalhistos);
 		if(!disable_fits) Aglfits->SaveFitResults(finalresults);	
 
-		//disable_fits=true;
+		disable_fits=true;
 
 		TOFfits_P->SetLocalFit();
 		TOFfits_P->SetFitRange(0.65,5.5);
@@ -217,7 +217,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		NaFfits_He->ExtractCounts(finalhistos);
 		if(!disable_fits) NaFfits_He->SaveFitResults(finalresults);
 	
-//		disable_fits=true;
+//		disable_fits=false;
 
 		Aglfits_He->SetLocalFit();
 		Aglfits_He->SetFitRange(0.5,6);
@@ -226,7 +226,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		Aglfits_He->ExtractCounts(finalhistos);
 		if(!disable_fits) 	Aglfits_He->SaveFitResults(finalresults);	
 
-	//	disable_fits=true;
+		//disable_fits=true;
 
 
 		TOFfits_He3->SetLocalFit();

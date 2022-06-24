@@ -77,14 +77,28 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	before = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsGoodKalman&L1LooseCharge1&IsLUT2";
         after  = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsGoodKalman&L1LooseCharge1&IsPhysTrig";
 	EffCorr * TriggerEffCorr_HE  = new EffCorr(finalhistos,"TriggerEffCorr_HE" ,"Trigger Eff. Corr",false,1  ,before,after,"IsPrimary"); 
+
 	before = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge2Track&IsGoodKalman&L1LooseCharge2&IsLUT2";
         after  = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge2Track&IsGoodKalman&L1LooseCharge2&IsPhysTrig";
 	EffCorr * TriggerEffCorr_Z2  = new EffCorr(finalhistos,"TriggerEffCorr_Z2" ,"Trigger Eff. Corr",false,2  ,before,after,"IsPrimary",false,"IsHeliumMC"); 
 
-
         before = "IsDownGoin&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsGoodKalman&L1LooseCharge1&HasL9&IsLUT2";
         after  = "IsDownGoin&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsGoodKalman&L1LooseCharge1&HasL9&IsPhysTrig";
 	EffCorr * TriggerFullSpan_HE  = new EffCorr(finalhistos,"TriggerFullSpan_HE" ,"Trigger Full Span",false,2  ,before,after,"IsPrimary"); 
+
+	before = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsGoodKalman&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF&IsLUT2";
+        after  = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsGoodKalman&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF&IsPhysTrig";
+	EffCorr * TriggerTOFEffCorr  = new EffCorr(finalhistos,"TriggerTOFEffCorr" ,"TriggerTOF Eff. Corr",false,1  ,before,after,"IsPrimary"); 
+
+	before = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsGoodKalman&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut&IsLUT2";
+        after  = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsGoodKalman&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut&IsPhysTrig";
+	EffCorr * TriggerNaFEffCorr  = new EffCorr(finalhistos,"TriggerNaFEffCorr" ,"TriggerNaF Eff. Corr",false,1  ,before,after,"IsPrimary"); 
+
+	before = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsGoodKalman&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut&IsLUT2";
+        after  = "IsDownGoing&IsGoodTrack&IsGoodChi2&IsCharge1Track&IsGoodKalman&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut&IsPhysTrig";
+	EffCorr * TriggerAglEffCorr  = new EffCorr(finalhistos,"TriggerAglEffCorr" ,"TriggerAgl Eff. Corr",false,1  ,before,after,"IsPrimary"); 
+
+
 
 
 	// Good Z=1 and Golden Efficiency corrections
@@ -187,6 +201,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	TriggerEffCorr_HE	->SetDefaultOutFile(finalhistos); 
 	TriggerEffCorr_Z2	->SetDefaultOutFile(finalhistos); 
 	TriggerFullSpan_HE	->SetDefaultOutFile(finalhistos); 
+	TriggerTOFEffCorr	->SetDefaultOutFile(finalhistos); 
+	TriggerNaFEffCorr	->SetDefaultOutFile(finalhistos); 
+	TriggerAglEffCorr	->SetDefaultOutFile(finalhistos); 
 	L1PickUpEffCorr_HE ->SetDefaultOutFile(finalhistos); 
 	L1PickUpGeom_HE ->SetDefaultOutFile(finalhistos); 
 	TrackerEffCorr_HE ->SetDefaultOutFile(finalhistos); 
@@ -250,6 +267,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Filler.AddObject2beFilled(TriggerEffCorr_HE,GetRigidityInner,GetRigidityInner);
 	Filler.AddObject2beFilled(TriggerEffCorr_Z2,GetRigidityInner,GetRigidityInner);
 	Filler.AddObject2beFilled(TriggerFullSpan_HE,GetRigidityInner,GetRigidityInner);
+	Filler.AddObject2beFilled(TriggerTOFEffCorr,GetRigidityInner,GetRigidityInner);
+	Filler.AddObject2beFilled(TriggerNaFEffCorr,GetRigidityInner,GetRigidityInner);
+	Filler.AddObject2beFilled(TriggerAglEffCorr,GetRigidityInner,GetRigidityInner);
 	Filler.AddObject2beFilled(TrackerEffCorr_HE,GetMomentumProxy,GetMomentumProxy);
 	Filler.AddObject2beFilled(GoodQTrack_HE,GetMomentumProxy,GetMomentumProxy);
 	Filler.AddObject2beFilled(GoodChi_HE   ,GetMomentumProxy,GetMomentumProxy);	
@@ -343,6 +363,10 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_DNaF->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);	
 		Acceptance_DAgl->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);	
 
+/*		Acceptance_DTOF->Set_MCPar(0.2,1000,1,"D.B1220/d.pl1ph.021000.info",filelistMC2.c_str(),0.23716441,0.05);	
+		Acceptance_DNaF->Set_MCPar(0.2,1000,1,"D.B1220/d.pl1ph.021000.info",filelistMC2.c_str(),0.23716441,0.05);	
+		Acceptance_DAgl->Set_MCPar(0.2,1000,1,"D.B1220/d.pl1ph.021000.info",filelistMC2.c_str(),0.23716441,0.05);	
+*/
 		Acceptance_HeTOF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 		Acceptance_HeNaF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 		Acceptance_HeAgl->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
@@ -406,6 +430,9 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		AnalyzeEffCorr(	TriggerEffCorr_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,true);
 		AnalyzeEffCorr(	TriggerEffCorr_Z2  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.45,true);
 		AnalyzeEffCorr(	TriggerFullSpan_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,true);
+		AnalyzeEffCorr(	TriggerTOFEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,true);
+		AnalyzeEffCorr(	TriggerNaFEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.45,true);
+		AnalyzeEffCorr(	TriggerAglEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,true);
 		AnalyzeEffCorr(	L1PickUpEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
 		AnalyzeEffCorr(	L1PickUpGeom_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
 		AnalyzeEffCorr(	TrackerEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),3.);

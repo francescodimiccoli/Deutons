@@ -66,9 +66,9 @@ class Acceptance : public Tool{
 	public:
 	//standard constructor
 	Acceptance(FileSaver File, std::string Basename, std::string Directory,std::string Cut_before,std::string Cut_after,Binning Bins,Binning BinsForUnfolding,std::string dataeffcut=""){
-		FullSetEff     = new Efficiency(File, (Basename+"_FullSetMC" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str(),true);
-		FullSetEff_gen     = new Efficiency(File, (Basename+"_FullSetMCgen" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str(),true);
-	        For_Acceptance = new Efficiency(File,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,Cut_before.c_str(),Cut_before.c_str(),true);
+		FullSetEff     = new Efficiency(File, (Basename+"_FullSetMC" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str(),false);
+		FullSetEff_gen     = new Efficiency(File, (Basename+"_FullSetMCgen" ).c_str(),Directory,Bins, Cut_before.c_str(),Cut_after.c_str(),false);
+	        For_Acceptance = new Efficiency(File,(Basename +"_For_Acceptance").c_str(),Directory,ForAcceptance,Cut_before.c_str(),Cut_before.c_str(),false);
       		For_Acceptance->SetNotWeightedMC();
  		//FullSetEff->SetNotWeightedMC(); // da rimuovere quando avrai vera MC di DEUTONI
 		FullSetEff_gen->SetNotWeightedMC(); 

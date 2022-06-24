@@ -437,8 +437,11 @@ void Flux::SaveResults(FileSaver finalhistos){
 		RooUnfolding_Err = ConvertBinnedHisto(RooUnfolding_Err,"RooUnfolding_Syst_Error",bins,false);
 		finalhistos.Add(RooUnfolding_Err);
 	}
-
-
+	if(TOT_statErr) {
+		TOT_statErr = ConvertBinnedHisto(TOT_statErr,"TOT_Stat_Error",bins,false);
+		finalhistos.Add(TOT_statErr);
+	}
+	
 	if(FluxEstim_unf){
 		FluxEstim_unf_stat = (TH1F*) FluxEstim_unf->Clone();
 	 	FluxEstim_unf_stat -> SetName((basename+"_Flux_unf_stat").c_str());
@@ -449,7 +452,7 @@ void Flux::SaveResults(FileSaver finalhistos){
 			float error=0;
 			if(Counts_statErr) error+=pow(Counts_statErr->GetBinContent(i+1),2);
 			//if(Counts_systErr) error+=pow(Counts_systErr->GetBinContent(i+1),2);
-			if(Acc_ErrStat) 	   error+=pow(Acc_ErrStat->GetBinContent(i+1),2);
+			//if(Acc_ErrStat) 	   error+=pow(Acc_ErrStat->GetBinContent(i+1),2);
 			//if(Unfolding_Err)  error+=pow(Unfolding_Err->GetBinContent(i+1),2);
 			FluxEstim_unf_stat->SetBinError(i+1, pow(error,0.5)*FluxEstim_unf_stat->GetBinContent(i+1));
 		}
@@ -467,7 +470,7 @@ void Flux::SaveResults(FileSaver finalhistos){
 			float error=0;
 			if(Counts_statErr) error+=pow(Counts_statErr->GetBinContent(i+1),2);
 			//if(Counts_systErr) error+=pow(Counts_systErr->GetBinContent(i+1),2);
-			if(Acc_ErrStat) 	   error+=pow(Acc_ErrStat->GetBinContent(i+1),2);
+			//if(Acc_ErrStat) 	   error+=pow(Acc_ErrStat->GetBinContent(i+1),2);
 		//	if(Unfolding_Err)  error+=pow(Unfolding_Err->GetBinContent(i+1),2);
 			FluxEstim_rig_stat->SetBinError(i+1, pow(error,0.5)*FluxEstim_rig_stat->GetBinContent(i+1));
 		}
@@ -546,19 +549,26 @@ void Flux::Eval_Errors(){
 			Counts_systErr->Reset();	
 
 			for(int i=0;i<Counts->GetNbinsX();i++){
-				Counts_systErr->SetBinContent(i+1,pow(pow(Counts->GetBinError(i+1)/Counts->GetBinContent(i+1),2) - pow(Counts_statErr->GetBinContent(i+1),2),0.5));
+			if(Counts->GetBinContent(i+1)>0)
+				Counts_systErr->SetBinContent(i+1,pow(fabs( (pow(Counts->GetBinError(i+1)/Counts->GetBinContent(i+1),2) -
+							          pow(Counts_statErr->GetBinContent(i+1),2))),0.5));
 								
 			}
 		}
+		TOT_statErr = (TH1F*) Counts_statErr->Clone("TOT_statErr");
 	}
 
 	if(Eff_Acceptance>0){
-		Acc_Err = (TH1F*) Eff_Acceptance->Clone("Acc_Err");	
+		/*Acc_Err = (TH1F*) Eff_Acceptance->Clone("Acc_Err");	
 		Acc_Err->Reset();
 		for(int i=0;i<Eff_Acceptance->GetNbinsX();i++){
                                 Acc_Err->SetBinContent(i+1,Eff_Acceptance->GetBinError(i+1)/Eff_Acceptance->GetBinContent(i+1));
-                        }
+                        }*/
+		Acc_Err =(TH1F*) EffAcceptance->GetSyst_Err();
+		Acc_Err->SetName("Acc_Err");
 		Acc_ErrStat=(TH1F*)EffAcceptance->GetStat_Err();
+		for(int j=0;j<TOT_statErr->GetNbinsX();j++) TOT_statErr->SetBinContent(j+1,pow(pow(Acc_ErrStat->GetBinContent(j+1),2)+pow(TOT_statErr->GetBinContent(j+1),2),0.5));
+
 	}
 	if(Unfolding_factor>0){
 		Unfolding_Err = (TH1F*) Unfolding_factor->Clone("Unfolding_Err");	
@@ -567,6 +577,25 @@ void Flux::Eval_Errors(){
                                 Unfolding_Err->SetBinContent(i+1,Unfolding_factor->GetBinError(i+1)/Unfolding_factor->GetBinContent(i+1));
                         }
 
+	}
+
+	for(int i=0;i<FluxEstim_rig->GetNbinsX();i++){
+		float error=0;
+		if(Counts_statErr) error+=pow(Counts_statErr->GetBinContent(i+1),2);
+		if(Counts_systErr) error+=pow(Counts_systErr->GetBinContent(i+1),2);
+		if(Acc_ErrStat)            error+=pow(Acc_ErrStat->GetBinContent(i+1),2);
+		if(Acc_Err)               error+=pow(Acc_Err->GetBinContent(i+1),2);
+		FluxEstim_rig->SetBinError(i+1, pow(error,0.5)*FluxEstim_rig->GetBinContent(i+1));
+	}
+
+	for(int i=0;i<FluxEstim_unf->GetNbinsX();i++){
+		float error=0;
+		if(Counts_statErr) error+=pow(Counts_statErr->GetBinContent(i+1),2);
+		if(Counts_systErr) error+=pow(Counts_systErr->GetBinContent(i+1),2);
+		if(Acc_ErrStat)            error+=pow(Acc_ErrStat->GetBinContent(i+1),2);
+		if(Acc_Err)            error+=pow(Acc_Err->GetBinContent(i+1),2);
+		if(RooUnfolding_Err)  error+=pow(RooUnfolding_Err->GetBinContent(i+1),2);
+		FluxEstim_unf->SetBinError(i+1, pow(error,0.5)*FluxEstim_unf->GetBinContent(i+1));
 	}
 
 

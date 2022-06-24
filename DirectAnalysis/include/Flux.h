@@ -70,6 +70,7 @@ class Flux{
 	TCanvas * test=0x0;
 
 	TH1F * Counts_statErr=0x0;
+	TH1F * TOT_statErr=0x0;
 	TH1F * Counts_systErr=0x0;
 	TH1F * Acc_Err=0x0;
 	TH1F * Acc_ErrStat=0x0;
@@ -221,7 +222,7 @@ class Flux{
 	TH1F * GetMCAcceptance(){return MC_Acceptance;}
 	TH1F * GetMCAcceptance_raw(){return MC_Acceptance_raw;}
 	TH1F * GetCounts() {return Counts;}
-	TH1F * GetStatError() {return Counts_statErr;}
+	TH1F * GetStatError() {return TOT_statErr;}
 	TH1F * GetAccError() {return Acc_Err;}
 	TH1F * GetSystError() {return Counts_systErr;}
 	TH1F * GetUnfError() {return Unfolding_Err;}
