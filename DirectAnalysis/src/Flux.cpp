@@ -276,6 +276,13 @@ void Flux::Eval_Flux(float corr_acc, float fit_min, float fit_max,int knots, flo
 	if(ExposureTime) {
 		ExposureTime_plot_rig =  ConvertBinnedHisto(ExposureTime,"ExposureTime R",bins,false);
 		ExposureTime_plot     =  ConvertBinnedHisto(ExposureTime,"ExposureTime Ekin",bins,true);
+	
+
+		//////////////////////// ????????????????????????????????	
+		//ExposureTime_plot_rig->Scale(1.2369646);
+                //ExposureTime_plot->Scale(1.2369646);
+    		//////////////////////// ????????????????????????????????
+	
 		Counts_density_Ekin -> Divide(ExposureTime_plot);
         	Counts_density_Ekin_unf -> Divide(ExposureTime_plot);
                 Counts_density -> Divide(ExposureTime_plot_rig);

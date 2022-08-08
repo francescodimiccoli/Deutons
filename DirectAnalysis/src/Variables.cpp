@@ -229,6 +229,7 @@ void Variables::ResetVariables(){
 
     // TOF
     Beta               = 0;
+    Beta_raw	       = 0;
     BetaR              = 0;
     Beta_pre           = 0;
     qUtof              = 0;
@@ -239,6 +240,7 @@ void Variables::ResetVariables(){
 
     // RICH 
     BetaRICH_new           = 0;
+    BetaRICH_raw           = 0;
     Richtotused            = 0;
     RichPhEl               = 0;
      RichPhEl_tot               = 0;

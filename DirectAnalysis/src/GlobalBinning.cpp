@@ -157,24 +157,24 @@ void SetBins(){
 	cout<<"**********H.E.**"<<endl;
 	HeRB.Print();
 	cout<<"**TOF**"<<endl;
-	GlobalRig.GetToFPBins().Print();
-	GlobalRig.GetToFDBins().Print();
-	Global_He.GetToFDBins().Print();
+	Global_HeRig.GetToFPBins().Print();
+	Global_HeRig.GetToFDBins().Print();
 	Global_He.GetToFPBins().Print();
+	Global_He.GetToFDBins().Print();
 
 
 	cout<<"**NaF**"<<endl;
-	GlobalRig.GetNaFPBins().Print();
-	GlobalRig.GetNaFDBins().Print();
-	Global_He.GetNaFDBins().Print();
+	Global_HeRig.GetNaFPBins().Print();
+	Global_HeRig.GetNaFDBins().Print();
 	Global_He.GetNaFPBins().Print();
+	Global_He.GetNaFDBins().Print();
 
 
 	cout<<"**Agl**"<<endl;
-	GlobalRig.GetAglPBins().Print();
-	GlobalRig.GetAglDBins().Print();
-	Global_He.GetAglDBins().Print();
+	Global_HeRig.GetAglPBins().Print();
+	Global_HeRig.GetAglDBins().Print();
 	Global_He.GetAglPBins().Print();
+	Global_He.GetAglDBins().Print();
 
 
 	/*cout<<"**Global**"<<endl;

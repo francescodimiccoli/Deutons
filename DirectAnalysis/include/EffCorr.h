@@ -54,6 +54,9 @@ class EffCorr : public Tool{
 	TH2F * avg_time=0x0;
 	int time=1429054000;
 
+
+	bool splinemodel=false;
+
 	protected:
 	Binning Bins;
 	Binning Bins_D;
@@ -177,6 +180,8 @@ class EffCorr : public Tool{
 	void SetDefaultOutFile(FileSaver FinalHistos);
 	void SetAsTrigEffCorr() {IsTrigEffCorr = true;};
 	void ModelWithSpline(float shift);
+	void ModelWithSimple();
+	void SetSplineModel(){splinemodel=true;}
 
 	void Eval_Errors();
 	void Set_SystStat(TH1F * syst, TH2F * avg,std::string timename) { 

@@ -122,6 +122,7 @@ struct Variables{
     float      Beta;
     float      BetaR;
     float      Beta_pre; // ?
+    float      Beta_raw;
     float      qUtof;
     float      qLtof;
     float      TOFchisq_s;
@@ -142,8 +143,9 @@ struct Variables{
 
     // RICH 
     float      BetaRICH_new;
-    float Richtothits;
-    float        Richtotused;
+    float      BetaRICH_raw;
+    float      Richtothits;
+    float      Richtotused;
     float      RichPhEl;
     float      RichPhEl_tot;
     float      RichPhEl_ring;

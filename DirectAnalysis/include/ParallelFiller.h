@@ -129,7 +129,7 @@ class ParallelFiller{
             }
         }
 	
-
+	
 	for(int i=0;i<readerMC_D.GetTreeEntries();i++){
             UpdateProgressBar(i, readerMC_D.GetTreeEntries());
            if(i%(int)FRAC!=0) continue; // WTF ?!
@@ -157,7 +157,7 @@ class ParallelFiller{
             }
         }
 	}
- 
+	
    }
    	 
     void LoopOnMC(DBarReader readerMC, Variables * vars){
@@ -241,7 +241,7 @@ class ParallelFiller{
 				    Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
 			    }
 		    }
-
+		
 
 
 	    }
@@ -373,6 +373,7 @@ class ParallelFiller{
 		   	
 	    }
 	    cout<<" Seconds in te RUN: "<<n_of_seconds<<endl;
+	    if(n_of_seconds>1)	
 	    for(int nobj=0;nobj<Objects2beFilled.size();nobj++){ 
 		    Objects2beFilled[nobj]->GetOutFileSaver().Add(Objects2beFilled[nobj]->GetExposureTime());
 		    Objects2beFilled[nobj]->GetOutFileSaver().writeObjsInFolder(("Fluxes/"+Objects2beFilled[nobj]->GetName()).c_str());

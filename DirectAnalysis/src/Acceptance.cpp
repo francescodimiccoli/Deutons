@@ -300,9 +300,9 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 			if(EfficiencyCorrections[i]->IsEkin()){ 
 				float correction;
 				if(EfficiencyCorrections[i]->Get_TimeAvgCorrection())
-					correction  = GetAverage(EfficiencyCorrections[i]->Get_TimeAvgCorrection(),bins.ekpermassbin_TOI[j],bins.ekpermassbin_TOI[j+1]);//EfficiencyCorrections[i]->Get_TimeAvgCorrection()->Eval(bins.ekpermassbincent_TOI[j] + EffCorrshift[i]); 
+					correction  = GetAverage(EfficiencyCorrections[i]->Get_TimeAvgCorrection(),bins.ekpermassbin_TOI[j]+EffCorrshift[i],bins.ekpermassbin_TOI[j+1]+EffCorrshift[i]);//EfficiencyCorrections[i]->Get_TimeAvgCorrection()->Eval(bins.ekpermassbincent_TOI[j] + EffCorrshift[i]); 
 				else
-					correction  = GetAverage(EfficiencyCorrections[i]->GetCorrectionModel(),bins.ekpermassbin_TOI[j],bins.ekpermassbin_TOI[j+1]);//EfficiencyCorrections[i]->GetCorrectionModel()->Eval(bins.ekpermassbincent_TOI[j] + EffCorrshift[i]);
+					correction  = GetAverage(EfficiencyCorrections[i]->GetCorrectionModel(),bins.ekpermassbin_TOI[j]+EffCorrshift[i],bins.ekpermassbin_TOI[j+1]+EffCorrshift[i]);//EfficiencyCorrections[i]->GetCorrectionModel()->Eval(bins.ekpermassbincent_TOI[j] + EffCorrshift[i]);
 				EffAcceptance -> SetBinContent( j+1, EffAcceptance -> GetBinContent(j+1)*correction);
 				EffAcceptance_gen -> SetBinContent( j+1, EffAcceptance_gen -> GetBinContent(j+1)*correction);
 				cout<<"***********  correction EK nr "<<i<<" "<<EfficiencyCorrections[i]->GetName()<<" "<<correction<<endl;

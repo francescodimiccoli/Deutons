@@ -174,7 +174,8 @@ void EffCorr::Eval_Corrections(float shift){
 	}
 	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) if(GlobalCorrection->GetBinLowEdge(i+1)<shift)	GlobalCorrection->SetBinContent(i+1,GlobalCorrection->GetBinContent(GlobalCorrection->FindBin(shift)));
 
-	ModelWithSpline(shift);
+	if(splinemodel) ModelWithSpline(shift);
+	else ModelWithSimple();
 
 	//incertezza a posteriori
 	float std=0;
@@ -234,6 +235,78 @@ double Model::Function(double *x, double *p){
 	TSpline3 * spline = new TSpline3("spline",X,Y,nodes);
 	return spline->Eval(x[0]); 
 }
+
+
+double SimpleModel(double *x, double *p){
+        if(x[0]<=p[3])
+        return p[0]*x[0]+p[1];
+        else return p[2]*x[0]+(p[0]-p[2])*p[3]+p[1];
+}
+
+
+
+void EffCorr::ModelWithSimple(){
+	float shift=0;
+	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) if(((fabs(GlobalCorrection->GetBinContent(i+1)-GlobalCorrection->GetBinContent(i))>0.02&&fabs(GlobalCorrection->GetBinContent(i+1)-GlobalCorrection->GetBinContent(i+2))>0.02) || GlobalCorrection->GetBinError(i+1)>0.4)&&i>10) { GlobalCorrection->SetBinContent(i+1,(GlobalCorrection->GetBinContent(i) + GlobalCorrection->GetBinContent(i-1)) /2); GlobalCorrection->SetBinError(i+1,0.01); i++;}; 	
+
+	int nodes = 11;//Bins.size()/4+1;
+	double p[nodes];
+	double eff[nodes];
+	float fibonacci[11]={0,0.5, 1., 2., 3., 5., 8., 15., 23., 30.,37};
+	int j=0;
+	for(int i=0;i<nodes;i++){
+		p[j]=GlobalCorrection->GetBinContent(GlobalCorrection->FindBin(shift+fibonacci[i]));
+		eff[j]=EffData_glob->GetEfficiency()->GetBinContent(GlobalCorrection->FindBin(shift+fibonacci[i]));
+		cout<<"NODINODI: "<<shift+fibonacci[i]<<" "<<p[j]<<endl;
+		j++;
+	}
+
+	cout<<"******** "<<basename<<" ***********"<<endl;
+	std::vector<float> spline_x;
+	for(int i=0;i<nodes;i++) {
+		spline_x.push_back(shift + fibonacci[i]);
+		cout<<spline_x[i]<<endl;
+	}
+	Model *M = new Model(spline_x);
+
+	DataEffModel = new TF1((basename+"_Eff").c_str(),M,&Model::Function,0,50,nodes,"DataEff_Model","Function");
+ 
+
+	CorrectionModel = new TF1((basename+"_Corr").c_str(),SimpleModel,0,50,4);
+ 	
+	for(int i=0;i<nodes;i++) {
+		DataEffModel->SetParameter(i,eff[i]);
+		DataEffModel->SetParLimits(i,0.8*eff[i],1.2*eff[i]);
+	}
+
+
+	CorrectionModel->SetParLimits(0,-0.08,0.08);
+	CorrectionModel->SetParLimits(1,0.8,1.1);
+	CorrectionModel->SetParLimits(2,-0.0052,0.0052);
+	CorrectionModel->SetParLimits(3,1,15);
+
+
+
+	float endrange=9999;
+	for(int i=GlobalCorrection->GetNbinsX();i>0;i--) if(!(GlobalCorrection->GetBinContent(i+1)>0)) endrange = GlobalCorrection->GetBinLowEdge(i+1); else break;
+
+	GlobalCorrection->Fit((basename+"_Corr").c_str(),"","SWW",1,endrange-1); 
+
+
+	Syst_Stat = (TH1F *) GlobalCorrection->Clone();
+	Syst_Stat->Reset();
+	for(int i=0;i<Syst_Stat->GetNbinsX();i++ ){
+		double x[1] = {GlobalCorrection->GetBinCenter(i+1)};
+		double c1[1];
+		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.997);
+		if(GlobalCorrection->GetBinContent(i+1)) 
+			Syst_Stat->SetBinContent(i+1,c1[0]/GlobalCorrection->GetBinContent(i+1));		
+	}	
+	GlobalEfficiency_plot->Fit((basename+"_Eff").c_str(),"","WM",shift,endrange-0.5); 
+	
+
+}
+
 
 void EffCorr::ModelWithSpline(float shift){
 

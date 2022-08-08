@@ -406,20 +406,20 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 
 
-		TH1F * ratioDHe4 	  = DoRatio(DeutonRes->flux,He4Res->flux,"DHe4ratio");
-		TH1F * ratioDHe4_stat	  = DoRatio(DeutonRes->flux_stat,He4Res->flux_stat,"DHe4ratio_stat");
-		TH1F * ratioDHe4_unf 	  = DoRatio(DeutonRes->flux_unf,He4Res->flux_unf,"DHe4ratio_unf");
-		TH1F * ratioDHe4_unf_stat = DoRatio(DeutonRes->flux_unf_stat,He4Res->flux_unf_stat,"DHe4ratio_unf_stat");
+		TH1F * ratioDHe4 	  = DoRatio(DeutonRes->flux,RigHeRes->flux,"DHe4ratio");
+		TH1F * ratioDHe4_stat	  = DoRatio(DeutonRes->flux_stat,RigHeRes->flux_stat,"DHe4ratio_stat");
+		TH1F * ratioDHe4_unf 	  = DoRatio(DeutonRes->flux_unf,RigHeRes->flux,"DHe4ratio_unf");
+		TH1F * ratioDHe4_unf_stat = DoRatio(DeutonRes->flux_unf_stat,RigHeRes->flux_stat,"DHe4ratio_unf_stat");
 
 		TH1F * ratioHe3He4 	  = DoRatio(He3Res->flux,He4Res->flux,"He3He4ratio");
 		TH1F * ratioHe3He4_stat	  = DoRatio(He3Res->flux_stat,He4Res->flux_stat,"He3He4ratio_stat");
-		TH1F * ratioHe3He4_unf 	  = DoRatio(He3Res->flux_unf,He4Res->flux_unf,"He3He4ratio_unf");
+		TH1F * ratioHe3He4_unf 	  = DoRatio(He3Res->flux_unf,He4Res->flux,"He3He4ratio_unf");
 		TH1F * ratioHe3He4_unf_stat = DoRatio(He3Res->flux_unf_stat,He4Res->flux_unf_stat,"He3He4ratio_unf_stat");
 
 		TH1F * ratioDAllHe 	  = DoRatio(DeutonRes->flux,RigHeRes->flux,"DAllHeratio");
 		TH1F * ratioDAllHe_stat	  = DoRatio(DeutonRes->flux_stat,RigHeRes->flux_stat,"DAllHeratio_stat");
 		TH1F * ratioDAllHe_unf 	  = DoRatio(DeutonRes->flux_unf,RigHeRes->flux_unf,"DAllHeratio_unf");
-		TH1F * ratioDAllHe_unf_stat = DoRatio(DeutonRes->flux_unf_stat,RigHeRes->flux_unf_stat,"DAllHeratio_unf_stat");
+		TH1F * ratioDAllHe_unf_stat = DoRatio(DeutonRes->flux_unf_stat,He4Res->flux_unf_stat,"DAllHeratio_unf_stat");
 
   		//Flux Unfolding Test	
 		TH1F * ratioPP = DoRatio(FitBetaPRes->flux,RigBetaPRes->flux,"unfoldingtest_ratiofolded");

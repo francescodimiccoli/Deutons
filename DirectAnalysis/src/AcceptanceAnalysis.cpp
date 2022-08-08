@@ -6,7 +6,7 @@
 #include "Acceptance.h"
 #include "TStyle.h"
 
-void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults, TFile * systfile, std::string systidirname,std::string systerrname, std::string avgname,std::string tima,float shift =0, bool IsTrig=false);
+void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults, TFile * systfile, std::string systidirname,std::string systerrname, std::string avgname,std::string tima,  float shift =0,bool spline = false, bool IsTrig=false);
 
 void DrawBlockCascade(std::vector<EffCorr *> block, std::string Blockname,FileSaver Plots,float rangemin, float rangemax);
 void DrawCorrectionBlock(std::vector<EffCorr *> block, std::string Blockname,FileSaver Plots);
@@ -128,6 +128,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	before = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
         after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime"; 
 	EffCorr * GoodTime_TOF = new EffCorr(finalhistos,"GoodTimeEffCorr_TOF","GoodTime Eff. Corr",true,1,before,after,"IsPrimary");
+
 	before = "IsPositive&IsPhysTrig&IsBaselineHe&L1LooseCharge2&IsCleaningHe";
         after  = "IsPositive&IsPhysTrig&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsGoodTimeHe"; 
 	EffCorr * GoodTimeZ2_TOF = new EffCorr(finalhistos,"GoodTimeEffCorrZ2_TOF","GoodTime Eff. Corr",true,2,before,after,"IsPrimary",false,"IsHeliumMC");
@@ -140,6 +141,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
         after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
 	EffCorr * RICHEffCorr_NaF = new EffCorr(finalhistos,"RICHCorrection_NaF","RICH Eff. Corr",true,1,before,(after+"&IsFromNaF").c_str(),"IsPrimary");
 	EffCorr * RICHEffCorr_Agl = new EffCorr(finalhistos,"RICHCorrection_Agl","RICH Eff. Corr",true,1,before,(after+"&IsFromAgl").c_str(),"IsPrimary");
+
 	before = "IsPositive&IsPhysTrig&IsBaselineHe&L1LooseCharge2&IsCleaningHe";
         after  = "IsPositive&IsPhysTrig&IsBaselineHe&L1LooseCharge2&IsCleaningHe";
 	EffCorr * RICHEffCorrZ2_NaF = new EffCorr(finalhistos,"RICHCorrectionZ2_NaF","RICH Eff. Corr",true,2,before,(after+"&IsFromNaF").c_str(),"IsPrimary",false,"IsHeliumMC");
@@ -172,7 +174,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Acceptance * Acceptance_RigPTOF = new Acceptance(finalhistos,"Acceptance_RigPTOF","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",GlobalRig.GetToFPBins(),UnfoldingToF);
 	Acceptance * Acceptance_RigPNaF = new Acceptance(finalhistos,"Acceptance_RigPNaF","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",GlobalRig.GetNaFPBins(),UnfoldingNaF);
 	Acceptance * Acceptance_RigPAgl = new Acceptance(finalhistos,"Acceptance_RigPAgl","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",GlobalRig.GetAglPBins(),UnfoldingAgl);
-
+	
 	Acceptance * Acceptance_RigBetaPTOF = new Acceptance(finalhistos,"Acceptance_RigBetaPTOF","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF",GlobalRig.GetToFPBins(),UnfoldingToF);
 	Acceptance * Acceptance_RigBetaPNaF = new Acceptance(finalhistos,"Acceptance_RigBetaPNaF","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",GlobalRig.GetNaFPBins(),UnfoldingNaF);
 	Acceptance * Acceptance_RigBetaPAgl = new Acceptance(finalhistos,"Acceptance_RigBetaPAgl","Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",GlobalRig.GetAglPBins(),UnfoldingAgl);
@@ -188,8 +190,8 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Acceptance * Acceptance_DTOF = new Acceptance(finalhistos,"Acceptance_DTOF","Acceptance","IsDeutonMC","IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF",Global.GetToFDBins(),UnfoldingToF_D);
 	Acceptance * Acceptance_DNaF = new Acceptance(finalhistos,"Acceptance_DNaF","Acceptance","IsDeutonMC","IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromNaF&RICHBDTCut",Global.GetNaFDBins(),UnfoldingNaF_D);
 	Acceptance * Acceptance_DAgl = new Acceptance(finalhistos,"Acceptance_DAgl","Acceptance","IsDeutonMC","IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsFromAgl&RICHBDTCut",Global.GetAglDBins(),UnfoldingAgl_D);
-
-	Acceptance * Acceptance_HeTOF = new Acceptance(finalhistos,"Acceptance_HeTOF","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsGoodTimeHe",Global_He.GetToFDBins(),UnfoldingToF_He);
+															
+	Acceptance * Acceptance_HeTOF = new Acceptance(finalhistos,"Acceptance_HeTOF","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsGoodTimeHe"          ,Global_He.GetToFDBins(),UnfoldingToF_He);
 	Acceptance * Acceptance_HeNaF = new Acceptance(finalhistos,"Acceptance_HeNaF","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromNaF&RICHHeCutNaF",Global_He.GetNaFDBins(),UnfoldingNaF_He);
 	Acceptance * Acceptance_HeAgl = new Acceptance(finalhistos,"Acceptance_HeAgl","Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe&IsFromAgl&RICHHeCutAgl",Global_He.GetAglDBins(),UnfoldingAgl_He);
 
@@ -393,7 +395,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_QualHE->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
 		Acceptance_HeQualHE->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 
-
+/*
 		Acceptance_PTOF->SetModeled();
 		Acceptance_PNaF->SetModeled();
 		Acceptance_PAgl->SetModeled();
@@ -414,10 +416,18 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_RigPNaF->SetModeled();
 		Acceptance_RigPAgl->SetModeled();
 
+		Acceptance_RigHeTOF->SetModeled();
+		Acceptance_RigHeNaF->SetModeled();
+		Acceptance_RigHeAgl->SetModeled();
+
+		Acceptance_RigPTOF->SetModeled();
+		Acceptance_RigPNaF->SetModeled();
+		Acceptance_RigPAgl->SetModeled();
+
 		Acceptance_RigBetaPTOF->SetModeled();
 		Acceptance_RigBetaPNaF->SetModeled();
 		Acceptance_RigBetaPAgl->SetModeled();
-
+*/
 		Fragmentation_P->Eval_Efficiency();
 		Fragmentation_D->Eval_Efficiency();
 
@@ -427,12 +437,12 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		TFile * EffSystFile = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/EffSyst/Time.root");
 			
 	
-		AnalyzeEffCorr(	TriggerEffCorr_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,true);
-		AnalyzeEffCorr(	TriggerEffCorr_Z2  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.45,true);
-		AnalyzeEffCorr(	TriggerFullSpan_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,true);
-		AnalyzeEffCorr(	TriggerTOFEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,true);
-		AnalyzeEffCorr(	TriggerNaFEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.45,true);
-		AnalyzeEffCorr(	TriggerAglEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,true);
+		AnalyzeEffCorr(	TriggerEffCorr_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,false,true);
+		AnalyzeEffCorr(	TriggerEffCorr_Z2  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.45,false,true);
+		AnalyzeEffCorr(	TriggerFullSpan_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,false,true);
+		AnalyzeEffCorr(	TriggerTOFEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,false,true);
+		AnalyzeEffCorr(	TriggerNaFEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.45,false,true);
+		AnalyzeEffCorr(	TriggerAglEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,false,true);
 		AnalyzeEffCorr(	L1PickUpEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
 		AnalyzeEffCorr(	L1PickUpGeom_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
 		AnalyzeEffCorr(	TrackerEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),3.);
@@ -442,12 +452,12 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		AnalyzeEffCorr(	GoodLtof_HE  , finalhistos, finalresults ,EffSystFile,"Eff. Corrections Sys/NoInteraction/","GoodLtof_Err"	,"GoodLtof_timeavg"	,filelistDT.c_str(),0.65); 
 		AnalyzeEffCorr(	GoodQTrack_HE , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/Track Quality/","GoodQTrack_Err"	,"GoodQTrack_timeavg"	,filelistDT.c_str(),0.8);
 		AnalyzeEffCorr(	Good1Track_HE , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/NoInteraction/","Good1Track_Err"	,"Good1Track_timeavg"	,filelistDT.c_str(),0.65); 
-		AnalyzeEffCorr(	GoodTime_TOF , finalhistos, finalresults,EffSystFile, "Eff. Corrections Sys/TOF/","GoodTime_Err"		,"GoodTime_timeavg"	,filelistDT.c_str(),0.65);
-		AnalyzeEffCorr(	Quality_TOF , finalhistos, finalresults,EffSystFile,    "Eff. Corrections Sys/TOF/","QualityTime_Err"		,"Quality_timeavg"	,filelistDT.c_str(),0.65);
+		AnalyzeEffCorr(	GoodTime_TOF , finalhistos, finalresults,EffSystFile, "Eff. Corrections Sys/TOF/","GoodTime_Err"		,"GoodTime_timeavg"	,filelistDT.c_str(),0.65,true);
+		AnalyzeEffCorr(	Quality_TOF , finalhistos, finalresults,EffSystFile,    "Eff. Corrections Sys/TOF/","QualityTime_Err"		,"Quality_timeavg"	,filelistDT.c_str(),0.65,true);
 		AnalyzeEffCorr(	RICHEffCorr_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH CIEMAT/","RICHNTime_Err"	,"RICHTF1_Ntimeavg"	,filelistDT.c_str(),1);
-		AnalyzeEffCorr(	RICHEffCorr_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH CIEMAT/","RICHATime_Err"	,"RICHTF1_Atimeavg"	,filelistDT.c_str(),3.2);
+		AnalyzeEffCorr(	RICHEffCorr_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH CIEMAT/","RICHATime_Err"	,"RICHTF1_Atimeavg"	,filelistDT.c_str(),3.2,true);
 		AnalyzeEffCorr(	RICHQualEffCorr_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH BDT/","RICHQNTime_Err"	,"RICHQualTF1_Ntimeavg",filelistDT.c_str(),1);
-		AnalyzeEffCorr(	RICHQualEffCorr_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH BDT/","RICHQATime_Err"	,"RICHQualTF1_Atimeavg",filelistDT.c_str(),3.2);
+		AnalyzeEffCorr(	RICHQualEffCorr_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH BDT/","RICHQATime_Err"	,"RICHQualTF1_Atimeavg",filelistDT.c_str(),3.2,true);
 
 		AnalyzeEffCorr(	L1PickUpEffCorr_Z2 , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.05);
 		AnalyzeEffCorr(	L1PickUpGeom_Z2 , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.05);
@@ -741,12 +751,12 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_RigHeNaF	->ApplyEfficCorr(TriggerEffCorr_Z2);
 		Acceptance_RigHeAgl	->ApplyEfficCorr(TriggerEffCorr_Z2);
 				
-		//velocity effcorr
-	
+			//velocity effcorr
+
 		Acceptance_PTOF->ApplyEfficCorr(GoodTime_TOF);
 		Acceptance_PTOF->ApplyEfficCorr(Quality_TOF);
-	        Acceptance_PNaF->ApplyEfficCorr(RICHEffCorr_NaF);
-                Acceptance_PAgl->ApplyEfficCorr(RICHEffCorr_Agl);
+		Acceptance_PNaF->ApplyEfficCorr(RICHEffCorr_NaF);
+		Acceptance_PAgl->ApplyEfficCorr(RICHEffCorr_Agl);
 	        Acceptance_PNaF->ApplyEfficCorr(RICHQualEffCorr_NaF);
                 Acceptance_PAgl->ApplyEfficCorr(RICHQualEffCorr_Agl);
 	
@@ -761,10 +771,10 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_DTOF->ApplyEfficCorr(Quality_TOF);
 
 	        Acceptance_DNaF->ApplyEfficCorr(RICHEffCorr_NaF);
-                Acceptance_DAgl->ApplyEfficCorr(RICHEffCorr_Agl);//,0.2);
+                Acceptance_DAgl->ApplyEfficCorr(RICHEffCorr_Agl);
 
 	        Acceptance_DNaF->ApplyEfficCorr(RICHQualEffCorr_NaF);
-          	Acceptance_DAgl->ApplyEfficCorr(RICHQualEffCorr_Agl);//,0.2);
+          	Acceptance_DAgl->ApplyEfficCorr(RICHQualEffCorr_Agl);
 	
 
 		Acceptance_HeTOF->ApplyEfficCorr(GoodTimeZ2_TOF);
@@ -1017,7 +1027,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 }
 
 
-void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults, TFile * systfile, std::string systdirname, std::string systerrname, std::string avgname, std::string tima,float shift, bool IsTrig){
+void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  finalresults, TFile * systfile, std::string systdirname, std::string systerrname, std::string avgname, std::string tima,float shift,bool spline, bool IsTrig){
 
 	TH1F * syst=0x0;
         TH2F * avg=0x0;
@@ -1028,6 +1038,7 @@ void AnalyzeEffCorr(EffCorr * Correction, FileSaver  finalhistos, FileSaver  fin
 		cout<<"AVERAGE EFFCORR: "<<systdirname<<" "<<syst<<" "<<avg<<endl;
 	}
 */
+	if(spline) Correction   -> SetSplineModel();
 	if(IsTrig) Correction   -> SetAsTrigEffCorr();
 	Correction   -> Set_SystStat(syst,avg,tima.c_str());
 	Correction   -> Eval_Efficiencies();

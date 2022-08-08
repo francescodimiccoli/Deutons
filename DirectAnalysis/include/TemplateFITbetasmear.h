@@ -125,6 +125,11 @@ class TemplateFIT : public Tool{
 	std::vector<TH2F *> TFitChisquare;
 	std::vector<TH2F *> TFitChisquareD;
 
+	TH1F * BetaResolutionDT;
+   	TH1F * BetaResolutionMC;
+ 	TH1F * BetaResolutionMC_tuned;
+
+
 
 	TH2F* Global_ChiSquare;	
 
@@ -184,11 +189,13 @@ class TemplateFIT : public Tool{
 	float template1scalefactor2=1;
 	float template1scalefactor3=1;
 
-	float lowstatDmode=false;
-
+	bool lowstatDmode=false;
+	bool adjousttail=false;
 
 	bool IsExtern = false;
 
+	bool useMCreweighting=true;
+	bool useMCtuning=true;
 
 	public:	
 	//standard constructor
@@ -233,7 +240,22 @@ class TemplateFIT : public Tool{
 				fitsD[bin][i].push_back(fit);
 				}
 			}
+		
+			if(IsRich){
+			BetaResolutionDT=new TH1F("BetaResolutionDT","BetaResolutionDT",1000,0.95,1.05);
+			BetaResolutionMC=new TH1F("BetaResolutionMC","BetaResolutionMC",1000,0.95,1.05);
+			BetaResolutionMC_tuned=new TH1F("BetaResolutionMC_tuned","BetaResolutionMC_tuned",1000,0.95,1.05);
+			}
+
+			else{
+			BetaResolutionDT=new TH1F("BetaResolutionDT","BetaResolutionDT",1000,0.8,1.2);
+			BetaResolutionMC=new TH1F("BetaResolutionMC","BetaResolutionMC",1000,0.8,1.2);
+			BetaResolutionMC_tuned=new TH1F("BetaResolutionMC_tuned","BetaResolutionMC_tuned",1000,0.8,1.2);
+			}
+
+
 		}
+	
 		MCmodel = new TF1("MCmodel","pol3",0,5);
 		MCmodel->SetParameter(0,-0.257527);
 		MCmodel->SetParameter(1,0.737386);
@@ -307,6 +329,11 @@ class TemplateFIT : public Tool{
 		else file = filecurrent;
 */
 		file = filecurrent;
+
+		BetaResolutionDT = (TH1F*) filecurrent->Get((Basename+"/BetaRes/BetaResolutionDT").c_str());
+		BetaResolutionMC = (TH1F*) filecurrent->Get((Basename+"/BetaRes/BetaResolutionMC").c_str());
+		BetaResolutionMC_tuned = (TH1F*) filecurrent->Get((Basename+"/BetaRes/BetaResolutionMC_tuned").c_str());
+		cout<<BetaResolutionMC_tuned->Integral()<<endl;
 
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
@@ -438,9 +465,9 @@ class TemplateFIT : public Tool{
 	TH1F * Eval_MCHeContRatio(std::string name);
 	void Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) );
 	float SmearBeta(float Beta,float M_gen, float stepsigma, float stepshift,float R);
-	float SmearBeta_v2(float Beta, float Beta_gen, float M_gen, TF1* MCmodel, float stepsigma, float stepshift);
+	float SmearBeta_v2(float Beta, float Beta_gen,float  HighRsigmaMC, float HighRsigmaDT, float relativeshift , TF1* MCmodel,  float stepsigma, float stepshift);
 	float SmearBetaRICH(float Beta, float stepsigma, float stepshift);
-	float SmearBetaRICH_v2(float Beta, float Betagen, float stepsigma, float stepshift);
+	float SmearBetaRICH_v2(float Beta, float Betagen,float HighRsigmaMC,float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
 	float SmearRRICH_R(float R, float R_gen, float stepsigma, float stepshift);
 
 	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
@@ -489,12 +516,16 @@ class TemplateFIT : public Tool{
 	void SetLocalFit(){IsLocalFit = true; }
 	void SetLocalConstrainedFit(){IsLocalConstrainedFit = true; }
 	void SetLowStatDMode(){lowstatDmode=true;}
+	void SetAdjoustTailMode(){adjousttail=true;}
+
 
 	TH2F * GetDCountsSpread(int bin)	{ return DCountsSpread[bin];}
 	TH2F * GetChiSquareSpread(int bin)      { return TFitChisquare[bin];}	
 	TH1F * GetWeightedDCounts(int bin)     { return WeightedDCounts[bin];}
 	
-	bool SetAsExtern() {IsExtern=true;}
+	void SetAsExtern() {IsExtern=true;}
+	void SetNotWeightedMC() {useMCreweighting=false;}
+	void SetNotTunedMC() {useMCtuning=false;}
 
 
 };
