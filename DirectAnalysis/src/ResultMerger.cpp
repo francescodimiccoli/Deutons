@@ -15,7 +15,7 @@ TH1F * Twentisevenify(TH1F* input){
 
 
 
-ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger Global, Flux * FluxTOF, Flux * FluxNaF, Flux * FluxAgl, Particle particle){
+ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger Global, Flux * FluxTOF, Flux * FluxNaF, Flux * FluxAgl, Particle particle, bool nafpriority){
 
 	Name=name;
 	if(!FluxTOF || !FluxNaF || !FluxAgl) return;
@@ -24,56 +24,56 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 	if(particle.getA()/particle.getZ() <=1.5){
 
 		if(FluxTOF->GetEffAcceptance()&&FluxNaF->GetEffAcceptance()&&FluxAgl->GetEffAcceptance())
-			effAcc = Global.MergeSubDResult_P(FluxTOF->GetEffAcceptance(),FluxNaF->GetEffAcceptance(),FluxAgl->GetEffAcceptance());
+			effAcc = Global.MergeSubDResult_P(FluxTOF->GetEffAcceptance(),FluxNaF->GetEffAcceptance(),FluxAgl->GetEffAcceptance(),nafpriority);
 
 		if(FluxTOF->GetMCAcceptance()&&FluxNaF->GetMCAcceptance()&&FluxAgl->GetMCAcceptance())
-			effAccMC = Global.MergeSubDResult_P(FluxTOF->GetMCAcceptance(),FluxNaF->GetMCAcceptance(),FluxAgl->GetMCAcceptance());
+			effAccMC = Global.MergeSubDResult_P(FluxTOF->GetMCAcceptance(),FluxNaF->GetMCAcceptance(),FluxAgl->GetMCAcceptance(),nafpriority);
 
 		if(FluxTOF->GetMCAcceptance_raw()&&FluxNaF->GetMCAcceptance_raw()&&FluxAgl->GetMCAcceptance_raw())
-			effAccMC_raw = Global.MergeSubDResult_P(FluxTOF->GetMCAcceptance_raw(),FluxNaF->GetMCAcceptance_raw(),FluxAgl->GetMCAcceptance_raw());
+			effAccMC_raw = Global.MergeSubDResult_P(FluxTOF->GetMCAcceptance_raw(),FluxNaF->GetMCAcceptance_raw(),FluxAgl->GetMCAcceptance_raw(),nafpriority);
 
 
 		if(FluxTOF->GetFlux()&&FluxNaF->GetFlux()&&FluxAgl->GetFlux())
-			flux_ekin = Global.MergeSubDResult_P(FluxTOF->GetFlux(),FluxNaF->GetFlux(),FluxAgl->GetFlux());
+			flux_ekin = Global.MergeSubDResult_P(FluxTOF->GetFlux(),FluxNaF->GetFlux(),FluxAgl->GetFlux(),nafpriority);
 
 		if(FluxTOF->GetFlux_ekin_unf()&&FluxNaF->GetFlux_ekin_unf()&&FluxAgl->GetFlux_ekin_unf())
-			flux_ekin_unf = Global.MergeSubDResult_P(FluxTOF->GetFlux_ekin_unf(),FluxNaF->GetFlux_ekin_unf(),FluxAgl->GetFlux_ekin_unf());
+			flux_ekin_unf = Global.MergeSubDResult_P(FluxTOF->GetFlux_ekin_unf(),FluxNaF->GetFlux_ekin_unf(),FluxAgl->GetFlux_ekin_unf(),nafpriority);
 
 		if(FluxTOF->GetFlux_rig()&&FluxNaF->GetFlux_rig()&&FluxAgl->GetFlux_rig())
-			flux = Global.MergeSubDResult_P(FluxTOF->GetFlux_rig(),FluxNaF->GetFlux_rig(),FluxAgl->GetFlux_rig());
+			flux = Global.MergeSubDResult_P(FluxTOF->GetFlux_rig(),FluxNaF->GetFlux_rig(),FluxAgl->GetFlux_rig(),nafpriority);
 
 		if(FluxTOF->GetFlux_rig_stat()&&FluxNaF->GetFlux_rig_stat()&&FluxAgl->GetFlux_rig_stat())
-			flux_stat = Global.MergeSubDResult_P(FluxTOF->GetFlux_rig_stat(),FluxNaF->GetFlux_rig_stat(),FluxAgl->GetFlux_rig_stat());
+			flux_stat = Global.MergeSubDResult_P(FluxTOF->GetFlux_rig_stat(),FluxNaF->GetFlux_rig_stat(),FluxAgl->GetFlux_rig_stat(),nafpriority);
 
 		if(FluxTOF->GetFlux_unf()&&FluxNaF->GetFlux_unf()&&FluxAgl->GetFlux_unf())
-			flux_unf= Global.MergeSubDResult_P(FluxTOF->GetFlux_unf(),FluxNaF->GetFlux_unf(),FluxAgl->GetFlux_unf());
+			flux_unf= Global.MergeSubDResult_P(FluxTOF->GetFlux_unf(),FluxNaF->GetFlux_unf(),FluxAgl->GetFlux_unf(),nafpriority);
  
 		if(FluxTOF->GetFlux_unf_stat()&&FluxNaF->GetFlux_unf_stat()&&FluxAgl->GetFlux_unf_stat())
-			flux_unf_stat= Global.MergeSubDResult_P(FluxTOF->GetFlux_unf_stat(),FluxNaF->GetFlux_unf_stat(),FluxAgl->GetFlux_unf_stat()); 
+			flux_unf_stat= Global.MergeSubDResult_P(FluxTOF->GetFlux_unf_stat(),FluxNaF->GetFlux_unf_stat(),FluxAgl->GetFlux_unf_stat()),nafpriority; 
 
 		if(FluxTOF->GetCounts()&&FluxNaF->GetCounts()&&FluxAgl->GetCounts())
-			counts = Global.MergeSubDResult_P(FluxTOF->GetCounts(),FluxNaF->GetCounts(),FluxAgl->GetCounts());
+			counts = Global.MergeSubDResult_P(FluxTOF->GetCounts(),FluxNaF->GetCounts(),FluxAgl->GetCounts(),nafpriority);
 
 		if(FluxTOF->GetUnfoldingFactor()&&FluxNaF->GetUnfoldingFactor()&&FluxAgl->GetUnfoldingFactor())
-			unfolding = Global.MergeSubDResult_P(FluxTOF->GetUnfoldingFactor(),FluxNaF->GetUnfoldingFactor(),FluxAgl->GetUnfoldingFactor());
+			unfolding = Global.MergeSubDResult_P(FluxTOF->GetUnfoldingFactor(),FluxNaF->GetUnfoldingFactor(),FluxAgl->GetUnfoldingFactor(),nafpriority);
 
 		if(FluxTOF->GetRooUnfoldingFactor()&&FluxNaF->GetRooUnfoldingFactor()&&FluxAgl->GetRooUnfoldingFactor())
-			roounfolding = Global.MergeSubDResult_P(FluxTOF->GetRooUnfoldingFactor(),FluxNaF->GetRooUnfoldingFactor(),FluxAgl->GetRooUnfoldingFactor());
+			roounfolding = Global.MergeSubDResult_P(FluxTOF->GetRooUnfoldingFactor(),FluxNaF->GetRooUnfoldingFactor(),FluxAgl->GetRooUnfoldingFactor(),nafpriority);
 
 		if(FluxTOF->GetStatError()&&FluxNaF->GetStatError()&&FluxAgl->GetStatError())
-			statErr = Global.MergeSubDResult_P(FluxTOF->GetStatError(),FluxNaF->GetStatError(),FluxAgl->GetStatError());
+			statErr = Global.MergeSubDResult_P(FluxTOF->GetStatError(),FluxNaF->GetStatError(),FluxAgl->GetStatError(),nafpriority);
 
 		if(FluxTOF->GetSystError()&&FluxNaF->GetSystError()&&FluxAgl->GetSystError())
-			systErr= Global.MergeSubDResult_P(FluxTOF->GetSystError(),FluxNaF->GetSystError(),FluxAgl->GetSystError());
+			systErr= Global.MergeSubDResult_P(FluxTOF->GetSystError(),FluxNaF->GetSystError(),FluxAgl->GetSystError(),nafpriority);
 
 		if(FluxTOF->GetAccError()&&FluxNaF->GetAccError()&&FluxAgl->GetAccError())
-			accErr= Global.MergeSubDResult_P(FluxTOF->GetAccError(),FluxNaF->GetAccError(),FluxAgl->GetAccError());
+			accErr= Global.MergeSubDResult_P(FluxTOF->GetAccError(),FluxNaF->GetAccError(),FluxAgl->GetAccError(),nafpriority);
 
 		if(FluxTOF->GetUnfError()&&FluxNaF->GetUnfError()&&FluxAgl->GetUnfError())
-			unfErr= Global.MergeSubDResult_P(FluxTOF->GetUnfError(),FluxNaF->GetUnfError(),FluxAgl->GetUnfError());
+			unfErr= Global.MergeSubDResult_P(FluxTOF->GetUnfError(),FluxNaF->GetUnfError(),FluxAgl->GetUnfError(),nafpriority);
 
 		if(FluxTOF->GetRooUnfError()&&FluxNaF->GetRooUnfError()&&FluxAgl->GetRooUnfError())
-			roounfErr= Global.MergeSubDResult_P(FluxTOF->GetRooUnfError(),FluxNaF->GetRooUnfError(),FluxAgl->GetRooUnfError());
+			roounfErr= Global.MergeSubDResult_P(FluxTOF->GetRooUnfError(),FluxNaF->GetRooUnfError(),FluxAgl->GetRooUnfError(),nafpriority);
 
 
 		if(	effAcc		) 	effAcc	      		= ConvertBinnedHisto( effAcc	          , (Name+"_EffAcc").c_str()     ,Global.GetGlobalPBins(),false); 
@@ -101,56 +101,56 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 
 	else{
 		if(FluxTOF->GetEffAcceptance()&&FluxNaF->GetEffAcceptance()&&FluxAgl->GetEffAcceptance())
-			effAcc = Global.MergeSubDResult_D(FluxTOF->GetEffAcceptance(),FluxNaF->GetEffAcceptance(),FluxAgl->GetEffAcceptance());
+			effAcc = Global.MergeSubDResult_D(FluxTOF->GetEffAcceptance(),FluxNaF->GetEffAcceptance(),FluxAgl->GetEffAcceptance(),nafpriority);
 
 		if(FluxTOF->GetMCAcceptance()&&FluxNaF->GetMCAcceptance()&&FluxAgl->GetMCAcceptance())
-			effAccMC = Global.MergeSubDResult_D(FluxTOF->GetMCAcceptance(),FluxNaF->GetMCAcceptance(),FluxAgl->GetMCAcceptance());
+			effAccMC = Global.MergeSubDResult_D(FluxTOF->GetMCAcceptance(),FluxNaF->GetMCAcceptance(),FluxAgl->GetMCAcceptance(),nafpriority);
 
 		if(FluxTOF->GetMCAcceptance_raw()&&FluxNaF->GetMCAcceptance_raw()&&FluxAgl->GetMCAcceptance_raw())
-			effAccMC_raw = Global.MergeSubDResult_D(FluxTOF->GetMCAcceptance_raw(),FluxNaF->GetMCAcceptance_raw(),FluxAgl->GetMCAcceptance_raw());
+			effAccMC_raw = Global.MergeSubDResult_D(FluxTOF->GetMCAcceptance_raw(),FluxNaF->GetMCAcceptance_raw(),FluxAgl->GetMCAcceptance_raw(),nafpriority);
 
 
 		if(FluxTOF->GetFlux()&&FluxNaF->GetFlux()&&FluxAgl->GetFlux())
-			flux_ekin = Global.MergeSubDResult_D(FluxTOF->GetFlux(),FluxNaF->GetFlux(),FluxAgl->GetFlux());
+			flux_ekin = Global.MergeSubDResult_D(FluxTOF->GetFlux(),FluxNaF->GetFlux(),FluxAgl->GetFlux(),nafpriority);
 
 		if(FluxTOF->GetFlux_ekin_unf()&&FluxNaF->GetFlux_ekin_unf()&&FluxAgl->GetFlux_ekin_unf())
-			flux_ekin_unf = Global.MergeSubDResult_D(FluxTOF->GetFlux_ekin_unf(),FluxNaF->GetFlux_ekin_unf(),FluxAgl->GetFlux_ekin_unf());
+			flux_ekin_unf = Global.MergeSubDResult_D(FluxTOF->GetFlux_ekin_unf(),FluxNaF->GetFlux_ekin_unf(),FluxAgl->GetFlux_ekin_unf(),nafpriority);
 
 		if(FluxTOF->GetFlux_rig()&&FluxNaF->GetFlux_rig()&&FluxAgl->GetFlux_rig())
-			flux = Global.MergeSubDResult_D(FluxTOF->GetFlux_rig(),FluxNaF->GetFlux_rig(),FluxAgl->GetFlux_rig());
+			flux = Global.MergeSubDResult_D(FluxTOF->GetFlux_rig(),FluxNaF->GetFlux_rig(),FluxAgl->GetFlux_rig(),nafpriority);
 
 		if(FluxTOF->GetFlux_rig_stat()&&FluxNaF->GetFlux_rig_stat()&&FluxAgl->GetFlux_rig_stat())
-			flux_stat = Global.MergeSubDResult_D(FluxTOF->GetFlux_rig_stat(),FluxNaF->GetFlux_rig_stat(),FluxAgl->GetFlux_rig_stat());
+			flux_stat = Global.MergeSubDResult_D(FluxTOF->GetFlux_rig_stat(),FluxNaF->GetFlux_rig_stat(),FluxAgl->GetFlux_rig_stat(),nafpriority);
 
 		if(FluxTOF->GetFlux_unf()&&FluxNaF->GetFlux_unf()&&FluxAgl->GetFlux_unf())
-			flux_unf= Global.MergeSubDResult_D(FluxTOF->GetFlux_unf(),FluxNaF->GetFlux_unf(),FluxAgl->GetFlux_unf());
+			flux_unf= Global.MergeSubDResult_D(FluxTOF->GetFlux_unf(),FluxNaF->GetFlux_unf(),FluxAgl->GetFlux_unf(),nafpriority);
 
 		if(FluxTOF->GetFlux_unf_stat()&&FluxNaF->GetFlux_unf_stat()&&FluxAgl->GetFlux_unf_stat())
-			flux_unf_stat= Global.MergeSubDResult_D(FluxTOF->GetFlux_unf_stat(),FluxNaF->GetFlux_unf_stat(),FluxAgl->GetFlux_unf_stat());
+			flux_unf_stat= Global.MergeSubDResult_D(FluxTOF->GetFlux_unf_stat(),FluxNaF->GetFlux_unf_stat(),FluxAgl->GetFlux_unf_stat(),nafpriority);
 
 		if(FluxTOF->GetCounts()&&FluxNaF->GetCounts()&&FluxAgl->GetCounts())
-			counts = Global.MergeSubDResult_D(FluxTOF->GetCounts(),FluxNaF->GetCounts(),FluxAgl->GetCounts());
+			counts = Global.MergeSubDResult_D(FluxTOF->GetCounts(),FluxNaF->GetCounts(),FluxAgl->GetCounts(),nafpriority);
 
 		if(FluxTOF->GetUnfoldingFactor()&&FluxNaF->GetUnfoldingFactor()&&FluxAgl->GetUnfoldingFactor())
-			unfolding = Global.MergeSubDResult_D(FluxTOF->GetUnfoldingFactor(),FluxNaF->GetUnfoldingFactor(),FluxAgl->GetUnfoldingFactor());
+			unfolding = Global.MergeSubDResult_D(FluxTOF->GetUnfoldingFactor(),FluxNaF->GetUnfoldingFactor(),FluxAgl->GetUnfoldingFactor(),nafpriority);
 
 		if(FluxTOF->GetRooUnfoldingFactor()&&FluxNaF->GetRooUnfoldingFactor()&&FluxAgl->GetRooUnfoldingFactor())
-			roounfolding = Global.MergeSubDResult_D(FluxTOF->GetRooUnfoldingFactor(),FluxNaF->GetRooUnfoldingFactor(),FluxAgl->GetRooUnfoldingFactor());
+			roounfolding = Global.MergeSubDResult_D(FluxTOF->GetRooUnfoldingFactor(),FluxNaF->GetRooUnfoldingFactor(),FluxAgl->GetRooUnfoldingFactor(),nafpriority);
 
 		if(FluxTOF->GetStatError()&&FluxNaF->GetStatError()&&FluxAgl->GetStatError())
-			statErr = Global.MergeSubDResult_D(FluxTOF->GetStatError(),FluxNaF->GetStatError(),FluxAgl->GetStatError());
+			statErr = Global.MergeSubDResult_D(FluxTOF->GetStatError(),FluxNaF->GetStatError(),FluxAgl->GetStatError(),nafpriority);
 
 		if(FluxTOF->GetSystError()&&FluxNaF->GetSystError()&&FluxAgl->GetSystError())
-			systErr= Global.MergeSubDResult_D(FluxTOF->GetSystError(),FluxNaF->GetSystError(),FluxAgl->GetSystError());
+			systErr= Global.MergeSubDResult_D(FluxTOF->GetSystError(),FluxNaF->GetSystError(),FluxAgl->GetSystError(),nafpriority);
 
 		if(FluxTOF->GetAccError()&&FluxNaF->GetAccError()&&FluxAgl->GetAccError())
-			accErr= Global.MergeSubDResult_D(FluxTOF->GetAccError(),FluxNaF->GetAccError(),FluxAgl->GetAccError());
+			accErr= Global.MergeSubDResult_D(FluxTOF->GetAccError(),FluxNaF->GetAccError(),FluxAgl->GetAccError(),nafpriority);
 
 		if(FluxTOF->GetUnfError()&&FluxNaF->GetUnfError()&&FluxAgl->GetUnfError())
-			unfErr= Global.MergeSubDResult_D(FluxTOF->GetUnfError(),FluxNaF->GetUnfError(),FluxAgl->GetUnfError());
+			unfErr= Global.MergeSubDResult_D(FluxTOF->GetUnfError(),FluxNaF->GetUnfError(),FluxAgl->GetUnfError(),nafpriority);
 
 		if(FluxTOF->GetRooUnfError()&&FluxNaF->GetRooUnfError()&&FluxAgl->GetRooUnfError())
-			roounfErr= Global.MergeSubDResult_D(FluxTOF->GetRooUnfError(),FluxNaF->GetRooUnfError(),FluxAgl->GetRooUnfError());
+			roounfErr= Global.MergeSubDResult_D(FluxTOF->GetRooUnfError(),FluxNaF->GetRooUnfError(),FluxAgl->GetRooUnfError(),nafpriority);
 
 
 		if(	effAcc	        ) 	effAcc	           		= ConvertBinnedHisto( effAcc	          , (Name+"_EffAcc").c_str()     ,Global.GetGlobalDBins(),false); 
@@ -165,10 +165,10 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		if(	counts	        ) 	counts	           		= ConvertBinnedHisto( counts	          , (Name+"_Counts").c_str()     ,Global.GetGlobalDBins(),false); 
 		if(	unfolding	) 	unfolding      		= ConvertBinnedHisto( unfolding	          , (Name+"_unfolding").c_str()     ,Global.GetGlobalDBins(),false); 
 		if(	roounfolding	) 	roounfolding   		= ConvertBinnedHisto( roounfolding	  , (Name+"_roounfolding").c_str()     ,Global.GetGlobalDBins(),false); 
-		if(	statErr	        ) 	statErr	           		= ConvertBinnedHisto( statErr	          , (Name+"_stat").c_str()     ,Global.GetGlobalDBins(),false); 
-		if(	systErr	        ) 	systErr	           		= ConvertBinnedHisto( systErr	          , (Name+"_syste").c_str()     ,Global.GetGlobalDBins(),false); 
-		if(	accErr	        ) 	accErr	           		= ConvertBinnedHisto( accErr	          , (Name+"_acce").c_str()     ,Global.GetGlobalDBins(),false); 
-		if(	unfErr	        )  	unfErr	           		= ConvertBinnedHisto( unfErr	          , (Name+"_unfe").c_str()     ,Global.GetGlobalDBins(),false); 
+		if(	statErr	        ) 	statErr	           	= ConvertBinnedHisto( statErr	          , (Name+"_stat").c_str()     ,Global.GetGlobalDBins(),false); 
+		if(	systErr	        ) 	systErr	           	= ConvertBinnedHisto( systErr	          , (Name+"_syste").c_str()     ,Global.GetGlobalDBins(),false); 
+		if(	accErr	        ) 	accErr	           	= ConvertBinnedHisto( accErr	          , (Name+"_acce").c_str()     ,Global.GetGlobalDBins(),false); 
+		if(	unfErr	        )  	unfErr	           	= ConvertBinnedHisto( unfErr	          , (Name+"_unfe").c_str()     ,Global.GetGlobalDBins(),false); 
 		if(	roounfErr	)  	roounfErr	 	= ConvertBinnedHisto( roounfErr	          , (Name+"_roounfe").c_str()  ,Global.GetGlobalDBins(),false); 
 
 

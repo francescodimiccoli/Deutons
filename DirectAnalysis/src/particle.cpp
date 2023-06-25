@@ -23,7 +23,9 @@ float Particle::BetaTOIFromBeta (float beta){
    	brf.Solve();
 	float betaTOI = brf.Root();
 
-	return betaTOI;
+//	return betaTOI;
+
+	return beta;
 }	
  
 float Particle::BetaMeasFromBetaTOI (float beta){
@@ -33,7 +35,7 @@ float Particle::BetaMeasFromBetaTOI (float beta){
 	model.SetParameter(2,0.9/mass);
 	model.SetParameter(3,beta);
 
-	return beta + model.Eval(beta);
+	return beta; //+ model.Eval(beta);
 }
 
 

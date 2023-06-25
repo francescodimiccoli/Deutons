@@ -22,10 +22,15 @@ class Flux{
 	TH1F * Counts_density27=0x0;
 	TH1F * Counts_density_unfolded=0x0;
 	TH1F * Counts_density_roounf=0x0;
+	TH1F * Counts_density_hRecoroounf=0x0;
 	TH1F * Counts_density_Ekin=0x0;
 	TH1F * Counts_density_Ekin_unf=0x0;
 	TH1F * Unfolding_factor=0x0;
 	TH1F * Unfolding_factor_raw=0x0;
+
+	TH1F * Counts_ForAverage=0x0;
+	TH1F * Exposure_ForAverage=0x0;
+
 
 	bool rooUnfolding=false;
 
@@ -34,7 +39,8 @@ class Flux{
 	TH2F * avg_time=0x0;
 	int time=1429054000;
 
-	TH1F * RooUnfolding_factor=0x0;
+	TH1F * RooUnfolding_factor=new TH1F();;
+	TH1F * RooUnfolding_factor_raw=new TH1F();
 	
 	TH1F * Eff_Acceptance=0x0;
 	TH1F * MC_Acceptance=0x0;
@@ -90,7 +96,7 @@ class Flux{
 
 	public:
 
-	Flux(FileSaver File, FileSaver FileRes, std::string Basename,std::string Accname, std::string AccDir,std::string CountsName,std::string CountsStatName,std::string ExposureName, Binning Bins){
+	Flux(FileSaver File, FileSaver FileRes, std::string Basename,std::string Accname, std::string AccDir,std::string CountsName,std::string CountsStatName,std::string CountsSystName,std::string ExposureName, Binning Bins){
 	
 		EffAcceptance = new Acceptance(FileRes,Accname,AccDir,Bins,Bins);
 		Eff_Acceptance = (TH1F *) EffAcceptance->GetEffAcc_gen();	
@@ -105,6 +111,8 @@ class Flux{
 
 		if(FileRes.CheckFile()) Counts = (TH1F *) FileRes.Get((CountsName).c_str());	 
 		if(FileRes.CheckFile()) Counts_statErr = (TH1F *) FileRes.Get((CountsStatName).c_str());	 
+		if(FileRes.CheckFile()) Counts_systErr = (TH1F *) FileRes.Get((CountsSystName).c_str());	 
+
 
 		ExposureTime = (TH1F *) File.Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
 		cout<<("Fluxes/"+Basename+"/"+ExposureName).c_str()<<" "<<ExposureTime<<"; File Name: "<<File.GetName()<<endl;
@@ -183,6 +191,8 @@ class Flux{
 		return true;	}
 	}
 	void Eval_ExposureTime(Variables * vars, TTree * treeDT,FileSaver finalhistos,bool refill);
+
+        void AverageCountsWithOther(FileSaver FileRes, std::string namecounts, std::string nameexposure,float cutoffcorr);
 	
 	void Eval_Flux(float corr_acc=1, float fit_min=0, float fit_max=0,int knots=10,float offset=0.0,bool regularize=false);
 	void Eval_Errors();
@@ -198,10 +208,8 @@ class Flux{
 
 	void ActivateRooUnfolding(){ rooUnfolding=true;}
 
-	void Set_UnfoldingTime(TH2F * avg,std::string timename) { 
-		if(avg)  avg_time=(TH2F*)avg->Clone();
-		time=std::atoi(timename.substr(timename.find("-")+1,10).c_str())-4665600;
-		std::cout<<"Set_UnfoldingPar: "<<time<<" "<<" "<<avg_time<<std::endl;
+	void Set_UnfoldingTime(TH1F * avg) {
+		Unfolding_factor_timeavg = (TH1F *) avg->Clone(); 
 	}
 
 	void Roounfold(int iterations);
@@ -230,7 +238,7 @@ class Flux{
 	TH1F * GetRooUnfoldingFactor() {return RooUnfolding_factor;}
 	TH1F * GetRooUnfError() {return RooUnfolding_Err;}
 	
-
+	void Average_with_another(TH1F* ratio);
 	TH1F * Eval_FluxRatio(Flux * Denominator,std::string name);
 
 };

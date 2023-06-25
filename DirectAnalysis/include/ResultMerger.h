@@ -45,7 +45,7 @@ class ResultMerger{
 
 	std::string Name;
 
-	ResultMerger(FileSaver finalhostos, std::string name, RangeMerger Global, Flux *FluxTOF,  Flux *FluxNaF, Flux *FluxAgl, Particle particle);
+	ResultMerger(FileSaver finalhostos, std::string name, RangeMerger Global, Flux *FluxTOF,  Flux *FluxNaF, Flux *FluxAgl, Particle particle, bool nafpriority=false);
 
 	void SaveResults(FileSaver finalhistos);
 	

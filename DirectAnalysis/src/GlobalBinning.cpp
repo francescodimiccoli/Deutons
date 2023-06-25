@@ -40,6 +40,8 @@ Particle helium4(4*0.9382720813, 2, 4);  // deuterium mass 1876 MeV, Z=1, A=2
 
 Binning ForEffCorr(proton);
 Binning ForEffCorr_D(deuton);
+Binning ForEffCorr_rig(proton);
+Binning ForEffCorr_rig_D(deuton);
 Binning HefragmToF(deuton);
 Binning HefragmNaF(deuton);
 Binning HefragmAgl(deuton);
@@ -163,22 +165,22 @@ void SetBins(){
 	cout<<"**********H.E.**"<<endl;
 	HeRB.Print();
 	cout<<"**TOF**"<<endl;
-	Global_HeRig.GetToFPBins().Print();
-	Global_HeRig.GetToFDBins().Print();
+	Global.GetToFPBins().Print();
+	Global.GetToFDBins().Print();
 	Global_He.GetToFPBins().Print();
 	Global_He.GetToFDBins().Print();
 
 
 	cout<<"**NaF**"<<endl;
-	Global_HeRig.GetNaFPBins().Print();
-	Global_HeRig.GetNaFDBins().Print();
+	Global.GetNaFPBins().Print();
+	Global.GetNaFDBins().Print();
 	Global_He.GetNaFPBins().Print();
 	Global_He.GetNaFDBins().Print();
 
 
 	cout<<"**Agl**"<<endl;
-	Global_HeRig.GetAglPBins().Print();
-	Global_HeRig.GetAglDBins().Print();
+	Global.GetAglPBins().Print();
+	Global.GetAglDBins().Print();
 	Global_He.GetAglPBins().Print();
 	Global_He.GetAglDBins().Print();
 

@@ -87,7 +87,8 @@ TH1F * SimpleShiftHisto(TH1F * Histo, float mu,int steps){
 			if(Histo->GetBinContent(i+1)>0)
 			 Term->SetBinError(i+1,(Histo->GetBinError(i+1)/Histo->GetBinContent(i+1))*Term->GetBinContent(i+1));
 	}
-        return Term;
+       	Term->SetName(Histo->GetName());
+	 return Term;
 
 }
 

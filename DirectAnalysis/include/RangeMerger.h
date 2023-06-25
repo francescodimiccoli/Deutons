@@ -80,8 +80,8 @@ class RangeMerger{
 	int GetAglBinD(int globalbin);
 
 
-	TH1F * MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl);
-	TH1F * MergeSubDResult_D(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl);
+	TH1F * MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl,bool nafpriority=false);
+	TH1F * MergeSubDResult_D(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl,bool nafpriority=false);
 
 	TH1F * MergedRatio(TH1F * Result_D, TH1F * Result_P);	
 	TH1F * MergedRatio_Ekin(TH1F * Result_D, TH1F * Result_P);	

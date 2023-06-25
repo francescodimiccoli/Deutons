@@ -30,6 +30,8 @@ struct TFit {
    TH1F * DataAmbient =0x0;
    TH1F * DataPrim=0x0;	
 
+   TH1F * Residual=0x0;	
+
 
    float wheightP,wheightD,wheightHe,wheightNoise;
    float ContribP,ContribD,ContribHe,ContribNoise;
@@ -74,6 +76,12 @@ struct Systpar{
 	float sigma;
 	float shift;
 
+	float SigmaStart;	
+	float SigmaEnd;	
+	float ShiftStart;	
+	float ShiftEnd;	
+
+
 	float GetSigmaStart();
 	float GetSigmaEnd();
 	float GetShiftStart();
@@ -85,6 +93,10 @@ struct BestChi {
 	int j=0;
 	int z=0;
 	float chimin=0;
+	float centroid_x=0;
+	float centroid_y=0;
+	float centroid_parx=0;
+	float centroid_pary=0;
 	void FindMinimum(TH2F * Histo) {
 			Histo->GetMinimumBin(i,j,z);
 			i--;
@@ -98,7 +110,73 @@ struct BestChi {
 			i=fixed_i;
 			chimin = Histo->GetBinContent(fixed_i+1,j+1);
 			}
+	void FindCentroid(TH2F * histo) {
+		TH2F* Histo = (TH2F*) histo->Clone("histo");
+		float chimin= Histo->GetMinimum();
+		for(int i=0;i<Histo->GetNbinsX();i++){
+			for(int j=0;j<Histo->GetNbinsX();j++){
+			if(Histo->GetBinContent(i+1,j+1)>15*chimin) Histo->SetBinContent(i+1,j+1,15*chimin); 
+			}  
+		}
+		TH1F * Centroid_X = (TH1F*) Histo->ProjectionX();
+		TH1F * Centroid_Y = (TH1F*) Histo->ProjectionY();
+//		FindMinimum(Histo);
+	
+		float binx1 = Centroid_X->GetMinimumBin();
+		float biny1 = Centroid_Y->GetMinimumBin();
+		float parx1 = Centroid_X->GetBinCenter(binx1);
+		float pary1 = Centroid_Y->GetBinCenter(biny1);
+		float wx1 = Centroid_X->GetBinContent(binx1);
+		float wy1 = Centroid_Y->GetBinContent(biny1);
+/*		Centroid_X->SetBinContent(Centroid_X->GetMinimumBin(),1e7);
+		Centroid_Y->SetBinContent(Centroid_Y->GetMinimumBin(),1e7);
+		float binx2 = Centroid_X->GetMinimumBin();
+		float biny2 = Centroid_Y->GetMinimumBin();
+		float parx2 = Centroid_X->GetBinCenter(binx2);
+		float pary2 = Centroid_Y->GetBinCenter(biny2);
+		float wx2 = Centroid_X->GetBinContent(binx2);
+		float wy2 = Centroid_Y->GetBinContent(biny2);
+		Centroid_X->SetBinContent(Centroid_X->GetMinimumBin(),1e7);
+		Centroid_Y->SetBinContent(Centroid_Y->GetMinimumBin(),1e7);
+		float binx3 = Centroid_X->GetMinimumBin();
+		float biny3 = Centroid_Y->GetMinimumBin();
+		float parx3 = Centroid_X->GetBinCenter(binx3);
+		float pary3 = Centroid_Y->GetBinCenter(biny3);
+		float wx3 = Centroid_X->GetBinContent(binx3);
+		float wy3 = Centroid_Y->GetBinContent(biny3);
+		Centroid_X->SetBinContent(Centroid_X->GetMinimumBin(),1e7);
+		Centroid_Y->SetBinContent(Centroid_Y->GetMinimumBin(),1e7);
+		float binx4 = Centroid_X->GetMinimumBin();
+		float biny4 = Centroid_Y->GetMinimumBin();
+		float parx4 = Centroid_X->GetBinCenter(binx4);
+		float pary4 = Centroid_Y->GetBinCenter(biny4);
+		float wx4 = Centroid_X->GetBinContent(binx4);
+		float wy4 = Centroid_Y->GetBinContent(biny4);
+*/
 
+		float binx2 = binx1-1;
+		float biny2 = biny1-1;
+		float parx2 = Centroid_X->GetBinCenter(binx2);
+		float pary2 = Centroid_Y->GetBinCenter(biny2);
+		float wx2 = Centroid_X->GetBinContent(binx2);
+		float wy2 = Centroid_Y->GetBinContent(biny2);
+		float binx3 = binx1+1;
+		float biny3 = biny1+1;
+		float parx3 = Centroid_X->GetBinCenter(binx3);
+		float pary3 = Centroid_Y->GetBinCenter(biny3);
+		float wx3 = Centroid_X->GetBinContent(binx3);
+		float wy3 = Centroid_Y->GetBinContent(biny3);
+		
+		if(wx2==0) wx2=10000;
+		if(wx3==0) wx3=10000;
+
+
+		centroid_x = ((binx1/wx1)+(binx2/wx2)+(binx3/wx3))/(1/wx1+1/wx2+1/wx3);
+		centroid_y = ((biny1/wy1)+(biny2/wy2)+(biny3/wy3))/(1/wy1+1/wy2+1/wy3);
+		centroid_parx = ((parx1/wx1)+(parx2/wx2)+(parx3/wx3))/(1/wx1+1/wx2+1/wx3);
+		centroid_pary = ((pary1/wy1)+(pary2/wy2)+(pary3/wy3))/(1/wy1+1/wy2+1/wy3);
+	
+	}
 
 };
 	
@@ -112,7 +190,8 @@ class TemplateFIT : public Tool{
 
 	private:
 	std::vector<std::vector<std::vector<TFit *>>> fits;
-	std::vector<std::vector<std::vector<TFit *>>> fitsD;
+	std::vector<std::vector<std::vector<TFit *>>> fits_copy;
+	std::vector<TFit *>fits_best;
 	BestChi * BestChiSquare;	
 	std::vector<TH1F *> TransferFunction;
 	double massbins[46]={0.4,0.476667,0.553333,0.63,0.706667,0.783333,0.86,0.936667,1.01333,1.09,1.16667,1.24333,1.32,1.39667,1.47333,1.55,1.62667,1.70333,1.78,1.85667,1.93333,2.01,2.08667,2.16333,2.24,2.31667,2.39333,2.47,2.54667,2.62333,2.7,2.77667,2.85333,2.93,3.00667,3.08333,3.16,3.23667,3.39,3.54333,3.77333,4.00333,4.31,4.61667,4.92333,6};
@@ -123,12 +202,10 @@ class TemplateFIT : public Tool{
 	std::vector<TH2F *> DErrSpread;
 	std::vector<TH1F *> WeightedDCounts;
 	std::vector<TH2F *> TFitChisquare;
-	std::vector<TH2F *> TFitChisquareD;
 
 	TH1F * BetaResolutionDT;
    	TH1F * BetaResolutionMC;
  	TH1F * BetaResolutionMC_tuned;
-
 
 
 	TH2F* Global_ChiSquare;	
@@ -153,9 +230,12 @@ class TemplateFIT : public Tool{
 	TH1F * ProtonCountsPrim;
 	TH1F * DeuteronCountsPrim;
 
-
 	TH1F * BestChiSquares;
 	TH1F * OriginalChiSquares;
+
+	TH1F * BestSigma;
+	TH1F * BestShift;
+
 
 	Binning bins;
         std::string cut;
@@ -167,10 +247,12 @@ class TemplateFIT : public Tool{
         std::string cutHe;
 
 
-
+	TFile * regularizationfile=0x0;
+	TF1 * Reg_sigma=0x0;
+	TF1 * Reg_shift=0x0;
 
 	std::string basename;
-
+	int time=1429054000;
 
 	Systpar systpar;
 	bool fitDisabled=false;
@@ -183,7 +265,8 @@ class TemplateFIT : public Tool{
 	int ActualTime=0;
 	bool IsLocalFit=false;
 	bool IsLocalConstrainedFit=false;
-
+	bool usebestonly=false;
+	bool usecentroid=false;
 
 	float template1scalefactor1=1;
 	float template1scalefactor2=1;
@@ -191,6 +274,18 @@ class TemplateFIT : public Tool{
 
 	bool lowstatDmode=false;
 	bool adjousttail=false;
+	float Mag=0;
+	float Mid=0;
+	float Midbin=0;
+	float Fast=0;
+	std::vector<TFit*> tailFT;
+
+	bool adjoustpeak=false;
+	int iso=0;	
+	float magpeak=0;
+
+	float sharpenfactor=0;
+	bool sharpen=false;
 
 	bool IsExtern = false;
 
@@ -203,10 +298,8 @@ class TemplateFIT : public Tool{
 		
 			for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
-			fitsD.push_back(std::vector<std::vector<TFit *>>());
 			for(int i=0;i<steps;i++){
 				fits[bin].push_back(std::vector<TFit *>());
-				fitsD[bin].push_back(std::vector<TFit *>());
 				for(int j=0;j<steps;j++){
 
 					TFit * fit = new TFit;
@@ -237,20 +330,19 @@ class TemplateFIT : public Tool{
 					fit->DataAmbient=  new TH1F(namedamb.c_str(),namedprim.c_str(),Nbins,Xmin,Xmax);
 					}		
 				fits[bin][i].push_back(fit);
-				fitsD[bin][i].push_back(fit);
 				}
 			}
 		
 			if(IsRich){
-			BetaResolutionDT=new TH1F("BetaResolutionDT","BetaResolutionDT",1000,0.95,1.05);
-			BetaResolutionMC=new TH1F("BetaResolutionMC","BetaResolutionMC",1000,0.95,1.05);
-			BetaResolutionMC_tuned=new TH1F("BetaResolutionMC_tuned","BetaResolutionMC_tuned",1000,0.95,1.05);
+			BetaResolutionDT=new TH1F("BetaResolutionDT","BetaResolutionDT",1000,0.9,1.25);
+			BetaResolutionMC=new TH1F("BetaResolutionMC","BetaResolutionMC",1000,0.9,1.25);
+			BetaResolutionMC_tuned=new TH1F("BetaResolutionMC_tuned","BetaResolutionMC_tuned",1000,0.9,1.25);
 			}
 
 			else{
-			BetaResolutionDT=new TH1F("BetaResolutionDT","BetaResolutionDT",1000,0.8,1.2);
-			BetaResolutionMC=new TH1F("BetaResolutionMC","BetaResolutionMC",1000,0.8,1.2);
-			BetaResolutionMC_tuned=new TH1F("BetaResolutionMC_tuned","BetaResolutionMC_tuned",1000,0.8,1.2);
+			BetaResolutionDT=new TH1F("BetaResolutionDT","BetaResolutionDT",1000,0.7,1.5);
+			BetaResolutionMC=new TH1F("BetaResolutionMC","BetaResolutionMC",1000,0.7,1.5);
+			BetaResolutionMC_tuned=new TH1F("BetaResolutionMC_tuned","BetaResolutionMC_tuned",1000,0.7,1.5);
 			}
 
 
@@ -319,15 +411,8 @@ class TemplateFIT : public Tool{
 
 		cout<<"Templates: "<<Basename<<endl;
 		TFile * filecurrent = File.GetFile();
-		TFile * fileextern = TFile::Open((workdir+"/ExternalTemplatesMC.root").c_str()); 			
 	
 		TFile * file;
-	/*	if(!IsExtern) {
-			if(fileextern)	file = fileextern;
-			else file = filecurrent;
-			}
-		else file = filecurrent;
-*/
 		file = filecurrent;
 
 		BetaResolutionDT = (TH1F*) filecurrent->Get((Basename+"/BetaRes/BetaResolutionDT").c_str());
@@ -337,11 +422,9 @@ class TemplateFIT : public Tool{
 
 		for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
-			fitsD.push_back(std::vector<std::vector<TFit *>>());
 			cout<<"Reading Bin: "<<bin<<endl;
 			for(int i=0;i<steps;i++){
 				fits[bin].push_back(std::vector<TFit *>());
-				fitsD[bin].push_back(std::vector<TFit *>());
 				for(int j=0;j<steps;j++){
 
 					TFit * fit = new TFit;
@@ -379,7 +462,6 @@ class TemplateFIT : public Tool{
 
 
 					fits[bin][i].push_back(fit);
-					fitsD[bin][i].push_back(fit);
 				}
 			}
 		}
@@ -460,6 +542,15 @@ class TemplateFIT : public Tool{
 		highmassconstrain = highmasstailconstrain;
 	}
 
+	void BuildRegularizedTemplates(int bin,float centroid_x,float centroid_y, TH2F* Chi);
+
+	void SetRegularizationFile(TFile* file,std::string timename){
+		regularizationfile=file;
+		time=std::atoi(timename.substr(timename.find("-")+1,10).c_str())-4665600;
+                std::cout<<"Set_Regularization: "<<time<<" "<<regularizationfile<<std::endl;
+	
+	}
+
 	bool ReinitializeHistos(bool refill){return true;}; //dummy
 	void Eval_TransferFunction();
 	TH1F * Eval_MCHeContRatio(std::string name);
@@ -467,7 +558,7 @@ class TemplateFIT : public Tool{
 	float SmearBeta(float Beta,float M_gen, float stepsigma, float stepshift,float R);
 	float SmearBeta_v2(float Beta, float Beta_gen,float  HighRsigmaMC, float HighRsigmaDT, float relativeshift , TF1* MCmodel,  float stepsigma, float stepshift);
 	float SmearBetaRICH(float Beta, float stepsigma, float stepshift);
-	float SmearBetaRICH_v2(float Beta, float Betagen,float HighRsigmaMC,float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
+	float SmearBetaRICH_v2(int kbin, float Beta, float Betagen,float HighRsigmaMC,float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
 	float SmearRRICH_R(float R, float R_gen, float stepsigma, float stepshift);
 
 	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
@@ -491,8 +582,6 @@ class TemplateFIT : public Tool{
 		for(int bin=0;bin<bins.size();bin++) for(int i=0;i<systpar.steps;i++) for(int j=0;j<systpar.steps;j++) {
 			fits[bin][i][j]->fitrangemin=min; 
 			fits[bin][i][j]->fitrangemax=max; 
-			fitsD[bin][i][j]->fitrangemin=min; 
-			fitsD[bin][i][j]->fitrangemax=max; 
 			}
 			return;
 		}
@@ -516,8 +605,9 @@ class TemplateFIT : public Tool{
 	void SetLocalFit(){IsLocalFit = true; }
 	void SetLocalConstrainedFit(){IsLocalConstrainedFit = true; }
 	void SetLowStatDMode(){lowstatDmode=true;}
-	void SetAdjoustTailMode(){adjousttail=true;}
-
+	void SetAdjoustTailMode(float magn,float midpoint, float enmidpoint, float fast){Mag=magn; Mid=midpoint; Midbin=enmidpoint; Fast=fast;  adjousttail=true;}
+	void SetAdjoustPeakMode(int isotope, float mag){iso=isotope; magpeak=mag; adjoustpeak=true;}
+	void SetSharpenMode(float SharpenFactor) {sharpen=true; sharpenfactor=SharpenFactor;}
 
 	TH2F * GetDCountsSpread(int bin)	{ return DCountsSpread[bin];}
 	TH2F * GetChiSquareSpread(int bin)      { return TFitChisquare[bin];}	
@@ -526,6 +616,8 @@ class TemplateFIT : public Tool{
 	void SetAsExtern() {IsExtern=true;}
 	void SetNotWeightedMC() {useMCreweighting=false;}
 	void SetNotTunedMC() {useMCtuning=false;}
+	void SetUseBestOnly() {usebestonly=true;}
+	void UseCentroid() {usecentroid=true;}
 
 
 };

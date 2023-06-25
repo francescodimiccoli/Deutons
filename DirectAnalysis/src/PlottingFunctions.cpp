@@ -44,15 +44,19 @@ TH1D * CreateHistoD(std::string name,  Binning Bins,bool IsEkin){
 
 TH1F * ConvertBinnedHisto(TH1F * histo,std::string name,  Binning Bins,bool IsEkin){
 	TH1F * plot = CreateHisto(name,Bins,IsEkin);
+	cout<<name<<" "<<histo<<" "<<plot<<endl;
+	if(histo>0&&plot>0)
 	for(int bin=0;bin<histo->GetNbinsX();bin++){
 		plot->SetBinContent(bin+1,histo->GetBinContent(bin+1));
 		plot->SetBinError(bin+1,histo->GetBinError(bin+1));
 	}
+	cout<<name<<endl;
 	return plot;
 }
 
 TH1D * ConvertBinnedHisto(TH1D * histo,std::string name,  Binning Bins,bool IsEkin){
 	TH1D * plot = CreateHistoD(name,Bins,IsEkin);
+	if(histo&&plot)
 	for(int bin=0;bin<histo->GetNbinsX();bin++){
 		plot->SetBinContent(bin+1,histo->GetBinContent(bin+1));
 		plot->SetBinError(bin+1,histo->GetBinError(bin+1));

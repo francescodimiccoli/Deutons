@@ -94,7 +94,7 @@ int RangeMerger::GetAglBinD(int globalbin){ return AglD.GetRTOIBin( Global_D.rig
 
 
 
-TH1F * RangeMerger::MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl) {
+TH1F * RangeMerger::MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl,bool nafpriority) {
 		std::cout<<ResultTOF->GetName()<<" "<<ResultNaF<<" "<<ResultAgl<<std::endl;
 			
 		std::cout<<ResultTOF<<" "<<ResultNaF<<" "<<ResultAgl<<std::endl;
@@ -117,20 +117,20 @@ TH1F * RangeMerger::MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 					Merged->SetBinContent(j+1,ResultNaF->GetBinContent(i+1));
 					Merged->SetBinError(j+1,ResultNaF->GetBinError(i+1));
 				}
-				if(GetToFBinP(j)>=0) {
+			/*	if(GetToFBinP(j)>=0) {
 					i=GetToFBinP(j);
 					if(i>=0&&ResultTOF->GetBinContent(i+1)>0){
 						Merged->SetBinContent(j+1,ResultTOF->GetBinContent(i+1));
 						Merged->SetBinError(j+1,ResultTOF->GetBinError(i+1));
 					}
 				}
-				if(GetAglBinP(j)>=0) {
+				if(GetAglBinP(j)>=0&&!nafpriority) {
 					i=GetAglBinP(j);
 					if(i>=0&&ResultAgl->GetBinContent(i+1)>0){
 						Merged->SetBinContent(j+1,ResultAgl->GetBinContent(i+1));
 						Merged->SetBinError(j+1,ResultAgl->GetBinError(i+1));
 					}
-				}
+				}*/
 				continue;
 			}
 			if(GetAglBinP(j)>=0) {
@@ -148,7 +148,7 @@ TH1F * RangeMerger::MergeSubDResult_P(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 }
 
 
-TH1F * RangeMerger::MergeSubDResult_D(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl) {
+TH1F * RangeMerger::MergeSubDResult_D(TH1F * ResultTOF, TH1F * ResultNaF, TH1F * ResultAgl,bool nafpriority) {
 	
 		std::cout<<ResultTOF->GetName()<<" "<<ResultNaF<<" "<<ResultAgl<<std::endl;
 		
@@ -171,14 +171,14 @@ TH1F * RangeMerger::MergeSubDResult_D(TH1F * ResultTOF, TH1F * ResultNaF, TH1F *
 					Merged->SetBinContent(j+1,ResultNaF->GetBinContent(i+1));
 					Merged->SetBinError(j+1,ResultNaF->GetBinError(i+1));
 				}
-				if(GetToFBinD(j)>=0) {
+				/*if(GetToFBinD(j)>=0) {
 					i=GetToFBinD(j);
 					if(i>=0&&ResultTOF->GetBinContent(i+1)>0){
 						Merged->SetBinContent(j+1,ResultTOF->GetBinContent(i+1));
 						Merged->SetBinError(j+1,ResultTOF->GetBinError(i+1));
 					}
 				}
-				if(GetAglBinD(j)>=0) {
+			*/	if(GetAglBinD(j)>=0&&!nafpriority) {
 					i=GetAglBinD(j);
 					if(i>=0&&ResultAgl->GetBinContent(i+1)>0){
 						Merged->SetBinContent(j+1,ResultAgl->GetBinContent(i+1));

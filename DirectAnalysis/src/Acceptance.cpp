@@ -123,14 +123,20 @@ void Acceptance::SaveResults(FileSaver finalhistos){
 	FullSetEff  -> SaveResults(finalhistos);
 	FullSetEff_gen  -> SaveResults(finalhistos);
 	For_Acceptance  -> SaveResults(finalhistos);
- 	if(EffAcceptance)  finalhistos.Add(EffAcceptance ); 
- 	if(EffAcceptanceMC)finalhistos.Add(EffAcceptanceMC);
- 	if(EffAcceptance_gen)  finalhistos.Add(EffAcceptance_gen ); 
- 	if(EffAcceptanceMC_gen)finalhistos.Add(EffAcceptanceMC_gen);
-  	if(EffAcceptanceMC_gen_raw)finalhistos.Add(EffAcceptanceMC_gen_raw);
+  	if(EffAcceptance)  finalhistos.Add(ConvertBinnedHisto(EffAcceptance,"EffAcceptance",bins,false));   
+        if(EffAcceptanceMC)finalhistos.Add(ConvertBinnedHisto(EffAcceptanceMC,"EffAcceptanceMC",bins,false));
+
+ 	if(EffAcceptance_gen)  		finalhistos.Add(EffAcceptance_gen); 
+ 	if(EffAcceptanceMC_gen)		finalhistos.Add(EffAcceptanceMC_gen);
+  	if(EffAcceptanceMC_gen_raw)	finalhistos.Add(EffAcceptanceMC_gen_raw);
+ 
+	if(EffAcceptance_gen)  finalhistos.Add(ConvertBinnedHisto(EffAcceptance_gen,"EffAcceptance_gen",bins,false)); 
+ 	if(EffAcceptanceMC_gen)finalhistos.Add(ConvertBinnedHisto(EffAcceptanceMC_gen,"EffAcceptanceMC_gen",bins,false));
+  	if(EffAcceptanceMC_gen_raw)finalhistos.Add(ConvertBinnedHisto(EffAcceptanceMC_gen_raw,"EffAcceptanceMC_gen_raw",bins,false));
  	if(EffAcceptance_StatErr)  finalhistos.Add(EffAcceptance_StatErr ); 
   	if(EffAcceptance_SystErr)  finalhistos.Add(EffAcceptance_SystErr ); 
  
+
 	if(Migr_rig) finalhistos.Add(Migr_rig);
 	if(Migr_beta) finalhistos.Add(Migr_beta);
 	if(Migr_R) finalhistos.Add(Migr_R);
@@ -171,7 +177,7 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 	Variables * vars = new Variables(timeindex);
 	cout<<"********** For_Acceptance **************"<<endl;
 	long int normalization = FRAC*(For_Acceptance->GetBefore()->GetEntries()/param.compact_event_ratio)/param.Trigrate/1.;  
-	cout<<"Normalization Check:  "<<basename<<" "<<normalization<<" "<<param.TOT_TRIG<<" "<<For_Acceptance->GetBefore()->GetEntries()/param.compact_event_ratio<<" "<<param.TOT_EV<<endl;
+	cout<<"Normalization Check:  "<<basename<<" "<<normalization<<" "<<param.TOT_TRIG<<" "<<For_Acceptance->GetBefore()->GetEntries()/param.compact_event_ratio<<" "<<param.Trigrate<<endl;
 	
 	Histogram Spectrum;
 	Histogram LogNorm;
@@ -183,6 +189,7 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 		Spectrum = vars->reweighter.getTo();
 		LogNorm  = vars->reweighter.getFrom();
 	}
+
 	cout<<"********** Gen. Spectrum **********"<<endl;
 	FullSetEff_gen->GetBefore()->Reset();
 	//total triggers in range
@@ -214,7 +221,11 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 				FullSetEff->GetBefore()->SetBinError(i+1,0);
 		}
 	}
-		
+	cout<<"********** STEP CORR ***********"<<endl;
+	if(Applystep) 
+	for(int i=0;i<bins.size();i++)
+		if((bins.RigTOIBins()[i+1])<rigstep) FullSetEff_gen->GetBefore()->SetBinContent(i+1,FullSetEff_gen->GetBefore()->GetBinContent(i+1)*stepsize);
+
 	cout<<"********** THE DIVISION **********"<<endl;
 
 	FullSetEff_gen->Eval_Efficiency();
@@ -223,22 +234,6 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 	EffAcceptance= (TH1F*)FullSetEff->GetEfficiency()->Clone();
 	EffAcceptanceMC= (TH1F*)FullSetEff->GetEfficiency()->Clone();	
 		
-	if(IsModeled){
-	
-		EffAcceptance->Reset();
-		EffAcceptanceMC->Reset();
-		TF1 * fit_fold = new TF1("fit_fold","pol3",0,50);
-		FullSetEff->GetEfficiency()->Fit("fit_fold","SM");
-		for(int i=0;i<EffAcceptance->GetNbinsX();i++){
-			double x[1] = {EffAcceptance->GetBinCenter(i+1)};
-			double c1[1];
-			(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.683);
-			EffAcceptance->SetBinContent(i+1,fit_fold->Eval(EffAcceptance->GetBinCenter(i+1)));
-			EffAcceptance->SetBinError(i+1,c1[0]);
-		}	
-		EffAcceptanceMC= (TH1F*)EffAcceptance->Clone();
-	}
-
 	EffAcceptance -> Sumw2();
 	EffAcceptance -> Scale(47.78/param.gen_factor);
 	EffAcceptanceMC -> Sumw2();
@@ -255,22 +250,6 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 
 
 
-	if(IsModeled){
-	
-		EffAcceptance_gen->Reset();
-		EffAcceptanceMC_gen->Reset();
-		TF1 * fit_gen = new TF1("fit_gen","pol3",0,50);
-		FullSetEff_gen->GetEfficiency()->Fit("fit_gen","SM");
-		for(int i=0;i<EffAcceptance_gen->GetNbinsX();i++){
-			double x[1] = {EffAcceptance_gen->GetBinCenter(i+1)};
-			double c1[1];
-			(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.683);
-			EffAcceptance_gen->SetBinContent(i+1,fit_gen->Eval(EffAcceptance_gen->GetBinCenter(i+1)));
-			EffAcceptance_gen->SetBinError(i+1,c1[0]);
-		}	
-		EffAcceptanceMC_gen= (TH1F*)EffAcceptance_gen->Clone();
-	}
-
 	EffAcceptance_gen -> Sumw2();
 	EffAcceptance_gen -> Scale(47.78/param.gen_factor);
 	EffAcceptanceMC_gen -> Sumw2();
@@ -285,6 +264,36 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 	EffAcceptanceMC_gen->SetTitle((basename +"_Eff_AcceptanceMC_gen").c_str());
 	EffAcceptanceMC_gen_raw->SetName((basename +"_Eff_AcceptanceMC_gen_raw").c_str());
 	EffAcceptanceMC_gen_raw->SetTitle((basename +"_Eff_AcceptanceMC_gen_raw").c_str());
+
+	if(EffAcceptanceTime){
+
+		TH1F * tmp = ConvertBinnedHisto(EffAcceptanceMC_gen,"tmp",bins,false);
+		for(int i=0;i<EffAcceptance_gen->GetNbinsX();i++){
+			if(  fabs(EffAcceptanceTime->GetBinContent(EffAcceptanceTime->FindBin(tmp->GetBinCenter(i+1)) ) - EffAcceptanceMC_gen->GetBinContent(i+1))<EffAcceptanceMC_gen->GetBinContent(i+1) ){
+			EffAcceptanceMC_gen->SetBinContent(i+1, EffAcceptanceTime->GetBinContent(EffAcceptanceTime->FindBin(tmp->GetBinCenter(i+1)) ) );
+			EffAcceptanceMC_gen->SetBinError(i+1, EffAcceptanceTime->GetBinError(EffAcceptanceTime->FindBin(tmp->GetBinCenter(i+1)) ) );
+			}
+		}
+		EffAcceptance_gen= (TH1F*)EffAcceptanceMC_gen->Clone((basename +"_Eff_Acceptance_gen").c_str());
+	
+	}
+
+	if(IsModeled){
+	
+/*		TF1 * fit_gen = new TF1("fit_gen","pol3",0,50);
+		EffAcceptanceMC_gen->Fit("fit_gen","SMN");
+		for(int i=0;i<EffAcceptanceMC_gen->GetNbinsX();i++){
+			double x[1] = {EffAcceptance_gen->GetBinCenter(i+1)};
+			double c1[1];
+			(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.683);
+			EffAcceptanceMC_gen->SetBinContent(i+1,fit_gen->Eval(EffAcceptanceMC_gen->GetBinCenter(i+1)));
+			EffAcceptanceMC_gen->SetBinError(i+1,c1[0]);
+		}	
+*/
+		
+		EffAcceptanceMC_gen->Smooth();
+		EffAcceptance_gen->Smooth();
+	}
 
 
 	cout<<"*********** Efficiency corrections ************"<<endl;

@@ -52,6 +52,8 @@ class Acceptance : public Tool{
 
 	FileSaver finalhistos;
 
+	TH1F * EffAcceptanceTime  	  =0x0;
+	
 	TH1F * EffAcceptance  	  =0x0;
 	TH1F * EffAcceptanceMC	  =0x0;
 	TH1F * EffAcceptance_gen  =0x0;
@@ -62,6 +64,12 @@ class Acceptance : public Tool{
 	TH1F * EffAcceptance_StatErr  	  =0x0;
 	TH1F * EffAcceptance_SystErr  	  =0x0;
 	
+
+	//STEP correction
+	bool Applystep=false;
+	float rigstep=0;
+	float stepsize=0;
+
 
 	public:
 	//standard constructor
@@ -87,20 +95,23 @@ class Acceptance : public Tool{
 		binsfu=BinsForUnfolding;
 
 		float rig_gen[binsfu.size()+1];
-		float rig_meas[binsfu.size()+1];
-		float beta_meas[binsfu.size()+1];
+		float rig_meas[bins.size()+1];
+		float beta_meas[bins.size()+1];
+		float beta_gen[binsfu.size()+1];
 		float ekin_meas[bins.size()+1];
 		float ekin_true[binsfu.size()+1]; 
 
 		for(int i=0;i<binsfu.size()+1;i++) { 
 			rig_gen[i]=binsfu.RigTOIBins()[i];	
-			rig_meas[i]=binsfu.RigBins()[i];	
-			beta_meas[i]=binsfu.BetaBins()[i];
+			rig_meas[i]=bins.RigBins()[i];	
+			beta_meas[i]=bins.BetaBins()[i];
+			beta_gen[i]=bins.BetaTOIBins()[i];
 			ekin_true[i]=binsfu.EkPerMasTOIBins()[i];
+			ekin_meas[i]=bins.EkPerMasTOIBins()[i];
 
 		}	
 
-		for(int i=0;i<bins.size()+1;i++) ekin_meas[i]=bins.EkPerMasBins()[i];
+//		for(int i=0;i<bins.size()+1;i++) ekin_meas[i]=bins.EkPerMasBins()[i];
 			
 	
 		finalhistos = File;
@@ -119,13 +130,13 @@ class Acceptance : public Tool{
 			int j = slicenormalizex(Migr_beta);
 		}
 		else{
-			Migr_rig = new TH2F((Basename +"_UnfoldingRig").c_str(),(Basename+"rig;R_{GEN}[GV];R_{meas}[GV]").c_str(),binsfu.size(),rig_gen,binsfu.size(),rig_meas);
-			Migr_beta= new TH2F((Basename +"_Unfolding").c_str(),(Basename+"beta;R_{GEN}[GV];#beta_{meas}").c_str(),binsfu.size(),rig_gen,binsfu.size(),beta_meas);
+			Migr_rig = new TH2F((Basename +"_UnfoldingRig").c_str(),(Basename+"rig;R_{GEN}[GV];R_{meas}[GV]").c_str(),binsfu.size(),rig_gen,binsfu.size(),rig_gen);
+			Migr_beta= new TH2F((Basename +"_Unfolding").c_str(),(Basename+"beta;R_{GEN}[GV];#beta_{meas}").c_str(),binsfu.size(),rig_gen,binsfu.size(),beta_gen);
 			Migr_R= new TH2F((Basename +"_R").c_str(),(Basename+"mass;R_{GEN}[GV];R_{meas}").c_str(),200,0,30,200,0,30);
 			Migr_B= new TH2F((Basename +"_B").c_str(),(Basename+"mass;R_{GEN}[GV];#beta_{meas}").c_str(),200,0,30,200,0.8,1.2);
-			Migr_Unf= new TH2F((Basename +"_RooUnfold").c_str(),(Basename+"beta;Ekin_{meas}[GV];#Ekin_{GEN}").c_str(),bins.size(),ekin_meas,binsfu.size(),ekin_true);
+			Migr_Unf= new TH2F((Basename +"_RooUnfold").c_str(),(Basename+"beta;Ekin_{meas}[GV];#Ekin_{GEN}").c_str(),binsfu.size(),ekin_true,binsfu.size(),ekin_true);
 			Migr_True= new TH1F((Basename +"_RooTrue").c_str(),(Basename+"beta;Ekin_{GEN}[GV];").c_str(),binsfu.size(),ekin_true);
-			Migr_Meas= new TH1F((Basename +"_RooMeas").c_str(),(Basename+"beta;Ekin_{meas}[GV];").c_str(),bins.size(),ekin_meas);
+			Migr_Meas= new TH1F((Basename +"_RooMeas").c_str(),(Basename+"beta;Ekin_{meas}[GV];").c_str(),binsfu.size(),ekin_true);
 	
 			}
 	}
@@ -173,6 +184,7 @@ class Acceptance : public Tool{
 	}
 
 
+	void ApplyStepCorr(float R,float step){ Applystep=true; rigstep=R; stepsize=step;}
 
 	void Set_MCPar(float rmin, float rmax, float Gen_factor, std::string Filename, std::string Runlist, float Compact_event_ratio, float Art_ratio=1);
 	void ApplyEfficCorr(EffCorr * Correction,float shift=0);
@@ -189,7 +201,8 @@ class Acceptance : public Tool{
 
 		float rig_gen[binsfu.size()+1];
 		float rig_meas[binsfu.size()+1];
-		float beta_meas[binsfu.size()+1];
+		float beta_meas[bins.size()+1];
+		float beta_gen[binsfu.size()+1];
 		float ekin_meas[bins.size()+1];
 		float ekin_true[binsfu.size()+1]; 
 
@@ -197,19 +210,20 @@ class Acceptance : public Tool{
 			rig_gen[i]=binsfu.RigTOIBins()[i];	
 			rig_meas[i]=binsfu.RigBins()[i];	
 			beta_meas[i]=binsfu.BetaBins()[i];
+			beta_gen[i]=binsfu.BetaTOIBins()[i];
 			ekin_true[i]=binsfu.EkPerMasTOIBins()[i];
 
 		}	
 
 		for(int i=0;i<bins.size()+1;i++) ekin_meas[i]=bins.EkPerMasBins()[i];
 			
-			Migr_rig = new TH2F((basename +"_UnfoldingRig").c_str(),(basename+"rig;R_{GEN}[GV];R_{meas}[GV]").c_str(),binsfu.size(),rig_gen,binsfu.size(),rig_meas);
-			Migr_beta= new TH2F((basename +"_Unfolding").c_str(),(basename+"beta;R_{GEN}[GV];#beta_{meas}").c_str(),binsfu.size(),rig_gen,binsfu.size(),beta_meas);
+			Migr_rig = new TH2F((basename +"_UnfoldingRig").c_str(),(basename+"rig;R_{GEN}[GV];R_{meas}[GV]").c_str(),binsfu.size(),rig_gen,binsfu.size(),rig_gen);
+			Migr_beta= new TH2F((basename +"_Unfolding").c_str(),(basename+"beta;R_{GEN}[GV];#beta_{meas}").c_str(),binsfu.size(),rig_gen,binsfu.size(),beta_gen);
 			Migr_R= new TH2F((basename +"_R").c_str(),(basename+"mass;R_{GEN}[GV];R_{meas}").c_str(),200,0,30,200,0,30);
 			Migr_B= new TH2F((basename +"_B").c_str(),(basename+"mass;R_{GEN}[GV];#beta_{meas}").c_str(),200,0,30,200,0.8,1.2);
-			Migr_Unf= new TH2F((basename +"_RooUnfold").c_str(),(basename+"beta;Ekin_{meas}[GV];#Ekin_{GEN}").c_str(),bins.size(),ekin_meas,binsfu.size(),ekin_true);
+			Migr_Unf= new TH2F((basename +"_RooUnfold").c_str(),(basename+"beta;Ekin_{meas}[GV];#Ekin_{GEN}").c_str(),binsfu.size(),ekin_true,binsfu.size(),ekin_true);
 			Migr_True= new TH1F((basename +"_RooTrue").c_str(),(basename+"beta;Ekin_{GEN}[GV];").c_str(),binsfu.size(),ekin_true);
-			Migr_Meas= new TH1F((basename +"_RooMeas").c_str(),(basename+"beta;Ekin_{meas}[GV];").c_str(),bins.size(),ekin_meas);
+			Migr_Meas= new TH1F((basename +"_RooMeas").c_str(),(basename+"beta;Ekin_{meas}[GV];").c_str(),binsfu.size(),ekin_true);
 	
 } 		
 		if(checkifsomeismissing||refill) allfound=false;
@@ -232,11 +246,11 @@ class Acceptance : public Tool{
 			float Ekin_n = 0.938*((1/sqrt(1-pow(var(vars),2)))-1); 
 			float betagen = GetBetaFromR(vars->Massa_gen,GetGenRigidity(vars),vars->Charge_gen);
 			float Ekin_gen = 0.938*((1/sqrt(1-pow(betagen,2)))-1); 
-			if (Ekin_n>bins.EkPerMasBins()[0]&&Ekin_n<bins.EkPerMasBins()[bins.size()]){ 
+		//	if (Ekin_n>bins.EkPerMasBins()[0]&&Ekin_n<bins.EkPerMasBins()[bins.size()]){ 
 				Migr_True->Fill(Ekin_gen,vars->mcweight);
 				Migr_Unf->Fill(Ekin_n,Ekin_gen,vars->mcweight);	
 				Migr_Meas->Fill(Ekin_n,vars->mcweight);
-			}
+		//	}
 		}		
 
 	}
@@ -263,6 +277,9 @@ class Acceptance : public Tool{
 	TH1F * GetStat_Err(){return EffAcceptance_StatErr;}
 	TH1F * GetSyst_Err(){return EffAcceptance_SystErr;}
 
+	void Set_AcceptanceTime(TH1F * avg) {
+		EffAcceptanceTime = (TH1F *) avg->Clone(); 
+	}
 
 	void SetModeled() {IsModeled=true;}
 

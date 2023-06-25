@@ -39,16 +39,59 @@ TCanvas * DrawTemplateFit(int bin, TH1F * Data, TH1F* BestP,TH1F * BestD,TH1F *B
         gPad->SetTicky();
         gPad->SetGridy();
 
+	TH1F * residuals;
+	if(Residuals->GetEntries()>0) residuals=(TH1F*)Residuals->Clone();
+	else	{
+		residuals=(TH1F*)Data->Clone("residuals");
+		TH1F* model=(TH1F*) BestP->Clone("model");
+		model->Add(BestD);
+		model->Add(BestHe);
+		residuals->Add(model,-1);
+		for(int i=0;i<model->GetNbinsX();i++){
+			if(residuals->GetBinError(i+1)>0&&Data->GetBinContent(i+1)>0 && model->GetBinContent(i+1)>0){
+			residuals->SetBinContent(i+1,residuals->GetBinContent(i+1)/residuals->GetBinError(i+1));
+			residuals->SetBinError(i+1,1);
+			}
+			else{
+			residuals->SetBinContent(i+1,0);
+			residuals->SetBinError(i+1,1);
+			}
+		}
+	}
 
-	Residuals->SetMarkerStyle(8);
-        Residuals->SetMarkerColor(1);
-        //Residuals->GetXaxis()->SetRangeUser(0.5,6.5);
-        Residuals->Draw("P");
+	residuals->SetMarkerStyle(8);
+        residuals->SetMarkerColor(1);
+        //residuals->GetXaxis()->SetRangeUser(0.5,6.5);
+        residuals->Draw("P");
 
 
 	return c1;
 
 }
+
+float EvalFitProbability(float chi,float chimax){
+
+/*	TF1 * CumulativeChiSquare=new TF1("Chi","exp(-x)*x^-0.5",0.001,10000);
+	if(chi>0.01&&chi<10000)
+		return CumulativeChiSquare->Integral(chi,10000);
+	else return 0;
+*/
+	
+	return fabs(chi-chimax)/1000;
+}
+
+float EvalFitProbability(float chi,int x, int y, float centroid_x, float centroid_y, bool usecentroid=false){
+
+/*	TF1 * CumulativeChiSquare=new TF1("Chi","exp(-x)*x^-0.5",0.001,10000);
+	if(chi>0.01&&chi<10000)
+		return CumulativeChiSquare->Integral(chi,10000);
+	else return 0;
+*/
+	float centroidweight=1;
+	if(usecentroid) centroidweight= (pow((pow(x-centroid_x,2)+pow(y-centroid_y,2)),0.5) + 0.025);	
+	return 1/(chi * centroidweight );
+}
+
 
 
 
@@ -158,6 +201,10 @@ TFit* TFit::Clone(){
 
 	fit->fitrangemin = fitrangemin;
 	fit->fitrangemax = fitrangemax;
+	fit->DCounts = DCounts;
+	fit->PCounts = PCounts;
+	fit -> PCountsPrim =PCountsPrim;
+	fit -> DCountsPrim =DCountsPrim;
 
 	return fit;
 }
@@ -166,6 +213,12 @@ TFit* TFit::Clone(){
 
 	
 void TFit::RegularizeTemplateError(){
+/*	for(int i=0;i<Templ_D->GetNbinsX();i++) {
+		Templ_D->SetBinError(i+1,pow(Templ_D->GetBinContent(i+1),0.5));
+	}
+*/	for(int i=0;i<Templ_He->GetNbinsX();i++) {
+		Templ_He->SetBinError(i+1,pow(Templ_He->GetBinContent(i+1),0.5));
+	}
 	float integral = Templ_P->Integral();
 	float mincontent=9999999;
 	for(int i=0;i<Templ_P->GetNbinsX();i++)
@@ -173,12 +226,13 @@ void TFit::RegularizeTemplateError(){
 			mincontent = Templ_P->GetBinContent(i+1);
 	}
 	Templ_P->Scale(1/mincontent);
-	if(Templ_P->Integral(Templ_P->FindBin(3),Templ_P->FindBin(7))>0)
+	float maximum= Templ_P->GetBinCenter(Templ_P->GetMaximumBin());
+	if(Templ_P->Integral(Templ_P->FindBin(3/maximum),Templ_P->FindBin(7/maximum))>0)
 	{
-		float content = Templ_P->Integral(Templ_P->FindBin(3),Templ_P->FindBin(7))/(Templ_P->FindBin(7)-Templ_P->FindBin(3));
+		float content = Templ_P->Integral(Templ_P->FindBin(3/maximum),Templ_P->FindBin(7/maximum))/(Templ_P->FindBin(7/maximum)-Templ_P->FindBin(3/maximum));
 		for(int i=0;i<Templ_P->GetNbinsX();i++) {
-			if(Templ_P->GetBinContent(i+1)==0) Templ_P->SetBinError(i+1,pow(content,0.5));
-			if(Templ_P->GetBinCenter(i+1)>4) Templ_P->SetBinError(i+1,0.5*Templ_P->GetBinError(i+1));
+			if(Templ_P->GetBinContent(i+1)==0||Templ_P->GetBinError(i+1)==0) Templ_P->SetBinError(i+1,pow(content,0.5));
+			Templ_P->SetBinError(i+1,(2/maximum)*Templ_P->GetBinError(i+1));
 		}
 	}
 	Templ_P->Scale(integral/Templ_P->Integral());
@@ -234,19 +288,15 @@ void TemplateFIT::FillEventByEventData(Variables * vars, float (*var) (Variables
 	if(!ApplyCuts("IsData",vars)) return;
 	//cout<<vars->Event<<endl;
 	//vars->PrintCurrentState();
-	if(ApplyCuts((cut+"&RigSafetyCut").c_str(),vars)/*&&kbin>=0*/){
+	if(ApplyCuts((cut+"").c_str(),vars)/*&&kbin>=0*/){
 		if(!(kbin<0)){
-		//if(vars->BetaRICH_new>0) cout<<vars->Event<<" "<<vars->BetaRICH_new<<endl;
-		for(int i=0;i<systpar.steps;i++)
-			for(int j=0;j<systpar.steps;j++){
-				if(fits[kbin][i][j]->Data){
-				if(ApplyCuts(cut,vars)) 	fits[kbin][i][j]->DataAmbient->Fill(var(vars),vars->PrescaleFactor);		
-				if(ApplyCuts((cut+"&"+cutoff).c_str(),vars)) fits[kbin][i][j]->Data->Fill(var(vars),vars->PrescaleFactor);		
-				if(ApplyCuts(cutprimary,vars)) 		     fits[kbin][i][j]->DataPrim->Fill(var(vars),vars->PrescaleFactor);
-					}
-				}
+			//if(vars->BetaRICH_new>0) cout<<vars->Event<<" "<<vars->BetaRICH_new<<endl;
+			if(fits[kbin][0][5]->Data){
+				if(ApplyCuts(cut,vars)) 	fits[kbin][0][5]->DataAmbient->Fill(var(vars),vars->PrescaleFactor);		
+				if(ApplyCuts((cut+"&"+cutoff).c_str(),vars)) fits[kbin][0][5]->Data->Fill(var(vars),vars->PrescaleFactor);		
+				if(ApplyCuts(cutprimary,vars)) 		     fits[kbin][0][5]->DataPrim->Fill(var(vars),vars->PrescaleFactor);
+			}
 		}
-	
 		if(vars->R>50) {
 			if(!isrich)	BetaResolutionDT->Fill(1/vars->Beta);
 			else BetaResolutionDT->Fill(1/vars->BetaRICH_new);
@@ -278,31 +328,19 @@ void TemplateFIT::SimpleExtractPrimaries(){
 } 
  
 float Systpar::GetShiftStart(){
-	if(mode==0) return (-shift/5000)*100;   //delta T.o.F. (%)
-	if(mode==1) return (-shift*1e-4)*0.75*100;   //delta (1/beta) (%)
-	if(mode==2) return (-shift/(10e4*acos(1/(1.2*0.98))))*100; //delta angle (%)			///(1-1/(1.2*cos( ((acos(1/(1.2)) *10e4)+shift)/10e4)))*100; 
-	if(mode==3) return -shift*1e-5*100;     //delta (1/beta) (%)
+	return ShiftStart;
 }
 
 float Systpar::GetShiftEnd(){
-	if(mode==0) return (shift/5000)*100;
-	if(mode==1) return (shift*1e-4)*100;
-	if(mode==2) return (shift/(10e4*acos(1/(1.2*0.98))))*100;
-	if(mode==3) return shift*1e-5*100;
+	return ShiftEnd;
 }
 
 float Systpar::GetSigmaStart(){
-	if(mode==0) return  0;  //sigma T.o.F.(%)
-	if(mode==1) return  ((0.0284/2 - 0.0284/2*sigma/100)/0.0318)*100; //delta (sigma(1/beta)) (%)
-	if(mode==2) return  0; //delta (sigma angle) %
-	if(mode==3) return  ((1.28694e-03*(1-sigma/100.) - 1.36634e-03)/1.36634e-03)*100; //delta (sigma(1/beta)) (%)
+	return SigmaStart;
 }
 
 float Systpar::GetSigmaEnd(){
-	if(mode==0) return ((2*sigma/5000)/0.0318)*100;
-	if(mode==1) return ((0.0284/2 + 0.0284/2*sigma/100)/0.0318)*100;
-	if(mode==2) return /*sigma angolo da prop. errori di 0.3% di errore su beta*/ (2*sigma/(100000*1/sqrt(1-pow(1/(1.2*0.98),2))*((1/1.2)/(0.98*0.98))*0.003))*100  ;
-	if(mode==3) return ((1.28694e-03*(1+sigma/100.)-1.36634e-03)/1.36634e-03)*100;
+	return SigmaEnd;
 }
 
 
@@ -310,26 +348,109 @@ float TemplateFIT::SmearBetaRICH(float Beta, float stepsigma, float stepshift){
 }
 
 
+void TemplateFIT::BuildRegularizedTemplates(int bin,float centroid_x,float centroid_y, TH2F* Chi){
+/*	if(regularizationfile>0){
+		Reg_sigma = (TF1*)regularizationfile->Get(("Parameters/"+basename+"/Sigma/Model_"+to_string(bin)).c_str());	
+		Reg_shift = (TF1*)regularizationfile->Get(("Parameters/"+basename+"/Shift/Model_"+to_string(bin)).c_str());	
+		cout<<"********* Regularization functions: "<<("Parameters/"+basename+"/Sigma/Model_"+to_string(bin)).c_str()<<" "<<Reg_sigma<<" "<<Reg_shift<<"**********"<<endl;
 
-float TemplateFIT::SmearBetaRICH_v2(float Beta, float Beta_gen, float HighRsigmaMC, float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift){
+		if(Reg_sigma>0){
+			cout<< "****************************+ REGULARIZATION PARAMETERS *****************************" <<endl;
+			cout<<"Sigma: "<<Reg_sigma->Eval(time)<<endl;
+			cout<<"Shift: "<<Reg_shift->Eval(time)<<endl;
+			cout<< "*************************************************************************************" <<endl;
+
+			int sigma1= 	Reg_sigma->Eval(time);
+			int sigma2= 	Reg_sigma->Eval(time)+1;
+			int shift1= 	Reg_shift->Eval(time);
+			int shift2= 	Reg_shift->Eval(time)+1;
+		}
+	}
+*/
+	TH1F * TemplP = (TH1F*) fits[bin][0][5]->Templ_P->Clone("fitbest_P");
+	TH1F * TemplD = (TH1F*) fits[bin][0][5]->Templ_D->Clone("fitbest_D"); 
+	TemplP->Reset();
+
+	float w=0;
+	float wl=0;
+	float x,y;
+	for(int sigma=0;sigma<systpar.steps;sigma++)
+		for(int shift=0;shift<systpar.steps;shift++)
+		if(fits[bin][sigma][shift]->DCounts<1.5*fits_best[bin]->DCounts && fits[bin][sigma][shift]->DCounts>0.6*fits_best[bin]->DCounts)
+		{
+			x=sigma+1;y=shift+1;
+			wl=EvalFitProbability(Chi->GetBinContent(sigma+1,shift+1),x,y,centroid_x,centroid_y,(usecentroid));
+			w+=EvalFitProbability(Chi->GetBinContent(sigma+1,shift+1),x,y,centroid_x,centroid_y,(usecentroid));
+			TemplP->Add(fits[bin][sigma][shift]->Templ_P,wl);
+		}
+	TemplP->Scale(1/w);
+	for(int i=0;i<fits[bin][0][5]->Templ_P->GetNbinsX();i++) TemplP->SetBinError(i+1,1.3*fits[bin][0][5]->Templ_P->GetBinError(i+1));
+
+	TemplD->Reset();
+	w=0;
+	for(int sigma=0;sigma<systpar.steps;sigma++)
+		for(int shift=0;shift<systpar.steps;shift++)
+		if(fits[bin][sigma][shift]->DCounts<1.5*fits_best[bin]->DCounts && fits[bin][sigma][shift]->DCounts>0.6*fits_best[bin]->DCounts)
+		{
+			x=sigma+1;y=shift+1;
+			wl=EvalFitProbability(Chi->GetBinContent(sigma+1,shift+1),x,y,centroid_x,centroid_y,(usecentroid&&(bin>=11)));
+			w+=EvalFitProbability(Chi->GetBinContent(sigma+1,shift+1),x,y,centroid_x,centroid_y,(usecentroid&&(bin>=11)));
+			TemplD->Add(fits[bin][sigma][shift]->Templ_D,wl);
+		}
+	TemplD->Scale(1/w);
+//	for(int i=0;i<fits[bin][0][5]->Templ_D->GetNbinsX();i++) TemplD->SetBinError(i+1,fits[bin][0][5]->Templ_D->GetBinError(i+1));
+	
+	fits_best[bin]->Templ_P = (TH1F*) TemplP->Clone();
+	fits_best[bin]->Templ_D = (TH1F*) TemplD->Clone();
+//	fits_best[bin]->Templ_He = (TH1F*) TemplHe->Clone();
+	fits_best[bin] -> DCounts = fits_best[bin] ->  Templ_D -> Integral();
+	fits_best[bin] -> PCounts = fits_best[bin] ->  Templ_P -> Integral();
+
+	if(fits_best[bin]-> Templ_He->Integral()>0) fits_best[bin] -> TCounts = fits_best[bin] ->  Templ_He -> Integral();
+	else fits_best[bin] -> TCounts = 0;
+
+
+
+	return;
+}
+
+
+float TemplateFIT::SmearBetaRICH_v2(int kbin, float Beta, float Beta_gen, float HighRsigmaMC, float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift){
 	if(stepsigma==0 && stepshift==5) return Beta;
 	float sigmaMC=HighRsigmaMC;
 	float sigmaDT=HighRsigmaDT;
 
+	
+	if(kbin<=0) kbin =0;
+	
 	float delta = (1/Beta - 1/Beta_gen);
 
-/*	float sigma = (sigmaDT)*(1-systpar.sigma/100.); 
-	sigma+=(float)((2*fabs(sigmaDT-sigma)/(float)systpar.steps)*stepsigma);
+	/*	float sigma = (sigmaDT)*(1-systpar.sigma/100.); 
+		sigma+=(float)((2*fabs(sigmaDT-sigma)/(float)systpar.steps)*stepsigma);
 
-	float shift = -relativeshift - systpar.shift*1e-5 + (2*systpar.shift*1e-5/(float)systpar.steps)*stepshift;		
-*/
+		float shift = -relativeshift - systpar.shift*1e-5 + (2*systpar.shift*1e-5/(float)systpar.steps)*stepshift;		
+		*/
 
-	float shiftstart = -relativeshift - 5*fabs(relativeshift);
-	float sigmastart = sigmaDT - fabs(sigmaDT-sigmaMC);
-	float shift = shiftstart + 10*fabs(relativeshift)/(systpar.steps)*stepshift; 
-	float sigma = sigmastart + 2*fabs(sigmaDT-sigmaMC)/(systpar.steps)*(stepsigma+0.5);
+	float shift; 
+	float sigma; 
+	
+
+	float shiftstart = -relativeshift - 0.0004*sigmaDT/0.00114; //-relativeshift - 5*fabs(relativeshift);
+	float sigmastart = sigmaDT - fabs(sigmaDT-0.8*sigmaDT);
 
 
+	if(stepsigma==-1 && stepshift==-1){
+		shift= -relativeshift;
+		sigma=sigmaDT;
+
+	} 
+
+	else{
+	//	shift = shiftstart+2*(fabs(relativeshift-shiftstart)/systpar.steps)*stepshift;  //shiftstart + 10*fabs(relativeshift)/(systpar.steps)*stepshift; 
+		sigma = sigmastart+2*(fabs(sigmaDT-sigmastart)/systpar.steps)*stepsigma;//sigmastart + 2*fabs(sigmaDT-sigmaMC)/(systpar.steps)*(stepsigma+0.5);
+		shift= -relativeshift;
+
+	}
 
 	return 1/(1/Beta_gen +(sigma/sigmaMC)*(delta + shift) );
 }
@@ -349,20 +470,35 @@ float TemplateFIT::SmearBeta_v2(float Beta, float Beta_gen,float  HighRsigmaMC, 
 
 	float beta_inv = 1/Beta;
 	float sigmasmear = pow(pow(HighRsigmaDT,2)-pow(HighRsigmaMC,2),0.5);
+
 /*	float shiftstart=-systpar.shift;
 	float sigmastart = sigmasmear - sigmasmear*systpar.sigma/100;
 	float sigma = sigmastart +  ((2*systpar.sigma/(systpar.steps))*stepsigma)/100*sigmasmear;
 	float shift = -relativeshift - (systpar.shift*1e-5 + (2*systpar.shift*1e-5/(float)systpar.steps)*stepshift);	
 */
-	float shiftstart = -relativeshift - 10*fabs(relativeshift);
-	float sigmastart = sigmasmear - 0.5*sigmasmear;
-	float shift = shiftstart + 20*fabs(relativeshift)/(systpar.steps)*stepshift; 
-	float sigma = sigmastart + sigmasmear/(systpar.steps)*stepsigma;
 
+	float shift;
+        float sigma;
+
+	float shiftstart = -relativeshift - 4*fabs(relativeshift);
+	float sigmastart = 0;
+
+
+	if(stepsigma==-1 && stepshift==-1){
+		shift = -relativeshift;
+		sigma = sigmasmear;
+	}
+
+	else{
+		shift = -relativeshift; //shiftstart + 10*fabs(relativeshift)/(systpar.steps)*stepshift; 
+		sigma = sigmastart + 1.2*fabs(sigmasmear-sigmastart)/(systpar.steps)*stepsigma;
+	}
+	
 	float norm = Rand->Rndm();
 	
 	float MCsigma = MCmodel->Eval(1/Beta_gen);
-	
+
+
 	if (norm<=0.6667) {
 		beta_inv = beta_inv + shift + Rand->Gaus(0,sigma);
 		}
@@ -375,6 +511,7 @@ float TemplateFIT::SmearBeta_v2(float Beta, float Beta_gen,float  HighRsigmaMC, 
 		beta_inv = beta_inv + shift + Rand->Gaus(0.02747,sigma3);
 		}
 	return 1/(beta_inv);
+
 		
 }
 
@@ -388,101 +525,99 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 	int imin,imax,jmin,jmax;
 	imin=0; jmin=0; imax=systpar.steps; jmax=systpar.steps;
 	if(IsExtern) {imin=0; jmin=5; imax=1; jmax=6;}
-	
-	for(int i=imin;i<imax;i++)
-			for(int j=jmin;j<jmax;j++){
-		
-	
-				float betasmear=0;
-				float Rsmear = vars->R;
-				
-				if(!isrich){ 	
-					if(systpar.mode==1) {
-						float ss,si1,si2;
-						if(useMCtuning) {	
-							if(vars->Massa_gen<2)	{ss=-0.0008; si1=0.0329; si2=0.0428; }
-							else  {ss=0.0005; si1=0.01657; si2=0.01934; }
-						}
-						betasmear = SmearBeta_v2(vars->Beta,GetBetaGen_cpct(vars),si1,si2,ss,MCmodel,(float)i,(float)j);   
-					}
+	int kbin=0;
 
+
+	for(int i=0;i<systpar.steps;i++)
+	    for(int j=0;j<systpar.steps;j++)
+		{
+	
+			
+		if(!((i==0&&j==5)||(j==5))) continue;
+
+		float betasmear=0;
+		float Rsmear = vars->R;
+
+		if(!isrich){ 	
+			if(systpar.mode==1) {
+				float ss,si1,si2;
+				if(useMCtuning) {	
+					if(vars->Massa_gen<2)	{ss=-0.0024; si1=0.0329; si2=0.0428; }
+					else  {ss=0.0005; si1=0.01657; si2=0.01934; }
 				}
-				else {
-					if(ApplyCuts("IsFromNaF",vars))	 {
-						if(systpar.mode==3) { 
-							float ss,si1,si2;
-							if(useMCtuning) {	
-								if(vars->Massa_gen<2)	{ss=0.00002; si1=0.00334; si2=0.00325; }
-								else  {ss=0.00005; si1=0.00213; si2=0.00233; }
-							}
+				betasmear = SmearBeta_v2(vars->Beta,GetBetaGen_cpct(vars),si1,si2,ss,MCmodel,i,j);   
+			}
 
-							betasmear = SmearBetaRICH_v2(vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,(float)i,(float)j); 
-							Rsmear = vars->R;
-						}
+		}
+		else {
+			if(ApplyCuts("IsFromNaF",vars))	 {
+				if(systpar.mode==3) { 
+					float ss,si1,si2;
+					if(useMCtuning) {	
+						if(vars->Massa_gen<2)	{ss=0.00002; si1=0.00334; si2=0.00325; }
+						else  {ss=0.00005; si1=0.00213; si2=0.00233; }
 					}
-					if(ApplyCuts("IsFromAgl",vars))  {
-						if(systpar.mode==3) {
-							float ss,si1,si2;
-							if(useMCtuning) {	
-								if(vars->Massa_gen<2)	{ss=0.00008; si1=0.001236; si2=0.00114; }
-								else  {ss=-0.0001; si1=0.000733; si2=0.000760; }
-							}
-							betasmear = SmearBetaRICH_v2(vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,(float)i,(float)j); 
-							Rsmear = vars->R;
-						}
-					}
-				}
-	
-				float mctotalweight =1;
-				mctotalweight = vars->mcweight;
-				if(useMCreweighting){
-					          mctotalweight = vars->mcweight 
-						  // * vars->GetCutoffCleaningWeight(GetRFromBeta(bins.getParticle().getMass(),betasmear),GetGenMomentum(vars),BetacutoffCut) 
-						  // * vars->GetTimeDepWeight(vars->R)
-						   ;
- 				}
-				int kbin;
-	
-				if(!IsFitNoise){
-				   if(bins.IsUsingBetaEdges()){	 
-					kbin = bins.GetBin(betasmear);
-					float scaledR;
-					float mass;
-					float rigcut;
-					if(vars->Massa_gen<2) rigcut=0.55;
-					else rigcut=1.05; 
-					scaledR=Rsmear*template1scalefactor1;
-					mass = scaledR/betasmear * pow((1-pow(betasmear,2)),0.5);
-					if(ApplyCuts(cutP,vars)&&kbin>=0&&scaledR>=rigcut) { 
-				//		if(i==0&&j==5) cout<<vars->R<<" "<<vars->RInner<<" "<<betasmear<<" "<<vars->Event<<endl;
 
-					 fits[kbin][i][j]->Templ_P->Fill(mass,mctotalweight);}
-					scaledR=Rsmear*template1scalefactor2;
-					mass = scaledR/betasmear * pow((1-pow(betasmear,2)),0.5);
-					if(ApplyCuts(cutD,vars)&&kbin>=0&&scaledR>=rigcut)  {fits[kbin][i][j]->Templ_D->Fill(mass,mctotalweight);}
-					scaledR=Rsmear*template1scalefactor3;
-					mass = scaledR/betasmear * pow((1-pow(betasmear,2)),0.5);
-					if(ApplyCuts(cutHe,vars)&&kbin>=0&&scaledR>=rigcut) fits[kbin][i][j]->Templ_He->Fill(mass,mctotalweight);
-				   }
-				   else {
-					   kbin = bins.GetBin(discr_var(vars));
-					if(ApplyCuts(cutP,vars)&&kbin>=0)   fits[kbin][i][j]->Templ_P->Fill(betasmear,mctotalweight);
-                                        if(ApplyCuts((cutD).c_str(),vars)&&kbin>=0)   fits[kbin][i][j]->Templ_D->Fill(betasmear,mctotalweight);
-                                        if(ApplyCuts(cutHe,vars)&&kbin>=0) fits[kbin][i][j]->Templ_He->Fill(betasmear,mctotalweight);
-
-				   }	
-
+					betasmear = SmearBetaRICH_v2(kbin,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,i,j); 
+					Rsmear = vars->R;
 				}
 			}
+			if(ApplyCuts("IsFromAgl",vars))  {
+				if(systpar.mode==3) {
+					float ss,si1,si2;
+					if(useMCtuning) {	
+						if(vars->Massa_gen<2)	{ss=0.00008; si1=0.001236; si2=0.00114; }
+						else  {ss=-0.0001; si1=0.000733; si2=0.000760; }
+					}
+					betasmear = SmearBetaRICH_v2(kbin,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,i,j); 
+					Rsmear = vars->R;
+				}
+			}
+		}
+
+		float mctotalweight =1;
+		mctotalweight = vars->mcweight;
+
+		if(useMCreweighting){
+			mctotalweight = vars->mcweight;
+			//* vars->GetCutoffCleaningWeight(GetRFromBeta(bins.getParticle().getMass(),betasmear),GetGenMomentum(vars),BetacutoffCut) 
+			if(!isrich) mctotalweight*=vars->GetTimeDepWeight(vars->R);
+		}
+		if(!IsFitNoise){
+			if(bins.IsUsingBetaEdges()){	 
+				kbin = bins.GetBin(betasmear);
+				float scaledR;
+				float mass;
+				float rigcut=0;
+				scaledR=Rsmear*template1scalefactor1;
+				mass = scaledR/betasmear * pow((1-pow(betasmear,2)),0.5);
+				if(ApplyCuts(cutP,vars)&&kbin>=0&&scaledR>=rigcut) {fits[kbin][i][5]->Templ_P->Fill(mass,mctotalweight);}
+				scaledR=Rsmear*template1scalefactor2;
+				mass = scaledR/betasmear * pow((1-pow(betasmear,2)),0.5);
+				if(ApplyCuts(cutD,vars)&&kbin>=0&&scaledR>=rigcut)  {fits[kbin][i][5]->Templ_D->Fill(mass,mctotalweight);}
+				scaledR=Rsmear*template1scalefactor3;
+				mass = scaledR/betasmear * pow((1-pow(betasmear,2)),0.5);
+				if(ApplyCuts(cutHe,vars)&&kbin>=0&&scaledR>=rigcut) fits[kbin][i][5]->Templ_He->Fill(mass,mctotalweight);
+			}
+			else {
+				kbin = bins.GetBin(discr_var(vars));
+				if(ApplyCuts(cutP,vars)&&kbin>=0)   fits[kbin][i][5]->Templ_P->Fill(betasmear,mctotalweight);
+				if(ApplyCuts((cutD).c_str(),vars)&&kbin>=0)   fits[kbin][i][5]->Templ_D->Fill(betasmear,mctotalweight);
+				if(ApplyCuts(cutHe,vars)&&kbin>=0) fits[kbin][i][5]->Templ_He->Fill(betasmear,mctotalweight);
+
+			}	
+
+		}
+		}
 	}
 	if(ApplyCuts(cutP,vars))
 		if(vars->R>50) {
 			if(!isrich)	{ 
 				BetaResolutionMC->Fill(1/vars->Beta);
 				float ss,si1,si2;
-				if(vars->Massa_gen<2)	{ss=-0.0008; si1=0.0329; si2=0.0428; }
+				if(vars->Massa_gen<2)	{ss=-0.0024; si1=0.0329; si2=0.0422; }
 				else  {ss=0.0005; si1=0.01657; si2=0.01934; }
-				BetaResolutionMC_tuned->Fill(1/ SmearBeta_v2(vars->Beta,GetBetaGen_cpct(vars),si1,si2,ss,MCmodel,systpar.steps/2.,systpar.steps/2.)   );
+				BetaResolutionMC_tuned->Fill(1/ SmearBeta_v2(vars->Beta,GetBetaGen_cpct(vars),si1,si2,ss,MCmodel,-1,-1)   );
 
 			}
 			else {
@@ -491,14 +626,14 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 					float ss,si1,si2;
 					if(vars->Massa_gen<2)	{ss=0.00002; si1=0.00334; si2=0.00325; }
 					else  {ss=0.00005; si1=0.00213; si2=0.00233; }
-					BetaResolutionMC_tuned->Fill(1/SmearBetaRICH_v2(vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,systpar.steps/2.,systpar.steps/2.));
+					BetaResolutionMC_tuned->Fill(1/SmearBetaRICH_v2(10,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,-1,-1));
 				}
 
 				if(ApplyCuts("IsFromAgl",vars))  {
 					float ss,si1,si2;
 					if(vars->Massa_gen<2)	{ss=0.00008; si1=0.001236; si2=0.00114; }
 					else  {ss=-0.0001; si1=0.000733; si2=0.000760; }
-					BetaResolutionMC_tuned->Fill(1/SmearBetaRICH_v2(vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,systpar.steps/2.,systpar.steps/2.));
+					BetaResolutionMC_tuned->Fill(1/SmearBetaRICH_v2(10,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,-1,-1));
 				}
 			}
 		}
@@ -565,11 +700,15 @@ void TemplateFIT::Save(){
 
 void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 
+	// Best è il migliore regolarizzato
+	// Best2 + il migliore locale
+	
 	cout<<"Saving best"<<endl;	
 	//save best
 	for(int bin=0;bin<bins.size();bin++){
 		TH1F * OriginalP=(TH1F*)fits[bin][0][5]->Templ_P->Clone();
 		TH1F* BestP;
+		TH1F* BestP2;
 		if(!IsLocalFit&&!IsLocalConstrainedFit) {
 				BestP=(TH1F*)fits[bin][BestChiSquare->i][BestChiSquare->j]->Templ_P->Clone();
 				BestP->SetName("Best #chi^{2}: "/* + to_string(BestChiSquare->i) + "_" + to_string(BestChiSquare->j)).c_str()*/);
@@ -578,8 +717,10 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 			BestChi * bestlocal = new BestChi();
 			if(IsLocalConstrainedFit)  bestlocal->FindMinimum(TFitChisquare[bin],BestChiSquare->i);
 			else bestlocal->FindMinimum(TFitChisquare[bin]);
-			BestP=(TH1F*)fits[bin][bestlocal->i][bestlocal->j]->Templ_P->Clone();	
-			BestP->SetName(("Best #chi^{2}: " + to_string(bestlocal->i) + "_" + to_string(bestlocal->j)).c_str());
+			BestP=(TH1F*)fits_best[bin]->Templ_P->Clone();	
+			BestP2=(TH1F*)fits[bin][bestlocal->i][bestlocal->j]->Templ_P->Clone();	
+			BestP->SetName(("Reg #chi^{2}: " + to_string(bestlocal->i) + "_" + to_string(bestlocal->j)).c_str());
+			BestP2->SetName("Best #chi^{2}: ");
 
 		}
 		TH1F * BestPPrim =(TH1F*)fits[bin][BestChiSquare->i][BestChiSquare->j]->Templ_PPrim->Clone();
@@ -587,32 +728,39 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 		BestPPrim->SetName("Best #chi^{2} Overcutoff Proton MC ");
 		finalhistos.Add(OriginalP);
 		finalhistos.Add(BestP);
+		finalhistos.Add(BestP2);
 		finalhistos.Add(BestPPrim);
 		finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesP/Bin"+to_string(bin)).c_str());
 		TH1F * OriginalD=(TH1F*)fits[bin][0][5]->Templ_D->Clone();
 		TH1F * BestD;
+		TH1F * BestD2;
 		if(!IsLocalFit&!IsLocalConstrainedFit){
-				 BestD=(TH1F*)fits[bin][BestChiSquare->i][BestChiSquare->j]->Templ_D->Clone();
-				BestD->SetName("Best #chi^{2}: "/* + to_string(BestChiSquare->i) + "_" + to_string(BestChiSquare->j)).c_str()*/);
+				 BestD=(TH1F*)fits_best[bin]->Templ_D->Clone();
+				 BestD2=(TH1F*)fits[bin][BestChiSquare->i][BestChiSquare->j]->Templ_D->Clone();
+			//	BestD->SetName("Best #chi^{2}: "/* + to_string(BestChiSquare->i) + "_" + to_string(BestChiSquare->j)).c_str()*/);
+				BestD2->SetName("Best #chi^{2}: "/* + to_string(BestChiSquare->i) + "_" + to_string(BestChiSquare->j)).c_str()*/);
 			}
 		else {
 			BestChi * bestlocal = new BestChi();
-			if(IsLocalConstrainedFit)  bestlocal->FindMinimum(TFitChisquareD[bin],BestChiSquare->i);
-			else bestlocal->FindMinimum(TFitChisquareD[bin]);
-			BestD=(TH1F*)fitsD[bin][bestlocal->i][bestlocal->j]->Templ_D->Clone();	
-			BestD->SetName(("Best #chi^{2}: " + to_string(bestlocal->i) + "_" + to_string(bestlocal->j)).c_str());
+			if(IsLocalConstrainedFit)  bestlocal->FindMinimum(TFitChisquare[bin],BestChiSquare->i);
+			else bestlocal->FindMinimum(TFitChisquare[bin]);
+			BestD=(TH1F*)fits_best[bin]->Templ_D->Clone();	
+			BestD2=(TH1F*)fits[bin][bestlocal->i][bestlocal->j]->Templ_D->Clone();	
+			BestD->SetName(("Reg #chi^{2}: " + to_string(bestlocal->i) + "_" + to_string(bestlocal->j)).c_str());
+			BestD2->SetName("Best #chi^{2}: "/* + to_string(BestChiSquare->i) + "_" + to_string(BestChiSquare->j)).c_str()*/);
 		}
 		TH1F * BestDPrim =(TH1F*)fits[bin][BestChiSquare->i][BestChiSquare->j]->Templ_DPrim->Clone();
 		OriginalD->SetName("Original Deuton MC ");
 		BestDPrim->SetName("Best #chi^{2} Overcutoff Deuton MC ");
 		finalhistos.Add(OriginalD);
 		finalhistos.Add(BestD);
+		finalhistos.Add(BestD2);
 		finalhistos.Add(BestDPrim);
 		finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
 		
 		TH1F * BestHe=0x0;
 		TH1F * OriginalHe=(TH1F*)fits[bin][0][5]->Templ_He->Clone();
-		BestHe=(TH1F*)fits[bin][BestChiSquare->i][BestChiSquare->j]->Templ_He->Clone();
+		BestHe=(TH1F*)fits_best[bin]->Templ_He->Clone();
 		TH1F * BestHePrim =(TH1F*)fits[bin][BestChiSquare->i][BestChiSquare->j]->Templ_HePrim->Clone();
 		OriginalHe->SetName("Original Tritium MC ");
 		BestHe->SetName("Best #chi^{2} Tritium MC ");
@@ -621,6 +769,14 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 		finalhistos.Add(BestHe);
 		finalhistos.Add(BestHePrim);
 		finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
+
+		if(IsFitNoise){
+			TH1F * BestNoise=0x0;
+			BestNoise=(TH1F*)fits_best[bin]->Templ_Noise->Clone();
+			BestNoise->SetName("Best Noise ");
+			finalhistos.Add(BestNoise);
+			finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesNoise/Bin"+to_string(bin)).c_str());
+		}
 
 		TH1F * Residuals = (TH1F*) fits[bin][0][5]->Data->Clone(("Residuals " + to_string(bin)).c_str());
 		TH1F * model = (TH1F*) BestP->Clone("model");
@@ -658,17 +814,19 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 		finalhistos.Add(ResidualGraph);
 		finalhistos.writeObjsInFolder((basename+"/Fit Results/Residuals").c_str());
 	
+	//	finalhistos.Add(DrawTemplateFit(bin,fits[bin][0][5]->Data,fits[bin][0][5]->Templ_P,fits[bin][0][5]->Templ_D,BestHe,Residuals));
 		finalhistos.Add(DrawTemplateFit(bin,fits[bin][0][5]->Data,BestP,BestD,BestHe,Residuals));
 		finalhistos.writeObjsInFolder((basename+"/Fit Results/DrawFits").c_str());
 
 	}
 
+	if(adjousttail) {
+		TH1F* dummy=new TH1F();
+		for(int i=0;i<tailFT.size();i++)
+			finalhistos.Add(DrawTemplateFit(i,tailFT[i]->Data,tailFT[i]->Templ_P,tailFT[i]->Templ_D,tailFT[i]->Templ_He,dummy));
+			finalhistos.writeObjsInFolder((basename+"/Fit Results/TailFT").c_str());
 
-	
-
-
-
-
+	}
 	cout<<"Saving data"<<endl;	
 	
 	//save data
@@ -679,22 +837,28 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/Data/Bin"+to_string(bin)).c_str());	
 	}
 	////////////////////////////////////////////////////////	
-	cout<<"Saving all"<<endl;	
-///*
+/*	cout<<"Saving all"<<endl;	
+
 	//save all
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==3)) if(fits[bin][i][j]->Templ_P) finalhistos.Add(fits[bin][i][j]->Templ_P);
-			}	
+				if(fits[bin][i][j]->Templ_P) {
+					fits[bin][i][j]->Templ_P->SetName(("P_"+to_string(bin)+"_"+to_string(i)+"_"+to_string(j)).c_str());
+					finalhistos.Add(fits[bin][i][j]->Templ_P);
+				}
+			}
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesP/Bin"+to_string(bin)).c_str());
 	}
 
 	for(int bin=0;bin<bins.size();bin++){
                 for(int i=0;i<systpar.steps;i++)
                         for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==3))if(fits[bin][i][j]->Templ_D) finalhistos.Add(fits[bin][i][j]->Templ_D);
-				}
+				if(fits[bin][i][j]->Templ_D) {
+					fits[bin][i][j]->Templ_D->SetName(("D_"+to_string(bin)+"_"+to_string(i)+"_"+to_string(j)).c_str());
+					finalhistos.Add(fits[bin][i][j]->Templ_D);
+					}
+				}	
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/Bin"+to_string(bin)).c_str());
 	}
 	
@@ -705,24 +869,15 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 				}
 	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesHe/Bin"+to_string(bin)).c_str());
 	}
-//*/
-	for(int bin=0;bin<bins.size();bin++){
-                for(int i=0;i<systpar.steps;i++)
-                        for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==3)) if(fitsD[bin][i][j]->Templ_P) finalhistos.Add(fitsD[bin][i][j]->Templ_P);
-			}	
-	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesP/BinD"+to_string(bin)).c_str());
-	}
-
-	for(int bin=0;bin<bins.size();bin++){
-                for(int i=0;i<systpar.steps;i++)
-                        for(int j=0;j<systpar.steps;j++){
-				if(!(i==0&&i==3))if(fitsD[bin][i][j]->Templ_D) finalhistos.Add(fitsD[bin][i][j]->Templ_D);
-				}
-	finalhistos.writeObjsInFolder((basename+"/Fit Results/ScaledTemplatesD/BinD"+to_string(bin)).c_str());
-	}
 	
-
+	for(int bin=0;bin<bins.size();bin++){
+                for(int i=0;i<systpar.steps;i++)
+                        for(int j=0;j<systpar.steps;j++){
+				if(!(i==0&&i==3))if(fits[bin][i][j]->Residual) finalhistos.Add(fits[bin][i][j]->Residual);
+				}
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/Residual/Bin"+to_string(bin)).c_str());
+	}
+	*/
 	/////////////////////////////////////////////////////////
 	cout<<"Saving fits"<<endl;	
 	//save fits
@@ -758,16 +913,10 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 		}
 		finalhistos.writeObjsInFolder((basename+"/Fit Results/Spreads/ChiSquare").c_str());	
 
-	for(int i=0;i<bins.size();i++)
-		if(TFitChisquareD[i]) { 
-			TFitChisquareD[i]->Scale(fits[i][BestChiSquare->i][BestChiSquare->j]->ndf);	
-			finalhistos.Add(TFitChisquareD[i]);
-		}
-		finalhistos.writeObjsInFolder((basename+"/Fit Results/Spreads/ChiSquareD").c_str());	
-
 
 	for(int i=0;i<bins.size();i++)
 		if(WeightedDCounts[i]) finalhistos.Add(WeightedDCounts[i]);
+	finalhistos.writeObjsInFolder((basename+"/Fit Results/WeightedCounts").c_str());	
 		
 	
 
@@ -800,18 +949,14 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 	if(Global_ChiSquare) {
 		Global_ChiSquare->Scale(fits[0][BestChiSquare->i][BestChiSquare->j]->ndf);	
 		finalhistos.Add(Global_ChiSquare);
-		TH1D * BestSigma = (TH1D*) Global_ChiSquare->ProjectionX("Best Sigma",BestChiSquare->j+1,BestChiSquare->j+1);
-		BestSigma   = ConvertBinnedHisto(BestSigma,"Best Sigma",bins,false);
+		BestSigma   = ConvertBinnedHisto((TH1F*)BestSigma,"Best Sigma",bins,false); 
+		BestShift   = ConvertBinnedHisto((TH1F*)BestShift,"Best Shift",bins,false); 
 		finalhistos.Add(BestSigma);
-		TH1D * BestShift = (TH1D*) Global_ChiSquare->ProjectionY("Best Shift",BestChiSquare->i+1,BestChiSquare->i+1);
-		BestShift   = ConvertBinnedHisto(BestShift,"Best Shift",bins,false);
 		finalhistos.Add(BestShift);
 		BestChiSquares->Scale(fits[0][BestChiSquare->i][BestChiSquare->j]->ndf);
 		OriginalChiSquares->Scale(fits[0][BestChiSquare->i][BestChiSquare->j]->ndf);
-
 		BestChiSquares   = ConvertBinnedHisto((TH1F*)BestChiSquares,"Best ChiSquare",bins,false); 
 		OriginalChiSquares   = ConvertBinnedHisto((TH1F*)OriginalChiSquares,"Original ChiSquare",bins,false); 
-	
 		finalhistos.Add(BestChiSquares   ); 
 		finalhistos.Add(OriginalChiSquares);
 	}
@@ -908,27 +1053,39 @@ float GetChiSquare(TH1 * result, TH1 * data, float min, float max,bool prioritiz
 	float err = 0;
 	int ndf =0;
 	if(prioritizetail) cout<<"PRIORITIZING TAIL!"<<endl;
+	float tailmult=1;
 	//core
-	for(int i=binmin; i<data->FindBin(4); i++){
+	for(int i=binmin; i<binmax/*data->FindBin(4)*/; i++){
 			if(Result->GetBinError(i+1)<=0||Data->GetBinError(i+1)<=0) continue;
-			float tailmult=1;
-			if(Data->GetBinCenter(i+1)>3&&Data->GetBinCenter(i+1)<5&&prioritizetail) tailmult=4;
-			if(Data->GetBinCenter(i+1)>5&&Data->GetBinCenter(i+1)<10&&prioritizetail) tailmult=0.5;
 			err = pow(pow(Data->GetBinError(i+1),2) + pow(Result->GetBinError(i+1),2),0.5);
-			chi += tailmult * pow((Data->GetBinContent(i+1) - Result->GetBinContent(i+1)),2)/pow(err,2);
+			chi += pow((Data->GetBinContent(i+1) - Result->GetBinContent(i+1)),2)/pow(err,2);
 			ndf++;
 	}
-
+	/*
 	float totalcontent_DT=0;
 	float totalcontent_MC=0;
 	float totalerror=0;
 	for(int i=Data->FindBin(4); i<binmax; i++){
+		totalerror+=pow(Data->GetBinError(i+1),2)+pow(Result->GetBinError(i+1),2);		
+		if(Result->GetBinError(i+1)<=0||Data->GetBinError(i+1)<=0) continue;
 		totalcontent_DT+=Data->GetBinContent(i+1);		
 		totalcontent_MC+=Result->GetBinContent(i+1);		
-		totalerror+=pow(Data->GetBinError(i+1),2)+pow(Result->GetBinError(i+1),2);		
 	}
 	chi+=pow(totalcontent_DT-totalcontent_MC,2)/totalerror;
-	ndf++;
+	ndf++;*/
+	if(prioritizetail){
+		chi=0;
+		ndf=0;
+		for(int i=Data->FindBin(2); i<binmax; i++){
+			if(Result->GetBinCenter(i+1)>4) tailmult=4;
+			if(Result->GetBinError(i+1)<=0||Data->GetBinError(i+1)<=0) continue;
+			err = pow(pow(Data->GetBinError(i+1),2) + pow(Result->GetBinError(i+1),2),0.5);
+			chi += tailmult*pow((Data->GetBinContent(i+1) - Result->GetBinContent(i+1)),2)/pow(err,2);
+			ndf++;
+		}
+
+	}	
+
 	ndf = ndf-3;
 	chi /= ndf;
 	cout<<"chi: "<<chi<<" ndf: "<<ndf<<endl;
@@ -938,15 +1095,31 @@ float GetChiSquare(TH1 * result, TH1 * data, float min, float max,bool prioritiz
 
 
 void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constrain_min[], float constrain_max[], bool isfitnoise, bool prioritizetail, bool IsFitPrim){
-	if(isfitnoise) cout<<"********** FIT NOISE MODE **********"<<endl;
+	cout<<	Fit -> Data->GetEntries()<<" "<<Fit -> Templ_P->GetEntries()<<" "<<Fit -> Templ_D->GetEntries()<<endl;
+/*	if(isfitnoise) cout<<"********** FIT NOISE MODE **********"<<endl;
 	if(isfitnoise) Fit->Templ_Noise->Scale(0.01*Fit ->  Templ_P->Integral()/Fit ->  Templ_Noise->Integral());
+*/
+
+	Fit->Templ_Noise = (TH1F*)Fit -> Templ_P->Clone();
+	for(int i=0;i<Fit->Templ_Noise->GetNbinsX();i++){
+
+		if(Fit->Templ_Noise->GetBinCenter(i+1)>1) Fit->Templ_Noise->SetBinContent(i+1, 100*exp(-0.7*Fit->Templ_Noise->GetBinCenter(i+1)));
+		else Fit->Templ_Noise->SetBinContent(i+1, 100*exp(-0.7*1));
+		Fit->Templ_Noise->SetBinError(i+1,0.1*Fit->Templ_Noise->GetBinContent(i+1));
+	}
+
 	TObjArray *Tpl;
 	Tpl = new TObjArray(3);
 
 
-
-
 	if(!IsFitPrim) {
+
+	/*	float n=0;
+		if(Fit ->  Templ_P)     n = Fit -> Data->Integral() / Fit -> Templ_P->Integral();
+		if(Fit ->  Templ_P) 	Fit -> Templ_P-> Scale(n);
+		if(Fit ->  Templ_D) 	Fit -> Templ_D-> Scale(0.02*n);
+		if(Fit ->  Templ_He)	Fit -> Templ_He-> Scale(0.01*n);
+	*/
 		if(Fit ->  Templ_P)  if(Fit ->  Templ_P ->Integral()>0) Tpl -> Add( Fit ->  Templ_P );
 		if(Fit ->  Templ_D)  if(Fit ->  Templ_D ->Integral()>0) Tpl -> Add( Fit ->  Templ_D );
 		if(Fit ->  Templ_He) if(Fit ->  Templ_He->Integral()>0) Tpl -> Add( Fit ->  Templ_He);
@@ -958,11 +1131,11 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 	}
 
 
-	if(isfitnoise) if(Fit ->  Templ_Noise) if(Fit ->  Templ_Noise->GetEntries()>50) Tpl -> Add( Fit ->  Templ_Noise);
+	if(isfitnoise) if(Fit ->  Templ_Noise) Tpl -> Add( Fit ->  Templ_Noise);
 
 	float min=fitrangemin;
 	float max=fitrangemax;
-	cout<<	Fit -> Data<<" "<<Fit -> Templ_P<<" "<<Fit -> Templ_D<<" "<<endl;
+	cout<<	Fit -> Data<<" "<<Fit -> Templ_P<<" "<<Fit -> Templ_D<<" "<<Fit -> Templ_He<<endl;
 
 	bool fitcondition = (Fit -> Data->GetEntries()>100)&&(Fit -> Templ_P->GetEntries()>100);
 	cout<<"fit"<<endl;
@@ -973,11 +1146,6 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 		
 		if(!IsFitPrim) Fit -> Tfit = new TFractionFitter(Fit -> Data, Tpl ,"q");
 		else   	Fit -> Tfit = new TFractionFitter(Fit -> DataPrim, Tpl ,"q");
-		float n = Fit -> Data->Integral() / Fit -> Templ_P->Integral();
-		Fit -> Templ_P-> Scale(n);
-		Fit -> Templ_D-> Scale(n);
-		Fit -> Templ_He-> Scale(n);
-
 		cout<<"fitting..."<<endl;			
 		cout<<"Constrainsts: "<<endl;
 		cout<<constrain_min[0]<<" "<<constrain_max[0]<<endl;	
@@ -988,6 +1156,8 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 		Fit -> Tfit -> Constrain(1, constrain_min[0] ,constrain_max[0]);
                 Fit -> Tfit -> Constrain(2, constrain_min[1] ,constrain_max[1]);
 	 	Fit -> Tfit -> Constrain(3, constrain_min[2] ,constrain_max[2]);
+	 	if(isfitnoise) Fit -> Tfit -> Constrain(4, 0.0005 ,0.1);
+
 
 
 		//fitting
@@ -1002,7 +1172,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			if(Fit -> Tfit_outcome == 0) break;
 			else {
 				cout<<fit_attempt<<endl;
-				Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin((1+0.01*fit_attempt)*min), Fit -> Data -> FindBin((1+0.01*fit_attempt)*max));
+				Fit -> Tfit -> SetRangeX(Fit -> Data -> FindBin((1-0.03*fit_attempt)*min), Fit -> Data -> FindBin((1+0.03*fit_attempt)*max));
 
 				Fit -> Tfit_outcome = -1;
 				try { Fit -> Tfit_outcome = Fit -> Tfit -> Fit(); } catch(const std::invalid_argument& e) 
@@ -1033,7 +1203,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 				 i1 = Fit-> Templ_P  ->Integral(Fit->Templ_P -> FindBin(min), Fit->Templ_P -> FindBin(max));
 				 i2 = Fit-> Templ_D  ->Integral(Fit->Templ_D -> FindBin(min), Fit->Templ_D -> FindBin(max));
 				if(Fit-> Templ_He) i3 = Fit-> Templ_He ->Integral(Fit->Templ_He -> FindBin(min), Fit->Templ_He -> FindBin(max));
-				if(isfitnoise) i4 = Fit-> Templ_Noise ->Integral(Fit->Templ_Noise -> FindBin(min), Fit->Templ_Noise -> FindBin(max));
+	        			if(isfitnoise) i4 = Fit-> Templ_Noise ->Integral(Fit->Templ_Noise -> FindBin(min), Fit->Templ_Noise -> FindBin(max));
 			}
 
 			else{
@@ -1092,8 +1262,6 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 
 			cout<<endl;
 
-	
-
 			if(!IsFitPrim){
 				Fit ->  Templ_P  -> Scale(Fit ->wheightP);
 				Fit ->  Templ_D  -> Scale(Fit ->wheightD);
@@ -1111,7 +1279,19 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			Sum -> Add(Fit ->  Templ_D);
 			if(Fit-> Templ_He->Integral()>0) Sum -> Add(Fit ->  Templ_He);
 			if(isfitnoise) Sum -> Add(Fit ->  Templ_Noise);			
-			for(int n=0;n<Sum->GetNbinsX();n++) if(Sum->GetBinContent(n+1)==0) Sum->SetBinError(n+1,1);
+			
+			Fit->Residual = (TH1F*)Fit->Data->Clone(Sum->GetName());
+			Fit->Residual ->Add(Sum,-1);
+			for(int l=0;l<Fit->Residual->GetNbinsX();l++){
+				if(Fit->Data->GetBinError(l+1)>0){
+					Fit->Residual->SetBinContent(l+1,pow(Fit->Residual->GetBinContent(l+1)/Fit->Data->GetBinError(l+1),2));		
+					Fit->Residual->SetBinError(l+1,1);
+				}
+				else{
+					Fit->Residual->SetBinContent(l+1,0);
+					Fit->Residual->SetBinContent(l+1,1);
+				}
+			}
 	
 			if(( df1dw1*df1dw1*Cov00 + df1dw2*df1dw2*Cov11 + df1dw3*df1dw3*Cov22 +2*df1dw1*df1dw2*Cov01 +2*df1dw1*df1dw3*Cov02+ 2*df1dw2*df1dw3*Cov12)>0){
 				Fit -> StatErrP =  pow(( df1dw1*df1dw1*Cov00 + df1dw2*df1dw2*Cov11 + df1dw3*df1dw3*Cov22 +2*df1dw1*df1dw2*Cov01 +2*df1dw1*df1dw3*Cov02+ 2*df1dw2*df1dw3*Cov12)/2,0.5)/w1;
@@ -1121,11 +1301,13 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 			else{
 
 				Fit -> StatErrP = 0.5*e1/w1;
-				Fit -> StatErrD = 0.5*e2/w2;			
+				Fit -> StatErrD = 0.5*e2/w2;
 				Fit -> StatErrT = 0.5*e3/w3;
+
 			}
 			cout<<"fract: "<<w1<<" "<<w2<<" "<<w3<<endl;
 			cout<<endl;
+			if(isfitnoise) cout<<"frac noise: "<<w4<<endl;
 			cout<<"err: "  <<e1<<" "<<e2<<" "<<e3<<endl;
 			cout<<"er c:"  <<Fit -> StatErrP<<" "<<Fit -> StatErrD<<" "<<Fit -> StatErrT<<endl;	
 			
@@ -1179,17 +1361,6 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 	return;
 }
 
-float EvalFitProbability(float chi,float chimin){
-
-/*	TF1 * CumulativeChiSquare=new TF1("Chi","exp(-x)*x^-0.5",0.001,10000);
-	if(chi>0.01&&chi<10000)
-		return CumulativeChiSquare->Integral(chi,10000);
-	else return 0;
-*/
-	
-	return 1/fabs(chimin-chi+0.5);
-
-}
 
 void  TemplateFIT::RebinAll(int f){
 	for(int bin=0;bin<bins.size();bin++){
@@ -1216,158 +1387,323 @@ float FindConstraintD(TH1F * dt, TH1F * mcp, TH1F * mcd){
 	return corrd*counts_d/(corrp*counts_p);
 }
 
+
+
+void SharpenDistrib(TH1F* Distrib, float factor){
+
+	float sigma= Distrib->GetStdDev();
+	float mean = Distrib->GetBinCenter(Distrib->GetMaximumBin());
+
+	float sigma_r = sigma*pow(pow(1-factor,2)/(1-pow(1-factor,2)),0.5);
+
+TF1 * G = new TF1("G","gaus",0,10);	
+	G->SetParameter(0,1);
+	G->SetParameter(1,mean);
+	G->SetParameter(2,sigma_r);
+
+	for(int i=0;i<Distrib->GetNbinsX();i++){
+		float Mid = mean + 4*sigma;
+		if(Distrib->GetBinCenter(i+1)<Mid)
+			Distrib->SetBinContent(i+1,Distrib->GetBinContent(i+1)*G->Eval(Distrib->GetBinCenter(i+1)));
+		else
+			Distrib->SetBinContent(i+1,Distrib->GetBinContent(i+1)*G->Eval(Mid));
+	}
+	return;
+
+}
+
+
+
+
 void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 
 	SimpleExtractPrimaries();
+	//magnitude fine tuning
+	float mag=0;
+	int sigmabest[4]={0,0,0,0};
+	float chibest=9e7; 
+	float magbest[4]={0,0,0,0};
 
-	for(int bin=0;bin<bins.size();bin++){
-		
-		TH1F * DD = (TH1F*) fits[bin][0][5]->Data->Clone("tempdata");
-                TH1F * TT = (TH1F*) fits[bin][0][5]->Templ_P->Clone("temptemp");
+	if(sharpen) {
+		for(int bin=0;bin<bins.size();bin++)	
+			 for(int sigma=0;sigma<systpar.steps;sigma++){
+			SharpenDistrib(fits[bin][sigma][5]->Templ_P,sharpenfactor);
+			//if(bin<(bins.size()-2))	SharpenDistrib(fits[bin][sigma][5]->Templ_P,sharpenfactor);
+			SharpenDistrib(fits[bin][sigma][5]->Templ_D,sharpenfactor);
 
-               //* float eq = 1;
-               // if(bin<=14&&(systpar.mode==3)) eq= EqualizeTemplate(DD, TT);
-                TH1F * DD2 = (TH1F*) fits[bin][0][6]->Data->Clone("tempdata2");
-
-		// MAIN Template Fit 
-		for(int sigma=0;sigma<systpar.steps;sigma++){
-			for(int shift=0;shift<systpar.steps;shift++){
-			fitsD[bin][sigma][shift] = fits[bin][sigma][shift]->Clone();
-			float constrain_D = FindConstraintD (DD2,fits[bin][0][5]->Templ_P,fits[bin][0][5]->Templ_D);
-
-			if(adjousttail){
-				if(bin>5){
-					for(int j=0;j<fits[bin][sigma][shift] ->  Templ_P->GetNbinsX();j++)
-						if(fits[bin][sigma][shift] ->  Templ_P->GetBinCenter(j+1)>1.75&&fits[bin][sigma][shift] ->  Templ_P->GetBinCenter(j+1)<4)
-							if(bin<9) fits[bin][sigma][shift] ->  Templ_P->SetBinContent(j+1,0.7*fits[bin][sigma][shift] ->  Templ_P->GetBinContent(j+1));
-					for(int j=0;j<fitsD[bin][sigma][shift] ->  Templ_P->GetNbinsX();j++)
-						if(fitsD[bin][sigma][shift] ->  Templ_P->GetBinCenter(j+1)>1.75&&fitsD[bin][sigma][shift] ->  Templ_P->GetBinCenter(j+1)<4)
-							if(bin<9) fitsD[bin][sigma][shift] ->  Templ_P->SetBinContent(j+1,0.7*fitsD[bin][sigma][shift] ->  Templ_P->GetBinContent(j+1));
+		}
+	}		
+	
+	if(adjoustpeak){
+	    for(int bin=0;bin<bins.size();bin++){	
+		 for(int sigma=0;sigma<systpar.steps;sigma++){
+		if(iso==0) fits[bin][sigma][5]->Templ_P =SimpleShiftHisto(fits[bin][sigma][5]->Templ_P,magpeak);
+		if(iso==1) fits[bin][sigma][5]->Templ_D =SimpleShiftHisto(fits[bin][sigma][5]->Templ_D,magpeak);
 				}
+		}
+	}
+
+	if(adjousttail){
+		mag=Mag;
+		for(int bin=0;bin<4;bin++) {
+			for(int sigma=0;sigma<systpar.steps;sigma++) tailFT.push_back(fits[Midbin-2+bin][sigma][5]->Clone());
+			chibest=9e7;
+			int sigmaindex=0;
+			for(int k=(systpar.steps+13)*bin;k<(systpar.steps+13)*(bin)+systpar.steps;k++){
+		
+				float fixminimum_factor=1;
+				//if((k-(systpar.steps+13)*bin)==3) fixminimum_factor=0.001;
+				//else fixminimum_factor=1;
+
+				/*for(int i=0;i<tailFT[k]->Templ_P->GetNbinsX();i++){	
+				  float mod=(mag)/(1+exp(-Fast*(tailFT[k]->Templ_P->GetBinCenter(i+1)-Mid)));
+				  tailFT[k]->Templ_P->SetBinContent(i+1,max((double)(1+mod)*tailFT[k]->Templ_P->GetBinContent(i+1),0.));
+				  tailFT[k]->Templ_P->SetBinError(i+1,max((double)(1+mod)*tailFT[k]->Templ_P->GetBinError(i+1),0.));
+				  }*/
+				float eq = EqualizeTemplate(tailFT[k]->Templ_P,tailFT[k]->Data);
+				tailFT[k]->Templ_P=SimpleShiftHisto(tailFT[k]->Templ_P,eq);			
+				tailFT[k]->RegularizeTemplateError();
+				Do_TemplateFIT(tailFT[k],fits[Midbin-2+bin][0][5]->fitrangemin,fits[Midbin-2+bin][0][5]->fitrangemax,constrainmin,constrainmax,IsFitNoise,false);
+				if(fixminimum_factor*tailFT[k]->ChiSquare<chibest){
+					chibest=fixminimum_factor*tailFT[k]->ChiSquare;
+					sigmabest[bin]=sigmaindex;
+				}
+				sigmaindex++;
 			}
+		
 
-			cout<<"************ CONSTRAIN FIT: "<<constrain_D<<endl;
+			chibest=9e7;
+			for(int k=0;k<13;k++) tailFT.push_back(fits[Midbin-2+bin][sigmabest[bin]][5]->Clone());
+			for(int k=0;k<13;k++) {
+			
+				int n=(13+systpar.steps)*bin + (k+systpar.steps);
+				float eq = EqualizeTemplate(tailFT[n]->Templ_P,tailFT[n]->Data);
+                                tailFT[n]->Templ_P=SimpleShiftHisto(tailFT[n]->Templ_P,eq);
+				for(int i=0;i<tailFT[n]->Templ_P->GetNbinsX();i++)
+					if(true) {
+						float mod=((0.5+0.2*k)*mag)/(1+exp(-3*(tailFT[n]->Templ_P->GetBinCenter(i+1)-Mid)));
+						//	float mod=(((0.5+0.2*k)*mag/2/1.57)*atan(Fast*(tailFT[n]->Templ_P->GetBinCenter(i+1)-Mid))+(0.5+0.2*k)*mag/2);
+						tailFT[n]->Templ_P->SetBinContent(i+1,max((double)(1+mod)*tailFT[n]->Templ_P->GetBinContent(i+1),0.));
+						tailFT[n]->Templ_P->SetBinError(i+1,max((double)(1+mod)*tailFT[n]->Templ_P->GetBinError(i+1),0.));
+					} 		
+				cout<<"*********************** TAIL FINE TUNING: "<<(0.5+0.2*k)*mag<<" *********************************"<<endl;
+				tailFT[n]->RegularizeTemplateError();
+				Do_TemplateFIT(tailFT[n],fits[Midbin-2+bin][0][5]->fitrangemin,fits[Midbin-2+bin][0][5]->fitrangemax,constrainmin,constrainmax,IsFitNoise,true);
+				if(tailFT[n]->ChiSquare<chibest){
+					chibest=tailFT[n]->ChiSquare;
+					magbest[bin]=(0.5+0.2*k)*mag;
+				}
 
+			}	
 
-			if(!fitDisabled) {
+		}	
+	}
+	for(int bin=0;bin<bins.size();bin++){
+
+		float eq = 1;
+
+		TH1F * DD = (TH1F*) fits[bin][0][5]->Data->Clone("Data");
+		std::vector<TH1F*> TP;
+		std::vector<TH1F*> TD;
+		std::vector<TH1F*> THe;
+
+		for(int sigma=0;sigma<systpar.steps;sigma++){
+			TP.push_back((TH1F*)fits[bin][sigma][5]->Templ_P  ->Clone());
+			TD.push_back((TH1F*)fits[bin][sigma][5]->Templ_D  ->Clone());
+			THe.push_back((TH1F*)fits[bin][sigma][5]->Templ_He  ->Clone());
+		}
+
+	for(int sigma=0;sigma<systpar.steps;sigma++){
+			for(int shift=0;shift<systpar.steps;shift++){
+					//build all template combinations
+					fits[bin][sigma][shift]->Data=(TH1F*) DD->Clone();
+			//	if(!(sigma==0&&sigma==5)){
+						if(sigma!=0){
+						fits[bin][sigma][shift]->Templ_P =SimpleShiftHisto((TH1F*)TP[sigma]  ->Clone((("P_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
+						fits[bin][sigma][shift]->Templ_D =SimpleShiftHisto((TH1F*)TD[sigma]  ->Clone((("D_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
+						fits[bin][sigma][shift]->Templ_He=SimpleShiftHisto((TH1F*)THe[sigma] ->Clone((("He_"+to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
+						}
+						else{
+						fits[bin][sigma][shift]->Templ_P =(TH1F*)SimpleShiftHisto((TH1F*)TP[1]  ->Clone((("P_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
+						fits[bin][sigma][shift]->Templ_D =(TH1F*)SimpleShiftHisto((TH1F*)TD[1]  ->Clone((("D_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
+						fits[bin][sigma][shift]->Templ_He=(TH1F*)SimpleShiftHisto((TH1F*)THe[1] ->Clone((("He_"+to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
+						}	
+			//	}
+
+				systpar.ShiftStart= -0.02;
+				systpar.ShiftEnd=0.02;
+				if(systpar.mode==1) {
+					systpar.SigmaStart=-23;
+					systpar.SigmaEnd=4;
+				}
+				if(systpar.mode==3) {
+					systpar.SigmaStart=-0.2;
+					systpar.SigmaEnd=0.2;
+				}
+
+					
+				bool prioritizetail=false;
+				// MAIN Template Fit Manipulations 
+				if(adjousttail){
+
+					float binf=bin;
+					float bins=fits.size()/2.;
+					float enmod=0;           //exp(-0.5*pow((binf-Midbin)/1,2));
+					if(bin==Midbin-2) enmod=magbest[0];
+					else if(bin==Midbin-1) enmod=magbest[1];
+					else if(bin==Midbin) enmod=magbest[2];
+					else if(bin==Midbin+1) enmod=magbest[3];
+					else enmod=0;  
+					cout<<"*********************** TUNED TAIL: "<<enmod<<" *********************************"<<endl;
+					for(int i=0;i<fits[bin][sigma][shift]->Templ_P->GetNbinsX();i++)	
+					if(/*fits[bin][sigma][shift]->Templ_P->GetBinCenter(i+1)>Mid*/true) {
+					float mod=enmod/(1+exp(-3*(fits[bin][sigma][shift]->Templ_P->GetBinCenter(i+1)-Mid)));
+				//	float mod=enmod*((mag/2/1.57)*atan(Fast*(fits[bin][sigma][shift]->Templ_P->GetBinCenter(i+1)-Mid))+mag/2);
+					fits[bin][sigma][shift]->Templ_P->SetBinContent(i+1,max((double)(1+mod)*fits[bin][sigma][shift]->Templ_P->GetBinContent(i+1),0.));
+					fits[bin][sigma][shift]->Templ_P->SetBinError(i+1,max((double)(1+mod)*fits[bin][sigma][shift]->Templ_P->GetBinError(i+1),0.));
+					//	prioritizetail=true;	
+					}
+				}
+
+				if(!fitDisabled) {
 					cout<<endl;
 					cout<<"Bin: "<<bin<<": "<<sigma<<" "<<shift<<endl;
-					//fits[bin][sigma][shift]->RegularizeTemplateError();	
-					//if(!isrich) fits[bin][sigma][shift]->AddSysttoTempl();
-					float constrain_deut=constrainmin[1];
-				Do_TemplateFIT(fits[bin][sigma][shift],fits[bin][sigma][shift]->fitrangemin,fits[bin][sigma][shift]->fitrangemax,constrainmin,constrainmax,IsFitNoise,false);
-		    		constrainmin[1]=constrain_deut; 
+					fits[bin][sigma][shift]->RegularizeTemplateError();	
+					Do_TemplateFIT(fits[bin][sigma][shift],fits[bin][0][5]->fitrangemin,fits[bin][0][5]->fitrangemax,constrainmin,constrainmax,IsFitNoise,prioritizetail);
 				}
 			}
 		}
 		// Histograms for systematic error evaluation
 		TH2F * dcountsspread;
 		TH2F * tfitchisquare;
-	
+
 		std::string xaxisname;
 		std::string yaxisname;
-		
+
 		if(systpar.mode==0) { xaxisname = "#Delta #sigma_{T} (%)";
-			      yaxisname = "#Delta (T) (%)";}
+			yaxisname = "#Delta (T) (%)";}
 		if(systpar.mode==1) { xaxisname = "#Delta #sigma_{1/#beta} (%)";
-			      yaxisname = "#Delta (1/#beta) (%)";}
+			yaxisname = "#Delta (1/#beta) (%)";}
 		if(systpar.mode==2) { xaxisname = "#Delta #sigma_{#theta_{C}} (%)";
-			      yaxisname = "#Delta (#theta_{C}) (%)";}
+			yaxisname = "#Delta (#theta_{C}) (%)";}
 		if(systpar.mode==3) { xaxisname = "#Delta #sigma_{1/#beta} (%)";
-			      yaxisname = "#Delta (1/#beta) (%)";}
-		
+			yaxisname = "#Delta (1/#beta) (%)";}
+
 
 		dcountsspread = new TH2F(("DCountsSpread Bin " +to_string(bin)).c_str(),("DCountsSpread Bin " +to_string(bin)+";"+xaxisname+";"+yaxisname).c_str(),systpar.steps,systpar.GetSigmaStart(),systpar.GetSigmaEnd(),systpar.steps,systpar.GetShiftStart(),systpar.GetShiftEnd());
 
 		tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)+";"+xaxisname+";"+yaxisname).c_str(),systpar.steps,systpar.GetSigmaStart(),systpar.GetSigmaEnd(),systpar.steps,systpar.GetShiftStart(),systpar.GetShiftEnd());
 
-
+		float adjousttailchi=1;
 		for(int sigma=0;sigma<systpar.steps;sigma++){
 			for(int shift=0;shift<systpar.steps;shift++){
-				dcountsspread->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->DCounts);
-			
-				if(fits[bin][sigma][shift]->ChiSquare>0)
-					 tfitchisquare->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->ChiSquare);	
+				if(adjousttail){
+				if(bin==Midbin-2||bin==Midbin-1||bin==Midbin||bin==Midbin+1){ 
+				if(sigma==sigmabest[(int)(bin - Midbin+2)])  adjousttailchi=0.1;
+				else adjousttailchi=1;
+				}
+			}		
+		
+			float fixminimum_factor=1;
+			//if(sigma==3) fixminimum_factor=0.001;
+			//else fixminimum_factor=1;
+		
+			dcountsspread->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->DCounts);
+
+				if(fits[bin][sigma][shift]->ChiSquare>0){
+					
+					tfitchisquare->SetBinContent(sigma+1,shift+1,fixminimum_factor*adjousttailchi*fits[bin][sigma][shift]->ChiSquare);	
+				}
 				else  tfitchisquare->SetBinContent(sigma+1,shift+1,5000);
 				tfitchisquare->SetBinError(sigma+1,shift+1,0.2);	
-				}
-		}
-	
-		DCountsSpread.push_back(dcountsspread);
-		TFitChisquare.push_back(tfitchisquare);
-	
-		BestChi * bestlocal = new BestChi();
-		if(IsLocalConstrainedFit)  bestlocal->FindMinimum(TFitChisquare[bin],BestChiSquare->i);
-		else bestlocal->FindMinimum(TFitChisquare[bin]);
-	
-		//Deuteron TemplateFIT	
-		for(int sigma=0;sigma<systpar.steps;sigma++){
-			for(int shift=0;shift<systpar.steps;shift++){
-			float constrain_D = FindConstraintD (DD2,fitsD[bin][0][5]->Templ_P,fitsD[bin][0][5]->Templ_D);
-			fitsD[bin][sigma][shift]->Templ_P = (TH1F*) fitsD[bin][bestlocal->i][bestlocal->j]->Templ_P->Clone();
-			cout<<"************ CONSTRAIN FIT: FIT DEUT"<<constrain_D<<endl;
-	
-			if(!fitDisabled) {
-					cout<<endl;
-					cout<<"Bin: "<<bin<<": "<<sigma<<" "<<shift<<endl;
-					//fitsD[bin][sigma][shift]->RegularizeTemplateError();	
-					//if(!isrich) fitsD[bin][sigma][shift]->AddSysttoTempl();
-				float constrain_deut=constrainmin[1];
-				Do_TemplateFIT(fitsD[bin][sigma][shift],fitsD[bin][sigma][shift]->fitrangemin,fitsD[bin][sigma][shift]->fitrangemax,constrainmin,constrainmax,IsFitNoise,false);
-		    		constrainmin[1]=constrain_deut; 
-				}
 			}
 		}
-		tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)+";"+xaxisname+";"+yaxisname).c_str(),systpar.steps,systpar.GetSigmaStart(),systpar.GetSigmaEnd(),systpar.steps,systpar.GetShiftStart(),systpar.GetShiftEnd());
-	
-		for(int sigma=0;sigma<systpar.steps;sigma++){
-			for(int shift=0;shift<systpar.steps;shift++){
-				if(fitsD[bin][sigma][shift]->ChiSquare>0)
-					 tfitchisquare->SetBinContent(sigma+1,shift+1,fitsD[bin][sigma][shift]->ChiSquare);	
-				else  tfitchisquare->SetBinContent(sigma+1,shift+1,5000);
-				tfitchisquare->SetBinError(sigma+1,shift+1,0.2);	
-				}
-		}
-	
-		TFitChisquareD.push_back(tfitchisquare);
 
-		
+		DCountsSpread.push_back(dcountsspread);
+		TFitChisquare.push_back(tfitchisquare);
+
 	}
 
 	Global_ChiSquare = (TH2F*) TFitChisquare[TFitChisquare.size()-1]->Clone("Global ChiSquare");
-	for(int i=TFitChisquare.size();i<TFitChisquare.size()-1;i--) Global_ChiSquare->Add(TFitChisquare[i]);
+	for(int i=0;i<TFitChisquare.size()-2;i++) Global_ChiSquare->Add(TFitChisquare[i]);
 	BestChiSquare = new BestChi();
 	BestChiSquare->FindMinimum(Global_ChiSquare);
 
 	for(int bin=0;bin<bins.size();bin++){
-	BestChi * bestlocal = new BestChi();
-	if(IsLocalConstrainedFit)  bestlocal->FindMinimum(TFitChisquare[bin],BestChiSquare->i);
-	else bestlocal->FindMinimum(TFitChisquare[bin]);
+		BestChi * bestlocal = new BestChi();
+		if(IsLocalConstrainedFit)  bestlocal->FindMinimum(TFitChisquare[bin],BestChiSquare->i);
+		else bestlocal->FindMinimum(TFitChisquare[bin]);
 
-	BestChi * besterror = new BestChi();
-	besterror->FindMinimum(TFitChisquare[bin]);
+		BestChi * besterror = new BestChi();
+		besterror->FindMinimum(TFitChisquare[bin]);
+		besterror->FindCentroid(TFitChisquare[bin]);
 
-	TH1F * weighteddcounts  = new TH1F(("WeightedCountsBin " +to_string(bin)).c_str(),("WeightedCountsBin " +to_string(bin)+";Counts;").c_str(),100,0.5*fits[bin][bestlocal->i][bestlocal->j]->DCounts,2*fits[bin][bestlocal->i][bestlocal->j]->DCounts);
+
+		if(IsLocalFit||IsLocalConstrainedFit) fits_best.push_back(fits[bin][bestlocal->i][bestlocal->j]->Clone());
+		else fits_best.push_back(fits[bin][BestChiSquare->i][BestChiSquare->j]->Clone());
+
+		
+		cout<<"***************** TIME REGULARIZED FIT BIN "<<bin<<"***********************"<<endl;	
+//		Do_TemplateFIT(fits[bin][bestlocal->i][bestlocal->j],fits[bin][0][5]->fitrangemin,fits[bin][0][5]->fitrangemax,constrainmin,constrainmax,IsFitNoise,false);
+		/////////
+
+		//float Dmax= fits[bin][besterror->centroid_x][besterror->centroid_y]->DCounts;
+		float Dmax = fits_best[bin]->DCounts;
+		TH1F * weighteddcounts  = new TH1F(("WeightedCountsBin " +to_string(bin)).c_str(),("WeightedCountsBin " +to_string(bin)+";Counts;").c_str(),1000,0.2*Dmax,2.5*Dmax/*fits_best[bin]->DCounts*/);
+
 		for(int sigma=0;sigma<systpar.steps;sigma++)
 			for(int shift=0;shift<systpar.steps;shift++)
 				if(fits[bin][sigma][shift]->DCounts&&fits[bin][0][5]->DCounts){
-					float totcounts=fits[bin][sigma][shift]->DCounts/*+fits[bin][sigma][shift]->Templ_P->Integral(fits[bin][sigma][shift]->Templ_P->FindBin(2),fits[bin][sigma][shift]->Templ_P->FindBin(3))*/;
-					weighteddcounts -> Fill(totcounts,EvalFitProbability(fits[bin][sigma][shift]->ChiSquare,TFitChisquare[bin]->GetBinContent(besterror->i+1,besterror->j+1) ));
-					
+					float adjousttailchi=1;
+					if(adjousttail){
+						if(bin==Midbin-2||bin==Midbin-1||bin==Midbin||bin==Midbin+1){ 
+							if(sigma==sigmabest[(int)(bin - Midbin+2)])  adjousttailchi=0.1;
+							else adjousttailchi=1;
+						}
 					}
+				
+					float fixminimum_factor=1;
+					//if(sigma==3) fixminimum_factor=0.001;
+					//else fixminimum_factor=1;
+	
+					float totcounts=fits[bin][sigma][shift]->DCounts;
+					//					weighteddcounts -> Fill(totcounts,EvalFitProbability(fits[bin][sigma][shift]->ChiSquare,TFitChisquare[bin]->GetBinContent(besterror->i+1,besterror->j+1) ));
+					//					weighteddcounts -> Fill(totcounts,EvalFitProbability(fits[bin][sigma][shift]->ChiSquare,TFitChisquare[bin]->GetMaximum()));
+					weighteddcounts -> Fill(totcounts,EvalFitProbability(fixminimum_factor*adjousttailchi*fits[bin][sigma][shift]->ChiSquare,sigma+1,shift+1,besterror->centroid_x,besterror->centroid_y,(usecentroid)));
+
+
+				}
+		int nbin=2*(2*fits_best[bin]->DCounts-0.4*fits_best[bin]->DCounts)/weighteddcounts->GetStdDev();
+		//weighteddcounts->Rebin(100/nbin);
 		WeightedDCounts.push_back(weighteddcounts);
-			
+	
+	
 	}
 
 
-	EvalFinalParameters();
-	EvalFinalErrors();
-	CalculateFinalPDCounts();	
-	return;
+EvalFinalParameters();
+EvalFinalErrors();
+CalculateFinalPDCounts();	
+
+for(int bin=0;bin<bins.size();bin++){
+	BestChi * besterror = new BestChi();
+	besterror->FindMinimum(TFitChisquare[bin]);
+	besterror->FindCentroid(TFitChisquare[bin]);
+
+	/// TIME REGULARIZED FIT
+	//BuildRegularizedTemplates(bin,besterror->centroid_x,besterror->centroid_y,TFitChisquare[bin]);
+}	
+	
+
+return;
 }
 
 
 void TemplateFIT::EvalFinalParameters(){
+	BestSigma = (TH1F*) BestChiSquares->Clone("BestSigma");
+	BestShift = (TH1F*) BestChiSquares->Clone("BestShift");
+	BestSigma->Clear();
+	BestShift->Clear();
 	for(int bin=0;bin<bins.size();bin++){
 
 		if(!IsLocalFit&&!IsLocalConstrainedFit) BestChiSquares     ->SetBinContent(bin+1,TFitChisquare[bin]->GetBinContent(BestChiSquare->i+1,BestChiSquare->j+1));
@@ -1375,12 +1711,18 @@ void TemplateFIT::EvalFinalParameters(){
 			BestChi * bestlocal = new BestChi();
 			if(IsLocalConstrainedFit)  bestlocal->FindMinimum(TFitChisquare[bin],BestChiSquare->i);
 			else bestlocal->FindMinimum(TFitChisquare[bin]);
+			bestlocal->FindCentroid(TFitChisquare[bin]);
 			BestChiSquares     ->SetBinContent(bin+1,TFitChisquare[bin]->GetBinContent(bestlocal->i+1,bestlocal->j+1));
-		}
+			BestSigma->SetBinContent(bin+1,bestlocal->centroid_parx);
+			BestSigma->SetBinError(bin+1,0.05*fabs(systpar.GetSigmaStart()-systpar.GetSigmaEnd())/sqrt(12));
+			BestShift->SetBinContent(bin+1,bestlocal->centroid_pary);
+			BestShift->SetBinError(bin+1,0.05*fabs(systpar.GetShiftStart()-systpar.GetShiftEnd())/sqrt(12));
+			}
 		if(TFitChisquare[bin]->GetBinContent(1,6)<1000) OriginalChiSquares ->SetBinContent(bin+1,TFitChisquare[bin]->GetBinContent(1,6));
 		BestChiSquares     ->SetBinError(bin+1,0.25);	
-                OriginalChiSquares ->SetBinError(bin+1,0.25);
+		OriginalChiSquares ->SetBinError(bin+1,0.25);
 	}
+
 	return;
 }
 
@@ -1394,11 +1736,42 @@ void TemplateFIT::EvalFinalErrors(){
 		if(fits[bin][bestlocal->i][bestlocal->j]->StatErrP>0 
 	        && fits[bin][bestlocal->i][bestlocal->j]->StatErrD>0
 		&& fits[bin][bestlocal->i][bestlocal->j]->DCounts>0){
-			StatErrorP -> SetBinContent(bin+1,1.2*fits[bin][bestlocal->i][bestlocal->j]->StatErrP);
-			StatErrorD -> SetBinContent(bin+1,max(1.2*fits[bin][bestlocal->i][bestlocal->j]->StatErrD,0.002));
+	
+			//ADD systematic if template mod
+			double systmodfactor=1;
+			if(adjousttail) systmodfactor*=1.2;
+			if(adjoustpeak) systmodfactor*=1.2;
+			if(sharpenfactor) systmodfactor*=1.2;
+			//find best error
+			float x,y;
+               		 float BestED = 9999999;
+  			for(int sigma=0;sigma<systpar.steps;sigma++)
+                        	for(int shift=0;shift<systpar.steps;shift++)
+                                	if(fits[bin][sigma][shift]->StatErrD<BestED){
+                                        	if(fits[bin][sigma][shift] ->ContribP>constrainmin[0]+0.001&&fits[bin][sigma][shift] ->ContribP<constrainmax[0]-0.001)
+				           	if(fits[bin][sigma][shift] ->ContribD>constrainmin[1]+0.001&&fits[bin][sigma][shift] ->ContribD<constrainmax[1]-0.001){
+						BestED=fits[bin][sigma][shift]->StatErrD;
+                        			x=sigma;y=shift;   
+						}
+				}	
+
+			 float BestEP = 9999999;
+  			for(int sigma=0;sigma<systpar.steps;sigma++)
+                        	for(int shift=0;shift<systpar.steps;shift++)
+                                	if(fits[bin][sigma][shift]->StatErrP<BestEP){
+                                        	if(fits[bin][sigma][shift] ->ContribP>constrainmin[0]+0.001&&fits[bin][sigma][shift] ->ContribP<constrainmax[0]-0.001)
+				           	if(fits[bin][sigma][shift] ->ContribD>constrainmin[1]+0.001&&fits[bin][sigma][shift] ->ContribD<constrainmax[1]-0.001){
+					       	BestEP=fits[bin][sigma][shift]->StatErrP;
+						}
+                           	}	
+
+			cout<<"STATERR BIN: "<<bin<<" "<<BestED<<" "<<x<<" "<<y<<endl;
+			StatErrorP -> SetBinContent(bin+1,BestEP);
+			StatErrorD -> SetBinContent(bin+1,max((double)BestED,0.015));
 			StatErrorT -> SetBinContent(bin+1,1.2*fits[bin][bestlocal->i][bestlocal->j]->StatErrT);
 			if(IsLocalConstrainedFit) SystError -> SetBinContent(bin+1,std::max(WeightedDCounts[bin]->GetStdDev()/fits[bin][bestlocal->i][bestlocal->j]->DCounts,0.045));
-			else SystError -> SetBinContent(bin+1,0.5*WeightedDCounts[bin]->GetStdDev()/fits[bin][bestlocal->i][bestlocal->j]->DCounts);
+			else SystError -> SetBinContent(bin+1,systmodfactor*0.2*WeightedDCounts[bin]->GetStdDev()/fits[bin][bestlocal->i][bestlocal->j]->DCounts);
+			if(lowstatDmode) SystError -> SetBinContent(bin+1,SystError -> GetBinContent(bin+1)+0.025);	
 			StatErrorP -> SetBinError(bin+1,0);
 			StatErrorD -> SetBinError(bin+1,0);
 			StatErrorT -> SetBinError(bin+1,0);
@@ -1424,11 +1797,11 @@ void TemplateFIT::CalculateFinalPDCounts(){
 
 	for(int bin=0;bin<bins.size();bin++){
 
-		BestChi * bestlocal = new BestChi();
+/*		BestChi * bestlocal = new BestChi();
 		if(IsLocalConstrainedFit)  bestlocal->FindMinimum(TFitChisquare[bin],BestChiSquare->i);
 		else bestlocal->FindMinimum(TFitChisquare[bin]);
 
-/*		float staterrP= StatErrorP -> GetBinContent(bin+1) * fits[bin][bestlocal->i][bestlocal->j]->PCounts;
+		float staterrP= StatErrorP -> GetBinContent(bin+1) * fits[bin][bestlocal->i][bestlocal->j]->PCounts;
 		float staterrD= StatErrorD -> GetBinContent(bin+1) * fits[bin][bestlocal->i][bestlocal->j]->DCounts;
 		float staterrT= StatErrorT -> GetBinContent(bin+1) * fits[bin][bestlocal->i][bestlocal->j]->PCounts;
 	
@@ -1441,35 +1814,41 @@ void TemplateFIT::CalculateFinalPDCounts(){
 		float systerrT= SystError -> GetBinContent(bin+1) * fits[bin][bestlocal->i][bestlocal->j]->TCounts;
 */
 		float CountsP; 	
-		if(IsLocalFit||IsLocalConstrainedFit)  CountsP      = fits[bin][bestlocal->i][bestlocal->j]->PCounts - 8.5 * fits[bin][bestlocal->i][bestlocal->j]->TCounts;
-		else CountsP      = fits[bin][BestChiSquare->i][BestChiSquare->j]->PCounts- 8.5 * fits[bin][bestlocal->i][bestlocal->j]->TCounts;
-
-		BestChi * bestlocald = new BestChi();
-		if(IsLocalConstrainedFit)  bestlocald->FindMinimum(TFitChisquareD[bin],BestChiSquare->i);
-		else bestlocald->FindMinimum(TFitChisquareD[bin]);
+		CountsP      = fits_best[bin]->PCounts;//- 8.5 * fits_best[bin]->TCounts;
 
 		float CountsD;	
+		BestChi * bestlocal = new BestChi();
+                if(IsLocalConstrainedFit)  bestlocal->FindMinimum(TFitChisquare[bin],BestChiSquare->i);
+                else bestlocal->FindMinimum(TFitChisquare[bin]);
+
 		if(!lowstatDmode){
-			if(IsLocalFit||IsLocalConstrainedFit)  CountsD      = fitsD[bin][bestlocald->i][bestlocald->j]->DCounts - 1.5 * fits[bin][bestlocal->i][bestlocal->j]->TCounts;
-			else CountsD      = fits[bin][BestChiSquare->i][BestChiSquare->j]->DCounts - 1.5 * fits[bin][bestlocal->i][bestlocal->j]->TCounts;
+			 // CountsD      = fits_best[bin]->DCounts - 1.5 * fits_best[bin]->TCounts;
+			if(!usebestonly) CountsD = WeightedDCounts[bin]->GetMean();// - 1.5 * fits_best[bin]->TCounts;
+			else CountsD=fits[bin][bestlocal->i][bestlocal->j]->DCounts;//- 1.5*fits[bin][bestlocal->i][bestlocal->j]->TCounts;
+			CountsD=CountsD-0.033*CountsD; //Tritium contamination stable in time
 		}
-		else {  
-			int cutbin=fits[bin][bestlocal->i][bestlocal->j]->Data->FindBin(1.65);
-			CountsD= fits[bin][bestlocal->i][bestlocal->j]->Data->Integral(cutbin, fits[bin][bestlocal->i][bestlocal->j]->Data->GetNbinsX() ) ;
-			CountsD*=fits[bin][bestlocal->i][bestlocal->j]->Templ_D->Integral()/fits[bin][bestlocal->i][bestlocal->j]->Templ_D->Integral(cutbin,fits[bin][bestlocal->i][bestlocal->j]->Data->GetNbinsX());
-		}
-
-		float Countsnoise= fits[bin][bestlocal->i][bestlocal->j]->Templ_P->Integral(fits[bin][bestlocal->i][bestlocal->j]->Data->FindBin(1.65), fits[bin][bestlocal->i][bestlocal->j]->Data->GetNbinsX() ) ;
-		ProtonTail->SetBinContent(bin+1,Countsnoise);
 	
+		else { 
+			int cutbin=fits[bin][bestlocal->i][bestlocal->j]->Data->FindBin(1.55);
+			int cutbin2=fits[bin][bestlocal->i][bestlocal->j]->Data->FindBin(3.5);
+			CountsD= fits[bin][bestlocal->i][bestlocal->j]->Data->Integral(cutbin,cutbin2) ;
+			CountsD*=fits[bin][bestlocal->i][bestlocal->j]->Templ_D->Integral()/
+				 fits[bin][bestlocal->i][bestlocal->j]->Templ_D->Integral(cutbin,fits[bin][bestlocal->i][bestlocal->j]->Data->GetNbinsX());
+			CountsD-=1.0 * fits[bin][bestlocal->i][bestlocal->j]->TCounts; //fragm. of He + Tritium
+			CountsD=CountsD-0.033*CountsD;
+			CountsD*=1.02;//fragm of D
+		}
+		float Countsnoise= fits[bin][bestlocal->i][bestlocal->j]->Templ_P->Integral(fits_best[bin]->Data->FindBin(1.55), fits_best[bin]->Data->GetNbinsX() ) ;
+		ProtonTail->SetBinContent(bin+1,Countsnoise);
 
-		float CountsT      = fits[bin][bestlocal->i][bestlocal->j]->TCounts;
-		float CountsP_prim = fits[bin][bestlocal->i][bestlocal->j]->PCountsPrim - 8.5 * fits[bin][bestlocal->i][bestlocal->j]->TCounts;
-		float CountsD_prim = fits[bin][bestlocal->i][bestlocal->j]->DCountsPrim - 1.5 * fits[bin][bestlocal->i][bestlocal->j]->TCounts;
 
-		float conterrP= 0.1 * fits[bin][bestlocal->i][bestlocal->j]->TCounts;
-		float conterrD= 0.1 * fits[bin][bestlocal->i][bestlocal->j]->TCounts;
-		float conterrT= 0.1 * fits[bin][bestlocal->i][bestlocal->j]->TCounts;
+		float CountsT      = fits_best[bin]->TCounts;
+		float CountsP_prim = fits_best[bin]->PCountsPrim - 8.5 * fits_best[bin]->TCounts;
+		float CountsD_prim = fits_best[bin]->DCountsPrim - 1.0 * fits_best[bin]->TCounts;
+
+		float conterrP= 0.1 * fits_best[bin]->TCounts;
+		float conterrD= 0.1 * fits_best[bin]->TCounts;
+		float conterrT= 0.1 * fits_best[bin]->TCounts;
 
 
 		HeContError -> SetBinContent(bin+1,conterrD);
@@ -1485,25 +1864,24 @@ void TemplateFIT::CalculateFinalPDCounts(){
 		ProtonCounts->SetBinContent(bin+1,CountsP);
 		ProtonCounts->SetBinError(bin+1,pow(pow(staterrP,2)+pow(systerrP,2)+pow(conterrP,2),0.5));
 
-		DeuteronCounts->SetBinContent(bin+1,CountsD);
-		DeuteronCounts->SetBinError(bin+1,pow(pow(staterrD,2)+pow(systerrD,2)+pow(conterrD,2),0.5));		
+		if(CountsD>0) DeuteronCounts->SetBinContent(bin+1,CountsD);
+		if(CountsD>0) DeuteronCounts->SetBinError(bin+1,pow(pow(staterrD,2)+pow(systerrD,2)+pow(conterrD,2),0.5));		
 
 		TritiumCounts->SetBinContent(bin+1,CountsT);
 		TritiumCounts->SetBinError(bin+1,pow(pow(staterrT,2)+pow(systerrT,2)+pow(conterrT,2),0.5));		
 
 
-		if(fits[bin][bestlocal->i][bestlocal->j]->PCountsPrim>0){
-			ProtonCountsPrim->SetBinContent(bin+1,fits[bin][bestlocal->i][bestlocal->j]->PCountsPrim);
+		if(fits_best[bin]->PCountsPrim>0){
+			ProtonCountsPrim->SetBinContent(bin+1,fits_best[bin]->PCountsPrim);
 			ProtonCountsPrim->SetBinError(bin+1,pow(pow(staterrP,2)+pow(systerrP,2)+pow(conterrP,2),0.5) * ProtonCountsPrim->GetBinContent(bin+1)/ProtonCounts->GetBinContent(bin+1) );
 		}
-		if(fits[bin][bestlocal->i][bestlocal->j]->DCountsPrim>0){
-			DeuteronCountsPrim->SetBinContent(bin+1,fits[bin][bestlocal->i][bestlocal->j]->DCountsPrim);
+		if(fits_best[bin]->DCountsPrim>0){
+			DeuteronCountsPrim->SetBinContent(bin+1,fits_best[bin]->DCountsPrim);
 			DeuteronCountsPrim->SetBinError(bin+1,pow(pow(staterrD,2)+pow(systerrD,2)+pow(conterrD,2),0.5)* DeuteronCountsPrim->GetBinContent(bin+1)/DeuteronCounts->GetBinContent(bin+1) );		
 		}
 	}	
 
 	if(lowstatDmode) {
-//	ProtonTail->Smooth();
 	ProtonTail->Scale(1);
 	DeuteronCounts->Add(ProtonTail,-1);
 	}

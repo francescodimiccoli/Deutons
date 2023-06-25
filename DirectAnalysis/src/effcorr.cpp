@@ -172,16 +172,16 @@ void EffCorr::Eval_Corrections(float shift){
 		GlobalCorrection = ConvertBinnedHisto(GlobalCorrection,"Global Correction;R [GV];Efficiency",Bins,false);
 		GlobalEfficiency_plot = ConvertBinnedHisto(GlobalEfficiency,"Data Efficiency;R [GV];Efficiency",Bins,false);
 	}
-	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) if(GlobalCorrection->GetBinLowEdge(i+1)<shift)	GlobalCorrection->SetBinContent(i+1,GlobalCorrection->GetBinContent(GlobalCorrection->FindBin(shift)));
+	//for(int i=0;i<GlobalCorrection->GetNbinsX();i++) if(GlobalCorrection->GetBinLowEdge(i+1)<shift)	GlobalCorrection->SetBinContent(i+1,GlobalCorrection->GetBinContent(GlobalCorrection->FindBin(shift)));
 
 	if(splinemodel) ModelWithSpline(shift);
-	else ModelWithSimple();
+	else ModelWithSimple(shift);
 
 	//incertezza a posteriori
 	float std=0;
 	int nn=0;
 	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) {
-			if(GlobalCorrection->GetBinLowEdge(i+1)>shift ){
+			if(GlobalCorrection->GetBinLowEdge(i+1)>shift&&fabs(GlobalCorrection->GetBinContent(i+1)-CorrectionModel->Eval(GlobalCorrection->GetBinCenter(i+1)))<0.025){
 			std+=pow(GlobalCorrection->GetBinContent(i+1)-CorrectionModel->Eval(GlobalCorrection->GetBinCenter(i+1)),2);
 			nn++;
 			}
@@ -245,14 +245,13 @@ double SimpleModel(double *x, double *p){
 
 
 
-void EffCorr::ModelWithSimple(){
-	float shift=0;
+void EffCorr::ModelWithSimple(float shift){
 	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) if(((fabs(GlobalCorrection->GetBinContent(i+1)-GlobalCorrection->GetBinContent(i))>0.02&&fabs(GlobalCorrection->GetBinContent(i+1)-GlobalCorrection->GetBinContent(i+2))>0.02) || GlobalCorrection->GetBinError(i+1)>0.4)&&i>10) { GlobalCorrection->SetBinContent(i+1,(GlobalCorrection->GetBinContent(i) + GlobalCorrection->GetBinContent(i-1)) /2); GlobalCorrection->SetBinError(i+1,0.01); i++;}; 	
 
-	int nodes = 11;//Bins.size()/4+1;
+	int nodes = 12;//Bins.size()/4+1;
 	double p[nodes];
 	double eff[nodes];
-	float fibonacci[11]={0,0.5, 1., 2., 3., 5., 8., 15., 23., 30.,37};
+	float fibonacci[12]={0,0.1, 0.5, 1., 2., 3., 5., 8., 15., 23., 30.,37};
 	int j=0;
 	for(int i=0;i<nodes;i++){
 		p[j]=GlobalCorrection->GetBinContent(GlobalCorrection->FindBin(shift+fibonacci[i]));
@@ -283,14 +282,17 @@ void EffCorr::ModelWithSimple(){
 	CorrectionModel->SetParLimits(0,-0.08,0.08);
 	CorrectionModel->SetParLimits(1,0.8,1.1);
 	CorrectionModel->SetParLimits(2,-0.0052,0.0052);
-	CorrectionModel->SetParLimits(3,1,15);
 
-
+	if(!IsEkinCorrection) 
+		CorrectionModel->SetParLimits(3,2.8,25);
+	else 
+		CorrectionModel->SetParLimits(3,2.8,5);
 
 	float endrange=9999;
 	for(int i=GlobalCorrection->GetNbinsX();i>0;i--) if(!(GlobalCorrection->GetBinContent(i+1)>0)) endrange = GlobalCorrection->GetBinLowEdge(i+1); else break;
 
-	GlobalCorrection->Fit((basename+"_Corr").c_str(),"","SWW",1,endrange-1); 
+	if(endrange>40) endrange=40;
+	GlobalCorrection->Fit((basename+"_Corr").c_str(),"","SWW",shift,endrange-1); 
 
 
 	Syst_Stat = (TH1F *) GlobalCorrection->Clone();
@@ -298,9 +300,9 @@ void EffCorr::ModelWithSimple(){
 	for(int i=0;i<Syst_Stat->GetNbinsX();i++ ){
 		double x[1] = {GlobalCorrection->GetBinCenter(i+1)};
 		double c1[1];
-		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.997);
+		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.68);
 		if(GlobalCorrection->GetBinContent(i+1)) 
-			Syst_Stat->SetBinContent(i+1,c1[0]/GlobalCorrection->GetBinContent(i+1));		
+			Syst_Stat->SetBinContent(i+1,c1[0]);		
 	}	
 	GlobalEfficiency_plot->Fit((basename+"_Eff").c_str(),"","WM",shift,endrange-0.5); 
 	
@@ -345,7 +347,7 @@ void EffCorr::ModelWithSpline(float shift){
 	for(int i=GlobalCorrection->GetNbinsX();i>0;i--) if(!(GlobalCorrection->GetBinContent(i+1)>0)) endrange = GlobalCorrection->GetBinLowEdge(i+1); else break;
 
 
-	GlobalCorrection->Fit((basename+"_Corr").c_str(),"","MS",0,endrange-1); 
+	GlobalCorrection->Fit((basename+"_Corr").c_str(),"","MS",shift,endrange-1); 
 
 
 	Syst_Stat = (TH1F *) GlobalCorrection->Clone();
@@ -353,9 +355,9 @@ void EffCorr::ModelWithSpline(float shift){
 	for(int i=0;i<Syst_Stat->GetNbinsX();i++ ){
 		double x[1] = {GlobalCorrection->GetBinCenter(i+1)};
 		double c1[1];
-		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.997);
+		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.68);
 		if(GlobalCorrection->GetBinContent(i+1)) 
-			Syst_Stat->SetBinContent(i+1,c1[0]/GlobalCorrection->GetBinContent(i+1));		
+			Syst_Stat->SetBinContent(i+1,c1[0]);		
 	}	
 	GlobalEfficiency_plot->Fit((basename+"_Eff").c_str(),"","WM",shift,endrange-0.5); 
 	

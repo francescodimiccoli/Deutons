@@ -54,6 +54,11 @@ extern Binning ForAcceptance;
 extern Binning ForEffCorr;
 extern Binning ForEffCorr_D;
 
+extern Binning ForEffCorr_rig;
+extern Binning ForEffCorr_rig_D;
+
+
+
 extern Binning ForCutoff;
 
 extern float con_min;

@@ -25,52 +25,52 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
  
 	cout<<"****************************** FLUXES EVALUATION ******************************************"<<endl;
 
-	Flux * DFluxTOF  = new Flux(finalhistos,finalresults, "DFluxTOF", "Acceptance_DTOF","Acceptance","TOFDfits/Fit Results/Deuteron Counts","TOFDfits/Fit Results/StatErrorD","ExposureTOF",Global.GetToFDBins());
-	Flux * DFluxNaF  = new Flux(finalhistos,finalresults, "DFluxNaF", "Acceptance_DNaF","Acceptance","NaFDfits/Fit Results/Deuteron Counts","NaFDfits/Fit Results/StatErrorD","ExposureNaF",Global.GetNaFDBins());
-	Flux * DFluxAgl  = new Flux(finalhistos,finalresults, "DFluxAgl", "Acceptance_DAgl","Acceptance","AglDfits/Fit Results/Deuteron Counts","AglDfits/Fit Results/StatErrorD","ExposureAgl",Global.GetAglDBins());
+	Flux * DFluxTOF  = new Flux(finalhistos,finalresults, "DFluxTOF", "Acceptance_DTOF","Acceptance","TOFDfits/Fit Results/Deuteron Counts","TOFDfits/Fit Results/StatErrorD","TOFDfits/Fit Results/SystError","ExposureTOF",Global.GetToFDBins());
+	Flux * DFluxNaF  = new Flux(finalhistos,finalresults, "DFluxNaF", "Acceptance_DNaF","Acceptance","NaFDfits/Fit Results/Deuteron Counts","NaFDfits/Fit Results/StatErrorD","NaFDfits/Fit Results/SystError","ExposureNaF",Global.GetNaFDBins());
+	Flux * DFluxAgl  = new Flux(finalhistos,finalresults, "DFluxAgl", "Acceptance_DAgl","Acceptance","AglDfits/Fit Results/Deuteron Counts","AglDfits/Fit Results/StatErrorD","AglDfits/Fit Results/SystError","ExposureAgl",Global.GetAglDBins());
 
-	Flux * HEPFlux   = new Flux(finalhistos,finalresults,"PFluxHE"  ,"Acceptance_HE"    ,"Acceptance","HEPCounts/HEPCounts/HEPCounts_before","","HEExposure"		,PRB);
-	Flux * HEPFluxL1 = new Flux(finalhistos,finalresults,"PFluxL1HE","Acceptance_L1HE"  ,"Acceptance","HEPCountsL1/HEPCountsL1/HEPCountsL1_before","","HEExposure"	,PRB);
-	Flux * HEPFluxQ  = new Flux(finalhistos,finalresults,"PFluxQHE" ,"Acceptance_QualHE","Acceptance","HEPCountsQual/HEPCountsQual/HEPCountsQual_before","","HEExposure",PRB);
-	Flux * HEHeFluxQ  = new Flux(finalhistos,finalresults,"HeFluxQHE" ,"Acceptance_HeQualHE","Acceptance","HEHeCountsQual/HEHeCountsQual/HEHeCountsQual_before","","HEExposure",HeRB);
+	Flux * HEPFlux   = new Flux(finalhistos,finalresults,"PFluxHE"  ,"Acceptance_HE"    ,"Acceptance","HEPCounts/HEPCounts/HEPCounts_before","","","HEExposure"		,PRB);
+	Flux * HEPFluxL1 = new Flux(finalhistos,finalresults,"PFluxL1HE","Acceptance_L1HE"  ,"Acceptance","HEPCountsL1/HEPCountsL1/HEPCountsL1_before","","","HEExposure"	,PRB);
+	Flux * HEPFluxQ  = new Flux(finalhistos,finalresults,"PFluxQHE" ,"Acceptance_QualHE","Acceptance","HEPCountsQual/HEPCountsQual/HEPCountsQual_before","","","HEExposure",PRB);
+	Flux * HEHeFluxQ  = new Flux(finalhistos,finalresults,"HeFluxQHE" ,"Acceptance_HeQualHE","Acceptance","HEHeCountsQual/HEHeCountsQual/HEHeCountsQual_before","","","HEExposure",HeRB);
 
 
-	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "Acceptance_PTOF","Acceptance","TOFPfits/Fit Results/Proton Counts","TOFPfits/Fit Results/StatErrorP","ExposureTOF",Global.GetToFPBins());
-	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "Acceptance_PNaF","Acceptance","NaFPfits/Fit Results/Proton Counts","NaFPfits/Fit Results/StatErrorP","ExposureNaF",Global.GetNaFPBins());
-	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "Acceptance_PAgl","Acceptance","AglPfits/Fit Results/Proton Counts","AglPfits/Fit Results/StatErrorP","ExposureAgl",Global.GetAglPBins());
+	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "Acceptance_PTOF","Acceptance","TOFPfits/Fit Results/Proton Counts","TOFPfits/Fit Results/StatErrorP","TOFPfits/Fit Results/SystError","ExposureTOF",Global.GetToFPBins());
+	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "Acceptance_PNaF","Acceptance","NaFPfits/Fit Results/Proton Counts","NaFPfits/Fit Results/StatErrorP","NaFPfits/Fit Results/SystError","ExposureNaF",Global.GetNaFPBins());
+	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "Acceptance_PAgl","Acceptance","AglPfits/Fit Results/Proton Counts","AglPfits/Fit Results/StatErrorP","AglPfits/Fit Results/SystError","ExposureAgl",Global.GetAglPBins());
 	
-	Flux * RigPTOF = new Flux(finalhistos,finalresults, "RigPTOF", "Acceptance_RigPTOF","Acceptance","TOFPCounts/TOFPCounts/TOFPCounts_before","","ExposureTOF",GlobalRig.GetToFPBins());
-	Flux * RigPNaF = new Flux(finalhistos,finalresults, "RigPNaF", "Acceptance_RigPNaF","Acceptance","NaFPCounts/NaFPCounts/NaFPCounts_before","","ExposureNaF",GlobalRig.GetNaFPBins());
-	Flux * RigPAgl = new Flux(finalhistos,finalresults, "RigPAgl", "Acceptance_RigPAgl","Acceptance","AglPCounts/AglPCounts/AglPCounts_before","","ExposureAgl",GlobalRig.GetAglPBins());
+	Flux * RigPTOF = new Flux(finalhistos,finalresults, "RigPTOF", "Acceptance_RigPTOF","Acceptance","TOFPCounts/TOFPCounts/TOFPCounts_before","","","ExposureTOF",GlobalRig.GetToFPBins());
+	Flux * RigPNaF = new Flux(finalhistos,finalresults, "RigPNaF", "Acceptance_RigPNaF","Acceptance","NaFPCounts/NaFPCounts/NaFPCounts_before","","","ExposureNaF",GlobalRig.GetNaFPBins());
+	Flux * RigPAgl = new Flux(finalhistos,finalresults, "RigPAgl", "Acceptance_RigPAgl","Acceptance","AglPCounts/AglPCounts/AglPCounts_before","","","ExposureAgl",GlobalRig.GetAglPBins());
 
-	Flux * RigBetaPTOF = new Flux(finalhistos,finalresults, "RigBetaPTOF", "Acceptance_RigBetaPTOF","Acceptance","TOFPCountsBeta/TOFPCountsBeta/TOFPCountsBeta_before","","ExposureTOF",GlobalRig.GetToFPBins());
-	Flux * RigBetaPNaF = new Flux(finalhistos,finalresults, "RigBetaPNaF", "Acceptance_RigBetaPNaF","Acceptance","NaFPCountsBeta/NaFPCountsBeta/NaFPCountsBeta_before","","ExposureNaF",GlobalRig.GetNaFPBins());
-	Flux * RigBetaPAgl = new Flux(finalhistos,finalresults, "RigBetaPAgl", "Acceptance_RigBetaPAgl","Acceptance","AglPCountsBeta/AglPCountsBeta/AglPCountsBeta_before","","ExposureAgl",GlobalRig.GetAglPBins());
+	Flux * RigBetaPTOF = new Flux(finalhistos,finalresults, "RigBetaPTOF", "Acceptance_RigBetaPTOF","Acceptance","TOFPCountsBeta/TOFPCountsBeta/TOFPCountsBeta_before","","","ExposureTOF",GlobalRig.GetToFPBins());
+	Flux * RigBetaPNaF = new Flux(finalhistos,finalresults, "RigBetaPNaF", "Acceptance_RigBetaPNaF","Acceptance","NaFPCountsBeta/NaFPCountsBeta/NaFPCountsBeta_before","","","ExposureNaF",GlobalRig.GetNaFPBins());
+	Flux * RigBetaPAgl = new Flux(finalhistos,finalresults, "RigBetaPAgl", "Acceptance_RigBetaPAgl","Acceptance","AglPCountsBeta/AglPCountsBeta/AglPCountsBeta_before","","","ExposureAgl",GlobalRig.GetAglPBins());
 
-	Flux * FitBetaPTOF = new Flux(finalhistos,finalresults, "FitBetaPTOF", "Acceptance_PTOF","Acceptance","TOFPCountsFit/TOFPCountsFit/TOFPCountsFit_before","","ExposureTOF",Global.GetToFPBins());
-	Flux * FitBetaPNaF = new Flux(finalhistos,finalresults, "FitBetaPNaF", "Acceptance_PNaF","Acceptance","NaFPCountsFit/NaFPCountsFit/NaFPCountsFit_before","","ExposureNaF",Global.GetNaFPBins());
-	Flux * FitBetaPAgl = new Flux(finalhistos,finalresults, "FitBetaPAgl", "Acceptance_PAgl","Acceptance","AglPCountsFit/AglPCountsFit/AglPCountsFit_before","","ExposureAgl",Global.GetAglPBins());
+	Flux * FitBetaPTOF = new Flux(finalhistos,finalresults, "FitBetaPTOF", "Acceptance_PTOF","Acceptance","TOFPCountsFit/TOFPCountsFit/TOFPCountsFit_before","","","ExposureTOF",Global.GetToFPBins());
+	Flux * FitBetaPNaF = new Flux(finalhistos,finalresults, "FitBetaPNaF", "Acceptance_PNaF","Acceptance","NaFPCountsFit/NaFPCountsFit/NaFPCountsFit_before","","","ExposureNaF",Global.GetNaFPBins());
+	Flux * FitBetaPAgl = new Flux(finalhistos,finalresults, "FitBetaPAgl", "Acceptance_PAgl","Acceptance","AglPCountsFit/AglPCountsFit/AglPCountsFit_before","","","ExposureAgl",Global.GetAglPBins());
 
 
-	Flux * RigHeTOF = new Flux(finalhistos,finalresults, "RigHeTOF", "Acceptance_RigHeTOF","Acceptance","TOFHeCounts/TOFHeCounts/TOFHeCounts_before","","ExposureTOF",Global_HeRig.GetToFDBins());
-	Flux * RigHeNaF = new Flux(finalhistos,finalresults, "RigHeNaF", "Acceptance_RigHeNaF","Acceptance","NaFHeCounts/NaFHeCounts/NaFHeCounts_before","","ExposureNaF",Global_HeRig.GetNaFDBins());
-	Flux * RigHeAgl = new Flux(finalhistos,finalresults, "RigHeAgl", "Acceptance_RigHeAgl","Acceptance","AglHeCounts/AglHeCounts/AglHeCounts_before","","ExposureAgl",Global_HeRig.GetAglDBins());
+	Flux * RigHeTOF = new Flux(finalhistos,finalresults, "RigHeTOF", "Acceptance_RigHeTOF","Acceptance","TOFHeCounts/TOFHeCounts/TOFHeCounts_before","","","ExposureTOF",Global_HeRig.GetToFDBins());
+	Flux * RigHeNaF = new Flux(finalhistos,finalresults, "RigHeNaF", "Acceptance_RigHeNaF","Acceptance","NaFHeCounts/NaFHeCounts/NaFHeCounts_before","","","ExposureNaF",Global_HeRig.GetNaFDBins());
+	Flux * RigHeAgl = new Flux(finalhistos,finalresults, "RigHeAgl", "Acceptance_RigHeAgl","Acceptance","AglHeCounts/AglHeCounts/AglHeCounts_before","","","ExposureAgl",Global_HeRig.GetAglDBins());
 
-	Flux * RigBetaHeTOF = new Flux(finalhistos,finalresults, "RigBetaHeTOF", "Acceptance_HeTOF","Acceptance","TOFHeBetaCounts/TOFHeBetaCounts/TOFHeBetaCounts_before","","ExposureTOF",Global_HeRig.GetToFDBins());
-	Flux * RigBetaHeNaF = new Flux(finalhistos,finalresults, "RigBetaHeNaF", "Acceptance_HeNaF","Acceptance","NaFHeBetaCounts/NaFHeBetaCounts/NaFHeBetaCounts_before","","ExposureNaF",Global_HeRig.GetNaFDBins());
-	Flux * RigBetaHeAgl = new Flux(finalhistos,finalresults, "RigBetaHeAgl", "Acceptance_HeAgl","Acceptance","AglHeBetaCounts/AglHeBetaCounts/AglHeBetaCounts_before","","ExposureAgl",Global_HeRig.GetAglDBins());
+	Flux * RigBetaHeTOF = new Flux(finalhistos,finalresults, "RigBetaHeTOF", "Acceptance_HeTOF","Acceptance","TOFHeBetaCounts/TOFHeBetaCounts/TOFHeBetaCounts_before","","","ExposureTOF",Global_HeRig.GetToFDBins());
+	Flux * RigBetaHeNaF = new Flux(finalhistos,finalresults, "RigBetaHeNaF", "Acceptance_HeNaF","Acceptance","NaFHeBetaCounts/NaFHeBetaCounts/NaFHeBetaCounts_before","","","ExposureNaF",Global_HeRig.GetNaFDBins());
+	Flux * RigBetaHeAgl = new Flux(finalhistos,finalresults, "RigBetaHeAgl", "Acceptance_HeAgl","Acceptance","AglHeBetaCounts/AglHeBetaCounts/AglHeBetaCounts_before","","","ExposureAgl",Global_HeRig.GetAglDBins());
 
-	Flux * FitBetaHeTOF = new Flux(finalhistos,finalresults, "FitBetaHeTOF", "Acceptance_HeTOF","Acceptance","TOFHeFitCounts/TOFHeFitCounts/TOFHeFitCounts_before","","ExposureTOF",Global_He.GetToFDBins());
-	Flux * FitBetaHeNaF = new Flux(finalhistos,finalresults, "FitBetaHeNaF", "Acceptance_HeNaF","Acceptance","NaFHeFitCounts/NaFHeFitCounts/NaFHeFitCounts_before","","ExposureNaF",Global_He.GetNaFDBins());
-	Flux * FitBetaHeAgl = new Flux(finalhistos,finalresults, "FitBetaHeAgl", "Acceptance_HeAgl","Acceptance","AglHeFitCounts/AglHeFitCounts/AglHeFitCounts_before","","ExposureAgl",Global_He.GetAglDBins());
+	Flux * FitBetaHeTOF = new Flux(finalhistos,finalresults, "FitBetaHeTOF", "Acceptance_HeTOF","Acceptance","TOFHeFitCounts/TOFHeFitCounts/TOFHeFitCounts_before","","","ExposureTOF",Global_He.GetToFDBins());
+	Flux * FitBetaHeNaF = new Flux(finalhistos,finalresults, "FitBetaHeNaF", "Acceptance_HeNaF","Acceptance","NaFHeFitCounts/NaFHeFitCounts/NaFHeFitCounts_before","","","ExposureNaF",Global_He.GetNaFDBins());
+	Flux * FitBetaHeAgl = new Flux(finalhistos,finalresults, "FitBetaHeAgl", "Acceptance_HeAgl","Acceptance","AglHeFitCounts/AglHeFitCounts/AglHeFitCounts_before","","","ExposureAgl",Global_He.GetAglDBins());
 
-	Flux * He3FluxTOF  = new Flux(finalhistos,finalresults, "He3FluxTOF", "Acceptance_He3TOF","Acceptance","TOFHe3fits/Fit Results/Deuteron Counts","TOFHe3fits/Fit Results/StatErrorD","ExposureTOF",Global_He.GetToFPBins());
-	Flux * He3FluxNaF  = new Flux(finalhistos,finalresults, "He3FluxNaF", "Acceptance_He3NaF","Acceptance","NaFHe3fits/Fit Results/Deuteron Counts","NaFHe3fits/Fit Results/StatErrorD","ExposureNaF",Global_He.GetNaFPBins());
-	Flux * He3FluxAgl  = new Flux(finalhistos,finalresults, "He3FluxAgl", "Acceptance_He3Agl","Acceptance","AglHE3fits/Fit Results/Deuteron Counts","AglHE3fits/Fit Results/StatErrorD","ExposureAgl",Global_He.GetAglPBins());
+	Flux * He3FluxTOF  = new Flux(finalhistos,finalresults, "He3FluxTOF", "Acceptance_He3TOF","Acceptance","TOFHe3fits/Fit Results/Deuteron Counts","TOFHe3fits/Fit Results/StatErrorD","TOFHe3fits/Fit Results/SystError","ExposureTOF",Global_He.GetToFPBins());
+	Flux * He3FluxNaF  = new Flux(finalhistos,finalresults, "He3FluxNaF", "Acceptance_He3NaF","Acceptance","NaFHe3fits/Fit Results/Deuteron Counts","NaFHe3fits/Fit Results/StatErrorD","NaFHe3fits/Fit Results/SystError","ExposureNaF",Global_He.GetNaFPBins());
+	Flux * He3FluxAgl  = new Flux(finalhistos,finalresults, "He3FluxAgl", "Acceptance_He3Agl","Acceptance","AglHE3fits/Fit Results/Deuteron Counts","AglHE3fits/Fit Results/StatErrorD","AglHE3fits/Fit Results/SystError","ExposureAgl",Global_He.GetAglPBins());
 
-	Flux * He4FluxTOF  = new Flux(finalhistos,finalresults, "He4FluxTOF", "Acceptance_HeTOF","Acceptance","TOFHefits/Fit Results/Proton Counts","TOFHefits/Fit Results/StatErrorP","ExposureTOF",Global_He.GetToFDBins());
-	Flux * He4FluxNaF  = new Flux(finalhistos,finalresults, "He4FluxNaF", "Acceptance_HeNaF","Acceptance","NaFHefits/Fit Results/Proton Counts","NaFHefits/Fit Results/StatErrorP","ExposureNaF",Global_He.GetNaFDBins());
-	Flux * He4FluxAgl  = new Flux(finalhistos,finalresults, "He4FluxAgl", "Acceptance_HeAgl","Acceptance","AglHEfits/Fit Results/Proton Counts","AglHEfits/Fit Results/StatErrorP","ExposureAgl",Global_He.GetAglDBins());
+	Flux * He4FluxTOF  = new Flux(finalhistos,finalresults, "He4FluxTOF", "Acceptance_HeTOF","Acceptance","TOFHefits/Fit Results/Proton Counts","TOFHefits/Fit Results/StatErrorP","TOFHefits/Fit Results/SystError","ExposureTOF",Global_He.GetToFDBins());
+	Flux * He4FluxNaF  = new Flux(finalhistos,finalresults, "He4FluxNaF", "Acceptance_HeNaF","Acceptance","NaFHefits/Fit Results/Proton Counts","NaFHefits/Fit Results/StatErrorP","NaFHefits/Fit Results/SystError","ExposureNaF",Global_He.GetNaFDBins());
+	Flux * He4FluxAgl  = new Flux(finalhistos,finalresults, "He4FluxAgl", "Acceptance_HeAgl","Acceptance","AglHEfits/Fit Results/Proton Counts","AglHEfits/Fit Results/StatErrorP","AglHEfits/Fit Results/SystError","ExposureAgl",Global_He.GetAglDBins());
 
 	DFluxTOF ->SetDefaultOutFile(finalhistos); 
 	DFluxNaF ->SetDefaultOutFile(finalhistos);
@@ -160,50 +160,22 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 
 	if(!refill&&checkfile) {
-	float corr_D  = 1;//0.8618;
-	float corr_p  = 1;
+
+	//correction for fragmentation
+	float corr_D  = 0.9618;
+	float corr_p  = 0.99;
 	float corr_he = 1;
 
 
-	TFile * UnfoldingFile = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/EffSyst/Time.root");
-	TH2F* avg; 	
-
-	cout<<"************* D FLUX ************"<<endl;
-		
-	if(UnfoldingFile){	
-		avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Deuteron/sTOF/unfoldingTOFD_timeavg");
-		DFluxTOF->Set_UnfoldingTime(avg,filelistDT.c_str());	
-		avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Deuteron/sNaF/unfoldingNaFD_timeavg");
-		DFluxNaF->Set_UnfoldingTime(avg,filelistDT.c_str());
-		avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Deuteron/sAgl/unfoldingAglD_timeavg");
-		DFluxAgl->Set_UnfoldingTime(avg,filelistDT.c_str());
-	}	
-	
-	DFluxTOF->SetForceFolded(); 
-        DFluxNaF->SetForceFolded(); 
-        DFluxAgl->SetForceFolded();  //sistemare unfolding agl 
-     
-	DFluxTOF->ActivateRooUnfolding(); 
-	DFluxNaF->ActivateRooUnfolding(); 
-	DFluxAgl->ActivateRooUnfolding(); 
-
-	DFluxTOF-> Eval_Flux(corr_D,1.25,4,6,0.01);
-	DFluxNaF-> Eval_Flux(corr_D,3.4,8.2,6,0.01);
-	DFluxAgl-> Eval_Flux(corr_D,8,17.8,4,0.1,true);
-
-	DFluxTOF->SaveResults(finalresults);
-	DFluxNaF->SaveResults(finalresults);
-	DFluxAgl->SaveResults(finalresults);
+	TFile * UnfoldingFile = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/Unfolding/AvgUnfolding.root");
+	TH1F* avg; 	
 
 		cout<<"************* P FLUX ************"<<endl;
 
 	if(UnfoldingFile){	
-		avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Proton/sTOF/unfoldingTOFP_timeavg");
-		PFluxTOF->Set_UnfoldingTime(avg,filelistDT.c_str());	
-		avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Proton/sNaF/unfoldingNaFP_timeavg");
-		PFluxNaF->Set_UnfoldingTime(avg,filelistDT.c_str());
-		avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Proton/sAgl/unfoldingAglP_timeavg");
-		PFluxAgl->Set_UnfoldingTime(avg,filelistDT.c_str());
+		PFluxTOF->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("p"));	
+		PFluxNaF->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("p"));	
+		PFluxAgl->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("p"));	
 	}
 
 		PFluxTOF->SetForceFolded(); 
@@ -222,15 +194,40 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		PFluxNaF->SaveResults(finalresults);
 		PFluxAgl->SaveResults(finalresults);
 
-		cout<<"************* P+D FLUX ************"<<endl;
+		cout<<"************* D FLUX ************"<<endl;
+		
+	if(UnfoldingFile){	
+		DFluxTOF->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("D"));	
+		DFluxNaF->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("D"));	
+		DFluxAgl->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("D"));	
+	}	
+	
+/*	DFluxTOF->SetForceFolded(); 
+        DFluxNaF->SetForceFolded(); 
+        DFluxAgl->SetForceFolded();  //sistemare unfolding agl 
+  */   
+	DFluxTOF->ActivateRooUnfolding(); 
+	DFluxNaF->ActivateRooUnfolding(); 
+	DFluxAgl->ActivateRooUnfolding(); 
+
+	//DFluxTOF->AverageCountsWithOther(finalresults,"TOFPfits/Fit Results/Deuteron Counts","/Fluxes/PFluxTOF/ExposureTime Ekin",1.2);
+	DFluxNaF->AverageCountsWithOther(finalresults,"NaFPfits/Fit Results/Deuteron Counts","/Fluxes/PFluxNaF/ExposureTime Ekin",1.37);
+        DFluxAgl->AverageCountsWithOther(finalresults,"AglPfits/Fit Results/Deuteron Counts","/Fluxes/PFluxAgl/ExposureTime Ekin",1.2);
+
+	DFluxTOF-> Eval_Flux(corr_D,1.25,4,6,0.01);
+	DFluxNaF-> Eval_Flux(corr_D,3.4,8.2,6,0.01);
+	DFluxAgl-> Eval_Flux(corr_D,8,17.8,4,0.1,true);
+
+	DFluxTOF->SaveResults(finalresults);
+	DFluxNaF->SaveResults(finalresults);
+	DFluxAgl->SaveResults(finalresults);
+
+	cout<<"************* P+D FLUX ************"<<endl;
 
 		if(UnfoldingFile){	
-			avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Proton/sTOF/unfoldingTOFP_timeavg");
-			FitBetaPTOF->Set_UnfoldingTime(avg,filelistDT.c_str());	
-			avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Proton/sNaF/unfoldingNaFP_timeavg");
-			FitBetaPNaF->Set_UnfoldingTime(avg,filelistDT.c_str());
-			avg  = (TH2F*)UnfoldingFile->Get("/Unfolding/Proton/sAgl/unfoldingAglP_timeavg");
-			FitBetaPAgl->Set_UnfoldingTime(avg,filelistDT.c_str());
+		FitBetaPTOF->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("p"));	
+		FitBetaPNaF->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("p"));	
+		FitBetaPAgl->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("p"));	
 		}
 
 		FitBetaPTOF-> Eval_Flux(corr_p,1.2,1.57,3,0.01);
@@ -311,6 +308,12 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		FitBetaHeAgl->SaveResults(finalresults);
 
 	cout<<"************* 4He FLUX ************"<<endl;
+	if(UnfoldingFile){	
+		He4FluxTOF->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("He4"));	
+		He4FluxNaF->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("He4"));	
+		He4FluxAgl->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("He4"));	
+	}
+
 		He4FluxTOF->ActivateRooUnfolding(); 
 		He4FluxNaF->ActivateRooUnfolding(); 
 		He4FluxAgl->ActivateRooUnfolding(); 
@@ -324,10 +327,20 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		He4FluxAgl->SaveResults(finalresults);
 
 		cout<<"************* 3He FLUX ************"<<endl;
-		He3FluxTOF->ActivateRooUnfolding(); 
+	if(UnfoldingFile){	
+		He3FluxTOF->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("He3"));	
+		He3FluxNaF->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("He3"));	
+		He3FluxAgl->Set_UnfoldingTime((TH1F*)UnfoldingFile->Get("He3"));	
+	}
+
+	He3FluxTOF->ActivateRooUnfolding(); 
 		He3FluxNaF->ActivateRooUnfolding(); 
 		He3FluxAgl->ActivateRooUnfolding(); 
 	
+		He3FluxTOF->AverageCountsWithOther(finalresults,"TOFHefits/Fit Results/Deuteron Counts","/Fluxes/He4FluxTOF/ExposureTime Ekin",1.2);
+		He3FluxNaF->AverageCountsWithOther(finalresults,"NaFHefits/Fit Results/Deuteron Counts","/Fluxes/He4FluxNaF/ExposureTime Ekin",1.37);
+	        He3FluxAgl->AverageCountsWithOther(finalresults,"AglHEfits/Fit Results/Deuteron Counts","/Fluxes/He4FluxAgl/ExposureTime Ekin",1.2);
+
 		He3FluxTOF-> Eval_Flux(corr_he);//,1.9,3.2,3,0.01);
 		He3FluxNaF-> Eval_Flux(corr_he);//,3.4,8.2,6,0.01);
 		He3FluxAgl-> Eval_Flux(corr_he);//,8,17.5,5,0.01);
@@ -342,6 +355,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 		Particle proton(0.9382720813, 1, 1);  // proton mass 938 MeV
 		Particle deuton(1.8756129   , 1, 2);  // deuterium mass 1876 MeV, Z=1, A=2
+		bool nafpriority=true;
 
 		ResultMerger*	DeutonRes   = new ResultMerger(finalresults,"DFlux",Global,DFluxTOF,DFluxNaF,DFluxAgl,deuton);
 		ResultMerger*	RigPRes     = new ResultMerger(finalresults,"RigPFlux",Global,RigPTOF,RigPNaF,RigPAgl,proton);
@@ -349,11 +363,11 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		ResultMerger*	FitBetaPRes = new ResultMerger(finalresults,"FitBetaPFlux",Global,FitBetaPTOF,FitBetaPNaF,FitBetaPAgl,proton);
 		ResultMerger*	ProtonRes   = new ResultMerger(finalresults,"PFlux",Global,PFluxTOF,PFluxNaF,PFluxAgl,proton);
 	
-		ResultMerger*	He4Res 	    = new ResultMerger(finalresults,"He4Flux",Global_He,He4FluxTOF,He4FluxNaF,He4FluxAgl,deuton);
-		ResultMerger*	He3Res 	    = new ResultMerger(finalresults,"He3Flux",Global_He,He3FluxTOF,He3FluxNaF,He3FluxAgl,proton);
-		ResultMerger*	RigHeRes    = new ResultMerger(finalresults,"RigHeFlux",Global_HeRig,RigHeTOF,RigHeNaF,RigHeAgl,deuton);
-		ResultMerger*	RigBetaHeRes    = new ResultMerger(finalresults,"RigBetaHeFlux",Global_HeRig,RigBetaHeTOF,RigBetaHeNaF,RigBetaHeAgl,deuton);
-		ResultMerger*	FitBetaHeRes    = new ResultMerger(finalresults,"FitBetaHeFlux",Global_HeRig,FitBetaHeTOF,FitBetaHeNaF,FitBetaHeAgl,deuton);
+		ResultMerger*	He4Res 	    = new ResultMerger(finalresults,"He4Flux",Global_He,He4FluxTOF,He4FluxNaF,He4FluxAgl,deuton,nafpriority);
+		ResultMerger*	He3Res 	    = new ResultMerger(finalresults,"He3Flux",Global_He,He3FluxTOF,He3FluxNaF,He3FluxAgl,proton,nafpriority);
+		ResultMerger*	RigHeRes    = new ResultMerger(finalresults,"RigHeFlux",Global_HeRig,RigHeTOF,RigHeNaF,RigHeAgl,deuton,nafpriority);
+		ResultMerger*	RigBetaHeRes    = new ResultMerger(finalresults,"RigBetaHeFlux",Global_HeRig,RigBetaHeTOF,RigBetaHeNaF,RigBetaHeAgl,deuton,nafpriority);
+		ResultMerger*	FitBetaHeRes    = new ResultMerger(finalresults,"FitBetaHeFlux",Global_HeRig,FitBetaHeTOF,FitBetaHeNaF,FitBetaHeAgl,deuton,nafpriority);
 		
 
 		DeutonRes->SaveResults(finalresults);
@@ -406,31 +420,36 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 
 
-		TH1F * ratioDHe4 	  = DoRatio(DeutonRes->flux,RigHeRes->flux,"DHe4ratio");
-		TH1F * ratioDHe4_stat	  = DoRatio(DeutonRes->flux_stat,RigHeRes->flux_stat,"DHe4ratio_stat");
-		TH1F * ratioDHe4_unf 	  = DoRatio(DeutonRes->flux_unf,RigHeRes->flux,"DHe4ratio_unf");
-		TH1F * ratioDHe4_unf_stat = DoRatio(DeutonRes->flux_unf_stat,RigHeRes->flux_stat,"DHe4ratio_unf_stat");
+		TH1F * ratioDHe4 	  = DoRatio(DeutonRes->flux,He4Res->flux,"DHe4ratio");
+		TH1F * ratioDHe4_stat	  = DoRatio(DeutonRes->flux_stat,He4Res->flux_stat,"DHe4ratio_stat");
+		TH1F * ratioDHe4_unf 	  = DoRatio(DeutonRes->flux_unf,He4Res->flux,"DHe4ratio_unf");
+		TH1F * ratioDHe4_unf_stat = DoRatio(DeutonRes->flux_unf_stat,He4Res->flux_stat,"DHe4ratio_unf_stat");
 
 		TH1F * ratioHe3He4 	  = DoRatio(He3Res->flux,He4Res->flux,"He3He4ratio");
 		TH1F * ratioHe3He4_stat	  = DoRatio(He3Res->flux_stat,He4Res->flux_stat,"He3He4ratio_stat");
 		TH1F * ratioHe3He4_unf 	  = DoRatio(He3Res->flux_unf,He4Res->flux,"He3He4ratio_unf");
 		TH1F * ratioHe3He4_unf_stat = DoRatio(He3Res->flux_unf_stat,He4Res->flux_unf_stat,"He3He4ratio_unf_stat");
 
-		TH1F * ratioDAllHe 	  = DoRatio(DeutonRes->flux,RigHeRes->flux,"DAllHeratio");
-		TH1F * ratioDAllHe_stat	  = DoRatio(DeutonRes->flux_stat,RigHeRes->flux_stat,"DAllHeratio_stat");
-		TH1F * ratioDAllHe_unf 	  = DoRatio(DeutonRes->flux_unf,RigHeRes->flux_unf,"DAllHeratio_unf");
-		TH1F * ratioDAllHe_unf_stat = DoRatio(DeutonRes->flux_unf_stat,He4Res->flux_unf_stat,"DAllHeratio_unf_stat");
+		TH1F * ratioPAllHe 	    = DoRatio(RigPRes->flux,RigHeRes->flux,"PAllHeratio");
+		TH1F * ratioPAllHe_stat	    = DoRatio(RigPRes->flux_stat,RigHeRes->flux_stat,"PAllHeratio_stat");
+		TH1F * ratioPAllHe_unf 	    = DoRatio(RigPRes->flux_unf,RigHeRes->flux_unf,"PAllHeratio_unf");
+		TH1F * ratioPAllHe_unf_stat = DoRatio(RigPRes->flux_unf_stat,He4Res->flux_unf_stat,"PAllHeratio_unf_stat");
+
+		TH1F * ratioPHe4 	  = DoRatio(ProtonRes->flux,He4Res->flux,"PHe4ratio");
+		TH1F * ratioPHe4_stat	  = DoRatio(ProtonRes->flux_stat,He4Res->flux_stat,"PHe4ratio_stat");
+		TH1F * ratioPHe4_unf 	  = DoRatio(ProtonRes->flux_unf,He4Res->flux,"PHe4ratio_unf");
+		TH1F * ratioPHe4_unf_stat = DoRatio(ProtonRes->flux_unf_stat,He4Res->flux_stat,"PHe4ratio_unf_stat");
+
 
   		//Flux Unfolding Test	
 		TH1F * ratioPP = DoRatio(FitBetaPRes->flux,RigBetaPRes->flux,"unfoldingtest_ratiofolded");
 		TH1F * ratioPP_stat = DoRatio(FitBetaPRes->flux_stat,RigBetaPRes->flux_stat,"unfoldingtest_ratiofolded_stat");
-		TH1F * ratioPP_unf = DoRatio(FitBetaPRes->flux_unf,RigBetaPRes->flux_unf,"unfoldingtest_ratiounfolded");
-		TH1F * ratioPP_unf_stat = DoRatio(FitBetaPRes->flux_unf_stat,RigBetaPRes->flux_unf_stat,"unfoldingtest_ratiounfolded_stat");
+		TH1F * ratioPP_unf = DoRatio(ProtonRes->flux_unf,RigBetaPRes->flux_unf,"unfoldingtest_ratiounfolded");
+		TH1F * ratioPP_unf_stat = DoRatio(ProtonRes->flux_unf_stat,RigBetaPRes->flux_unf_stat,"unfoldingtest_ratiounfolded_stat");
 
 		//////////////// Ekin RATIO ////////////////////////
 
 		TH1F * ratio_DP_ekin = DoRatio_Ekin(DeutonRes->flux_ekin,ProtonRes->flux_ekin,"DPratio_Ekin");
-
 
 		finalresults.Add(ratioDP_);	
 		finalresults.Add(ratioDP_unf_);	
@@ -449,15 +468,21 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		finalresults.Add(ratioDHe4_stat);	
 		finalresults.Add(ratioDHe4_unf_stat);	
 
+		finalresults.Add(ratioPHe4);	
+		finalresults.Add(ratioPHe4_unf);	
+		finalresults.Add(ratioPHe4_stat);	
+		finalresults.Add(ratioPHe4_unf_stat);	
+
+		
 		finalresults.Add(ratioHe3He4);	
 		finalresults.Add(ratioHe3He4_unf);	
 		finalresults.Add(ratioHe3He4_stat);	
 		finalresults.Add(ratioHe3He4_unf_stat);	
 	
-		finalresults.Add(ratioDAllHe);	
-		finalresults.Add(ratioDAllHe_unf);	
-		finalresults.Add(ratioDAllHe_stat);	
-		finalresults.Add(ratioDAllHe_unf_stat);	
+		finalresults.Add(ratioPAllHe);	
+		finalresults.Add(ratioPAllHe_unf);	
+		finalresults.Add(ratioPAllHe_stat);	
+		finalresults.Add(ratioPAllHe_unf_stat);	
 
 		finalresults.Add(ratioPP);
 		finalresults.Add(ratioPP_stat);
@@ -498,9 +523,9 @@ TH1F * DoRatio(TH1F* numerator, TH1F * denominator,std::string name){
 
 	for(int i=0;i<rebinned_denominator->GetNbinsX();i++) {
 
-		float error = pow(rebinned_denominator->GetBinError(i+1)/rebinned_denominator->GetBinContent(i+1),2);
-//		error+= pow(numerator->GetBinError(i+1)/numerator->GetBinContent(i+1),2);
-
+		//float error = pow(rebinned_denominator->GetBinError(i+1)/rebinned_denominator->GetBinContent(i+1),2);
+		float error= pow(numerator->GetBinError(i+1)/numerator->GetBinContent(i+1),2);
+		ratio->SetBinError(i+1,pow(error,0.5)*ratio->GetBinContent(i+1));
 	}
 
 
@@ -530,9 +555,9 @@ TH1F * DoRatio_Extended_subtraction(TH1F* numerator, TH1F * denominator, TH1F* e
 
 	for(int i=0;i<rebinned_denominator->GetNbinsX();i++) {
 
-		float error = pow(rebinned_denominator->GetBinError(i+1)/rebinned_denominator->GetBinContent(i+1),2);
-		error+= pow(numerator->GetBinError(i+1)/numerator->GetBinContent(i+1),2);
-
+		float error= pow(numerator->GetBinError(i+1)/numerator->GetBinContent(i+1),2);
+		ratio->SetBinError(i+1,pow(error,0.5)*ratio->GetBinContent(i+1));
+	
 	}
 
 

@@ -14,8 +14,8 @@ bool IsTritiumMC   (Variables * vars){ return (vars->Massa_gen>2&&vars->Massa_ge
 bool IsFragmentedPfromHeMC (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
 bool IsFragmentedDfromHeMC (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==45&&(GetPIDatL3(vars))==45;}
 bool IsFragmentedTMC 	   (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==46&&(GetPIDatL3(vars))==46;}
-bool IsPureDMC 		   (Variables * vars) {return IsDeutonMC(vars)&&(GetPIDatL2(vars))==45&&(GetPIDatL3(vars))==45;}
-bool IsPurePMC 		   (Variables * vars) {return IsProtonMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
+bool IsPureDMC 		   (Variables * vars) {return IsDeutonMC(vars)&&vars->R>0.7*vars->Momento_gen;}//IsDeutonMC(vars)&&(GetPIDatL2(vars))==45&&(GetPIDatL3(vars))==45;}
+bool IsPurePMC 		   (Variables * vars) {return IsProtonMC(vars)&&vars->R>0.7*vars->Momento_gen;}//IsProtonMC(vars)&&(GetPIDatL2(vars))==14&&(GetPIDatL3(vars))==14;}
 bool IsPureTMC 		   (Variables * vars) {return IsTritiumMC(vars)&&(GetPIDatL2(vars))==46&&(GetPIDatL3(vars))==46;}
 bool IsPureHeMC		   (Variables * vars) {return IsHeliumMC(vars)&&(GetPIDatL2(vars))==47&&(GetPIDatL3(vars))==47;}
 
@@ -157,7 +157,7 @@ bool L1LooseCharge1(Variables * vars){ return (vars->qL1>0.2 && vars->qL1<1.75&&
 bool L1LooseCharge2(Variables * vars){ return (vars->qL1>1.2 && vars->qL1<3&&HasL1(vars));} 
 bool IsCleaning	(Variables * vars) { return Is1TrTrack(vars)&&IsCharge1UTOF(vars)&&IsCharge1LTOF(vars);  }
 bool IsCleaningHe	(Variables * vars) { return Is1TrTrack(vars)&&IsCharge2UTOF(vars)&&IsCharge2LTOF(vars);  }
-bool IsGoodTime (Variables * vars) { return ( ((int)vars->joinCutmask&32)==32);}
+bool IsGoodTime (Variables * vars) { return (vars->TOFchisq_s<5 && vars->TOFchisq_t<10); /*( ((int)vars->joinCutmask&32)==32);*/}
 bool IsGoodTimeHe (Variables * vars) { return (vars->TOFchisq_s<5 && vars->TOFchisq_t<10);}
 bool IsFromNaF_nosel     (Variables * vars){ return vars->IsFromNaF_nosel();}
 bool IsFromAgl_nosel     (Variables * vars){ return vars->IsFromAgl_nosel();}
@@ -168,9 +168,9 @@ bool IsFromAgl     (Variables * vars){ return vars->IsFromAgl();}
 
 //bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,999999,-0.275,-0.25);  }
 bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,999999,-0.26,-0.2);  }
-bool QualityTOF(Variables * vars) { return (vars->Richtothits<20 && vars->EdepECAL<10 && vars->qLtof>0.92 && vars->NAnticluster<=2); }
+bool QualityTOF(Variables * vars) { return (vars->Richtothits<20 && vars->EdepECAL<10 && vars->qLtof>0.92 && vars->NAnticluster<=2);}
 bool RICHHeCutNaF(Variables * vars) { return (vars->RichPhEl_tot>6 && vars->RICHPmts>4 &&  vars->RICHTOFBetaConsistency<0.05 && vars->Richtothits>5);}
-bool RICHHeCutAgl(Variables * vars) { return (vars->RichPhEl_tot>5 && vars->RICHPmts>3 &&  vars->RICHTOFBetaConsistency<0.06 && vars->Richtothits>5);}
+bool RICHHeCutAgl(Variables * vars) { return true;}//(vars->RichPhEl_tot>5 && vars->RICHPmts>3 &&  vars->RICHTOFBetaConsistency<0.06 && vars->Richtothits>5);}
 
 
 

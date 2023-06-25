@@ -151,6 +151,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
         after  = "IsPositive&IsPhysTrig&IsBaseline&L1LooseCharge1&IsCleaning";
 	EffCorr * RICHQualEffCorr_NaF = new EffCorr(finalhistos,"RICHQualCorrection_NaF","RICH Qual. Eff. Corr",true,1,(before+"&IsFromNaF").c_str(),(after+"&IsFromNaF&RICHBDTCut").c_str(),"IsPrimary");
 	EffCorr * RICHQualEffCorr_Agl = new EffCorr(finalhistos,"RICHqualCorrection_Agl","RICH Qual. Eff. Corr",true,1,(before+"&IsFromAgl").c_str(),(after+"&IsFromAgl&RICHBDTCut").c_str(),"IsPrimary");
+
 	before = "IsPositive&IsPhysTrig&IsBaselineHe&L1LooseCharge2&IsCleaningHe";
         after  = "IsPositive&IsPhysTrig&IsBaselineHe&L1LooseCharge2&IsCleaningHe";
 	EffCorr * RICHQualEffCorrZ2_NaF = new EffCorr(finalhistos,"RICHQualCorrectionZ2_NaF","RICH Qual. Eff. Corr",true,2,(before+"&IsFromNaF").c_str(),(after+"&IsFromNaF&RICHHeCutNaF").c_str(),"IsPrimary",false,"IsHeliumMC");
@@ -164,10 +165,21 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 
 	//Acceptance
 
+	//High Energy Cascade p&D
+	Acceptance * Acceptance_HE     		= new Acceptance(finalhistos,"Acceptance_HE"	,"Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline"	    ,PRB,UnfoldingToF);
+	Acceptance * Acceptance_L1HE   		= new Acceptance(finalhistos,"Acceptance_L1HE"	,"Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1"	    ,PRB,UnfoldingToF);
+	Acceptance * Acceptance_L1T1HE 		= new Acceptance(finalhistos,"Acceptance_L1HT1E"	,"Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&Is1TrTrack",PRB,UnfoldingToF);
+	Acceptance * Acceptance_L1T1UTOF1HE 	= new Acceptance(finalhistos,"Acceptance_L1T1UTOF1HE"	,"Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&Is1TrTrack&IsCharge1UTOF",PRB,UnfoldingToF);
+	Acceptance * Acceptance_QualHE 		= new Acceptance(finalhistos,"Acceptance_QualHE" ,"Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",PRB,UnfoldingToF);
+	Acceptance * Acceptance_TOFHE 		= new Acceptance(finalhistos,"Acceptance_TOFHE" ,"Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF",PRB,UnfoldingToF);
 
-	Acceptance * Acceptance_HE     = new Acceptance(finalhistos,"Acceptance_HE"	,"Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline"	    ,PRB,UnfoldingToF);
-	Acceptance * Acceptance_L1HE   = new Acceptance(finalhistos,"Acceptance_L1HE"	,"Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1"	    ,PRB,UnfoldingToF);
-	Acceptance * Acceptance_QualHE = new Acceptance(finalhistos,"Acceptance_QualHE" ,"Acceptance","IsProtonMC","IsProtonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",PRB,UnfoldingToF);
+
+	Acceptance * Acceptance_DHE     = new Acceptance(finalhistos,"Acceptance_DHE"	,"Acceptance","IsDeutonMC","IsDeutonMC&IsPositive&IsBaseline"	    ,PRB,UnfoldingToF);
+	Acceptance * Acceptance_DL1HE   = new Acceptance(finalhistos,"Acceptance_DL1HE"	,"Acceptance","IsDeutonMC","IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1"	    ,PRB,UnfoldingToF);
+	Acceptance * Acceptance_DL1T1HE = new Acceptance(finalhistos,"Acceptance_DL1HT1E"	,"Acceptance","IsDeutonMC","IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&Is1TrTrack",PRB,UnfoldingToF);
+	Acceptance * Acceptance_DL1T1UTOF1HE = new Acceptance(finalhistos,"Acceptance_DL1T1UTOF1HE"	,"Acceptance","IsDeutonMC","IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&Is1TrTrack&IsCharge1UTOF",PRB,UnfoldingToF);
+	Acceptance * Acceptance_DQualHE = new Acceptance(finalhistos,"Acceptance_DQualHE" ,"Acceptance","IsDeutonMC","IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning",PRB,UnfoldingToF);
+	Acceptance * Acceptance_DTOFHE = new Acceptance(finalhistos,"Acceptance_DTOFHE" ,"Acceptance","IsDeutonMC","IsDeutonMC&IsPositive&IsBaseline&L1LooseCharge1&IsCleaning&IsGoodTime&QualityTOF",PRB,UnfoldingToF);
 
 	Acceptance * Acceptance_HeQualHE = new Acceptance(finalhistos,"Acceptance_HeQualHE" ,"Acceptance","IsHeliumMC","IsHeliumMC&IsPositive&IsBaselineHe&L1LooseCharge2&IsCleaningHe",HeRB,UnfoldingToF_He);
 
@@ -259,10 +271,21 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Acceptance_RigHeTOF 	->SetDefaultOutFile(finalhistos); 
  	Acceptance_RigHeNaF 	->SetDefaultOutFile(finalhistos); 
  	Acceptance_RigHeAgl 	->SetDefaultOutFile(finalhistos); 
-	Acceptance_HE    	->SetDefaultOutFile(finalhistos); 
-        Acceptance_L1HE  	->SetDefaultOutFile(finalhistos); 
-	Acceptance_QualHE	->SetDefaultOutFile(finalhistos); 
-	Acceptance_HeQualHE	->SetDefaultOutFile(finalhistos); 
+	Acceptance_HE     	     ->SetDefaultOutFile(finalhistos); 
+        Acceptance_L1HE   	     ->SetDefaultOutFile(finalhistos); 
+	Acceptance_L1T1HE 	     ->SetDefaultOutFile(finalhistos); 
+	Acceptance_L1T1UTOF1HE 	     ->SetDefaultOutFile(finalhistos); 
+        Acceptance_QualHE 	     ->SetDefaultOutFile(finalhistos); 
+        Acceptance_TOFHE 	     ->SetDefaultOutFile(finalhistos); 
+	Acceptance_DHE     	     ->SetDefaultOutFile(finalhistos); 
+        Acceptance_DL1HE   	     ->SetDefaultOutFile(finalhistos); 
+	Acceptance_DL1T1HE 	     ->SetDefaultOutFile(finalhistos); 
+	Acceptance_DL1T1UTOF1HE 	     ->SetDefaultOutFile(finalhistos); 
+        Acceptance_DQualHE 	     ->SetDefaultOutFile(finalhistos); 
+        Acceptance_DTOFHE 	     ->SetDefaultOutFile(finalhistos); 
+	Acceptance_HeQualHE	->SetDefaultOutFile(finalhistos);
+
+
 
 
 
@@ -327,31 +350,28 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	Filler.AddObject2beFilled(Acceptance_RigBetaPTOF, 	GetRigidity,GetRigidity);
         Filler.AddObject2beFilled(Acceptance_RigBetaPNaF,	GetRigidity,GetRigidity);
         Filler.AddObject2beFilled(Acceptance_RigBetaPAgl, 	GetRigidity,GetRigidity);
-	Filler.AddObject2beFilled(Acceptance_HE,    	GetRigidity,GetRigidity);
-	Filler.AddObject2beFilled(Acceptance_L1HE , 	GetRigidity,GetRigidity);
-	Filler.AddObject2beFilled(Acceptance_QualHE,	GetRigidity,GetRigidity);
+	Filler.AddObject2beFilled(Acceptance_HE     	,    GetRigidity,GetRigidity);
+	Filler.AddObject2beFilled(Acceptance_L1HE   	,    GetRigidity,GetRigidity);
+	Filler.AddObject2beFilled(Acceptance_L1T1HE 	,    GetRigidity,GetRigidity);
+	Filler.AddObject2beFilled(Acceptance_L1T1UTOF1HE,    GetRigidity,GetRigidity);
+        Filler.AddObject2beFilled(Acceptance_QualHE 	,    GetRigidity,GetRigidity);  
+        Filler.AddObject2beFilled(Acceptance_TOFHE 	,    GetRigidity,GetRigidity);  
+
+	Filler.AddObject2beFilled(Acceptance_DHE     	,    GetRigidity,GetRigidity);
+	Filler.AddObject2beFilled(Acceptance_DL1HE   	,    GetRigidity,GetRigidity);
+	Filler.AddObject2beFilled(Acceptance_DL1T1HE 	,    GetRigidity,GetRigidity);
+	Filler.AddObject2beFilled(Acceptance_DL1T1UTOF1HE,    GetRigidity,GetRigidity);
+        Filler.AddObject2beFilled(Acceptance_DQualHE 	,    GetRigidity,GetRigidity);  
+        Filler.AddObject2beFilled(Acceptance_DTOFHE 	,    GetRigidity,GetRigidity);  
+
+
+
 	Filler.AddObject2beFilled(Acceptance_HeQualHE,	GetRigidity,GetRigidity);
 
 	Filler.AddObject2beFilled(Fragmentation_P,GetGenMomentum,GetGenMomentum);
 	Filler.AddObject2beFilled(Fragmentation_D,GetGenMomentum,GetGenMomentum);
 
 	Filler.ReinitializeAll(refill);
-
-/*
-	FillerAcc.AddObject2beFilled(Acceptance_PTOF,GetSmearedBetaTOF ,GetSmearedBetaTOF );
-        FillerAcc.AddObject2beFilled(Acceptance_PNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
-        FillerAcc.AddObject2beFilled(Acceptance_PAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
-	FillerAcc.AddObject2beFilled(Acceptance_DTOF,GetSmearedBetaTOF ,GetSmearedBetaTOF );
-        FillerAcc.AddObject2beFilled(Acceptance_DNaF,GetSmearedBetaRICH,GetSmearedBetaRICH);
-        FillerAcc.AddObject2beFilled(Acceptance_DAgl,GetSmearedBetaRICH,GetSmearedBetaRICH);
-	FillerAcc.AddObject2beFilled(Acceptance_RigPTOF, 	GetSmearedBetaTOF ,GetSmearedBetaTOF );
-        FillerAcc.AddObject2beFilled(Acceptance_RigPNaF,	GetSmearedBetaRICH,GetSmearedBetaRICH);
-        FillerAcc.AddObject2beFilled(Acceptance_RigPAgl, 	GetSmearedBetaRICH,GetSmearedBetaRICH);
-	FillerAcc.AddObject2beFilled(Acceptance_HE,    	GetSmearedBetaTOF ,GetSmearedBetaTOF );
-	FillerAcc.AddObject2beFilled(Acceptance_L1HE , 	GetSmearedBetaRICH,GetSmearedBetaRICH);
-	FillerAcc.AddObject2beFilled(Acceptance_QualHE,	GetSmearedBetaRICH,GetSmearedBetaRICH);
-	
-*/
 
 	if(!refill&&checkfile) {	
 
@@ -377,7 +397,6 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_He3NaF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 		Acceptance_He3Agl->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 
-
 		Acceptance_RigPTOF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
 		Acceptance_RigPNaF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
 		Acceptance_RigPAgl->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
@@ -390,89 +409,112 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_RigHeNaF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 		Acceptance_RigHeAgl->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 
-		Acceptance_HE    ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
-		Acceptance_L1HE  ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
-		Acceptance_QualHE->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
+		Acceptance_HE    	 ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);		
+		Acceptance_L1HE   	 ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);
+                Acceptance_L1T1HE 	 ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);
+                Acceptance_L1T1UTOF1HE	 ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);
+                Acceptance_QualHE 	 ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);
+                Acceptance_TOFHE 	 ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);
+
+		Acceptance_DHE    	 ->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);		
+		Acceptance_DL1HE   	 ->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);
+                Acceptance_DL1T1HE 	 ->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);
+                Acceptance_DL1T1UTOF1HE	 ->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);	
+                Acceptance_DQualHE 	 ->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);
+                Acceptance_DTOFHE 	 ->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);
+
+
 		Acceptance_HeQualHE->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 
-/*
-		Acceptance_PTOF->SetModeled();
-		Acceptance_PNaF->SetModeled();
-		Acceptance_PAgl->SetModeled();
-
-		Acceptance_DTOF->SetModeled();
 		Acceptance_DNaF->SetModeled();
-		Acceptance_DAgl->SetModeled();
-
-		Acceptance_HeTOF->SetModeled();
-		Acceptance_HeNaF->SetModeled();
-		Acceptance_HeAgl->SetModeled();
-
-		Acceptance_He3TOF->SetModeled();
-		Acceptance_He3NaF->SetModeled();
-		Acceptance_He3Agl->SetModeled();
-
-		Acceptance_RigPTOF->SetModeled();
-		Acceptance_RigPNaF->SetModeled();
-		Acceptance_RigPAgl->SetModeled();
-
-		Acceptance_RigHeTOF->SetModeled();
-		Acceptance_RigHeNaF->SetModeled();
-		Acceptance_RigHeAgl->SetModeled();
-
-		Acceptance_RigPTOF->SetModeled();
-		Acceptance_RigPNaF->SetModeled();
-		Acceptance_RigPAgl->SetModeled();
-
-		Acceptance_RigBetaPTOF->SetModeled();
-		Acceptance_RigBetaPNaF->SetModeled();
-		Acceptance_RigBetaPAgl->SetModeled();
-*/
+	
 		Fragmentation_P->Eval_Efficiency();
 		Fragmentation_D->Eval_Efficiency();
 
-		//Fragmentation_P->SaveResults(finalresults);
-	        //Fragmentation_D->SaveResults(finalresults);
+		Fragmentation_P->SaveResults(finalresults);
+	        Fragmentation_D->SaveResults(finalresults);
 
 		TFile * EffSystFile = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/EffSyst/Time.root");
-			
+		TFile * AcceptenceFile = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/Unfolding/AvgUnfolding.root");
 	
-		AnalyzeEffCorr(	TriggerEffCorr_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,false,true);
+	
+		AnalyzeEffCorr(	TriggerEffCorr_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),2,false,true);
 		AnalyzeEffCorr(	TriggerEffCorr_Z2  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.45,false,true);
-		AnalyzeEffCorr(	TriggerFullSpan_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,false,true);
-		AnalyzeEffCorr(	TriggerTOFEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,false,true);
-		AnalyzeEffCorr(	TriggerNaFEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.45,false,true);
-		AnalyzeEffCorr(	TriggerAglEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1,false,true);
-		AnalyzeEffCorr(	L1PickUpEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
-		AnalyzeEffCorr(	L1PickUpGeom_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
-		AnalyzeEffCorr(	TrackerEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),3.);
-		AnalyzeEffCorr(	KalmanEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1);
-		AnalyzeEffCorr(	GoodChi_HE  , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/Track Quality/","GoodChi_Err"		,"GoodChi_timeavg"	,filelistDT.c_str(),0.8);  
+		AnalyzeEffCorr(	TriggerFullSpan_HE  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),2,false,true);
+		AnalyzeEffCorr(	TriggerTOFEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),2,false,true);
+		AnalyzeEffCorr(	TriggerNaFEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),2.45,false,true);
+		AnalyzeEffCorr(	TriggerAglEffCorr  , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),2,false,true);
+		AnalyzeEffCorr(	L1PickUpEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.05);
+		AnalyzeEffCorr(	L1PickUpGeom_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.05);
+		AnalyzeEffCorr(	TrackerEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),4.5);
+		AnalyzeEffCorr(	KalmanEffCorr_HE , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.5);
+		AnalyzeEffCorr(	GoodChi_HE  , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/Track Quality/","GoodChi_Err"		,"GoodChi_timeavg"	,filelistDT.c_str(),0.8,true);  
 		AnalyzeEffCorr(	GoodUtof_HE , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/NoInteraction/","GoodUtof_Err"	,"GoodUtof_timeavg"	,filelistDT.c_str(),0.65);
 		AnalyzeEffCorr(	GoodLtof_HE  , finalhistos, finalresults ,EffSystFile,"Eff. Corrections Sys/NoInteraction/","GoodLtof_Err"	,"GoodLtof_timeavg"	,filelistDT.c_str(),0.65); 
 		AnalyzeEffCorr(	GoodQTrack_HE , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/Track Quality/","GoodQTrack_Err"	,"GoodQTrack_timeavg"	,filelistDT.c_str(),0.8);
 		AnalyzeEffCorr(	Good1Track_HE , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/NoInteraction/","Good1Track_Err"	,"Good1Track_timeavg"	,filelistDT.c_str(),0.65); 
-		AnalyzeEffCorr(	GoodTime_TOF , finalhistos, finalresults,EffSystFile, "Eff. Corrections Sys/TOF/","GoodTime_Err"		,"GoodTime_timeavg"	,filelistDT.c_str(),0.65,true);
+		AnalyzeEffCorr(	GoodTime_TOF , finalhistos, finalresults,EffSystFile, "Eff. Corrections Sys/TOF/","GoodTime_Err"		,"GoodTime_timeavg"	,filelistDT.c_str(),2);
 		AnalyzeEffCorr(	Quality_TOF , finalhistos, finalresults,EffSystFile,    "Eff. Corrections Sys/TOF/","QualityTime_Err"		,"Quality_timeavg"	,filelistDT.c_str(),0.65,true);
-		AnalyzeEffCorr(	RICHEffCorr_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH CIEMAT/","RICHNTime_Err"	,"RICHTF1_Ntimeavg"	,filelistDT.c_str(),1);
+	/*	AnalyzeEffCorr(	RICHEffCorr_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH CIEMAT/","RICHNTime_Err"	,"RICHTF1_Ntimeavg"	,filelistDT.c_str(),0.5,true);
 		AnalyzeEffCorr(	RICHEffCorr_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH CIEMAT/","RICHATime_Err"	,"RICHTF1_Atimeavg"	,filelistDT.c_str(),3.2,true);
-		AnalyzeEffCorr(	RICHQualEffCorr_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH BDT/","RICHQNTime_Err"	,"RICHQualTF1_Ntimeavg",filelistDT.c_str(),1);
-		AnalyzeEffCorr(	RICHQualEffCorr_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH BDT/","RICHQATime_Err"	,"RICHQualTF1_Atimeavg",filelistDT.c_str(),3.2,true);
+		AnalyzeEffCorr(	RICHQualEffCorr_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH BDT/","RICHQNTime_Err"	,"RICHQualTF1_Ntimeavg",filelistDT.c_str(),4,true);
+		AnalyzeEffCorr(	RICHQualEffCorr_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH BDT/","RICHQATime_Err"	,"RICHQualTF1_Atimeavg",filelistDT.c_str(),5.5,true);
+	*/
+		AnalyzeEffCorr(	RICHEffCorr_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH CIEMAT/","RICHNTime_Err"	,"RICHTF1_Ntimeavg"	,filelistDT.c_str(),1.0,true);
+		AnalyzeEffCorr(	RICHEffCorr_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH CIEMAT/","RICHATime_Err"	,"RICHTF1_Atimeavg"	,filelistDT.c_str(),3.65,true);
+		AnalyzeEffCorr(	RICHQualEffCorr_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH BDT/","RICHQNTime_Err"	,"RICHQualTF1_Ntimeavg",filelistDT.c_str(),1,true);
+		AnalyzeEffCorr(	RICHQualEffCorr_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys/RICH BDT/","RICHQATime_Err"	,"RICHQualTF1_Atimeavg",filelistDT.c_str(),0.7,true);
+
 
 		AnalyzeEffCorr(	L1PickUpEffCorr_Z2 , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.05);
 		AnalyzeEffCorr(	L1PickUpGeom_Z2 , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.05);
-		AnalyzeEffCorr(	TrackerEffCorr_Z2 , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.25);
+		AnalyzeEffCorr(	TrackerEffCorr_Z2 , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.25,true);
 		AnalyzeEffCorr(	KalmanEffCorr_Z2 , finalhistos, finalresults,EffSystFile,"","","",filelistDT.c_str(),1.25);
-		AnalyzeEffCorr(	GoodChi_Z2  , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/Track Quality/","GoodChi_Err"		,"GoodChi_timeavg"	,filelistDT.c_str(),1.25);  
-		AnalyzeEffCorr(	GoodUtof_Z2 , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/NoInteraction/","GoodUtof_Err"		,"GoodUtof_timeavg"	,filelistDT.c_str(),0.35);
-		AnalyzeEffCorr(	GoodLtof_Z2  , finalhistos, finalresults ,EffSystFile,"Eff. Corrections Sys. He/NoInteraction/","GoodLtof_Err"		,"GoodLtof_timeavg"	,filelistDT.c_str(),0.35); 
+		AnalyzeEffCorr(	GoodChi_Z2  , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/Track Quality/","GoodChi_Err"		,"GoodChi_timeavg"	,filelistDT.c_str(),1.25,true);  
+		AnalyzeEffCorr(	GoodUtof_Z2 , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/NoInteraction/","GoodUtof_Err"		,"GoodUtof_timeavg"	,filelistDT.c_str(),0.5,true);
+		AnalyzeEffCorr(	GoodLtof_Z2  , finalhistos, finalresults ,EffSystFile,"Eff. Corrections Sys. He/NoInteraction/","GoodLtof_Err"		,"GoodLtof_timeavg"	,filelistDT.c_str(),0.5,true); 
 		AnalyzeEffCorr(	GoodQTrack_Z2 , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/Track Quality/","GoodQTrack_Err"	,"GoodQTrack_timeavg"	,filelistDT.c_str(),1.25);
 		AnalyzeEffCorr(	Good1Track_Z2 , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/NoInteraction/","Good1Track_Err"	,"Good1Track_timeavg"	,filelistDT.c_str(),0.23); 
-		AnalyzeEffCorr(	GoodTimeZ2_TOF , finalhistos, finalresults,EffSystFile, "Eff. Corrections Sys. He/TOF/","GoodTime_Err"			,"GoodTime_timeavg"	,filelistDT.c_str(),0.3);
-		AnalyzeEffCorr(	RICHEffCorrZ2_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/RICH CIEMAT/","RICHNTime_Err"	,"RICHTF1_Ntimeavg"    ,filelistDT.c_str(),1.05);
+		AnalyzeEffCorr(	GoodTimeZ2_TOF , finalhistos, finalresults,EffSystFile, "Eff. Corrections Sys. He/TOF/","GoodTime_Err"			,"GoodTime_timeavg"	,filelistDT.c_str(),2);
+
+		AnalyzeEffCorr(	RICHEffCorrZ2_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/RICH CIEMAT/","RICHNTime_Err"	,"RICHTF1_Ntimeavg"    ,filelistDT.c_str(),1);
+		AnalyzeEffCorr(	RICHEffCorrZ2_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/RICH CIEMAT/","RICHATime_Err"	,"RICHTF1_Atimeavg"    ,filelistDT.c_str(),3.2);
+
+		AnalyzeEffCorr(	RICHQualEffCorrZ2_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/RICH BDT/","RICHQNTime_Err"	,"RICHQualTF1_Ntimeavg",filelistDT.c_str(),1);
+		AnalyzeEffCorr(	RICHQualEffCorrZ2_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/RICH BDT/","RICHQATime_Err"	,"RICHQualTF1_Atimeavg",filelistDT.c_str(),3.5);
+
+
+/*		AnalyzeEffCorr(	RICHEffCorrZ2_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/RICH CIEMAT/","RICHNTime_Err"	,"RICHTF1_Ntimeavg"    ,filelistDT.c_str(),1.05);
 		AnalyzeEffCorr(	RICHEffCorrZ2_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/RICH CIEMAT/","RICHATime_Err"	,"RICHTF1_Atimeavg"    ,filelistDT.c_str(),3.05);
 		AnalyzeEffCorr(	RICHQualEffCorrZ2_NaF , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/RICH BDT/","RICHQNTime_Err"	,"RICHQualTF1_Ntimeavg",filelistDT.c_str(),0.9);
 		AnalyzeEffCorr(	RICHQualEffCorrZ2_Agl , finalhistos, finalresults,EffSystFile,"Eff. Corrections Sys. He/RICH BDT/","RICHQATime_Err"	,"RICHQualTF1_Atimeavg",filelistDT.c_str(),3.05);
+*/
+
+	
+		//time regularization of EffMC
+		if(AcceptenceFile) {
+
+			Acceptance_RigBetaPTOF->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("Effp"));
+			Acceptance_RigBetaPNaF->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("Effp"));
+			Acceptance_RigBetaPAgl->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("Effp"));
+
+			Acceptance_PTOF ->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("Effp"));
+			Acceptance_PNaF ->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("Effp"));
+			Acceptance_PAgl ->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("Effp"));
+
+			Acceptance_DTOF->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("EffD"));
+			Acceptance_DNaF->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("EffD"));
+			Acceptance_DAgl->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("EffD"));
+
+			Acceptance_HeTOF ->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("EffHe4"));
+			Acceptance_HeNaF ->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("EffHe4"));
+			Acceptance_HeAgl ->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("EffHe4"));
+
+			Acceptance_He3TOF->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("EffHe3"));
+			Acceptance_He3NaF->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("EffHe3"));
+			Acceptance_He3Agl->Set_AcceptanceTime((TH1F*)AcceptenceFile->Get("EffHe3"));
+
+		}
 
 
 		//Baseline effcorr
@@ -577,7 +619,6 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_He3Agl->ApplyEfficCorr(GoodChi_Z2);
 		Acceptance_He3Agl->ApplyEfficCorr(KalmanEffCorr_Z2);
 
-
 		Acceptance_RigHeTOF->ApplyEfficCorr(TrackerEffCorr_Z2);
 		Acceptance_RigHeTOF->ApplyEfficCorr(GoodQTrack_Z2);
 		Acceptance_RigHeTOF->ApplyEfficCorr(GoodChi_Z2);
@@ -639,7 +680,6 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_He3NaF->ApplyEfficCorr(L1PickUpEffCorr_Z2);
 		Acceptance_He3Agl->ApplyEfficCorr(L1PickUpGeom_Z2);
 		Acceptance_He3Agl->ApplyEfficCorr(L1PickUpEffCorr_Z2);
-
 
 		Acceptance_RigHeTOF->ApplyEfficCorr(L1PickUpGeom_Z2);
 		Acceptance_RigHeTOF->ApplyEfficCorr(L1PickUpEffCorr_Z2);
@@ -735,12 +775,12 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_RigBetaPTOF	->ApplyEfficCorr(TriggerEffCorr_HE);
 		Acceptance_RigBetaPNaF	->ApplyEfficCorr(TriggerEffCorr_HE);
 		Acceptance_RigBetaPAgl	->ApplyEfficCorr(TriggerEffCorr_HE);
-		Acceptance_PTOF	->ApplyEfficCorr(TriggerEffCorr_HE);
-		Acceptance_PNaF	->ApplyEfficCorr(TriggerEffCorr_HE);
-		Acceptance_PAgl	->ApplyEfficCorr(TriggerEffCorr_HE);
-		Acceptance_DTOF	->ApplyEfficCorr(TriggerEffCorr_HE);
-		Acceptance_DNaF	->ApplyEfficCorr(TriggerEffCorr_HE);
-		Acceptance_DAgl	->ApplyEfficCorr(TriggerEffCorr_HE);
+		Acceptance_PTOF		->ApplyEfficCorr(TriggerEffCorr_HE);
+		Acceptance_PNaF		->ApplyEfficCorr(TriggerEffCorr_HE);
+		Acceptance_PAgl		->ApplyEfficCorr(TriggerEffCorr_HE);
+		Acceptance_DTOF		->ApplyEfficCorr(TriggerEffCorr_HE);
+		Acceptance_DNaF		->ApplyEfficCorr(TriggerEffCorr_HE);
+		Acceptance_DAgl		->ApplyEfficCorr(TriggerEffCorr_HE);
 		Acceptance_HeTOF	->ApplyEfficCorr(TriggerEffCorr_Z2);
 		Acceptance_HeNaF	->ApplyEfficCorr(TriggerEffCorr_Z2);
 		Acceptance_HeAgl	->ApplyEfficCorr(TriggerEffCorr_Z2);
@@ -751,7 +791,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_RigHeNaF	->ApplyEfficCorr(TriggerEffCorr_Z2);
 		Acceptance_RigHeAgl	->ApplyEfficCorr(TriggerEffCorr_Z2);
 				
-			//velocity effcorr
+         	//velocity effcorr
 
 		Acceptance_PTOF->ApplyEfficCorr(GoodTime_TOF);
 		Acceptance_PTOF->ApplyEfficCorr(Quality_TOF);
@@ -781,16 +821,15 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 	        Acceptance_HeNaF->ApplyEfficCorr(RICHEffCorrZ2_NaF);
                 Acceptance_HeAgl->ApplyEfficCorr(RICHEffCorrZ2_Agl);
 	        Acceptance_HeNaF->ApplyEfficCorr(RICHQualEffCorrZ2_NaF);
-                Acceptance_HeAgl->ApplyEfficCorr(RICHQualEffCorrZ2_Agl);
+               // Acceptance_HeAgl->ApplyEfficCorr(RICHQualEffCorrZ2_Agl);
 	
 		Acceptance_He3TOF->ApplyEfficCorr(GoodTimeZ2_TOF);
 	        Acceptance_He3NaF->ApplyEfficCorr(RICHEffCorrZ2_NaF);
                 Acceptance_He3Agl->ApplyEfficCorr(RICHEffCorrZ2_Agl);
 	        Acceptance_He3NaF->ApplyEfficCorr(RICHQualEffCorrZ2_NaF);
-                Acceptance_He3Agl->ApplyEfficCorr(RICHQualEffCorrZ2_Agl);
-	
+               // Acceptance_He3Agl->ApplyEfficCorr(RICHQualEffCorrZ2_Agl);
 
-
+		
 		Acceptance_PTOF 	->  EvalEffAcc(timeindex,1.2);
 		Acceptance_PNaF 	->  EvalEffAcc(timeindex,1.2);
 		Acceptance_PAgl 	->  EvalEffAcc(timeindex,1.2);
@@ -849,19 +888,40 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
         Acceptance_RigHeAgl 	->SaveResults(finalresults);
 
 
-	Acceptance_HE     	->  EvalEffAcc(timeindex,1.2);
+	Acceptance_HE    	->  EvalEffAcc(timeindex,1.2);
         Acceptance_L1HE   	->  EvalEffAcc(timeindex,1.2);
+      Acceptance_L1T1HE 	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_L1T1UTOF1HE	->  EvalEffAcc(timeindex,1.2);
         Acceptance_QualHE 	->  EvalEffAcc(timeindex,1.2);
-	
-	Acceptance_HE     	->SaveResults(finalresults);
-        Acceptance_L1HE   	->SaveResults(finalresults);
-        Acceptance_QualHE 	->SaveResults(finalresults);
+        Acceptance_TOFHE 	->  EvalEffAcc(timeindex,1.2);
+
+
+	Acceptance_DHE    	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_DL1HE   	->  EvalEffAcc(timeindex,1.2);
+        Acceptance_DL1T1HE 	->  EvalEffAcc(timeindex,1.2);
+	Acceptance_DL1T1UTOF1HE	->  EvalEffAcc(timeindex,1.2);
+	Acceptance_DQualHE 	->  EvalEffAcc(timeindex,1.2);
+	Acceptance_DTOFHE 	->  EvalEffAcc(timeindex,1.2);
 
 
 
+	Acceptance_HE    	->SaveResults(finalresults);
+	Acceptance_L1HE   	->SaveResults(finalresults);
+	Acceptance_L1T1HE 	->SaveResults(finalresults);
+	Acceptance_L1T1UTOF1HE	->SaveResults(finalresults);
+	Acceptance_QualHE 	->SaveResults(finalresults);
+	Acceptance_TOFHE 	->SaveResults(finalresults);
+
+
+	Acceptance_DHE    	->SaveResults(finalresults);
+	Acceptance_DL1HE   	->SaveResults(finalresults);
+	Acceptance_DL1T1HE 	->SaveResults(finalresults);
+	Acceptance_DL1T1UTOF1HE	->SaveResults(finalresults);
+	Acceptance_DQualHE 	->SaveResults(finalresults);
+	Acceptance_DTOFHE 	->SaveResults(finalresults);
 
 	//Plotting EffCorr
-		
+
 	//Z1
 	std::vector<EffCorr *> Trigg;
 	Trigg.push_back(TriggerEffCorr_HE);
@@ -1138,9 +1198,10 @@ void DrawCorrectionBlock(std::vector<EffCorr *> block, std::string Blockname,Fil
 	else TotalCorrection->GetXaxis()->SetTitle("R [GV]");
 	
 	TCanvas * c1 = new TCanvas("Correction Block");
-	if(block.size()>1) TotalCorrection->Draw("Ae4C");
+	if(block.size()>1) TotalCorrection->Draw("Ae3C");
 	for(int i=0;i<block.size();i++) block[i]->GetCorrectionModel()->SetLineColor(i+2);	
-	for(int i=0;i<block.size();i++) block[i]->GetCorrectionModel()->Draw("same");
+	for(int i=0;i<block.size();i++) block[i]->GetCorrectionModel()->SetLineWidth(2);	
+//	for(int i=0;i<block.size();i++) block[i]->GetCorrectionModel()->Draw("same");
 
 	TGraphErrors * raw_corrections[block.size()];
 	for(int i=0;i<block.size();i++){
@@ -1172,9 +1233,9 @@ void DrawCorrectionBlock(std::vector<EffCorr *> block, std::string Blockname,Fil
 		}	
 		correction_err[i]->SetFillColor(i+2);
 		correction_err[i]->SetFillStyle(3002);
-		correction_err[i]->SetLineColor(0);
-		correction_err[i]->SetLineWidth(0);
-		correction_err[i]->Draw("e4same");
+		correction_err[i]->SetLineColor(i+2);
+		correction_err[i]->SetLineWidth(2);
+		correction_err[i]->Draw("Ce3same");
 	}
 
 
