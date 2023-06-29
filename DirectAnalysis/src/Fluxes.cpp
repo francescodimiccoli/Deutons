@@ -210,9 +210,9 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	DFluxNaF->ActivateRooUnfolding(); 
 	DFluxAgl->ActivateRooUnfolding(); 
 
-	//DFluxTOF->AverageCountsWithOther(finalresults,"TOFPfits/Fit Results/Deuteron Counts","/Fluxes/PFluxTOF/ExposureTime Ekin",1.2);
-	DFluxNaF->AverageCountsWithOther(finalresults,"NaFPfits/Fit Results/Deuteron Counts","/Fluxes/PFluxNaF/ExposureTime Ekin",1.37);
-        DFluxAgl->AverageCountsWithOther(finalresults,"AglPfits/Fit Results/Deuteron Counts","/Fluxes/PFluxAgl/ExposureTime Ekin",1.2);
+	DFluxTOF->AverageCountsWithOther(finalresults,"TOFPfits/Fit Results/Deuteron Counts","/Fluxes/PFluxTOF/ExposureTime Ekin");
+	DFluxNaF->AverageCountsWithOther(finalresults,"NaFPfits/Fit Results/Deuteron Counts","/Fluxes/PFluxNaF/ExposureTime Ekin",0.3);
+        DFluxAgl->AverageCountsWithOther(finalresults,"AglPfits/Fit Results/Deuteron Counts","/Fluxes/PFluxAgl/ExposureTime Ekin");
 
 	DFluxTOF-> Eval_Flux(corr_D,1.25,4,6,0.01);
 	DFluxNaF-> Eval_Flux(corr_D,3.4,8.2,6,0.01);
@@ -337,9 +337,9 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		He3FluxNaF->ActivateRooUnfolding(); 
 		He3FluxAgl->ActivateRooUnfolding(); 
 	
-		He3FluxTOF->AverageCountsWithOther(finalresults,"TOFHefits/Fit Results/Deuteron Counts","/Fluxes/He4FluxTOF/ExposureTime Ekin",1.2);
-		He3FluxNaF->AverageCountsWithOther(finalresults,"NaFHefits/Fit Results/Deuteron Counts","/Fluxes/He4FluxNaF/ExposureTime Ekin",1.37);
-	        He3FluxAgl->AverageCountsWithOther(finalresults,"AglHEfits/Fit Results/Deuteron Counts","/Fluxes/He4FluxAgl/ExposureTime Ekin",1.2);
+		He3FluxTOF->AverageCountsWithOther(finalresults,"TOFHefits/Fit Results/Deuteron Counts","/Fluxes/He4FluxTOF/ExposureTime Ekin");
+		He3FluxNaF->AverageCountsWithOther(finalresults,"NaFHefits/Fit Results/Deuteron Counts","/Fluxes/He4FluxNaF/ExposureTime Ekin");
+	        He3FluxAgl->AverageCountsWithOther(finalresults,"AglHEfits/Fit Results/Deuteron Counts","/Fluxes/He4FluxAgl/ExposureTime Ekin");
 
 		He3FluxTOF-> Eval_Flux(corr_he);//,1.9,3.2,3,0.01);
 		He3FluxNaF-> Eval_Flux(corr_he);//,3.4,8.2,6,0.01);

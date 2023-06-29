@@ -824,6 +824,8 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 		TH1F* dummy=new TH1F();
 		for(int i=0;i<tailFT.size();i++)
 			finalhistos.Add(DrawTemplateFit(i,tailFT[i]->Data,tailFT[i]->Templ_P,tailFT[i]->Templ_D,tailFT[i]->Templ_He,dummy));
+			for(int i=0;i<chitail.size();i++) 
+			finalhistos.Add(chitail[i]);
 			finalhistos.writeObjsInFolder((basename+"/Fit Results/TailFT").c_str());
 
 	}
@@ -1076,7 +1078,7 @@ float GetChiSquare(TH1 * result, TH1 * data, float min, float max,bool prioritiz
 	if(prioritizetail){
 		chi=0;
 		ndf=0;
-		for(int i=Data->FindBin(2); i<binmax; i++){
+		for(int i=binmin; i<binmax; i++){
 			if(Result->GetBinCenter(i+1)>4) tailmult=4;
 			if(Result->GetBinError(i+1)<=0||Data->GetBinError(i+1)<=0) continue;
 			err = pow(pow(Data->GetBinError(i+1),2) + pow(Result->GetBinError(i+1),2),0.5);
@@ -1103,8 +1105,8 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 	Fit->Templ_Noise = (TH1F*)Fit -> Templ_P->Clone();
 	for(int i=0;i<Fit->Templ_Noise->GetNbinsX();i++){
 
-		if(Fit->Templ_Noise->GetBinCenter(i+1)>1) Fit->Templ_Noise->SetBinContent(i+1, 100*exp(-0.7*Fit->Templ_Noise->GetBinCenter(i+1)));
-		else Fit->Templ_Noise->SetBinContent(i+1, 100*exp(-0.7*1));
+		if(Fit->Templ_Noise->GetBinCenter(i+1)>1) Fit->Templ_Noise->SetBinContent(i+1, 100*exp(-0.6*Fit->Templ_Noise->GetBinCenter(i+1)));
+		else Fit->Templ_Noise->SetBinContent(i+1, 100*exp(-0.6*1));
 		Fit->Templ_Noise->SetBinError(i+1,0.1*Fit->Templ_Noise->GetBinContent(i+1));
 	}
 
@@ -1156,7 +1158,7 @@ void Do_TemplateFIT(TFit * Fit,float fitrangemin,float fitrangemax,float constra
 		Fit -> Tfit -> Constrain(1, constrain_min[0] ,constrain_max[0]);
                 Fit -> Tfit -> Constrain(2, constrain_min[1] ,constrain_max[1]);
 	 	Fit -> Tfit -> Constrain(3, constrain_min[2] ,constrain_max[2]);
-	 	if(isfitnoise) Fit -> Tfit -> Constrain(4, 0.0005 ,0.1);
+	 	if(isfitnoise) Fit -> Tfit -> Constrain(4, 0.000005 ,0.1);
 
 
 
@@ -1446,24 +1448,20 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 	if(adjousttail){
 		mag=Mag;
 		for(int bin=0;bin<4;bin++) {
+			if((Midbin-2+bin)>=bins.size()) continue;
 			for(int sigma=0;sigma<systpar.steps;sigma++) tailFT.push_back(fits[Midbin-2+bin][sigma][5]->Clone());
 			chibest=9e7;
 			int sigmaindex=0;
-			for(int k=(systpar.steps+13)*bin;k<(systpar.steps+13)*(bin)+systpar.steps;k++){
+			for(int k=(systpar.steps+20)*bin;k<(systpar.steps+20)*(bin)+systpar.steps;k++){
 		
 				float fixminimum_factor=1;
-				//if((k-(systpar.steps+13)*bin)==3) fixminimum_factor=0.001;
+				//if((k-(systpar.steps+20)*bin)==3) fixminimum_factor=0.001;
 				//else fixminimum_factor=1;
 
-				/*for(int i=0;i<tailFT[k]->Templ_P->GetNbinsX();i++){	
-				  float mod=(mag)/(1+exp(-Fast*(tailFT[k]->Templ_P->GetBinCenter(i+1)-Mid)));
-				  tailFT[k]->Templ_P->SetBinContent(i+1,max((double)(1+mod)*tailFT[k]->Templ_P->GetBinContent(i+1),0.));
-				  tailFT[k]->Templ_P->SetBinError(i+1,max((double)(1+mod)*tailFT[k]->Templ_P->GetBinError(i+1),0.));
-				  }*/
 				float eq = EqualizeTemplate(tailFT[k]->Templ_P,tailFT[k]->Data);
 				tailFT[k]->Templ_P=SimpleShiftHisto(tailFT[k]->Templ_P,eq);			
 				tailFT[k]->RegularizeTemplateError();
-				Do_TemplateFIT(tailFT[k],fits[Midbin-2+bin][0][5]->fitrangemin,fits[Midbin-2+bin][0][5]->fitrangemax,constrainmin,constrainmax,IsFitNoise,false);
+				Do_TemplateFIT(tailFT[k],fits[Midbin-2+bin][0][5]->fitrangemin,4.5,constrainmin,constrainmax,IsFitNoise,false);
 				if(fixminimum_factor*tailFT[k]->ChiSquare<chibest){
 					chibest=fixminimum_factor*tailFT[k]->ChiSquare;
 					sigmabest[bin]=sigmaindex;
@@ -1471,33 +1469,36 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 				sigmaindex++;
 			}
 		
-
+			chitail.push_back(new TH1F(("mod_chi bin "+to_string(bin)).c_str(),("mod_chi bin "+to_string(bin)).c_str(),20,0,20));
 			chibest=9e7;
-			for(int k=0;k<13;k++) tailFT.push_back(fits[Midbin-2+bin][sigmabest[bin]][5]->Clone());
-			for(int k=0;k<13;k++) {
+			for(int k=0;k<20;k++) tailFT.push_back(tailFT[(systpar.steps+20)*bin +sigmabest[bin]]->Clone());
+			for(int k=0;k<20;k++) {
 			
-				int n=(13+systpar.steps)*bin + (k+systpar.steps);
-				float eq = EqualizeTemplate(tailFT[n]->Templ_P,tailFT[n]->Data);
-                                tailFT[n]->Templ_P=SimpleShiftHisto(tailFT[n]->Templ_P,eq);
+				int n=(20+systpar.steps)*bin + (k+systpar.steps);
+
 				for(int i=0;i<tailFT[n]->Templ_P->GetNbinsX();i++)
-					if(true) {
-						float mod=((0.5+0.2*k)*mag)/(1+exp(-3*(tailFT[n]->Templ_P->GetBinCenter(i+1)-Mid)));
+					if(tailFT[n]->Templ_P->GetBinCenter(i+1)>1.4) {
+						float mod=((0.4+0.3*k)*mag)/(1+exp(-3*(tailFT[n]->Templ_P->GetBinCenter(i+1)-Mid)));
 						//	float mod=(((0.5+0.2*k)*mag/2/1.57)*atan(Fast*(tailFT[n]->Templ_P->GetBinCenter(i+1)-Mid))+(0.5+0.2*k)*mag/2);
 						tailFT[n]->Templ_P->SetBinContent(i+1,max((double)(1+mod)*tailFT[n]->Templ_P->GetBinContent(i+1),0.));
 						tailFT[n]->Templ_P->SetBinError(i+1,max((double)(1+mod)*tailFT[n]->Templ_P->GetBinError(i+1),0.));
-					} 		
-				cout<<"*********************** TAIL FINE TUNING: "<<(0.5+0.2*k)*mag<<" *********************************"<<endl;
-				tailFT[n]->RegularizeTemplateError();
+					
+						} 		
+				
+				cout<<"*********************** TAIL FINE TUNING: "<<(0.4+0.3*k)<<" *********************************"<<endl;
+				//tailFT[n]->RegularizeTemplateError();
 				Do_TemplateFIT(tailFT[n],fits[Midbin-2+bin][0][5]->fitrangemin,fits[Midbin-2+bin][0][5]->fitrangemax,constrainmin,constrainmax,IsFitNoise,true);
+				chitail[bin]->SetBinContent(k+1,tailFT[n]->ChiSquare);
 				if(tailFT[n]->ChiSquare<chibest){
 					chibest=tailFT[n]->ChiSquare;
-					magbest[bin]=(0.5+0.2*k)*mag;
+					magbest[bin]=(0.4+0.3*k)*mag;
 				}
 
 			}	
 
 		}	
 	}
+
 	for(int bin=0;bin<bins.size();bin++){
 
 		float eq = 1;
@@ -1555,14 +1556,25 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 					else if(bin==Midbin+1) enmod=magbest[3];
 					else enmod=0;  
 					cout<<"*********************** TUNED TAIL: "<<enmod<<" *********************************"<<endl;
+						
 					for(int i=0;i<fits[bin][sigma][shift]->Templ_P->GetNbinsX();i++)	
-					if(/*fits[bin][sigma][shift]->Templ_P->GetBinCenter(i+1)>Mid*/true) {
+					if(fits[bin][sigma][shift]->Templ_P->GetBinCenter(i+1)>1.4) {
 					float mod=enmod/(1+exp(-3*(fits[bin][sigma][shift]->Templ_P->GetBinCenter(i+1)-Mid)));
 				//	float mod=enmod*((mag/2/1.57)*atan(Fast*(fits[bin][sigma][shift]->Templ_P->GetBinCenter(i+1)-Mid))+mag/2);
 					fits[bin][sigma][shift]->Templ_P->SetBinContent(i+1,max((double)(1+mod)*fits[bin][sigma][shift]->Templ_P->GetBinContent(i+1),0.));
 					fits[bin][sigma][shift]->Templ_P->SetBinError(i+1,max((double)(1+mod)*fits[bin][sigma][shift]->Templ_P->GetBinError(i+1),0.));
 					//	prioritizetail=true;	
 					}
+				}
+
+				if(adjoustfixedtail){
+					float enmod=exp(-0.5*pow((bin-Midbin)/2,2));
+					for(int i=0;i<fits[bin][sigma][shift]->Templ_P->GetNbinsX();i++)	
+					if(true) {
+                                        float mod=enmod*Mag/(1+exp(-4*(fits[bin][sigma][shift]->Templ_P->GetBinCenter(i+1)-Mid)));
+					fits[bin][sigma][shift]->Templ_P->SetBinContent(i+1,max((double)(1+mod)*fits[bin][sigma][shift]->Templ_P->GetBinContent(i+1),0.));
+                                      //fits[bin][sigma][shift]->Templ_P->SetBinError(i+1,1+mod);//max((double)(1+mod)*fits[bin][sigma][shift]->Templ_P->GetBinError(i+1),0.));
+					}	
 				}
 
 				if(!fitDisabled) {
@@ -1597,12 +1609,12 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 		float adjousttailchi=1;
 		for(int sigma=0;sigma<systpar.steps;sigma++){
 			for(int shift=0;shift<systpar.steps;shift++){
-				if(adjousttail){
+			 if(adjousttail){
 				if(bin==Midbin-2||bin==Midbin-1||bin==Midbin||bin==Midbin+1){ 
 				if(sigma==sigmabest[(int)(bin - Midbin+2)])  adjousttailchi=0.1;
 				else adjousttailchi=1;
 				}
-			}		
+			 }		
 		
 			float fixminimum_factor=1;
 			//if(sigma==3) fixminimum_factor=0.001;
@@ -1612,7 +1624,7 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 
 				if(fits[bin][sigma][shift]->ChiSquare>0){
 					
-					tfitchisquare->SetBinContent(sigma+1,shift+1,fixminimum_factor*adjousttailchi*fits[bin][sigma][shift]->ChiSquare);	
+					tfitchisquare->SetBinContent(sigma+1,shift+1,adjousttailchi*fits[bin][sigma][shift]->ChiSquare);	
 				}
 				else  tfitchisquare->SetBinContent(sigma+1,shift+1,5000);
 				tfitchisquare->SetBinError(sigma+1,shift+1,0.2);	
@@ -1691,7 +1703,7 @@ for(int bin=0;bin<bins.size();bin++){
 	besterror->FindCentroid(TFitChisquare[bin]);
 
 	/// TIME REGULARIZED FIT
-	//BuildRegularizedTemplates(bin,besterror->centroid_x,besterror->centroid_y,TFitChisquare[bin]);
+	BuildRegularizedTemplates(bin,besterror->centroid_x,besterror->centroid_y,TFitChisquare[bin]);
 }	
 	
 

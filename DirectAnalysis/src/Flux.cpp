@@ -32,7 +32,7 @@ void Regularize_Counts(TH1 * flux){
 	return;
 }
 
-void Flux::AverageCountsWithOther(FileSaver FileRes, std::string namecounts, std::string nameexposure,float cutoffcorr){
+void Flux::AverageCountsWithOther(FileSaver FileRes, std::string namecounts, std::string nameexposure,float toll){
 	TFile * fileres = FileRes.GetFile();
 
 	Counts_ForAverage = (TH1F *) fileres->Get((namecounts).c_str())->Clone("Counts_ForAverage")  ;
@@ -64,7 +64,7 @@ void Flux::AverageCountsWithOther(FileSaver FileRes, std::string namecounts, std
 		if(This->GetBinCenter(i+1)>Counts_ForAverage->GetBinLowEdge(1)){
 			float ave=(This->GetBinContent(i+1) + RatioOther_g->Eval(This->GetBinCenter(i+1)))/2;
 			ave/=This->GetBinContent(i+1) ;
-			Counts->SetBinContent(i+1,ave*Counts->GetBinContent(i+1));	
+			if(ave>1-toll&&ave<1+toll) Counts->SetBinContent(i+1,ave*Counts->GetBinContent(i+1));	
 		}
 	}
 	return;
