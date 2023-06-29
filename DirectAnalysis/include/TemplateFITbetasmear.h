@@ -274,11 +274,14 @@ class TemplateFIT : public Tool{
 
 	bool lowstatDmode=false;
 	bool adjousttail=false;
+	bool adjoustfixedtail=false;
 	float Mag=0;
 	float Mid=0;
 	float Midbin=0;
 	float Fast=0;
+	int Forcesigma=-1;
 	std::vector<TFit*> tailFT;
+	std::vector<TH1F *> chitail;
 
 	bool adjoustpeak=false;
 	int iso=0;	
@@ -605,7 +608,8 @@ class TemplateFIT : public Tool{
 	void SetLocalFit(){IsLocalFit = true; }
 	void SetLocalConstrainedFit(){IsLocalConstrainedFit = true; }
 	void SetLowStatDMode(){lowstatDmode=true;}
-	void SetAdjoustTailMode(float magn,float midpoint, float enmidpoint, float fast){Mag=magn; Mid=midpoint; Midbin=enmidpoint; Fast=fast;  adjousttail=true;}
+	void SetAdjoustTailMode(float magn,float midpoint, float enmidpoint, float fast, int forcesigma=-1){Mag=magn; Mid=midpoint; Midbin=enmidpoint; Fast=fast; Forcesigma=forcesigma; adjousttail=true;}
+	void SetFixModTailMode(float magn,float midpoint, float enmidpoint, float fast, int forcesigma=-1){Mag=magn; Mid=midpoint; Midbin=enmidpoint; Fast=fast; Forcesigma=forcesigma; adjoustfixedtail=true;}
 	void SetAdjoustPeakMode(int isotope, float mag){iso=isotope; magpeak=mag; adjoustpeak=true;}
 	void SetSharpenMode(float SharpenFactor) {sharpen=true; sharpenfactor=SharpenFactor;}
 
