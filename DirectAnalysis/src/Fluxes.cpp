@@ -162,7 +162,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	if(!refill&&checkfile) {
 
 	//correction for fragmentation
-	float corr_D  = 0.9618;
+	float corr_D  = 1;//0.9618;
 	float corr_p  = 0.99;
 	float corr_he = 1;
 
@@ -440,6 +440,11 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		TH1F * ratioPHe4_unf 	  = DoRatio(ProtonRes->flux_unf,He4Res->flux,"PHe4ratio_unf");
 		TH1F * ratioPHe4_unf_stat = DoRatio(ProtonRes->flux_unf_stat,He4Res->flux_stat,"PHe4ratio_unf_stat");
 
+		TH1F * ratioDHe3 	  = DoRatio(DeutonRes->flux,He3Res->flux,"DHe3ratio");
+		TH1F * ratioDHe3_stat	  = DoRatio(DeutonRes->flux_stat,He3Res->flux_stat,"DHe3ratio_stat");
+		TH1F * ratioDHe3_unf 	  = DoRatio(DeutonRes->flux_unf,He3Res->flux,"DHe3ratio_unf");
+		TH1F * ratioDHe3_unf_stat = DoRatio(DeutonRes->flux_unf_stat,He3Res->flux_stat,"DHe3ratio_unf_stat");
+
 
   		//Flux Unfolding Test	
 		TH1F * ratioPP = DoRatio(FitBetaPRes->flux,RigBetaPRes->flux,"unfoldingtest_ratiofolded");
@@ -473,7 +478,12 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		finalresults.Add(ratioPHe4_stat);	
 		finalresults.Add(ratioPHe4_unf_stat);	
 
-		
+		finalresults.Add(ratioDHe3);	
+		finalresults.Add(ratioDHe3_unf);	
+		finalresults.Add(ratioDHe3_stat);	
+		finalresults.Add(ratioDHe3_unf_stat);	
+
+	
 		finalresults.Add(ratioHe3He4);	
 		finalresults.Add(ratioHe3He4_unf);	
 		finalresults.Add(ratioHe3He4_stat);	

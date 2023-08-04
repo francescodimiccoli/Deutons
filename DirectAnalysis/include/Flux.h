@@ -192,7 +192,7 @@ class Flux{
 	}
 	void Eval_ExposureTime(Variables * vars, TTree * treeDT,FileSaver finalhistos,bool refill);
 
-        void AverageCountsWithOther(FileSaver FileRes, std::string namecounts, std::string nameexposure,float cutoffcorr);
+        void AverageCountsWithOther(FileSaver FileRes, std::string namecounts, std::string nameexposure,float toll=0.05);
 	
 	void Eval_Flux(float corr_acc=1, float fit_min=0, float fit_max=0,int knots=10,float offset=0.0,bool regularize=false);
 	void Eval_Errors();

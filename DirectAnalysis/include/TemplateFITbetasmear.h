@@ -295,10 +295,13 @@ class TemplateFIT : public Tool{
 	bool useMCreweighting=true;
 	bool useMCtuning=true;
 
+	TF1 * richcore;
+
 	public:	
 	//standard constructor
 	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, std::string CutP, std::string CutD, std::string CutHe,std::string Cutoff, int Nbins, float Xmin, float Xmax, bool IsRich,int steps,float sigma,float shift,int smearingmode){
-		
+			
+
 			for(int bin=0;bin<Bins.size();bin++){
 			fits.push_back(std::vector<std::vector<TFit *>>());
 			for(int i=0;i<steps;i++){
@@ -406,6 +409,9 @@ class TemplateFIT : public Tool{
 		systpar.steps=steps;
 
 		SetFitConstraints(0.9,1,0.015,0.06,0.0001,0.005);
+
+		richcore = new TF1("richcore","[0]*exp(-0.5*((x-[1])/[2])*((x-[1])/[2]))+0.0001*(1+sign(1,(x-1)))*[3]*pow(x,[4]) + [5]*exp(-0.5*((x-[1]+[9])/([6]*[2]))*((x-[1]+[9])/([6]*[2]))) + [7]*exp(-0.5*((x-[1]+[10])/([8]*[2]))*((x-[1]+[10])/([8]*[2]))) ",0.8,1.3);
+		richcore->SetNpx(500);
 	}
 
 	//reading constructor
@@ -534,7 +540,7 @@ class TemplateFIT : public Tool{
 		//if(!MCHeContRatio) MCHeContRatio = Eval_MCHeContRatio("MC Expected He over P");
 
 		SetFitConstraints(0.9,1,0.015,0.06,0.0001,0.005);
-
+	
 	}
 
 	TH1F * BuildTemplateFromExternal(TH1F* core, TH1F *reference, TH1F* external);
@@ -558,11 +564,11 @@ class TemplateFIT : public Tool{
 	void Eval_TransferFunction();
 	TH1F * Eval_MCHeContRatio(std::string name);
 	void Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) );
-	float SmearBeta(float Beta,float M_gen, float stepsigma, float stepshift,float R);
+	float SmearBeta(float Beta, float Beta_gen,float  HighRsigmaMC, float HighRsigmaDT, float relativeshift , TF1* MCmodel,  float stepsigma, float stepshift);
 	float SmearBeta_v2(float Beta, float Beta_gen,float  HighRsigmaMC, float HighRsigmaDT, float relativeshift , TF1* MCmodel,  float stepsigma, float stepshift);
-	float SmearBetaRICH(float Beta, float stepsigma, float stepshift);
-	float SmearBetaRICH_v2(int kbin, float Beta, float Betagen,float HighRsigmaMC,float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
-	float SmearRRICH_R(float R, float R_gen, float stepsigma, float stepshift);
+	float SmearBetaRICH_v2(int kbin, float Beta, float Beta_gen, float HighRsigmaMC, float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
+	float SmearBetaNaF_v2(int kbin, float Beta, float Betagen,float HighRsigmaMC,float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
+	float SmearBetaAgl_v2(int kbin, float Beta, float Betagen,float HighRsigmaMC,float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
 
 	void FillEventByEventData(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
 	void FillEventByEventMC(Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars));
@@ -622,6 +628,7 @@ class TemplateFIT : public Tool{
 	void SetNotTunedMC() {useMCtuning=false;}
 	void SetUseBestOnly() {usebestonly=true;}
 	void UseCentroid() {usecentroid=true;}
+
 
 
 };

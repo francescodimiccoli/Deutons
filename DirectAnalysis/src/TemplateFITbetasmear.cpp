@@ -344,8 +344,42 @@ float Systpar::GetSigmaEnd(){
 }
 
 
-float TemplateFIT::SmearBetaRICH(float Beta, float stepsigma, float stepshift){
+float TemplateFIT::SmearBetaRICH_v2(int kbin, float Beta, float Beta_gen, float HighRsigmaMC, float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift){
+	if(stepsigma==0 && stepshift==5) return Beta;
+	float sigmaMC=HighRsigmaMC;
+	float sigmaDT=HighRsigmaDT;
+
+
+	if(kbin<=0) kbin =0;
+
+	float delta = (1/Beta - 1/Beta_gen);
+
+
+	float shift; 
+	float sigma; 
+
+
+	float shiftstart = -relativeshift - 0.0004*sigmaDT/0.00114; //-relativeshift - 5*fabs(relativeshift);
+	float sigmastart = sigmaDT - fabs(sigmaDT-0.8*sigmaDT);
+
+
+	if(stepsigma==-1 && stepshift==-1){
+		shift= -relativeshift;
+		sigma=sigmaDT;
+
+	} 
+
+	else{
+		shift = shiftstart+2*(fabs(relativeshift-shiftstart)/systpar.steps)*stepshift; 
+		sigma = sigmastart+2*(fabs(sigmaDT-sigmastart)/systpar.steps)*stepsigma;
+		shift= -relativeshift;
+
+	}
+
+	return 1/(1/Beta_gen +(sigma/sigmaMC)*(delta + shift) );
 }
+
+
 
 
 void TemplateFIT::BuildRegularizedTemplates(int bin,float centroid_x,float centroid_y, TH2F* Chi){
@@ -370,7 +404,6 @@ void TemplateFIT::BuildRegularizedTemplates(int bin,float centroid_x,float centr
 	TH1F * TemplP = (TH1F*) fits[bin][0][5]->Templ_P->Clone("fitbest_P");
 	TH1F * TemplD = (TH1F*) fits[bin][0][5]->Templ_D->Clone("fitbest_D"); 
 	TemplP->Reset();
-
 	float w=0;
 	float wl=0;
 	float x,y;
@@ -393,8 +426,8 @@ void TemplateFIT::BuildRegularizedTemplates(int bin,float centroid_x,float centr
 		if(fits[bin][sigma][shift]->DCounts<1.5*fits_best[bin]->DCounts && fits[bin][sigma][shift]->DCounts>0.6*fits_best[bin]->DCounts)
 		{
 			x=sigma+1;y=shift+1;
-			wl=EvalFitProbability(Chi->GetBinContent(sigma+1,shift+1),x,y,centroid_x,centroid_y,(usecentroid&&(bin>=11)));
-			w+=EvalFitProbability(Chi->GetBinContent(sigma+1,shift+1),x,y,centroid_x,centroid_y,(usecentroid&&(bin>=11)));
+			wl=EvalFitProbability(Chi->GetBinContent(sigma+1,shift+1),x,y,centroid_x,centroid_y,(usecentroid));
+			w+=EvalFitProbability(Chi->GetBinContent(sigma+1,shift+1),x,y,centroid_x,centroid_y,(usecentroid));
 			TemplD->Add(fits[bin][sigma][shift]->Templ_D,wl);
 		}
 	TemplD->Scale(1/w);
@@ -414,15 +447,16 @@ void TemplateFIT::BuildRegularizedTemplates(int bin,float centroid_x,float centr
 	return;
 }
 
-
-float TemplateFIT::SmearBetaRICH_v2(int kbin, float Beta, float Beta_gen, float HighRsigmaMC, float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift){
+float TemplateFIT::SmearBetaNaF_v2(int kbin, float Beta, float Beta_gen, float HighRsigmaMC, float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift){
 	if(stepsigma==0 && stepshift==5) return Beta;
 	float sigmaMC=HighRsigmaMC;
 	float sigmaDT=HighRsigmaDT;
 
 	
 	if(kbin<=0) kbin =0;
-	
+
+	float norm = Rand->Rndm();
+
 	float delta = (1/Beta - 1/Beta_gen);
 
 	/*	float sigma = (sigmaDT)*(1-systpar.sigma/100.); 
@@ -433,7 +467,7 @@ float TemplateFIT::SmearBetaRICH_v2(int kbin, float Beta, float Beta_gen, float 
 
 	float shift; 
 	float sigma; 
-	
+
 
 	float shiftstart = -relativeshift - 0.0004*sigmaDT/0.00114; //-relativeshift - 5*fabs(relativeshift);
 	float sigmastart = sigmaDT - fabs(sigmaDT-0.8*sigmaDT);
@@ -446,23 +480,137 @@ float TemplateFIT::SmearBetaRICH_v2(int kbin, float Beta, float Beta_gen, float 
 	} 
 
 	else{
-	//	shift = shiftstart+2*(fabs(relativeshift-shiftstart)/systpar.steps)*stepshift;  //shiftstart + 10*fabs(relativeshift)/(systpar.steps)*stepshift; 
+		//	shift = shiftstart+2*(fabs(relativeshift-shiftstart)/systpar.steps)*stepshift;  //shiftstart + 10*fabs(relativeshift)/(systpar.steps)*stepshift; 
 		sigma = sigmastart+2*(fabs(sigmaDT-sigmastart)/systpar.steps)*stepsigma;//sigmastart + 2*fabs(sigmaDT-sigmaMC)/(systpar.steps)*(stepsigma+0.5);
 		shift= -relativeshift;
 
 	}
 
-	return 1/(1/Beta_gen +(sigma/sigmaMC)*(delta + shift) );
+	richcore->SetRange(0.97,1.2);
+	
+	//core
+	richcore->SetNpx(1e3);
+	
+	richcore->SetParameter(0,1798);
+	richcore->SetParameter(1,1+shift);
+	richcore->SetParameter(2,sigma);
+	richcore->SetParameter(3,2.276e4);
+	richcore->SetParameter(4,-31.3);
+	richcore->SetParameter(5,1160);
+	richcore->SetParameter(6,1.491);
+	richcore->SetParameter(7,67.08);
+	richcore->SetParameter(8,2.541);
+	richcore->SetParameter(9,-0.0002029);
+	richcore->SetParameter(10,-0.001101);
+
+	return 1/(1/Beta_gen + (richcore->GetRandom()-1)    );
+
+
+	//return 1/(1/Beta_gen +(sigma/sigmaMC)*(delta + shift) );
+
+
+
+}
+
+
+float TemplateFIT::SmearBetaAgl_v2(int kbin, float Beta, float Beta_gen, float HighRsigmaMC, float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift){
+	if(stepsigma==0 && stepshift==5) return Beta;
+	float sigmaMC=HighRsigmaMC;
+	float sigmaDT=HighRsigmaDT;
+
+	
+	if(kbin<=0) kbin =0;
+
+	float delta = (1/Beta - 1/Beta_gen);
+
+	/*	float sigma = (sigmaDT)*(1-systpar.sigma/100.); 
+		sigma+=(float)((2*fabs(sigmaDT-sigma)/(float)systpar.steps)*stepsigma);
+
+		float shift = -relativeshift - systpar.shift*1e-5 + (2*systpar.shift*1e-5/(float)systpar.steps)*stepshift;		
+		*/
+
+	float shift; 
+	float sigma; 
+
+
+	float shiftstart = -relativeshift - 0.0004*sigmaDT/0.00114; //-relativeshift - 5*fabs(relativeshift);
+	float sigmastart = sigmaDT - fabs(sigmaDT-0.8*sigmaDT);
+
+
+	if(stepsigma==-1 && stepshift==-1){
+		shift= -relativeshift;
+		sigma=sigmaDT;
+
+	} 
+
+	else{
+		//	shift = shiftstart+2*(fabs(relativeshift-shiftstart)/systpar.steps)*stepshift;  //shiftstart + 10*fabs(relativeshift)/(systpar.steps)*stepshift; 
+		sigma = sigmastart+2*(fabs(sigmaDT-sigmastart)/systpar.steps)*stepsigma;//sigmastart + 2*fabs(sigmaDT-sigmaMC)/(systpar.steps)*(stepsigma+0.5);
+		shift= -relativeshift;
+
+	}
+
+	richcore->SetRange(0.97,1.06);
+	//core
+	richcore->SetParameter(0,38852.35);
+	richcore->SetParameter(1,1+shift);
+	richcore->SetParameter(2,sigma);
+	richcore->SetParameter(3,251600.7);
+	richcore->SetParameter(4,-168.157);
+	richcore->SetParameter(5,17962.76);
+	richcore->SetParameter(6,1.599928);
+	richcore->SetParameter(7,676.7463);
+	richcore->SetParameter(8,3.005362);
+	richcore->SetParameter(9,-0.0001519769);
+	richcore->SetParameter(10,-0.0001153038);
+
+	return 1/(1/Beta_gen + (richcore->GetRandom()-1)    );
+
+	//return 1/(1/Beta_gen +(sigma/sigmaMC)*(delta + shift) );
+
+
 }
 
 
 
-float TemplateFIT::SmearRRICH_R(float R, float R_gen, float stepsigma, float stepshift){
+float TemplateFIT::SmearBeta(float Beta, float Beta_gen,float  HighRsigmaMC, float HighRsigmaDT, float relativeshift , TF1* MCmodel,  float stepsigma, float stepshift){
+
+	if(stepsigma==0 && stepshift==5) return Beta;
+
+	float beta_inv = 1/Beta;
+	float sigmasmear = pow(pow(HighRsigmaDT,2)-pow(HighRsigmaMC,2),0.5);
+
+	float shift;
+        float sigma;
+
+	float shiftstart = -relativeshift - 4*fabs(relativeshift);
+	float sigmastart = 0;
+
+
+	if(stepsigma==-1 && stepshift==-1){
+		shift = -relativeshift;
+		sigma = sigmasmear;
+	}
+
+	else{
+		shift = -relativeshift; //shiftstart + 10*fabs(relativeshift)/(systpar.steps)*stepshift; 
+		sigma = sigmastart + 1.2*fabs(sigmasmear-sigmastart)/(systpar.steps)*stepsigma;
+	}
+	
+	float norm = Rand->Rndm();
+	
+	float MCsigma = MCmodel->Eval(1/Beta_gen);
+
+
+	beta_inv = beta_inv + shift + Rand->Gaus(0,sigma);
+
+	return 1/(beta_inv);
+		
 }
 
 
-float TemplateFIT::SmearBeta(float Beta,float M_gen, float stepsigma, float stepshift,float R){
-}
+
+
 
 float TemplateFIT::SmearBeta_v2(float Beta, float Beta_gen,float  HighRsigmaMC, float HighRsigmaDT, float relativeshift , TF1* MCmodel,  float stepsigma, float stepshift){
 
@@ -542,10 +690,17 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 			if(systpar.mode==1) {
 				float ss,si1,si2;
 				if(useMCtuning) {	
-					if(vars->Massa_gen<2)	{ss=-0.0024; si1=0.0329; si2=0.0428; }
-					else  {ss=0.0005; si1=0.01657; si2=0.01934; }
+					if(vars->Massa_gen<2)	{
+						ss=-0.0024; si1=0.0329; si2=0.0428; 
+						betasmear = SmearBeta_v2(vars->Beta,GetBetaGen_cpct(vars),si1,si2,ss,MCmodel,i,j);   
+					}
+			
+					else  {
+						ss=-0.0001; si1=1.66514e-02; si2=1.91982e-02; 
+						betasmear = SmearBeta(vars->Beta,GetBetaGen_cpct(vars),si1,si2,ss,MCmodel,i,j);   
+			
+					      }
 				}
-				betasmear = SmearBeta_v2(vars->Beta,GetBetaGen_cpct(vars),si1,si2,ss,MCmodel,i,j);   
 			}
 
 		}
@@ -554,11 +709,16 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 				if(systpar.mode==3) { 
 					float ss,si1,si2;
 					if(useMCtuning) {	
-						if(vars->Massa_gen<2)	{ss=0.00002; si1=0.00334; si2=0.00325; }
-						else  {ss=0.00005; si1=0.00213; si2=0.00233; }
+						if(vars->Massa_gen<2)	{
+							ss=-0.00014; si1=0.00334; si2=0.002786; 
+							betasmear = SmearBetaNaF_v2(kbin,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,i,j); 
+						}
+						else  {
+							ss=0.00005; si1=0.00213; si2=0.00233; 
+							betasmear = SmearBetaRICH_v2(kbin,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,i,j); 
+						}
 					}
 
-					betasmear = SmearBetaRICH_v2(kbin,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,i,j); 
 					Rsmear = vars->R;
 				}
 			}
@@ -566,10 +726,16 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 				if(systpar.mode==3) {
 					float ss,si1,si2;
 					if(useMCtuning) {	
-						if(vars->Massa_gen<2)	{ss=0.00008; si1=0.001236; si2=0.00114; }
-						else  {ss=-0.0001; si1=0.000733; si2=0.000760; }
+						if(vars->Massa_gen<2)	{
+							ss=0.00006; si1=0.0012369; si2=0.0009792274; 
+							betasmear = SmearBetaAgl_v2(kbin,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,i,j); 
+						}
+						else  {
+							ss=-0.0001; si1=0.000733; si2=0.000760; 
+							betasmear = SmearBetaRICH_v2(kbin,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,i,j); 
+
+						}
 					}
-					betasmear = SmearBetaRICH_v2(kbin,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,i,j); 
 					Rsmear = vars->R;
 				}
 			}
@@ -615,25 +781,33 @@ void TemplateFIT::FillEventByEventMC(Variables * vars, float (*var) (Variables *
 			if(!isrich)	{ 
 				BetaResolutionMC->Fill(1/vars->Beta);
 				float ss,si1,si2;
-				if(vars->Massa_gen<2)	{ss=-0.0024; si1=0.0329; si2=0.0422; }
-				else  {ss=0.0005; si1=0.01657; si2=0.01934; }
-				BetaResolutionMC_tuned->Fill(1/ SmearBeta_v2(vars->Beta,GetBetaGen_cpct(vars),si1,si2,ss,MCmodel,-1,-1)   );
-
+				if(vars->Massa_gen<2)	{ss=-0.0024; si1=0.0329; si2=0.0422; 
+					BetaResolutionMC_tuned->Fill(1/ SmearBeta_v2(vars->Beta,GetBetaGen_cpct(vars),si1,si2,ss,MCmodel,-1,-1)   );
+				}
+				else  {ss=-0.0001; si1=1.66514e-02; si2=1.91982e-02; 
+					BetaResolutionMC_tuned->Fill(1/ SmearBeta(vars->Beta,GetBetaGen_cpct(vars),si1,si2,ss,MCmodel,-1,-1)   );
+				}
 			}
 			else {
 				BetaResolutionMC->Fill(1/vars->BetaRICH_new);
 				if(ApplyCuts("IsFromNaF",vars))  {
 					float ss,si1,si2;
-					if(vars->Massa_gen<2)	{ss=0.00002; si1=0.00334; si2=0.00325; }
-					else  {ss=0.00005; si1=0.00213; si2=0.00233; }
+					if(vars->Massa_gen<2)	{ss=-0.00014; si1=0.00334; si2=0.002786; 
+								BetaResolutionMC_tuned->Fill(1/SmearBetaNaF_v2(10,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,-1,-1));
+					}
+					else  {ss=0.00005; si1=0.00213; si2=0.00233; 
 					BetaResolutionMC_tuned->Fill(1/SmearBetaRICH_v2(10,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,-1,-1));
+					}
 				}
 
 				if(ApplyCuts("IsFromAgl",vars))  {
 					float ss,si1,si2;
-					if(vars->Massa_gen<2)	{ss=0.00008; si1=0.001236; si2=0.00114; }
-					else  {ss=-0.0001; si1=0.000733; si2=0.000760; }
-					BetaResolutionMC_tuned->Fill(1/SmearBetaRICH_v2(10,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,-1,-1));
+					if(vars->Massa_gen<2)	{ss=0.00006; si1=0.0012369; si2=0.0009792274; 
+						BetaResolutionMC_tuned->Fill(1/SmearBetaAgl_v2(10,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,-1,-1));
+					}
+					else  {ss=-0.0001; si1=0.000733; si2=0.000760; 
+						BetaResolutionMC_tuned->Fill(1/SmearBetaRICH_v2(10,vars->BetaRICH_new,GetBetaGen_cpct(vars),si1,si2,ss,-1,-1));
+					}
 				}
 			}
 		}
@@ -953,6 +1127,8 @@ void TemplateFIT::SaveFitResults(FileSaver finalhistos){
 		finalhistos.Add(Global_ChiSquare);
 		BestSigma   = ConvertBinnedHisto((TH1F*)BestSigma,"Best Sigma",bins,false); 
 		BestShift   = ConvertBinnedHisto((TH1F*)BestShift,"Best Shift",bins,false); 
+		finalhistos.Add(new TGraphErrors(BestSigma));
+		finalhistos.Add(new TGraphErrors(BestShift));
 		finalhistos.Add(BestSigma);
 		finalhistos.Add(BestShift);
 		BestChiSquares->Scale(fits[0][BestChiSquare->i][BestChiSquare->j]->ndf);
@@ -1520,14 +1696,14 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 					fits[bin][sigma][shift]->Data=(TH1F*) DD->Clone();
 			//	if(!(sigma==0&&sigma==5)){
 						if(sigma!=0){
-						fits[bin][sigma][shift]->Templ_P =SimpleShiftHisto((TH1F*)TP[sigma]  ->Clone((("P_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
-						fits[bin][sigma][shift]->Templ_D =SimpleShiftHisto((TH1F*)TD[sigma]  ->Clone((("D_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
-						fits[bin][sigma][shift]->Templ_He=SimpleShiftHisto((TH1F*)THe[sigma] ->Clone((("He_"+to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
+						fits[bin][sigma][shift]->Templ_P =SimpleShiftHisto((TH1F*)TP[sigma]  ->Clone((("P_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-systpar.shift+2*(systpar.shift/systpar.steps)*shift );
+						fits[bin][sigma][shift]->Templ_D =SimpleShiftHisto((TH1F*)TD[sigma]  ->Clone((("D_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-systpar.shift+2*(systpar.shift/systpar.steps)*shift );
+						fits[bin][sigma][shift]->Templ_He=SimpleShiftHisto((TH1F*)THe[sigma] ->Clone((("He_"+to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-systpar.shift+2*(systpar.shift/systpar.steps)*shift );
 						}
 						else{
-						fits[bin][sigma][shift]->Templ_P =(TH1F*)SimpleShiftHisto((TH1F*)TP[1]  ->Clone((("P_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
-						fits[bin][sigma][shift]->Templ_D =(TH1F*)SimpleShiftHisto((TH1F*)TD[1]  ->Clone((("D_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
-						fits[bin][sigma][shift]->Templ_He=(TH1F*)SimpleShiftHisto((TH1F*)THe[1] ->Clone((("He_"+to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-0.03+2*(0.03/systpar.steps)*shift );
+						fits[bin][sigma][shift]->Templ_P =(TH1F*)SimpleShiftHisto((TH1F*)TP[1]  ->Clone((("P_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-systpar.shift+2*(systpar.shift/systpar.steps)*shift );
+						fits[bin][sigma][shift]->Templ_D =(TH1F*)SimpleShiftHisto((TH1F*)TD[1]  ->Clone((("D_" +to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-systpar.shift+2*(systpar.shift/systpar.steps)*shift );
+						fits[bin][sigma][shift]->Templ_He=(TH1F*)SimpleShiftHisto((TH1F*)THe[1] ->Clone((("He_"+to_string(bin)+"_"+to_string(sigma)+"_"+to_string(shift)).c_str())),-systpar.shift+2*(systpar.shift/systpar.steps)*shift );
 						}	
 			//	}
 
@@ -1570,7 +1746,7 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 				if(adjoustfixedtail){
 					float enmod=exp(-0.5*pow((bin-Midbin)/2,2));
 					for(int i=0;i<fits[bin][sigma][shift]->Templ_P->GetNbinsX();i++)	
-					if(true) {
+					if(1<2.1) {
                                         float mod=enmod*Mag/(1+exp(-4*(fits[bin][sigma][shift]->Templ_P->GetBinCenter(i+1)-Mid)));
 					fits[bin][sigma][shift]->Templ_P->SetBinContent(i+1,max((double)(1+mod)*fits[bin][sigma][shift]->Templ_P->GetBinContent(i+1),0.));
                                       //fits[bin][sigma][shift]->Templ_P->SetBinError(i+1,1+mod);//max((double)(1+mod)*fits[bin][sigma][shift]->Templ_P->GetBinError(i+1),0.));
@@ -1606,25 +1782,15 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 
 		tfitchisquare = new TH2F(("ChiSquare Bin " +to_string(bin)).c_str(),("ChiSquare Bin " +to_string(bin)+";"+xaxisname+";"+yaxisname).c_str(),systpar.steps,systpar.GetSigmaStart(),systpar.GetSigmaEnd(),systpar.steps,systpar.GetShiftStart(),systpar.GetShiftEnd());
 
-		float adjousttailchi=1;
 		for(int sigma=0;sigma<systpar.steps;sigma++){
-			for(int shift=0;shift<systpar.steps;shift++){
-			 if(adjousttail){
-				if(bin==Midbin-2||bin==Midbin-1||bin==Midbin||bin==Midbin+1){ 
-				if(sigma==sigmabest[(int)(bin - Midbin+2)])  adjousttailchi=0.1;
-				else adjousttailchi=1;
-				}
-			 }		
-		
-			float fixminimum_factor=1;
-			//if(sigma==3) fixminimum_factor=0.001;
-			//else fixminimum_factor=1;
+                        for(int shift=0;shift<systpar.steps;shift++){	
+						float fixminimum_factor=1;
 		
 			dcountsspread->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->DCounts);
 
 				if(fits[bin][sigma][shift]->ChiSquare>0){
 					
-					tfitchisquare->SetBinContent(sigma+1,shift+1,adjousttailchi*fits[bin][sigma][shift]->ChiSquare);	
+					tfitchisquare->SetBinContent(sigma+1,shift+1,fits[bin][sigma][shift]->ChiSquare);	
 				}
 				else  tfitchisquare->SetBinContent(sigma+1,shift+1,5000);
 				tfitchisquare->SetBinError(sigma+1,shift+1,0.2);	
@@ -1703,7 +1869,7 @@ for(int bin=0;bin<bins.size();bin++){
 	besterror->FindCentroid(TFitChisquare[bin]);
 
 	/// TIME REGULARIZED FIT
-	BuildRegularizedTemplates(bin,besterror->centroid_x,besterror->centroid_y,TFitChisquare[bin]);
+	if(!(adjousttail||adjoustfixedtail)) BuildRegularizedTemplates(bin,besterror->centroid_x,besterror->centroid_y,TFitChisquare[bin]);
 }	
 	
 
@@ -1726,9 +1892,9 @@ void TemplateFIT::EvalFinalParameters(){
 			bestlocal->FindCentroid(TFitChisquare[bin]);
 			BestChiSquares     ->SetBinContent(bin+1,TFitChisquare[bin]->GetBinContent(bestlocal->i+1,bestlocal->j+1));
 			BestSigma->SetBinContent(bin+1,bestlocal->centroid_parx);
-			BestSigma->SetBinError(bin+1,0.05*fabs(systpar.GetSigmaStart()-systpar.GetSigmaEnd())/sqrt(12));
+			BestSigma->SetBinError(bin+1,2*fabs(systpar.GetSigmaStart()-systpar.GetSigmaEnd())/(sqrt(12)*systpar.steps));
 			BestShift->SetBinContent(bin+1,bestlocal->centroid_pary);
-			BestShift->SetBinError(bin+1,0.05*fabs(systpar.GetShiftStart()-systpar.GetShiftEnd())/sqrt(12));
+			BestShift->SetBinError(bin+1,2*fabs(systpar.GetShiftStart()-systpar.GetShiftEnd())/(sqrt(12)*systpar.steps));
 			}
 		if(TFitChisquare[bin]->GetBinContent(1,6)<1000) OriginalChiSquares ->SetBinContent(bin+1,TFitChisquare[bin]->GetBinContent(1,6));
 		BestChiSquares     ->SetBinError(bin+1,0.25);	
@@ -1841,14 +2007,17 @@ void TemplateFIT::CalculateFinalPDCounts(){
 		}
 	
 		else { 
-			int cutbin=fits[bin][bestlocal->i][bestlocal->j]->Data->FindBin(1.55);
+			/*int cutbin=fits[bin][bestlocal->i][bestlocal->j]->Data->FindBin(1.55);
 			int cutbin2=fits[bin][bestlocal->i][bestlocal->j]->Data->FindBin(3.5);
 			CountsD= fits[bin][bestlocal->i][bestlocal->j]->Data->Integral(cutbin,cutbin2) ;
 			CountsD*=fits[bin][bestlocal->i][bestlocal->j]->Templ_D->Integral()/
 				 fits[bin][bestlocal->i][bestlocal->j]->Templ_D->Integral(cutbin,fits[bin][bestlocal->i][bestlocal->j]->Data->GetNbinsX());
 			CountsD-=1.0 * fits[bin][bestlocal->i][bestlocal->j]->TCounts; //fragm. of He + Tritium
-			CountsD=CountsD-0.033*CountsD;
-			CountsD*=1.02;//fragm of D
+			*/
+			if(!usebestonly) CountsD = WeightedDCounts[bin]->GetMean();// - 1.5 * fits_best[bin]->TCounts;
+			else CountsD=fits[bin][bestlocal->i][bestlocal->j]->DCounts;//- 1.5*fits[bin][bestlocal->i][bestlocal->j]->TCounts;
+			CountsD=CountsD-0.033*CountsD; //Tritium contamination stable in time
+			CountsD*=1.035;//fragm of D
 		}
 		float Countsnoise= fits[bin][bestlocal->i][bestlocal->j]->Templ_P->Integral(fits_best[bin]->Data->FindBin(1.55), fits_best[bin]->Data->GetNbinsX() ) ;
 		ProtonTail->SetBinContent(bin+1,Countsnoise);
@@ -1892,11 +2061,6 @@ void TemplateFIT::CalculateFinalPDCounts(){
 			DeuteronCountsPrim->SetBinError(bin+1,pow(pow(staterrD,2)+pow(systerrD,2)+pow(conterrD,2),0.5)* DeuteronCountsPrim->GetBinContent(bin+1)/DeuteronCounts->GetBinContent(bin+1) );		
 		}
 	}	
-
-	if(lowstatDmode) {
-	ProtonTail->Scale(1);
-	DeuteronCounts->Add(ProtonTail,-1);
-	}
 
 }
 
