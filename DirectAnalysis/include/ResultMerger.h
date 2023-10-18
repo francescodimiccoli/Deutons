@@ -34,6 +34,8 @@ class ResultMerger{
 	TH1F* counts;
 	TH1F* unfolding;
 	TH1F* roounfolding;
+	TH1F* roounfolding_raw;
+
 
 
 	TH1F * statErr;
@@ -45,7 +47,7 @@ class ResultMerger{
 
 	std::string Name;
 
-	ResultMerger(FileSaver finalhostos, std::string name, RangeMerger Global, Flux *FluxTOF,  Flux *FluxNaF, Flux *FluxAgl, Particle particle, bool nafpriority=false);
+	ResultMerger(FileSaver finalhostos, std::string name, RangeMerger Global, Flux *FluxTOF,  Flux *FluxNaF, Flux *FluxAgl,  Particle particle, bool nafpriority=false,Flux * Fluxsum=0x0, Flux * Fluxtosubtract=0x0, TH1F * forbinning=0x0);
 
 	void SaveResults(FileSaver finalhistos);
 	

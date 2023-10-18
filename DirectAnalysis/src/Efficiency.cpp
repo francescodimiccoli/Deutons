@@ -211,7 +211,7 @@ void Efficiency::Eval_Efficiency(){
 		float db = before->GetBinError(i+1);
 		float da=after->GetBinError(i+1);
 		if(a!=0&&b!=0 && (da*da/(b*b) + pow(a,2)/pow(b,4)*db*db - 2*db*da*a/pow(b,3))>0) 
-			Err->SetBinContent(i+1,pow(da*da/(b*b) + pow(a,2)/pow(b,4)*db*db - 2*db*da*a/pow(b,3) ,0.5));
+			Err->SetBinContent(i+1,pow(da*da/(b*b) + pow(a,2)/pow(b,4)*db*db - 2*0.95*db*da*a/pow(b,3) ,0.5));
 			//Err->SetBinContent(i+1,sqrt( ( (1-2*a/b)*db*da + a/b*a/b*db*db )/(b*b)));
 
 	}

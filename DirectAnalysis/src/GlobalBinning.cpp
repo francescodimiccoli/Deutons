@@ -47,6 +47,7 @@ Binning HefragmNaF(deuton);
 Binning HefragmAgl(deuton);
 
 
+
 Binning UnfoldingToF(proton);
 Binning UnfoldingNaF(proton);
 Binning UnfoldingAgl(proton);
@@ -59,7 +60,15 @@ Binning UnfoldingToF_He(helium4);
 Binning UnfoldingNaF_He(helium4);
 Binning UnfoldingAgl_He(helium4);
 
-	
+
+Binning DPExtension(deuton);
+Binning HeExtension(helium4);
+Binning PExtension(proton);
+Binning He3Extension(helium3);
+
+
+
+
 Binning DRB(deuton);
 Binning PRB(proton);
 Binning HeRB(deuton);
@@ -111,7 +120,9 @@ void SetBins(){
 	UnfoldingToF_He.Reset();
 	UnfoldingNaF_He.Reset();
 	UnfoldingAgl_He.Reset();
-	
+	DPExtension.Reset();
+	HeExtension.Reset();	
+
 	cout<<"H.E. bins"<<endl;
 	DRB.setBinsFromRDatacard ((workdir+"/bindatacard_PMIT.data").c_str(), 0.1, 0.9999999 ,ResponseTOF,0.00347548,5.8474); 
 	PRB.setBinsFromRDatacard ((workdir+"/bindatacard_PMIT.data").c_str(), 0.1, 0.9999999 ,ResponseTOF,0.00347548,5.8474);
@@ -128,10 +139,9 @@ void SetBins(){
 	float ekmin=0.1, ekmax=0.82;
 	float betamin=0.55; float betamax=0.853;
 	HefragmToF.setBinsFromEkPerMass (4,0.15,0.504,ResponseTOF,0.00347548,5.8474);
-	UnfoldingToF.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.555, 0.91 ,ResponseTOF,0.00347548,5.8474);
-	UnfoldingToF_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.555, 0.91 ,ResponseTOF,0.00347548,5.8474);
-	UnfoldingToF_He.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.555, 0.91 ,ResponseTOF,0.00347548,5.8474);
-
+	UnfoldingToF.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.555, 0.99 ,ResponseTOF,0.00347548,5.8474);
+	UnfoldingToF_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.555, 0.99 ,ResponseTOF,0.00347548,5.8474);
+	UnfoldingToF_He.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.555, 0.99 ,ResponseTOF,0.00347548,5.8474);
 
 
 	cout<<"NaF bins"<<endl;
@@ -144,8 +154,6 @@ void SetBins(){
 	UnfoldingNaF_He.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.75, 0.9878 ,ResponseNaF,0.00347548,5.8474);
 
 
-
-
 	cout<<"Agl bins"<<endl;
 	betamin=0.97, betamax=0.995;
 	HefragmAgl.setBinsFromEkPerMass (2,2.6,11.9,ResponseAgl,0.00347548,5.8474);
@@ -155,6 +163,13 @@ void SetBins(){
 	UnfoldingAgl_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.945,0.9978 ,ResponseAgl,0.00347548,5.8474);
 	UnfoldingAgl_He.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.945,0.9978 ,ResponseAgl,0.00347548,5.8474);
 
+
+
+	cout<<"R Extension bins"<<endl;
+	DPExtension.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.98, 0.9968 ,ResponseAgl,0.00347548,5.8474);
+	HeExtension.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.98, 0.9968 ,ResponseAgl,0.00347548,5.8474);
+	PExtension.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.9949, 0.9991 ,ResponseAgl,0.00347548,5.8474);
+	He3Extension.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.9886, 0.998 ,ResponseAgl,0.00347548,5.8474);
 
 
 
@@ -185,6 +200,13 @@ void SetBins(){
 	Global_He.GetAglDBins().Print();
 
 
+
+	cout<<"** R extension**"<<endl;
+	PExtension.Print();
+	DPExtension.Print();
+	HeExtension.Print();
+	He3Extension.Print();
+	
 	/*cout<<"**Global**"<<endl;
 	GlobalRig.GetGlobalPBins().Print();
 	GlobalRig.GetGlobalDBins().Print();
@@ -220,6 +242,14 @@ void SetUpUsualBinning(){
 	PRB.UseREdges();
 	HeRB.UseREdges();
 	ForAcceptance.UseREdges();
+
+	DPExtension.UseREdges();
+	HeExtension.UseREdges();
+
+	PExtension.UseREdges();
+	He3Extension.UseREdges();
+
+
 	cout<<endl;
 	return;
 }
@@ -238,6 +268,14 @@ void SetUpTOIBinning(){
 	PRB.UseRTOIEdges();
 	HeRB.UseRTOIEdges();
 	ForAcceptance.UseRTOIEdges();
+
+	DPExtension.UseRTOIEdges();
+	HeExtension.UseRTOIEdges();
+
+	PExtension.UseRTOIEdges();
+	He3Extension.UseRTOIEdges();
+
+
 	cout<<endl;
 	return;
 }
@@ -254,6 +292,13 @@ void SetUpRigTOIBinning(){
 	PRB.UseRTOIEdges();
 	HeRB.UseRTOIEdges();
 	ForAcceptance.UseRTOIEdges();
+
+	DPExtension.UseRTOIEdges();
+	HeExtension.UseRTOIEdges();
+
+	PExtension.UseRTOIEdges();
+	He3Extension.UseRTOIEdges();
+
 	cout<<endl;
 	return;
 

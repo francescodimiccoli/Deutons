@@ -6,10 +6,12 @@
 #include "AllRangesEfficiency.h"
 #include "Flux.h"
 #include "ResultMerger.h"
+#include "RatioMaker.h"
 
 
 //MC parameters taken from /cvmfs/ams.cern.ch/Offline/AMSDataDir/DataManagement/DataSetsDesc
 TH1F * DoRatio(TH1F* numerator, TH1F * denominator,std::string name);
+TH1F * DoRatioErr(ResultMerger * num, ResultMerger *den,std::string name);
 TH1F * DoRatio_Extended_subtraction(TH1F* numerator, TH1F * denominator, TH1F* extended,std::string name);
 TH1F * DoRatio_Ekin(TH1F* numerator, TH1F * denominator,std::string name);
 
@@ -35,9 +37,9 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	Flux * HEHeFluxQ  = new Flux(finalhistos,finalresults,"HeFluxQHE" ,"Acceptance_HeQualHE","Acceptance","HEHeCountsQual/HEHeCountsQual/HEHeCountsQual_before","","","HEExposure",HeRB);
 
 
-	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "Acceptance_PTOF","Acceptance","TOFPfits/Fit Results/Proton Counts","TOFPfits/Fit Results/StatErrorP","TOFPfits/Fit Results/SystError","ExposureTOF",Global.GetToFPBins());
-	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "Acceptance_PNaF","Acceptance","NaFPfits/Fit Results/Proton Counts","NaFPfits/Fit Results/StatErrorP","NaFPfits/Fit Results/SystError","ExposureNaF",Global.GetNaFPBins());
-	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "Acceptance_PAgl","Acceptance","AglPfits/Fit Results/Proton Counts","AglPfits/Fit Results/StatErrorP","AglPfits/Fit Results/SystError","ExposureAgl",Global.GetAglPBins());
+	Flux * PFluxTOF  = new Flux(finalhistos,finalresults, "PFluxTOF", "Acceptance_PTOF","Acceptance","TOFPfits/Fit Results/Proton Counts","TOFPfits/Fit Results/StatErrorP","TOFPfits/Fit Results/SystErrorP","ExposureTOF",Global.GetToFPBins());
+	Flux * PFluxNaF  = new Flux(finalhistos,finalresults, "PFluxNaF", "Acceptance_PNaF","Acceptance","NaFPfits/Fit Results/Proton Counts","NaFPfits/Fit Results/StatErrorP","NaFPfits/Fit Results/SystErrorP","ExposureNaF",Global.GetNaFPBins());
+	Flux * PFluxAgl  = new Flux(finalhistos,finalresults, "PFluxAgl", "Acceptance_PAgl","Acceptance","AglPfits/Fit Results/Proton Counts","AglPfits/Fit Results/StatErrorP","AglPfits/Fit Results/SystErrorP","ExposureAgl",Global.GetAglPBins());
 	
 	Flux * RigPTOF = new Flux(finalhistos,finalresults, "RigPTOF", "Acceptance_RigPTOF","Acceptance","TOFPCounts/TOFPCounts/TOFPCounts_before","","","ExposureTOF",GlobalRig.GetToFPBins());
 	Flux * RigPNaF = new Flux(finalhistos,finalresults, "RigPNaF", "Acceptance_RigPNaF","Acceptance","NaFPCounts/NaFPCounts/NaFPCounts_before","","","ExposureNaF",GlobalRig.GetNaFPBins());
@@ -68,9 +70,17 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	Flux * He3FluxNaF  = new Flux(finalhistos,finalresults, "He3FluxNaF", "Acceptance_He3NaF","Acceptance","NaFHe3fits/Fit Results/Deuteron Counts","NaFHe3fits/Fit Results/StatErrorD","NaFHe3fits/Fit Results/SystError","ExposureNaF",Global_He.GetNaFPBins());
 	Flux * He3FluxAgl  = new Flux(finalhistos,finalresults, "He3FluxAgl", "Acceptance_He3Agl","Acceptance","AglHE3fits/Fit Results/Deuteron Counts","AglHE3fits/Fit Results/StatErrorD","AglHE3fits/Fit Results/SystError","ExposureAgl",Global_He.GetAglPBins());
 
-	Flux * He4FluxTOF  = new Flux(finalhistos,finalresults, "He4FluxTOF", "Acceptance_HeTOF","Acceptance","TOFHefits/Fit Results/Proton Counts","TOFHefits/Fit Results/StatErrorP","TOFHefits/Fit Results/SystError","ExposureTOF",Global_He.GetToFDBins());
-	Flux * He4FluxNaF  = new Flux(finalhistos,finalresults, "He4FluxNaF", "Acceptance_HeNaF","Acceptance","NaFHefits/Fit Results/Proton Counts","NaFHefits/Fit Results/StatErrorP","NaFHefits/Fit Results/SystError","ExposureNaF",Global_He.GetNaFDBins());
-	Flux * He4FluxAgl  = new Flux(finalhistos,finalresults, "He4FluxAgl", "Acceptance_HeAgl","Acceptance","AglHEfits/Fit Results/Proton Counts","AglHEfits/Fit Results/StatErrorP","AglHEfits/Fit Results/SystError","ExposureAgl",Global_He.GetAglDBins());
+	Flux * He4FluxTOF  = new Flux(finalhistos,finalresults, "He4FluxTOF", "Acceptance_HeTOF","Acceptance","TOFHefits/Fit Results/Proton Counts","TOFHefits/Fit Results/StatErrorP","TOFHefits/Fit Results/SystErrorP","ExposureTOF",Global_He.GetToFDBins());
+	Flux * He4FluxNaF  = new Flux(finalhistos,finalresults, "He4FluxNaF", "Acceptance_HeNaF","Acceptance","NaFHefits/Fit Results/Proton Counts","NaFHefits/Fit Results/StatErrorP","NaFHefits/Fit Results/SystErrorP","ExposureNaF",Global_He.GetNaFDBins());
+	Flux * He4FluxAgl  = new Flux(finalhistos,finalresults, "He4FluxAgl", "Acceptance_HeAgl","Acceptance","AglHEfits/Fit Results/Proton Counts","AglHEfits/Fit Results/StatErrorP","AglHEfits/Fit Results/SystErrorP","ExposureAgl",Global_He.GetAglDBins());
+
+
+
+	Flux* PFluxExtension   = new Flux(finalhistos,finalresults,"PFluxExtension","AccProtonExtension","Acceptance","Z1Extension/Fit Results/Proton Counts","Z1Extension/Fit Results/StatErrorP","Z1Extension/Fit Results/SystErrorP","ExposureExt",PExtension);
+	Flux* DFluxExtension   = new Flux(finalhistos,finalresults,"DFluxExtension","AccDeutExtension","Acceptance","Z1Extension/Fit Results/Deuteron Counts","Z1Extension/Fit Results/StatErrorD","Z1Extension/Fit Results/SystError","ExposureExt",DPExtension);
+	Flux* He3FluxExtension = new Flux(finalhistos,finalresults,"He3FluxExtension","AccHe3Extension","Acceptance","Z2Extension/Fit Results/Deuteron Counts","Z2Extension/Fit Results/StatErrorD","Z2Extension/Fit Results/SystError","ExposureExt",He3Extension);
+
+
 
 	DFluxTOF ->SetDefaultOutFile(finalhistos); 
 	DFluxNaF ->SetDefaultOutFile(finalhistos);
@@ -120,6 +130,11 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	He4FluxAgl ->SetDefaultOutFile(finalhistos);
 
 
+	PFluxExtension 	->SetDefaultOutFile(finalhistos);  
+	DFluxExtension  ->SetDefaultOutFile(finalhistos);
+	He3FluxExtension->SetDefaultOutFile(finalhistos);
+
+
 	cout<<"********** EXPOSURE TIME & GEOM. ACCEPT. ********"<<endl;
 
 	Filler_RTI.AddObject2beFilled(DFluxTOF,GetBetaGen,GetBetaGen,"IsDeutonMC");
@@ -156,19 +171,45 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	Filler_RTI.AddObject2beFilled(He4FluxTOF,GetBetaGen,GetBetaGen,"IsHeliumMC");
 	Filler_RTI.AddObject2beFilled(He4FluxNaF,GetBetaGen,GetBetaGen,"IsHeliumMC");
 	Filler_RTI.AddObject2beFilled(He4FluxAgl,GetBetaGen,GetBetaGen,"IsHeliumMC");
+
+
+	Filler_RTI.AddObject2beFilled(PFluxExtension,GetBetaGen,GetBetaGen,"IsProtonMC");
+	Filler_RTI.AddObject2beFilled(DFluxExtension,GetBetaGen,GetBetaGen,"IsDeutonMC");
+	Filler_RTI.AddObject2beFilled(He3FluxExtension,GetBetaGen,GetBetaGen,"IsHeliumMC");
+	
+
 	Filler_RTI.ReinitializeAll(refill);
 
 
 	if(!refill&&checkfile) {
 
 	//correction for fragmentation
-	float corr_D  = 1;//0.9618;
-	float corr_p  = 0.99;
-	float corr_he = 1;
+	float corr_D  = 0.97*0.9618;
+	float corr_p  = 0.97;
+	float corr_he = 1.02;
 
 
 	TFile * UnfoldingFile = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/Unfolding/AvgUnfolding.root");
 	TH1F* avg; 	
+
+		cout<<"********  EXTENSION P ************"<<endl;
+
+		PFluxExtension->SetForceFolded();
+		PFluxExtension->Eval_Flux(corr_p);
+		PFluxExtension->SaveResults(finalresults);
+
+		cout<<"********  EXTENSION D ************"<<endl;
+
+		DFluxExtension->SetForceFolded();
+		DFluxExtension->Eval_Flux(corr_D);
+		DFluxExtension->SaveResults(finalresults);
+
+		cout<<"********  EXTENSION 3He ************"<<endl;
+
+		He3FluxExtension->SetForceFolded();
+		He3FluxExtension->Eval_Flux(corr_he);
+		He3FluxExtension->SaveResults(finalresults);
+
 
 		cout<<"************* P FLUX ************"<<endl;
 
@@ -282,26 +323,26 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 
 		cout<<"************* AllHe FLUX **********"<<endl;
-		RigHeTOF->Eval_Flux(corr_he);//,1.9,3.2,3,0.01);
-		RigHeNaF->Eval_Flux(corr_he);//,3.4,8.2,6,0.01);
-		RigHeAgl->Eval_Flux(corr_he);//,8,17.5,5,0.01);
+		RigHeTOF->Eval_Flux(corr_he+0.00);//,1.9,3.2,3,0.01);
+		RigHeNaF->Eval_Flux(corr_he+0.00);//,3.4,8.2,6,0.01);
+		RigHeAgl->Eval_Flux(corr_he+0.00);//,8,17.5,5,0.01);
 
 		RigHeTOF->SaveResults(finalresults);
 		RigHeNaF->SaveResults(finalresults);
 		RigHeAgl->SaveResults(finalresults);
 
-		RigBetaHeTOF->Eval_Flux(corr_he);//,1.9,3.2,3,0.01);
-		RigBetaHeNaF->Eval_Flux(corr_he);//,3.4,8.2,6,0.01);
-		RigBetaHeAgl->Eval_Flux(corr_he);//,8,17.5,5,0.01);
+		RigBetaHeTOF->Eval_Flux(corr_he+0.004);//,1.9,3.2,3,0.01);
+		RigBetaHeNaF->Eval_Flux(corr_he+0.004);//,3.4,8.2,6,0.01);
+		RigBetaHeAgl->Eval_Flux(corr_he+0.004);//,8,17.5,5,0.01);
 
 		RigBetaHeTOF->SaveResults(finalresults);
 		RigBetaHeNaF->SaveResults(finalresults);
 		RigBetaHeAgl->SaveResults(finalresults);
 
 	
-		FitBetaHeTOF->Eval_Flux(corr_he);//,1.9,3.2,3,0.01);
-		FitBetaHeNaF->Eval_Flux(corr_he);//,3.4,8.2,6,0.01);
-		FitBetaHeAgl->Eval_Flux(corr_he);//,8,17.5,5,0.01);
+		FitBetaHeTOF->Eval_Flux(corr_he+0.00);//,1.9,3.2,3,0.01);
+		FitBetaHeNaF->Eval_Flux(corr_he+0.00);//,3.4,8.2,6,0.01);
+		FitBetaHeAgl->Eval_Flux(corr_he+0.00);//,8,17.5,5,0.01);
 
 		FitBetaHeTOF->SaveResults(finalresults);
 		FitBetaHeNaF->SaveResults(finalresults);
@@ -341,9 +382,10 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		He3FluxNaF->AverageCountsWithOther(finalresults,"NaFHefits/Fit Results/Deuteron Counts","/Fluxes/He4FluxNaF/ExposureTime Ekin");
 	        He3FluxAgl->AverageCountsWithOther(finalresults,"AglHEfits/Fit Results/Deuteron Counts","/Fluxes/He4FluxAgl/ExposureTime Ekin");
 
-		He3FluxTOF-> Eval_Flux(corr_he);//,1.9,3.2,3,0.01);
-		He3FluxNaF-> Eval_Flux(corr_he);//,3.4,8.2,6,0.01);
-		He3FluxAgl-> Eval_Flux(corr_he);//,8,17.5,5,0.01);
+		//He4->He3
+		He3FluxTOF-> Eval_Flux(corr_he/*1.043*/);//,1.9,3.2,3,0.01);
+		He3FluxNaF-> Eval_Flux(corr_he/*1.043*/);//,3.4,8.2,6,0.01);
+		He3FluxAgl-> Eval_Flux(corr_he/*1.043*/);//,8,17.5,5,0.01);
 
 		He3FluxTOF->SaveResults(finalresults);
 		He3FluxNaF->SaveResults(finalresults);
@@ -361,13 +403,13 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		ResultMerger*	RigPRes     = new ResultMerger(finalresults,"RigPFlux",Global,RigPTOF,RigPNaF,RigPAgl,proton);
 		ResultMerger*	RigBetaPRes = new ResultMerger(finalresults,"RigBetaPFlux",Global,RigBetaPTOF,RigBetaPNaF,RigBetaPAgl,proton);
 		ResultMerger*	FitBetaPRes = new ResultMerger(finalresults,"FitBetaPFlux",Global,FitBetaPTOF,FitBetaPNaF,FitBetaPAgl,proton);
-		ResultMerger*	ProtonRes   = new ResultMerger(finalresults,"PFlux",Global,PFluxTOF,PFluxNaF,PFluxAgl,proton);
+		ResultMerger*	ProtonRes   = new ResultMerger(finalresults,"PFlux",Global,PFluxTOF,PFluxNaF,PFluxAgl, proton,false,HEPFluxL1,DFluxAgl,DeutonRes->flux);
 	
 		ResultMerger*	He4Res 	    = new ResultMerger(finalresults,"He4Flux",Global_He,He4FluxTOF,He4FluxNaF,He4FluxAgl,deuton,nafpriority);
-		ResultMerger*	He3Res 	    = new ResultMerger(finalresults,"He3Flux",Global_He,He3FluxTOF,He3FluxNaF,He3FluxAgl,proton,nafpriority);
 		ResultMerger*	RigHeRes    = new ResultMerger(finalresults,"RigHeFlux",Global_HeRig,RigHeTOF,RigHeNaF,RigHeAgl,deuton,nafpriority);
 		ResultMerger*	RigBetaHeRes    = new ResultMerger(finalresults,"RigBetaHeFlux",Global_HeRig,RigBetaHeTOF,RigBetaHeNaF,RigBetaHeAgl,deuton,nafpriority);
 		ResultMerger*	FitBetaHeRes    = new ResultMerger(finalresults,"FitBetaHeFlux",Global_HeRig,FitBetaHeTOF,FitBetaHeNaF,FitBetaHeAgl,deuton,nafpriority);
+		ResultMerger*	He3Res 	    = new ResultMerger(finalresults,"He3Flux",Global_He,He3FluxTOF,He3FluxNaF,He3FluxAgl,proton,nafpriority,RigBetaHeAgl,He4FluxAgl,He4Res->flux);
 		
 
 		DeutonRes->SaveResults(finalresults);
@@ -403,11 +445,11 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 
 		//Flux
-		TH1F * ratioDP_ = DoRatio_Extended_subtraction(DeutonRes->flux,ProtonRes->flux,HEPFluxL1->GetFlux_rig(),"DPratio");
-
+	//	TH1F * ratioDP_ = DoRatio_Extended_subtraction(DeutonRes->flux,ProtonRes->flux,HEPFluxL1->GetFlux_rig(),"DPratio");
+		TH1F * ratioDP_ = DoRatio(DeutonRes->flux,ProtonRes->flux,"DPratio");
 
 		//Flux_Unfolded
-		TH1F * ratioDP_unf_ = DoRatio_Extended_subtraction(DeutonRes->flux_unf,ProtonRes->flux_unf,HEPFluxL1->GetFlux_rig(),"DPratio_unf");
+		TH1F * ratioDP_unf_ = DoRatio(DeutonRes->flux_unf,ProtonRes->flux_unf,"DPratio_unf");
 
 
 		//Flux_Folded_stat
@@ -424,6 +466,8 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		TH1F * ratioDHe4_stat	  = DoRatio(DeutonRes->flux_stat,He4Res->flux_stat,"DHe4ratio_stat");
 		TH1F * ratioDHe4_unf 	  = DoRatio(DeutonRes->flux_unf,He4Res->flux,"DHe4ratio_unf");
 		TH1F * ratioDHe4_unf_stat = DoRatio(DeutonRes->flux_unf_stat,He4Res->flux_stat,"DHe4ratio_unf_stat");
+		
+
 
 		TH1F * ratioHe3He4 	  = DoRatio(He3Res->flux,He4Res->flux,"He3He4ratio");
 		TH1F * ratioHe3He4_stat	  = DoRatio(He3Res->flux_stat,He4Res->flux_stat,"He3He4ratio_stat");
@@ -442,7 +486,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 		TH1F * ratioDHe3 	  = DoRatio(DeutonRes->flux,He3Res->flux,"DHe3ratio");
 		TH1F * ratioDHe3_stat	  = DoRatio(DeutonRes->flux_stat,He3Res->flux_stat,"DHe3ratio_stat");
-		TH1F * ratioDHe3_unf 	  = DoRatio(DeutonRes->flux_unf,He3Res->flux,"DHe3ratio_unf");
+		TH1F * ratioDHe3_unf 	  = DoRatio(DeutonRes->flux_unf,He3Res->flux_unf,"DHe3ratio_unf");
 		TH1F * ratioDHe3_unf_stat = DoRatio(DeutonRes->flux_unf_stat,He3Res->flux_stat,"DHe3ratio_unf_stat");
 
 
@@ -453,6 +497,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		TH1F * ratioPP_unf_stat = DoRatio(ProtonRes->flux_unf_stat,RigBetaPRes->flux_unf_stat,"unfoldingtest_ratiounfolded_stat");
 
 		//////////////// Ekin RATIO ////////////////////////
+
 
 		TH1F * ratio_DP_ekin = DoRatio_Ekin(DeutonRes->flux_ekin,ProtonRes->flux_ekin,"DPratio_Ekin");
 
@@ -504,6 +549,24 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 		finalresults.writeObjsInFolder("MergedRatios/");	
 
+		
+		RatioMaker * DHe4ratio = new RatioMaker(DeutonRes,He4Res,"DHe4ratio");
+		DHe4ratio->SaveResults(finalresults);
+
+		RatioMaker * DPratio = new RatioMaker(DeutonRes,ProtonRes,"DPratio");
+		DPratio->SaveResults(finalresults);
+
+		RatioMaker * DHe3ratio = new RatioMaker(DeutonRes,He3Res,"DHe3ratio");
+		DHe3ratio->SaveResults(finalresults);
+
+		RatioMaker * PHe4ratio = new RatioMaker(ProtonRes,He4Res,"PHe4ratio");
+		PHe4ratio->SaveResults(finalresults);
+
+		RatioMaker * He3He4ratio = new RatioMaker(He3Res,He4Res,"He3He4ratio");
+		He3He4ratio->SaveResults(finalresults);
+
+
+
 
 	}
 	return;
@@ -513,28 +576,55 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 
 
+TH1F * DoRatio(TH1F* numerator, TH1F * denominator,std::string name){
+
+	TH1F * ratio;
+	if(numerator->GetBinLowEdge(0)>denominator->GetBinLowEdge(0)) 
+	ratio=(TH1F*) numerator->Clone(name.c_str());
+	else 
+	ratio=(TH1F*) denominator->Clone(name.c_str());
+
+	ratio->Reset();
+
+	for(int i=0;i<ratio->GetNbinsX();i++){
+		int bin_num=numerator->FindBin(ratio->GetBinCenter(i+1));
+		int bin_den=denominator->FindBin(ratio->GetBinCenter(i+1));
+		if(denominator->GetBinContent(bin_den)>0){
+			ratio->SetBinContent(i+1,numerator->GetBinContent(bin_num)/denominator->GetBinContent(bin_den));
+			float error = pow(denominator->GetBinError(bin_den)/denominator->GetBinContent(bin_den),2);
+	                error += pow(numerator->GetBinError(bin_num)/numerator->GetBinContent(bin_num),2);
+        	        ratio->SetBinError(i+1,pow(error,0.5)*ratio->GetBinContent(i+1));
+		}
+	}
+	return ratio;
+}
 
 
-
-
-
+/*
 TH1F * DoRatio(TH1F* numerator, TH1F * denominator,std::string name){
 
 	TH1F * ratio = (TH1F*) numerator->Clone(name.c_str());
-	TH1F * rebinned_denominator = (TH1F*) numerator->Clone("rebinned_denom");
+
+	TH1F * rebinned_denominator;
+	if(numerator->GetBinLowEdge(0)>denominator->GetBinLowEdge(0))	
+	rebinned_denominator= (TH1F*) numerator->Clone("rebinned_denom");
+	else rebinned_denominator = (TH1F*) denominator->Clone("rebinned_denom");
+
 	rebinned_denominator->Reset();
+
 	cout<<"RATIO CALC "<<name<<endl;
 	for(int i=0;i<rebinned_denominator->GetNbinsX();i++) {
 		rebinned_denominator->SetBinContent(i+1,denominator->GetBinContent(denominator->FindBin(numerator->GetBinCenter(i+1))));
 		rebinned_denominator->SetBinError(i+1,denominator->GetBinError(denominator->FindBin(numerator->GetBinCenter(i+1))));
-
+		
 	}
 	ratio->Divide(rebinned_denominator);
 
+
 	for(int i=0;i<rebinned_denominator->GetNbinsX();i++) {
 
-		//float error = pow(rebinned_denominator->GetBinError(i+1)/rebinned_denominator->GetBinContent(i+1),2);
-		float error= pow(numerator->GetBinError(i+1)/numerator->GetBinContent(i+1),2);
+		float error = pow(rebinned_denominator->GetBinError(i+1)/rebinned_denominator->GetBinContent(i+1),2);
+		error += pow(numerator->GetBinError(i+1)/numerator->GetBinContent(i+1),2);
 		ratio->SetBinError(i+1,pow(error,0.5)*ratio->GetBinContent(i+1));
 	}
 
@@ -542,7 +632,7 @@ TH1F * DoRatio(TH1F* numerator, TH1F * denominator,std::string name){
 	return ratio;	
 
 
-}
+}*/
 
 
 TH1F * DoRatio_Extended_subtraction(TH1F* numerator, TH1F * denominator, TH1F* extended,std::string name){

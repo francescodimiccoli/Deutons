@@ -219,6 +219,7 @@ class TemplateFIT : public Tool{
 	TH1F * StatErrorT;
 	
 	TH1F * SystError;
+	TH1F * SystErrorP;
 	TH1F * HeContError;
 
 	TH1F * ProtonCounts;
@@ -296,7 +297,7 @@ class TemplateFIT : public Tool{
 	bool useMCtuning=true;
 
 	TF1 * richcore;
-
+	TF1 * slowdownmodel;
 	public:	
 	//standard constructor
 	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, std::string CutP, std::string CutD, std::string CutHe,std::string Cutoff, int Nbins, float Xmin, float Xmax, bool IsRich,int steps,float sigma,float shift,int smearingmode){
@@ -380,6 +381,8 @@ class TemplateFIT : public Tool{
 		StatErrorT  = new TH1F("StatErrorT","StatErrorT",bins.size(),0,bins.size()) ;
 
         	SystError  = new TH1F("SystError","SystError",bins.size(),0,bins.size()) ;
+		SystErrorP  = new TH1F("SystErrorP","SystErrorP",bins.size(),0,bins.size()) ;
+
 
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
@@ -412,6 +415,11 @@ class TemplateFIT : public Tool{
 
 		richcore = new TF1("richcore","[0]*exp(-0.5*((x-[1])/[2])*((x-[1])/[2]))+0.0001*(1+sign(1,(x-1)))*[3]*pow(x,[4]) + [5]*exp(-0.5*((x-[1]+[9])/([6]*[2]))*((x-[1]+[9])/([6]*[2]))) + [7]*exp(-0.5*((x-[1]+[10])/([8]*[2]))*((x-[1]+[10])/([8]*[2]))) ",0.8,1.3);
 		richcore->SetNpx(500);
+
+		slowdownmodel = new TF1("slowdown","pol4",0.8,2);
+		slowdownmodel->SetNpx(500);
+
+
 	}
 
 	//reading constructor
@@ -504,6 +512,8 @@ class TemplateFIT : public Tool{
 		StatErrorT  = new TH1F("StatErrorT","StatErrorT",bins.size(),0,bins.size()) ;
 
 		SystError  = new TH1F("SystError","SystError",bins.size(),0,bins.size()) ;
+		SystErrorP  = new TH1F("SystErrorP","SystErrorP",bins.size(),0,bins.size()) ;
+
 
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
 		DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
@@ -540,7 +550,7 @@ class TemplateFIT : public Tool{
 		//if(!MCHeContRatio) MCHeContRatio = Eval_MCHeContRatio("MC Expected He over P");
 
 		SetFitConstraints(0.9,1,0.015,0.06,0.0001,0.005);
-	
+
 	}
 
 	TH1F * BuildTemplateFromExternal(TH1F* core, TH1F *reference, TH1F* external);
@@ -566,6 +576,7 @@ class TemplateFIT : public Tool{
 	void Fill(TTree * treeMC,TTree * treeDT, Variables * vars, float (*var) (Variables * vars),float (*discr_var) (Variables * vars) );
 	float SmearBeta(float Beta, float Beta_gen,float  HighRsigmaMC, float HighRsigmaDT, float relativeshift , TF1* MCmodel,  float stepsigma, float stepshift);
 	float SmearBeta_v2(float Beta, float Beta_gen,float  HighRsigmaMC, float HighRsigmaDT, float relativeshift , TF1* MCmodel,  float stepsigma, float stepshift);
+	float SmearBetaTOF_v2(float massagen, float R, float Beta, float Beta_gen, float HighRsigmaMC, float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
 	float SmearBetaRICH_v2(int kbin, float Beta, float Beta_gen, float HighRsigmaMC, float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
 	float SmearBetaNaF_v2(int kbin, float Beta, float Betagen,float HighRsigmaMC,float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
 	float SmearBetaAgl_v2(int kbin, float Beta, float Betagen,float HighRsigmaMC,float HighRsigmaDT, float relativeshift, float stepsigma, float stepshift);
@@ -607,6 +618,7 @@ class TemplateFIT : public Tool{
 
 	void SetTemplateScaleFactor(float scale1,float scale2, float scale3) {template1scalefactor1=scale1; template1scalefactor2=scale2; template1scalefactor3=scale3;}
 	TH1F * GetSystError() { return SystError;}	
+	TH1F * GetSystErrorP() { return SystErrorP;}	
 	Binning  GetBinning() {return bins;}
 	void  RebinAll(int f=2);	
 	float GetHeContaminationWeight(int bin) { return fits[bin][BestChiSquare->i][BestChiSquare->j]->ContribHe; }

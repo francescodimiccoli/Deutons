@@ -53,7 +53,10 @@ TMVA::Reader *readerTOF;
 TMVA::Reader *readerNaF;
 TMVA::Reader *readerAgl;
 
-
+//R Extension
+//
+Binning DPExtension(deuton);
+Binning HeExtension(helium4);
 
 
 void SetBins(){	

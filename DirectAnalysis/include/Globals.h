@@ -98,6 +98,14 @@ extern Binning UnfoldingNaF_He;
 extern Binning UnfoldingAgl_He;
 
 
+//R Extension
+extern Binning DPExtension;
+extern Binning HeExtension;
+extern Binning PExtension;
+extern Binning He3Extension;
+
+
+
 
 int FindTimeIndex(std::string input);
 #endif

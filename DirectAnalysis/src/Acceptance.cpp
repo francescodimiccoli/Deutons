@@ -111,6 +111,7 @@ void Acceptance::Save(){
 	finalhistos.Add(Migr_rig);
         finalhistos.Add(Migr_beta);
        	finalhistos.Add(Migr_R);
+       	finalhistos.Add(EnLoss);
         finalhistos.Add(Migr_B);
         finalhistos.Add(Migr_Unf);
         finalhistos.Add(Migr_True);
@@ -140,6 +141,14 @@ void Acceptance::SaveResults(FileSaver finalhistos){
 	if(Migr_rig) finalhistos.Add(Migr_rig);
 	if(Migr_beta) finalhistos.Add(Migr_beta);
 	if(Migr_R) finalhistos.Add(Migr_R);
+	if(EnLoss) 
+	{
+		EnLoss->FitSlicesY(0,0,-1,0,"QG3");
+		std::string name = EnLoss->GetName();
+		TH1D * means = (TH1D*)gDirectory->Get((name+"_1").c_str());
+		finalhistos.Add(EnLoss);
+		finalhistos.Add(means);
+	}
 	if(Migr_B) finalhistos.Add(Migr_B);
 	if(Migr_Unf) finalhistos.Add(Migr_Unf);
 	if(Migr_True) finalhistos.Add(Migr_True);
@@ -374,18 +383,18 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 			if(EfficiencyCorrections[i]->IsEkin()) bin = EfficiencyCorrections[i]->GetGlobCorrection()->FindBin(bins.ekpermassbin_TOI[j]);
 			else bin = EfficiencyCorrections[i]->GetGlobCorrection()->FindBin(bins.rigbin_TOI[j]);
 	
-		if(EfficiencyCorrections[i]->GetStat_Err()->GetBinContent(bin+1)<0.1) err_stat+= pow(EfficiencyCorrections[i]->GetStat_Err()->GetBinContent(bin+1),2);
-			if(EfficiencyCorrections[i]->GetSyst_Err()->GetBinContent(bin+1)<0.1) err_syst+= pow(EfficiencyCorrections[i]->GetSyst_Err()->GetBinContent(bin+1),2);
-			if(EfficiencyCorrections[i]->GetSyst_Stat()->GetBinContent(bin+1)<0.1) err_stat+= pow(EfficiencyCorrections[i]->GetSyst_Stat()->GetBinContent(bin+1),2);
+			if(EfficiencyCorrections[i]->GetStat_Err() ->GetBinContent(bin+1)<0.1)  err_stat+= pow(EfficiencyCorrections[i]->GetStat_Err()->GetBinContent(bin+1),2);
+			if(EfficiencyCorrections[i]->GetSyst_Err() ->GetBinContent(bin+1)<0.1)  err_syst+= pow(EfficiencyCorrections[i]->GetSyst_Err()->GetBinContent(bin+1),2);
+			if(EfficiencyCorrections[i]->GetSyst_Stat()->GetBinContent(bin+1)<0.1)  err_stat+= pow(EfficiencyCorrections[i]->GetSyst_Stat()->GetBinContent(bin+1),2);
 		}	
 		for(int i=0;i<EfficiencyFromData.size();i++) {
 			int bin=-1;
 			if(EfficiencyFromData[i]->IsEkin()) bin = EfficiencyFromData[i]->GetGlobCorrection()->FindBin(bins.ekpermassbin_TOI[j]);
 			else bin = EfficiencyFromData[i]->GetGlobCorrection()->FindBin(bins.rigbin_TOI[j]);
 	
-			if(EfficiencyFromData[i]->GetStat_Err()->GetBinContent(bin+1)<0.1) err_stat+= pow(EfficiencyFromData[i]->GetStat_Err()->GetBinContent(bin+1),2);
-			if(EfficiencyFromData[i]->GetSyst_Err()->GetBinContent(bin+1)<0.1) err_syst+= pow(EfficiencyFromData[i]->GetSyst_Err()->GetBinContent(bin+1),2);
-			if(EfficiencyFromData[i]->GetSyst_Stat()->GetBinContent(bin+1)<0.1) err_stat+= pow(EfficiencyFromData[i]->GetSyst_Stat()->GetBinContent(bin+1),2);
+			if(EfficiencyFromData[i]->GetStat_Err() ->GetBinContent(bin+1)<0.1)  err_stat+= pow(EfficiencyFromData[i]->GetStat_Err()->GetBinContent(bin+1),2);
+			if(EfficiencyFromData[i]->GetSyst_Err() ->GetBinContent(bin+1)<0.1)  err_syst+= pow(EfficiencyFromData[i]->GetSyst_Err()->GetBinContent(bin+1),2);
+			if(EfficiencyFromData[i]->GetSyst_Stat()->GetBinContent(bin+1)<0.1)  err_stat+= pow(EfficiencyFromData[i]->GetSyst_Stat()->GetBinContent(bin+1),2);
 		}	
 		err_syst+=pow(0.02,2); //fragmentation syst error
 

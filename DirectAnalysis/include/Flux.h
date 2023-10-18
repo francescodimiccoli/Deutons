@@ -22,6 +22,7 @@ class Flux{
 	TH1F * Counts_density27=0x0;
 	TH1F * Counts_density_unfolded=0x0;
 	TH1F * Counts_density_roounf=0x0;
+	TH1F * Prior=0x0;
 	TH1F * Counts_density_hRecoroounf=0x0;
 	TH1F * Counts_density_Ekin=0x0;
 	TH1F * Counts_density_Ekin_unf=0x0;
@@ -113,9 +114,11 @@ class Flux{
 		if(FileRes.CheckFile()) Counts_statErr = (TH1F *) FileRes.Get((CountsStatName).c_str());	 
 		if(FileRes.CheckFile()) Counts_systErr = (TH1F *) FileRes.Get((CountsSystName).c_str());	 
 
+		//Counts_statErr->Scale(1.5);
 
 		ExposureTime = (TH1F *) File.Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
-		cout<<("Fluxes/"+Basename+"/"+ExposureName).c_str()<<" "<<ExposureTime<<"; File Name: "<<File.GetName()<<endl;
+		cout<<("Fluxes/"+Basename+"/"+ExposureName).c_str()<<endl;
+		cout<<ExposureTime<<"; File Name: "<<File.GetName()<<endl;
 		bins = Bins;		
 		basename = Basename;
 		exposurename = ExposureName;
@@ -236,6 +239,7 @@ class Flux{
 	TH1F * GetUnfError() {return Unfolding_Err;}
 	TH1F * GetUnfoldingFactor() {return Unfolding_factor;}
 	TH1F * GetRooUnfoldingFactor() {return RooUnfolding_factor;}
+	TH1F * GetRooUnfoldingFactor_Raw() {return RooUnfolding_factor_raw;}
 	TH1F * GetRooUnfError() {return RooUnfolding_Err;}
 	
 	void Average_with_another(TH1F* ratio);

@@ -209,7 +209,7 @@ bool ControlSampleMassCut(Variables * vars){  if(IsFromNaF(vars)||IsFromAgl(vars
 bool IsNegativeCharged (Variables * vars) {return (vars->Beta>0&&vars->R<0);}
 bool IsPositiveCharged (Variables * vars) {return (vars->Beta>0&&vars->R>0);}
 
-
+bool CheckBetaAgl(Variables * vars) {return (vars->BetaRICH_new<1 && GetRecMassRICH(vars)>0.35 && GetRecMassRICH(vars)<5 ); }
 
 bool IsGoodHe      (Variables * vars){ return (LikelihoodCut(vars) && vars->qInner>1.6 && vars->qInner<2.6 &&  vars->qUtof>1.6 && vars->qUtof<2.6 &&  vars->qLtof>1.6 && vars->qLtof<2.6);}
 
@@ -392,6 +392,7 @@ bool ApplyCuts(std::string cut, Variables * Vars){
 		if(spl[i]=="IsBaselineHe" ) IsPassed=IsPassed && IsBaselineHe (Vars); 
 		if(spl[i]=="IsMinTOF" )      IsPassed=IsPassed && IsMinTOF (Vars); 
 		if(spl[i]=="IsStandardSel" )      IsPassed=IsPassed && IsStandardSel (Vars); 
+		if(spl[i]=="CheckBetaAgl" )      IsPassed=IsPassed && CheckBetaAgl (Vars); 
 	
 		if(spl[i]=="IsStandardSel_v0" )      IsPassed=IsPassed && IsStandardSel_v0 (Vars); 
 		if(spl[i]=="IsStandardSel_v1" )      IsPassed=IsPassed && IsStandardSel_v1 (Vars); 

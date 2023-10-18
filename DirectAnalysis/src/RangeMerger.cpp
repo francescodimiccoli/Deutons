@@ -64,12 +64,12 @@ void RangeMerger::setBinsFromRDatacard(std::string datacard, TF1 * ResponseTOF, 
 		betamin=0.86, betamax=0.977;
 		NaFD.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseNaF,a,b);
 		NaFP.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseNaF,a,b);
-		betamin=0.97, betamax=0.995;
+		betamin=0.97, betamax=0.9957;
 		AglD.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseAgl,a,b);
 		AglP.setBinsFromRDatacard (datacard.c_str(), betamin, betamax ,ResponseAgl,a,b);
 		
-		Global_D.setBinsFromRDatacard (datacard.c_str(), 0.55, 0.995 ,ResponseTOF,a,b);
-		Global_P.setBinsFromRDatacard (datacard.c_str(), 0.55, 0.995 ,ResponseTOF,a,b);
+		Global_D.setBinsFromRDatacard (datacard.c_str(), 0.55, 0.9957 ,ResponseTOF,a,b);
+		Global_P.setBinsFromRDatacard (datacard.c_str(), 0.55, 0.9957 ,ResponseTOF,a,b);
 		
 	}
 

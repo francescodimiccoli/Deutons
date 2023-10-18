@@ -36,6 +36,7 @@ class Acceptance : public Tool{
 
 	TH2F * Migr_rig;
 	TH2F * Migr_beta;
+	TH2F * EnLoss;
 	TH2F * Migr_R;
 	TH2F * Migr_B;
 	TH2F * Migr_Unf;
@@ -123,6 +124,7 @@ class Acceptance : public Tool{
                        	Migr_beta= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_Unfolding").c_str());
 		        Migr_R= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_R").c_str());
 			Migr_B= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_B").c_str());
+			EnLoss= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_EnLoss").c_str());
 			Migr_Unf= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_RooUnfold").c_str());
 			Migr_True= (TH1F*) file->Get((directory + "/" + basename + "/"+ Basename +"_RooTrue").c_str());
 			Migr_Meas= (TH1F*) file->Get((directory + "/" + basename + "/"+ Basename +"_RooMeas").c_str());
@@ -134,6 +136,7 @@ class Acceptance : public Tool{
 			Migr_beta= new TH2F((Basename +"_Unfolding").c_str(),(Basename+"beta;R_{GEN}[GV];#beta_{meas}").c_str(),binsfu.size(),rig_gen,binsfu.size(),beta_gen);
 			Migr_R= new TH2F((Basename +"_R").c_str(),(Basename+"mass;R_{GEN}[GV];R_{meas}").c_str(),200,0,30,200,0,30);
 			Migr_B= new TH2F((Basename +"_B").c_str(),(Basename+"mass;R_{GEN}[GV];#beta_{meas}").c_str(),200,0,30,200,0.8,1.2);
+			EnLoss= new TH2F((Basename +"_EnLoss").c_str(),(Basename+"mass;1/#beta_{GEN}[GV];1/#beta_{meas}").c_str(),400,0.8,2.,400,0.8,2.);
 			Migr_Unf= new TH2F((Basename +"_RooUnfold").c_str(),(Basename+"beta;Ekin_{meas}[GV];#Ekin_{GEN}").c_str(),binsfu.size(),ekin_true,binsfu.size(),ekin_true);
 			Migr_True= new TH1F((Basename +"_RooTrue").c_str(),(Basename+"beta;Ekin_{GEN}[GV];").c_str(),binsfu.size(),ekin_true);
 			Migr_Meas= new TH1F((Basename +"_RooMeas").c_str(),(Basename+"beta;Ekin_{meas}[GV];").c_str(),binsfu.size(),ekin_true);
@@ -172,7 +175,8 @@ class Acceptance : public Tool{
                        	Migr_beta= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Unfolding").c_str());
 		        Migr_R= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_R").c_str());
 			Migr_B= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_B").c_str());
-		     	Migr_Unf= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_RooUnfold").c_str());
+		    	EnLoss= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_EnLoss").c_str());
+			Migr_Unf= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_RooUnfold").c_str());
 			Migr_True= (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_RooTrue").c_str());
 			Migr_Meas= (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_RooMeas").c_str());
 		   
@@ -221,6 +225,7 @@ class Acceptance : public Tool{
 			Migr_beta= new TH2F((basename +"_Unfolding").c_str(),(basename+"beta;R_{GEN}[GV];#beta_{meas}").c_str(),binsfu.size(),rig_gen,binsfu.size(),beta_gen);
 			Migr_R= new TH2F((basename +"_R").c_str(),(basename+"mass;R_{GEN}[GV];R_{meas}").c_str(),200,0,30,200,0,30);
 			Migr_B= new TH2F((basename +"_B").c_str(),(basename+"mass;R_{GEN}[GV];#beta_{meas}").c_str(),200,0,30,200,0.8,1.2);
+			EnLoss= new TH2F((basename +"_EnLoss").c_str(),(basename+"mass;1/#beta_{GEN}[GV];1/#beta_{meas}").c_str(),400,0.8,2.,400,0.8,2.);
 			Migr_Unf= new TH2F((basename +"_RooUnfold").c_str(),(basename+"beta;Ekin_{meas}[GV];#Ekin_{GEN}").c_str(),binsfu.size(),ekin_true,binsfu.size(),ekin_true);
 			Migr_True= new TH1F((basename +"_RooTrue").c_str(),(basename+"beta;Ekin_{GEN}[GV];").c_str(),binsfu.size(),ekin_true);
 			Migr_Meas= new TH1F((basename +"_RooMeas").c_str(),(basename+"beta;Ekin_{meas}[GV];").c_str(),binsfu.size(),ekin_true);
@@ -251,6 +256,8 @@ class Acceptance : public Tool{
 				Migr_Unf->Fill(Ekin_n,Ekin_gen,vars->mcweight);	
 				Migr_Meas->Fill(Ekin_n,vars->mcweight);
 		//	}
+				EnLoss->Fill(1/betagen,1/var(vars),vars->mcweight);
+	
 		}		
 
 	}

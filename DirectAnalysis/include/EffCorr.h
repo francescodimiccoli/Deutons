@@ -119,9 +119,9 @@ class EffCorr : public Tool{
 		/*		ForEffCorr.setBinsFromRDatacard ((workdir+"/bindatacard_PMIT.data").c_str(), 0.1, 0.9999999 ,ResponseTOF,0.00347548,5.8474); ;
 				ForEffCorr_D.setBinsFromRDatacard ((workdir+"/bindatacard_PMIT.data").c_str(), 0.1, 0.9999999 ,ResponseTOF,0.00347548,5.8474); 
 		*/
-				float ekmin=0.1, ekmax=10;
-				ForEffCorr.setBinsFromEkPerMass (40, ekmin, ekmax,ResponseTOF,0.00347548,5.8474);
-				ForEffCorr_D.setBinsFromEkPerMass(40, ekmin, ekmax,ResponseTOF,0.00347548,5.8474);
+				float ekmin=0.1, ekmax=25;
+				ForEffCorr.setBinsFromEkPerMass (50, ekmin, ekmax,ResponseTOF,0.00347548,5.8474);
+				ForEffCorr_D.setBinsFromEkPerMass(50, ekmin, ekmax,ResponseTOF,0.00347548,5.8474);
 				ForEffCorr.UseREdges();
 				ForEffCorr_D.UseREdges();
 				cout<<"FOREFFCORRBINS: "<<basename<<endl;

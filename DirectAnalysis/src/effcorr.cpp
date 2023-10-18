@@ -83,10 +83,11 @@ void EffCorr::Eval_Errors(){
 	for(int i=0; i<GlobalCorrection->GetNbinsX(); i++) {
 		cout<<"ECCO "<<EffMC->GetEfficiency()->GetNbinsX()<<" "<<Stat_Err<<" "<<Syst_Err<<" "<<Syst_Stat<<endl;	
 		cout<<i<<endl;
-		float syst = 0.2*fabs(EffData_glob->GetEfficiency()->GetBinContent(i+1)-EffData_glob->GetEfficiency()->GetBinContent(i));   //fabs(GlobalCorrection->GetBinContent(i+1) - 1);
+		float syst = 0.2*fabs(EffData_glob->GetEfficiency()->GetBinContent(i+1)-EffData_glob->GetEfficiency()->GetBinContent(i)); 
+		float syst2 = 0.03*fabs(GlobalCorrection->GetBinContent(i+1) - 1);
 		if(GlobalCorrection->GetBinContent(i+1)>0){
 			Stat_Err->SetBinContent(i+1, 0 / GlobalCorrection->GetBinContent(i+1));
-			Syst_Err->SetBinContent(i+1, syst / GlobalCorrection->GetBinContent(i+1));
+			Syst_Err->SetBinContent(i+1, pow(pow(syst,2)+pow(syst2,2),0.5) / GlobalCorrection->GetBinContent(i+1));
 		/*	Syst_Stat->SetBinContent(i+1, 0);
 
 			if(syst_stat>0){ 
@@ -178,7 +179,7 @@ void EffCorr::Eval_Corrections(float shift){
 	else ModelWithSimple(shift);
 
 	//incertezza a posteriori
-	float std=0;
+/*	float std=0;
 	int nn=0;
 	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) {
 			if(GlobalCorrection->GetBinLowEdge(i+1)>shift&&fabs(GlobalCorrection->GetBinContent(i+1)-CorrectionModel->Eval(GlobalCorrection->GetBinCenter(i+1)))<0.025){
@@ -189,7 +190,7 @@ void EffCorr::Eval_Corrections(float shift){
 
 	std/=nn;
 	for(int i=0;i<GlobalCorrection->GetNbinsX();i++) GlobalCorrection->SetBinError(i+1,0.6*pow(std,0.5));
-
+	*/
 	Eval_Errors();
 
 	return;
@@ -288,6 +289,12 @@ void EffCorr::ModelWithSimple(float shift){
 	else 
 		CorrectionModel->SetParLimits(3,2.8,5);
 
+	if(shift<0) 
+	{ 
+		CorrectionModel -> FixParameter(3,0);
+		shift = fabs(shift);
+	}
+
 	float endrange=9999;
 	for(int i=GlobalCorrection->GetNbinsX();i>0;i--) if(!(GlobalCorrection->GetBinContent(i+1)>0)) endrange = GlobalCorrection->GetBinLowEdge(i+1); else break;
 
@@ -300,7 +307,7 @@ void EffCorr::ModelWithSimple(float shift){
 	for(int i=0;i<Syst_Stat->GetNbinsX();i++ ){
 		double x[1] = {GlobalCorrection->GetBinCenter(i+1)};
 		double c1[1];
-		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.68);
+		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.80);
 		if(GlobalCorrection->GetBinContent(i+1)) 
 			Syst_Stat->SetBinContent(i+1,c1[0]);		
 	}	
@@ -355,7 +362,7 @@ void EffCorr::ModelWithSpline(float shift){
 	for(int i=0;i<Syst_Stat->GetNbinsX();i++ ){
 		double x[1] = {GlobalCorrection->GetBinCenter(i+1)};
 		double c1[1];
-		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.68);
+		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(1,1,x,c1,0.80);
 		if(GlobalCorrection->GetBinContent(i+1)) 
 			Syst_Stat->SetBinContent(i+1,c1[0]);		
 	}	

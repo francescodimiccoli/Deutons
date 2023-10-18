@@ -15,7 +15,7 @@ TH1F * Twentisevenify(TH1F* input){
 
 
 
-ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger Global, Flux * FluxTOF, Flux * FluxNaF, Flux * FluxAgl, Particle particle, bool nafpriority){
+ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger Global, Flux * FluxTOF, Flux * FluxNaF, Flux * FluxAgl, Particle particle, bool nafpriority, Flux * Fluxsum, Flux * Fluxtosubtract,TH1F * forbinning){
 
 	Name=name;
 	if(!FluxTOF || !FluxNaF || !FluxAgl) return;
@@ -60,6 +60,9 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		if(FluxTOF->GetRooUnfoldingFactor()&&FluxNaF->GetRooUnfoldingFactor()&&FluxAgl->GetRooUnfoldingFactor())
 			roounfolding = Global.MergeSubDResult_P(FluxTOF->GetRooUnfoldingFactor(),FluxNaF->GetRooUnfoldingFactor(),FluxAgl->GetRooUnfoldingFactor(),nafpriority);
 
+		if(FluxTOF->GetRooUnfoldingFactor_Raw()&&FluxNaF->GetRooUnfoldingFactor_Raw()&&FluxAgl->GetRooUnfoldingFactor_Raw())
+			roounfolding_raw = Global.MergeSubDResult_P(FluxTOF->GetRooUnfoldingFactor_Raw(),FluxNaF->GetRooUnfoldingFactor_Raw(),FluxAgl->GetRooUnfoldingFactor_Raw(),nafpriority);
+
 		if(FluxTOF->GetStatError()&&FluxNaF->GetStatError()&&FluxAgl->GetStatError())
 			statErr = Global.MergeSubDResult_P(FluxTOF->GetStatError(),FluxNaF->GetStatError(),FluxAgl->GetStatError(),nafpriority);
 
@@ -88,6 +91,7 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		if(	counts		) 	counts	      		= ConvertBinnedHisto( counts	          , (Name+"_Counts").c_str()     ,Global.GetGlobalPBins(),false); 
 		if(	unfolding	) 	unfolding      		= ConvertBinnedHisto( unfolding	          , (Name+"_unfolding").c_str()     ,Global.GetGlobalPBins(),false); 
 		if(	roounfolding	) 	roounfolding   		= ConvertBinnedHisto( roounfolding	  , (Name+"_roounfolding").c_str()     ,Global.GetGlobalPBins(),false); 
+		if(	roounfolding_raw) 	roounfolding_raw 	= ConvertBinnedHisto( roounfolding_raw	  , (Name+"_roounfolding_raw").c_str()     ,Global.GetGlobalPBins(),false); 
 		if(	statErr		) 	statErr	      		= ConvertBinnedHisto( statErr	          , (Name+"_stat").c_str()     ,Global.GetGlobalPBins(),false); 
 		if(	systErr		) 	systErr	      		= ConvertBinnedHisto( systErr	          , (Name+"_syste").c_str()     ,Global.GetGlobalPBins(),false); 
 		if(	accErr		) 	accErr	      		= ConvertBinnedHisto( accErr	          , (Name+"_acce").c_str()     ,Global.GetGlobalPBins(),false); 
@@ -137,6 +141,10 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		if(FluxTOF->GetRooUnfoldingFactor()&&FluxNaF->GetRooUnfoldingFactor()&&FluxAgl->GetRooUnfoldingFactor())
 			roounfolding = Global.MergeSubDResult_D(FluxTOF->GetRooUnfoldingFactor(),FluxNaF->GetRooUnfoldingFactor(),FluxAgl->GetRooUnfoldingFactor(),nafpriority);
 
+		if(FluxTOF->GetRooUnfoldingFactor_Raw()&&FluxNaF->GetRooUnfoldingFactor_Raw()&&FluxAgl->GetRooUnfoldingFactor_Raw())
+			roounfolding_raw = Global.MergeSubDResult_D(FluxTOF->GetRooUnfoldingFactor_Raw(),FluxNaF->GetRooUnfoldingFactor_Raw(),FluxAgl->GetRooUnfoldingFactor_Raw(),nafpriority);
+
+
 		if(FluxTOF->GetStatError()&&FluxNaF->GetStatError()&&FluxAgl->GetStatError())
 			statErr = Global.MergeSubDResult_D(FluxTOF->GetStatError(),FluxNaF->GetStatError(),FluxAgl->GetStatError(),nafpriority);
 
@@ -165,6 +173,7 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		if(	counts	        ) 	counts	           		= ConvertBinnedHisto( counts	          , (Name+"_Counts").c_str()     ,Global.GetGlobalDBins(),false); 
 		if(	unfolding	) 	unfolding      		= ConvertBinnedHisto( unfolding	          , (Name+"_unfolding").c_str()     ,Global.GetGlobalDBins(),false); 
 		if(	roounfolding	) 	roounfolding   		= ConvertBinnedHisto( roounfolding	  , (Name+"_roounfolding").c_str()     ,Global.GetGlobalDBins(),false); 
+		if(	roounfolding_raw) 	roounfolding_raw  	= ConvertBinnedHisto( roounfolding_raw	  , (Name+"_roounfolding_raw").c_str()     ,Global.GetGlobalDBins(),false); 
 		if(	statErr	        ) 	statErr	           	= ConvertBinnedHisto( statErr	          , (Name+"_stat").c_str()     ,Global.GetGlobalDBins(),false); 
 		if(	systErr	        ) 	systErr	           	= ConvertBinnedHisto( systErr	          , (Name+"_syste").c_str()     ,Global.GetGlobalDBins(),false); 
 		if(	accErr	        ) 	accErr	           	= ConvertBinnedHisto( accErr	          , (Name+"_acce").c_str()     ,Global.GetGlobalDBins(),false); 
@@ -173,6 +182,59 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 
 
 	}	
+
+	if(Fluxsum&&Fluxtosubtract) {
+		TH1F * sumflux   = (TH1F*) Fluxsum->GetFlux_rig()->Clone();
+		TH1F * fluxtosub = (TH1F*) Fluxtosubtract->GetFlux_unf()->Clone();
+
+		TH1F * totflux   = (TH1F*) forbinning->Clone((Name+"_unf").c_str());
+		TH1F * Staterr   = (TH1F*) forbinning->Clone((Name+"_stat").c_str());
+		TH1F * Systerr   = (TH1F*) forbinning->Clone((Name+"_syste").c_str());
+		TH1F * Accerr    = (TH1F*) forbinning->Clone((Name+"_acce").c_str());
+		
+		totflux->Reset();
+		Staterr->Reset();
+		Systerr->Reset();
+		Accerr ->Reset();
+
+		fluxtosub->Smooth(3);
+		sumflux->Smooth();
+
+		for(int i=0;i<totflux->GetNbinsX();i++)
+			if(flux_unf->FindBin(totflux->GetBinCenter(i+1))<=flux_unf->GetNbinsX()){
+				totflux->SetBinContent(i+1, flux_unf->GetBinContent(flux_unf->FindBin(totflux->GetBinCenter(i+1))));
+				totflux->SetBinError(i+1, flux_unf->GetBinError(flux_unf->FindBin(totflux->GetBinCenter(i+1))));
+				Staterr->SetBinContent(i+1,statErr->GetBinContent(i+1));
+				Systerr->SetBinContent(i+1,systErr->GetBinContent(i+1));
+				Accerr->SetBinContent(i+1,accErr->GetBinContent(i+1));
+			}
+			else{
+				float bincenter= totflux->GetBinCenter(i+1);
+		
+				totflux->SetBinContent(i+1,sumflux->GetBinContent(sumflux->FindBin(bincenter)) - fluxtosub->GetBinContent(fluxtosub->FindBin(bincenter)));
+		
+				Staterr->SetBinContent(i+1,sqrt(pow(Fluxtosubtract->GetStatError()->GetBinContent(sumflux->FindBin(bincenter))*fluxtosub->GetBinContent(sumflux->FindBin(bincenter)),2)+ 
+						     	   pow(Fluxsum->GetStatError()->GetBinContent(sumflux->FindBin(bincenter))*sumflux->GetBinContent(sumflux->FindBin(bincenter)),2))
+							   /totflux->GetBinContent(sumflux->FindBin(bincenter)));
+
+				Systerr->SetBinContent(i+1,Fluxtosubtract->GetSystError()->GetBinContent(sumflux->FindBin(bincenter))+0.05);
+				Accerr->SetBinContent(i+1,Fluxtosubtract->GetAccError()->GetBinContent(sumflux->FindBin(bincenter)));
+			
+				float error1 = (fluxtosub->GetBinError(fluxtosub->FindBin(bincenter))/fluxtosub->GetBinContent(fluxtosub->FindBin(bincenter)));
+				float error2 = (sumflux->GetBinError(sumflux->FindBin(bincenter))/sumflux->GetBinContent(sumflux->FindBin(bincenter)));
+				float error3 = Systerr->GetBinContent(i+1);
+
+
+				totflux->SetBinError(i+1,sqrt(pow(error1,2)+pow(error2,2)+pow(error3,3))*totflux->GetBinContent(i+1));
+
+			}
+			
+		flux_unf = (TH1F*) totflux->Clone((Name+"_unf").c_str());
+		statErr = (TH1F*) Staterr->Clone((Name+"_stat").c_str());
+		systErr = (TH1F*) Systerr->Clone((Name+"_syste").c_str());
+		accErr = (TH1F*) Accerr->Clone((Name+"_acce").c_str());
+	}
+	
 
 		if(	flux	        )  flux27 = Twentisevenify(flux);
                 if( 	flux_stat       )  flux_stat27 = Twentisevenify(flux_stat);
@@ -204,6 +266,7 @@ void ResultMerger::SaveResults(FileSaver finalhistos){
 	if(	counts		)	finalhistos.Add(counts	     	); 
 	if(	unfolding	)	finalhistos.Add(unfolding     	); 
 	if(	roounfolding	)	finalhistos.Add(roounfolding  	); 
+	if(	roounfolding_raw)	finalhistos.Add(roounfolding_raw); 
 	if(	statErr		)	finalhistos.Add(statErr	     	); 
 	if(	systErr		)	finalhistos.Add(systErr	     	); 
 	if(	accErr		)	finalhistos.Add(accErr	     	); 
