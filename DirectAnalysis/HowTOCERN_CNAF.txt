@@ -1,0 +1,3 @@
+1- Do not touch perl, it is not updated from GIT
+2- grep all the "afs" in the code, change with correct path
+3- In cnaf there is no eos writing
