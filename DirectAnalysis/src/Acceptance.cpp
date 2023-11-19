@@ -108,11 +108,7 @@ void Acceptance::Save(){
 	FullSetEff_gen  -> Save();
 	For_Acceptance  -> Save();
       
-	finalhistos.Add(Migr_rig);
-        finalhistos.Add(Migr_beta);
-       	finalhistos.Add(Migr_R);
        	finalhistos.Add(EnLoss);
-        finalhistos.Add(Migr_B);
         finalhistos.Add(Migr_Unf);
         finalhistos.Add(Migr_True);
         finalhistos.Add(Migr_Meas);
@@ -138,9 +134,6 @@ void Acceptance::SaveResults(FileSaver finalhistos){
   	if(EffAcceptance_SystErr)  finalhistos.Add(EffAcceptance_SystErr ); 
  
 
-	if(Migr_rig) finalhistos.Add(Migr_rig);
-	if(Migr_beta) finalhistos.Add(Migr_beta);
-	if(Migr_R) finalhistos.Add(Migr_R);
 	if(EnLoss) 
 	{
 		EnLoss->FitSlicesY(0,0,-1,0,"QG3");
@@ -149,7 +142,6 @@ void Acceptance::SaveResults(FileSaver finalhistos){
 		finalhistos.Add(EnLoss);
 		finalhistos.Add(means);
 	}
-	if(Migr_B) finalhistos.Add(Migr_B);
 	if(Migr_Unf) finalhistos.Add(Migr_Unf);
 	if(Migr_True) finalhistos.Add(Migr_True);
 	if(Migr_Meas) finalhistos.Add(Migr_Meas);
@@ -278,11 +270,10 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 
 		TH1F * tmp = ConvertBinnedHisto(EffAcceptanceMC_gen,"tmp",bins,false);
 		for(int i=0;i<EffAcceptance_gen->GetNbinsX();i++){
-			if(  fabs(EffAcceptanceTime->GetBinContent(EffAcceptanceTime->FindBin(tmp->GetBinCenter(i+1)) ) - EffAcceptanceMC_gen->GetBinContent(i+1))<EffAcceptanceMC_gen->GetBinContent(i+1) ){
-			EffAcceptanceMC_gen->SetBinContent(i+1, EffAcceptanceTime->GetBinContent(EffAcceptanceTime->FindBin(tmp->GetBinCenter(i+1)) ) );
-			EffAcceptanceMC_gen->SetBinError(i+1, EffAcceptanceTime->GetBinError(EffAcceptanceTime->FindBin(tmp->GetBinCenter(i+1)) ) );
+			EffAcceptanceMC_gen->SetBinContent(i+1, EffAcceptanceTime->Eval((tmp->GetBinCenter(i+1)) ) );
+			EffAcceptanceMC_gen->SetBinError(i+1, EffAcceptanceMC_gen->GetBinError(i+1)*0.1);
 			}
-		}
+		
 		EffAcceptance_gen= (TH1F*)EffAcceptanceMC_gen->Clone((basename +"_Eff_Acceptance_gen").c_str());
 	
 	}
@@ -317,10 +308,12 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 		for(int j=0; j<EffAcceptance->GetNbinsX(); j++){
 			if(EfficiencyCorrections[i]->IsEkin()){ 
 				float correction;
-				if(EfficiencyCorrections[i]->Get_TimeAvgCorrection())
+			/*	if(EfficiencyCorrections[i]->Get_TimeAvgCorrection())
 					correction  = GetAverage(EfficiencyCorrections[i]->Get_TimeAvgCorrection(),bins.ekpermassbin_TOI[j]+EffCorrshift[i],bins.ekpermassbin_TOI[j+1]+EffCorrshift[i]);//EfficiencyCorrections[i]->Get_TimeAvgCorrection()->Eval(bins.ekpermassbincent_TOI[j] + EffCorrshift[i]); 
-				else
-					correction  = GetAverage(EfficiencyCorrections[i]->GetCorrectionModel(),bins.ekpermassbin_TOI[j]+EffCorrshift[i],bins.ekpermassbin_TOI[j+1]+EffCorrshift[i]);//EfficiencyCorrections[i]->GetCorrectionModel()->Eval(bins.ekpermassbincent_TOI[j] + EffCorrshift[i]);
+				else*/
+					correction  = 
+				//GetAverage(EfficiencyCorrections[i]->GetCorrectionModel(),bins.ekpermassbin_TOI[j]+EffCorrshift[i],bins.ekpermassbin_TOI[j+1]+EffCorrshift[i]);
+				EfficiencyCorrections[i]->GetCorrectionModel()->Eval(bins.ekpermassbincent_TOI[j] + EffCorrshift[i]);
 				EffAcceptance -> SetBinContent( j+1, EffAcceptance -> GetBinContent(j+1)*correction);
 				EffAcceptance_gen -> SetBinContent( j+1, EffAcceptance_gen -> GetBinContent(j+1)*correction);
 				cout<<"***********  correction EK nr "<<i<<" "<<EfficiencyCorrections[i]->GetName()<<" "<<correction<<endl;
@@ -344,11 +337,10 @@ void Acceptance:: EvalEffAcc(int timeindex,float SF,bool IsHe){
 			if(EfficiencyFromData[i]->IsEkin()){ 
 				float correction;
 					correction= GetAverage(EfficiencyFromData[i]->GetDataEffModel(),bins.ekpermassbin_TOI[j],bins.ekpermassbin_TOI[j+1]); //EfficiencyFromData[i]->GetDataEffModel()->Eval(bins.ekpermassbincent_TOI[j]+EffDatashift[i]);
-				if(EfficiencyCorrections[i]->Get_TimeAvgCorrection()) 
-				//	correction*=EfficiencyCorrections[i]->Get_TimeAvgCorrection()->Eval(bins.ekpermassbincent_TOI[j] + EffCorrshift[i])/
-				//	EfficiencyCorrections[i]->GetCorrectionModel()->Eval(bins.ekpermassbincent_TOI[j] + EffCorrshift[i]);	
+			/*	if(EfficiencyCorrections[i]->Get_TimeAvgCorrection()) 
 					correction*=GetAverage(EfficiencyCorrections[i]->Get_TimeAvgCorrection(),bins.ekpermassbin_TOI[j],bins.ekpermassbin_TOI[j+1])/
 						    GetAverage(EfficiencyCorrections[i]->GetCorrectionModel(),bins.ekpermassbin_TOI[j],bins.ekpermassbin_TOI[j+1]);
+*/
 				EffAcceptance -> SetBinContent( j+1, EffAcceptance -> GetBinContent(j+1)*correction);
 				EffAcceptance_gen -> SetBinContent( j+1, EffAcceptance_gen -> GetBinContent(j+1)*correction);
 

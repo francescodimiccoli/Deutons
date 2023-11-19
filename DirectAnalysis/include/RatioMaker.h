@@ -18,6 +18,8 @@ class RatioMaker{
         TH1F * ratio_unf_stat   ;
         TH1F * ratio_errstat    ;
         TH1F * ratio_errsyst    ;
+	TH1F * ratio_errunf    ;
+	TH1F * ratio_erracc    ;
 	TH1F * ratiounfolding   ;
 	TH1F * ratioacceptance  ;
 	TH1F * ratiocounts      ;
@@ -28,6 +30,8 @@ class RatioMaker{
 	RatioMaker(ResultMerger * num, ResultMerger * den, std::string name);
 	void DoRatioErrStat(float C);
 	void DoRatioErrSyst(float C);
+	void DoRatioErrUnf(float C);
+	void DoRatioErrAcc(float C);
 	
 	void SaveResults(FileSaver finalhistos);
 };

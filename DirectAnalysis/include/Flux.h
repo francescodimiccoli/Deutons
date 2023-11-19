@@ -36,7 +36,7 @@ class Flux{
 	bool rooUnfolding=false;
 
 
-	TH1F * Unfolding_factor_timeavg=0x0;
+	TGraphErrors * Unfolding_factor_timeavg=0x0;
 	TH2F * avg_time=0x0;
 	int time=1429054000;
 
@@ -79,6 +79,7 @@ class Flux{
 	TH1F * Counts_statErr=0x0;
 	TH1F * TOT_statErr=0x0;
 	TH1F * Counts_systErr=0x0;
+	TH1F * Counts_systErr_unb=0x0;
 	TH1F * Acc_Err=0x0;
 	TH1F * Acc_ErrStat=0x0;
 	TH1F * Unfolding_Err=0x0;
@@ -93,7 +94,7 @@ class Flux{
 	TH1F* roounfold_meas=0x0;
 
 
-
+	bool Usepdf=true;
 
 	public:
 
@@ -113,6 +114,8 @@ class Flux{
 		if(FileRes.CheckFile()) Counts = (TH1F *) FileRes.Get((CountsName).c_str());	 
 		if(FileRes.CheckFile()) Counts_statErr = (TH1F *) FileRes.Get((CountsStatName).c_str());	 
 		if(FileRes.CheckFile()) Counts_systErr = (TH1F *) FileRes.Get((CountsSystName).c_str());	 
+		if(FileRes.CheckFile()) Counts_systErr_unb = (TH1F *) FileRes.Get((CountsSystName+"_unb").c_str());	 
+
 
 		//Counts_statErr->Scale(1.5);
 
@@ -125,8 +128,6 @@ class Flux{
 		EfficiencyCorrections.clear();
 		EfficiencyFromData.clear();
 
-		if(bins.IsUsingBetaEdges()) migr_matr = (TH2F*) EffAcceptance->GetMigr_beta();
-		else migr_matr = (TH2F*) EffAcceptance->GetMigr_rig();
 		if(migr_matr) cout<<"**************** MIGRATION MATRIX FOUND: ********************"<<endl;
 		
 		cout<<"Matrix: "<<migr_matr<<endl;
@@ -142,45 +143,6 @@ class Flux{
 	}
 
 
-	Flux(FileSaver FileRes, std::string Basename, std::string Accname, std::string AccDir,std::string CountsName,std::string ExposureName, Binning Bins){
-		
-		EffAcceptance = new Acceptance(FileRes,Accname,AccDir,Bins,Bins);
-		Eff_Acceptance = (TH1F *) EffAcceptance->GetEffAcc_gen();	
-		MC_Acceptance = (TH1F *) EffAcceptance->GetEffAccMC_gen();	
-		MC_Acceptance_raw = (TH1F *) EffAcceptance->GetEffAccMC_gen_raw();	
-
-
-
-		if(EffAcceptance) {
-			cout<<"************ EFFECTIVE ACCEPTANCE FOUND: ********************"<<endl;
-			cout<<Eff_Acceptance<<" "<<EffAcceptance->GetEffAcc()<<" "<<EffAcceptance->GetEffAcc_gen()<<endl; }
-
-		TFile * fileres = FileRes.GetFile();
-
-			if(FileRes.CheckFile()) {
-			Counts = (TH1F *) fileres->Get((CountsName).c_str());
-			Unfolding_Err = (TH1F *) fileres->Get((CountsName).c_str());
-			Unfolding_Err->Reset();
-			RooUnfolding_Err = (TH1F *) fileres->Get((CountsName).c_str());
-			RooUnfolding_Err->Reset();
-			RooUnfolding_factor = (TH1F *) fileres->Get((CountsName).c_str());
-			RooUnfolding_factor->Reset();
-			ExposureTime = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+ExposureName).c_str());
-
-			FluxEstim = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str());
-			FluxEstim_rig = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+Basename+"_Flux_rig").c_str());
-			FluxEstim_rig_stat = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+Basename+"_Flux_rig_stat").c_str());
-			FluxEstim_unf = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+Basename+"_Flux_unf").c_str());
-			FluxEstim_unf_stat = (TH1F *) fileres->Get(("Fluxes/"+Basename+"/"+Basename+"_Flux_unf_stat").c_str());
-			cout<<("Fluxes/"+Basename+"/"+Basename+"_Flux").c_str()<<" "<<FluxEstim<<"; File Name: "<<FileRes.GetName()<<endl;
-			cout<<("Fluxes/"+Basename+"/"+Basename+"_Flux_rig").c_str()<<" "<<FluxEstim_rig<<"; File Name: "<<FileRes.GetName()<<endl;
-			EfficiencyCorrections.clear();
-			EfficiencyFromData.clear();
-		
-		}
-		bins = Bins;		
-		basename = Basename;
-	}
 	bool ReinitializeHistos(bool refill) {
 		if(!finalhistos.CheckFile()||refill) { 
 
@@ -199,7 +161,7 @@ class Flux{
 	
 	void Eval_Flux(float corr_acc=1, float fit_min=0, float fit_max=0,int knots=10,float offset=0.0,bool regularize=false);
 	void Eval_Errors();
-	void SaveResults(FileSaver finalhistos);
+	void SaveResults(FileSaver finalhistos,std::string bn="");
 	void ChangeName (std::string newname) {basename = newname; return;}
 	Binning GetBins(){return bins;}
 	std::string GetName(){return basename;}
@@ -209,13 +171,13 @@ class Flux{
 	void Unfold_Counts(float fit_min, float fit_max,int knots,float offset, bool regularize=false);
 	void ModelAcceptanceWithSpline(float shift);
 
-	void ActivateRooUnfolding(){ rooUnfolding=true;}
+	void ActivateRooUnfolding(bool usepdf=true){ rooUnfolding=true; Usepdf=usepdf;}
 
-	void Set_UnfoldingTime(TH1F * avg) {
-		Unfolding_factor_timeavg = (TH1F *) avg->Clone(); 
+	void Set_UnfoldingTime(TGraphErrors * avg) {
+		Unfolding_factor_timeavg = (TGraphErrors *) avg->Clone(); 
 	}
 
-	void Roounfold(int iterations);
+	void Roounfold(int iterations,bool usepdf);
 	
 	
 	void SetForceFolded(){forcefolded=true;}
@@ -236,6 +198,7 @@ class Flux{
 	TH1F * GetStatError() {return TOT_statErr;}
 	TH1F * GetAccError() {return Acc_Err;}
 	TH1F * GetSystError() {return Counts_systErr;}
+	TH1F * GetSystError_unb() {return Counts_systErr_unb;}
 	TH1F * GetUnfError() {return Unfolding_Err;}
 	TH1F * GetUnfoldingFactor() {return Unfolding_factor;}
 	TH1F * GetRooUnfoldingFactor() {return RooUnfolding_factor;}

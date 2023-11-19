@@ -354,7 +354,47 @@ void EffCorr::ModelWithSpline(float shift){
 	for(int i=GlobalCorrection->GetNbinsX();i>0;i--) if(!(GlobalCorrection->GetBinContent(i+1)>0)) endrange = GlobalCorrection->GetBinLowEdge(i+1); else break;
 
 
-	GlobalCorrection->Fit((basename+"_Corr").c_str(),"","MS",shift,endrange-1); 
+	GlobalCorrection->Fit((basename+"_Corr").c_str(),"N","MS",shift,endrange-1); 
+
+
+	for(int i=0;i<nodes;i++) {
+                CorrectionModel->SetParameter(i,p[i]);
+		if(i==0||i==1) CorrectionModel->SetParLimits(i,0.95*p[i],1.1*p[i]);
+                if(i>1)   {
+                 float liminf,limsup;
+        
+			if(spline_x[i]>15) {
+                        float deriv = (CorrectionModel->GetParameter(i-1)-CorrectionModel->GetParameter(i-2))/(spline_x[i-1]-spline_x[i-2]);
+                        if(deriv>=0){
+                                liminf=CorrectionModel->GetParameter(i-1)-0.35*deriv*(spline_x[i]-spline_x[i-1]);
+                                limsup=CorrectionModel->GetParameter(i-1)+0.35*deriv*(spline_x[i]-spline_x[i-1]);
+                        }
+                        else{
+                                liminf=CorrectionModel->GetParameter(i-1)+0.35*deriv*(spline_x[i]-spline_x[i-1]);
+                                limsup=CorrectionModel->GetParameter(i-1)-0.35*deriv*(spline_x[i]-spline_x[i-1]);
+                        }
+			}
+     	  		else {
+                        float deriv = (CorrectionModel->GetParameter(i-1)-CorrectionModel->GetParameter(i-2))/(spline_x[i-1]-spline_x[i-2]);
+                        if(deriv>=0){
+                                liminf=CorrectionModel->GetParameter(i-1)-3.*deriv*(spline_x[i]-spline_x[i-1]);
+                                limsup=CorrectionModel->GetParameter(i-1)+3.*deriv*(spline_x[i]-spline_x[i-1]);
+                        }
+                        else{
+                                liminf=CorrectionModel->GetParameter(i-1)+3.*deriv*(spline_x[i]-spline_x[i-1]);
+                                limsup=CorrectionModel->GetParameter(i-1)-3.*deriv*(spline_x[i]-spline_x[i-1]);
+                        }
+			}
+                        CorrectionModel->SetParLimits(i,liminf,limsup);
+
+
+                }
+        }
+
+
+        GlobalCorrection->Fit((basename+"_Corr").c_str(),"","MS",shift,endrange-1);
+
+
 
 
 	Syst_Stat = (TH1F *) GlobalCorrection->Clone();

@@ -184,13 +184,14 @@ class ParallelFiller{
 	}
     }
  
-    void LoopOnMC(DBarReader readerMC_P, DBarReader readerMC_D,DBarReader readerMC_He, Variables * vars){
+    void LoopOnMC(DBarReader readerMC_P, DBarReader readerMC_D,DBarReader readerMC_He, DBarReader readerMC_He3,Variables * vars){
 	    if(!Refill) return;
 	    cout<<" MC Filling ..."<< endl;
 	    if(!readerMC_P.GetTree()) return;
 	    if(readerMC_P.GetTree()->GetNbranches()>11) {LoopOnMC(readerMC_P.GetTree(),vars); return;}
 	    else{
-		    for(int i=0;i<readerMC_P.GetCompactEntries();i++){
+					 
+		   for(int i=0;i<readerMC_P.GetCompactEntries();i++){
 			    if(i%(int)FRAC!=0) continue; // WTF ?!
 			    UpdateProgressBar(i, readerMC_P.GetCompactEntries());
 			    vars->ResetVariables();
@@ -222,27 +223,26 @@ class ParallelFiller{
 			    vars->ResetVariables();
 			    readerMC_He.FillCompact(i,vars,4*0.938);	
 			    vars->Update();
-			    //vars->PrintCurrentState();
+		//	    vars->PrintCurrentState();
 			    for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
 				    Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
 				    Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
 			    }
 		    }
-
-		 for(int i=0;i<readerMC_He.GetCompactEntries();i++){
+			
+		 for(int i=0;i<readerMC_He3.GetCompactEntries();i++){
 			    if(i%(int)FRAC!=0) continue; // WTF ?!
-			    UpdateProgressBar(i, readerMC_He.GetCompactEntries());
+			    UpdateProgressBar(i, readerMC_He3.GetCompactEntries());
 			    vars->ResetVariables();
-			    readerMC_He.FillCompact(i,vars,3*0.938,3/4.);	
+			    readerMC_He3.FillCompact(i,vars,3*0.938);	
 			    vars->Update();
-			    //vars->PrintCurrentState();
+		//	    vars->PrintCurrentState();
 			    for(int nobj=0;nobj<Objects2beFilled.size();nobj++){
 				    Objects2beFilled[nobj]->LoadEventIntoBadEvSim(vars);
 				    Objects2beFilled[nobj]->FillEventByEventMC(vars,FillinVariables[nobj],DiscrimVariables[nobj]);
 			    }
 		    }
-		
-
+	
 
 	    }
     }

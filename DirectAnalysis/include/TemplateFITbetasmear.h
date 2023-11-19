@@ -197,10 +197,17 @@ class TemplateFIT : public Tool{
 	double massbins[46]={0.4,0.476667,0.553333,0.63,0.706667,0.783333,0.86,0.936667,1.01333,1.09,1.16667,1.24333,1.32,1.39667,1.47333,1.55,1.62667,1.70333,1.78,1.85667,1.93333,2.01,2.08667,2.16333,2.24,2.31667,2.39333,2.47,2.54667,2.62333,2.7,2.77667,2.85333,2.93,3.00667,3.08333,3.16,3.23667,3.39,3.54333,3.77333,4.00333,4.31,4.61667,4.92333,6};
 
 	TF1 * MCmodel;
+ 	TF1 * Sigmamodel;
  
+
 	std::vector<TH2F *> DCountsSpread;
 	std::vector<TH2F *> DErrSpread;
 	std::vector<TH1F *> WeightedDCounts;
+	std::vector<TH1F *> WeightedPCounts;
+	std::vector<TH1F *> WeightedDCounts_unb;
+	std::vector<TH1F *> WeightedPCounts_unb;
+	std::vector<TH1F *> WeightedSigma;
+	std::vector<TH1F *> WeightedShift;
 	std::vector<TH2F *> TFitChisquare;
 
 	TH1F * BetaResolutionDT;
@@ -227,6 +234,11 @@ class TemplateFIT : public Tool{
 	TH1F * ProtonTail;
 	TH1F * TritiumCounts;
 
+	TH1F * ProtonCounts_unb;
+	TH1F * DeuteronCounts_unb;
+	TH1F * SystError_unb;
+	TH1F * SystErrorP_unb;
+	
 
 	TH1F * ProtonCountsPrim;
 	TH1F * DeuteronCountsPrim;
@@ -298,6 +310,11 @@ class TemplateFIT : public Tool{
 
 	TF1 * richcore;
 	TF1 * slowdownmodel;
+
+	bool isreg;
+	float regmin;
+	float regmax;
+
 	public:	
 	//standard constructor
 	TemplateFIT(std::string Basename,Binning Bins, std::string Cut, std::string CutP, std::string CutD, std::string CutHe,std::string Cutoff, int Nbins, float Xmin, float Xmax, bool IsRich,int steps,float sigma,float shift,int smearingmode){
@@ -383,9 +400,17 @@ class TemplateFIT : public Tool{
         	SystError  = new TH1F("SystError","SystError",bins.size(),0,bins.size()) ;
 		SystErrorP  = new TH1F("SystErrorP","SystErrorP",bins.size(),0,bins.size()) ;
 
+		SystError_unb  = new TH1F("SystError_unb","SystError_unb",bins.size(),0,bins.size()) ;
+		SystErrorP_unb  = new TH1F("SystErrorP_unb","SystErrorP_unb",bins.size(),0,bins.size()) ;
+
+
 
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
         	DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+
+		ProtonCounts_unb    = new TH1F("Proton Counts_unb","Proton Counts_unb",bins.size(),0,bins.size()) ;
+        	DeuteronCounts_unb  = new TH1F("Deuteron Counts_unb","Deuteron Counts_unb",bins.size(),0,bins.size()) ;
+	
 		ProtonTail  = new TH1F("Proton Tail","Proton Tail",bins.size(),0,bins.size()) ;
 		TritiumCounts  = new TH1F("Tritium Counts","Tritium Counts",bins.size(),0,bins.size()) ;
 
@@ -419,6 +444,7 @@ class TemplateFIT : public Tool{
 		slowdownmodel = new TF1("slowdown","pol4",0.8,2);
 		slowdownmodel->SetNpx(500);
 
+		Sigmamodel= new TF1("sigmamodel","pol2",0.9,2);
 
 	}
 
@@ -514,9 +540,16 @@ class TemplateFIT : public Tool{
 		SystError  = new TH1F("SystError","SystError",bins.size(),0,bins.size()) ;
 		SystErrorP  = new TH1F("SystErrorP","SystErrorP",bins.size(),0,bins.size()) ;
 
+		SystError_unb  = new TH1F("SystError_unb","SystError_unb",bins.size(),0,bins.size()) ;
+		SystErrorP_unb  = new TH1F("SystErrorP_unb","SystErrorP_unb",bins.size(),0,bins.size()) ;
+
+
 
 		ProtonCounts    = new TH1F("Proton Counts","Proton Counts",bins.size(),0,bins.size()) ;
 		DeuteronCounts  = new TH1F("Deuteron Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
+	
+		ProtonCounts_unb    = new TH1F("Proton Counts_unb","Proton Counts_unb",bins.size(),0,bins.size()) ;
+		DeuteronCounts_unb  = new TH1F("Deuteron Counts_unb","Deuteron Counts_unb",bins.size(),0,bins.size()) ;
 		ProtonTail  = new TH1F("Proton Tail","Proton Tail",bins.size(),0,bins.size()) ;
 		TritiumCounts    = new TH1F("Tritium Counts","Deuteron Counts",bins.size(),0,bins.size()) ;
 		
@@ -619,6 +652,8 @@ class TemplateFIT : public Tool{
 	void SetTemplateScaleFactor(float scale1,float scale2, float scale3) {template1scalefactor1=scale1; template1scalefactor2=scale2; template1scalefactor3=scale3;}
 	TH1F * GetSystError() { return SystError;}	
 	TH1F * GetSystErrorP() { return SystErrorP;}	
+	TH1F * GetSystError_unb() { return SystError_unb;}	
+	TH1F * GetSystErrorP_unb() { return SystErrorP_unb;}	
 	Binning  GetBinning() {return bins;}
 	void  RebinAll(int f=2);	
 	float GetHeContaminationWeight(int bin) { return fits[bin][BestChiSquare->i][BestChiSquare->j]->ContribHe; }
@@ -634,13 +669,14 @@ class TemplateFIT : public Tool{
 	TH2F * GetDCountsSpread(int bin)	{ return DCountsSpread[bin];}
 	TH2F * GetChiSquareSpread(int bin)      { return TFitChisquare[bin];}	
 	TH1F * GetWeightedDCounts(int bin)     { return WeightedDCounts[bin];}
+	TH1F * GetWeightedPCounts(int bin)     { return WeightedPCounts[bin];}
 	
 	void SetAsExtern() {IsExtern=true;}
 	void SetNotWeightedMC() {useMCreweighting=false;}
 	void SetNotTunedMC() {useMCtuning=false;}
 	void SetUseBestOnly() {usebestonly=true;}
 	void UseCentroid() {usecentroid=true;}
-
+	void ActivateRegularization(float Regmin, float Regmax){isreg=true; regmin=Regmin; regmax=Regmax; }
 
 
 };

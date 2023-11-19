@@ -23,6 +23,8 @@ class Analyzer{
         TChain * chainMC1_Cpct;  
         TChain * chainMC2_Cpct;  
         TChain * chainMC3_Cpct;  
+        TChain * chainMC4_Cpct;  
+
 
 
 
@@ -31,6 +33,7 @@ class Analyzer{
 	std::string filelistMC1;	
 	std::string filelistMC2;	
 	std::string filelistMC3;	
+	std::string filelistMC4;	
 	std::string filelistDT;	
 	ParallelFiller<Acceptance *> FillerAcc;
 	ParallelFiller<Tool *> Filler;
@@ -47,10 +50,12 @@ class Analyzer{
 		chainMC1_Cpct    = InputFileReader((INPUT2+"_P").c_str(),"Compact");
 		chainMC2_Cpct    = InputFileReader((INPUT2+"_D").c_str(),"Compact");
 		chainMC3_Cpct    = InputFileReader((INPUT2+"_He").c_str(),"Compact");
+		chainMC4_Cpct    = InputFileReader((INPUT2+"_He3").c_str(),"Compact");
 		timeindex = FindTimeIndex(INPUT1);
 		filelistMC1 = (INPUT2+"_P").c_str();
 		filelistMC2 = (INPUT2+"_D").c_str();
 		filelistMC3 = (INPUT2+"_He").c_str();
+		filelistMC4 = (INPUT2+"_He3").c_str();
 		filelistDT = INPUT1.c_str();
 
 	};

@@ -128,6 +128,9 @@ class Efficiency : public Tool{
 	TGraphErrors * GetFittedEfficiency() {return FittedEff;}
 	TH1 * GetBefore()     {return before;}
 	TH1 * GetAfter()      {return after;}
+	void SetBefore(TH1F* Before)     {before=Before;}
+	void SetAfter(TH1F * After)      {after=After;}
+
 
 	TH1F * GetSyst_Error() {return Syst_Error;}
 	TH1F * GetStat_Error() {return Stat_Error;}

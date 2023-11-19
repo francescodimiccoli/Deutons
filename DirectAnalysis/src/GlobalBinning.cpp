@@ -141,7 +141,7 @@ void SetBins(){
 	HefragmToF.setBinsFromEkPerMass (4,0.15,0.504,ResponseTOF,0.00347548,5.8474);
 	UnfoldingToF.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.555, 0.99 ,ResponseTOF,0.00347548,5.8474);
 	UnfoldingToF_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.555, 0.99 ,ResponseTOF,0.00347548,5.8474);
-	UnfoldingToF_He.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.555, 0.99 ,ResponseTOF,0.00347548,5.8474);
+	UnfoldingToF_He.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.555, 0.99 ,ResponseTOF,0.00347548,5.8474);
 
 
 	cout<<"NaF bins"<<endl;
@@ -149,9 +149,9 @@ void SetBins(){
 	HefragmNaF.setBinsFromEkPerMass (1,1.5,3,ResponseNaF,0.00347548,5.8474);
 //	UnfoldingNaF.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.813, 0.9878 ,ResponseNaF,0.00347548,5.8474);
 //	UnfoldingNaF_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.813, 0.9878 ,ResponseNaF,0.00347548,5.8474);
-	UnfoldingNaF.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.75, 0.9878 ,ResponseNaF,0.00347548,5.8474);
-	UnfoldingNaF_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.75, 0.9878 ,ResponseNaF,0.00347548,5.8474);
-	UnfoldingNaF_He.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.75, 0.9878 ,ResponseNaF,0.00347548,5.8474);
+	UnfoldingNaF.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.75, 0.99 ,ResponseNaF,0.00347548,5.8474);
+	UnfoldingNaF_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.75, 0.99 ,ResponseNaF,0.00347548,5.8474);
+	UnfoldingNaF_He.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.75, 0.99 ,ResponseNaF,0.00347548,5.8474);
 
 
 	cout<<"Agl bins"<<endl;
@@ -159,9 +159,9 @@ void SetBins(){
 	HefragmAgl.setBinsFromEkPerMass (2,2.6,11.9,ResponseAgl,0.00347548,5.8474);
 //	UnfoldingAgl.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.953,0.9977 ,ResponseNaF,0.00347548,5.8474);
 //	UnfoldingAgl_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper.data").c_str(), 0.953,0.9977 ,ResponseNaF,0.00347548,5.8474);
-	UnfoldingAgl.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.945,0.9978 ,ResponseAgl,0.00347548,5.8474);
-	UnfoldingAgl_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.945,0.9978 ,ResponseAgl,0.00347548,5.8474);
-	UnfoldingAgl_He.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Extended.data").c_str(), 0.945,0.9978 ,ResponseAgl,0.00347548,5.8474);
+	UnfoldingAgl.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.945,0.9995 ,ResponseAgl,0.00347548,5.8474);
+	UnfoldingAgl_D.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.945,0.9995 ,ResponseAgl,0.00347548,5.8474);
+	UnfoldingAgl_He.setBinsFromRDatacard((workdir+"/bindatacard_Hepaper_Unfolding.data").c_str(), 0.945,0.9995 ,ResponseAgl,0.00347548,5.8474);
 
 
 
@@ -176,7 +176,7 @@ void SetBins(){
 
 	ForCutoff.setBinsFromRigidity(100,0.5,50,ResponseTOF,0.00347548,5.8474);
 	ForCutoff.UseREdges();
-
+/*
 	cout<<"**********H.E.**"<<endl;
 	HeRB.Print();
 	cout<<"**TOF**"<<endl;
@@ -207,21 +207,24 @@ void SetBins(){
 	HeExtension.Print();
 	He3Extension.Print();
 	
-	/*cout<<"**Global**"<<endl;
+	cout<<"**Global**"<<endl;
 	GlobalRig.GetGlobalPBins().Print();
 	GlobalRig.GetGlobalDBins().Print();
-			
+		*/	
 	cout<<"*** For Unfolding ***"<<endl;
 
 	cout<<"**TOF**"<<endl;
 	UnfoldingToF.Print();
+	UnfoldingToF_D.Print();
 	
 	cout<<"**NaF**"<<endl;
 	UnfoldingNaF.Print();
+	UnfoldingNaF_D.Print();
 	
 	cout<<"**Agl**"<<endl;
-	UnfoldingAgl.Print();*/
-	
+	UnfoldingAgl.Print();
+	UnfoldingAgl_D.Print();
+		
 	return;
 }
 

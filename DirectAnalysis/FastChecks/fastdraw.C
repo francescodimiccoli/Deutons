@@ -1,4 +1,4 @@
-#include "fastcut.h"
+#include "fastcut_v7.h"
 
 {
 	pp=TProof::Open("");
@@ -7,20 +7,20 @@
 
 	TH1::SetDefaultSumw2();
 
-	TChain * chainMC = InputFileReader("/data1/home/fdimicco/Deutons/DirectAnalysis/InputFileLists/1392643918-1395014410/FileListMC2.txt","Compact");
-	TChain * chainDT = InputFileReader("/data1/home/fdimicco/Deutons/DirectAnalysis/InputFileLists/1392643918-1395014410/FileListDT2.txt","Compact");
+	TChain * chainMC = InputFileReader("../InputFileLists/1475712000-1485043200/FileListMC2.txt_He","Compact");
+	TChain * chainDT = InputFileReader("../InputFileLists/1475712000-1485043200/FileListDT0.txt","Compact");
 
 	chainMC->SetProof();
 	chainDT->SetProof();
 
-	TH1F * Distr_DT = new TH1F("Distr_DT","Distr_DT",100,0,5);
-	TH1F * Distr_MC = new TH1F("Distr_MC","Distr_MC",100,0,5);
+	TH1F * Distr_DT = new TH1F("Distr_DT","Distr_DT",100,0,25);
+	TH1F * Distr_MC = new TH1F("Distr_MC","Distr_MC",100,0,25);
 
-	string cutMC =  (IsDownGoing + "&&" + IsPhysTrig + "&&" + IsCleanL1Hit + "&&" + IsGoodTOFStandaloneQ1 + "&&" + IsGoodTrackPattern + "&&" + IsNotL1HitMultiplX + "&&" +HasL1).c_str(); 
-	string cutDT =  (IsDownGoing + "&&" + IsPhysTrig + "&&" + IsCleanL1Hit + "&&" + IsGoodTOFStandaloneQ1 + "&&" + IsGoodTrackPattern + "&&" + IsNotL1HitMultiplX + "&&" +HasL1).c_str(); 
+	string cutMC =  (IsDownGoing + "&&" + IsPhysTrig + "&&" + IsCleanL1Hit + "&&"  + IsGoodTrackPattern + "&&"  +HasL1+"&&"+HasL2+"&&"+IsKalman+"&&"+trackChicut+"&&"+qInnerCutHe+"&&"+L1LooseCutHe+"&&"+IsSingleTrack).c_str(); 
+	string cutDT =  (IsDownGoing + "&&" + IsPhysTrig + "&&" + IsCleanL1Hit + "&&"  + IsGoodTrackPattern + "&&"  +HasL1+"&&"+HasL2+"&&"+IsKalman+"&&"+trackChicut+"&&"+qInnerCutHe+"&&"+L1LooseCutHe+"&&"+IsSingleTrack).c_str(); 
 	
-	chainMC->Draw("(sa_exthit_dl1[0]^2+sa_exthit_dl1[1]^2)^0.5>>Distr_MC",cutMC.c_str());
-	chainDT->Draw("(sa_exthit_dl1[0]^2+sa_exthit_dl1[1]^2)^0.5>>Distr_DT",cutDT.c_str());
+	chainMC->Draw("tof_chisqtn>>Distr_MC",cutMC.c_str());
+	chainDT->Draw("tof_chisqtn>>Distr_DT",cutDT.c_str());
 
 	
 	Distr_DT->Scale(1/Distr_DT->Integral());

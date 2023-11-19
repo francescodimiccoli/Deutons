@@ -559,7 +559,7 @@ DBarReader::DBarReader(TTree * tree, bool _isMC, TTree * tree_RTI, TTree * tree_
 	Tree_RTI = tree_RTI	;   
 	Tree_Cpct = tree_cpct; 
 
-	cout<<Tree<<" "<<Tree_RTI<<" "<<Tree_Cpct<<endl;
+	cout<<"DBARREADER: "<<Tree<<" "<<Tree_RTI<<" "<<Tree_Cpct<<" "<<Tree_Cpct->GetEntries()<<endl;
 
 	if(Tree){
 		Tree->SetAutoFlush( 0 );

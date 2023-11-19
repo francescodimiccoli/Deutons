@@ -53,8 +53,8 @@ void RatioMaker::DoRatioErrSyst(float C){
 		float x = ratio_errsyst->GetBinCenter(i+1);
 		float n = Num->flux_unf->GetBinContent(Num->flux_unf->FindBin(x));
 		float d = Den->flux_unf->GetBinContent(Den->flux_unf->FindBin(x));
-		float dn = sqrt(pow(Num->systErr->GetBinContent(Num->systErr->FindBin(x)),2)+pow(Num->unfErr->GetBinContent(Num->unfErr->FindBin(x)),2))*n;
-		float dd = sqrt(pow(Den->systErr->GetBinContent(Den->systErr->FindBin(x)),2)+pow(Den->unfErr->GetBinContent(Den->unfErr->FindBin(x)),2))*d;
+		float dn = sqrt(pow(Num->systErr->GetBinContent(Num->systErr->FindBin(x)),2))*n;
+		float dd = sqrt(pow(Den->systErr->GetBinContent(Den->systErr->FindBin(x)),2))*d;
 		float r = ratio_unf->GetBinContent(ratio->FindBin(x));
 		if(dn/n>0.1) dn=0.1*n;
 		ratio_errsyst->SetBinError(i+1,0);
@@ -64,6 +64,49 @@ void RatioMaker::DoRatioErrSyst(float C){
 	}
 
 }
+
+void RatioMaker::DoRatioErrUnf(float C){
+
+	ratio_errunf = (TH1F*)ratio_unf->Clone((Name+ "err_syst").c_str());
+	ratio_errunf->Reset();
+
+	for(int i=0; i<ratio_errunf->GetNbinsX();i++){
+		float x = ratio_errunf->GetBinCenter(i+1);
+		float n = Num->flux_unf->GetBinContent(Num->flux_unf->FindBin(x));
+		float d = Den->flux_unf->GetBinContent(Den->flux_unf->FindBin(x));
+		float dn = sqrt(pow(Num->roounfErr->GetBinContent(Num->roounfErr->FindBin(x)),2))*n;
+		float dd = sqrt(pow(Den->roounfErr->GetBinContent(Den->roounfErr->FindBin(x)),2))*d;
+		float r = ratio_unf->GetBinContent(ratio->FindBin(x));
+		if(dn/n>0.1) dn=0.1*n;
+		ratio_errunf->SetBinError(i+1,0);
+		cout<<"RATIOERR "<<sqrt(dn*dn/(d*d)+(n*n/pow(d,4))*(dd*dd) - 2*n/(d*d*d)*C)/r<<" "<<dn<<" "<<dd<<" "<<n<<" "<<d<<endl;
+		ratio_errunf->SetBinContent(i+1, sqrt(dn*dn/(d*d)+(n*n/pow(d,4))*(dd*dd) - 2*n/(d*d*d)*C)/r);
+
+	}
+
+}
+
+void RatioMaker::DoRatioErrAcc(float C){
+
+	ratio_erracc = (TH1F*)ratio_unf->Clone((Name+ "err_syst").c_str());
+	ratio_erracc->Reset();
+
+	for(int i=0; i<ratio_errunf->GetNbinsX();i++){
+		float x = ratio_erracc->GetBinCenter(i+1);
+		float n = Num->flux_unf->GetBinContent(Num->flux_unf->FindBin(x));
+		float d = Den->flux_unf->GetBinContent(Den->flux_unf->FindBin(x));
+		float dn = sqrt(pow(Num->accErr->GetBinContent(Num->accErr->FindBin(x)),2))*n;
+		float dd = sqrt(pow(Den->accErr->GetBinContent(Den->accErr->FindBin(x)),2))*d;
+		float r = ratio_unf->GetBinContent(ratio->FindBin(x));
+		if(dn/n>0.1) dn=0.1*n;
+		ratio_erracc->SetBinError(i+1,0);
+		cout<<"RATIOERR "<<sqrt(dn*dn/(d*d)+(n*n/pow(d,4))*(dd*dd) - 2*n/(d*d*d)*C)/r<<" "<<dn<<" "<<dd<<" "<<n<<" "<<d<<endl;
+		ratio_erracc->SetBinContent(i+1, sqrt(dn*dn/(d*d)+(n*n/pow(d,4))*(dd*dd) - 2*n/(d*d*d)*C)/r);
+
+	}
+
+}
+
 
 
 
@@ -99,6 +142,8 @@ void RatioMaker::SaveResults(FileSaver finalhistos){
         if(ratio_unf_stat) 	finalhistos.Add(ratio_unf_stat);
 	if(ratio_errstat )	finalhistos.Add(ratio_errstat );
 	if(ratio_errsyst )	finalhistos.Add(ratio_errsyst );
+        if(ratio_errunf )	finalhistos.Add(ratio_errsyst );
+ 	if(ratio_erracc )	finalhistos.Add(ratio_errsyst );
         if(ratioacceptance    )	finalhistos.Add(ratioacceptance    );
         if(ratiocounts 	 )      finalhistos.Add(ratiocounts 	 );
         if(ratiounfolding) 	finalhistos.Add(ratiounfolding);

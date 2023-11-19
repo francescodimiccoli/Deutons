@@ -170,7 +170,7 @@ bool IsFromAgl     (Variables * vars){ return vars->IsFromAgl();}
 bool RICHBDTCut (Variables * vars){ return Qualitycut(vars,-vars->BDTDiscr,999999,-0.26,-0.2);  }
 bool QualityTOF(Variables * vars) { return (vars->Richtothits<20 && vars->EdepECAL<10 && vars->qLtof>0.92 && vars->NAnticluster<=2);}
 bool RICHHeCutNaF(Variables * vars) { return (vars->RichPhEl_tot>6 && vars->RICHPmts>4 &&  vars->RICHTOFBetaConsistency<0.05 && vars->Richtothits>5);}
-bool RICHHeCutAgl(Variables * vars) { return true;}//(vars->RichPhEl_tot>5 && vars->RICHPmts>3 &&  vars->RICHTOFBetaConsistency<0.06 && vars->Richtothits>5);}
+bool RICHHeCutAgl(Variables * vars) { return (vars->RichPhEl_tot>5 && vars->RICHPmts>3 &&  vars->RICHTOFBetaConsistency<0.06 && vars->Richtothits>5);}
 
 
 

@@ -15,7 +15,7 @@ TH1F * Twentisevenify(TH1F* input){
 
 
 
-ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger Global, Flux * FluxTOF, Flux * FluxNaF, Flux * FluxAgl, Particle particle, bool nafpriority, Flux * Fluxsum, Flux * Fluxtosubtract,TH1F * forbinning){
+ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger Global, Flux * FluxTOF, Flux * FluxNaF, Flux * FluxAgl, Particle particle, bool nafpriority, Flux * Fluxsum, Flux * Fluxtosubtract,TH1F * forbinning, Flux * FluxR){
 
 	Name=name;
 	if(!FluxTOF || !FluxNaF || !FluxAgl) return;
@@ -66,8 +66,8 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		if(FluxTOF->GetStatError()&&FluxNaF->GetStatError()&&FluxAgl->GetStatError())
 			statErr = Global.MergeSubDResult_P(FluxTOF->GetStatError(),FluxNaF->GetStatError(),FluxAgl->GetStatError(),nafpriority);
 
-		if(FluxTOF->GetSystError()&&FluxNaF->GetSystError()&&FluxAgl->GetSystError())
-			systErr= Global.MergeSubDResult_P(FluxTOF->GetSystError(),FluxNaF->GetSystError(),FluxAgl->GetSystError(),nafpriority);
+		if(FluxTOF->GetSystError_unb()&&FluxNaF->GetSystError_unb()&&FluxAgl->GetSystError_unb())
+			systErr= Global.MergeSubDResult_P(FluxTOF->GetSystError_unb(),FluxNaF->GetSystError_unb(),FluxAgl->GetSystError_unb(),nafpriority);
 
 		if(FluxTOF->GetAccError()&&FluxNaF->GetAccError()&&FluxAgl->GetAccError())
 			accErr= Global.MergeSubDResult_P(FluxTOF->GetAccError(),FluxNaF->GetAccError(),FluxAgl->GetAccError(),nafpriority);
@@ -148,8 +148,8 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		if(FluxTOF->GetStatError()&&FluxNaF->GetStatError()&&FluxAgl->GetStatError())
 			statErr = Global.MergeSubDResult_D(FluxTOF->GetStatError(),FluxNaF->GetStatError(),FluxAgl->GetStatError(),nafpriority);
 
-		if(FluxTOF->GetSystError()&&FluxNaF->GetSystError()&&FluxAgl->GetSystError())
-			systErr= Global.MergeSubDResult_D(FluxTOF->GetSystError(),FluxNaF->GetSystError(),FluxAgl->GetSystError(),nafpriority);
+		if(FluxTOF->GetSystError_unb()&&FluxNaF->GetSystError_unb()&&FluxAgl->GetSystError_unb())
+			systErr= Global.MergeSubDResult_D(FluxTOF->GetSystError_unb(),FluxNaF->GetSystError_unb(),FluxAgl->GetSystError_unb(),nafpriority);
 
 		if(FluxTOF->GetAccError()&&FluxNaF->GetAccError()&&FluxAgl->GetAccError())
 			accErr= Global.MergeSubDResult_D(FluxTOF->GetAccError(),FluxNaF->GetAccError(),FluxAgl->GetAccError(),nafpriority);
@@ -197,8 +197,8 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		Systerr->Reset();
 		Accerr ->Reset();
 
-		fluxtosub->Smooth(3);
-		sumflux->Smooth();
+//		fluxtosub->Smooth(3);
+//		sumflux->Smooth();
 
 		for(int i=0;i<totflux->GetNbinsX();i++)
 			if(flux_unf->FindBin(totflux->GetBinCenter(i+1))<=flux_unf->GetNbinsX()){
@@ -217,15 +217,15 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 						     	   pow(Fluxsum->GetStatError()->GetBinContent(sumflux->FindBin(bincenter))*sumflux->GetBinContent(sumflux->FindBin(bincenter)),2))
 							   /totflux->GetBinContent(sumflux->FindBin(bincenter)));
 
-				Systerr->SetBinContent(i+1,Fluxtosubtract->GetSystError()->GetBinContent(sumflux->FindBin(bincenter))+0.05);
+				Systerr->SetBinContent(i+1,(0.01+Fluxtosubtract->GetSystError()->GetBinContent(sumflux->FindBin(bincenter)))*fluxtosub->GetBinContent(fluxtosub->FindBin(bincenter))/totflux->GetBinContent(i+1));
 				Accerr->SetBinContent(i+1,Fluxtosubtract->GetAccError()->GetBinContent(sumflux->FindBin(bincenter)));
 			
 				float error1 = (fluxtosub->GetBinError(fluxtosub->FindBin(bincenter))/fluxtosub->GetBinContent(fluxtosub->FindBin(bincenter)));
 				float error2 = (sumflux->GetBinError(sumflux->FindBin(bincenter))/sumflux->GetBinContent(sumflux->FindBin(bincenter)));
-				float error3 = Systerr->GetBinContent(i+1);
+				float error3 = Systerr->GetBinContent(i+1)*fluxtosub->GetBinContent(fluxtosub->FindBin(bincenter))/totflux->GetBinContent(i+1);
 
 
-				totflux->SetBinError(i+1,sqrt(pow(error1,2)+pow(error2,2)+pow(error3,3))*totflux->GetBinContent(i+1));
+				totflux->SetBinError(i+1,sqrt(pow(error1,2)+pow(error2,2)+pow(error3,2))*totflux->GetBinContent(i+1));
 
 			}
 			
@@ -235,6 +235,82 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		accErr = (TH1F*) Accerr->Clone((Name+"_acce").c_str());
 	}
 	
+	if(FluxR){
+		TH1F * fluxR_unf = (TH1F*) FluxR->GetFlux_rig()->Clone();
+
+
+
+
+		//realligning fluxes
+		if(fluxR_unf->GetBinLowEdge(1)<flux_unf->GetBinLowEdge(flux_unf->GetNbinsX())){
+		float mean_new = (fluxR_unf->GetBinContent(2)+fluxR_unf->GetBinContent(3)+fluxR_unf->GetBinContent(4))/3.;
+		float meanold = (flux_unf->GetBinContent(flux_unf->FindBin(fluxR_unf->GetBinCenter(2)))+
+				flux_unf->GetBinContent(flux_unf->FindBin(fluxR_unf->GetBinCenter(3)))+
+				flux_unf->GetBinContent(flux_unf->FindBin(fluxR_unf->GetBinCenter(4))))/3.;
+
+		fluxR_unf->Scale(meanold/mean_new);
+		}
+		///
+		//
+		std::vector<float> newEdges;
+		for (int i=0;i<flux->GetNbinsX();i++) newEdges.push_back(flux->GetBinLowEdge(i+1));
+		for (int i=0;i<fluxR_unf->GetNbinsX()+1;i++) 
+			if(fluxR_unf->GetBinLowEdge(i+1)>flux->GetBinLowEdge(flux->GetNbinsX())) newEdges.push_back(fluxR_unf->GetBinLowEdge(i+1));
+		TH1F * newflux = new TH1F((Name+"_unf").c_str(),(Name+"_unf").c_str(),newEdges.size()-1,newEdges.data());
+		TH1F * newflux_stat = new TH1F((Name+"_unf_stat").c_str(),(Name+"_unf_stat").c_str(),newEdges.size()-1,newEdges.data());
+		TH1F * newsyst = new TH1F((Name+"_syste").c_str(),(Name+"_syste").c_str(),newEdges.size()-1,newEdges.data());
+		TH1F * newacce = new TH1F((Name+"_acce").c_str(),(Name+"_acce").c_str(),newEdges.size()-1,newEdges.data());
+		TH1F * newstate = new TH1F((Name+"_state").c_str(),(Name+"_state").c_str(),newEdges.size()-1,newEdges.data());
+		for (int i=0;i<newflux->GetNbinsX();i++) {
+			if(newflux->GetBinLowEdge(i+1)<fluxR_unf->GetBinLowEdge(1) ){
+				newflux->SetBinContent(i+1,flux_unf->GetBinContent(i+1));
+				newflux->SetBinError(i+1,flux_unf->GetBinError(i+1));
+				newflux_stat->SetBinContent(i+1,flux_unf_stat->GetBinContent(i+1));
+				newflux_stat->SetBinError(i+1,flux_unf_stat->GetBinError(i+1));
+				newsyst->SetBinContent(i+1,systErr->GetBinContent(i+1));
+				newsyst->SetBinError(i+1,systErr->GetBinError(i+1));
+				newacce->SetBinContent(i+1,accErr->GetBinContent(i+1));
+				newacce->SetBinError(i+1,accErr->GetBinError(i+1));
+				newstate->SetBinContent(i+1,statErr->GetBinContent(i+1));
+				newstate->SetBinError(i+1,statErr->GetBinError(i+1));
+				}
+			else if(newflux->GetBinLowEdge(i+1)<=flux->GetBinLowEdge(flux->GetNbinsX())     ){
+				newflux->SetBinContent(i+1,(fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux->GetBinCenter(i+1)))+flux_unf->GetBinContent(i+1))/2.   );
+				newflux->SetBinError(i+1,flux_unf->GetBinError(i+1));
+				newflux_stat->SetBinContent(i+1,(fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1)))+flux_unf->GetBinContent(i+1))/2.   );
+				newflux_stat->SetBinError(i+1,flux_unf_stat->GetBinError(i+1));
+				newsyst->SetBinContent(i+1,systErr->GetBinContent(i+1));
+				newsyst->SetBinError(i+1,systErr->GetBinError(i+1));
+				newacce->SetBinContent(i+1,accErr->GetBinContent(i+1));
+				newacce->SetBinError(i+1,accErr->GetBinError(i+1));
+				newstate->SetBinContent(i+1,statErr->GetBinContent(i+1));
+				newstate->SetBinError(i+1,statErr->GetBinError(i+1));
+			
+			}
+			else {
+				newflux->SetBinContent(i+1,fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux->GetBinCenter(i+1))));
+				newflux->SetBinError(i+1,fluxR_unf->GetBinError(fluxR_unf->FindBin(newflux->GetBinCenter(i+1)))+0.02*fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
+				newflux_stat->SetBinContent(i+1,fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
+				newflux_stat->SetBinError(i+1,fluxR_unf->GetBinError(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1)))+0.02*fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
+				newsyst->SetBinContent(i+1,0.03);
+				newsyst->SetBinError(i+1,0.03);
+				newacce->SetBinContent(i+1,0.02);
+				newacce->SetBinError(i+1,0.02);
+				newstate->SetBinContent(i+1,0.01);
+				newstate->SetBinError(i+1,0.01);
+			}
+		}
+	
+		flux_unf = (TH1F*) newflux->Clone((Name+"_unf").c_str());
+		flux_unf_stat = (TH1F*) newflux_stat->Clone((Name+"_unf_stat").c_str());
+		statErr = (TH1F*) newstate->Clone((Name+"_stat").c_str());
+		systErr = (TH1F*) newsyst->Clone((Name+"_syste").c_str());
+		accErr = (TH1F*)  newacce->Clone((Name+"_acce").c_str());
+	
+
+		}
+
+
 
 		if(	flux	        )  flux27 = Twentisevenify(flux);
                 if( 	flux_stat       )  flux_stat27 = Twentisevenify(flux_stat);
@@ -282,5 +358,35 @@ void ResultMerger::SaveResults(FileSaver finalhistos){
 
 
 
+void ResultMerger::ResidualCorrectionWithFluxes(TH1F * fluxekin1,TH1F * fluxekin2){
 
+	for(int i=0;i<flux_ekin->GetNbinsX();i++){
+
+		float ekin = flux_ekin->GetBinCenter(i+1);
+		float ekinbin = fluxekin2->FindBin(ekin);
+		float bin_this = flux_ekin->FindBin(ekin);
+		float corr ;
+		if(fluxekin1->GetBinContent(ekinbin)>0){
+			corr= fluxekin2->GetBinContent(ekinbin)/fluxekin1->GetBinContent(ekinbin);
+			flux_ekin->SetBinContent(i+1,flux_ekin->GetBinContent(i+1)*corr );
+			flux_ekin_unf->SetBinContent(i+1,flux_ekin_unf->GetBinContent(i+1)*corr );
+			flux_stat->SetBinContent(bin_this, flux_stat->GetBinContent(bin_this)*corr);
+			flux->SetBinContent(bin_this, flux->GetBinContent(bin_this)*corr);
+			flux_unf->SetBinContent(bin_this, flux_unf->GetBinContent(bin_this)*corr);
+			flux_unf_stat->SetBinContent(bin_this, flux_unf_stat->GetBinContent(bin_this)*corr);
+			flux27->SetBinContent(bin_this, flux27->GetBinContent(bin_this)*corr);
+			flux_stat27->SetBinContent(bin_this, flux_stat27->GetBinContent(bin_this)*corr);
+			flux_unf27->SetBinContent(bin_this, flux_unf27->GetBinContent(bin_this)*corr);
+			flux_unf_stat27->SetBinContent(bin_this, flux_unf_stat27->GetBinContent(bin_this)*corr);
+			effAcc->SetBinContent(bin_this, effAcc->GetBinContent(bin_this)*corr);
+		}
+
+
+
+
+
+
+	}
+}
+	
 

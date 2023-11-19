@@ -106,6 +106,29 @@ class EffCorr : public Tool{
 		}
 	}
 
+	EffCorr(FileSaver File,std::string Basename, std::string Directory, Binning bins,TH1F * DataBefore, TH1F * DataAfter, TH1F * MCBefore, TH1F * MCAfter){
+
+		Bins = bins;
+
+		basename = Basename;	
+		directory = Directory;
+	
+		EffMC     = new Efficiency(File, (Basename+"_MC" ).c_str(),directory,Bins, "","",false);
+		EffMCpid  = new Efficiency(File, (Basename+"_MCpid").c_str(),directory,Bins, "","",false);
+	
+		EffData = new Efficiency(File, (Basename+"_lat").c_str(),directory,Bins, "","",LatEdges);
+		EffData_glob = new Efficiency(File, (Basename+"_glob").c_str(),directory,Bins,"","");
+	
+		EffMC->SetBefore((TH1F*)MCBefore->Clone((Basename+"_MC_before" ).c_str()));	
+		EffMC->SetAfter( (TH1F*)MCAfter->Clone((Basename+"_MC_after" ).c_str()));	
+		EffMCpid->SetBefore( (TH1F*)MCBefore->Clone((Basename+"_MCpid_before" ).c_str()));	
+		EffMCpid->SetAfter( (TH1F*)MCAfter->Clone((Basename+"_MCpid_after" ).c_str()));	
+
+		EffData_glob->SetBefore( (TH1F*)DataBefore->Clone((Basename+"_glob_before" ).c_str()));	
+		EffData_glob->SetAfter( (TH1F*)DataAfter->Clone((Basename+"_glob_after" ).c_str()));	
+
+	}
+
 	Binning GetBins(){ return Bins;}	
 	bool IsEkin(){return IsEkinCorrection;}
 	TF1 * GetCorrectionModel(){return CorrectionModel;}
@@ -171,7 +194,7 @@ class EffCorr : public Tool{
 	}
 	
 	virtual void FillEventByEventData(Variables * vars, float (*var) (Variables * vars), float (*discr_var) (Variables * vars)){
-		EffData -> FillEventByEventData(vars,var,discr_var);
+	//	EffData -> FillEventByEventData(vars,var,discr_var);
 		EffData_glob -> FillEventByEventData(vars,var,discr_var);
 	
 	}

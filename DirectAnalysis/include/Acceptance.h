@@ -34,11 +34,7 @@ class Acceptance : public Tool{
 	Binning binsfu;
 	MCPar param;
 
-	TH2F * Migr_rig;
-	TH2F * Migr_beta;
 	TH2F * EnLoss;
-	TH2F * Migr_R;
-	TH2F * Migr_B;
 	TH2F * Migr_Unf;
 	TH1F * Migr_True;
 	TH1F * Migr_Meas;
@@ -53,7 +49,7 @@ class Acceptance : public Tool{
 
 	FileSaver finalhistos;
 
-	TH1F * EffAcceptanceTime  	  =0x0;
+	TF1 * EffAcceptanceTime  	  =0x0;
 	
 	TH1F * EffAcceptance  	  =0x0;
 	TH1F * EffAcceptanceMC	  =0x0;
@@ -103,45 +99,53 @@ class Acceptance : public Tool{
 		float ekin_true[binsfu.size()+1]; 
 
 		for(int i=0;i<binsfu.size()+1;i++) { 
-			rig_gen[i]=binsfu.RigTOIBins()[i];	
+			rig_gen[i]	=0;
+			rig_meas[i]	=0;;
+			beta_meas[i]	=0;
+			beta_gen[i]	=0;
+			ekin_true[i]	=0;;
+			ekin_meas[i]	=0;
+			rig_gen[i]=binsfu.RigBins()[i];	
 			rig_meas[i]=bins.RigBins()[i];	
 			beta_meas[i]=bins.BetaBins()[i];
 			beta_gen[i]=bins.BetaTOIBins()[i];
 			ekin_true[i]=binsfu.EkPerMasTOIBins()[i];
 			ekin_meas[i]=bins.EkPerMasTOIBins()[i];
-
-		}	
+	}
 
 //		for(int i=0;i<bins.size()+1;i++) ekin_meas[i]=bins.EkPerMasBins()[i];
 			
-	
 		finalhistos = File;
 		TFile * file = finalhistos.GetFile();
 		if(file) 
 		{
 			cout<<basename<<endl;
-			Migr_rig = (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_UnfoldingRig").c_str());
-                       	Migr_beta= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_Unfolding").c_str());
-		        Migr_R= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_R").c_str());
-			Migr_B= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_B").c_str());
 			EnLoss= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_EnLoss").c_str());
 			Migr_Unf= (TH2F*) file->Get((directory + "/" + basename + "/"+ Basename +"_RooUnfold").c_str());
 			Migr_True= (TH1F*) file->Get((directory + "/" + basename + "/"+ Basename +"_RooTrue").c_str());
 			Migr_Meas= (TH1F*) file->Get((directory + "/" + basename + "/"+ Basename +"_RooMeas").c_str());
-			int i = slicenormalizex(Migr_rig);
-			int j = slicenormalizex(Migr_beta);
+		//	int i = slicenormalizex(Migr_rig);
+		//	int j = slicenormalizex(Migr_beta);
 		}
 		else{
-			Migr_rig = new TH2F((Basename +"_UnfoldingRig").c_str(),(Basename+"rig;R_{GEN}[GV];R_{meas}[GV]").c_str(),binsfu.size(),rig_gen,binsfu.size(),rig_gen);
-			Migr_beta= new TH2F((Basename +"_Unfolding").c_str(),(Basename+"beta;R_{GEN}[GV];#beta_{meas}").c_str(),binsfu.size(),rig_gen,binsfu.size(),beta_gen);
-			Migr_R= new TH2F((Basename +"_R").c_str(),(Basename+"mass;R_{GEN}[GV];R_{meas}").c_str(),200,0,30,200,0,30);
-			Migr_B= new TH2F((Basename +"_B").c_str(),(Basename+"mass;R_{GEN}[GV];#beta_{meas}").c_str(),200,0,30,200,0.8,1.2);
 			EnLoss= new TH2F((Basename +"_EnLoss").c_str(),(Basename+"mass;1/#beta_{GEN}[GV];1/#beta_{meas}").c_str(),400,0.8,2.,400,0.8,2.);
-			Migr_Unf= new TH2F((Basename +"_RooUnfold").c_str(),(Basename+"beta;Ekin_{meas}[GV];#Ekin_{GEN}").c_str(),binsfu.size(),ekin_true,binsfu.size(),ekin_true);
-			Migr_True= new TH1F((Basename +"_RooTrue").c_str(),(Basename+"beta;Ekin_{GEN}[GV];").c_str(),binsfu.size(),ekin_true);
-			Migr_Meas= new TH1F((Basename +"_RooMeas").c_str(),(Basename+"beta;Ekin_{meas}[GV];").c_str(),binsfu.size(),ekin_true);
-	
+			if(Bins.IsUsingBetaEdges()){
+				Migr_Unf= new TH2F((Basename +"_RooUnfold").c_str(),(Basename+"beta;Ekin_{meas}[GeV/n];Ekin_{GEN}").c_str(),binsfu.size(),ekin_true,binsfu.size(),ekin_true);
+				Migr_True= new TH1F((Basename +"_RooTrue").c_str(),(Basename+"beta;Ekin_{GEN}[GeV/nV];").c_str(),binsfu.size(),ekin_true);
+				Migr_Meas= new TH1F((Basename +"_RooMeas").c_str(),(Basename+"beta;Ekin_{meas}[GeV/n];").c_str(),binsfu.size(),ekin_true);
 			}
+			else{
+					for(int i=0;i<binsfu.size();i++) {
+						rig_gen[i]=binsfu.RigBins()[i];	
+						cout<<basename<<" RGEN "<<rig_gen[i]<<" "<<binsfu.RigBins()[i]<<endl;
+					}	
+				Migr_Unf= new TH2F((Basename +"_RooUnfold").c_str(),(Basename+"beta;R_{meas}[GV];R_{GEN}").c_str(),binsfu.size(),rig_gen,binsfu.size(),rig_gen);
+				Migr_True= new TH1F((Basename +"_RooTrue").c_str(),(Basename+"R;R_{GEN}[GV];").c_str(),binsfu.size(),rig_gen);
+				Migr_Meas= new TH1F((Basename +"_RooMeas").c_str(),(Basename+"R;R_{meas}[GV];").c_str(),binsfu.size(),rig_gen);
+			}
+
+		}
+	
 	}
 
 
@@ -171,10 +175,6 @@ class Acceptance : public Tool{
 			EffAcceptance_SystErr       = (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Eff_Acceptance_SystErr").c_str());
 		
 
-			Migr_rig = (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_UnfoldingRig").c_str());
-                       	Migr_beta= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_Unfolding").c_str());
-		        Migr_R= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_R").c_str());
-			Migr_B= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_B").c_str());
 		    	EnLoss= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_EnLoss").c_str());
 			Migr_Unf= (TH2F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_RooUnfold").c_str());
 			Migr_True= (TH1F*) fileres->Get((directory + "/" + basename + "/"+ Basename +"_RooTrue").c_str());
@@ -201,7 +201,7 @@ class Acceptance : public Tool{
 		if(!(FullSetEff_gen -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
 		if(!(For_Acceptance -> ReinitializeHistos(refill))) checkifsomeismissing   = true;
 
-		if(!Migr_rig||!Migr_beta||!Migr_Unf||!Migr_True||!Migr_Meas){
+		if(!Migr_Unf||!Migr_True||!Migr_Meas){
 
 		float rig_gen[binsfu.size()+1];
 		float rig_meas[binsfu.size()+1];
@@ -211,7 +211,13 @@ class Acceptance : public Tool{
 		float ekin_true[binsfu.size()+1]; 
 
 		for(int i=0;i<binsfu.size()+1;i++) { 
-			rig_gen[i]=binsfu.RigTOIBins()[i];	
+			rig_gen[i]	=0;
+			rig_meas[i]	=0;;
+			beta_meas[i]	=0;
+			beta_gen[i]	=0;
+			ekin_true[i]	=0;;
+			ekin_meas[i]	=0;
+			rig_gen[i]=binsfu.RigBins()[i];	
 			rig_meas[i]=binsfu.RigBins()[i];	
 			beta_meas[i]=binsfu.BetaBins()[i];
 			beta_gen[i]=binsfu.BetaTOIBins()[i];
@@ -221,16 +227,25 @@ class Acceptance : public Tool{
 
 		for(int i=0;i<bins.size()+1;i++) ekin_meas[i]=bins.EkPerMasBins()[i];
 			
-			Migr_rig = new TH2F((basename +"_UnfoldingRig").c_str(),(basename+"rig;R_{GEN}[GV];R_{meas}[GV]").c_str(),binsfu.size(),rig_gen,binsfu.size(),rig_gen);
-			Migr_beta= new TH2F((basename +"_Unfolding").c_str(),(basename+"beta;R_{GEN}[GV];#beta_{meas}").c_str(),binsfu.size(),rig_gen,binsfu.size(),beta_gen);
-			Migr_R= new TH2F((basename +"_R").c_str(),(basename+"mass;R_{GEN}[GV];R_{meas}").c_str(),200,0,30,200,0,30);
-			Migr_B= new TH2F((basename +"_B").c_str(),(basename+"mass;R_{GEN}[GV];#beta_{meas}").c_str(),200,0,30,200,0.8,1.2);
 			EnLoss= new TH2F((basename +"_EnLoss").c_str(),(basename+"mass;1/#beta_{GEN}[GV];1/#beta_{meas}").c_str(),400,0.8,2.,400,0.8,2.);
-			Migr_Unf= new TH2F((basename +"_RooUnfold").c_str(),(basename+"beta;Ekin_{meas}[GV];#Ekin_{GEN}").c_str(),binsfu.size(),ekin_true,binsfu.size(),ekin_true);
-			Migr_True= new TH1F((basename +"_RooTrue").c_str(),(basename+"beta;Ekin_{GEN}[GV];").c_str(),binsfu.size(),ekin_true);
-			Migr_Meas= new TH1F((basename +"_RooMeas").c_str(),(basename+"beta;Ekin_{meas}[GV];").c_str(),binsfu.size(),ekin_true);
-	
-} 		
+			if(bins.IsUsingBetaEdges()){
+				Migr_Unf= new TH2F((basename +"_RooUnfold").c_str(),(basename+"beta;Ekin_{meas}[GeV/n];#Ekin_{GEN}").c_str(),binsfu.size(),ekin_true,binsfu.size(),ekin_true);
+				Migr_True= new TH1F((basename +"_RooTrue").c_str(),(basename+"beta;Ekin_{GEN}[GeV/nV];").c_str(),binsfu.size(),ekin_true);
+				Migr_Meas= new TH1F((basename +"_RooMeas").c_str(),(basename+"beta;Ekin_{meas}[GeV/n];").c_str(),binsfu.size(),ekin_true);
+			}
+			else{
+				for(int i=0;i<binsfu.size();i++) {
+						rig_gen[i]=binsfu.RigBins()[i];	
+						cout<<basename<<" RGEN "<<rig_gen[i]<<" "<<binsfu.RigBins()[i]<<endl;
+					}	
+		
+			Migr_Unf= new TH2F((basename +"_RooUnfold").c_str(),(basename+"R;R_{meas}[GV];R_{GEN}").c_str(),binsfu.size(),rig_gen,binsfu.size(),rig_gen);
+				Migr_True= new TH1F((basename +"_RooTrue").c_str(),(basename+"R;R_{GEN}[GV];").c_str(),binsfu.size(),rig_gen);
+				Migr_Meas= new TH1F((basename +"_RooMeas").c_str(),(basename+"R;R_{meas}[GV];").c_str(),binsfu.size(),rig_gen);
+				cout<<Migr_Unf->GetNbinsX()<<endl;
+		}
+
+	} 		
 		if(checkifsomeismissing||refill) allfound=false;
 		return allfound;
 	}
@@ -244,20 +259,21 @@ class Acceptance : public Tool{
 		For_Acceptance  -> FillEventByEventMC(vars,GetGenMomentum_10,GetGenMomentum_10);
 
 		if(ApplyCuts((cut+"&"+dataeff_cut).c_str(),vars)){
-			Migr_rig->Fill(GetGenRigidity(vars),GetRigidity(vars),vars->mcweight);
-			Migr_beta->Fill(GetGenRigidity(vars),var(vars),vars->mcweight);
-			Migr_R->Fill(GetGenRigidity(vars),GetRigidity(vars),vars->mcweight);
-			Migr_B->Fill(GetGenRigidity(vars),var(vars),vars->mcweight);
 			float Ekin_n = 0.938*((1/sqrt(1-pow(var(vars),2)))-1); 
 			float betagen = GetBetaFromR(vars->Massa_gen,GetGenRigidity(vars),vars->Charge_gen);
 			float Ekin_gen = 0.938*((1/sqrt(1-pow(betagen,2)))-1); 
-		//	if (Ekin_n>bins.EkPerMasBins()[0]&&Ekin_n<bins.EkPerMasBins()[bins.size()]){ 
+			if(FullSetEff_gen->GetBins().IsUsingBetaEdges()){
 				Migr_True->Fill(Ekin_gen,vars->mcweight);
 				Migr_Unf->Fill(Ekin_n,Ekin_gen,vars->mcweight);	
 				Migr_Meas->Fill(Ekin_n,vars->mcweight);
-		//	}
-				EnLoss->Fill(1/betagen,1/var(vars),vars->mcweight);
-	
+			}
+			else{
+				Migr_True->Fill(GetGenRigidity(vars),vars->mcweight);
+				Migr_Unf->Fill(vars->R,GetGenRigidity(vars),vars->mcweight);	
+				Migr_Meas->Fill(vars->R,vars->mcweight);
+			}
+			EnLoss->Fill(1/betagen,1/var(vars),vars->mcweight);
+				
 		}		
 
 	}
@@ -274,8 +290,6 @@ class Acceptance : public Tool{
 	TH1F * GetEffAcc_gen() {return EffAcceptance_gen;}
 	TH1F * GetEffAccMC_gen() {return EffAcceptanceMC_gen;}
 	TH1F * GetEffAccMC_gen_raw() {return EffAcceptanceMC_gen_raw;}
-	TH2F * GetMigr_rig() {return Migr_rig;}	
-	TH2F * GetMigr_beta() {return Migr_beta;}	
 	TH2F * GetMigr_Unf() {return Migr_Unf;}	
 	TH1F * GetMigr_True() {return Migr_True;}	
 	TH1F * GetMigr_Meas() {return Migr_Meas;}	
@@ -284,8 +298,8 @@ class Acceptance : public Tool{
 	TH1F * GetStat_Err(){return EffAcceptance_StatErr;}
 	TH1F * GetSyst_Err(){return EffAcceptance_SystErr;}
 
-	void Set_AcceptanceTime(TH1F * avg) {
-		EffAcceptanceTime = (TH1F *) avg->Clone(); 
+	void Set_AcceptanceTime(TF1 * avg) {
+		EffAcceptanceTime = (TF1 *) avg->Clone(); 
 	}
 
 	void SetModeled() {IsModeled=true;}

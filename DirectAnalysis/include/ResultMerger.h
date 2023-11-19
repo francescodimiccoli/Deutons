@@ -47,8 +47,10 @@ class ResultMerger{
 
 	std::string Name;
 
-	ResultMerger(FileSaver finalhostos, std::string name, RangeMerger Global, Flux *FluxTOF,  Flux *FluxNaF, Flux *FluxAgl,  Particle particle, bool nafpriority=false,Flux * Fluxsum=0x0, Flux * Fluxtosubtract=0x0, TH1F * forbinning=0x0);
+	ResultMerger(FileSaver finalhostos, std::string name, RangeMerger Global, Flux *FluxTOF,  Flux *FluxNaF, Flux *FluxAgl,  Particle particle, bool nafpriority=false,Flux * Fluxsum=0x0, Flux * Fluxtosubtract=0x0, TH1F * forbinning=0x0, Flux * FluxR =0x0);
 
+
+	void ResidualCorrectionWithFluxes(TH1F * fluxekin1,TH1F * fluxekin2);
 	void SaveResults(FileSaver finalhistos);
 	
 
