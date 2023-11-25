@@ -15,9 +15,10 @@ TH1F * Twentisevenify(TH1F* input){
 
 
 
-ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger Global, Flux * FluxTOF, Flux * FluxNaF, Flux * FluxAgl, Particle particle, bool nafpriority, Flux * Fluxsum, Flux * Fluxtosubtract,TH1F * forbinning, Flux * FluxR){
+ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger Global, Flux * FluxTOF, Flux * FluxNaF, Flux * FluxAgl, Particle particle, bool nafpriority, ResultMerger * Fluxsum, ResultMerger * Fluxtosubtract,TH1F * forbinning, Flux * FluxR,bool Aver){
 
 	Name=name;
+	is_ave=Aver;
 	if(!FluxTOF || !FluxNaF || !FluxAgl) return;
 
 
@@ -184,8 +185,8 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 	}	
 
 	if(Fluxsum&&Fluxtosubtract) {
-		TH1F * sumflux   = (TH1F*) Fluxsum->GetFlux_rig()->Clone();
-		TH1F * fluxtosub = (TH1F*) Fluxtosubtract->GetFlux_unf()->Clone();
+		TGraphErrors * sumflux   = new TGraphErrors((TH1F*) Fluxsum->flux_unf->Clone());
+		TGraphErrors * fluxtosub = new TGraphErrors((TH1F*) Fluxtosubtract->flux_unf->Clone());
 
 		TH1F * totflux   = (TH1F*) forbinning->Clone((Name+"_unf").c_str());
 		TH1F * Staterr   = (TH1F*) forbinning->Clone((Name+"_stat").c_str());
@@ -201,7 +202,7 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 //		sumflux->Smooth();
 
 		for(int i=0;i<totflux->GetNbinsX();i++)
-			if(flux_unf->FindBin(totflux->GetBinCenter(i+1))<=flux_unf->GetNbinsX()){
+			if(flux_unf->GetBinLowEdge(flux_unf->FindBin(totflux->GetBinCenter(i+1)))<=flux_unf->GetBinLowEdge(flux_unf->GetNbinsX())){
 				totflux->SetBinContent(i+1, flux_unf->GetBinContent(flux_unf->FindBin(totflux->GetBinCenter(i+1))));
 				totflux->SetBinError(i+1, flux_unf->GetBinError(flux_unf->FindBin(totflux->GetBinCenter(i+1))));
 				Staterr->SetBinContent(i+1,statErr->GetBinContent(i+1));
@@ -211,21 +212,15 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 			else{
 				float bincenter= totflux->GetBinCenter(i+1);
 		
-				totflux->SetBinContent(i+1,sumflux->GetBinContent(sumflux->FindBin(bincenter)) - fluxtosub->GetBinContent(fluxtosub->FindBin(bincenter)));
+				totflux->SetBinContent(i+1,sumflux->Eval(bincenter) - sumflux->Eval(bincenter)  );
 		
-				Staterr->SetBinContent(i+1,sqrt(pow(Fluxtosubtract->GetStatError()->GetBinContent(sumflux->FindBin(bincenter))*fluxtosub->GetBinContent(sumflux->FindBin(bincenter)),2)+ 
-						     	   pow(Fluxsum->GetStatError()->GetBinContent(sumflux->FindBin(bincenter))*sumflux->GetBinContent(sumflux->FindBin(bincenter)),2))
-							   /totflux->GetBinContent(sumflux->FindBin(bincenter)));
+				Staterr->SetBinContent(i+1,0.04);
 
-				Systerr->SetBinContent(i+1,(0.01+Fluxtosubtract->GetSystError()->GetBinContent(sumflux->FindBin(bincenter)))*fluxtosub->GetBinContent(fluxtosub->FindBin(bincenter))/totflux->GetBinContent(i+1));
-				Accerr->SetBinContent(i+1,Fluxtosubtract->GetAccError()->GetBinContent(sumflux->FindBin(bincenter)));
+				Systerr->SetBinContent(i+1,0.04);
+				Accerr->SetBinContent(i+1,Fluxtosubtract->accErr->GetBinContent(2));
 			
-				float error1 = (fluxtosub->GetBinError(fluxtosub->FindBin(bincenter))/fluxtosub->GetBinContent(fluxtosub->FindBin(bincenter)));
-				float error2 = (sumflux->GetBinError(sumflux->FindBin(bincenter))/sumflux->GetBinContent(sumflux->FindBin(bincenter)));
-				float error3 = Systerr->GetBinContent(i+1)*fluxtosub->GetBinContent(fluxtosub->FindBin(bincenter))/totflux->GetBinContent(i+1);
 
-
-				totflux->SetBinError(i+1,sqrt(pow(error1,2)+pow(error2,2)+pow(error3,2))*totflux->GetBinContent(i+1));
+				totflux->SetBinError(i+1,0.05*totflux->GetBinContent(i+1));
 
 			}
 			
@@ -237,6 +232,11 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 	
 	if(FluxR){
 		TH1F * fluxR_unf = (TH1F*) FluxR->GetFlux_rig()->Clone();
+		TH1F * fluxR_state = (TH1F*) FluxR->GetStatError()->Clone();
+		TH1F * fluxR_acce = (TH1F*) FluxR->GetAccError()->Clone();
+		TH1F * fluxR_syste = (TH1F*) FluxR->GetSystError_unb()->Clone();
+		TH1F * fluxR_unfe = (TH1F*) FluxR->GetRooUnfError()->Clone();
+
 
 
 
@@ -255,12 +255,20 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		std::vector<float> newEdges;
 		for (int i=0;i<flux->GetNbinsX();i++) newEdges.push_back(flux->GetBinLowEdge(i+1));
 		for (int i=0;i<fluxR_unf->GetNbinsX()+1;i++) 
-			if(fluxR_unf->GetBinLowEdge(i+1)>flux->GetBinLowEdge(flux->GetNbinsX())) newEdges.push_back(fluxR_unf->GetBinLowEdge(i+1));
+			if(fluxR_unf->GetBinLowEdge(i+1)>flux->GetBinLowEdge(flux->GetNbinsX())
+				&& fluxR_unf->GetBinLowEdge(i+1) > fluxR_unf->GetBinLowEdge(i) //protection against strange bins
+				) 
+
+				newEdges.push_back(fluxR_unf->GetBinLowEdge(i+1));
+
+		
+
 		TH1F * newflux = new TH1F((Name+"_unf").c_str(),(Name+"_unf").c_str(),newEdges.size()-1,newEdges.data());
 		TH1F * newflux_stat = new TH1F((Name+"_unf_stat").c_str(),(Name+"_unf_stat").c_str(),newEdges.size()-1,newEdges.data());
 		TH1F * newsyst = new TH1F((Name+"_syste").c_str(),(Name+"_syste").c_str(),newEdges.size()-1,newEdges.data());
 		TH1F * newacce = new TH1F((Name+"_acce").c_str(),(Name+"_acce").c_str(),newEdges.size()-1,newEdges.data());
 		TH1F * newstate = new TH1F((Name+"_state").c_str(),(Name+"_state").c_str(),newEdges.size()-1,newEdges.data());
+		TH1F * newunfe = new TH1F((Name+"_roounfe").c_str(),(Name+"_roounfe").c_str(),newEdges.size()-1,newEdges.data());
 		for (int i=0;i<newflux->GetNbinsX();i++) {
 			if(newflux->GetBinLowEdge(i+1)<fluxR_unf->GetBinLowEdge(1) ){
 				newflux->SetBinContent(i+1,flux_unf->GetBinContent(i+1));
@@ -270,14 +278,16 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 				newsyst->SetBinContent(i+1,systErr->GetBinContent(i+1));
 				newsyst->SetBinError(i+1,systErr->GetBinError(i+1));
 				newacce->SetBinContent(i+1,accErr->GetBinContent(i+1));
-				newacce->SetBinError(i+1,accErr->GetBinError(i+1));
+						newacce->SetBinError(i+1,accErr->GetBinError(i+1));
 				newstate->SetBinContent(i+1,statErr->GetBinContent(i+1));
 				newstate->SetBinError(i+1,statErr->GetBinError(i+1));
+				newunfe->SetBinContent(i+1,roounfErr->GetBinContent(i+1));
+				newunfe->SetBinError(i+1,roounfErr->GetBinError(i+1));
 				}
 			else if(newflux->GetBinLowEdge(i+1)<=flux->GetBinLowEdge(flux->GetNbinsX())     ){
-				newflux->SetBinContent(i+1,(fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux->GetBinCenter(i+1)))+flux_unf->GetBinContent(i+1))/2.   );
+				newflux->SetBinContent(i+1,((is_ave)*fluxR_unf->GetBinContent( fluxR_unf->FindBin(newflux->GetBinCenter(i+1)))+flux_unf->GetBinContent(i+1))/(1+is_ave)   );
 				newflux->SetBinError(i+1,flux_unf->GetBinError(i+1));
-				newflux_stat->SetBinContent(i+1,(fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1)))+flux_unf->GetBinContent(i+1))/2.   );
+				newflux_stat->SetBinContent(i+1,((is_ave)*fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1)))+flux_unf->GetBinContent(i+1))/(1+is_ave)   );
 				newflux_stat->SetBinError(i+1,flux_unf_stat->GetBinError(i+1));
 				newsyst->SetBinContent(i+1,systErr->GetBinContent(i+1));
 				newsyst->SetBinError(i+1,systErr->GetBinError(i+1));
@@ -285,19 +295,23 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 				newacce->SetBinError(i+1,accErr->GetBinError(i+1));
 				newstate->SetBinContent(i+1,statErr->GetBinContent(i+1));
 				newstate->SetBinError(i+1,statErr->GetBinError(i+1));
+				newunfe->SetBinContent(i+1,roounfErr->GetBinContent(i+1));
+				newunfe->SetBinError(i+1,roounfErr->GetBinError(i+1));
 			
 			}
 			else {
 				newflux->SetBinContent(i+1,fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux->GetBinCenter(i+1))));
 				newflux->SetBinError(i+1,fluxR_unf->GetBinError(fluxR_unf->FindBin(newflux->GetBinCenter(i+1)))+0.02*fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
 				newflux_stat->SetBinContent(i+1,fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
-				newflux_stat->SetBinError(i+1,fluxR_unf->GetBinError(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1)))+0.02*fluxR_unf->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
-				newsyst->SetBinContent(i+1,0.03);
-				newsyst->SetBinError(i+1,0.03);
-				newacce->SetBinContent(i+1,0.02);
-				newacce->SetBinError(i+1,0.02);
-				newstate->SetBinContent(i+1,0.01);
-				newstate->SetBinError(i+1,0.01);
+				newflux_stat->SetBinError(i+1,fluxR_unf->GetBinError(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
+				newsyst->SetBinContent(i+1,fluxR_syste->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
+				newsyst->SetBinError(i+1,0);
+				newacce->SetBinContent(i+1,fluxR_acce->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
+				newacce->SetBinError(i+1,0);
+				newstate->SetBinContent(i+1,fluxR_state->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
+				newstate->SetBinError(i+1,0);
+				newunfe->SetBinContent(i+1,fluxR_unfe->GetBinContent(fluxR_unf->FindBin(newflux_stat->GetBinCenter(i+1))));
+				newunfe->SetBinError(i+1,0);
 			}
 		}
 	
@@ -306,7 +320,7 @@ ResultMerger::ResultMerger(FileSaver finalhistos, std::string name, RangeMerger 
 		statErr = (TH1F*) newstate->Clone((Name+"_stat").c_str());
 		systErr = (TH1F*) newsyst->Clone((Name+"_syste").c_str());
 		accErr = (TH1F*)  newacce->Clone((Name+"_acce").c_str());
-	
+		roounfErr= (TH1F*) newunfe->Clone((Name+"_roounfe").c_str());
 
 		}
 
@@ -368,8 +382,6 @@ void ResultMerger::ResidualCorrectionWithFluxes(TH1F * fluxekin1,TH1F * fluxekin
 		float corr ;
 		if(fluxekin1->GetBinContent(ekinbin)>0){
 			corr= fluxekin2->GetBinContent(ekinbin)/fluxekin1->GetBinContent(ekinbin);
-			flux_ekin->SetBinContent(i+1,flux_ekin->GetBinContent(i+1)*corr );
-			flux_ekin_unf->SetBinContent(i+1,flux_ekin_unf->GetBinContent(i+1)*corr );
 			flux_stat->SetBinContent(bin_this, flux_stat->GetBinContent(bin_this)*corr);
 			flux->SetBinContent(bin_this, flux->GetBinContent(bin_this)*corr);
 			flux_unf->SetBinContent(bin_this, flux_unf->GetBinContent(bin_this)*corr);
@@ -379,12 +391,16 @@ void ResultMerger::ResidualCorrectionWithFluxes(TH1F * fluxekin1,TH1F * fluxekin
 			flux_unf27->SetBinContent(bin_this, flux_unf27->GetBinContent(bin_this)*corr);
 			flux_unf_stat27->SetBinContent(bin_this, flux_unf_stat27->GetBinContent(bin_this)*corr);
 			effAcc->SetBinContent(bin_this, effAcc->GetBinContent(bin_this)*corr);
+	
+			flux_ekin->SetBinContent(i+1,flux->GetBinContent(i+1)
+				/(flux->GetBinLowEdge(i+2)-flux->GetBinLowEdge(i+1)) 
+				* (flux_ekin->GetBinLowEdge(i+2)-flux_ekin->GetBinLowEdge(i+1))  );
+			flux_ekin_unf->SetBinContent(i+1,flux_unf->GetBinContent(i+1)
+				/(flux_unf->GetBinLowEdge(i+2)-flux_unf->GetBinLowEdge(i+1)) 
+				* (flux_ekin_unf->GetBinLowEdge(i+2)-flux_ekin_unf->GetBinLowEdge(i+1))  );
+			
+
 		}
-
-
-
-
-
 
 	}
 }

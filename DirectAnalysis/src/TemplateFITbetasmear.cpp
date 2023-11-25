@@ -1897,7 +1897,7 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 					cout<<endl;
 					cout<<"Bin: "<<bin<<": "<<sigma<<" "<<shift<<endl;
 				//	fits[bin][sigma][shift]->RegularizeTemplateError();	
-					if(lowstatDmode) {
+					if(lowstatDmode||lowstatPmode) {
 						fits[bin][sigma][shift]->Data->Rebin(2);
 						fits[bin][sigma][shift]->Templ_P->Rebin(2);
 						fits[bin][sigma][shift]->Templ_D->Rebin(2);
@@ -2243,8 +2243,10 @@ void TemplateFIT::CalculateFinalPDCounts(){
                 else bestlocal->FindMinimum(TFitChisquare[bin]);
 
 		float CountsP; 	
-		if(!usebestonly) CountsP      = WeightedPCounts[bin]->GetMean()   - 8.5 * fits_best[bin]->TCounts;
+		if(!usebestonly) CountsP      = //fits[bin][bestlocal->i][bestlocal->j]->Data->Integral()- fits[bin][bestlocal->i][bestlocal->j]->DCounts; 
+						WeightedPCounts[bin]->GetMean()   - 8.5 * fits_best[bin]->TCounts;
 		else CountsP=fits[bin][bestlocal->i][bestlocal->j]->PCounts - 8.5 * fits_best[bin]->TCounts; 
+		
 
 		float CountsP_unb; 	
 		if(!usebestonly) CountsP_unb      = WeightedPCounts_unb[bin]->GetMean()   - 8.5 * fits_best[bin]->TCounts;
@@ -2263,6 +2265,8 @@ void TemplateFIT::CalculateFinalPDCounts(){
 			else CountsD=fits[bin][bestlocal->i][bestlocal->j]->DCounts ;//- 1.5*fits[bin][bestlocal->i][bestlocal->j]->TCounts;
 			CountsD=CountsD-0.033*CountsD; //Tritium contamination stable in time
 		}
+		if(lowstatPmode) CountsP  = fits[bin][bestlocal->i][bestlocal->j]->Data->Integral()- CountsD;
+
 
 		float CountsD_unb;	
 				
@@ -2278,6 +2282,8 @@ void TemplateFIT::CalculateFinalPDCounts(){
 			CountsD_unb=CountsD_unb-0.033*CountsD; //Tritium contamination stable in time
 		}
 	
+		if(lowstatPmode) CountsP      = fits[bin][bestlocal->i][bestlocal->j]->Data->Integral()- CountsD_unb;
+
 
 
 

@@ -67,7 +67,7 @@ void RatioMaker::DoRatioErrSyst(float C){
 
 void RatioMaker::DoRatioErrUnf(float C){
 
-	ratio_errunf = (TH1F*)ratio_unf->Clone((Name+ "err_syst").c_str());
+	ratio_errunf = (TH1F*)ratio_unf->Clone((Name+ "err_unf").c_str());
 	ratio_errunf->Reset();
 
 	for(int i=0; i<ratio_errunf->GetNbinsX();i++){
@@ -88,7 +88,7 @@ void RatioMaker::DoRatioErrUnf(float C){
 
 void RatioMaker::DoRatioErrAcc(float C){
 
-	ratio_erracc = (TH1F*)ratio_unf->Clone((Name+ "err_syst").c_str());
+	ratio_erracc = (TH1F*)ratio_unf->Clone((Name+ "err_acc").c_str());
 	ratio_erracc->Reset();
 
 	for(int i=0; i<ratio_errunf->GetNbinsX();i++){
@@ -128,6 +128,8 @@ RatioMaker::RatioMaker(ResultMerger * num, ResultMerger * den, std::string name)
 
 	DoRatioErrStat(0);
 	DoRatioErrSyst(0);
+	DoRatioErrUnf(0);
+	DoRatioErrAcc(0);
 
 }
 
@@ -142,8 +144,8 @@ void RatioMaker::SaveResults(FileSaver finalhistos){
         if(ratio_unf_stat) 	finalhistos.Add(ratio_unf_stat);
 	if(ratio_errstat )	finalhistos.Add(ratio_errstat );
 	if(ratio_errsyst )	finalhistos.Add(ratio_errsyst );
-        if(ratio_errunf )	finalhistos.Add(ratio_errsyst );
- 	if(ratio_erracc )	finalhistos.Add(ratio_errsyst );
+        if(ratio_errunf )	finalhistos.Add(ratio_errunf );
+ 	if(ratio_erracc )	finalhistos.Add(ratio_erracc );
         if(ratioacceptance    )	finalhistos.Add(ratioacceptance    );
         if(ratiocounts 	 )      finalhistos.Add(ratiocounts 	 );
         if(ratiounfolding) 	finalhistos.Add(ratiounfolding);

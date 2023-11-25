@@ -286,6 +286,7 @@ class TemplateFIT : public Tool{
 	float template1scalefactor3=1;
 
 	bool lowstatDmode=false;
+	bool lowstatPmode=false;
 	bool adjousttail=false;
 	bool adjoustfixedtail=false;
 	float Mag=0;
@@ -661,6 +662,7 @@ class TemplateFIT : public Tool{
 	void SetLocalFit(){IsLocalFit = true; }
 	void SetLocalConstrainedFit(){IsLocalConstrainedFit = true; }
 	void SetLowStatDMode(){lowstatDmode=true;}
+	void SetLowStatPMode(){lowstatPmode=true;}
 	void SetAdjoustTailMode(float magn,float midpoint, float enmidpoint, float fast, int forcesigma=-1){Mag=magn; Mid=midpoint; Midbin=enmidpoint; Fast=fast; Forcesigma=forcesigma; adjousttail=true;}
 	void SetFixModTailMode(float magn,float midpoint, float enmidpoint, float fast, int forcesigma=-1){Mag=magn; Mid=midpoint; Midbin=enmidpoint; Fast=fast; Forcesigma=forcesigma; adjoustfixedtail=true;}
 	void SetAdjoustPeakMode(int isotope, float mag){iso=isotope; magpeak=mag; adjoustpeak=true;}

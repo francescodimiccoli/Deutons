@@ -12,13 +12,13 @@ void FileSaver::writeObjsInFolder(string folder, bool recreate)
 	if (!fileFinalPlots->GetDirectory(folder.c_str()))
 		fileFinalPlots->mkdir(folder.c_str());
 	fileFinalPlots->cd   (folder.c_str());
-	cout<<"vrce: "<<fArr->At(0)<<endl;
+//	cout<<"vrce: "<<fArr->At(0)<<endl;
 	if(fArr->At(0)){
 		cout<<fArr->At(0)->GetName()<<endl; 	
 		for (int i = 0; i <= fArr->GetLast(); i++){
-			cout<<fArr->At(i)<<" "<<fArr->At(i)->GetName()<<endl;
+		//	cout<<fArr->At(i)<<" "<<fArr->At(i)->GetName()<<endl;
 			fArr->At(i)->Write(fArr->At(i)->GetName(),2);
-			cout<<"Object saved ..."<<endl;
+		//	cout<<"Object saved ..."<<endl;
 		}
 	}
 	fileFinalPlots->Flush();

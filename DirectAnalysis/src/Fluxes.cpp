@@ -190,7 +190,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 	if(!refill&&checkfile) {
 
 	//correction for fragmentation
-	float corr_D  = 0.95*0.9618;//0.97*0.9618;
+	float corr_D  = 0.95*0.95*0.9618;//0.97*0.9618;
 	float corr_p  = 0.95*1;//0.97;
 	float corr_he = 1;//1.02;
 
@@ -201,6 +201,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		cout<<"********  EXTENSION P ************"<<endl;
 
 		PFluxExtension->SetForceFolded();
+		PFluxExtension->SetSystFragm(0.02*0.02);
 		PFluxExtension->Eval_Flux(corr_p);
 		PFluxExtension->SaveResults(finalresults);
 
@@ -227,21 +228,21 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		cout<<"************* P FLUX ************"<<endl;
 
 	if(UnfoldingFile){	
-		PFluxTOF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1TOF"));	
-		PFluxNaF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1NaF"));	
-		PFluxAgl->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1Agl"));	
+		PFluxTOF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1TOF"),(TGraphErrors*)UnfoldingFile->Get("Z1TOF_err"));	
+		PFluxNaF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1NaF"),(TGraphErrors*)UnfoldingFile->Get("Z1NaF_err"));	
+		PFluxAgl->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1Agl"),(TGraphErrors*)UnfoldingFile->Get("Z1Agl_err"));	
 	}
-
-		PFluxTOF->SetForceFolded(); 
-		PFluxNaF->SetForceFolded(); 
-		PFluxAgl->SetForceFolded();  //sistemare unfolding agl 
 
 		PFluxTOF->ActivateRooUnfolding(false); 
 		PFluxNaF->ActivateRooUnfolding(); 
 		PFluxAgl->ActivateRooUnfolding(); 
 
+		PFluxTOF->SetSystFragm(0.02*0.02);
+		PFluxNaF->SetSystFragm(0.02*0.02);
+		PFluxAgl->SetSystFragm(0.02*0.02);		
+
 		PFluxTOF-> Eval_Flux(corr_p);//,1.2,1.5,3,0.01);
-		PFluxNaF-> Eval_Flux(corr_p);//,1.5,4.0,7,0.1);
+		PFluxNaF-> Eval_Flux(corr_p);//,1.5,4.0,7,0.1);  //Carlos Bump (?)
 		PFluxAgl-> Eval_Flux(corr_p);//,4.0,8.9,7,0.1);
 
 		PFluxTOF->SaveResults(finalresults);
@@ -251,15 +252,11 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		cout<<"************* D FLUX ************"<<endl;
 		
 	if(UnfoldingFile){	
-		DFluxTOF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1TOF"));	
-		DFluxNaF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1NaF"));	
-		DFluxAgl->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1Agl"));	
+		DFluxTOF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1TOF"),(TGraphErrors*)UnfoldingFile->Get("Z1TOF_err"));	
+		DFluxNaF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1NaF"),(TGraphErrors*)UnfoldingFile->Get("Z1NaF_err"));	
+		DFluxAgl->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z1Agl"),(TGraphErrors*)UnfoldingFile->Get("Z1Agl_err"));	
 	}	
 	
-/*	DFluxTOF->SetForceFolded(); 
-        DFluxNaF->SetForceFolded(); 
-        DFluxAgl->SetForceFolded();  //sistemare unfolding agl 
-  */   
 	DFluxTOF->ActivateRooUnfolding(false); 
 	DFluxNaF->ActivateRooUnfolding(); 
 	DFluxAgl->ActivateRooUnfolding(); 
@@ -269,7 +266,7 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
         //DFluxAgl->AverageCountsWithOther(finalresults,"AglPfits/Fit Results/Deuteron Counts","/Fluxes/PFluxAgl/ExposureTime Ekin");
 
 	DFluxTOF-> Eval_Flux(corr_D,1.25,4,6,0.01);
-	DFluxNaF-> Eval_Flux(corr_D,3.4,8.2,6,0.01);
+	DFluxNaF-> Eval_Flux(corr_D,4,8.2,6,0.01);  //Carlos Bump (?)
 	DFluxAgl-> Eval_Flux(corr_D,8,17.8,4,0.1,true);
 
 	DFluxTOF->SaveResults(finalresults);
@@ -287,6 +284,10 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		FitBetaPNaF->ChangeName("FitBetaPNaF");
 		FitBetaPAgl->ChangeName("FitBetaPAgl");
 
+		RigBetaPTOF->SetSystFragm(0.02*0.02);
+		RigBetaPNaF->SetSystFragm(0.02*0.02);
+		RigBetaPAgl->SetSystFragm(0.02*0.02);		
+
 		RigBetaPTOF-> Eval_Flux(corr_p,1.2,1.57,3,0.01);
 		RigBetaPNaF-> Eval_Flux(corr_p,1.5,4.0,7,0.1);
 		RigBetaPAgl-> Eval_Flux(corr_p,4.0,8.9,7,0.1);
@@ -294,6 +295,10 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		RigBetaPTOF->ChangeName("RigBetaPTOF");
 		RigBetaPNaF->ChangeName("RigBetaPNaF");
 		RigBetaPAgl->ChangeName("RigBetaPAgl");
+
+		RigPTOF->SetSystFragm(0.02*0.02);
+		RigPNaF->SetSystFragm(0.02*0.02);
+		RigPAgl->SetSystFragm(0.02*0.02);		
 
 		RigPTOF-> Eval_Flux(corr_p,1.2,1.57,3,0.01);
 		RigPNaF-> Eval_Flux(corr_p,1.5,4.0,7,0.1); ;
@@ -358,9 +363,9 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 	cout<<"************* 4He FLUX ************"<<endl;
 	if(UnfoldingFile){	
-		He4FluxTOF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2TOF"));	
-		He4FluxNaF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2NaF"));	
-		He4FluxAgl->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2Agl"));	
+		He4FluxTOF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2TOF"),(TGraphErrors*)UnfoldingFile->Get("Z2TOF_err"));	
+		He4FluxNaF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2NaF"),(TGraphErrors*)UnfoldingFile->Get("Z2NaF_err"));	
+		He4FluxAgl->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2Agl"),(TGraphErrors*)UnfoldingFile->Get("Z2Agl_err"));	
 	}
 
 
@@ -378,9 +383,9 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 
 		cout<<"************* 3He FLUX ************"<<endl;
 	if(UnfoldingFile){	
-		He3FluxTOF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2TOF"));	
-		He3FluxNaF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2NaF"));	
-		He3FluxAgl->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2Agl"));	
+		He3FluxTOF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2TOF"),(TGraphErrors*)UnfoldingFile->Get("Z2TOF_err"));	
+		He3FluxNaF->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2NaF"),(TGraphErrors*)UnfoldingFile->Get("Z2NaF_err"));	
+		He3FluxAgl->Set_UnfoldingTime((TGraphErrors*)UnfoldingFile->Get("Z2Agl"),(TGraphErrors*)UnfoldingFile->Get("Z2Agl_err"));	
 	}
 
 		He3FluxTOF->ActivateRooUnfolding(false); 
@@ -408,27 +413,35 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		Particle deuton(1.8756129   , 1, 2);  // deuterium mass 1876 MeV, Z=1, A=2
 		bool nafpriority=true;
 
-		ResultMerger*	DeutonRes   = new ResultMerger(finalresults,"DFlux",Global,DFluxTOF,DFluxNaF,DFluxAgl,deuton,false,0x0,0x0,0x0,DFluxExtension);
+		ResultMerger*	DeutonRes   = new ResultMerger(finalresults,"DFlux",Global,DFluxTOF,DFluxNaF,DFluxAgl,deuton,false,0x0,0x0,0x0,DFluxExtension,true);
 		ResultMerger*	RigPRes     = new ResultMerger(finalresults,"RigPFlux",Global,RigPTOF,RigPNaF,RigPAgl,proton);
 		ResultMerger*	RigBetaPRes = new ResultMerger(finalresults,"RigBetaPFlux",Global,RigBetaPTOF,RigBetaPNaF,RigBetaPAgl,proton);
 		ResultMerger*	FitBetaPRes = new ResultMerger(finalresults,"FitBetaPFlux",Global,FitBetaPTOF,FitBetaPNaF,FitBetaPAgl,proton);
 	//	ResultMerger*	ProtonRes   = new ResultMerger(finalresults,"PFlux",Global,PFluxTOF,PFluxNaF,PFluxAgl, proton,false,HEPFluxL1,DFluxAgl,DeutonRes->flux);
 		ResultMerger*	ProtonRes   = new ResultMerger(finalresults,"PFlux",Global,PFluxTOF,PFluxNaF,PFluxAgl, proton,false,0x0,0x0,0x0,PFluxExtension);
 	
-
-		ResultMerger*	He4Res 	    = new ResultMerger(finalresults,"He4Flux",Global_He,He4FluxTOF,He4FluxNaF,He4FluxAgl,deuton,nafpriority);
+		ResultMerger*	He3Res 	    = new ResultMerger(finalresults,"He3Flux",Global_He,He3FluxTOF,He3FluxNaF,He3FluxAgl,proton,nafpriority,0x0,0x0,0x0,He3FluxExtension);
+		
 		ResultMerger*	RigHeRes    = new ResultMerger(finalresults,"RigHeFlux",Global_HeRig,RigHeTOF,RigHeNaF,RigHeAgl,deuton,nafpriority);
 		ResultMerger*	RigBetaHeRes    = new ResultMerger(finalresults,"RigBetaHeFlux",Global_HeRig,RigBetaHeTOF,RigBetaHeNaF,RigBetaHeAgl,deuton,nafpriority);
 		ResultMerger*	FitBetaHeRes    = new ResultMerger(finalresults,"FitBetaHeFlux",Global_HeRig,FitBetaHeTOF,FitBetaHeNaF,FitBetaHeAgl,deuton,nafpriority);
-	//	ResultMerger*	He3Res 	    = new ResultMerger(finalresults,"He3Flux",Global_He,He3FluxTOF,He3FluxNaF,He3FluxAgl,proton,nafpriority,RigHeAgl,He4FluxAgl,He4Res->flux);
-		ResultMerger*	He3Res 	    = new ResultMerger(finalresults,"He3Flux",Global_He,He3FluxTOF,He3FluxNaF,He3FluxAgl,proton,nafpriority,0x0,0x0,0x0,He3FluxExtension);
-		
-		//He4Res->ResidualCorrectionWithFluxes(RigBetaHeRes->flux_ekin,RigHeRes->flux_ekin);
-		//He3Res->ResidualCorrectionWithFluxes(RigBetaHeRes->flux_ekin,RigHeRes->flux_ekin);
+		ResultMerger*	He4Res 	    = new ResultMerger(finalresults,"He4Flux",Global_He,He4FluxTOF,He4FluxNaF,He4FluxAgl,deuton,nafpriority,0x0,0x0,0x0,He3FluxExtension,false);
+	
+		He4Res->ResidualCorrectionWithFluxes(RigBetaHeRes->flux_ekin,RigHeRes->flux_ekin);
+		He3Res->ResidualCorrectionWithFluxes(RigBetaHeRes->flux_ekin,RigHeRes->flux_ekin);
 
-		DeutonRes->ResidualCorrectionWithFluxes(RigBetaPRes->flux_ekin,RigPRes->flux_ekin);
-		ProtonRes->ResidualCorrectionWithFluxes(RigBetaPRes->flux_ekin,RigPRes->flux_ekin);
-		
+	//	DeutonRes->ResidualCorrectionWithFluxes(RigBetaPRes->flux_ekin,RigPRes->flux_ekin);
+	//	ProtonRes->ResidualCorrectionWithFluxes(RigBetaPRes->flux_ekin,RigPRes->flux_ekin);
+	
+
+
+		/// with ""unfolding""
+/*		He4Res->ResidualCorrectionWithFluxes(FitBetaHeRes->flux_ekin,RigHeRes->flux_ekin);
+		He3Res->ResidualCorrectionWithFluxes(FitBetaHeRes->flux_ekin,RigHeRes->flux_ekin);
+		DeutonRes->ResidualCorrectionWithFluxes(FitBetaPRes->flux_ekin,RigPRes->flux_ekin);
+		ProtonRes->ResidualCorrectionWithFluxes(FitBetaPRes->flux_ekin,RigPRes->flux_ekin);
+*/		//
+	
 		DeutonRes->SaveResults(finalresults);
 		ProtonRes->SaveResults(finalresults);
 		RigPRes->SaveResults(finalresults);

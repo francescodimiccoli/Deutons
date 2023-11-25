@@ -304,140 +304,176 @@ TH1F* RegularizeRooUnfold(TH1F * unf_factor){
 
 void Flux::Roounfold(int iterations, bool usepdf){
 
-	 Counts_density_roounf = (TH1F*) Counts_density->Clone();
-	 Counts_density_roounf -> Reset();
-  	 Counts_density_roounf ->SetName("Counts_density_roounf"); 
+	Counts_density_roounf = (TH1F*) Counts_density->Clone();
+	Counts_density_roounf -> Reset();
+	Counts_density_roounf ->SetName("Counts_density_roounf"); 
 
-	 RooUnfolding_factor = (TH1F*) Counts_density_Ekin->Clone();
-	 RooUnfolding_factor -> Reset();
-	 RooUnfolding_factor->SetName("RooUnfolding_factor"); 
+	RooUnfolding_factor = (TH1F*) Counts_density_Ekin->Clone();
+	RooUnfolding_factor -> Reset();
+	RooUnfolding_factor->SetName("RooUnfolding_factor"); 
 
-         RooUnfolding_Err = (TH1F*) Counts_density->Clone();
-	 RooUnfolding_Err -> Reset();
-	 RooUnfolding_Err->SetName("RooUnfolding_Err"); 
+	RooUnfolding_Err = (TH1F*) Counts_density->Clone();
+	RooUnfolding_Err -> Reset();
+	RooUnfolding_Err->SetName("RooUnfolding_Err"); 
 
-	 if(!rooUnfolding) return;         
+	//default values for NO UNFOLDING
+	for(int i=0;i< RooUnfolding_factor->GetNbinsX();i++){
+		RooUnfolding_factor->SetBinContent(i+1,1);
+		RooUnfolding_factor->SetBinError(i+1,0.01);
+		RooUnfolding_Err->SetBinContent(i+1,0.01);
+		RooUnfolding_Err->SetBinError(i+1,0.0);
+	}
+
+	if(!rooUnfolding) return;         
 
 	TH1F * tmp = (TH1F*) roounfold_meas->Clone("tmp");
 	tmp->Reset();
 
 	ExposureTime_plot     =  ConvertBinnedHisto(ExposureTime,"ExposureTime Ekin",bins,true);
 	Eff_Acceptance_plot = ConvertBinnedHisto(Eff_Acceptance,"Eff. Acceptance Ekin",bins,true);
-	
-//	Counts_density_Ekin->Divide(ExposureTime_plot);
+
+	//	Counts_density_Ekin->Divide(ExposureTime_plot);
 	Counts_density_Ekin=(TH1F*)Eff_Acceptance_plot->Clone();
 
-if(usepdf) {
-	for(int i=-1;i<tmp->GetNbinsX()+1;i++){
-		roounfold_meas->SetBinContent(i+1,roounfold_meas->GetBinContent(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
-		roounfold_meas->SetBinError(i+1,roounfold_meas->GetBinError(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
-	
-		roounfold_true->SetBinContent(i+1,roounfold_true->GetBinContent(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
-		roounfold_true->SetBinError(i+1,roounfold_true->GetBinError(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
-	}
-}	
+	if(usepdf) {
+		for(int i=-1;i<tmp->GetNbinsX()+1;i++){
+			roounfold_meas->SetBinContent(i+1,roounfold_meas->GetBinContent(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
+			roounfold_meas->SetBinError(i+1,roounfold_meas->GetBinError(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
+
+			roounfold_true->SetBinContent(i+1,roounfold_true->GetBinContent(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
+			roounfold_true->SetBinError(i+1,roounfold_true->GetBinError(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
+		}
+	}	
 
 	//"extend" range of measured histo using MC	
 	if(Counts_density_Ekin->GetNbinsX()>5)
-	for(int i=0;i<roounfold_meas->GetNbinsX();i++) { 
+		for(int i=0;i<roounfold_meas->GetNbinsX();i++) { 
 
-		TF1 * p = new TF1("","pol1",0,20);
+			TF1 * p = new TF1("","pol1",0,20);
 
-		Counts_density_Ekin->Fit(p,"","",Counts_density_Ekin->GetBinLowEdge(1),Counts_density_Ekin->GetBinLowEdge(3));
+			Counts_density_Ekin->Fit(p,"","",Counts_density_Ekin->GetBinLowEdge(1),Counts_density_Ekin->GetBinLowEdge(3));
 
-		if(tmp->GetBinLowEdge(i+1)<Counts_density_Ekin->GetBinLowEdge(1)){
-			tmp->SetBinContent(i+1,roounfold_meas->GetBinContent(i+1)/roounfold_meas->GetBinContent(roounfold_meas->FindBin(Counts_density_Ekin->GetBinCenter(1)))*Counts_density_Ekin->GetBinContent(1));
-			tmp->SetBinError(i+1,Counts_density_Ekin->GetBinError(1));
+			if(tmp->GetBinLowEdge(i+1)<Counts_density_Ekin->GetBinLowEdge(1)){
+				tmp->SetBinContent(i+1,roounfold_meas->GetBinContent(i+1)/roounfold_meas->GetBinContent(roounfold_meas->FindBin(Counts_density_Ekin->GetBinCenter(1)))*Counts_density_Ekin->GetBinContent(1));
+				tmp->SetBinError(i+1,Counts_density_Ekin->GetBinError(1));
+			}
+			else if(tmp->GetBinLowEdge(i+1)<Counts_density_Ekin->GetBinLowEdge(Counts_density_Ekin->GetNbinsX())){
+
+				tmp->SetBinContent(i+1, Counts_density_Ekin->GetBinContent(Counts_density_Ekin->FindBin(tmp->GetBinCenter(i+1))) ); 
+				tmp->SetBinError(i+1, Counts_density_Ekin->GetBinError(Counts_density_Ekin->FindBin(tmp->GetBinCenter(i+1))));
+			}
+			else {
+
+				/*			TF1 * ff = new TF1("ff","[0]*x^[1]",0,50);
+							Counts_density_Ekin->Fit(ff,"","w",Counts_density_Ekin->GetBinCenter(Counts_density_Ekin->GetNbinsX()-4),Counts_density_Ekin->GetBinCenter(Counts_density_Ekin->GetNbinsX()));
+							tmp->SetBinContent(i+1,ff->Eval(tmp->GetBinCenter(i+1)));
+							tmp->SetBinError(i+1,Counts_density_Ekin->GetBinError(Counts_density_Ekin->GetNbinsX()));
+							*/
+				tmp->SetBinContent(i+1,roounfold_meas->GetBinContent(i+1)/roounfold_meas->GetBinContent(roounfold_meas->FindBin(Counts_density_Ekin->GetBinCenter(Counts_density_Ekin->GetNbinsX())))*Counts_density_Ekin->GetBinContent(Counts_density_Ekin->GetNbinsX()));
+				tmp->SetBinError(i+1,Counts_density_Ekin->GetBinError(Counts_density_Ekin->GetNbinsX()));
+
+
+			}
 		}
-		else if(tmp->GetBinLowEdge(i+1)<Counts_density_Ekin->GetBinLowEdge(Counts_density_Ekin->GetNbinsX())){
 
-			tmp->SetBinContent(i+1, Counts_density_Ekin->GetBinContent(Counts_density_Ekin->FindBin(tmp->GetBinCenter(i+1))) ); 
-			tmp->SetBinError(i+1, Counts_density_Ekin->GetBinError(Counts_density_Ekin->FindBin(tmp->GetBinCenter(i+1))));
-		}
-		else {
-
-/*			TF1 * ff = new TF1("ff","[0]*x^[1]",0,50);
-			Counts_density_Ekin->Fit(ff,"","w",Counts_density_Ekin->GetBinCenter(Counts_density_Ekin->GetNbinsX()-4),Counts_density_Ekin->GetBinCenter(Counts_density_Ekin->GetNbinsX()));
-			tmp->SetBinContent(i+1,ff->Eval(tmp->GetBinCenter(i+1)));
-			tmp->SetBinError(i+1,Counts_density_Ekin->GetBinError(Counts_density_Ekin->GetNbinsX()));
-*/
-			tmp->SetBinContent(i+1,roounfold_meas->GetBinContent(i+1)/roounfold_meas->GetBinContent(roounfold_meas->FindBin(Counts_density_Ekin->GetBinCenter(Counts_density_Ekin->GetNbinsX())))*Counts_density_Ekin->GetBinContent(Counts_density_Ekin->GetNbinsX()));
-			tmp->SetBinError(i+1,Counts_density_Ekin->GetBinError(Counts_density_Ekin->GetNbinsX()));
-
-
+	if(usepdf){
+		for(int i=-1;i<tmp->GetNbinsX()+1;i++){
+			tmp->SetBinContent(i+1,tmp->GetBinContent(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
+			tmp->SetBinError(i+1,tmp->GetBinError(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
 		}
 	}
 
-if(usepdf){
-	for(int i=-1;i<tmp->GetNbinsX()+1;i++){
-		tmp->SetBinContent(i+1,tmp->GetBinContent(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
-		tmp->SetBinError(i+1,tmp->GetBinError(i+1)/(tmp->GetBinLowEdge(i+2)-tmp->GetBinLowEdge(i+1) ));
-	}
-}
-	
-//	Counts_density_Ekin->Multiply(ExposureTime_plot);
-//     	Counts_density_Ekin->Multiply(Eff_Acceptance_plot);
+	//	Counts_density_Ekin->Multiply(ExposureTime_plot);
+	//     	Counts_density_Ekin->Multiply(Eff_Acceptance_plot);
 
-	 tmp->Smooth();
+	tmp->Smooth();
 
-if(usepdf){	for(int i=-2;i<migr_matr_rootunfold->GetNbinsX()+2;i++)
+	if(usepdf){	for(int i=-2;i<migr_matr_rootunfold->GetNbinsX()+2;i++)
 		for(int j=-1;j<migr_matr_rootunfold->GetNbinsX()+1;j++){
-		float x1 = migr_matr_rootunfold->GetXaxis()->GetBinLowEdge(i+1);
-		float x2 = migr_matr_rootunfold->GetXaxis()->GetBinLowEdge(i+2);
-		migr_matr_rootunfold->SetBinContent(i+1,j+1,migr_matr_rootunfold->GetBinContent(i+1,j+1)/(x2-x1));
-		migr_matr_rootunfold->SetBinError(i+1,j+1,roounfold_meas->GetBinError(i+1,j+1)/(x2-x1));
-	}
+			float x1 = migr_matr_rootunfold->GetXaxis()->GetBinLowEdge(i+1);
+			float x2 = migr_matr_rootunfold->GetXaxis()->GetBinLowEdge(i+2);
+			migr_matr_rootunfold->SetBinContent(i+1,j+1,migr_matr_rootunfold->GetBinContent(i+1,j+1)/(x2-x1));
+			migr_matr_rootunfold->SetBinError(i+1,j+1,roounfold_meas->GetBinError(i+1,j+1)/(x2-x1));
+		}
 
-//	roounfold_true->Scale(roounfold_meas->Integral()/roounfold_true->Integral());
-}
+		//	roounfold_true->Scale(roounfold_meas->Integral()/roounfold_true->Integral());
+	}
 	RooUnfoldResponse response (roounfold_meas,roounfold_true,migr_matr_rootunfold);
 
-         cout << "==================================== UNFOLD ===================================" << endl;
-if(!usepdf)	response.UseOverflow();        
+	cout << "==================================== UNFOLD ===================================" << endl;
+	if(!usepdf)	response.UseOverflow();        
 
 
 
 
-	 RooUnfoldBayes   unfold (&response, tmp, iterations); 
-	  
-         
-	 TH1D* hReco= (TH1D*) unfold.Hreco();	
-	 cout<<" Unfolding successful"<< hReco->GetNbinsX()<<" "<<Counts_density->GetNbinsX()<<" "<<Counts_density_Ekin->GetNbinsX()<<endl;		
+	RooUnfoldBayes   unfold (&response, tmp, iterations); 
+
+
+	TH1D* hReco= (TH1D*) unfold.Hreco();	
+	cout<<" Unfolding successful"<< hReco->GetNbinsX()<<" "<<Counts_density->GetNbinsX()<<" "<<Counts_density_Ekin->GetNbinsX()<<endl;		
 
 
 	Counts_density_hRecoroounf = (TH1F*) hReco->Clone("RooUnfolding_Posterior");
 	Prior = (TH1F*)tmp->Clone("RooUnfolding_Prior");
 
-//	RooUnfolding_factor_raw= (TH1F*) RooUnfolding_factor->Clone("RooUnfolding_factor_raw");	
+	//	RooUnfolding_factor_raw= (TH1F*) RooUnfolding_factor->Clone("RooUnfolding_factor_raw");	
 
 	RooUnfolding_factor_raw= (TH1F*) Counts_density_hRecoroounf ->Clone("RooUnfolding_factor_raw");	
 	RooUnfolding_factor_raw->Divide(tmp);
-	
+
+
+	RooUnfolding_factor = (TH1F*) RooUnfolding_factor_raw->Clone("RooUnfolding_factor");
+	RooUnfolding_factor->SetBinContent(1,0.9*RooUnfolding_factor_raw->GetBinContent(2));
+	RooUnfolding_factor->Smooth();
+
+	RooUnfolding_factor_g= new TGraphErrors(RooUnfolding_factor);
+	RooUnfolding_factor_g->SetName("RooUnfolding_factor_g");
+
 
 	for(int i=0;i<RooUnfolding_factor->GetNbinsX();i++) {
-		 RooUnfolding_factor->SetBinContent(i+1,RooUnfolding_factor_raw->GetBinContent(RooUnfolding_factor_raw->FindBin(Counts_density_Ekin->GetBinCenter(i+1))));
-//		 float unf_err =  fabs(RooUnfolding_factor->GetBinContent(i+1) -1)*0.1;
-                RooUnfolding_factor->SetBinError(i+1,RooUnfolding_factor_raw->GetBinError(RooUnfolding_factor_raw->FindBin(Counts_density_Ekin->GetBinCenter(i+1))));		
-	}
-	if(Unfolding_factor_timeavg){
+		RooUnfolding_factor->SetBinContent(i+1,RooUnfolding_factor_g->Eval(RooUnfolding_factor->GetBinCenter(i+1)));
+		RooUnfolding_factor->SetBinError(i+1,0.01);
 
-	for(int i=0;i<RooUnfolding_factor->GetNbinsX();i++) {
-		 RooUnfolding_factor->SetBinContent(i+1,Unfolding_factor_timeavg->Eval(RooUnfolding_factor->GetBinCenter(i+1)));
-		 RooUnfolding_factor->SetBinError(i+1,0.01);
-		 float unferr =  fabs(RooUnfolding_factor->GetBinContent(i+1) -1)/sqrt(12);
-                 RooUnfolding_factor->SetBinError(i+1,unferr);		
+
+         	float unferr =  fabs(RooUnfolding_factor->GetBinContent(i+1) -1)/sqrt(12);
 		RooUnfolding_Err->SetBinContent(i+1, unferr);
-		}
+	}	
+
+/*	for(int i=0;i<RooUnfolding_factor->GetNbinsX();i++) {
+		RooUnfolding_factor->SetBinContent(i+1,RooUnfolding_factor_raw->GetBinContent(RooUnfolding_factor_raw->FindBin(Counts_density_Ekin->GetBinCenter(i+1))));
+		//		 float unf_err =  fabs(RooUnfolding_factor->GetBinContent(i+1) -1)*0.1;
+		if(i==0) RooUnfolding_factor->SetBinContent(i+1,0.9*RooUnfolding_factor_raw->GetBinContent(i+2));
 	
+		RooUnfolding_factor->SetBinError(i+1,RooUnfolding_factor_raw->GetBinError(RooUnfolding_factor_raw->FindBin(Counts_density_Ekin->GetBinCenter(i+1))));		
 	}
+*/
+
+	// EXTERNAL UNFOLDING
+/*	if(Unfolding_factor_timeavg && Unfolding_factor_timeavg_err)
+	{
+
+		for(int i=0;i<RooUnfolding_factor->GetNbinsX();i++) {
+			RooUnfolding_factor->SetBinContent(i+1,Unfolding_factor_timeavg->Eval(RooUnfolding_factor->GetBinCenter(i+1)));
+			RooUnfolding_factor->SetBinError(i+1,Unfolding_factor_timeavg_err->Eval(RooUnfolding_factor->GetBinCenter(i+1)));
+
+
+			float unferr =  fabs(RooUnfolding_factor->GetBinContent(i+1) -1)/sqrt(12);
+			RooUnfolding_Err->SetBinContent(i+1, unferr);
+		}
+	}
+
+*/
+//
 
 	
 	Counts_density_Ekin_unf = (TH1F*) Counts_density_Ekin->Clone("Counts density Ekin unfolded");
 	Counts_density_Ekin_unf -> Multiply(RooUnfolding_factor);
 
 	for(int i=0;i<Counts_density_roounf->GetNbinsX();i++){
-		  Counts_density_roounf->SetBinContent(i+1,Counts_density->GetBinContent(i+1)*RooUnfolding_factor->GetBinContent(i+1));		
-		  Counts_density_roounf->SetBinError(i+1,Counts_density->GetBinError(i+1)*RooUnfolding_factor->GetBinContent(i+1));		
+		int ekinbin= RooUnfolding_factor->FindBin(Counts_density_Ekin_unf -> GetBinCenter(i+1))-1 ;
+	//	  Counts_density_roounf->SetBinContent(i+1,Counts_density->GetBinContent(i+1)*RooUnfolding_factor->GetBinContent(ekinbin));		
+		  Counts_density_roounf->SetBinContent(i+1,Counts_density->GetBinContent(i+1)*RooUnfolding_factor_g->Eval(Counts_density_Ekin_unf -> GetBinCenter(i+1)));		
+		  Counts_density_roounf->SetBinError(i+1,Counts_density->GetBinError(i+1)*RooUnfolding_factor->GetBinContent(ekinbin));		
 	}
 
 
@@ -642,6 +678,8 @@ void Flux::SaveResults(FileSaver finalhistos,std::string bn){
 	if(Unfolding_factor) finalhistos.Add(Unfolding_factor);
 	if(RooUnfolding_factor) finalhistos.Add(RooUnfolding_factor);
 	if(RooUnfolding_factor_raw) finalhistos.Add(RooUnfolding_factor_raw);
+	if(RooUnfolding_factor_g) finalhistos.Add(RooUnfolding_factor_g);
+
 
 	if(Counts_ForAverage) finalhistos.Add(Counts_ForAverage);
 	if(Exposure_ForAverage) finalhistos.Add(Exposure_ForAverage);
@@ -814,27 +852,28 @@ void Flux::Eval_Errors(){
 	}
 
 	if(Counts_systErr&&Counts_systErr_unb) for(int i=0;i<Counts_systErr_unb->GetNbinsX();i++) 
-		Counts_systErr_unb->SetBinContent(i+1,Counts_systErr_unb->GetBinContent(i+1)-Counts_systErr->GetBinContent(i+1));
-		
+		if(Counts_systErr_unb->GetBinContent(i+1)-Counts_systErr->GetBinContent(i+1)>0) 
+		   Counts_systErr_unb->SetBinContent(i+1,Counts_systErr_unb->GetBinContent(i+1)-Counts_systErr->GetBinContent(i+1));
+		else
+		   Counts_systErr_unb->SetBinContent(i+1,Counts_systErr_unb->GetBinContent(i+1));
 
 	if(Eff_Acceptance>0){
-		/*Acc_Err = (TH1F*) Eff_Acceptance->Clone("Acc_Err");	
-		Acc_Err->Reset();
-		for(int i=0;i<Eff_Acceptance->GetNbinsX();i++){
-                                Acc_Err->SetBinContent(i+1,Eff_Acceptance->GetBinError(i+1)/Eff_Acceptance->GetBinContent(i+1));
-                        }*/
 		Acc_Err =(TH1F*) EffAcceptance->GetSyst_Err();
 		Acc_Err->SetName("Acc_Err");
 		Acc_ErrStat=(TH1F*)EffAcceptance->GetStat_Err();
-
-		//protection against super and too small stat error in effcorr
-		/*for(int i=0;i<Counts->GetNbinsX();i++){
-			Acc_ErrStat->SetBinContent(i+1,min(10*Acc_ErrStat->GetBinContent(i+1),0.01));
-		}*/
+		//correcting the fragmentation error 
+		for(int i=0;i<Acc_Err->GetNbinsX();i++){
+			float err= Acc_Err->GetBinContent(i+1);
+			err=pow(err,2);
+			err-=0.02*0.02;
+			err+=pow(systfragm,2);
+			err=sqrt(err);
+			Acc_Err->SetBinContent(i+1,err);
+			Acc_Err->SetBinError(i+1,0);
+		}
 
 		for(int j=0;j<TOT_statErr->GetNbinsX();j++) 
 			TOT_statErr->SetBinContent(j+1,pow(pow(Acc_ErrStat->GetBinContent(j+1),2)+
-						       pow(Counts_systErr->GetBinContent(j+1),2)+ 
 						       pow(RooUnfolding_factor->GetBinError(j+1)/RooUnfolding_factor->GetBinContent(j+1),2)+ 
 						       pow(TOT_statErr->GetBinContent(j+1),2),0.5));
 

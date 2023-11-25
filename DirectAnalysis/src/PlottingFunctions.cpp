@@ -22,7 +22,6 @@ TH1F * CreateHisto(std::string name,  Binning Bins,bool IsEkin){
 	float x[Bins.size()+1];
 	if(IsEkin) for(int i=0;i<Bins.size()+1;i++) x[i]=Bins.EkPerMasTOIBins()[i];
 	else for(int i=0;i<Bins.size()+1;i++) x[i]=Bins.RigTOIBins()[i]; 
-	
 	TH1F * hist = new TH1F(name.c_str(),name.c_str(),Bins.size(),x);
 	if(IsEkin) hist->GetXaxis()->SetTitle("Ekin [GeV/n]");
 	else hist->GetXaxis()->SetTitle("R [GV]");
@@ -34,13 +33,13 @@ TH1D * CreateHistoD(std::string name,  Binning Bins,bool IsEkin){
 	float x[Bins.size()+1];
 	if(IsEkin) for(int i=0;i<Bins.size()+1;i++) x[i]=Bins.EkPerMasTOIBins()[i];
 	else for(int i=0;i<Bins.size()+1;i++) x[i]=Bins.RigTOIBins()[i]; 
-	
 	TH1D * hist = new TH1D(name.c_str(),name.c_str(),Bins.size(),x);
 	if(IsEkin) hist->GetXaxis()->SetTitle("Ekin [GeV/n]");
 	else hist->GetXaxis()->SetTitle("R [GV]");
 	
 	return hist;
 }
+
 
 TH1F * ConvertBinnedHisto(TH1F * histo,std::string name,  Binning Bins,bool IsEkin){
 	TH1F * plot = CreateHisto(name,Bins,IsEkin);

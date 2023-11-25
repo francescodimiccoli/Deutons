@@ -32,15 +32,18 @@ class Flux{
 	TH1F * Counts_ForAverage=0x0;
 	TH1F * Exposure_ForAverage=0x0;
 
+	float systfragm = 0.02;
 
 	bool rooUnfolding=false;
 
 
 	TGraphErrors * Unfolding_factor_timeavg=0x0;
+	TGraphErrors * Unfolding_factor_timeavg_err=0x0;
 	TH2F * avg_time=0x0;
 	int time=1429054000;
 
 	TH1F * RooUnfolding_factor=new TH1F();;
+	TGraph * RooUnfolding_factor_g=new TGraphErrors;
 	TH1F * RooUnfolding_factor_raw=new TH1F();
 	
 	TH1F * Eff_Acceptance=0x0;
@@ -173,8 +176,9 @@ class Flux{
 
 	void ActivateRooUnfolding(bool usepdf=true){ rooUnfolding=true; Usepdf=usepdf;}
 
-	void Set_UnfoldingTime(TGraphErrors * avg) {
+	void Set_UnfoldingTime(TGraphErrors * avg,TGraphErrors * avg_err) {
 		Unfolding_factor_timeavg = (TGraphErrors *) avg->Clone(); 
+		Unfolding_factor_timeavg_err = (TGraphErrors *) avg_err->Clone(); 
 	}
 
 	void Roounfold(int iterations,bool usepdf);
@@ -207,7 +211,7 @@ class Flux{
 	
 	void Average_with_another(TH1F* ratio);
 	TH1F * Eval_FluxRatio(Flux * Denominator,std::string name);
-
+	void SetSystFragm(float sfr) {systfragm=sfr;}
 };
 
 

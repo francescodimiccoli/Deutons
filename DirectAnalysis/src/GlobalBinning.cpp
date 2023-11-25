@@ -176,7 +176,7 @@ void SetBins(){
 
 	ForCutoff.setBinsFromRigidity(100,0.5,50,ResponseTOF,0.00347548,5.8474);
 	ForCutoff.UseREdges();
-/*
+
 	cout<<"**********H.E.**"<<endl;
 	HeRB.Print();
 	cout<<"**TOF**"<<endl;
@@ -199,20 +199,13 @@ void SetBins(){
 	Global_He.GetAglPBins().Print();
 	Global_He.GetAglDBins().Print();
 
-
-
-	cout<<"** R extension**"<<endl;
-	PExtension.Print();
-	DPExtension.Print();
-	HeExtension.Print();
-	He3Extension.Print();
-	
+/*
 	cout<<"**Global**"<<endl;
 	GlobalRig.GetGlobalPBins().Print();
 	GlobalRig.GetGlobalDBins().Print();
 		*/	
 	cout<<"*** For Unfolding ***"<<endl;
-
+/*
 	cout<<"**TOF**"<<endl;
 	UnfoldingToF.Print();
 	UnfoldingToF_D.Print();
@@ -224,7 +217,17 @@ void SetBins(){
 	cout<<"**Agl**"<<endl;
 	UnfoldingAgl.Print();
 	UnfoldingAgl_D.Print();
-		
+	
+	cout<<"** R extension**"<<endl;
+	cout<<"**P**"<<endl;
+	PExtension.Print();
+		cout<<"**D**"<<endl;
+		DPExtension.Print();
+		cout<<"**He4**"<<endl;
+	HeExtension.Print();
+		cout<<"**He3**"<<endl;
+	He3Extension.Print();
+	*/	
 	return;
 }
 
