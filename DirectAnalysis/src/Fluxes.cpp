@@ -427,8 +427,8 @@ void Analyzer::BookFluxAnalysis(FileSaver finalhistos, FileSaver finalresults, b
 		ResultMerger*	FitBetaHeRes    = new ResultMerger(finalresults,"FitBetaHeFlux",Global_HeRig,FitBetaHeTOF,FitBetaHeNaF,FitBetaHeAgl,deuton,nafpriority);
 		ResultMerger*	He4Res 	    = new ResultMerger(finalresults,"He4Flux",Global_He,He4FluxTOF,He4FluxNaF,He4FluxAgl,deuton,nafpriority,0x0,0x0,0x0,He3FluxExtension,false);
 	
-		He4Res->ResidualCorrectionWithFluxes(RigBetaHeRes->flux_ekin,RigHeRes->flux_ekin);
-		He3Res->ResidualCorrectionWithFluxes(RigBetaHeRes->flux_ekin,RigHeRes->flux_ekin);
+	//	He4Res->ResidualCorrectionWithFluxes(RigBetaHeRes->flux_ekin,RigHeRes->flux_ekin);
+	//	He3Res->ResidualCorrectionWithFluxes(RigBetaHeRes->flux_ekin,RigHeRes->flux_ekin);
 
 	//	DeutonRes->ResidualCorrectionWithFluxes(RigBetaPRes->flux_ekin,RigPRes->flux_ekin);
 	//	ProtonRes->ResidualCorrectionWithFluxes(RigBetaPRes->flux_ekin,RigPRes->flux_ekin);

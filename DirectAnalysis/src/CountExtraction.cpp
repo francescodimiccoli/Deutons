@@ -178,7 +178,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		TFile * RegularizationFile = TFile::Open("/afs/cern.ch/work/f/fdimicco/private/Deutons/DirectAnalysis/EffSyst/Time.root");
 		
 		bool disable_fits=false;
-
+/*
 		TOFfits->SetLocalFit();
 	//	TOFfits->SetRegularizationFile(RegularizationFile,filelistDT.c_str());
 		TOFfits->SetFitRange(0.8,7);
@@ -186,7 +186,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		TOFfits->SetFitConstraints(0.94,1,0.0001,0.16,0.0005,0.0025,false);
 		//TOFfits->SetSharpenMode(0.02);
 		//TOFfits->SetAdjoustTailMode(0.6,2.3,11,25);
-		TOFfits->ActivateRegularization(0.0432/0.0395,0.83448980);
+		TOFfits->ActivateRegularization(0.0432/0.0395,1);
 		TOFfits->ExtractCounts(finalhistos);	
 		if(!disable_fits) TOFfits->SaveFitResults(finalresults);
 
@@ -201,7 +201,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		//NaFfits->SetAdjoustPeakMode(1,+0.01);
 		//NaFfits->SetFixModTailMode(-0.8,2.1,6,8);
 		NaFfits->SetLowStatDMode();
-		NaFfits->ActivateRegularization(0.86956522,0.0119/0.0133);
+		NaFfits->ActivateRegularization(1,0.0099/0.0111);
 		NaFfits->ExtractCounts(finalhistos);
 		if(!disable_fits) NaFfits->SaveFitResults(finalresults);
 
@@ -211,7 +211,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		Aglfits->SetFitRange(0.5,7);
 		if(disable_fits)  Aglfits->DisableFit();
 		Aglfits->SetFitConstraints(0.9,1,0.00072,0.1,0.0001,0.02,false);
-		Aglfits->ActivateRegularization(0.01337/0.01335,1);
+		Aglfits->ActivateRegularization(0.0115/0.011,1);
 		Aglfits->ExtractCounts(finalhistos);
 		if(!disable_fits) Aglfits->SaveFitResults(finalresults);	
 
@@ -232,8 +232,7 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		TOFfits_P->SetFitRange(0.6,5);
 		if(disable_fits) TOFfits_P->DisableFit();
 		TOFfits_P->SetFitConstraints(0.94,1,0.0001,0.16,0.0005,0.025,false);
-		//TOFfits_P->SetSharpenMode(0.02);
-		//TOFfits_P->SetAdjoustTailMode(0.6,2.3,3,25);
+		TOFfits_P->ActivateRegularization(0.022/0.02,0.0143/0.019);	
 		TOFfits_P->ExtractCounts(finalhistos);	
 		if(!disable_fits) 	TOFfits_P->SaveFitResults(finalresults);
 
@@ -243,9 +242,8 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		NaFfits_P->SetFitRange(0.6,6);
 		if(disable_fits) NaFfits_P->DisableFit();
 		NaFfits_P->SetFitConstraints(0.9,1,0.001,0.1,0.0005,0.02,false);
-		NaFfits_P->SetAdjoustPeakMode(1,+0.02);
-		NaFfits_P->SetFixModTailMode(-0.8,2.1,6,9);
 		NaFfits_P->SetLowStatDMode();
+		NaFfits_P->ActivateRegularization(0.019/0.0143,0.00864/0.00834);
 		NaFfits_P->ExtractCounts(finalhistos);
 		if(!disable_fits) NaFfits_P->SaveFitResults(finalresults);
 
@@ -256,21 +254,22 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		Aglfits_P->SetFitRange(0.5,7);
 		if(disable_fits) Aglfits_P->DisableFit();
 		Aglfits_P->SetFitConstraints(0.9,1,0.00072,0.1,0.0001,0.02,false);
+		Aglfits_P->ActivateRegularization(0.00834/0.00864,1);
 	//	Aglfits_P->SetUseBestOnly();
 		Aglfits_P->ExtractCounts(finalhistos);
 		if(!disable_fits) 	Aglfits_P->SaveFitResults(finalresults);	
 
 
 		//disable_fits=true;
-
+*/
 		TOFfits_He->SetLocalFit();
 //		TOFfits_He->SetRegularizationFile(RegularizationFile,filelistDT.c_str());
 		TOFfits_He->SetFitRange(0.65,5.5);
 		TOFfits_He->SetNotWeightedMC();
-		TOFfits_He->SetAdjoustPeakMode(1,0.02);
+		TOFfits_He->SetAdjoustPeakMode(1,0.03);
 		if(disable_fits) TOFfits_He->DisableFit();
 		TOFfits_He->SetFitConstraints(0.6,1,0.015,0.6,0.000001,0.02,false);
-		TOFfits_He->ActivateRegularization(0.6796,1.1278);
+		TOFfits_He->ActivateRegularization(0.128/0.1344,0.190/0.1814);
 		TOFfits_He->ExtractCounts(finalhistos);	
 		if(!disable_fits) 	TOFfits_He->SaveFitResults(finalresults);
 		
@@ -281,22 +280,22 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 	//	NaFfits_He->SetRegularizationFile(RegularizationFile,filelistDT.c_str());
 		NaFfits_He->SetFitRange(0.6,6);
 		NaFfits_He->SetNotWeightedMC();
-		NaFfits_He->SetAdjoustPeakMode(1,0.02);
+		NaFfits_He->SetAdjoustPeakMode(1,0.03);
 		if(disable_fits) NaFfits_He->DisableFit();
 		NaFfits_He->SetFitConstraints(0.6,1,0.001,0.6,0.0005,0.002,false);
-		NaFfits_He->ActivateRegularization(1/1.1278,1.0462);
+		NaFfits_He->ActivateRegularization(0.1814/0.190,0.176/0.194);
 		NaFfits_He->ExtractCounts(finalhistos);
 		if(!disable_fits) NaFfits_He->SaveFitResults(finalresults);
 
 //		disable_fits=false;
-
+/*
 		Aglfits_He->SetLocalFit();
 	//	Aglfits_He->SetRegularizationFile(RegularizationFile,filelistDT.c_str());
 		Aglfits_He->SetFitRange(0.5,6);
 		Aglfits_He->SetNotWeightedMC();
 		if(disable_fits) Aglfits_He->DisableFit();
 		Aglfits_He->SetFitConstraints(0.6,1,0.001,0.6,0.0005,0.02,false);
-		Aglfits_He->ActivateRegularization( 1.0242,0.987);
+		Aglfits_He->ActivateRegularization( 0.194/0.1846,1);
 		//Aglfits_He->SetSharpenMode(0.04);	
 		Aglfits_He->SetAdjoustPeakMode(1,-0.01);
 		Aglfits_He->ExtractCounts(finalhistos);
@@ -310,9 +309,10 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		Z2Extension->SetFitConstraints(0.6,1,0.001,0.6,0.0005,0.02,false);
 		Z2Extension->SetAdjoustPeakMode(1,-0.01);
 		Z2Extension->SetSharpenMode(0.025);
+		Z2Extension->ActivateRegularization( 0.194/0.1846,1);
 		Z2Extension->ExtractCounts(finalhistos);
 		if(!disable_fits) 	Z2Extension->SaveFitResults(finalresults);	
-
+*/
 		//disable_fits=false;
 
 		TOFfits_He3->SetLocalFit();
@@ -321,8 +321,8 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		TOFfits_He3->SetNotWeightedMC();
 		if(disable_fits) TOFfits_He3->DisableFit();
 		TOFfits_He3->SetFitConstraints(0.6,1,0.015,0.6,0.000001,0.02,false);
-		TOFfits_He3->SetAdjoustPeakMode(1,0.02);
-		TOFfits_He3->ActivateRegularization(0.919,1.064);
+		TOFfits_He3->SetAdjoustPeakMode(1,0.03);
+		TOFfits_He3->ActivateRegularization(0.16/0.165,0.1746/0.1797);
 		//	TOFfits_He3->SetUseBestOnly();
 		TOFfits_He3->ExtractCounts(finalhistos);	
 		if(!disable_fits) 	TOFfits_He3->SaveFitResults(finalresults);
@@ -335,16 +335,16 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		NaFfits_He3->SetFitRange(0.6,6);
 		NaFfits_He3->SetNotWeightedMC();
 		//NaFfits_He3->SetAdjoustPeakMode(0,0.01);
-	//	NaFfits_He3->SetAdjoustPeakMode(1,0.02);
+		NaFfits_He3->SetAdjoustPeakMode(1,0.03);
 		NaFfits_He3->SetLowStatPMode();
 		if(disable_fits) NaFfits_He3->DisableFit();
 		NaFfits_He3->SetFitConstraints(0.6,1,0.001,0.6,0.0005,0.002,false);
-		NaFfits_He3->ActivateRegularization(1/1.064,0.1816/0.172);
+		NaFfits_He3->ActivateRegularization(0.1797/0.1746,0.1796/0.1812);
 		NaFfits_He3->ExtractCounts(finalhistos);
 		if(!disable_fits) NaFfits_He3->SaveFitResults(finalresults);
 
 		//disable_fits=false;
-
+/*
 		Aglfits_He3->SetLocalFit();
 	//	Aglfits_He3->SetRegularizationFile(RegularizationFile,filelistDT.c_str());
 		Aglfits_He3->SetFitRange(0.5,6);
@@ -353,10 +353,10 @@ void Analyzer::BookCountsAnalysis(FileSaver finalhistos, FileSaver finalresults,
 		Aglfits_He3->SetFitConstraints(0.6,1,0.001,0.6,0.0005,0.02,false);
 		//Aglfits_He3->SetSharpenMode(0.04);	
 		Aglfits_He3->SetAdjoustPeakMode(1,-0.02);
-		Aglfits_He3->ActivateRegularization(0.172/0.1816,1);
+		Aglfits_He3->ActivateRegularization(0.1796/0.1812,1);
 		Aglfits_He3->ExtractCounts(finalhistos);
 		if(!disable_fits) 	Aglfits_He3->SaveFitResults(finalresults);	
-
+*/
 
 		CountsHE	->Eval_Efficiency();	
 		CountsL1HE	->Eval_Efficiency();	

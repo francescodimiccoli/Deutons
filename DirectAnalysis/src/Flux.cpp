@@ -416,9 +416,12 @@ void Flux::Roounfold(int iterations, bool usepdf){
 	Counts_density_hRecoroounf = (TH1F*) hReco->Clone("RooUnfolding_Posterior");
 	Prior = (TH1F*)tmp->Clone("RooUnfolding_Prior");
 
-	//	RooUnfolding_factor_raw= (TH1F*) RooUnfolding_factor->Clone("RooUnfolding_factor_raw");	
 
 	RooUnfolding_factor_raw= (TH1F*) Counts_density_hRecoroounf ->Clone("RooUnfolding_factor_raw");	
+	for(int i=0;i<RooUnfolding_factor_raw->GetNbinsX();i++)
+		if(fabs(RooUnfolding_factor_raw->GetBinContent(i+1)-tmp->GetBinContent(i+1))<RooUnfolding_factor_raw->GetBinError(i+1))
+			RooUnfolding_factor_raw->SetBinContent(i+1,tmp->GetBinContent(i+1));
+
 	RooUnfolding_factor_raw->Divide(tmp);
 
 
@@ -438,32 +441,6 @@ void Flux::Roounfold(int iterations, bool usepdf){
          	float unferr =  fabs(RooUnfolding_factor->GetBinContent(i+1) -1)/sqrt(12);
 		RooUnfolding_Err->SetBinContent(i+1, unferr);
 	}	
-
-/*	for(int i=0;i<RooUnfolding_factor->GetNbinsX();i++) {
-		RooUnfolding_factor->SetBinContent(i+1,RooUnfolding_factor_raw->GetBinContent(RooUnfolding_factor_raw->FindBin(Counts_density_Ekin->GetBinCenter(i+1))));
-		//		 float unf_err =  fabs(RooUnfolding_factor->GetBinContent(i+1) -1)*0.1;
-		if(i==0) RooUnfolding_factor->SetBinContent(i+1,0.9*RooUnfolding_factor_raw->GetBinContent(i+2));
-	
-		RooUnfolding_factor->SetBinError(i+1,RooUnfolding_factor_raw->GetBinError(RooUnfolding_factor_raw->FindBin(Counts_density_Ekin->GetBinCenter(i+1))));		
-	}
-*/
-
-	// EXTERNAL UNFOLDING
-/*	if(Unfolding_factor_timeavg && Unfolding_factor_timeavg_err)
-	{
-
-		for(int i=0;i<RooUnfolding_factor->GetNbinsX();i++) {
-			RooUnfolding_factor->SetBinContent(i+1,Unfolding_factor_timeavg->Eval(RooUnfolding_factor->GetBinCenter(i+1)));
-			RooUnfolding_factor->SetBinError(i+1,Unfolding_factor_timeavg_err->Eval(RooUnfolding_factor->GetBinCenter(i+1)));
-
-
-			float unferr =  fabs(RooUnfolding_factor->GetBinContent(i+1) -1)/sqrt(12);
-			RooUnfolding_Err->SetBinContent(i+1, unferr);
-		}
-	}
-
-*/
-//
 
 	
 	Counts_density_Ekin_unf = (TH1F*) Counts_density_Ekin->Clone("Counts density Ekin unfolded");
