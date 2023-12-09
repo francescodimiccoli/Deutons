@@ -98,6 +98,8 @@ class Flux{
 
 
 	bool Usepdf=true;
+	bool Plawext=false;
+
 
 	public:
 
@@ -174,14 +176,14 @@ class Flux{
 	void Unfold_Counts(float fit_min, float fit_max,int knots,float offset, bool regularize=false);
 	void ModelAcceptanceWithSpline(float shift);
 
-	void ActivateRooUnfolding(bool usepdf=true){ rooUnfolding=true; Usepdf=usepdf;}
+	void ActivateRooUnfolding(bool usepdf=true,bool plawext=false){ rooUnfolding=true; Usepdf=usepdf; Plawext=plawext;}
 
 	void Set_UnfoldingTime(TGraphErrors * avg,TGraphErrors * avg_err) {
 		Unfolding_factor_timeavg = (TGraphErrors *) avg->Clone(); 
 		Unfolding_factor_timeavg_err = (TGraphErrors *) avg_err->Clone(); 
 	}
 
-	void Roounfold(int iterations,bool usepdf);
+	void Roounfold(int iterations,bool usepdf,bool plawext);
 	
 	
 	void SetForceFolded(){forcefolded=true;}

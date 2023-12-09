@@ -408,13 +408,14 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 		Acceptance_DNaF->Set_MCPar(0.2,1000,1,"D.B1220/d.pl1ph.021000.info",filelistMC2.c_str(),0.23716441,0.05);	
 		Acceptance_DAgl->Set_MCPar(0.2,1000,1,"D.B1220/d.pl1ph.021000.info",filelistMC2.c_str(),0.23716441,0.05);	
 */
+
+		Acceptance_He3TOF->Set_MCPar(1,500,1,"He.B1220/he3.pl1.21000.4_01.info",filelistMC4.c_str(),0.1460);	
+		Acceptance_He3NaF->Set_MCPar(1,500,1,"He.B1220/he3.pl1.21000.4_01.info",filelistMC4.c_str(),0.1460);	
+		Acceptance_He3Agl->Set_MCPar(1,500,1,"He.B1220/he3.pl1.21000.4_01.info",filelistMC4.c_str(),0.1460);	
+
 		Acceptance_HeTOF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 		Acceptance_HeNaF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 		Acceptance_HeAgl->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
-
-		Acceptance_He3TOF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
-		Acceptance_He3NaF->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
-		Acceptance_He3Agl->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);	
 
 		Acceptance_RigPTOF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
 		Acceptance_RigPNaF->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);	
@@ -445,7 +446,7 @@ void Analyzer::BookAcceptanceAnalysis(FileSaver finalhistos, FileSaver finalresu
 
 		AccProtonExtension  ->Set_MCPar(0.5,100,1,"Pr.B1200/pr.pl1.05100.4_00.info",filelistMC1.c_str(),0.14699260);
 		AccDeutonExtension  ->Set_MCPar(0.5,100,1,"D.B1220/d.pl1.05100.info",filelistMC2.c_str(),0.15262600,0.05);
-		AccHe3Extension     ->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC4.c_str(),0.1381);		
+		AccHe3Extension     ->Set_MCPar(1,500,1,"He.B1220/he3.pl1.21000.4_01.info",filelistMC4.c_str(),0.1381);		
 		AccHe4Extension     ->Set_MCPar(1,500,1,"He.B1200/he4.pl1.21000.4_00.info",filelistMC3.c_str(),0.1381);		
 
 

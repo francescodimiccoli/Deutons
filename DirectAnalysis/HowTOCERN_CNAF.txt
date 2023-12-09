@@ -1,3 +1,4 @@
 1- Do not touch perl, it is not updated from GIT
-2- grep all the "afs" in the code, change with correct path
-3- In cnaf there is no eos writing
+2- git pull
+3- grep all the "afs" in the code, change with correct path
+4- In cnaf there is no eos writing

@@ -2007,10 +2007,14 @@ void TemplateFIT::ExtractCounts(FileSaver finalhistos,int force_shift){
 					float ww_unb = EvalFitProbability(fixminimum_factor*adjousttailchi*fits[bin][sigma][shift]->ChiSquare,sigma+1,shift+1,besterror->centroid_x,besterror->centroid_y,chimin);
 					
 					/////************ REGULARIZATION *******************//
-				
-			//		ww*= std::max((1-0.2*fabs(bestlocal->i-sigma)),0.);
-			//		ww*= std::max((1-0.2*fabs(bestlocal->j-shift)),0.);
-				
+			
+					if(usebestonly) {	
+						ww*= std::max((1-0.3*fabs(bestlocal->i-sigma)),0.);
+						ww*= std::max((1-0.3*fabs(bestlocal->j-shift)),0.);
+					//	ww_unb*= std::max((1-0.2*fabs(bestlocal->i-sigma)),0.);
+					//	ww_unb*= std::max((1-0.2*fabs(bestlocal->j-shift)),0.);
+					}
+
 					//ww*= std::max((1-0.025*fabs(sigma)),0.1);
 					//ww*= std::max((1-0.025*fabs(shift)),0.1);
 
@@ -2243,9 +2247,10 @@ void TemplateFIT::CalculateFinalPDCounts(){
                 else bestlocal->FindMinimum(TFitChisquare[bin]);
 
 		float CountsP; 	
-		if(!usebestonly) CountsP      = //fits[bin][bestlocal->i][bestlocal->j]->Data->Integral()- fits[bin][bestlocal->i][bestlocal->j]->DCounts; 
+		/*if(!usebestonly)*/ CountsP      = //fits[bin][bestlocal->i][bestlocal->j]->Data->Integral()- fits[bin][bestlocal->i][bestlocal->j]->DCounts; 
 						WeightedPCounts[bin]->GetMean()   - 8.5 * fits_best[bin]->TCounts;
-		else CountsP=fits[bin][bestlocal->i][bestlocal->j]->PCounts - 8.5 * fits_best[bin]->TCounts; 
+		//else 
+		CountsP=fits[bin][bestlocal->i][bestlocal->j]->PCounts - 8.5 * fits_best[bin]->TCounts; 
 		
 
 		float CountsP_unb; 	
@@ -2255,35 +2260,35 @@ void TemplateFIT::CalculateFinalPDCounts(){
 		float CountsD;	
 				
 		if(!lowstatDmode){
-			if(!usebestonly) CountsD = WeightedDCounts[bin]->GetMean();
-			else CountsD=fits[bin][bestlocal->i][bestlocal->j]->DCounts;
+			/*if(!usebestonly)*/ CountsD = WeightedDCounts[bin]->GetMean();
+			//else CountsD=fits[bin][bestlocal->i][bestlocal->j]->DCounts;
 			if(fits_best[bin]->TCounts>0) CountsD=CountsD-0.035*CountsD; //Tritium contamination stable in time
 		}
 	
 		else { 
-			if(!usebestonly) CountsD = WeightedDCounts[bin]->GetMean() ;//- 1.5 * fits_best[bin]->TCounts;
-			else CountsD=fits[bin][bestlocal->i][bestlocal->j]->DCounts ;//- 1.5*fits[bin][bestlocal->i][bestlocal->j]->TCounts;
-			CountsD=CountsD-0.033*CountsD; //Tritium contamination stable in time
+			/*if(!usebestonly)*/ CountsD = WeightedDCounts[bin]->GetMean() ;//- 1.5 * fits_best[bin]->TCounts;
+			//else CountsD=fits[bin][bestlocal->i][bestlocal->j]->DCounts ;//- 1.5*fits[bin][bestlocal->i][bestlocal->j]->TCounts;
+			if(fits_best[bin]->TCounts>0) CountsD=CountsD-0.033*CountsD; //Tritium contamination stable in time
 		}
-		if(lowstatPmode) CountsP  = fits[bin][bestlocal->i][bestlocal->j]->Data->Integral()- CountsD;
+		if(lowstatPmode) CountsP  = fits[bin][bestlocal->i][bestlocal->j]->Data->Integral()- 1.033*CountsD;
 
 
 		float CountsD_unb;	
 				
 		if(!lowstatDmode){
-			if(!usebestonly) CountsD_unb = WeightedDCounts_unb[bin]->GetMean();
-			else CountsD_unb=fits[bin][bestlocal->i][bestlocal->j]->DCounts;
+			/*if(!usebestonly)*/ CountsD_unb = WeightedDCounts_unb[bin]->GetMean();
+			//else CountsD_unb=fits[bin][bestlocal->i][bestlocal->j]->DCounts;
 			if(fits_best[bin]->TCounts>0) CountsD_unb=CountsD_unb-0.035*CountsD_unb; //Tritium contamination stable in time
 		}
 	
 		else { 
-			if(!usebestonly) CountsD_unb = WeightedDCounts_unb[bin]->GetMean() ;//- 1.5 * fits_best[bin]->TCounts;
-			else CountsD_unb=fits[bin][bestlocal->i][bestlocal->j]->DCounts ;//- 1.5*fits[bin][bestlocal->i][bestlocal->j]->TCounts;
-			CountsD_unb=CountsD_unb-0.033*CountsD; //Tritium contamination stable in time
+			/*if(!usebestonly)*/ CountsD_unb = WeightedDCounts_unb[bin]->GetMean() ;//- 1.5 * fits_best[bin]->TCounts;
+			//else CountsD_unb=fits[bin][bestlocal->i][bestlocal->j]->DCounts ;//- 1.5*fits[bin][bestlocal->i][bestlocal->j]->TCounts;
+			if(fits_best[bin]->TCounts>0) CountsD_unb=CountsD_unb-0.033*CountsD; //Tritium contamination stable in time
 		}
 	
-		if(lowstatPmode) CountsP      = fits[bin][bestlocal->i][bestlocal->j]->Data->Integral()- CountsD_unb;
-
+	
+		if(lowstatPmode) CountsP_unb      = fits[bin][bestlocal->i][bestlocal->j]->Data->Integral()- 1.033*CountsD_unb ;
 
 
 

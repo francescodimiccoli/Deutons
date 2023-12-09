@@ -21,7 +21,8 @@ void SetCanvas(TCanvas *c1){
 TH1F * CreateHisto(std::string name,  Binning Bins,bool IsEkin){
 	float x[Bins.size()+1];
 	if(IsEkin) for(int i=0;i<Bins.size()+1;i++) x[i]=Bins.EkPerMasTOIBins()[i];
-	else for(int i=0;i<Bins.size()+1;i++) x[i]=Bins.RigTOIBins()[i]; 
+	else for(int i=0;i<Bins.size()+1;i++) { cout<<"CREATING HISTO: "<<Bins.RigTOIBins()[i]<<endl;  x[i]=Bins.RigTOIBins()[i]; }
+
 	TH1F * hist = new TH1F(name.c_str(),name.c_str(),Bins.size(),x);
 	if(IsEkin) hist->GetXaxis()->SetTitle("Ekin [GeV/n]");
 	else hist->GetXaxis()->SetTitle("R [GV]");
